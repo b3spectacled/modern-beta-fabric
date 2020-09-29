@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "modernbeta",
+  "version": "${version}",
+
+  "name": "Modern Beta Fabric",
+  "description": "Modern Beta for Modern Minecraft.",
+  "authors": [
+    "bespectacled"
+  ],
+  "contact": {
+    "homepage": "https://github.com/b3spectacled/",
+    "sources": "https://github.com/b3spectacled/modern-beta-fabric"
+  },
+
+  "license": "LGPLv3",
+  "icon": "assets/modernbeta/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.bespectacled.modernbeta.ModernBeta"
+    ]
+  },
+  "mixins": [
+    "modern_beta.mixins.json"
+  ],
+  
+  "accessWidener": "modern_beta.accesswidener",
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}
