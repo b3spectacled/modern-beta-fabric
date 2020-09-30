@@ -65,6 +65,9 @@ public class BetaBiomeSource extends BiomeSource {
     public static Biome[] biomesInChunk1D = new Biome[256];
     private static Biome[][] biomesInChunk = new Biome[16][16]; // 2D array instead of 1D because I am dumb
     private static Biome[][] oceanBiomesInChunk = new Biome[16][16];
+    
+    private static boolean generateOceans = ModernBetaConfig.loadConfig().generate_oceans;
+    private static boolean generateIceDeserts = ModernBetaConfig.loadConfig().generate_ice_desert;
 
 	public BetaBiomeSource(long seed, Registry<Biome> registry) {
 	    super(BIOMES.stream().map((registryKey) -> () -> (Biome)registry.get(registryKey)));
@@ -187,7 +190,7 @@ public class BetaBiomeSource extends BiomeSource {
         humid *= temp;
 
         if(temp < 0.1F) {
-            if (ModernBetaConfig.loadConfig().generate_ice_desert)
+            if (generateIceDeserts)
                 return registry.get(new Identifier(ModernBeta.ID, "ice_desert"));
             else
                 return registry.get(new Identifier(ModernBeta.ID, "tundra"));
@@ -242,7 +245,7 @@ public class BetaBiomeSource extends BiomeSource {
         // 46 = Cold Ocean
         // 10 = Frozen Ocean
         
-        if (!ModernBetaConfig.loadConfig().generate_oceans) {
+        if (!generateOceans) {
             return getLiteOceanBiome(temp, humid, registry);
         }
 
@@ -293,7 +296,7 @@ public class BetaBiomeSource extends BiomeSource {
         humid *= temp;
         
         if(temp < 0.1F) {
-            if (ModernBetaConfig.loadConfig().generate_ice_desert)
+            if (generateIceDeserts)
                 return registry.get(new Identifier(ModernBeta.ID, "ice_desert"));
             else
                 return registry.get(new Identifier(ModernBeta.ID, "tundra"));

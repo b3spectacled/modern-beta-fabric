@@ -7,6 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.bespectacled.modernbeta.gen.BetaGeneratorType;
+import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
+import com.bespectacled.modernbeta.gen.SkylandsGeneratorType;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.client.GoVote;
@@ -33,9 +35,12 @@ public class ModernBeta implements ModInitializer {
 		BetaBiomeSource.register();
 		BetaChunkGenerator.register();
 		
+		SkylandsChunkGenerator.register();
+		
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 		    GoVote.init();
 			BetaGeneratorType.register();
+			SkylandsGeneratorType.register();
 		}
 		
 		// I am not a programmer, I am an ape smashing rocks together.....

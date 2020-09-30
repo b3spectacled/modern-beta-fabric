@@ -44,7 +44,9 @@ public class MixinGeneratorOptions {
         }
 
         // check for our world type and return if so
-        if (properties.get("level-type").toString().trim().toLowerCase().equals("beta")) {
+        if (properties.get("level-type").toString().trim().toLowerCase().equals("beta") || 
+            properties.get("level-type").toString().trim().toLowerCase().equals("skylands")
+        ) {
             // get or generate seed
             String seedField = (String) MoreObjects.firstNonNull(properties.get("level-seed"), "");
             long seed = new Random().nextLong();
