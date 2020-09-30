@@ -241,6 +241,10 @@ public class BetaBiomeSource extends BiomeSource {
         // 45 = Lukewarm Ocean
         // 46 = Cold Ocean
         // 10 = Frozen Ocean
+        
+        if (!ModernBetaConfig.loadConfig().generate_oceans) {
+            return getLiteOceanBiome(temp, humid, registry);
+        }
 
         if(temp < 0.1F) {
             return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
@@ -282,6 +286,39 @@ public class BetaBiomeSource extends BiomeSource {
         } else {
             return registry.get(new Identifier(ModernBeta.ID, "warm_ocean"));
         }
+        
+    }
+	
+	private static Biome getLiteOceanBiome(float temp, float humid, Registry<Biome> registry) {
+        humid *= temp;
+        
+        if(temp < 0.1F) {
+            if (ModernBetaConfig.loadConfig().generate_ice_desert)
+                return registry.get(new Identifier(ModernBeta.ID, "ice_desert"));
+            else
+                return registry.get(new Identifier(ModernBeta.ID, "tundra"));
+        }
+        
+        if(humid < 0.2F) {
+            if(temp < 0.5F) {
+                return registry.get(new Identifier(ModernBeta.ID, "tundra"));
+            }
+            if(temp < 0.95F) {
+                return registry.get(new Identifier(ModernBeta.ID, "ocean"));
+            } else {
+                return registry.get(new Identifier(ModernBeta.ID, "ocean"));
+            }
+        }
+        
+        if(humid > 0.5F && temp < 0.7F) {
+            return registry.get(new Identifier(ModernBeta.ID, "ocean"));
+        }
+        
+        if(temp < 0.5F) {
+            return registry.get(new Identifier(ModernBeta.ID, "taiga"));
+        }
+        
+        return registry.get(new Identifier(ModernBeta.ID, "ocean"));
         
     }
 	
