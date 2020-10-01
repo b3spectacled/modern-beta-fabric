@@ -50,6 +50,7 @@ public final class ModernBetaConfig {
         ModernBetaConfig config = new ModernBetaConfig();
         
         try {
+            Files.createDirectory(PATH.getParent());
             FileWriter writer = new FileWriter(PATH.toFile());
             writer.write(GSON.toJson(config));
             writer.close();

@@ -1,10 +1,13 @@
 package com.bespectacled.modernbeta.mixin;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
+import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 import com.bespectacled.modernbeta.gen.BetaGeneratorSettings;
 import com.bespectacled.modernbeta.gen.BetaGeneratorType;
+import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
 import com.google.common.base.MoreObjects;
 
 import net.minecraft.block.Blocks;
@@ -15,6 +18,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GeneratorOptions;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.NoiseSamplingConfig;
@@ -45,7 +49,8 @@ public class MixinGeneratorOptions {
 
         // check for our world type and return if so
         if (properties.get("level-type").toString().trim().toLowerCase().equals("beta") || 
-            properties.get("level-type").toString().trim().toLowerCase().equals("skylands")
+            properties.get("level-type").toString().trim().toLowerCase().equals("skylands") || 
+            properties.get("level-type").toString().trim().toLowerCase().equals("alpha")
         ) {
             // get or generate seed
             String seedField = (String) MoreObjects.firstNonNull(properties.get("level-seed"), "");
@@ -94,6 +99,23 @@ public class MixinGeneratorOptions {
                 false
             );
             
+            String levelType = properties.get("level-type").toString().trim().toLowerCase();
+            ChunkGenerator generator;
+            
+            switch(levelType) {
+                case "beta":
+                    generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes), seed, new BetaGeneratorSettings(type));
+                    break;
+                case "skylands":
+                    generator = new SkylandsChunkGenerator(new BetaBiomeSource(seed, biomes), seed, new BetaGeneratorSettings(type));
+                    break;
+                case "alpha":
+                    generator = new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes), seed, new BetaGeneratorSettings(type));
+                    break;
+                default:
+                    generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes), seed, new BetaGeneratorSettings(type));
+            }
+            
 
             // return our chunk generator
             cir.setReturnValue(new GeneratorOptions(
@@ -103,7 +125,7 @@ public class MixinGeneratorOptions {
                 GeneratorOptions.method_28608(
                     dimensions, 
                     dimensionOptions, 
-                    new BetaChunkGenerator(new BetaBiomeSource(seed, biomes), seed, new BetaGeneratorSettings(type))
+                    generator
                 )
             ));
         }
