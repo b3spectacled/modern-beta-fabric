@@ -30,7 +30,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 import com.bespectacled.modernbeta.gen.BetaGeneratorType;
-import com.bespectacled.modernbeta.noise.NoiseGeneratorOctaves2;
+import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,11 +54,11 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(value = ClientWorld.class, priority = 1) 
 public abstract class MixinClientWorld extends World {
 	
-	private static NoiseGeneratorOctaves2 tempNoiseOctaves = new NoiseGeneratorOctaves2(new Random(0 * 9871L), 4);
-    private static NoiseGeneratorOctaves2 humidNoiseOctaves = new NoiseGeneratorOctaves2(new Random(0 * 39811L), 4);
-    private static NoiseGeneratorOctaves2 noiseOctaves = new NoiseGeneratorOctaves2(new Random(0 * 543321L), 2);
+	private static BetaNoiseGeneratorOctaves2 tempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 9871L), 4);
+    private static BetaNoiseGeneratorOctaves2 humidNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 39811L), 4);
+    private static BetaNoiseGeneratorOctaves2 noiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 543321L), 2);
 	
-	private static NoiseGeneratorOctaves2 skyTempNoiseOctaves = new NoiseGeneratorOctaves2(new Random(0 * 9871L), 4);
+	private static BetaNoiseGeneratorOctaves2 skyTempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 9871L), 4);
 	
 	private double skyTemps[];
 	private double temps[];
@@ -225,11 +225,11 @@ public abstract class MixinClientWorld extends World {
 	
 	@Unique
 	private void initOctaves(long seed) {
-		tempNoiseOctaves = new NoiseGeneratorOctaves2(new Random(seed * 9871L), 4);
-	    humidNoiseOctaves = new NoiseGeneratorOctaves2(new Random(seed * 39811L), 4);
-	    noiseOctaves = new NoiseGeneratorOctaves2(new Random(seed * 0x84a59L), 2);
+		tempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(seed * 9871L), 4);
+	    humidNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(seed * 39811L), 4);
+	    noiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(seed * 0x84a59L), 2);
 		
-		skyTempNoiseOctaves = new NoiseGeneratorOctaves2(new Random(seed * 9871L), 4);
+		skyTempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(seed * 9871L), 4);
 	}
 	
 	@Unique

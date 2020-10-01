@@ -2,17 +2,17 @@ package com.bespectacled.modernbeta.noise;
 
 import java.util.Random;
 
-public class NoiseGeneratorOctaves2 extends NoiseGenerator {
-	private NoiseGenerator2 field_4234_a[];
+public class BetaNoiseGeneratorOctaves2 extends NoiseGenerator {
+	private BetaNoiseGenerator field_4234_a[];
 	private int field_4233_b;
 	
-	public NoiseGeneratorOctaves2(Random random, int i)
+	public BetaNoiseGeneratorOctaves2(Random random, int i)
     {
         field_4233_b = i;
-        field_4234_a = new NoiseGenerator2[i];
+        field_4234_a = new BetaNoiseGenerator[i];
         for(int j = 0; j < i; j++)
         {
-            field_4234_a[j] = new NoiseGenerator2(random);
+            field_4234_a[j] = new BetaNoiseGenerator(random);
         }
 
     }

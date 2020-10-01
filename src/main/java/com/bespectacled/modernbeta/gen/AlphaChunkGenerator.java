@@ -60,6 +60,7 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
@@ -68,7 +69,7 @@ import com.bespectacled.modernbeta.util.MutableBiomeArray;
 
 //private final BetaGeneratorSettings settings;
 
-public class BetaChunkGenerator extends NoiseChunkGenerator {
+public class AlphaChunkGenerator extends NoiseChunkGenerator {
 	
     static int noiseWeightX;
     static int noiseWeightY;
@@ -86,21 +87,21 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         return;
     });
     
-	public static final Codec<BetaChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+	public static final Codec<AlphaChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
             Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
             BetaGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings)
-    ).apply(instance, instance.stable(BetaChunkGenerator::new)));
+    ).apply(instance, instance.stable(AlphaChunkGenerator::new)));
 	
 	private final BetaGeneratorSettings settings;
 	
-	private BetaNoiseGeneratorOctaves minLimitNoiseOctaves; 
-	private BetaNoiseGeneratorOctaves maxLimitNoiseOctaves;
-	private BetaNoiseGeneratorOctaves mainNoiseOctaves; 
-	private BetaNoiseGeneratorOctaves beachNoiseOctaves; 
-	private BetaNoiseGeneratorOctaves stoneNoiseOctaves;
-	public BetaNoiseGeneratorOctaves scaleNoiseOctaves; 
-	public BetaNoiseGeneratorOctaves depthNoiseOctaves;
+	private AlphaNoiseGeneratorOctaves minLimitNoiseOctaves; 
+	private AlphaNoiseGeneratorOctaves maxLimitNoiseOctaves;
+	private AlphaNoiseGeneratorOctaves mainNoiseOctaves; 
+	private AlphaNoiseGeneratorOctaves beachNoiseOctaves; 
+	private AlphaNoiseGeneratorOctaves stoneNoiseOctaves;
+	public AlphaNoiseGeneratorOctaves scaleNoiseOctaves; 
+	public AlphaNoiseGeneratorOctaves depthNoiseOctaves;
 	
 	//private final NoiseSampler surfaceDepthNoise;
     
@@ -120,7 +121,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
     private Random rand;
     
-    BetaBiomeSource biomeSource;
+    AlphaBiomeSource biomeSource;
     private double temps[];
     
     public static long seed;
@@ -129,37 +130,37 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     // Block Y-height cache, taken from Beta+
  	public Map<BlockPos, Integer> groundCacheY = new HashMap<>();
     
-	public BetaChunkGenerator(BiomeSource biomes, long seed, BetaGeneratorSettings settings) {
+	public AlphaChunkGenerator(BiomeSource biomes, long seed, BetaGeneratorSettings settings) {
 		super(biomes, seed, () -> settings.wrapped);
 		this.settings = settings;
 		this.seed = seed;
 		this.rand = new Random(seed);
-		this.biomeSource = (BetaBiomeSource)biomes;
+		this.biomeSource = (AlphaBiomeSource)biomes;
 		//this.generateOceans = ModernBetaConfig.loadConfig().generate_oceans;
 		
 		// Noise Generators
-	    minLimitNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 16); 
-	    maxLimitNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 16); 
-	    mainNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 8);  
-	    beachNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 4); 
-	    stoneNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 4); 
-	    scaleNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 10); 
-	    depthNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 16); 
+	    minLimitNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 16); 
+	    maxLimitNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 16); 
+	    mainNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 8);  
+	    beachNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 4); 
+	    stoneNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 4); 
+	    scaleNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 10); 
+	    depthNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 16); 
 
 		// Yes this is messy.  What else am I supposed to do?
-	    BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
+	    BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
 	}
     
 	
 	public static void register() {
-		ModernBeta.LOGGER.log(Level.INFO, "Registering Beta chunk generator...");
-		Registry.register(Registry.CHUNK_GENERATOR, new Identifier(ModernBeta.ID, "beta"), CODEC);
-		ModernBeta.LOGGER.log(Level.INFO, "Registered Beta chunk generator.");
+		ModernBeta.LOGGER.log(Level.INFO, "Registering Alpha chunk generator...");
+		Registry.register(Registry.CHUNK_GENERATOR, new Identifier(ModernBeta.ID, "alpha"), CODEC);
+		ModernBeta.LOGGER.log(Level.INFO, "Registered Alpha chunk generator.");
 	}
 	
 	@Override
 	protected Codec<? extends ChunkGenerator> getCodec() {
-		return BetaChunkGenerator.CODEC;
+		return AlphaChunkGenerator.CODEC;
 	}
 	
     @Override
@@ -167,9 +168,12 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         ChunkPos pos = chunk.getPos();
     	
     	rand.setSeed((long)chunk.getPos().x * 341873128712L  + (long)chunk.getPos().z * 132897987541L);
-
+    	
+    	/*
     	biomeSource.fetchTempHumid(chunk.getPos().x * 16, chunk.getPos().z * 16, 16, 16);
     	temps = biomeSource.temps;
+    	*/
+    	
     	generateTerrain(chunk, temps, structureAccessor);
     	
     	MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
@@ -252,7 +256,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     	// Cannot simply just check blockstate for chunks that do not yet exist...
     	// Will have to simulate heightmap for some distant chunk
     
-    	biomeSource.fetchTempHumid(chunkPos.x * 16, chunkPos.z * 16, 16, 16);
+    	//biomeSource.fetchTempHumid(chunkPos.x * 16, chunkPos.z * 16, 16, 16);
+        
 		int[][] chunkY = sampleHeightmap(chunkPos);
 		
 		int thisY = chunkY[Math.abs(absX % 16)][Math.abs(absZ % 16)];
@@ -333,7 +338,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         
         // Do not use the built-in surface builders..
         // This works better for Beta-accurate surface generation anyway.
-        buildBetaSurface(chunk);
+        buildAlphaSurface(chunk);
     }
     
     /*
@@ -469,7 +474,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                             	
                             	int integer63 = (chunk.getPos().z << 4) + j * 4 + n;
                             	
-                            	double temp = temps[(i * 4 + m) * 16 + (j * 4 + n)];
+                            	//double temp = temps[(i * 4 + m) * 16 + (j * 4 + n)];
                                 
                                 double noiseWeight;
                             	
@@ -504,7 +509,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                                 jigsawListIterator.back(jigsawList.size());
                                 
 
-                            	BlockState blockToSet = this.getBlockState(density, y, temp);
+                            	BlockState blockToSet = this.getBlockState(density, y, 0);
                             	
                             	
                                 chunk.setBlockState(mutableBlock.set(x, y, z), blockToSet, false);
@@ -534,14 +539,11 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         if(heightmap == null) {
             heightmap = new double[int5_0 * byte17 * int5_1];
         }
+        double coordinateScale = 684.41200000000003D;
+        double heightScale = 684.41200000000003D;
         
-        // Var names taken from old customized preset names
-        double coordinateScale = 684.41200000000003D; // d
-        double heightScale = 684.41200000000003D; // d1
-        
-        double depthNoiseScaleX = 200D;
-        double depthNoiseScaleZ = 200D;
-        double depthNoiseScaleExponent = 0.5D;
+        double depthNoiseScaleX = 100D;
+        double depthNoiseScaleZ = 100D;
         
         double mainNoiseScaleX = 80D;
         double mainNoiseScaleY = 160D;
@@ -550,88 +552,73 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
         
-        double temps[] = biomeSource.temps;
-        double humids[] = biomeSource.humids;
-       
-        scaleNoise = scaleNoiseOctaves.func_4109_a(scaleNoise, x, z, int5_0, int5_1, 1.121D, 1.121D, 0.5D);
-        depthNoise = depthNoiseOctaves.func_4109_a(depthNoise, x, z, int5_0, int5_1, depthNoiseScaleX, depthNoiseScaleZ, depthNoiseScaleExponent);
+        scaleNoise = scaleNoiseOctaves.generateNoiseOctaves(scaleNoise, x, y, z, int5_0, 1, int5_1, 1.0D, 0.0D, 1.0D);
+        depthNoise = depthNoiseOctaves.generateNoiseOctaves(depthNoise, x, y, z, int5_0, 1, int5_1, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
         
         mainNoise = mainNoiseOctaves.generateNoiseOctaves(
-    		mainNoise, 
-    		x, 
-    		y, 
-    		z,
-    		int5_0, 
-    		byte17, 
-    		int5_1, 
-    		coordinateScale / mainNoiseScaleX, 
-    		heightScale / mainNoiseScaleY, 
-    		coordinateScale / mainNoiseScaleZ
-		);
+            mainNoise, 
+            x, 
+            y, 
+            z, 
+            int5_0, 
+            byte17, 
+            int5_1,
+            coordinateScale / mainNoiseScaleX, 
+            heightScale / mainNoiseScaleY, 
+            coordinateScale / mainNoiseScaleZ
+        );
         
         minLimitNoise = minLimitNoiseOctaves.generateNoiseOctaves(
-    		minLimitNoise, 
-    		x, 
-    		y, 
-    		z, 
-    		int5_0, 
-    		byte17, 
-    		int5_1, 
-    		coordinateScale, 
-    		heightScale, 
-    		coordinateScale
-		);
+            minLimitNoise, 
+            x, 
+            y, 
+            z, 
+            int5_0, 
+            byte17, 
+            int5_1, 
+            coordinateScale, 
+            heightScale, 
+            coordinateScale
+        );
         
         maxLimitNoise = maxLimitNoiseOctaves.generateNoiseOctaves(
-    		maxLimitNoise,
-    		x, 
-    		y, 
-    		z, 
-    		int5_0, 
-    		byte17, 
-    		int5_1, 
-    		coordinateScale, 
-    		heightScale, 
-    		coordinateScale
-		);
+            maxLimitNoise, 
+            x, 
+            y, 
+            z, 
+            int5_0, 
+            byte17, 
+            int5_1, 
+            coordinateScale, 
+            heightScale, 
+            coordinateScale
+        );
         
         int i = 0;
         int j = 0;
-        int k = 16 / int5_0;
-        
         for(int l = 0; l < int5_0; l++) {
-            int idx0 = l * k + k / 2;
-            
             for(int m = 0; m < int5_1; m++) {
-                int idx1 = m * k + k / 2;
-                
-                double curTemp = temps[idx0 * 16 + idx1];
-                double curHumid = humids[idx0 * 16 + idx1] * curTemp;
-                
-                double humidMod = 1.0D - curHumid;
-                humidMod *= humidMod;
-                humidMod *= humidMod;
-                humidMod = 1.0D - humidMod;
                 
                 double scaleMod = (scaleNoise[j] + 256D) / 512D;
-                scaleMod *= humidMod;
-                
                 if(scaleMod > 1.0D) {
                     scaleMod = 1.0D;
                 }
                 
-                double depthMod = depthNoise[j] / 8000D;
+                double d3 = 0.0D;
                 
-                if(depthMod < 0.0D) {
-                    depthMod = -depthMod * 0.29999999999999999D;
+                double depthMod = depthNoise[j] / 8000D;
+                if(depthMod < 0.0D)
+                {
+                    depthMod = -depthMod;
                 }
                 
-                depthMod = depthMod * 3D - 2D;
+                depthMod = depthMod * 3D - 3D;
                 
-                if(depthMod < 0.0D) {
+                if(depthMod < 0.0D)
+                {
                     depthMod /= 2D;
-                    
-                    if(depthMod < -1D) {
+                    if(depthMod < -1D)
+                    {
                         depthMod = -1D;
                     }
                     
@@ -641,14 +628,11 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                     scaleMod = 0.0D;
                     
                 } else {
-                    if(depthMod > 1.0D) {
+                    if(depthMod > 1.0D)
+                    {
                         depthMod = 1.0D;
                     }
-                    depthMod /= 8D;
-                }
-                
-                if(scaleMod < 0.0D) {
-                    scaleMod = 0.0D;
+                    depthMod /= 6D;
                 }
                 
                 scaleMod += 0.5D;
@@ -658,8 +642,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                 
                 j++;
                 
-                for(int n = 0; n < byte17; n++)
-                {
+                for(int n = 0; n < byte17; n++) {
                     double heightVal = 0.0D;
                     double scaleMod2 = (((double)n - depthMod2) * 12D) / scaleMod;
                     
@@ -668,22 +651,35 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                     }
                     
                     double minLimitMod = minLimitNoise[i] / lowerLimitScale;
-                    double maxLimitMod = maxLimitNoise[i] / upperLimitScale; 
-                    double mainNoiseMod = (mainNoise[i] / 10D + 1.0D) / 2D;
+                    double maxLimitMod = maxLimitNoise[i] / upperLimitScale;
+                    double mainLimitMod = (mainNoise[i] / 10D + 1.0D) / 2D;
                     
-                    if(mainNoiseMod < 0.0D) {
+                    if(mainLimitMod < 0.0D) {
                         heightVal = minLimitMod;
-                    } else if(mainNoiseMod > 1.0D) {
+                    } else if (mainLimitMod > 1.0D) {
                         heightVal = maxLimitMod;
                     } else {
-                        heightVal = minLimitMod + (maxLimitMod - minLimitMod) * mainNoiseMod;
-                    }
+                        heightVal = minLimitMod + (maxLimitMod - minLimitMod) * mainLimitMod;
+                    }   
                     heightVal -= scaleMod2;
                     
                     if(n > byte17 - 4) {
-                        double d13 = (float)(n - (byte17 - 4)) / 3F;
-                        heightVal = heightVal * (1.0D - d13) + -10D * d13;
+                        double d11 = (float)(n - (byte17 - 4)) / 3F;
+                        heightVal = heightVal * (1.0D - d11) + -10D * d11;
                     }
+                    
+                    if((double)n < d3)
+                    {
+                        double d12 = (d3 - (double)n) / 4D;
+                        if(d12 < 0.0D) {
+                            d12 = 0.0D;
+                        }
+                        if(d12 > 1.0D) {
+                            d12 = 1.0D;
+                        }
+                        heightVal = heightVal * (1.0D - d12) + -10D * d12;
+                    }
+                    
                     heightmap[i] = heightVal;
                     i++;
                 }
@@ -696,14 +692,14 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     }
     
     
-    private void buildBetaSurface(Chunk chunk) {
+    private void buildAlphaSurface(Chunk chunk) {
         byte seaLevel = (byte)this.getSeaLevel();
         double thirtysecond = 0.03125D; //  eighth
         
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
-        biomeSource.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
+        //biomeSource.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
         BlockPos.Mutable mutableBlock = new BlockPos.Mutable();
  
         Biome curBiome;
@@ -722,11 +718,12 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                 int flag = -1;
                 
                 //curBiome = biomesInChunk[j][i];
-                curBiome = biomeSource.biomesInChunk1D[i + j * 16];
+                //curBiome = biomeSource.biomesInChunk1D[i + j * 16];
                 
-                Block biomeTopBlock;
-                Block biomeFillerBlock;
+                Block biomeTopBlock = Blocks.GRASS_BLOCK;
+                Block biomeFillerBlock = Blocks.DIRT;
                 
+                /*
                 // Equivalent of surface builder here
                 if (curBiome.equals(biomeSource.biomeRegistry.get(new Identifier(ModernBeta.ID, "desert"))) || 
                     curBiome.equals(biomeSource.biomeRegistry.get(new Identifier(ModernBeta.ID, "ice_desert")))) {
@@ -735,6 +732,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                 	biomeTopBlock = Blocks.GRASS_BLOCK;
                 	biomeFillerBlock = Blocks.DIRT;
                 }
+                */
                 
                 Block topBlock = biomeTopBlock;
                 Block fillerBlock = biomeFillerBlock;
@@ -743,7 +741,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                 for (int y = 127; y>= 0; y--) {
                 	
                     // Randomly place bedrock from y=0 to y=5
-                    if (y <= 0 + rand.nextInt(5)) {
+                    if (y <= (0 + rand.nextInt(6)) - 1) {
                     	chunk.setBlockState(mutableBlock.set(j, y, i), Blocks.BEDROCK.getDefaultState(), false);
                         continue;
                     }
@@ -865,7 +863,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 		ChunkPos chunkPos = new ChunkPos(blockPos);
     	
     	if (groundCacheY.get(blockPos) == null) {
-    		biomeSource.fetchTempHumid(chunkPos.x * 16, chunkPos.z * 16, 16, 16);
+    		//biomeSource.fetchTempHumid(chunkPos.x * 16, chunkPos.z * 16, 16, 16);
     		sampleHeightmap(chunkPos);	
 		}
     	
@@ -968,7 +966,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public ChunkGenerator withSeed(long seed) {
-    	return new BetaChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings);
+    	return new AlphaChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings);
     }
     
 }

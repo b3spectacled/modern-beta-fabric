@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.surfacebuilders;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-import com.bespectacled.modernbeta.noise.NoiseGeneratorOctaves;
+import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
@@ -26,8 +26,8 @@ public class BeachSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> {
 	private Random rand;
 	private long seed;
 	
-	private NoiseGeneratorOctaves beachNoiseOctaves; // field_909_n
-	private NoiseGeneratorOctaves stoneNoiseOctaves; // field_908_o
+	private BetaNoiseGeneratorOctaves beachNoiseOctaves; // field_909_n
+	private BetaNoiseGeneratorOctaves stoneNoiseOctaves; // field_908_o
 	protected OctavePerlinNoiseSampler noise;
 	
 	private double sandNoise[];
@@ -164,8 +164,8 @@ public class BeachSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> {
 	private void initOctaveGen(long seed) {
 		rand = new Random(seed);
 		
-		beachNoiseOctaves = new NoiseGeneratorOctaves(rand, 4);  // field_909_n
-	    stoneNoiseOctaves = new NoiseGeneratorOctaves(rand, 4);  // field_908_o
+		beachNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 4);  // field_909_n
+	    stoneNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 4);  // field_908_o
 	}
 	
 	public void genNoise(Chunk chunk, long seed) {

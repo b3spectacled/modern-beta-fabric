@@ -94,13 +94,13 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 	
 	private final BetaGeneratorSettings settings;
 	
-	private NoiseGeneratorOctaves minLimitNoiseOctaves; 
-	private NoiseGeneratorOctaves maxLimitNoiseOctaves;
-	private NoiseGeneratorOctaves mainNoiseOctaves; 
-	private NoiseGeneratorOctaves beachNoiseOctaves; 
-	private NoiseGeneratorOctaves stoneNoiseOctaves;
-	public NoiseGeneratorOctaves scaleNoiseOctaves; 
-	public NoiseGeneratorOctaves depthNoiseOctaves;
+	private BetaNoiseGeneratorOctaves minLimitNoiseOctaves; 
+	private BetaNoiseGeneratorOctaves maxLimitNoiseOctaves;
+	private BetaNoiseGeneratorOctaves mainNoiseOctaves; 
+	private BetaNoiseGeneratorOctaves beachNoiseOctaves; 
+	private BetaNoiseGeneratorOctaves stoneNoiseOctaves;
+	public BetaNoiseGeneratorOctaves scaleNoiseOctaves; 
+	public BetaNoiseGeneratorOctaves depthNoiseOctaves;
 	
 	//private final NoiseSampler surfaceDepthNoise;
     
@@ -138,13 +138,13 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 		//this.generateOceans = ModernBetaConfig.loadConfig().generate_oceans;
 		
 		// Noise Generators
-	    minLimitNoiseOctaves = new NoiseGeneratorOctaves(rand, 16); 
-	    maxLimitNoiseOctaves = new NoiseGeneratorOctaves(rand, 16); 
-	    mainNoiseOctaves = new NoiseGeneratorOctaves(rand, 8);  
-	    beachNoiseOctaves = new NoiseGeneratorOctaves(rand, 4); 
-	    stoneNoiseOctaves = new NoiseGeneratorOctaves(rand, 4); 
-	    scaleNoiseOctaves = new NoiseGeneratorOctaves(rand, 10); 
-	    depthNoiseOctaves = new NoiseGeneratorOctaves(rand, 16); 
+	    minLimitNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 16); 
+	    maxLimitNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 16); 
+	    mainNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 8);  
+	    beachNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 4); 
+	    stoneNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 4); 
+	    scaleNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 10); 
+	    depthNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 16); 
 
 		// Yes this is messy.  What else am I supposed to do?
 	    BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
@@ -487,7 +487,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                 
                 for(int n = 0; n < byte33; n++)
                 {
-                    double d8 = 0.0D;
+                    double heightVal = 0.0D;
                     double scaleMod2 = (((double)n - depthMod2) * 8D) / scaleMod;
                     
                     if(scaleMod2 < 0.0D) {
@@ -499,27 +499,27 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                     double mainNoiseMod = (mainNoise[i] / 10D + 1.0D) / 2D;
                     
                     if(mainNoiseMod < 0.0D) {
-                        d8 = minLimitMod;
+                        heightVal = minLimitMod;
                     } else if(mainNoiseMod > 1.0D) {
-                        d8 = maxLimitMod;
+                        heightVal = maxLimitMod;
                     } else {
-                        d8 = minLimitMod + (maxLimitMod - minLimitMod) * mainNoiseMod;
+                        heightVal = minLimitMod + (maxLimitMod - minLimitMod) * mainNoiseMod;
                     }
-                    d8 -= 8D;
+                    heightVal -= 8D;
                     int int_32 = 32;
                     
                     if(n > byte33 - int_32) {
                         double d13 = (float)(n - (byte33 - int_32)) / ((float)int_32 - 1.0F);
-                        d8 = d8 * (1.0D - d13) + -30D * d13;
+                        heightVal = heightVal * (1.0D - d13) + -30D * d13;
                     }
                     
                     int_32 = 8;
                     if(n < int_32) {
                         double d14 = (float)(int_32 - n) / ((float)int_32 - 1.0F);
-                        d8 = d8 * (1.0D - d14) + -30D * d14;
+                        heightVal = heightVal * (1.0D - d14) + -30D * d14;
                     }
                     
-                    heightmap[i] = d8;
+                    heightmap[i] = heightVal;
                     i++;
                 }
 

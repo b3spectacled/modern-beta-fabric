@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.noise;
 
 import java.util.Random;
 
-public class NoiseGenerator2 {
+public class BetaNoiseGenerator {
 	private static int gradient_vec[][] = {
 	        {
 	            1, 1, 0
@@ -37,12 +37,12 @@ public class NoiseGenerator2 {
 	    private static final double field_4294_f = 0.5D * (Math.sqrt(3D) - 1.0D);
 	    private static final double field_4293_g = (3D - Math.sqrt(3D)) / 6D;
 	    
-	    public NoiseGenerator2()
+	    public BetaNoiseGenerator()
 	    {
 	        this(new Random());
 	    }
 
-	    public NoiseGenerator2(Random random)
+	    public BetaNoiseGenerator(Random random)
 	    {
 	        field_4295_e = new int[512];
 	        field_4292_a = random.nextDouble() * 256D;

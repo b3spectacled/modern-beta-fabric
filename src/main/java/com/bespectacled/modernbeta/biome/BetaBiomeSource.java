@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.bespectacled.modernbeta.noise.NoiseGeneratorOctaves2;
+import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -55,9 +55,9 @@ public class BetaBiomeSource extends BiomeSource {
 	public double humids[];
 	public double noises[];
 	
-	private NoiseGeneratorOctaves2 tempNoiseOctaves;
-    private NoiseGeneratorOctaves2 humidNoiseOctaves;
-    private NoiseGeneratorOctaves2 noiseOctaves;
+	private BetaNoiseGeneratorOctaves2 tempNoiseOctaves;
+    private BetaNoiseGeneratorOctaves2 humidNoiseOctaves;
+    private BetaNoiseGeneratorOctaves2 noiseOctaves;
     
     private static Biome biomeLookupTable[] = new Biome[4096];
     private static Biome oceanBiomeLookupTable[] = new Biome[4096];
@@ -75,9 +75,9 @@ public class BetaBiomeSource extends BiomeSource {
 		this.seed = seed;
 		this.biomeRegistry = registry;
 		
-		tempNoiseOctaves = new NoiseGeneratorOctaves2(new Random(this.seed * 9871L), 4);
-		humidNoiseOctaves = new NoiseGeneratorOctaves2(new Random(this.seed * 39811L), 4);
-		noiseOctaves = new NoiseGeneratorOctaves2(new Random(this.seed * 543321L), 2);
+		tempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 9871L), 4);
+		humidNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 39811L), 4);
+		noiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 543321L), 2);
 		
 		generateBiomeLookup(registry);
 		
@@ -328,7 +328,7 @@ public class BetaBiomeSource extends BiomeSource {
 	
 	public static void register() {
 		ModernBeta.LOGGER.log(Level.INFO, "Registering biome source...");
-		Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "modern_beta"), CODEC);
+		Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "beta_biome_source"), CODEC);
 		ModernBeta.LOGGER.log(Level.INFO, "Registered biome source.");
 	}
 	

@@ -4,30 +4,27 @@ import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves;
+import com.bespectacled.modernbeta.noise.AlphaNoiseGeneratorOctaves;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.client.render.chunk.ChunkBuilder.ChunkData;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkProvider;
 import net.minecraft.world.gen.decorator.SimpleDecorator;
 
-public class CountBetaNoiseDecorator extends SimpleDecorator<CountNoiseDecoratorConfig> {
-	public BetaNoiseGeneratorOctaves forestNoise;
+public class CountAlphaNoiseDecorator extends SimpleDecorator<CountNoiseDecoratorConfig> {
+	public AlphaNoiseGeneratorOctaves forestNoise;
 	
-	public CountBetaNoiseDecorator(Codec<CountNoiseDecoratorConfig> codec) {
+	public CountAlphaNoiseDecorator(Codec<CountNoiseDecoratorConfig> codec) {
 		super(codec);
 	}
 	
 	public void setSeed(long seed) {
-		forestNoise = new BetaNoiseGeneratorOctaves(new Random(seed), 8);
+		forestNoise = new AlphaNoiseGeneratorOctaves(new Random(seed), 8);
 	}
 
 	@Override
 	protected Stream<BlockPos> getPositions(Random random, CountNoiseDecoratorConfig config, BlockPos pos) {
 		if (forestNoise == null) {
-			forestNoise = new BetaNoiseGeneratorOctaves(new Random(0), 8);
+			forestNoise = new AlphaNoiseGeneratorOctaves(new Random(0), 8);
 		}
 		
 		int chunkX = (int)pos.getX() / 16;
@@ -39,7 +36,8 @@ public class CountBetaNoiseDecorator extends SimpleDecorator<CountNoiseDecorator
 		double d = 0.5D;
 		
 		int noiseCount = (int)((forestNoise.func_806_a((double)noiseX * d, (double)noiseY * d) / 8D + random.nextDouble() * 4D + 4D) / 3D);
-
+		if (noiseCount < 0) noiseCount = 0;
+		
 		int finalCount = noiseCount + config.density + ((random.nextFloat() < config.extraChance) ? config.extraCount : 0);
 		
 		// Returns just the count, actual block pos placement handled by Square decorator.

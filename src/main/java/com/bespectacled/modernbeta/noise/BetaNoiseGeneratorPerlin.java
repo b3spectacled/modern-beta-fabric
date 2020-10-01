@@ -5,18 +5,18 @@ import java.util.Random;
 /*
  * Used for additional info: https://adrianb.io/2014/08/09/perlinnoise.html
  */
-public class NoiseGeneratorPerlin extends NoiseGenerator {
+public class BetaNoiseGeneratorPerlin extends NoiseGenerator {
 	
 	private int permutations[];
     public double xCoord;
     public double yCoord;
     public double zCoord;
     
-	public NoiseGeneratorPerlin() {
+	public BetaNoiseGeneratorPerlin() {
 		this(new Random());
 	}
 	
-	public NoiseGeneratorPerlin (Random random) {
+	public BetaNoiseGeneratorPerlin (Random random) {
 		
 		// Generate permutation array
 		permutations = new int[512];

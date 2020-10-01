@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
-import com.bespectacled.modernbeta.decorator.CountBetaNoiseDecoratorConfig;
+import com.bespectacled.modernbeta.decorator.CountNoiseDecoratorConfig;
 import com.bespectacled.modernbeta.decorator.CountBetaNoiseDecorator;
 import com.google.common.collect.ImmutableList;
 
@@ -47,7 +47,10 @@ public class BetaFeature {
         new Identifier(ModernBeta.ID, "patch_dandelion_3"),
         new Identifier(ModernBeta.ID, "patch_dandelion_4"),
         new Identifier(ModernBeta.ID, "patch_poppy"),
-        new Identifier(ModernBeta.ID, "ore_emerald_y95")
+        new Identifier(ModernBeta.ID, "ore_emerald_y95"),
+        new Identifier(ModernBeta.ID, "trees_alpha_forest_bees"),
+        new Identifier(ModernBeta.ID, "patch_grass_alpha_2"),
+        new Identifier(ModernBeta.ID, "patch_cactus_alpha")
     );
 
 	public static ConfiguredFeature<?, ?> getFeature(String name) {

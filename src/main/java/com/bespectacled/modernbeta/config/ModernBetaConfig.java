@@ -22,31 +22,35 @@ import org.apache.logging.log4j.Level;
 
 public final class ModernBetaConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Path PATH = Paths.get("config", "modernbeta.json");
     
-    public boolean render_beta_sky_color;
     //public boolean render_beta_grass_color;
     //public boolean render_old_stars;
-    public boolean generate_oceans;
+    public static final int CURRENT_VERSION = 1;
+    
+    public final int VERSION;
+    public final boolean render_beta_sky_color;
+    public final boolean generate_oceans;
     public boolean generate_ice_desert;
+    public boolean alpha_winter_mode;
     
     public ModernBetaConfig() {
-        // Default values
-        render_beta_sky_color = true;
-        //render_beta_grass_color = false;
-        //render_old_stars = false;
-        generate_oceans = false;
-        generate_ice_desert = false;
+        this.VERSION = CURRENT_VERSION;
+        this.render_beta_sky_color = true;
+        this.generate_oceans = false;
+        this.generate_ice_desert = false;
+        this.alpha_winter_mode = false;
     }
     
     public static ModernBetaConfig loadConfig() {
         return readConfig();
     }
     
-    private static ModernBetaConfig createConfig(Path path) {
+    private static ModernBetaConfig createConfig() {
         ModernBetaConfig config = new ModernBetaConfig();
         
         try {
-            FileWriter writer = new FileWriter(path.toFile());
+            FileWriter writer = new FileWriter(PATH.toFile());
             writer.write(GSON.toJson(config));
             writer.close();
         }
@@ -59,21 +63,23 @@ public final class ModernBetaConfig {
     
     private static ModernBetaConfig readConfig() {
         ModernBetaConfig config = null;
-        Path path = Paths.get("config", "modernbeta.json");
         
         try {
             BufferedReader bufferedReader = new BufferedReader(
-                new FileReader(path.toFile())
+                new FileReader(PATH.toFile())
             );
             
             config = GSON.fromJson(bufferedReader, ModernBetaConfig.class);
         }
         catch (IOException e) {
             ModernBeta.LOGGER.log(Level.INFO, "Config file not found, creating...");
-            createConfig(path);
+            createConfig();
         }
         
-        if (config == null) config = createConfig(path);
+        if (config == null || config.VERSION != CURRENT_VERSION) {
+            ModernBeta.LOGGER.log(Level.INFO, "Missing or outdated config, recreating...");
+            config = createConfig();
+        }
         
         return config;
     }
