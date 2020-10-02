@@ -163,7 +163,7 @@ public abstract class MixinClientWorld extends World {
 	
 	private int getBetaSkyColor(BlockPos pos) {
         
-	    if (SEED == null || ModernBeta.GEN != CUR_GEN) {
+	    if (SEED == null || ModernBeta.GEN != CUR_GEN || ModernBeta.SEED != SEED) {
             switch(ModernBeta.GEN) {
                 case "beta": 
                     SEED = BetaChunkGenerator.seed;

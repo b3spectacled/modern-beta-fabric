@@ -59,6 +59,7 @@ public final class AlphaGeneratorType extends GeneratorType {
 	
 	@Override
 	protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
+	    ModernBeta.GEN = "alpha";
 	    ModernBeta.SEED = seed;
 	    
 		return new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes), seed, new BetaGeneratorSettings(type));

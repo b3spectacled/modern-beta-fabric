@@ -58,7 +58,8 @@ public final class SkylandsGeneratorType extends GeneratorType {
 	
 	@Override
 	protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-	    ModernBeta.SEED = seed;
+	    ModernBeta.GEN = "skylands";
+        ModernBeta.SEED = seed;
 	    
 		return new SkylandsChunkGenerator(new BetaBiomeSource(seed, biomes), seed, new BetaGeneratorSettings(type));
 	}
