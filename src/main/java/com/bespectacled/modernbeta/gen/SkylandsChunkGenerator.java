@@ -148,6 +148,8 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
 		// Yes this is messy.  What else am I supposed to do?
 	    BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
+	    ModernBeta.GEN = "skylands";
+	    ModernBeta.SEED = seed;
 	}
     
 	

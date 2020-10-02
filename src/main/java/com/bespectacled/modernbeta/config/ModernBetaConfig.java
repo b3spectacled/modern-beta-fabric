@@ -30,6 +30,7 @@ public final class ModernBetaConfig {
     
     public final int VERSION;
     public final boolean render_beta_sky_color;
+    public final boolean render_beta_grass_color;
     public final boolean generate_oceans;
     public boolean generate_ice_desert;
     public boolean alpha_winter_mode;
@@ -37,6 +38,7 @@ public final class ModernBetaConfig {
     public ModernBetaConfig() {
         this.VERSION = CURRENT_VERSION;
         this.render_beta_sky_color = true;
+        this.render_beta_grass_color = true;
         this.generate_oceans = false;
         this.generate_ice_desert = false;
         this.alpha_winter_mode = false;
@@ -50,7 +52,9 @@ public final class ModernBetaConfig {
         ModernBetaConfig config = new ModernBetaConfig();
         
         try {
-            Files.createDirectory(PATH.getParent());
+            if (!Files.exists(PATH))
+                Files.createDirectories(PATH.getParent());
+            
             FileWriter writer = new FileWriter(PATH.toFile());
             writer.write(GSON.toJson(config));
             writer.close();
@@ -73,12 +77,12 @@ public final class ModernBetaConfig {
             config = GSON.fromJson(bufferedReader, ModernBetaConfig.class);
         }
         catch (IOException e) {
-            ModernBeta.LOGGER.log(Level.INFO, "Config file not found, creating...");
+            ModernBeta.LOGGER.log(Level.WARN, "Config file not found, creating...");
             createConfig();
         }
         
         if (config == null || config.VERSION != CURRENT_VERSION) {
-            ModernBeta.LOGGER.log(Level.INFO, "Missing or outdated config, recreating...");
+            ModernBeta.LOGGER.log(Level.WARN, "Missing or outdated config, recreating...");
             config = createConfig();
         }
         

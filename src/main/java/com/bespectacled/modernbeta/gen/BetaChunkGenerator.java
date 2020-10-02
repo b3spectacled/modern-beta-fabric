@@ -63,6 +63,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
+import com.bespectacled.modernbeta.mixin.MixinBlockColors;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
 
@@ -148,6 +149,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
 		// Yes this is messy.  What else am I supposed to do?
 	    BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
+	    ModernBeta.GEN = "beta";
+	    ModernBeta.SEED = seed;
 	}
     
 	

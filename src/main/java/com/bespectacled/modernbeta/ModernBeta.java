@@ -26,6 +26,9 @@ public class ModernBeta implements ModInitializer {
 	
 	public static final Logger LOGGER = LogManager.getLogger("ModernBeta");
 	
+	public static String GEN = "";
+	public static long SEED = 0L;
+	
 	@Override
 	public void onInitialize() {
 	    ModernBetaConfig.loadConfig(); // Generate config if not present.

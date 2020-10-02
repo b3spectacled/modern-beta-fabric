@@ -149,6 +149,8 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
 
 		// Yes this is messy.  What else am I supposed to do?
 	    BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
+	    ModernBeta.GEN = "alpha";
+	    ModernBeta.SEED = 0L;
 	}
     
 	
