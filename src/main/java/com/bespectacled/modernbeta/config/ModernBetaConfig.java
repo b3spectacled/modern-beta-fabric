@@ -24,9 +24,8 @@ public final class ModernBetaConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path PATH = Paths.get("config", "modernbeta.json");
     
-    //public boolean render_beta_grass_color;
     //public boolean render_old_stars;
-    public static final int CURRENT_VERSION = 1;
+    public static final int CURRENT_VERSION = 2;
     
     public final int VERSION;
     public final boolean render_beta_sky_color;
