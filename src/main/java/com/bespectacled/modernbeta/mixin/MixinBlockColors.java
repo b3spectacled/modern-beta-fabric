@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.mixin;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.world.FoliageColors;
@@ -56,13 +57,13 @@ public class MixinBlockColors {
     @Dynamic("Two high grass color lambda method")
     @Inject(method = "method_1686", at = @At("HEAD"), cancellable = true)
     private static void onDoubleTallGrassColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx, CallbackInfoReturnable<Integer> info) {
-        if (renderBetaColor) info.setReturnValue(getGrassColor(world, pos));
+        if (renderBetaColor) info.setReturnValue(getGrassColor(state, world, pos));
     }
     
     @Dynamic("Grass color lambda method")
     @Inject(method = "method_1693", at = @At("HEAD"), cancellable = true)
     private static void onGrassColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx, CallbackInfoReturnable<Integer> info) {
-        if (renderBetaColor) info.setReturnValue(getGrassColor(world, pos));
+        if (renderBetaColor) info.setReturnValue(getGrassColor(state, world, pos));
     }
     
     @Dynamic("Foliage color lambda method")
@@ -73,7 +74,7 @@ public class MixinBlockColors {
     
     
     @Unique
-    private static int getGrassColor(BlockRenderView world, BlockPos pos) {
+    private static int getGrassColor(BlockState state, BlockRenderView world, BlockPos pos) {
         if (world == null || pos == null) { // Appears to enter here when loading color for inventory block
             return 8174955; // Default tint, from wiki
         }
@@ -96,14 +97,28 @@ public class MixinBlockColors {
             CUR_GEN = ModernBeta.GEN;
         }
         
+        
         double[] tempHumids;
         int x = pos.getX();
+        int y = pos.getY();
         int z = pos.getZ();
+        
+        if (state.equals(Blocks.GRASS.getDefaultState()) || 
+            state.equals(Blocks.FERN.getDefaultState()) ||
+            state.equals(Blocks.TALL_GRASS.getDefaultState()) ||
+            state.equals(Blocks.LARGE_FERN.getDefaultState())
+        ) {
+            long shift = x * 0x2fc20f + z * 0x5d8875 + y;
+            shift = shift * shift * 0x285b825L + shift * 11L;
+            x = (int)((long)x + (shift >> 14 & 31L));
+            y = (int)((long)y + (shift >> 19 & 31L));
+            z = (int)((long)z + (shift >> 24 & 31L));
+        }
         
         tempHumids = getTempHumid(x, z);
         return GrassColors.getColor(tempHumids[0], tempHumids[1]);
     }
-    
+
     @Unique
     private static int getFoliageColor(BlockRenderView world, BlockPos pos) {
         if (world == null || pos == null) { // Appears to enter here when loading color for inventory block
