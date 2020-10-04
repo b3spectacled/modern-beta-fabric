@@ -85,11 +85,11 @@ public class BetaBiomeSource extends BiomeSource {
 	
 	@Override
 	public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-		int absCoordX = biomeX << 2;
-		int absCoordZ = biomeZ << 2;
+		int absX = biomeX << 2;
+		int absZ = biomeZ << 2;
 		
 		// Sample biome at this one absolute coordinate.
-		fetchTempHumid(absCoordX, absCoordZ, 1, 1);
+		fetchTempHumid(absX, absZ, 1, 1);
 		
 		return biomesInChunk[0][0];
 	}
