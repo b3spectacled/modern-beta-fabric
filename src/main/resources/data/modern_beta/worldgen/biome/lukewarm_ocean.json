@@ -112,7 +112,7 @@
   "surface_builder": "minecraft:ocean_sand",
   "carvers": {
     "air": [
-      "minecraft:ocean_cave",
+      "modern_beta:beta_cave",
       "minecraft:canyon"
     ],
     "liquid": [

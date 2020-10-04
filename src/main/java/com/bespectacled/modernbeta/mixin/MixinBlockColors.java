@@ -79,7 +79,7 @@ public class MixinBlockColors {
             return 8174955; // Default tint, from wiki
         }
 
-        if (SEED == null || ModernBeta.GEN != CUR_GEN || ModernBeta.SEED != SEED) {
+        if (SEED == null || !ModernBeta.GEN.equals(CUR_GEN) || ModernBeta.SEED != SEED) {
             ModernBeta.LOGGER.log(Level.INFO, "Seed or gen changed. Re-initing block colors...");
             
             switch(ModernBeta.GEN) {

@@ -101,7 +101,7 @@
   "surface_builder": "minecraft:frozen_ocean",
   "carvers": {
     "air": [
-      "minecraft:ocean_cave",
+      "modern_beta:beta_cave",
       "minecraft:canyon"
     ],
     "liquid": [

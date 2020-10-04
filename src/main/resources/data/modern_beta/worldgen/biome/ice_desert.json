@@ -87,7 +87,7 @@
   "surface_builder": "minecraft:desert",
   "carvers": {
     "air": [
-      "minecraft:cave",
+      "modern_beta:beta_cave",
       "minecraft:canyon"
     ]
   },

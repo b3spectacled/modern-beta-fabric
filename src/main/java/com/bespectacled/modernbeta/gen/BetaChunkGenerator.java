@@ -38,6 +38,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
@@ -61,6 +62,7 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
+import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.mixin.MixinBlockColors;
@@ -291,11 +293,11 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         ChunkRandom chunkRand = new ChunkRandom();
         ChunkPos chunkPos = chunk.getPos();
         
-        int chunkX = chunkPos.x;
-        int chunkZ = chunkPos.z;
+        int mainChunkX = chunkPos.x;
+        int mainChunkZ = chunkPos.z;
         
-        int biomeX = chunkX << 2;
-        int biomeZ = chunkZ << 2;
+        int biomeX = mainChunkX << 2;
+        int biomeZ = mainChunkZ << 2;
         
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
@@ -311,20 +313,37 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         if (blockstate.isOf(Blocks.WATER)) {
             generationSettings = this.biomeSource.getOceanBiomeForNoiseGen(absX, 0, absZ).getGenerationSettings();
         }
+        
+        Random rand = new Random(seed);
+        long l = (rand.nextLong() / 2L) * 2L + 1L;
+        long l1 = (rand.nextLong() / 2L) * 2L + 1L;
 
-        for (int m = chunkX - 8; m <= chunkX + 8; ++m) {
-            for (int n = chunkZ - 8; n <= chunkZ + 8; ++n) {
+        for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
+            for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
                 List<Supplier<ConfiguredCarver<?>>> carverList = generationSettings.getCarversForStep(carver);
                 ListIterator<Supplier<ConfiguredCarver<?>>> carverIterator = carverList.listIterator();
                 
                 while (carverIterator.hasNext()) {
                     int carverNextIdx = carverIterator.nextIndex();
+                    Identifier betaCarverId = new Identifier(ModernBeta.ID, "beta_cave");
                     
                     ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
-                    chunkRand.setCarverSeed(seed + carverNextIdx, m, n);
                     
-                    if (configuredCarver.shouldCarve(chunkRand, m, n)) {
-                        configuredCarver.carve(chunk, biomeAcc::getBiome, chunkRand, this.getSeaLevel(), m, n, chunkX, chunkZ, bitSet);
+                    
+                    
+                    if (configuredCarver.equals(BetaCarver.CONF_BETA_CAVE_CARVER)) {
+                        System.out.println("Beta carver is here");
+                    }
+                    
+                    //chunkRand.setCarverSeed(seed + carverNextIdx, chunkX, chunkZ);
+                    
+                    
+                    
+                    rand.setSeed((long)chunkX * l + (long)chunkZ * l1 ^ seed);
+                    
+                    if (configuredCarver.shouldCarve(chunkRand, chunkX, chunkZ)) {
+                        configuredCarver.carve(chunk, biomeAcc::getBiome, rand, this.getSeaLevel(), chunkX, chunkZ, mainChunkX, mainChunkZ, bitSet);
+
                     }
                 }
             }

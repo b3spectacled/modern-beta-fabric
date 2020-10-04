@@ -13,6 +13,7 @@ import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.AlphaBiomes;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomes;
+import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.client.GoVote;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
@@ -34,6 +35,7 @@ public class ModernBeta implements ModInitializer {
 	    ModernBetaConfig.loadConfig(); // Generate config if not present.
 	    
 		//BetaSurfaceBuilder.register(); Unused
+	    BetaCarver.register();
 		BetaDecorator.register();
 		BetaFeature.reserveConfiguredFeatureIDs();
 		BetaBiomes.reserveBiomeIDs();

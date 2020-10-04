@@ -100,7 +100,7 @@
   "surface_builder": "minecraft:grass",
   "carvers": {
     "air": [
-      "minecraft:ocean_cave",
+      "modern_beta:beta_cave",
       "minecraft:canyon"
     ],
     "liquid": [
