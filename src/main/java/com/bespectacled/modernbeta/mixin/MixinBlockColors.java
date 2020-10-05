@@ -45,6 +45,7 @@ public class MixinBlockColors {
     private static Long SEED = null;
     private static String CUR_GEN = "";
     private static final boolean renderBetaColor = ModernBetaConfig.loadConfig().render_beta_grass_color;
+    private static final long fixedSeed = ModernBetaConfig.loadConfig().fixed_seed;
     
     /*
     @Dynamic("Reed grass color lambda method")
@@ -79,24 +80,7 @@ public class MixinBlockColors {
             return 8174955; // Default tint, from wiki
         }
 
-        if (SEED == null || !ModernBeta.GEN.equals(CUR_GEN) || ModernBeta.SEED != SEED) {
-            ModernBeta.LOGGER.log(Level.INFO, "Seed or gen changed. Re-initing block colors...");
-            
-            switch(ModernBeta.GEN) {
-                case "beta": 
-                    SEED = BetaChunkGenerator.seed;
-                    break;
-                case "skylands":
-                    SEED = SkylandsChunkGenerator.seed;
-                    break;
-                default:
-                    SEED = 0L;
-            }
-            
-            initOctaves(SEED);
-            CUR_GEN = ModernBeta.GEN;
-        }
-        
+        initSeed();
         
         double[] tempHumids;
         int x = pos.getX();
@@ -125,23 +109,7 @@ public class MixinBlockColors {
             return 4764952; // Default tint, from wiki
         }
         
-        if (SEED == null || ModernBeta.GEN != CUR_GEN || ModernBeta.SEED != SEED) {
-            ModernBeta.LOGGER.log(Level.INFO, "Seed or gen changed. Re-initing block colors...");
-            
-            switch(ModernBeta.GEN) {
-                case "beta": 
-                    SEED = BetaChunkGenerator.seed;
-                    break;
-                case "skylands":
-                    SEED = SkylandsChunkGenerator.seed;
-                    break;
-                default:
-                    SEED = 0L;
-            }
-            
-            initOctaves(SEED);
-            CUR_GEN = ModernBeta.GEN;
-        }
+        initSeed();
         
         double[] tempHumids;
         int x = pos.getX();
@@ -194,6 +162,30 @@ public class MixinBlockColors {
         }
         
         return new double[]{temp, humid};
+    }
+    
+    @Unique
+    private static void initSeed() {
+        if (fixedSeed != 0L) { // Use preset seed, if given.
+            if (SEED == null) {
+                SEED = fixedSeed;
+                initOctaves(SEED);
+            }
+        } else if (SEED == null || ModernBeta.GEN != CUR_GEN || ModernBeta.SEED != SEED) {
+            switch(ModernBeta.GEN) {
+                case "beta": 
+                    SEED = BetaChunkGenerator.seed;
+                    break;
+                case "skylands":
+                    SEED = SkylandsChunkGenerator.seed;
+                    break;
+                default:
+                    SEED = 0L;
+            }
+        
+            initOctaves(SEED);
+            CUR_GEN = ModernBeta.GEN;
+        }
     }
     
 }

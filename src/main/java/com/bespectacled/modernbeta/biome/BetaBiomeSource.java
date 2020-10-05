@@ -101,22 +101,6 @@ public class BetaBiomeSource extends BiomeSource {
 		return oceanBiomesInChunk[0][0];
 	}
 	
-	
-	public boolean hasStructureFeature(StructureFeature<?> structureFeature) {
-        return this.structureFeatures.computeIfAbsent(structureFeature, s -> this.biomes.stream().anyMatch(biome -> biome.getGenerationSettings().hasStructureFeature(s)));
-    }
-
-	@Override
-	protected Codec<? extends BiomeSource> getCodec() {
-		return BetaBiomeSource.CODEC;
-	}
-
-	@Environment(EnvType.CLIENT)
-	@Override
-	public BiomeSource withSeed(long seed) {
-		return new BetaBiomeSource(seed, this.biomeRegistry);
-	}
-	
 	public Biome[][] fetchTempHumid(int x, int z, int sizeX, int sizeZ) {
 		temps = tempNoiseOctaves.func_4112_a(temps, x, z, sizeX, sizeX, 0.02500000037252903D, 0.02500000037252903D, 0.25D);
         humids = humidNoiseOctaves.func_4112_a(humids, x, z, sizeX, sizeX, 0.05000000074505806D, 0.05000000074505806D, 0.33333333333333331D);
@@ -297,14 +281,14 @@ public class BetaBiomeSource extends BiomeSource {
         
         if(temp < 0.1F) {
             if (generateIceDeserts)
-                return registry.get(new Identifier(ModernBeta.ID, "ice_desert"));
+                return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
             else
-                return registry.get(new Identifier(ModernBeta.ID, "tundra"));
+                return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
         }
         
         if(humid < 0.2F) {
             if(temp < 0.5F) {
-                return registry.get(new Identifier(ModernBeta.ID, "tundra"));
+                return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
             }
             if(temp < 0.95F) {
                 return registry.get(new Identifier(ModernBeta.ID, "ocean"));
@@ -318,13 +302,27 @@ public class BetaBiomeSource extends BiomeSource {
         }
         
         if(temp < 0.5F) {
-            return registry.get(new Identifier(ModernBeta.ID, "taiga"));
+            return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
         }
         
         return registry.get(new Identifier(ModernBeta.ID, "ocean"));
         
     }
 	
+	public boolean hasStructureFeature(StructureFeature<?> structureFeature) {
+        return this.structureFeatures.computeIfAbsent(structureFeature, s -> this.biomes.stream().anyMatch(biome -> biome.getGenerationSettings().hasStructureFeature(s)));
+    }
+
+    @Override
+    protected Codec<? extends BiomeSource> getCodec() {
+        return BetaBiomeSource.CODEC;
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Override
+    public BiomeSource withSeed(long seed) {
+        return new BetaBiomeSource(seed, this.biomeRegistry);
+    }
 	
 	public static void register() {
 		ModernBeta.LOGGER.log(Level.INFO, "Registering biome source...");

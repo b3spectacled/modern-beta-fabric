@@ -25,22 +25,27 @@ public final class ModernBetaConfig {
     private static final Path PATH = Paths.get("config", "modernbeta.json");
     
     //public boolean render_old_stars;
-    public static final int CURRENT_VERSION = 2;
-    
+    public static final int CURRENT_VERSION = 3;
     public final int VERSION;
+    
+    public final Long fixed_seed;
     public final boolean render_beta_sky_color;
     public final boolean render_beta_grass_color;
     public final boolean generate_oceans;
-    public boolean generate_ice_desert;
-    public boolean alpha_winter_mode;
+    public final boolean generate_ice_desert;
+    public final boolean alpha_winter_mode;
+    public final boolean alpha_plus;
     
     public ModernBetaConfig() {
         this.VERSION = CURRENT_VERSION;
+        
+        this.fixed_seed = 0L;
         this.render_beta_sky_color = true;
         this.render_beta_grass_color = true;
         this.generate_oceans = false;
         this.generate_ice_desert = false;
         this.alpha_winter_mode = false;
+        this.alpha_plus = false;
     }
     
     public static ModernBetaConfig loadConfig() {
