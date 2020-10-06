@@ -6,12 +6,20 @@ import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.world.FoliageColors;
 import net.minecraft.client.color.world.GrassColors;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.collection.IdList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.util.Random;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Dynamic;
@@ -30,9 +38,10 @@ import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
 import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
+import com.bespectacled.modernbeta.util.MutableBlockColors;
 
 @Mixin(value = BlockColors.class, priority = 1) 
-public class MixinBlockColors {
+public class MixinBlockColors implements MutableBlockColors {
 
     private static BetaNoiseGeneratorOctaves2 tempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 9871L), 4);
     private static BetaNoiseGeneratorOctaves2 humidNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 39811L), 4);
@@ -42,11 +51,17 @@ public class MixinBlockColors {
     private double humids[];
     private double noises[];
     
-    private static Long SEED = null;
-    private static String CUR_GEN = "";
-    private static final boolean renderBetaColor = ModernBetaConfig.loadConfig().render_beta_grass_color;
-    private static final long fixedSeed = ModernBetaConfig.loadConfig().fixed_seed;
+    private long seed;
     
+    private static final boolean renderBetaColor = ModernBetaConfig.loadConfig().render_beta_grass_color;
+    
+    @Unique
+    @Override
+    public void setSeed(long seed) {
+        this.seed = seed;
+        initOctaves(seed);
+        
+    }
     /*
     @Dynamic("Reed grass color lambda method")
     @Inject(method = "method_1685", at = @At("HEAD"), cancellable = true)
@@ -80,7 +95,7 @@ public class MixinBlockColors {
             return 8174955; // Default tint, from wiki
         }
 
-        initSeed();
+        //initSeed();
         
         double[] tempHumids;
         int x = pos.getX();
@@ -109,7 +124,7 @@ public class MixinBlockColors {
             return 4764952; // Default tint, from wiki
         }
         
-        initSeed();
+        //initSeed();
         
         double[] tempHumids;
         int x = pos.getX();
@@ -164,6 +179,7 @@ public class MixinBlockColors {
         return new double[]{temp, humid};
     }
     
+    /*
     @Unique
     private static void initSeed() {
         if (fixedSeed != 0L) { // Use preset seed, if given.
@@ -187,5 +203,7 @@ public class MixinBlockColors {
             CUR_GEN = ModernBeta.GEN;
         }
     }
+    
+     */    
     
 }

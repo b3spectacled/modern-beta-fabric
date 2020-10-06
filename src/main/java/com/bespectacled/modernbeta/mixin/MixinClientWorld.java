@@ -1,14 +1,21 @@
 package com.bespectacled.modernbeta.mixin;
 
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.BiomeColorCache;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.profiler.Profiler;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.MutableWorldProperties;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.ColorResolver;
 
 import com.bespectacled.modernbeta.util.MathHelper;
+import com.bespectacled.modernbeta.util.MutableClientWorld;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 
@@ -21,19 +28,25 @@ import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Supplier;
+
+import org.spongepowered.asm.mixin.Intrinsic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.At;
 
 /*
  * Based on Colormatic ClientWorldMixin
  */
 @Mixin(value = ClientWorld.class, priority = 1) 
-public abstract class MixinClientWorld extends World {
+public abstract class MixinClientWorld extends World implements MutableClientWorld {
 	
 	private static BetaNoiseGeneratorOctaves2 skyTempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 9871L), 4);
-	private static Long SEED = null;
-	private static String CUR_GEN = "";
+	private long seed;
 	
 	private static final boolean renderBetaSkyColor = ModernBetaConfig.loadConfig().render_beta_sky_color;
 	private static final long fixedSeed = ModernBetaConfig.loadConfig().fixed_seed;
@@ -49,9 +62,33 @@ public abstract class MixinClientWorld extends World {
 	int prevX = 0;
 	int prevZ = 0;
 	
+	
 	private MixinClientWorld() {
         super(null, null, null, null, false, false, 0L);
     }
+	
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void init(
+        ClientPlayNetworkHandler netHandler, 
+        ClientWorld.Properties properties, 
+        RegistryKey<World> worldKey, 
+        DimensionType dimensionType, 
+        int loadDistance,
+        Supplier<Profiler> profiler, 
+        WorldRenderer renderer, 
+        boolean debugWorld, 
+        long seed,
+        CallbackInfo ci
+    ) {
+        //this.seed = ModernBeta.SEED;
+	    //this.seed = 0;
+        //initOctaves(this.seed);
+    }
+	
+	public void setSeed(long seed) {
+	    this.seed = seed;
+	    initOctaves(this.seed);
+	}
 	
 	/*
 	@Redirect(
@@ -136,8 +173,6 @@ public abstract class MixinClientWorld extends World {
     }
 	
 	private int getBetaSkyColor(BlockPos pos) {
-	    initSeed();
-	    
         int x = pos.getX();
         int z = pos.getZ();
 
@@ -150,6 +185,7 @@ public abstract class MixinClientWorld extends World {
         return skyColor;
     }
 	
+	/*
 	private static void initSeed() {
 	    if (fixedSeed != 0L) { // Use preset seed, if given.
             if (SEED == null) {
@@ -172,6 +208,7 @@ public abstract class MixinClientWorld extends World {
             CUR_GEN = ModernBeta.GEN;
         }
 	}
+	*/
 	
 	@Unique
 	private static void initOctaves(long seed) {

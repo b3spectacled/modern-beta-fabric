@@ -12,15 +12,16 @@ public class MixinWorldRenderer {
 	
 	/*
 	@ModifyVariable(
-		method = "renderStars(LBufferBuilder;)V",
+		method = "renderStars",
 		at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/Random;nextFloat()F"),
-		name = "double11"
+		index = 10
 	)
 	private double modifyStars(double double11) {
 	    
 	    return 0.25;
 	}
 	*/
+	
     
     /*
 	@ModifyVariable(

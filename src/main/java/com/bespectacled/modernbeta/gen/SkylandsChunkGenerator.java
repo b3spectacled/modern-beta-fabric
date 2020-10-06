@@ -135,7 +135,6 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 		this.seed = seed;
 		this.rand = new Random(seed);
 		this.biomeSource = (BetaBiomeSource)biomes;
-		//this.generateOceans = ModernBetaConfig.loadConfig().generate_oceans;
 		
 		// Noise Generators
 	    minLimitNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 16); 
@@ -148,8 +147,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
 		// Yes this is messy.  What else am I supposed to do?
 	    BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
-	    ModernBeta.GEN = "skylands";
-	    ModernBeta.SEED = seed;
+	    ModernBeta.setBlockColorsSeed(seed);
 	}
     
 	

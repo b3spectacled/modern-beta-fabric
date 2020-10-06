@@ -151,8 +151,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
 		// Yes this is messy.  What else am I supposed to do?
 	    BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
-	    ModernBeta.GEN = "beta";
-	    ModernBeta.SEED = seed;
+	    ModernBeta.setBlockColorsSeed(seed);
+	    //ModernBeta.setSkyColorSeed(seed);
 	}
     
 	
@@ -325,19 +325,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                 
                 while (carverIterator.hasNext()) {
                     int carverNextIdx = carverIterator.nextIndex();
-                    Identifier betaCarverId = new Identifier(ModernBeta.ID, "beta_cave");
                     
                     ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
-                    
-                    
-                    
-                    if (configuredCarver.equals(BetaCarver.CONF_BETA_CAVE_CARVER)) {
-                        System.out.println("Beta carver is here");
-                    }
-                    
-                    //chunkRand.setCarverSeed(seed + carverNextIdx, chunkX, chunkZ);
-                    
-                    
                     
                     rand.setSeed((long)chunkX * l + (long)chunkZ * l1 ^ seed);
                     
