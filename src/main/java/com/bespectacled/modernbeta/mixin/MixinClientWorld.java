@@ -8,21 +8,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.MutableWorldProperties;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.ColorResolver;
 
 import com.bespectacled.modernbeta.util.MathHelper;
-import com.bespectacled.modernbeta.util.MutableClientWorld;
-
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
-import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
 import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
 
 import java.util.HashMap;
@@ -30,12 +25,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import org.spongepowered.asm.mixin.Intrinsic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -43,7 +36,7 @@ import org.spongepowered.asm.mixin.injection.At;
  * Based on Colormatic ClientWorldMixin
  */
 @Mixin(value = ClientWorld.class, priority = 1) 
-public abstract class MixinClientWorld extends World implements MutableClientWorld {
+public abstract class MixinClientWorld extends World {
 	
 	private static BetaNoiseGeneratorOctaves2 skyTempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 9871L), 4);
 	private long seed;
@@ -80,15 +73,9 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
         long seed,
         CallbackInfo ci
     ) {
-        //this.seed = ModernBeta.SEED;
-	    //this.seed = 0;
-        //initOctaves(this.seed);
+        this.seed = fixedSeed == 0L ? ModernBeta.SEED : fixedSeed;
+        initOctaves(this.seed);
     }
-	
-	public void setSeed(long seed) {
-	    this.seed = seed;
-	    initOctaves(this.seed);
-	}
 	
 	/*
 	@Redirect(
@@ -185,39 +172,13 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
         return skyColor;
     }
 	
-	/*
-	private static void initSeed() {
-	    if (fixedSeed != 0L) { // Use preset seed, if given.
-            if (SEED == null) {
-                SEED = fixedSeed;
-                initOctaves(SEED);
-            }
-        } else if (SEED == null || ModernBeta.GEN != CUR_GEN || ModernBeta.SEED != SEED) {
-            switch(ModernBeta.GEN) {
-                case "beta": 
-                    SEED = BetaChunkGenerator.seed;
-                    break;
-                case "skylands":
-                    SEED = SkylandsChunkGenerator.seed;
-                    break;
-                default:
-                    SEED = 0L;
-            }
-        
-            initOctaves(SEED);
-            CUR_GEN = ModernBeta.GEN;
-        }
-	}
-	*/
-	
 	@Unique
 	private static void initOctaves(long seed) {
 		skyTempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(seed * 9871L), 4);
 	}
 	
 	@Unique
-	private static int getSkyColorByTemp(float temp)
-    {
+	private static int getSkyColorByTemp(float temp) {
 		temp /= 3F;
 		
         if(temp < -1F) {

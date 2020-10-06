@@ -43,25 +43,23 @@ import com.bespectacled.modernbeta.util.MutableBlockColors;
 @Mixin(value = BlockColors.class, priority = 1) 
 public class MixinBlockColors implements MutableBlockColors {
 
-    private static BetaNoiseGeneratorOctaves2 tempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 9871L), 4);
-    private static BetaNoiseGeneratorOctaves2 humidNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 39811L), 4);
-    private static BetaNoiseGeneratorOctaves2 noiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 543321L), 2);
-    
     private double temps[];
     private double humids[];
     private double noises[];
     
-    private long seed;
-    
+    private static long seed = ModernBetaConfig.loadConfig().fixed_seed;
     private static final boolean renderBetaColor = ModernBetaConfig.loadConfig().render_beta_grass_color;
+    
+    private static BetaNoiseGeneratorOctaves2 tempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(seed * 9871L), 4);
+    private static BetaNoiseGeneratorOctaves2 humidNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(seed * 39811L), 4);
+    private static BetaNoiseGeneratorOctaves2 noiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(seed * 543321L), 2);
     
     @Unique
     @Override
-    public void setSeed(long seed) {
-        this.seed = seed;
-        initOctaves(seed);
-        
+    public void setSeed(long newSeed) {
+        initOctaves(newSeed);
     }
+    
     /*
     @Dynamic("Reed grass color lambda method")
     @Inject(method = "method_1685", at = @At("HEAD"), cancellable = true)
@@ -94,8 +92,6 @@ public class MixinBlockColors implements MutableBlockColors {
         if (world == null || pos == null) { // Appears to enter here when loading color for inventory block
             return 8174955; // Default tint, from wiki
         }
-
-        //initSeed();
         
         double[] tempHumids;
         int x = pos.getX();
@@ -123,8 +119,6 @@ public class MixinBlockColors implements MutableBlockColors {
         if (world == null || pos == null) { // Appears to enter here when loading color for inventory block
             return 4764952; // Default tint, from wiki
         }
-        
-        //initSeed();
         
         double[] tempHumids;
         int x = pos.getX();
@@ -178,32 +172,5 @@ public class MixinBlockColors implements MutableBlockColors {
         
         return new double[]{temp, humid};
     }
-    
-    /*
-    @Unique
-    private static void initSeed() {
-        if (fixedSeed != 0L) { // Use preset seed, if given.
-            if (SEED == null) {
-                SEED = fixedSeed;
-                initOctaves(SEED);
-            }
-        } else if (SEED == null || ModernBeta.GEN != CUR_GEN || ModernBeta.SEED != SEED) {
-            switch(ModernBeta.GEN) {
-                case "beta": 
-                    SEED = BetaChunkGenerator.seed;
-                    break;
-                case "skylands":
-                    SEED = SkylandsChunkGenerator.seed;
-                    break;
-                default:
-                    SEED = 0L;
-            }
-        
-            initOctaves(SEED);
-            CUR_GEN = ModernBeta.GEN;
-        }
-    }
-    
-     */    
     
 }

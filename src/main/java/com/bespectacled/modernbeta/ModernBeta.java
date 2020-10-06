@@ -16,7 +16,6 @@ import com.bespectacled.modernbeta.gen.BetaGeneratorType;
 import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
 import com.bespectacled.modernbeta.gen.SkylandsGeneratorType;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
-import com.bespectacled.modernbeta.util.MutableClientWorld;
 import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.AlphaBiomes;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
@@ -33,20 +32,14 @@ import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 public class ModernBeta implements ModInitializer {
 	public static final String ID = "modern_beta";
 	public static final Logger LOGGER = LogManager.getLogger("ModernBeta");
-	
-	private static final long fixedSeed = ModernBetaConfig.loadConfig().fixed_seed;
+	public static long SEED;
 
 	// Ehh...
 	public static void setBlockColorsSeed(long seed) {
 	    if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 	        MutableBlockColors mutableBlockColors = MutableBlockColors.inject(MinecraftClient.getInstance().getBlockColors());
-	        mutableBlockColors.setSeed(fixedSeed == 0L ? seed : fixedSeed);
+	        mutableBlockColors.setSeed(seed);
 	    }
-	}
-	
-	// Ehhhh...
-	public static void setSkyColorSeed(long seed) {
-
 	}
 	
 	@Override

@@ -148,6 +148,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 		// Yes this is messy.  What else am I supposed to do?
 	    BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
 	    ModernBeta.setBlockColorsSeed(seed);
+	    ModernBeta.SEED = seed;
 	}
     
 	
@@ -173,6 +174,48 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     	generateTerrain(chunk, temps, structureAccessor);    
     }
     
+    @Override
+    public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
+        BiomeAccess biomeAcc = biomeAccess.withSource(this.biomeSource);
+        ChunkPos chunkPos = chunk.getPos();
+        
+        int mainChunkX = chunkPos.x;
+        int mainChunkZ = chunkPos.z;
+        
+        int biomeX = mainChunkX << 2;
+        int biomeZ = mainChunkZ << 2;
+        
+        int absX = biomeX << 2;
+        int absZ = biomeZ << 2;
+        
+        GenerationSettings generationSettings = this.biomeSource.getBiomeForNoiseGen(biomeX, 0, biomeZ).getGenerationSettings();
+        BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(carver);
+
+        
+        Random rand = new Random(seed);
+        long l = (rand.nextLong() / 2L) * 2L + 1L;
+        long l1 = (rand.nextLong() / 2L) * 2L + 1L;
+
+        for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
+            for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
+                List<Supplier<ConfiguredCarver<?>>> carverList = generationSettings.getCarversForStep(carver);
+                ListIterator<Supplier<ConfiguredCarver<?>>> carverIterator = carverList.listIterator();
+                
+                while (carverIterator.hasNext()) {
+                    //int carverNextIdx = carverIterator.nextIndex();
+                    
+                    ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
+                    
+                    rand.setSeed((long)chunkX * l + (long)chunkZ * l1 ^ seed);
+                    
+                    if (configuredCarver.shouldCarve(rand, chunkX, chunkZ)) {
+                        configuredCarver.carve(chunk, biomeAcc::getBiome, rand, this.getSeaLevel(), chunkX, chunkZ, mainChunkX, mainChunkZ, bitSet);
+
+                    }
+                }
+            }
+        }
+    }
  
     @Override
     public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {

@@ -152,7 +152,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 		// Yes this is messy.  What else am I supposed to do?
 	    BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
 	    ModernBeta.setBlockColorsSeed(seed);
-	    //ModernBeta.setSkyColorSeed(seed);
+	    ModernBeta.SEED = seed;
 	}
     
 	
@@ -290,7 +290,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     @Override
     public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
         BiomeAccess biomeAcc = biomeAccess.withSource(this.biomeSource);
-        ChunkRandom chunkRand = new ChunkRandom();
         ChunkPos chunkPos = chunk.getPos();
         
         int mainChunkX = chunkPos.x;
@@ -324,13 +323,13 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                 ListIterator<Supplier<ConfiguredCarver<?>>> carverIterator = carverList.listIterator();
                 
                 while (carverIterator.hasNext()) {
-                    int carverNextIdx = carverIterator.nextIndex();
+                    //int carverNextIdx = carverIterator.nextIndex();
                     
                     ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
                     
                     rand.setSeed((long)chunkX * l + (long)chunkZ * l1 ^ seed);
                     
-                    if (configuredCarver.shouldCarve(chunkRand, chunkX, chunkZ)) {
+                    if (configuredCarver.shouldCarve(rand, chunkX, chunkZ)) {
                         configuredCarver.carve(chunk, biomeAcc::getBiome, rand, this.getSeaLevel(), chunkX, chunkZ, mainChunkX, mainChunkZ, bitSet);
 
                     }
@@ -389,8 +388,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                 PoolStructurePiece poolStructurePiece;
                 StructurePool.Projection structureProjection;
                 
-                ObjectList list;
-                ObjectList list2;
                 
                 int integer13;
                 int integer14;
@@ -955,10 +952,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
             }
         }
 		
-		for (int pX = 0; pX < chunkY.length; pX++)
-		{
-			for (int pZ = 0; pZ < chunkY[pX].length; pZ++)
-			{
+		for (int pX = 0; pX < chunkY.length; pX++) {
+			for (int pZ = 0; pZ < chunkY[pX].length; pZ++) {
 				BlockPos pos = new BlockPos(chunkPos.getStartX() + pX, 0, chunkPos.getStartZ() + pZ);
 				groundCacheY.put(pos, chunkY[pX][pZ] + 1); // +1 because it is one above the ground
 			}
