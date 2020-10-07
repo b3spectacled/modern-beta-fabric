@@ -174,7 +174,7 @@
 	  "minecraft:seagrass_normal"
     ],
     [
-      "minecraft:freeze_top_layer"
+      "modern_beta:beta_freeze_top_layer"
     ]
   ],
   "scale": 0.2,

@@ -50,6 +50,7 @@ public class ModernBeta implements ModInitializer {
 	    BetaCarver.register();
 		BetaDecorator.register();
 		BetaFeature.reserveConfiguredFeatureIDs();
+		BetaFeature.register();
 		BetaBiomes.reserveBiomeIDs();
 		BetaBiomeSource.register();
 		BetaChunkGenerator.register();
