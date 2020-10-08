@@ -31,7 +31,9 @@ public class BetaBiomes {
         new Identifier(ModernBeta.ID, "lukewarm_ocean"),
         new Identifier(ModernBeta.ID, "warm_ocean"),
         new Identifier(ModernBeta.ID, "cold_ocean"),
-        new Identifier(ModernBeta.ID, "frozen_ocean")
+        new Identifier(ModernBeta.ID, "frozen_ocean"),
+        
+        new Identifier(ModernBeta.ID, "sky")
     );
     
     public static void reserveBiomeIDs() {

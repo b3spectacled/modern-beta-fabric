@@ -22,6 +22,11 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 public class BetaBiomeSource extends BiomeSource {
+    
+    enum BiomeType {
+        LAND,
+        OCEAN
+    }
 	
 	public static final Codec<BetaBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.LONG.fieldOf("seed").stable().forGetter(betaBiomeSource -> betaBiomeSource.seed), 
@@ -45,7 +50,9 @@ public class BetaBiomeSource extends BiomeSource {
             RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "lukewarm_ocean")),
             RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "warm_ocean")),
             RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "cold_ocean")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "frozen_ocean"))
+            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "frozen_ocean")),
+            
+            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "sky"))
 	);
 			
 	private final long seed;
@@ -62,12 +69,12 @@ public class BetaBiomeSource extends BiomeSource {
     private static Biome biomeLookupTable[] = new Biome[4096];
     private static Biome oceanBiomeLookupTable[] = new Biome[4096];
     
-    public static Biome[] biomesInChunk1D = new Biome[256];
-    private static Biome[][] biomesInChunk = new Biome[16][16]; // 2D array instead of 1D because I am dumb
-    private static Biome[][] oceanBiomesInChunk = new Biome[16][16];
+    public static Biome[] biomesInChunk = new Biome[256];
+    public static Biome[] oceanBiomesInChunk = new Biome[256];
     
-    private static boolean generateOceans = ModernBetaConfig.loadConfig().generate_oceans;
-    private static boolean generateIceDeserts = ModernBetaConfig.loadConfig().generate_ice_desert;
+    private static final boolean GENERATE_OCEANS = ModernBetaConfig.loadConfig().generate_oceans;
+    private static final boolean GENERATE_ICE_DESERT = ModernBetaConfig.loadConfig().generate_ice_desert;
+    private static final boolean GENERATE_SKY = ModernBetaConfig.loadConfig().generate_sky;
 
 	public BetaBiomeSource(long seed, Registry<Biome> registry) {
 	    super(BIOMES.stream().map((registryKey) -> () -> (Biome)registry.get(registryKey)));
@@ -91,17 +98,17 @@ public class BetaBiomeSource extends BiomeSource {
 		// Sample biome at this one absolute coordinate.
 		fetchTempHumid(absX, absZ, 1, 1);
 		
-		return biomesInChunk[0][0];
+		return biomesInChunk[0];
 	}
 	
 	public Biome getOceanBiomeForNoiseGen(int x, int y, int z) {
 		// Sample biome at this one absolute coordinate.
 		fetchTempHumid(x, z, 1, 1);
 		
-		return oceanBiomesInChunk[0][0];
+		return oceanBiomesInChunk[0];
 	}
 	
-	public Biome[][] fetchTempHumid(int x, int z, int sizeX, int sizeZ) {
+	public Biome[] fetchTempHumid(int x, int z, int sizeX, int sizeZ) {
 		temps = tempNoiseOctaves.func_4112_a(temps, x, z, sizeX, sizeX, 0.02500000037252903D, 0.02500000037252903D, 0.25D);
         humids = humidNoiseOctaves.func_4112_a(humids, x, z, sizeX, sizeX, 0.05000000074505806D, 0.05000000074505806D, 0.33333333333333331D);
         noises = noiseOctaves.func_4112_a(noises, x, z, sizeX, sizeX, 0.25D, 0.25D, 0.58823529411764708D);
@@ -136,10 +143,12 @@ public class BetaBiomeSource extends BiomeSource {
                 temps[i] = temp;
                 humids[i] = humid;
                 
-                biomesInChunk[k][j] = getBiomeFromLookup(temp, humid);
-                biomesInChunk1D[i++] = getBiomeFromLookup(temp, humid);
+                biomesInChunk[i] = getBiomeFromLookup(temp, humid, BiomeType.LAND);
+                oceanBiomesInChunk[i] = getBiomeFromLookup(temp, humid, BiomeType.OCEAN);
                 
-                oceanBiomesInChunk[k][j] = getOceanBiomeFromLookup(temp, humid);
+                //biomesInChunk[k][j] = getBiomeFromLookup(temp, humid, BiomeType.LAND);
+                //oceanBiomesInChunk[k][j] = getBiomeFromLookup(temp, humid, BiomeType.OCEAN);\
+                i++;
             }
         }
         
@@ -155,26 +164,25 @@ public class BetaBiomeSource extends BiomeSource {
         }
 	}
 	
-	private Biome getBiomeFromLookup(double temp, double humid) {
+	private Biome getBiomeFromLookup(double temp, double humid, BiomeType type) {
         int i = (int)(temp * 63D);
         int j = (int)(humid * 63D);
+        
+        if (type == BiomeType.LAND)
+            return biomeLookupTable[i + j * 64];
+        if (type == BiomeType.OCEAN)
+            return oceanBiomeLookupTable[i + j * 64];
         
         return biomeLookupTable[i + j * 64];
     }
 	
-	public Biome getOceanBiomeFromLookup(double temp, double humid) {
-		int i = (int)(temp * 63D);
-        int j = (int)(humid * 63D);
-        
-        return oceanBiomeLookupTable[i + j * 64];
-	}
 	
-	public static Biome getBiome(float temp, float humid, Registry<Biome> registry)
-    {
+	public static Biome getBiome(float temp, float humid, Registry<Biome> registry) {
         humid *= temp;
+        
 
         if(temp < 0.1F) {
-            if (generateIceDeserts)
+            if (GENERATE_ICE_DESERT)
                 return registry.get(new Identifier(ModernBeta.ID, "ice_desert"));
             else
                 return registry.get(new Identifier(ModernBeta.ID, "tundra"));
@@ -229,7 +237,7 @@ public class BetaBiomeSource extends BiomeSource {
         // 46 = Cold Ocean
         // 10 = Frozen Ocean
         
-        if (!generateOceans) {
+        if (!GENERATE_OCEANS) {
             return getLiteOceanBiome(temp, humid, registry);
         }
 
@@ -280,7 +288,7 @@ public class BetaBiomeSource extends BiomeSource {
         humid *= temp;
         
         if(temp < 0.1F) {
-            if (generateIceDeserts)
+            if (GENERATE_ICE_DESERT)
                 return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
             else
                 return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));

@@ -24,8 +24,7 @@ public final class ModernBetaConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path PATH = Paths.get("config", "modernbeta.json");
     
-    //public boolean render_old_stars;
-    public static final int CURRENT_VERSION = 3;
+    public static final int CURRENT_VERSION = 4;
     public final int VERSION;
     
     public final Long fixed_seed;
@@ -35,6 +34,7 @@ public final class ModernBetaConfig {
     public final boolean generate_ice_desert;
     public final boolean alpha_winter_mode;
     public final boolean alpha_plus;
+    public final boolean generate_sky;
     
     public ModernBetaConfig() {
         this.VERSION = CURRENT_VERSION;
@@ -46,6 +46,7 @@ public final class ModernBetaConfig {
         this.generate_ice_desert = false;
         this.alpha_winter_mode = false;
         this.alpha_plus = false;
+        this.generate_sky = false;
     }
     
     public static ModernBetaConfig loadConfig() {

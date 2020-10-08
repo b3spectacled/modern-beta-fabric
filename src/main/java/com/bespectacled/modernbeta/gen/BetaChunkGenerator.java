@@ -729,8 +729,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                 int genStone = (int)(stoneNoise[i + j * 16] / 3D + 3D + rand.nextDouble() * 0.25D); 
                 int flag = -1;
                 
-                //curBiome = biomesInChunk[j][i];
-                curBiome = biomeSource.biomesInChunk1D[i + j * 16];
+                curBiome = biomeSource.biomesInChunk[i + j * 16];
                 
                 Block biomeTopBlock;
                 Block biomeFillerBlock;
