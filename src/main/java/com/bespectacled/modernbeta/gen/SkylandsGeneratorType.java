@@ -51,7 +51,6 @@ public final class SkylandsGeneratorType extends GeneratorType {
 	}
 	
 	public static void register() {
-	    ModernBeta.LOGGER.log(Level.INFO, "Registering Skylands world type...");
 		GeneratorType.VALUES.add(INSTANCE);
 		ModernBeta.LOGGER.log(Level.INFO, "Registered Skylands world type.");
 	}

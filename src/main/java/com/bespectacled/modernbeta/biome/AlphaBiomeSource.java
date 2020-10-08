@@ -202,7 +202,6 @@ public class AlphaBiomeSource extends BiomeSource {
 	}
 
 	public static void register() {
-		ModernBeta.LOGGER.log(Level.INFO, "Registering Alpha biome source...");
 		Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "alpha_biome_source"), CODEC);
 		ModernBeta.LOGGER.log(Level.INFO, "Registered Alpha biome source.");
 	}

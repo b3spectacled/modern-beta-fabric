@@ -39,7 +39,6 @@ public class BetaCarver {
     }
     
     public static void register() {
-        ModernBeta.LOGGER.log(Level.INFO, "Registering carvers...");
         for (Identifier id : CARVERS.keySet()) {
             Registry.register(Registry.CARVER, id, CARVERS.get(id));
         }

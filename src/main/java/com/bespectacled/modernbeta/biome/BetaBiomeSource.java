@@ -325,9 +325,8 @@ public class BetaBiomeSource extends BiomeSource {
     }
 	
 	public static void register() {
-		ModernBeta.LOGGER.log(Level.INFO, "Registering biome source...");
 		Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "beta_biome_source"), CODEC);
-		ModernBeta.LOGGER.log(Level.INFO, "Registered biome source.");
+		ModernBeta.LOGGER.log(Level.INFO, "Registered Beta biome source.");
 	}
 	
 }

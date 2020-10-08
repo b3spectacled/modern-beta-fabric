@@ -155,7 +155,6 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
     
 	
 	public static void register() {
-		ModernBeta.LOGGER.log(Level.INFO, "Registering Alpha chunk generator...");
 		Registry.register(Registry.CHUNK_GENERATOR, new Identifier(ModernBeta.ID, "alpha"), CODEC);
 		ModernBeta.LOGGER.log(Level.INFO, "Registered Alpha chunk generator.");
 	}

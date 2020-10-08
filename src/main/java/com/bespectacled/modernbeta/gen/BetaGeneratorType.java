@@ -51,7 +51,6 @@ public final class BetaGeneratorType extends GeneratorType {
 	}
 	
 	public static void register() {
-	    ModernBeta.LOGGER.log(Level.INFO, "Registering Beta world type...");
 		GeneratorType.VALUES.add(INSTANCE);
 		ModernBeta.LOGGER.log(Level.INFO, "Registered Beta world type.");
 	}

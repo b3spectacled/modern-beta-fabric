@@ -29,8 +29,6 @@ public class BetaDecorator {
 	}
 	
 	public static void register() {
-		ModernBeta.LOGGER.log(Level.INFO, "Registering decorators...");
-
 		for (Identifier id : DECORATORS.keySet()) {
 			Registry.register(Registry.DECORATOR, id, DECORATORS.get(id));
 		}

@@ -106,8 +106,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 	private BetaNoiseGeneratorOctaves stoneNoiseOctaves;
 	public BetaNoiseGeneratorOctaves scaleNoiseOctaves; 
 	public BetaNoiseGeneratorOctaves depthNoiseOctaves;
-	
-	//private final NoiseSampler surfaceDepthNoise;
     
     private double heightmap[]; // field_4180_q
     private static double heightmapCache[];
@@ -149,7 +147,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 	    beachNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 4); 
 	    stoneNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 4); 
 	    scaleNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 10); 
-	    depthNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 16); 
+	    depthNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 16);
 
 		// Yes this is messy.  What else am I supposed to do?
 	    BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
@@ -160,7 +158,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     
 	
 	public static void register() {
-		ModernBeta.LOGGER.log(Level.INFO, "Registering Beta chunk generator...");
 		Registry.register(Registry.CHUNK_GENERATOR, new Identifier(ModernBeta.ID, "beta"), CODEC);
 		ModernBeta.LOGGER.log(Level.INFO, "Registered Beta chunk generator.");
 	}
@@ -174,7 +171,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
         ChunkPos pos = chunk.getPos();
     	
-    	rand.setSeed((long)chunk.getPos().x * 341873128712L  + (long)chunk.getPos().z * 132897987541L);
+    	rand.setSeed((long)chunk.getPos().x * 0x4f9939f508L  + (long)chunk.getPos().z * 0x1ef1565bd5L);
 
     	biomeSource.fetchTempHumid(chunk.getPos().x * 16, chunk.getPos().z * 16, 16, 16);
     	temps = biomeSource.temps;

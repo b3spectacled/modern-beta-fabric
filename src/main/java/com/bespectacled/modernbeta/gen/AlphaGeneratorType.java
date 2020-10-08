@@ -52,7 +52,6 @@ public final class AlphaGeneratorType extends GeneratorType {
 	}
 	
 	public static void register() {
-	    ModernBeta.LOGGER.log(Level.INFO, "Registering Alpha world type...");
 		GeneratorType.VALUES.add(INSTANCE);
 		ModernBeta.LOGGER.log(Level.INFO, "Registered Alpha world type.");
 	}

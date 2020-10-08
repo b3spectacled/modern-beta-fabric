@@ -71,11 +71,13 @@ public class BetaFeature {
 	        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, i, Feature.FLOWER.configure(Configs.DEFAULT_FLOWER_CONFIG));
 	    }
 	    
-	    
+	    ModernBeta.LOGGER.log(Level.INFO, "Reserved feature IDs.");
 	}
 	
 	public static void register() {
 	    Registry.register(Registry.FEATURE, new Identifier(ModernBeta.ID, "beta_freeze_top_layer"), BETA_FREEZE_TOP_LAYER);
 	    Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(ModernBeta.ID, "beta_freeze_top_layer"), BETA_FREEZE_TOP_LAYER_CONF);
+	    
+	    ModernBeta.LOGGER.log(Level.INFO, "Registered features.");
 	}
 }

@@ -44,6 +44,8 @@ public class ModernBeta implements ModInitializer {
 	
 	@Override
 	public void onInitialize() {
+	    LOGGER.log(Level.INFO, "Initializing Modern Beta...");
+	    
 	    ModernBetaConfig.loadConfig(); // Generate config if not present.
 	    
 		//BetaSurfaceBuilder.register(); Unused
@@ -51,14 +53,15 @@ public class ModernBeta implements ModInitializer {
 		BetaDecorator.register();
 		BetaFeature.reserveConfiguredFeatureIDs();
 		BetaFeature.register();
+		
 		BetaBiomes.reserveBiomeIDs();
-		BetaBiomeSource.register();
-		BetaChunkGenerator.register();
-		
-		SkylandsChunkGenerator.register();
-		
 		AlphaBiomes.reserveBiomeIDs();
+		
+		BetaBiomeSource.register();
 		AlphaBiomeSource.register();
+		
+		BetaChunkGenerator.register();
+		SkylandsChunkGenerator.register();
 		AlphaChunkGenerator.register();
 		
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -67,6 +70,8 @@ public class ModernBeta implements ModInitializer {
 			SkylandsGeneratorType.register();
 			AlphaGeneratorType.register();
 		}
+		
+		LOGGER.log(Level.INFO, "Initialized Modern Beta!");
 		
 		// I am not a programmer, I am an ape smashing rocks together.....
 	}

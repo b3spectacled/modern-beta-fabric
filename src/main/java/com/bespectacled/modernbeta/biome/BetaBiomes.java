@@ -2,6 +2,8 @@ package com.bespectacled.modernbeta.biome;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.Level;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.types.templates.List;
@@ -36,6 +38,8 @@ public class BetaBiomes {
         for (Identifier i : BIOMES) {
             Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createNormalOcean(false));
         }
+        
+        ModernBeta.LOGGER.log(Level.INFO, "Reserved Beta biome IDs.");
     }
 	
 }
