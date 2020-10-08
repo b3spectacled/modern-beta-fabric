@@ -723,7 +723,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 
-                boolean genSandBeach = sandNoise[i + j * 16] * rand.nextDouble() * 0.20000000000000001D > 0.0D;
+                boolean genSandBeach = sandNoise[i + j * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
                 boolean genGravelBeach = gravelNoise[i + j * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
             
                 int genStone = (int)(stoneNoise[i + j * 16] / 3D + 3D + rand.nextDouble() * 0.25D); 
