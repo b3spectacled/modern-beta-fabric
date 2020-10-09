@@ -69,7 +69,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Dynamic("Reed color lambda method")
     @Inject(method = "method_1685", at = @At("HEAD"), cancellable = true)
     private static void onReedColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx, CallbackInfoReturnable<Integer> info) {
-        info.setReturnValue(16777215);
+        info.setReturnValue(0xFFFFFF);
     }
     
     
