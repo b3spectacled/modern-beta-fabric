@@ -25,21 +25,27 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.LightType;
 
 public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
+    private Long seed;
+    
     public BetaFreezeTopLayerFeature(Codec<DefaultFeatureConfig> codec) {
         super(codec);
+        
+        seed = 0L;
     }
     
     public void setSeed(long seed) {
-        BiomeMath.initOctaves(seed);
+        BiomeMath.setSeed(seed);
+        this.seed = seed;
     }
     
     @Override
     public boolean generate(
-        StructureWorldAccess structureWorldAccess, 
+        StructureWorldAccess world, 
         ChunkGenerator chunkGenerator, 
         Random random, BlockPos blockPos, 
         DefaultFeatureConfig defaultFeatureConfig
     ) {
+        if (this.seed != world.getSeed()) setSeed(world.getSeed());
         
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutableDown = new BlockPos.Mutable();
@@ -54,22 +60,22 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
             for (int z = 0; z < 16; ++z) {
                 int curX = blockPos.getX() + x;
                 int curZ = blockPos.getZ() + z;
-                int curY = structureWorldAccess.getTopY(Heightmap.Type.MOTION_BLOCKING, curX, curZ);
+                int curY = world.getTopY(Heightmap.Type.MOTION_BLOCKING, curX, curZ);
                 
                 
                 mutable.set(curX, curY, curZ);
                 mutableDown.set(mutable).move(Direction.DOWN, 1);
                 
-                if (canSetIce(structureWorldAccess, mutableDown, false, BiomeMath.temps[i])) {
-                    structureWorldAccess.setBlockState(mutableDown, Blocks.ICE.getDefaultState(), 2);
+                if (canSetIce(world, mutableDown, false, BiomeMath.temps[i])) {
+                    world.setBlockState(mutableDown, Blocks.ICE.getDefaultState(), 2);
                 }
                 
-                if (canSetSnow(structureWorldAccess, mutable, BiomeMath.temps[i])) {
-                    structureWorldAccess.setBlockState(mutable, Blocks.SNOW.getDefaultState(), 2);
+                if (canSetSnow(world, mutable, BiomeMath.temps[i])) {
+                    world.setBlockState(mutable, Blocks.SNOW.getDefaultState(), 2);
                     
-                    BlockState blockState = structureWorldAccess.getBlockState(mutableDown);
+                    BlockState blockState = world.getBlockState(mutableDown);
                     if (blockState.contains(SnowyBlock.SNOWY)) {
-                        structureWorldAccess.setBlockState(mutableDown, blockState.with(SnowyBlock.SNOWY, true), 2);
+                        world.setBlockState(mutableDown, blockState.with(SnowyBlock.SNOWY, true), 2);
                     }
                 }
                 

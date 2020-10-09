@@ -35,10 +35,10 @@ public class ModernBeta implements ModInitializer {
 	public static long SEED;
 
 	// Ehh...
-	public static void setBlockColorsSeed(long seed) {
+	public static void setBlockColorsSeed(long seed, boolean defaultColors) {
 	    if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 	        MutableBlockColors mutableBlockColors = MutableBlockColors.inject(MinecraftClient.getInstance().getBlockColors());
-	        mutableBlockColors.setSeed(seed);
+	        mutableBlockColors.setSeed(seed, defaultColors);
 	    }
 	}
 	

@@ -151,8 +151,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
 		// Yes this is messy.  What else am I supposed to do?
 	    BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
-	    BetaFeature.BETA_FREEZE_TOP_LAYER.setSeed(seed);
-	    ModernBeta.setBlockColorsSeed(seed);
+	    ModernBeta.setBlockColorsSeed(seed, false);
 	    ModernBeta.SEED = seed;
 	}
     

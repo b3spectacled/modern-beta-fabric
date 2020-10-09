@@ -42,6 +42,7 @@ import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.noise.*;
+import com.bespectacled.modernbeta.util.BiomeMath;
 
 //private final BetaGeneratorSettings settings;
 
@@ -124,8 +125,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
 		// Yes this is messy.  What else am I supposed to do?
 	    BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
-	    BetaFeature.BETA_FREEZE_TOP_LAYER.setSeed(seed);
-	    ModernBeta.setBlockColorsSeed(seed);
+	    ModernBeta.setBlockColorsSeed(seed, false);
 	    ModernBeta.SEED = seed;
 	}
     

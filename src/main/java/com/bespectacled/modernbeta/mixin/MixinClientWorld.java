@@ -13,6 +13,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.ColorResolver;
 
+import com.bespectacled.modernbeta.util.BiomeMath;
 import com.bespectacled.modernbeta.util.MathHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 
@@ -74,7 +75,7 @@ public abstract class MixinClientWorld extends World {
         CallbackInfo ci
     ) {
         this.seed = fixedSeed == 0L ? ModernBeta.SEED : fixedSeed;
-        initOctaves(this.seed);
+        setSeed(this.seed);
     }
 	
 	/*
@@ -166,15 +167,16 @@ public abstract class MixinClientWorld extends World {
         prevX = x;
         prevZ = z;
         
-        float temp = (float)getTemperature(x, z);
+        //float temp = (float)getTemperature(x, z);
+        float temp = (float)BiomeMath.fetchSkyTemp(x, z);
         int skyColor = getSkyColorByTemp(temp);
         
         return skyColor;
     }
 	
 	@Unique
-	private static void initOctaves(long seed) {
-		skyTempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(seed * 9871L), 4);
+	private static void setSeed(long seed) {
+	    BiomeMath.setSeed(seed);
 	}
 	
 	@Unique
@@ -191,12 +193,5 @@ public abstract class MixinClientWorld extends World {
         return java.awt.Color.getHSBColor(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F).getRGB();
     }
 	
-	@Unique
-	private static double getTemperature(int x, int z) {
-	    double[] skyTemps = null;
-	    
-		skyTemps = skyTempNoiseOctaves.func_4112_a(skyTemps, x, z, 1, 1, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
-        return skyTemps[0];
-    }
 
 }

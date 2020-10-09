@@ -149,7 +149,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
 
 		// Yes this is messy.  What else am I supposed to do?
 	    BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
-	    ModernBeta.setBlockColorsSeed(0L);
+	    ModernBeta.setBlockColorsSeed(0L, true);
 	    ModernBeta.SEED = seed;
 	}
     
@@ -169,14 +169,10 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         ChunkPos pos = chunk.getPos();
     	
     	rand.setSeed((long)chunk.getPos().x * 341873128712L  + (long)chunk.getPos().z * 132897987541L);
-    	
-    	/*
-    	biomeSource.fetchTempHumid(chunk.getPos().x * 16, chunk.getPos().z * 16, 16, 16);
-    	temps = biomeSource.temps;
-    	*/
-    	
+
     	generateTerrain(chunk, temps, structureAccessor);
     	
+    	/*
     	MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
         BlockPos.Mutable mutableBlock = new BlockPos.Mutable();
 
@@ -198,7 +194,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         	}
         }
         
-        
+        */
     }
     
     // Modified to accommodate additional ocean biome replacements
@@ -222,12 +218,14 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         
         Biome biome = this.biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
         
+        /*
     	mutableBlock.set(absX, 62, absZ);
     	BlockState blockstate = ctrChunk.getBlockState(mutableBlock);
 		
 		if (blockstate.isOf(Blocks.WATER)) {
 			biome = this.biomeSource.getOceanBiomeForNoiseGen(absX, 2, absZ);
 		}
+		*/
         
         ChunkRandom chunkRand = new ChunkRandom();
         long popSeed = chunkRand.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
@@ -257,8 +255,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
     	// Cannot simply just check blockstate for chunks that do not yet exist...
     	// Will have to simulate heightmap for some distant chunk
     
-    	//biomeSource.fetchTempHumid(chunkPos.x * 16, chunkPos.z * 16, 16, 16);
-        
+        /*
 		int[][] chunkY = sampleHeightmap(chunkPos);
 		
 		int thisY = chunkY[Math.abs(absX % 16)][Math.abs(absZ % 16)];
@@ -266,6 +263,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
 		if (thisY <= this.getSeaLevel() - 4) { 
 			biome = this.biomeSource.getOceanBiomeForNoiseGen(absX, 0, absZ);
 		} 
+		*/
 
 
         this.setStructureStart(ConfiguredStructureFeatures.STRONGHOLD, dynamicRegistryManager, structureAccessor, chunk, structureManager, seed, chunkPos, biome);
@@ -305,6 +303,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         GenerationSettings generationSettings = this.biomeSource.getBiomeForNoiseGen(biomeX, 0, biomeZ).getGenerationSettings();
         BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(carver);
         
+        /*
         BlockPos.Mutable mutableBlock = new BlockPos.Mutable();
         
         mutableBlock.set(absX, 62, absZ);
@@ -313,6 +312,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         if (blockstate.isOf(Blocks.WATER)) {
             generationSettings = this.biomeSource.getOceanBiomeForNoiseGen(absX, 0, absZ).getGenerationSettings();
         }
+        */
         
         Random rand = new Random(seed);
         long l = (rand.nextLong() / 2L) * 2L + 1L;
@@ -717,7 +717,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 
-                boolean genSandBeach = sandNoise[i + j * 16] * rand.nextDouble() * 0.20000000000000001D > 0.0D;
+                boolean genSandBeach = sandNoise[i + j * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
                 boolean genGravelBeach = gravelNoise[i + j * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
             
                 int genStone = (int)(stoneNoise[i + j * 16] / 3D + 3D + rand.nextDouble() * 0.25D); 

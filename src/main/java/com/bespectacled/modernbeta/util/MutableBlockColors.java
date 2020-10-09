@@ -8,4 +8,5 @@ public interface MutableBlockColors {
     }
     
     void setSeed(long seed);
+    void setSeed(long seed,  boolean defaultColors);
 }
