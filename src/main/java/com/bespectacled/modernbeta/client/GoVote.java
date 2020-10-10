@@ -41,7 +41,7 @@ public class GoVote {
         try {
             Path path = Paths.get(MARKER_PATH);
             Files.createFile(path);
-            if (Util.getOSType() == Util.OS.WINDOWS) {
+            if (Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS) {
                 Files.setAttribute(path, "dos:hidden", true);
             }
         } catch (IOException ex) {
