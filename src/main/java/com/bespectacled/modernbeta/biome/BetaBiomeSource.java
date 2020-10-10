@@ -74,7 +74,7 @@ public class BetaBiomeSource extends BiomeSource {
     
     private static final boolean GENERATE_OCEANS = ModernBetaConfig.loadConfig().generate_oceans;
     private static final boolean GENERATE_ICE_DESERT = ModernBetaConfig.loadConfig().generate_ice_desert;
-    private static final boolean GENERATE_SKY = ModernBetaConfig.loadConfig().generate_sky;
+    //private static final boolean GENERATE_SKY = ModernBetaConfig.loadConfig().generate_sky;
 
 	public BetaBiomeSource(long seed, Registry<Biome> registry) {
 	    super(BIOMES.stream().map((registryKey) -> () -> (Biome)registry.get(registryKey)));
