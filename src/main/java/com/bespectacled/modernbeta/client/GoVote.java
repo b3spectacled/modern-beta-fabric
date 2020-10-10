@@ -41,7 +41,9 @@ public class GoVote {
         try {
             Path path = Paths.get(MARKER_PATH);
             Files.createFile(path);
-            Files.setAttribute(path, "dos:hidden", true);
+            if (Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS) {
+                Files.setAttribute(path, "dos:hidden", true);
+            }
         } catch (IOException ex) {
             markerAlreadyExists = true;
             return;
