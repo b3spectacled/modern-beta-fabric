@@ -62,7 +62,7 @@ import net.minecraft.world.gen.feature.StructureFeature;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
-import com.bespectacled.modernbeta.config.ModernBetaConfig;
+import com.bespectacled.modernbeta.config.ModernBetaConfigOld;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;

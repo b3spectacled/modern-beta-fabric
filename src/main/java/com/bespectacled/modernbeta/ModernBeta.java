@@ -16,6 +16,10 @@ import com.bespectacled.modernbeta.gen.BetaGeneratorType;
 import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
 import com.bespectacled.modernbeta.gen.SkylandsGeneratorType;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
+
+import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
+import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
+
 import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.AlphaBiomes;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
@@ -23,6 +27,7 @@ import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.client.GoVote;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
+import com.bespectacled.modernbeta.config.ModernBetaConfigOld;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
@@ -32,6 +37,9 @@ import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 public class ModernBeta implements ModInitializer {
     public static final String ID = "modern_beta";
     public static final Logger LOGGER = LogManager.getLogger("ModernBeta");
+    public static final ModernBetaConfig BETA_CONFIG = AutoConfig
+            .register(ModernBetaConfig.class, GsonConfigSerializer::new).getConfig();
+    
     public static long SEED;
 
     // Ehh...
@@ -47,7 +55,7 @@ public class ModernBeta implements ModInitializer {
     public void onInitialize() {
         LOGGER.log(Level.INFO, "Initializing Modern Beta...");
 
-        ModernBetaConfig.loadConfig(); // Generate config if not present.
+        ModernBetaConfigOld.loadConfig(); // Generate config if not present.
 
         // BetaSurfaceBuilder.register(); Unused
         BetaCarver.register();

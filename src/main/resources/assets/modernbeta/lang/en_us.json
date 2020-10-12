@@ -1,5 +1,20 @@
 {
-  "generator.beta": "Modern Beta",
-  "generator.skylands": "Modern Skylands",
-  "generator.alpha": "Modern Alpha"
+    "generator.beta": "Modern Beta",
+    "generator.skylands": "Modern Skylands",
+    "generator.alpha": "Modern Alpha",
+    "text.autoconfig.modernbeta.title": "Modern Beta Configuration",
+    "text.autoconfig.modernbeta.category.betaRender": "Render Options",
+    "text.autoconfig.modernbeta.category.betaGen": "Generation Options",
+    "text.autoconfig.modernbeta.option.fixedSeed": "Fixed Seed",
+    "text.autoconfig.modernbeta.option.fixedSeed.@Tooltip[0]": "For use on servers with Modern Beta.",
+    "text.autoconfig.modernbeta.option.fixedSeed.@Tooltip[1]": "Change to server seed to render",
+    "text.autoconfig.modernbeta.option.fixedSeed.@Tooltip[2]": "correct biome colors.",
+    "text.autoconfig.modernbeta.option.renderBetaSkyColor": "Beta Sky Colors",
+    "text.autoconfig.modernbeta.option.renderBetaSkyColor.@Tooltip[0]": "Render client-side temperature",
+    "text.autoconfig.modernbeta.option.renderBetaSkyColor.@Tooltip[1]": "noise-based Beta sky colors.",
+    "text.autoconfig.modernbeta.option.renderBetaBiomeColor": "Beta Biome Colors",
+    "text.autoconfig.modernbeta.option.renderBetaBiomeColor.@Tooltip[0]": "Render client-side temperature/humidity",
+    "text.autoconfig.modernbeta.option.renderBetaBiomeColor.@Tooltip[1]": "noise-based Beta biome colors.",
+    "text.autoconfig.modernbeta.option.renderAlphaSunset": "Alpha Sunset",
+    "text.autoconfig.modernbeta.option.renderAlphaSunset.@Tooltip": "Render client-side Alpha uncolored sunset."
 }

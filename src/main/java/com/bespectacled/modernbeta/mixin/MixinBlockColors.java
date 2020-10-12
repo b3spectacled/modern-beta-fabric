@@ -2,65 +2,42 @@ package com.bespectacled.modernbeta.mixin;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.world.FoliageColors;
 import net.minecraft.client.color.world.GrassColors;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.collection.IdList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.profiler.Profiler;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
-
-import java.util.Random;
-import java.util.function.Supplier;
-
-import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
-import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
-import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
+import com.bespectacled.modernbeta.config.ModernBetaConfigOld;
 import com.bespectacled.modernbeta.util.BiomeMath;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
 
 @Mixin(value = BlockColors.class, priority = 1)
 public class MixinBlockColors implements MutableBlockColors {
 
-    private static long SEED = ModernBetaConfig.loadConfig().fixed_seed;
-    private static final boolean RENDER_BETA_COLOR = ModernBetaConfig.loadConfig().render_beta_grass_color;
+    @Unique
+    private static ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
 
     private static boolean defaultColors = false;
 
     @Unique
     @Override
     public void setSeed(long seed) {
-        BiomeMath.setSeed(SEED != 0L ? SEED : seed);
+        BiomeMath.setSeed(BETA_CONFIG.fixedSeed != 0L ? BETA_CONFIG.fixedSeed : seed);
     }
 
     @Unique
     @Override
     public void setSeed(long seed, boolean useDefaultColors) {
         if (!useDefaultColors)
-            BiomeMath.setSeed(SEED != 0L ? SEED : seed);
+            BiomeMath.setSeed(BETA_CONFIG.fixedSeed != 0L ? BETA_CONFIG.fixedSeed : seed);
         else
             defaultColors = useDefaultColors;
     }
@@ -69,14 +46,15 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1685", at = @At("HEAD"), cancellable = true)
     private static void onReedColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        info.setReturnValue(0xFFFFFF);
+        if (BETA_CONFIG.renderBetaBiomeColor && !defaultColors)
+            info.setReturnValue(0xFFFFFF);
     }
 
     @Dynamic("Two high grass color lambda method")
     @Inject(method = "method_1686", at = @At("HEAD"), cancellable = true)
     private static void onDoubleTallGrassColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (RENDER_BETA_COLOR && !defaultColors)
+        if (BETA_CONFIG.renderBetaBiomeColor && !defaultColors)
             info.setReturnValue(getGrassColor(state, world, pos));
     }
 
@@ -84,7 +62,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1693", at = @At("HEAD"), cancellable = true)
     private static void onGrassColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (RENDER_BETA_COLOR && !defaultColors)
+        if (BETA_CONFIG.renderBetaBiomeColor && !defaultColors)
             info.setReturnValue(getGrassColor(state, world, pos));
     }
 
@@ -92,7 +70,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1692", at = @At("HEAD"), cancellable = true)
     private static void onFoliageColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (RENDER_BETA_COLOR && !defaultColors)
+        if (BETA_CONFIG.renderBetaBiomeColor && !defaultColors)
             info.setReturnValue(getFoliageColor(world, pos));
     }
 

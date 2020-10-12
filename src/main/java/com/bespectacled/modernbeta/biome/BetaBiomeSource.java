@@ -5,7 +5,7 @@ import java.util.Random;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.config.ModernBetaConfig;
+import com.bespectacled.modernbeta.config.ModernBetaConfigOld;
 import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
@@ -71,8 +71,8 @@ public class BetaBiomeSource extends BiomeSource {
     public static Biome[] biomesInChunk = new Biome[256];
     public static Biome[] oceanBiomesInChunk = new Biome[256];
 
-    private static final boolean GENERATE_OCEANS = ModernBetaConfig.loadConfig().generate_oceans;
-    private static final boolean GENERATE_ICE_DESERT = ModernBetaConfig.loadConfig().generate_ice_desert;
+    private static final boolean GENERATE_OCEANS = ModernBetaConfigOld.loadConfig().generate_oceans;
+    private static final boolean GENERATE_ICE_DESERT = ModernBetaConfigOld.loadConfig().generate_ice_desert;
     // private static final boolean GENERATE_SKY =
     // ModernBetaConfig.loadConfig().generate_sky;
 

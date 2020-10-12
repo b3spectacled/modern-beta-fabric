@@ -10,7 +10,9 @@
   "client": [
     "MixinBlockColors",
     "MixinClientWorld",
-    "MixinMinecraftClient"
+    "MixinMinecraftClient",
+    "MixinWorldRenderer",
+    "MixinBackgroundRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

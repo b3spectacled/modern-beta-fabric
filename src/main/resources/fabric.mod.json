@@ -20,6 +20,9 @@
   "entrypoints": {
     "main": [
       "com.bespectacled.modernbeta.ModernBeta"
+    ],
+    "modmenu": [
+      "com.bespectacled.modernbeta.config.ModernBetaModMenu"
     ]
   },
   "mixins": [

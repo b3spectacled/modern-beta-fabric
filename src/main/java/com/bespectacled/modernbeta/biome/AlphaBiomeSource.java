@@ -5,7 +5,7 @@ import java.util.Random;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.config.ModernBetaConfig;
+import com.bespectacled.modernbeta.config.ModernBetaConfigOld;
 import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
@@ -35,8 +35,8 @@ public class AlphaBiomeSource extends BiomeSource {
 
     private final long seed;
     public final Registry<Biome> biomeRegistry;
-    private final boolean alphaWinterMode = ModernBetaConfig.loadConfig().alpha_winter_mode;
-    private final boolean alphaPlus = ModernBetaConfig.loadConfig().alpha_plus;
+    private final boolean alphaWinterMode = ModernBetaConfigOld.loadConfig().alpha_winter_mode;
+    private final boolean alphaPlus = ModernBetaConfigOld.loadConfig().alpha_plus;
 
     public double temps[];
     public double humids[];
