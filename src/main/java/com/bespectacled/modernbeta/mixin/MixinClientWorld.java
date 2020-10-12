@@ -36,95 +36,79 @@ import org.spongepowered.asm.mixin.injection.At;
 /*
  * Based on Colormatic ClientWorldMixin
  */
-@Mixin(value = ClientWorld.class, priority = 1) 
+@Mixin(value = ClientWorld.class, priority = 1)
 public abstract class MixinClientWorld extends World {
-	
-	private static BetaNoiseGeneratorOctaves2 skyTempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 9871L), 4);
-	private long seed;
-	
-	private static final boolean renderBetaSkyColor = ModernBetaConfig.loadConfig().render_beta_sky_color;
-	private static final long fixedSeed = ModernBetaConfig.loadConfig().fixed_seed;
-	
+
+    private static BetaNoiseGeneratorOctaves2 skyTempNoiseOctaves = new BetaNoiseGeneratorOctaves2(
+            new Random(0 * 9871L), 4);
+    private long seed;
+
+    private static final boolean renderBetaSkyColor = ModernBetaConfig.loadConfig().render_beta_sky_color;
+    private static final long fixedSeed = ModernBetaConfig.loadConfig().fixed_seed;
+
     public Map<BlockPos, double[]> tempHumidCache = new HashMap<>();
-    
-	@Shadow
-	public Object2ObjectArrayMap<ColorResolver, BiomeColorCache> colorCache;
-	
-	@Shadow
-	private int lightningTicksLeft;
-	
-	int prevX = 0;
-	int prevZ = 0;
-	
-	
-	private MixinClientWorld() {
+
+    @Shadow
+    public Object2ObjectArrayMap<ColorResolver, BiomeColorCache> colorCache;
+
+    @Shadow
+    private int lightningTicksLeft;
+
+    int prevX = 0;
+    int prevZ = 0;
+
+    private MixinClientWorld() {
         super(null, null, null, null, false, false, 0L);
     }
-	
-	@Inject(method = "<init>", at = @At("RETURN"))
-	private void init(
-        ClientPlayNetworkHandler netHandler, 
-        ClientWorld.Properties properties, 
-        RegistryKey<World> worldKey, 
-        DimensionType dimensionType, 
-        int loadDistance,
-        Supplier<Profiler> profiler, 
-        WorldRenderer renderer, 
-        boolean debugWorld, 
-        long seed,
-        CallbackInfo ci
-    ) {
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void init(ClientPlayNetworkHandler netHandler, ClientWorld.Properties properties,
+            RegistryKey<World> worldKey, DimensionType dimensionType, int loadDistance, Supplier<Profiler> profiler,
+            WorldRenderer renderer, boolean debugWorld, long seed, CallbackInfo ci) {
         this.seed = fixedSeed == 0L ? ModernBeta.SEED : fixedSeed;
         setSeed(this.seed);
     }
-	
-	/*
-	@Redirect(
-	        method = "method_23777",
-	        at = @At(
-	            value = "INVOKE",
-	            target = "Lnet/minecraft/world/biome/Biome;getSkyColor()I"
-	        )
-	    )
-    private int injectBetaSkyColor(Biome self, BlockPos pos, float partialTicks) {
-	    DimensionType type = this.getDimension();
-	    
-		if (this.seed == null || this.seed != BetaChunkGenerator.seed) {
-			this.seed = BetaChunkGenerator.seed;
-			initOctaves(this.seed);
-			
-		}
-	
-		if (renderBetaSkyColor && type.hasSkyLight()) {
-		 
-	        int x = pos.getX();
-	        int z = pos.getZ();
-	        
-	        float temp = (float)getTemperature(x, z);
-	        int skyColor = getSkyColorByTemp(temp);
-	        
-	        return skyColor;
-		}
-		
-		return self.getSkyColor();
-    }
-	*/
-	
-	/* Yes I know this is bad, if there is a better way to achieve compatibility with Colormatic tell me! */
-	public Vec3d method_23777(BlockPos blockPos, float float3) {
+
+    /*
+     * @Redirect( method = "method_23777", at = @At( value = "INVOKE", target =
+     * "Lnet/minecraft/world/biome/Biome;getSkyColor()I" ) ) private int
+     * injectBetaSkyColor(Biome self, BlockPos pos, float partialTicks) {
+     * DimensionType type = this.getDimension();
+     * 
+     * if (this.seed == null || this.seed != BetaChunkGenerator.seed) { this.seed =
+     * BetaChunkGenerator.seed; initOctaves(this.seed);
+     * 
+     * }
+     * 
+     * if (renderBetaSkyColor && type.hasSkyLight()) {
+     * 
+     * int x = pos.getX(); int z = pos.getZ();
+     * 
+     * float temp = (float)getTemperature(x, z); int skyColor =
+     * getSkyColorByTemp(temp);
+     * 
+     * return skyColor; }
+     * 
+     * return self.getSkyColor(); }
+     */
+
+    /*
+     * Yes I know this is bad, if there is a better way to achieve compatibility
+     * with Colormatic tell me!
+     */
+    public Vec3d method_23777(BlockPos blockPos, float float3) {
         float float4 = this.getSkyAngle(float3);
         float float5 = MathHelper.cos(float4 * 6.2831855f) * 2.0f + 0.5f;
-        float5 = MathHelper.clamp(float5, 0.0f, 1.0f);     
+        float5 = MathHelper.clamp(float5, 0.0f, 1.0f);
         Biome biome6 = this.getBiome(blockPos);
         int integer7;
-        
+
         if (renderBetaSkyColor && this.getDimension().hasSkyLight()) {
             integer7 = getBetaSkyColor(blockPos);
         } else {
             integer7 = biome6.getSkyColor(); // Captured by Colormatic so I can't redirect.
         }
-            
-        
+
         float float8 = (integer7 >> 16 & 0xFF) / 255.0f;
         float float9 = (integer7 >> 8 & 0xFF) / 255.0f;
         float float10 = (integer7 & 0xFF) / 255.0f;
@@ -159,39 +143,38 @@ public abstract class MixinClientWorld extends World {
         }
         return new Vec3d(float8, float9, float10);
     }
-	
-	private int getBetaSkyColor(BlockPos pos) {
+
+    private int getBetaSkyColor(BlockPos pos) {
         int x = pos.getX();
         int z = pos.getZ();
 
         prevX = x;
         prevZ = z;
-        
-        //float temp = (float)getTemperature(x, z);
-        float temp = (float)BiomeMath.fetchSkyTemp(x, z);
+
+        // float temp = (float)getTemperature(x, z);
+        float temp = (float) BiomeMath.fetchSkyTemp(x, z);
         int skyColor = getSkyColorByTemp(temp);
-        
+
         return skyColor;
     }
-	
-	@Unique
-	private static void setSeed(long seed) {
-	    BiomeMath.setSeed(seed);
-	}
-	
-	@Unique
-	private static int getSkyColorByTemp(float temp) {
-		temp /= 3F;
-		
-        if(temp < -1F) {
-        	temp = -1F;
+
+    @Unique
+    private static void setSeed(long seed) {
+        BiomeMath.setSeed(seed);
+    }
+
+    @Unique
+    private static int getSkyColorByTemp(float temp) {
+        temp /= 3F;
+
+        if (temp < -1F) {
+            temp = -1F;
         }
-        
-        if(temp > 1.0F) {
-        	temp = 1.0F;
+
+        if (temp > 1.0F) {
+            temp = 1.0F;
         }
         return java.awt.Color.getHSBColor(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F).getRGB();
     }
-	
 
 }

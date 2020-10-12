@@ -29,15 +29,15 @@ import com.bespectacled.modernbeta.util.MutableBiomeArray;
 
 @Mixin(BiomeArray.class)
 public abstract class MixinBiomeArray implements MutableBiomeArray {
-	@Shadow
-	private Biome[] data;
+    @Shadow
+    private Biome[] data;
 
-	@Override
-	public void setBiome(int x, int y, int z, Biome biome) {
-		this.data[BiomeMath.computeBiomeIndex(x, y, z)] = biome;
-	}
-	
-	public Biome getBiome(int x, int y, int z) {
-		return this.data[BiomeMath.computeBiomeIndex(x, y, z)];
-	}
+    @Override
+    public void setBiome(int x, int y, int z, Biome biome) {
+        this.data[BiomeMath.computeBiomeIndex(x, y, z)] = biome;
+    }
+
+    public Biome getBiome(int x, int y, int z) {
+        return this.data[BiomeMath.computeBiomeIndex(x, y, z)];
+    }
 }

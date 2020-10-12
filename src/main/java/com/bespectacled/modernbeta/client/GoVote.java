@@ -60,11 +60,13 @@ public class GoVote {
                 conn.setConnectTimeout(4000);
                 conn.setReadTimeout(4000);
                 try (InputStreamReader reader = new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8)) {
-                    Type typeToken = new TypeToken<Map<String, String>>() {}.getType();
+                    Type typeToken = new TypeToken<Map<String, String>>() {
+                    }.getType();
                     Map<String, String> map = new Gson().fromJson(reader, typeToken);
                     countryCode = map.get("countryCode");
                 }
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+            }
         }, "Go Vote Country Check").start();
     }
 
@@ -92,8 +94,7 @@ public class GoVote {
     }
 
     private static boolean isEnglish(MinecraftClient mc) {
-        return mc.getLanguageManager() != null
-                && mc.getLanguageManager().getLanguage() != null
+        return mc.getLanguageManager() != null && mc.getLanguageManager().getLanguage() != null
                 && "English".equals(mc.getLanguageManager().getLanguage().getName());
     }
 
@@ -108,15 +109,12 @@ public class GoVote {
             this.parent = parent;
             addGroup(s("Please read the following message from " + BRAND + "."));
             addGroup(s("We are at a unique crossroads in the history of our country."));
-            addGroup(s("In this time of heightened polarization,"),
-                    s("breakdown of political decorum, and fear,"));
-            addGroup(s("it is tempting to succumb to apathy,"),
-                    s("to think that nothing you do will matter."));
+            addGroup(s("In this time of heightened polarization,"), s("breakdown of political decorum, and fear,"));
+            addGroup(s("it is tempting to succumb to apathy,"), s("to think that nothing you do will matter."));
             addGroup(LiteralText.EMPTY, s("But power is still in the hands of We, the People."));
             addGroup(s("The Constitution and its amendments guarantee every citizen the right to vote."));
             addGroup(s("And it is not only our right, but our ")
-                    .append(s("responsibility").formatted(Formatting.ITALIC, Formatting.GOLD))
-                    .append(" to do so."));
+                    .append(s("responsibility").formatted(Formatting.ITALIC, Formatting.GOLD)).append(" to do so."));
             addGroup(s("Your vote matters. Always."));
             addGroup(LiteralText.EMPTY, s("Click anywhere to check if you are registered to vote."),
                     s("The website is an official government site, unaffiliated with " + BRAND + "."));

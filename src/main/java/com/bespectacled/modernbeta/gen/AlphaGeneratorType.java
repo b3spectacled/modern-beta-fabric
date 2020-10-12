@@ -20,44 +20,29 @@ import net.minecraft.world.gen.chunk.StructuresConfig;
 
 @Environment(EnvType.CLIENT)
 public final class AlphaGeneratorType extends GeneratorType {
-	public static final GeneratorType INSTANCE = new AlphaGeneratorType();
-	
-	public static final StructuresConfig structures = new StructuresConfig(true);
-	public static final NoiseSamplingConfig noiseSampler = new NoiseSamplingConfig(1.0, 1.0, 40.0, 22.0);
-	public static final GenerationShapeConfig noise = new GenerationShapeConfig(
-        256,
-        noiseSampler,
-        new SlideConfig(-10, 3, 0),
-        new SlideConfig(-30, 0, 0),
-        1, 2,
-        1.0,
-        -60.0 / (256.0 / 2.0),
-        true,
-        true,
-        false,
-        false
-    );
+    public static final GeneratorType INSTANCE = new AlphaGeneratorType();
 
-	public static final ChunkGeneratorSettings type = new ChunkGeneratorSettings(
-        structures, noise,
-        Blocks.STONE.getDefaultState(),
-        Blocks.WATER.getDefaultState(),
-        -10, 0, 64,
-        false
-    );
-    
-	
-	private AlphaGeneratorType() {
-		super("alpha");
-	}
-	
-	public static void register() {
-		GeneratorType.VALUES.add(INSTANCE);
-		ModernBeta.LOGGER.log(Level.INFO, "Registered Alpha world type.");
-	}
-	
-	@Override
-	protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-	    return new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes), seed, new BetaGeneratorSettings(type));
-	}
+    public static final StructuresConfig structures = new StructuresConfig(true);
+    public static final NoiseSamplingConfig noiseSampler = new NoiseSamplingConfig(1.0, 1.0, 40.0, 22.0);
+    public static final GenerationShapeConfig noise = new GenerationShapeConfig(256, noiseSampler,
+            new SlideConfig(-10, 3, 0), new SlideConfig(-30, 0, 0), 1, 2, 1.0, -60.0 / (256.0 / 2.0), true, true, false,
+            false);
+
+    public static final ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise,
+            Blocks.STONE.getDefaultState(), Blocks.WATER.getDefaultState(), -10, 0, 64, false);
+
+    private AlphaGeneratorType() {
+        super("alpha");
+    }
+
+    public static void register() {
+        GeneratorType.VALUES.add(INSTANCE);
+        ModernBeta.LOGGER.log(Level.INFO, "Registered Alpha world type.");
+    }
+
+    @Override
+    protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings,
+            long seed) {
+        return new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes), seed, new BetaGeneratorSettings(type));
+    }
 }

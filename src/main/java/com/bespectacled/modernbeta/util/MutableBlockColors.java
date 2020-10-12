@@ -6,7 +6,8 @@ public interface MutableBlockColors {
     static MutableBlockColors inject(BlockColors blockColors) {
         return (MutableBlockColors) blockColors;
     }
-    
+
     void setSeed(long seed);
-    void setSeed(long seed,  boolean defaultColors);
+
+    void setSeed(long seed, boolean defaultColors);
 }

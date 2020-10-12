@@ -13,9 +13,9 @@ public class MixinMinecraftClient {
 
     @Inject(method = "openScreen", at = @At("HEAD"), cancellable = true)
     private void handleVoteScreen(Screen screen, CallbackInfo ci) {
-        
+
         // Handle the vote screen, go vote!
-        if (GoVote.show((MinecraftClient)(Object)this, screen)) {
+        if (GoVote.show((MinecraftClient) (Object) this, screen)) {
             ci.cancel();
         }
     }

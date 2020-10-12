@@ -4,8 +4,7 @@
     "minecraft:pillager_outpost",
     "minecraft:mineshaft",
     "minecraft:stronghold",
-    "minecraft:ruined_portal",
-    "minecraft:mansion"
+    "minecraft:ruined_portal"
   ],
   "spawners": {
     "monster": [

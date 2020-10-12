@@ -37,47 +37,45 @@ import net.minecraft.world.gen.feature.SimpleRandomFeatureConfig;
 
 public class BetaFeature {
     public static final ImmutableList<Identifier> CONFIG_FEATURES = ImmutableList.of(
-        new Identifier(ModernBeta.ID, "ore_clay"),
-        new Identifier(ModernBeta.ID, "patch_grass_rainforest_10"),
-        new Identifier(ModernBeta.ID, "patch_grass_plains_10"),
-        new Identifier(ModernBeta.ID, "patch_grass_taiga_1"),
-        new Identifier(ModernBeta.ID, "trees_beta_forest_bees"),
-        new Identifier(ModernBeta.ID, "trees_beta_rainforest_bees"),
-        new Identifier(ModernBeta.ID, "trees_beta_seasonal_forest_bees"),
-        new Identifier(ModernBeta.ID, "trees_beta_forest"),
-        new Identifier(ModernBeta.ID, "trees_beta_rainforest"),
-        new Identifier(ModernBeta.ID, "trees_beta_seasonal_forest"),
-        new Identifier(ModernBeta.ID, "trees_beta_taiga"),
-        new Identifier(ModernBeta.ID, "patch_dandelion_2"),
-        new Identifier(ModernBeta.ID, "patch_dandelion_3"),
-        new Identifier(ModernBeta.ID, "patch_dandelion_4"),
-        new Identifier(ModernBeta.ID, "patch_poppy"),
-        new Identifier(ModernBeta.ID, "ore_emerald_y95"),
-        new Identifier(ModernBeta.ID, "trees_alpha_forest_bees"),
-        new Identifier(ModernBeta.ID, "trees_alpha_forest"),
-        new Identifier(ModernBeta.ID, "patch_grass_alpha_2"),
-        new Identifier(ModernBeta.ID, "patch_cactus_alpha")
-    );
-    
-    public static final BetaFreezeTopLayerFeature BETA_FREEZE_TOP_LAYER = new BetaFreezeTopLayerFeature(DefaultFeatureConfig.CODEC);
-    private static final ConfiguredFeature<?, ?> BETA_FREEZE_TOP_LAYER_CONF = BETA_FREEZE_TOP_LAYER.configure(FeatureConfig.DEFAULT);
+            new Identifier(ModernBeta.ID, "ore_clay"), new Identifier(ModernBeta.ID, "patch_grass_rainforest_10"),
+            new Identifier(ModernBeta.ID, "patch_grass_plains_10"),
+            new Identifier(ModernBeta.ID, "patch_grass_taiga_1"),
+            new Identifier(ModernBeta.ID, "trees_beta_forest_bees"),
+            new Identifier(ModernBeta.ID, "trees_beta_rainforest_bees"),
+            new Identifier(ModernBeta.ID, "trees_beta_seasonal_forest_bees"),
+            new Identifier(ModernBeta.ID, "trees_beta_forest"), new Identifier(ModernBeta.ID, "trees_beta_rainforest"),
+            new Identifier(ModernBeta.ID, "trees_beta_seasonal_forest"),
+            new Identifier(ModernBeta.ID, "trees_beta_taiga"), new Identifier(ModernBeta.ID, "patch_dandelion_2"),
+            new Identifier(ModernBeta.ID, "patch_dandelion_3"), new Identifier(ModernBeta.ID, "patch_dandelion_4"),
+            new Identifier(ModernBeta.ID, "patch_poppy"), new Identifier(ModernBeta.ID, "ore_emerald_y95"),
+            new Identifier(ModernBeta.ID, "trees_alpha_forest_bees"),
+            new Identifier(ModernBeta.ID, "trees_alpha_forest"), new Identifier(ModernBeta.ID, "patch_grass_alpha_2"),
+            new Identifier(ModernBeta.ID, "patch_cactus_alpha"));
 
-	public static ConfiguredFeature<?, ?> getFeature(String name) {
-		return BuiltinRegistries.CONFIGURED_FEATURE.get(new Identifier(ModernBeta.ID, name));
-	}
-	
-	public static void reserveConfiguredFeatureIDs() {
-	    for (Identifier i : CONFIG_FEATURES) {
-	        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, i, Feature.FLOWER.configure(Configs.DEFAULT_FLOWER_CONFIG));
-	    }
-	    
-	    ModernBeta.LOGGER.log(Level.INFO, "Reserved feature IDs.");
-	}
-	
-	public static void register() {
-	    Registry.register(Registry.FEATURE, new Identifier(ModernBeta.ID, "beta_freeze_top_layer"), BETA_FREEZE_TOP_LAYER);
-	    Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(ModernBeta.ID, "beta_freeze_top_layer"), BETA_FREEZE_TOP_LAYER_CONF);
-	    
-	    ModernBeta.LOGGER.log(Level.INFO, "Registered features.");
-	}
+    public static final BetaFreezeTopLayerFeature BETA_FREEZE_TOP_LAYER = new BetaFreezeTopLayerFeature(
+            DefaultFeatureConfig.CODEC);
+    private static final ConfiguredFeature<?, ?> BETA_FREEZE_TOP_LAYER_CONF = BETA_FREEZE_TOP_LAYER
+            .configure(FeatureConfig.DEFAULT);
+
+    public static ConfiguredFeature<?, ?> getFeature(String name) {
+        return BuiltinRegistries.CONFIGURED_FEATURE.get(new Identifier(ModernBeta.ID, name));
+    }
+
+    public static void reserveConfiguredFeatureIDs() {
+        for (Identifier i : CONFIG_FEATURES) {
+            Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, i,
+                    Feature.FLOWER.configure(Configs.DEFAULT_FLOWER_CONFIG));
+        }
+
+        ModernBeta.LOGGER.log(Level.INFO, "Reserved feature IDs.");
+    }
+
+    public static void register() {
+        Registry.register(Registry.FEATURE, new Identifier(ModernBeta.ID, "beta_freeze_top_layer"),
+                BETA_FREEZE_TOP_LAYER);
+        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(ModernBeta.ID, "beta_freeze_top_layer"),
+                BETA_FREEZE_TOP_LAYER_CONF);
+
+        ModernBeta.LOGGER.log(Level.INFO, "Registered features.");
+    }
 }

@@ -14,39 +14,42 @@ import net.minecraft.world.chunk.ChunkProvider;
 import net.minecraft.world.gen.decorator.SimpleDecorator;
 
 public class CountBetaNoiseDecorator extends SimpleDecorator<CountNoiseDecoratorConfig> {
-	public BetaNoiseGeneratorOctaves forestNoise;
-	
-	public CountBetaNoiseDecorator(Codec<CountNoiseDecoratorConfig> codec) {
-		super(codec);
-	}
-	
-	public void setSeed(long seed) {
-		forestNoise = new BetaNoiseGeneratorOctaves(new Random(seed), 8);
-	}
+    public BetaNoiseGeneratorOctaves forestNoise;
 
-	@Override
-	protected Stream<BlockPos> getPositions(Random random, CountNoiseDecoratorConfig config, BlockPos pos) {
-		if (forestNoise == null) {
-			forestNoise = new BetaNoiseGeneratorOctaves(new Random(0), 8);
-		}
-		
-		int chunkX = (int)pos.getX() / 16;
-		int chunkZ = (int)pos.getZ() / 16;
-		
-		int noiseX = chunkX * 16;
-		int noiseY = chunkZ * 16;
-		
-		double d = 0.5D;
-		
-		int noiseCount = (int)((forestNoise.func_806_a((double)noiseX * d, (double)noiseY * d) / 8D + random.nextDouble() * 4D + 4D) / 3D);
+    public CountBetaNoiseDecorator(Codec<CountNoiseDecoratorConfig> codec) {
+        super(codec);
+    }
 
-		int finalCount = noiseCount + config.density + ((random.nextFloat() < config.extraChance) ? config.extraCount : 0);
-		
-		// Returns just the count, actual block pos placement handled by Square decorator.
-		// Unfortunately does not return the same tree density values, 
-		// would require simulating part of the b1.7.3 generation algorithm using the rand var.
-		return IntStream.range(0, finalCount).<BlockPos>mapToObj(integer -> pos);
-	}
+    public void setSeed(long seed) {
+        forestNoise = new BetaNoiseGeneratorOctaves(new Random(seed), 8);
+    }
 
+    @Override
+    protected Stream<BlockPos> getPositions(Random random, CountNoiseDecoratorConfig config, BlockPos pos) {
+        if (forestNoise == null) {
+            forestNoise = new BetaNoiseGeneratorOctaves(new Random(0), 8);
+        }
+
+        int chunkX = (int) pos.getX() / 16;
+        int chunkZ = (int) pos.getZ() / 16;
+
+        int noiseX = chunkX * 16;
+        int noiseY = chunkZ * 16;
+
+        double d = 0.5D;
+
+        int noiseCount = (int) ((forestNoise.func_806_a((double) noiseX * d, (double) noiseY * d) / 8D
+                + random.nextDouble() * 4D + 4D) / 3D);
+
+        int finalCount = noiseCount + config.density
+                + ((random.nextFloat() < config.extraChance) ? config.extraCount : 0);
+
+        // Returns just the count, actual block pos placement handled by Square
+        // decorator.
+        // Unfortunately does not return the same tree density values,
+        // would require simulating part of the b1.7.3 generation algorithm using the
+        // rand var.
+        return IntStream.range(0, finalCount).<BlockPos>mapToObj(integer -> pos);
+    }
 
 }

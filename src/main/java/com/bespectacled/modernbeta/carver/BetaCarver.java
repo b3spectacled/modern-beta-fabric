@@ -24,20 +24,21 @@ import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
 public class BetaCarver {
     public static final Map<Identifier, Carver> CARVERS = new HashMap<>();
     public static final Map<Identifier, ConfiguredCarver> CONFIGURED_CARVERS = new HashMap<>();
-    
+
     public static final Carver BETA_CAVE_CARVER = add("beta_cave", new BetaCaveCarver(ProbabilityConfig.CODEC, 128));
-    public static final ConfiguredCarver CONF_BETA_CAVE_CARVER = add("beta_cave", new ConfiguredCarver(BETA_CAVE_CARVER, new ProbabilityConfig(1f)));
-    
+    public static final ConfiguredCarver CONF_BETA_CAVE_CARVER = add("beta_cave",
+            new ConfiguredCarver(BETA_CAVE_CARVER, new ProbabilityConfig(1f)));
+
     static <C extends Carver> C add(String name, C carver) {
-        CARVERS.put(new Identifier(ModernBeta.ID, name), carver); 
+        CARVERS.put(new Identifier(ModernBeta.ID, name), carver);
         return carver;
     }
-    
+
     static <C extends ConfiguredCarver> C add(String name, C configuredCarver) {
-        CONFIGURED_CARVERS.put(new Identifier(ModernBeta.ID, name), configuredCarver); 
+        CONFIGURED_CARVERS.put(new Identifier(ModernBeta.ID, name), configuredCarver);
         return configuredCarver;
     }
-    
+
     public static void register() {
         for (Identifier id : CARVERS.keySet()) {
             Registry.register(Registry.CARVER, id, CARVERS.get(id));
@@ -45,7 +46,7 @@ public class BetaCarver {
         for (Identifier id : CONFIGURED_CARVERS.keySet()) {
             Registry.register(BuiltinRegistries.CONFIGURED_CARVER, id, CONFIGURED_CARVERS.get(id));
         }
-        
+
         ModernBeta.LOGGER.log(Level.INFO, "Registered carvers.");
     }
 }

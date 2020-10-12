@@ -30,50 +30,51 @@ import com.bespectacled.modernbeta.gen.AlphaGeneratorType;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 
 public class ModernBeta implements ModInitializer {
-	public static final String ID = "modern_beta";
-	public static final Logger LOGGER = LogManager.getLogger("ModernBeta");
-	public static long SEED;
+    public static final String ID = "modern_beta";
+    public static final Logger LOGGER = LogManager.getLogger("ModernBeta");
+    public static long SEED;
 
-	// Ehh...
-	public static void setBlockColorsSeed(long seed, boolean defaultColors) {
-	    if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-	        MutableBlockColors mutableBlockColors = MutableBlockColors.inject(MinecraftClient.getInstance().getBlockColors());
-	        mutableBlockColors.setSeed(seed, defaultColors);
-	    }
-	}
-	
-	@Override
-	public void onInitialize() {
-	    LOGGER.log(Level.INFO, "Initializing Modern Beta...");
-	    
-	    ModernBetaConfig.loadConfig(); // Generate config if not present.
-	    
-		//BetaSurfaceBuilder.register(); Unused
-	    BetaCarver.register();
-		BetaDecorator.register();
-		BetaFeature.reserveConfiguredFeatureIDs();
-		BetaFeature.register();
-		
-		BetaBiomes.reserveBiomeIDs();
-		AlphaBiomes.reserveBiomeIDs();
-		
-		BetaBiomeSource.register();
-		AlphaBiomeSource.register();
-		
-		BetaChunkGenerator.register();
-		SkylandsChunkGenerator.register();
-		AlphaChunkGenerator.register();
-		
-		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-		    GoVote.init();
-			BetaGeneratorType.register();
-			SkylandsGeneratorType.register();
-			AlphaGeneratorType.register();
-		}
-		
-		LOGGER.log(Level.INFO, "Initialized Modern Beta!");
-		
-		// I am not a programmer, I am an ape smashing rocks together.....
-	}
+    // Ehh...
+    public static void setBlockColorsSeed(long seed, boolean defaultColors) {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            MutableBlockColors mutableBlockColors = MutableBlockColors
+                    .inject(MinecraftClient.getInstance().getBlockColors());
+            mutableBlockColors.setSeed(seed, defaultColors);
+        }
+    }
+
+    @Override
+    public void onInitialize() {
+        LOGGER.log(Level.INFO, "Initializing Modern Beta...");
+
+        ModernBetaConfig.loadConfig(); // Generate config if not present.
+
+        // BetaSurfaceBuilder.register(); Unused
+        BetaCarver.register();
+        BetaDecorator.register();
+        BetaFeature.reserveConfiguredFeatureIDs();
+        BetaFeature.register();
+
+        BetaBiomes.reserveBiomeIDs();
+        AlphaBiomes.reserveBiomeIDs();
+
+        BetaBiomeSource.register();
+        AlphaBiomeSource.register();
+
+        BetaChunkGenerator.register();
+        SkylandsChunkGenerator.register();
+        AlphaChunkGenerator.register();
+
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            GoVote.init();
+            BetaGeneratorType.register();
+            SkylandsGeneratorType.register();
+            AlphaGeneratorType.register();
+        }
+
+        LOGGER.log(Level.INFO, "Initialized Modern Beta!");
+
+        // I am not a programmer, I am an ape smashing rocks together.....
+    }
 
 }

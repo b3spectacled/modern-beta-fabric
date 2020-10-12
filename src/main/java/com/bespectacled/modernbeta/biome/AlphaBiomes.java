@@ -14,17 +14,15 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class AlphaBiomes {
-    public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(
-        new Identifier(ModernBeta.ID, "alpha"),
-        new Identifier(ModernBeta.ID, "alpha_winter")
-    );
-    
+    public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(new Identifier(ModernBeta.ID, "alpha"),
+            new Identifier(ModernBeta.ID, "alpha_winter"));
+
     public static void reserveBiomeIDs() {
         for (Identifier i : BIOMES) {
             Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createNormalOcean(false));
         }
-        
+
         ModernBeta.LOGGER.log(Level.INFO, "Reserved Alpha biome IDs.");
     }
-	
+
 }
