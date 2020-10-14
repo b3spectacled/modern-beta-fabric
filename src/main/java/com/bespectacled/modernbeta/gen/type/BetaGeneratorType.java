@@ -54,7 +54,7 @@ public final class BetaGeneratorType extends GeneratorType {
             )
             .build();
     
-    public BetaGeneratorType() {
+    private BetaGeneratorType() {
         super("beta");
     }
 

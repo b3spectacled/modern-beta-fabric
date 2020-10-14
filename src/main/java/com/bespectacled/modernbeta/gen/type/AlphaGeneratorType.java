@@ -56,7 +56,7 @@ public final class AlphaGeneratorType extends GeneratorType {
             )
             .build();
 
-    public AlphaGeneratorType() {
+    private AlphaGeneratorType() {
         super("alpha");
     }
 

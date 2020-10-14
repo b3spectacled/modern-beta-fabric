@@ -36,5 +36,5 @@
     "text.autoconfig.modernbeta.option.alphaWinterMode.@Tooltip[1]": "noise-based Beta biome colors.",
     "text.autoconfig.modernbeta.option.alphaPlus": "Generate Alpha Plus World",
     "text.autoconfig.modernbeta.option.alphaPlus.@Tooltip[0]": "Render client-side temperature/humidity",
-    "text.autoconfig.modernbeta.option.alphaPlus.@Tooltip[1]": "noise-based Beta biome colors.",
+    "text.autoconfig.modernbeta.option.alphaPlus.@Tooltip[1]": "noise-based Beta biome colors."
 }

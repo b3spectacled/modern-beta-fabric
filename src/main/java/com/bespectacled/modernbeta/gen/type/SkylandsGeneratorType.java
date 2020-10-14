@@ -36,7 +36,7 @@ public final class SkylandsGeneratorType extends GeneratorType {
     
     public static BetaGeneratorSettings betaSettings = new BetaGeneratorSettings(type, new CompoundTag());
 
-    public SkylandsGeneratorType() {
+    private SkylandsGeneratorType() {
         super("skylands");
     }
 
