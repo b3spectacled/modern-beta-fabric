@@ -36,5 +36,27 @@
     "text.autoconfig.modernbeta.option.alphaWinterMode.@Tooltip[1]": "noise-based Beta biome colors.",
     "text.autoconfig.modernbeta.option.alphaPlus": "Generate Alpha Plus World",
     "text.autoconfig.modernbeta.option.alphaPlus.@Tooltip[0]": "Render client-side temperature/humidity",
-    "text.autoconfig.modernbeta.option.alphaPlus.@Tooltip[1]": "noise-based Beta biome colors."
+    "text.autoconfig.modernbeta.option.alphaPlus.@Tooltip[1]": "noise-based Beta biome colors.",
+    
+    "biome.modern_beta.forest": "Beta Forest",
+    "biome.modern_beta.shrubland": "Beta Shrubland",
+    "biome.modern_beta.desert": "Beta Desert",
+    "biome.modern_beta.savanna": "Beta Savanna",
+    "biome.modern_beta.plains": "Beta Plains",
+    "biome.modern_beta.seasonal_forest": "Beta Seasonal Forest",
+    "biome.modern_beta.rainforest": "Beta Rainforest",
+    "biome.modern_beta.swampland": "Beta Swampland",
+    "biome.modern_beta.taiga": "Beta Taiga",
+    "biome.modern_beta.tundra": "Beta Tundra",
+    "biome.modern_beta.ice_desert": "Beta Ice Desert",
+    "biome.modern_beta.sky": "Beta Sky",
+    
+    "biome.modern_beta.ocean": "Beta Ocean",
+    "biome.modern_beta.lukewarm_ocean": "Beta Lukewarm Ocean",
+    "biome.modern_beta.warm_ocean": "Beta Warm Ocean",
+    "biome.modern_beta.cold_ocean": "Beta Cold Ocean",
+    "biome.modern_beta.frozen_ocean": "Beta Frozen Ocean",
+    
+    "biome.modern_beta.alpha": "Alpha",
+    "biome.modern_beta.alpha_winter": "Alpha Winter"
 }
