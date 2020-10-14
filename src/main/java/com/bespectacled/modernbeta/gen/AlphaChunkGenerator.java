@@ -39,7 +39,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
@@ -59,11 +58,12 @@ import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
-import com.bespectacled.modernbeta.config.ModernBetaConfigOld;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
+import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
 
@@ -90,10 +90,10 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
     public static final Codec<AlphaChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
                     Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
-                    BetaGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
+                    AlphaGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
             .apply(instance, instance.stable(AlphaChunkGenerator::new)));
 
-    private final BetaGeneratorSettings settings;
+    private final AlphaGeneratorSettings settings;
 
     private AlphaNoiseGeneratorOctaves minLimitNoiseOctaves;
     private AlphaNoiseGeneratorOctaves maxLimitNoiseOctaves;
@@ -130,7 +130,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
     // Block Y-height cache, taken from Beta+
     public Map<BlockPos, Integer> groundCacheY = new HashMap<>();
 
-    public AlphaChunkGenerator(BiomeSource biomes, long seed, BetaGeneratorSettings settings) {
+    public AlphaChunkGenerator(BiomeSource biomes, long seed, AlphaGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
         this.settings = settings;
         this.seed = seed;
@@ -520,8 +520,8 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
 
                                     // density += getNoiseWeight(sX, sY, sZ) * 0.2;
                                     // Temporary fix
-                                    if (sY >= -2 && sY < 0 && sX == 0 && sZ == 0)
-                                        density = 1;
+                                    if (sY < 0 && sX == 0 && sZ == 0)
+                                        density += density * density / 0.1;
                                 }
                                 structureListIterator.back(structureList.size());
 
@@ -534,8 +534,8 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
 
                                     // density += getNoiseWeight(jX, jY, jZ) * 0.4;
                                     // Temporary fix
-                                    if (jY >= -2 && jY < 0 && jX == 0 && jZ == 0)
-                                        density = 1;
+                                    if (jY < 0 && jX == 0 && jZ == 0)
+                                        density += density * density / 0.1;
                                 }
                                 jigsawListIterator.back(jigsawList.size());
 

@@ -7,14 +7,16 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.MinecraftClientGame;
 import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.gui.widget.ButtonWidget;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.bespectacled.modernbeta.gen.BetaGeneratorType;
 import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
-import com.bespectacled.modernbeta.gen.SkylandsGeneratorType;
+import com.bespectacled.modernbeta.gen.type.AlphaGeneratorType;
+import com.bespectacled.modernbeta.gen.type.BetaGeneratorType;
+import com.bespectacled.modernbeta.gen.type.SkylandsGeneratorType;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
@@ -27,11 +29,9 @@ import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.client.GoVote;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.bespectacled.modernbeta.config.ModernBetaConfigOld;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
-import com.bespectacled.modernbeta.gen.AlphaGeneratorType;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 
 public class ModernBeta implements ModInitializer {
@@ -39,7 +39,7 @@ public class ModernBeta implements ModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("ModernBeta");
     public static final ModernBetaConfig BETA_CONFIG = AutoConfig
             .register(ModernBetaConfig.class, GsonConfigSerializer::new).getConfig();
-    
+
     public static long SEED;
 
     // Ehh...
@@ -55,8 +55,6 @@ public class ModernBeta implements ModInitializer {
     public void onInitialize() {
         LOGGER.log(Level.INFO, "Initializing Modern Beta...");
 
-        ModernBetaConfigOld.loadConfig(); // Generate config if not present.
-
         // BetaSurfaceBuilder.register(); Unused
         BetaCarver.register();
         BetaDecorator.register();
@@ -70,14 +68,17 @@ public class ModernBeta implements ModInitializer {
         AlphaBiomeSource.register();
 
         BetaChunkGenerator.register();
-        SkylandsChunkGenerator.register();
         AlphaChunkGenerator.register();
+        SkylandsChunkGenerator.register();
+        
 
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             GoVote.init();
+            
             BetaGeneratorType.register();
-            SkylandsGeneratorType.register();
             AlphaGeneratorType.register();
+            SkylandsGeneratorType.register();
+            
         }
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");

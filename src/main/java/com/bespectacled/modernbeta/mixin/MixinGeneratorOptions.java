@@ -3,14 +3,17 @@ package com.bespectacled.modernbeta.mixin;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
+import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
-import com.bespectacled.modernbeta.gen.BetaGeneratorSettings;
-import com.bespectacled.modernbeta.gen.BetaGeneratorType;
 import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
+import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.type.BetaGeneratorType;
 import com.google.common.base.MoreObjects;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -86,23 +89,32 @@ public class MixinGeneratorOptions {
 
             String levelType = properties.get("level-type").toString().trim().toLowerCase();
             ChunkGenerator generator;
+            
+            CompoundTag betaSettings = new CompoundTag();
+            CompoundTag alphaSettings = new CompoundTag();
+            
+            betaSettings.putBoolean("generateOceans", ModernBeta.BETA_CONFIG.generateOceans);
+            betaSettings.putBoolean("generateIceDesert", ModernBeta.BETA_CONFIG.generateIceDesert);
+            
+            alphaSettings.putBoolean("alphaWinterMode", ModernBeta.BETA_CONFIG.alphaWinterMode);
+            alphaSettings.putBoolean("alphaPlus", ModernBeta.BETA_CONFIG.alphaPlus);     
+   
+            BetaGeneratorSettings betaGenSettings = new BetaGeneratorSettings(type, betaSettings);
+            AlphaGeneratorSettings alphaGenSettings = new AlphaGeneratorSettings(type, alphaSettings);
+            
 
             switch (levelType) {
             case "beta":
-                generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes), seed,
-                        new BetaGeneratorSettings(type));
+                generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings), seed, betaGenSettings);
                 break;
             case "skylands":
-                generator = new SkylandsChunkGenerator(new BetaBiomeSource(seed, biomes), seed,
-                        new BetaGeneratorSettings(type));
+                generator = new SkylandsChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings), seed, betaGenSettings);
                 break;
             case "alpha":
-                generator = new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes), seed,
-                        new BetaGeneratorSettings(type));
+                generator = new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes, alphaGenSettings), seed, alphaGenSettings);
                 break;
             default:
-                generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes), seed,
-                        new BetaGeneratorSettings(type));
+                generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings), seed, betaGenSettings);
             }
 
             // return our chunk generator

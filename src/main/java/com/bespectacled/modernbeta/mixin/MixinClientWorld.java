@@ -2,33 +2,18 @@ package com.bespectacled.modernbeta.mixin;
 
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.world.BiomeColorCache;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.level.ColorResolver;
-
 import com.bespectacled.modernbeta.util.BiomeMath;
-import com.bespectacled.modernbeta.util.MathHelper;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.bespectacled.modernbeta.config.ModernBetaConfigOld;
-import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -60,6 +45,7 @@ public abstract class MixinClientWorld extends World {
     private void init(ClientPlayNetworkHandler netHandler, ClientWorld.Properties properties,
             RegistryKey<World> worldKey, DimensionType dimensionType, int loadDistance, Supplier<Profiler> profiler,
             WorldRenderer renderer, boolean debugWorld, long seed, CallbackInfo ci) {
+        
         long skySeed = BETA_CONFIG.fixedSeed == 0L ? ModernBeta.SEED : BETA_CONFIG.fixedSeed;
         setSeed(skySeed);
     }

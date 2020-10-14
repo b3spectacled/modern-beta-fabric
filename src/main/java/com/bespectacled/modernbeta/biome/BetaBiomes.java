@@ -14,18 +14,26 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class BetaBiomes {
-    public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(new Identifier(ModernBeta.ID, "forest"),
-            new Identifier(ModernBeta.ID, "shrubland"), new Identifier(ModernBeta.ID, "desert"),
-            new Identifier(ModernBeta.ID, "savanna"), new Identifier(ModernBeta.ID, "plains"),
-            new Identifier(ModernBeta.ID, "seasonal_forest"), new Identifier(ModernBeta.ID, "rainforest"),
-            new Identifier(ModernBeta.ID, "swampland"), new Identifier(ModernBeta.ID, "taiga"),
-            new Identifier(ModernBeta.ID, "tundra"), new Identifier(ModernBeta.ID, "ice_desert"),
+    public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(
+        new Identifier(ModernBeta.ID, "forest"),
+        new Identifier(ModernBeta.ID, "shrubland"), 
+        new Identifier(ModernBeta.ID, "desert"),
+        new Identifier(ModernBeta.ID, "savanna"), 
+        new Identifier(ModernBeta.ID, "plains"),
+        new Identifier(ModernBeta.ID, "seasonal_forest"), 
+        new Identifier(ModernBeta.ID, "rainforest"),
+        new Identifier(ModernBeta.ID, "swampland"), 
+        new Identifier(ModernBeta.ID, "taiga"),
+        new Identifier(ModernBeta.ID, "tundra"), 
+        new Identifier(ModernBeta.ID, "ice_desert"),
 
-            new Identifier(ModernBeta.ID, "ocean"), new Identifier(ModernBeta.ID, "lukewarm_ocean"),
-            new Identifier(ModernBeta.ID, "warm_ocean"), new Identifier(ModernBeta.ID, "cold_ocean"),
-            new Identifier(ModernBeta.ID, "frozen_ocean"),
+        new Identifier(ModernBeta.ID, "ocean"), 
+        new Identifier(ModernBeta.ID, "lukewarm_ocean"),
+        new Identifier(ModernBeta.ID, "warm_ocean"), 
+        new Identifier(ModernBeta.ID, "cold_ocean"),
+        new Identifier(ModernBeta.ID, "frozen_ocean"),
 
-            new Identifier(ModernBeta.ID, "sky"));
+        new Identifier(ModernBeta.ID, "sky"));
 
     public static void reserveBiomeIDs() {
         for (Identifier i : BIOMES) {

@@ -1,15 +1,25 @@
-package com.bespectacled.modernbeta.gen;
+package com.bespectacled.modernbeta.gen.type;
+
+import java.util.Map;
+import java.util.Optional;
 
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
+import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
+import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
+import com.bespectacled.modernbeta.gui.CustomizeBetaLevelScreen;
+import com.bespectacled.modernbeta.mixin.MixinGeneratorTypeAccessor;
+import com.google.common.collect.ImmutableMap;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.world.GeneratorType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
@@ -29,19 +39,35 @@ public final class BetaGeneratorType extends GeneratorType {
 
     public static final ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise,
             Blocks.STONE.getDefaultState(), Blocks.WATER.getDefaultState(), -10, 0, 64, false);
-
-    private BetaGeneratorType() {
+    
+    public static BetaGeneratorSettings betaSettings = new BetaGeneratorSettings(type, new CompoundTag());
+    
+    // Add to Screen Providers
+    private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
+        new ImmutableMap.Builder<Optional<GeneratorType>, ScreenProvider>()
+            .putAll(MixinGeneratorTypeAccessor.getScreenProviders())
+            .put(
+                Optional.<GeneratorType>of(INSTANCE), (createWorldScreen, generatorSettings) -> {
+                    return new CustomizeBetaLevelScreen(createWorldScreen, betaSettings);
+                }
+                
+            )
+            .build();
+    
+    public BetaGeneratorType() {
         super("beta");
     }
 
     public static void register() {
         GeneratorType.VALUES.add(INSTANCE);
+        MixinGeneratorTypeAccessor.setScreenProviders(NEW_SCREEN_PROVIDERS);
+        
         ModernBeta.LOGGER.log(Level.INFO, "Registered Beta world type.");
     }
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings,
             long seed) {
-        return new BetaChunkGenerator(new BetaBiomeSource(seed, biomes), seed, new BetaGeneratorSettings(type));
+        return new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaSettings), seed, betaSettings);
     }
 }

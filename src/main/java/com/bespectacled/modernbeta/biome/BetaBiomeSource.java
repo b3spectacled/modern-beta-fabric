@@ -5,7 +5,7 @@ import java.util.Random;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.config.ModernBetaConfigOld;
+import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
@@ -28,10 +28,11 @@ public class BetaBiomeSource extends BiomeSource {
     }
 
     public static final Codec<BetaBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance
-            .group(Codec.LONG.fieldOf("seed").stable().forGetter(betaBiomeSource -> betaBiomeSource.seed),
-                    RegistryLookupCodec.of(Registry.BIOME_KEY)
-                            .forGetter(betaBiomeSource -> betaBiomeSource.biomeRegistry))
-            .apply(instance, (instance).stable(BetaBiomeSource::new)));
+            .group(
+                Codec.LONG.fieldOf("seed").stable().forGetter(betaBiomeSource -> betaBiomeSource.seed),
+                RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(betaBiomeSource -> betaBiomeSource.biomeRegistry),
+                BetaGeneratorSettings.CODEC.fieldOf("settings").forGetter(betaBiomeSource -> betaBiomeSource.settings)
+            ).apply(instance, (instance).stable(BetaBiomeSource::new)));
 
     private static final List<RegistryKey<Biome>> BIOMES = ImmutableList.of(
             RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "forest")),
@@ -56,6 +57,7 @@ public class BetaBiomeSource extends BiomeSource {
 
     private final long seed;
     public final Registry<Biome> biomeRegistry;
+    private final BetaGeneratorSettings settings;
 
     public double temps[];
     public double humids[];
@@ -71,23 +73,32 @@ public class BetaBiomeSource extends BiomeSource {
     public static Biome[] biomesInChunk = new Biome[256];
     public static Biome[] oceanBiomesInChunk = new Biome[256];
 
-    private static final boolean GENERATE_OCEANS = ModernBetaConfigOld.loadConfig().generate_oceans;
-    private static final boolean GENERATE_ICE_DESERT = ModernBetaConfigOld.loadConfig().generate_ice_desert;
-    // private static final boolean GENERATE_SKY =
-    // ModernBetaConfig.loadConfig().generate_sky;
+    //private static final boolean GENERATE_OCEANS = ModernBetaConfigOld.loadConfig().generate_oceans;
+    //private static final boolean GENERATE_ICE_DESERT = ModernBetaConfigOld.loadConfig().generate_ice_desert;
 
-    public BetaBiomeSource(long seed, Registry<Biome> registry) {
+    private boolean generateOceans = false;
+    private boolean generateIceDesert = false;
+    
+    public BetaBiomeSource(long seed, Registry<Biome> registry, BetaGeneratorSettings settings) {
         super(BIOMES.stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
 
         this.seed = seed;
         this.biomeRegistry = registry;
+        this.settings = settings;
 
+        if (settings.settings == null) {
+            ModernBeta.LOGGER.log(Level.ERROR, "Save file does not have generator settings, probably created before v0.4.");
+            return;
+        }
+        
+        if (settings.settings.contains("generateOceans")) this.generateOceans = settings.settings.getBoolean("generateOceans");
+        if (settings.settings.contains("generateIceDesert")) this.generateIceDesert = settings.settings.getBoolean("generateIceDesert");
+        
         tempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 9871L), 4);
         humidNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 39811L), 4);
         noiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 543321L), 2);
-
+        
         generateBiomeLookup(registry);
-
     }
 
     @Override
@@ -148,8 +159,6 @@ public class BetaBiomeSource extends BiomeSource {
                 biomesInChunk[i] = getBiomeFromLookup(temp, humid, BiomeType.LAND);
                 oceanBiomesInChunk[i] = getBiomeFromLookup(temp, humid, BiomeType.OCEAN);
 
-                // biomesInChunk[k][j] = getBiomeFromLookup(temp, humid, BiomeType.LAND);
-                // oceanBiomesInChunk[k][j] = getBiomeFromLookup(temp, humid, BiomeType.OCEAN);\
                 i++;
             }
         }
@@ -178,11 +187,11 @@ public class BetaBiomeSource extends BiomeSource {
         return biomeLookupTable[i + j * 64];
     }
 
-    public static Biome getBiome(float temp, float humid, Registry<Biome> registry) {
+    public Biome getBiome(float temp, float humid, Registry<Biome> registry) {
         humid *= temp;
 
         if (temp < 0.1F) {
-            if (GENERATE_ICE_DESERT)
+            if (this.generateIceDesert)
                 return registry.get(new Identifier(ModernBeta.ID, "ice_desert"));
             else
                 return registry.get(new Identifier(ModernBeta.ID, "tundra"));
@@ -227,7 +236,7 @@ public class BetaBiomeSource extends BiomeSource {
 
     }
 
-    public static Biome getOceanBiome(float temp, float humid, Registry<Biome> registry) {
+    public Biome getOceanBiome(float temp, float humid, Registry<Biome> registry) {
         humid *= temp;
 
         // == Vanilla Biome IDs ==
@@ -237,7 +246,7 @@ public class BetaBiomeSource extends BiomeSource {
         // 46 = Cold Ocean
         // 10 = Frozen Ocean
 
-        if (!GENERATE_OCEANS) {
+        if (!this.generateOceans) {
             return getLiteOceanBiome(temp, humid, registry);
         }
 
@@ -284,11 +293,11 @@ public class BetaBiomeSource extends BiomeSource {
 
     }
 
-    private static Biome getLiteOceanBiome(float temp, float humid, Registry<Biome> registry) {
+    private Biome getLiteOceanBiome(float temp, float humid, Registry<Biome> registry) {
         humid *= temp;
 
         if (temp < 0.1F) {
-            if (GENERATE_ICE_DESERT)
+            if (this.generateIceDesert)
                 return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
             else
                 return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
@@ -330,7 +339,7 @@ public class BetaBiomeSource extends BiomeSource {
     @Environment(EnvType.CLIENT)
     @Override
     public BiomeSource withSeed(long seed) {
-        return new BetaBiomeSource(seed, this.biomeRegistry);
+        return new BetaBiomeSource(seed, this.biomeRegistry, this.settings);
     }
 
     public static void register() {

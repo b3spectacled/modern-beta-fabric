@@ -40,7 +40,6 @@ import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
@@ -60,12 +59,13 @@ import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.carver.BetaCarver;
-import com.bespectacled.modernbeta.config.ModernBetaConfigOld;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
+import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
 import com.bespectacled.modernbeta.mixin.MixinBlockColors;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.BiomeMath;
@@ -138,7 +138,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         this.seed = seed;
         this.rand = new Random(seed);
         this.biomeSource = (BetaBiomeSource) biomes;
-        // this.generateOceans = ModernBetaConfig.loadConfig().generate_oceans;
 
         // Noise Generators
         minLimitNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 16);
@@ -153,6 +152,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
         ModernBeta.setBlockColorsSeed(seed, false);
         ModernBeta.SEED = seed;
+        
+        
     }
 
     public static void register() {
@@ -517,10 +518,10 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                                     int sZ = Math.max(0,
                                             Math.max(blockBox.minZ - integer63, integer63 - blockBox.maxZ));
 
-                                    // density += getNoiseWeight(sX, sY, sZ) * 0.2;
+                                    //density += getNoiseWeight(sX, sY, sZ) * 0.8;
                                     // Temporary fix
-                                    if (sY >= -2 && sY < 0 && sX == 0 && sZ == 0)
-                                        density = 1;
+                                    if (sY < 0 && sX == 0 && sZ == 0)
+                                        density += density * density / 0.1;
                                 }
                                 structureListIterator.back(structureList.size());
 
@@ -531,10 +532,10 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                                     int jY = y - curJigsawJunction.getSourceGroundY();
                                     int jZ = integer63 - curJigsawJunction.getSourceZ();
 
-                                    // density += getNoiseWeight(jX, jY, jZ) * 0.4;
+                                    //density += getNoiseWeight(jX, jY, jZ) * 0.4;
                                     // Temporary fix
-                                    if (jY >= -2 && jY < 0 && jX == 0 && jZ == 0)
-                                        density = 1;
+                                    if (jY < 0 && jX == 0 && jZ == 0)
+                                        density += density * density / 0.1;
                                 }
                                 jigsawListIterator.back(jigsawList.size());
 

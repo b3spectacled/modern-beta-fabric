@@ -5,7 +5,8 @@ import java.util.Random;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.config.ModernBetaConfigOld;
+import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
@@ -24,10 +25,11 @@ import net.minecraft.world.gen.feature.StructureFeature;
 public class AlphaBiomeSource extends BiomeSource {
 
     public static final Codec<AlphaBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance
-            .group(Codec.LONG.fieldOf("seed").stable().forGetter(betaBiomeSource -> betaBiomeSource.seed),
-                    RegistryLookupCodec.of(Registry.BIOME_KEY)
-                            .forGetter(betaBiomeSource -> betaBiomeSource.biomeRegistry))
-            .apply(instance, (instance).stable(AlphaBiomeSource::new)));
+            .group(
+                Codec.LONG.fieldOf("seed").stable().forGetter(alphaBiomeSource -> alphaBiomeSource.seed),
+                RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(alphaBiomeSource -> alphaBiomeSource.biomeRegistry),
+                AlphaGeneratorSettings.CODEC.fieldOf("settings").forGetter(alphaBiomeSource -> alphaBiomeSource.settings)
+            ).apply(instance, (instance).stable(AlphaBiomeSource::new)));
 
     private static final List<RegistryKey<Biome>> BIOMES = ImmutableList.of(
             RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "alpha")),
@@ -35,9 +37,8 @@ public class AlphaBiomeSource extends BiomeSource {
 
     private final long seed;
     public final Registry<Biome> biomeRegistry;
-    private final boolean alphaWinterMode = ModernBetaConfigOld.loadConfig().alpha_winter_mode;
-    private final boolean alphaPlus = ModernBetaConfigOld.loadConfig().alpha_plus;
-
+    private final AlphaGeneratorSettings settings;
+    
     public double temps[];
     public double humids[];
     public double noises[];
@@ -49,15 +50,26 @@ public class AlphaBiomeSource extends BiomeSource {
     private static Biome biomeLookupTable[] = new Biome[4096];
     private static Biome oceanBiomeLookupTable[] = new Biome[4096];
 
-    public static Biome[] biomesInChunk1D = new Biome[256];
-    private static Biome[][] biomesInChunk = new Biome[16][16]; // 2D array instead of 1D because I am dumb
-    private static Biome[][] oceanBiomesInChunk = new Biome[16][16];
+    public static Biome[] biomesInChunk = new Biome[256];
+    public static Biome[] oceanBiomesInChunk = new Biome[256];
+    
+    private boolean alphaWinterMode = false;
+    private boolean alphaPlus = false;
 
-    public AlphaBiomeSource(long seed, Registry<Biome> registry) {
+    public AlphaBiomeSource(long seed, Registry<Biome> registry, AlphaGeneratorSettings settings) {
         super(BIOMES.stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
 
         this.seed = seed;
         this.biomeRegistry = registry;
+        this.settings = settings;
+        
+        if (settings.settings == null) {
+            ModernBeta.LOGGER.log(Level.ERROR, "Save file does not have generator settings, probably created before v0.4.");
+            return;
+        }
+        
+        if (settings.settings.contains("alphaWinterMode")) this.alphaWinterMode = settings.settings.getBoolean("alphaWinterMode");
+        if (settings.settings.contains("alphaPlus")) this.alphaPlus = settings.settings.getBoolean("alphaPlus");
 
         tempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 9871L), 4);
         humidNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 39811L), 4);
@@ -73,11 +85,11 @@ public class AlphaBiomeSource extends BiomeSource {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
 
-        if (alphaPlus) {
+        if (this.alphaPlus) {
             // Sample biome at this one absolute coordinate.
             fetchTempHumid(absX, absZ, 1, 1);
 
-            biome = biomesInChunk[0][0];
+            biome = biomesInChunk[0];
         } else if (alphaWinterMode) {
             biome = this.biomeRegistry.get(new Identifier(ModernBeta.ID, "alpha_winter"));
         } else {
@@ -90,11 +102,11 @@ public class AlphaBiomeSource extends BiomeSource {
     public Biome getOceanBiomeForNoiseGen(int x, int y, int z) {
         Biome biome;
 
-        if (alphaPlus) {
+        if (this.alphaPlus) {
             // Sample biome at this one absolute coordinate.
             fetchTempHumid(x, y, 1, 1);
 
-            biome = oceanBiomesInChunk[0][0];
+            biome = oceanBiomesInChunk[0];
         } else if (alphaWinterMode) {
             biome = this.biomeRegistry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
         } else {
@@ -104,7 +116,7 @@ public class AlphaBiomeSource extends BiomeSource {
         return biome;
     }
 
-    public Biome[][] fetchTempHumid(int x, int z, int sizeX, int sizeZ) {
+    public Biome[] fetchTempHumid(int x, int z, int sizeX, int sizeZ) {
         temps = tempNoiseOctaves.func_4112_a(temps, x, z, sizeX, sizeX, 0.02500000037252903D, 0.02500000037252903D,
                 0.25D);
         humids = humidNoiseOctaves.func_4112_a(humids, x, z, sizeX, sizeX, 0.05000000074505806D, 0.05000000074505806D,
@@ -140,11 +152,11 @@ public class AlphaBiomeSource extends BiomeSource {
                 }
                 temps[i] = temp;
                 humids[i] = humid;
-
-                biomesInChunk[k][j] = getBiomeFromLookup(temp, humid);
-                biomesInChunk1D[i++] = getBiomeFromLookup(temp, humid);
-
-                oceanBiomesInChunk[k][j] = getOceanBiomeFromLookup(temp, humid);
+                
+                biomesInChunk[i] = getBiomeFromLookup(temp, humid);
+                oceanBiomesInChunk[i] = getOceanBiomeFromLookup(temp, humid);
+                
+                ++i;
             }
         }
 
@@ -199,7 +211,7 @@ public class AlphaBiomeSource extends BiomeSource {
     @Environment(EnvType.CLIENT)
     @Override
     public BiomeSource withSeed(long seed) {
-        return new AlphaBiomeSource(seed, this.biomeRegistry);
+        return new AlphaBiomeSource(seed, this.biomeRegistry, this.settings);
     }
 
     public static void register() {

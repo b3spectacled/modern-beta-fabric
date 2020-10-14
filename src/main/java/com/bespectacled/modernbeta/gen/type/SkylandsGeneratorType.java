@@ -1,16 +1,19 @@
-package com.bespectacled.modernbeta.gen;
+package com.bespectacled.modernbeta.gen.type;
 
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
+import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
+import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.world.GeneratorType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
@@ -19,8 +22,8 @@ import net.minecraft.world.gen.chunk.SlideConfig;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 
 @Environment(EnvType.CLIENT)
-public final class AlphaGeneratorType extends GeneratorType {
-    public static final GeneratorType INSTANCE = new AlphaGeneratorType();
+public final class SkylandsGeneratorType extends GeneratorType {
+    public static final GeneratorType SKYLANDS = new SkylandsGeneratorType();
 
     public static final StructuresConfig structures = new StructuresConfig(true);
     public static final NoiseSamplingConfig noiseSampler = new NoiseSamplingConfig(1.0, 1.0, 40.0, 22.0);
@@ -30,19 +33,21 @@ public final class AlphaGeneratorType extends GeneratorType {
 
     public static final ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise,
             Blocks.STONE.getDefaultState(), Blocks.WATER.getDefaultState(), -10, 0, 64, false);
+    
+    public static BetaGeneratorSettings betaSettings = new BetaGeneratorSettings(type, new CompoundTag());
 
-    private AlphaGeneratorType() {
-        super("alpha");
+    public SkylandsGeneratorType() {
+        super("skylands");
     }
 
     public static void register() {
-        GeneratorType.VALUES.add(INSTANCE);
-        ModernBeta.LOGGER.log(Level.INFO, "Registered Alpha world type.");
+        GeneratorType.VALUES.add(SKYLANDS);
+        ModernBeta.LOGGER.log(Level.INFO, "Registered Skylands world type.");
     }
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings,
             long seed) {
-        return new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes), seed, new BetaGeneratorSettings(type));
+        return new SkylandsChunkGenerator(new BetaBiomeSource(seed, biomes, betaSettings), seed, betaSettings);
     }
 }
