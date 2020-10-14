@@ -105,16 +105,16 @@ public class MixinGeneratorOptions {
 
             switch (levelType) {
             case "beta":
-                generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings), seed, betaGenSettings);
+                generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
                 break;
             case "skylands":
-                generator = new SkylandsChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings), seed, betaGenSettings);
+                generator = new SkylandsChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
                 break;
             case "alpha":
-                generator = new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes, alphaGenSettings), seed, alphaGenSettings);
+                generator = new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes, alphaGenSettings.settings), seed, alphaGenSettings);
                 break;
             default:
-                generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings), seed, betaGenSettings);
+                generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
             }
 
             // return our chunk generator

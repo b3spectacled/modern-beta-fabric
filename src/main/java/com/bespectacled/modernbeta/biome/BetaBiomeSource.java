@@ -13,6 +13,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -31,7 +32,7 @@ public class BetaBiomeSource extends BiomeSource {
             .group(
                 Codec.LONG.fieldOf("seed").stable().forGetter(betaBiomeSource -> betaBiomeSource.seed),
                 RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(betaBiomeSource -> betaBiomeSource.biomeRegistry),
-                BetaGeneratorSettings.CODEC.fieldOf("settings").forGetter(betaBiomeSource -> betaBiomeSource.settings)
+                CompoundTag.CODEC.fieldOf("settings").forGetter(settings -> settings.settings)
             ).apply(instance, (instance).stable(BetaBiomeSource::new)));
 
     private static final List<RegistryKey<Biome>> BIOMES = ImmutableList.of(
@@ -57,7 +58,7 @@ public class BetaBiomeSource extends BiomeSource {
 
     private final long seed;
     public final Registry<Biome> biomeRegistry;
-    private final BetaGeneratorSettings settings;
+    private final CompoundTag settings;
 
     public double temps[];
     public double humids[];
@@ -79,20 +80,20 @@ public class BetaBiomeSource extends BiomeSource {
     private boolean generateOceans = false;
     private boolean generateIceDesert = false;
     
-    public BetaBiomeSource(long seed, Registry<Biome> registry, BetaGeneratorSettings settings) {
+    public BetaBiomeSource(long seed, Registry<Biome> registry, CompoundTag settings) {
         super(BIOMES.stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
 
         this.seed = seed;
         this.biomeRegistry = registry;
         this.settings = settings;
 
-        if (settings.settings == null) {
+        if (settings == null) {
             ModernBeta.LOGGER.log(Level.ERROR, "Save file does not have generator settings, probably created before v0.4.");
             return;
         }
         
-        if (settings.settings.contains("generateOceans")) this.generateOceans = settings.settings.getBoolean("generateOceans");
-        if (settings.settings.contains("generateIceDesert")) this.generateIceDesert = settings.settings.getBoolean("generateIceDesert");
+        if (settings.contains("generateOceans")) this.generateOceans = settings.getBoolean("generateOceans");
+        if (settings.contains("generateIceDesert")) this.generateIceDesert = settings.getBoolean("generateIceDesert");
         
         tempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 9871L), 4);
         humidNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 39811L), 4);

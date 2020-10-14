@@ -14,6 +14,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -28,7 +29,7 @@ public class AlphaBiomeSource extends BiomeSource {
             .group(
                 Codec.LONG.fieldOf("seed").stable().forGetter(alphaBiomeSource -> alphaBiomeSource.seed),
                 RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(alphaBiomeSource -> alphaBiomeSource.biomeRegistry),
-                AlphaGeneratorSettings.CODEC.fieldOf("settings").forGetter(alphaBiomeSource -> alphaBiomeSource.settings)
+                CompoundTag.CODEC.fieldOf("settings").forGetter(settings -> settings.settings)
             ).apply(instance, (instance).stable(AlphaBiomeSource::new)));
 
     private static final List<RegistryKey<Biome>> BIOMES = ImmutableList.of(
@@ -37,7 +38,7 @@ public class AlphaBiomeSource extends BiomeSource {
 
     private final long seed;
     public final Registry<Biome> biomeRegistry;
-    private final AlphaGeneratorSettings settings;
+    private final CompoundTag settings;
     
     public double temps[];
     public double humids[];
@@ -56,20 +57,20 @@ public class AlphaBiomeSource extends BiomeSource {
     private boolean alphaWinterMode = false;
     private boolean alphaPlus = false;
 
-    public AlphaBiomeSource(long seed, Registry<Biome> registry, AlphaGeneratorSettings settings) {
+    public AlphaBiomeSource(long seed, Registry<Biome> registry, CompoundTag settings) {
         super(BIOMES.stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
 
         this.seed = seed;
         this.biomeRegistry = registry;
         this.settings = settings;
         
-        if (settings.settings == null) {
+        if (settings == null) {
             ModernBeta.LOGGER.log(Level.ERROR, "Save file does not have generator settings, probably created before v0.4.");
             return;
         }
         
-        if (settings.settings.contains("alphaWinterMode")) this.alphaWinterMode = settings.settings.getBoolean("alphaWinterMode");
-        if (settings.settings.contains("alphaPlus")) this.alphaPlus = settings.settings.getBoolean("alphaPlus");
+        if (settings.contains("alphaWinterMode")) this.alphaWinterMode = settings.getBoolean("alphaWinterMode");
+        if (settings.contains("alphaPlus")) this.alphaPlus = settings.getBoolean("alphaPlus");
 
         tempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 9871L), 4);
         humidNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 39811L), 4);

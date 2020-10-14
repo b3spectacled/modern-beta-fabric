@@ -68,6 +68,6 @@ public final class BetaGeneratorType extends GeneratorType {
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings,
             long seed) {
-        return new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaSettings), seed, betaSettings);
+        return new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaSettings.settings), seed, betaSettings);
     }
 }
