@@ -729,17 +729,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
                 curBiome = biomeSource.biomesInChunk[i + j * 16];
 
-                Block biomeTopBlock;
-                Block biomeFillerBlock;
-
-                // Equivalent of surface builder here
-                if (curBiome.equals(biomeSource.biomeRegistry.get(new Identifier(ModernBeta.ID, "desert"))) || curBiome
-                        .equals(biomeSource.biomeRegistry.get(new Identifier(ModernBeta.ID, "ice_desert")))) {
-                    biomeTopBlock = biomeFillerBlock = Blocks.SAND;
-                } else {
-                    biomeTopBlock = Blocks.GRASS_BLOCK;
-                    biomeFillerBlock = Blocks.DIRT;
-                }
+                Block biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial().getBlock();
+                Block biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial().getBlock();
 
                 Block topBlock = biomeTopBlock;
                 Block fillerBlock = biomeFillerBlock;

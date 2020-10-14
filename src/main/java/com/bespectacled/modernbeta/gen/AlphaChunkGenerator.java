@@ -693,7 +693,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        // biomeSource.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
+        biomeSource.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
         BlockPos.Mutable mutableBlock = new BlockPos.Mutable();
 
         Biome curBiome;
@@ -714,20 +714,10 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
                 int genStone = (int) (stoneNoise[i + j * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
 
-                // curBiome = biomesInChunk[j][i];
-                // curBiome = biomeSource.biomesInChunk1D[i + j * 16];
+                curBiome = biomeSource.biomesInChunk[i + j * 16];
 
-                Block biomeTopBlock = Blocks.GRASS_BLOCK;
-                Block biomeFillerBlock = Blocks.DIRT;
-
-                /*
-                 * // Equivalent of surface builder here if
-                 * (curBiome.equals(biomeSource.biomeRegistry.get(new Identifier(ModernBeta.ID,
-                 * "desert"))) || curBiome.equals(biomeSource.biomeRegistry.get(new
-                 * Identifier(ModernBeta.ID, "ice_desert")))) { biomeTopBlock = biomeFillerBlock
-                 * = Blocks.SAND; } else { biomeTopBlock = Blocks.GRASS_BLOCK; biomeFillerBlock
-                 * = Blocks.DIRT; }
-                 */
+                Block biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial().getBlock();
+                Block biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial().getBlock();
 
                 Block topBlock = biomeTopBlock;
                 Block fillerBlock = biomeFillerBlock;

@@ -1,11 +1,18 @@
 package com.bespectacled.modernbeta.gen.type;
 
+import java.util.Map;
+import java.util.Optional;
+
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
+import com.bespectacled.modernbeta.gui.CustomizeBetaLevelScreen;
+import com.bespectacled.modernbeta.gui.CustomizeSkylandsLevelScreen;
+import com.bespectacled.modernbeta.mixin.MixinGeneratorTypeAccessor;
+import com.google.common.collect.ImmutableMap;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -13,6 +20,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.world.GeneratorType;
+import net.minecraft.client.world.GeneratorType.ScreenProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
@@ -23,7 +31,7 @@ import net.minecraft.world.gen.chunk.StructuresConfig;
 
 @Environment(EnvType.CLIENT)
 public final class SkylandsGeneratorType extends GeneratorType {
-    public static final GeneratorType SKYLANDS = new SkylandsGeneratorType();
+    public static final GeneratorType INSTANCE = new SkylandsGeneratorType();
 
     public static final StructuresConfig structures = new StructuresConfig(true);
     public static final NoiseSamplingConfig noiseSampler = new NoiseSamplingConfig(1.0, 1.0, 40.0, 22.0);
@@ -36,12 +44,27 @@ public final class SkylandsGeneratorType extends GeneratorType {
     
     public static BetaGeneratorSettings betaSettings = new BetaGeneratorSettings(type, new CompoundTag());
 
+    // Add to Screen Providers
+    private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
+        new ImmutableMap.Builder<Optional<GeneratorType>, ScreenProvider>()
+            .putAll(MixinGeneratorTypeAccessor.getScreenProviders())
+            .put(
+                Optional.<GeneratorType>of(INSTANCE), (createWorldScreen, generatorSettings) -> {
+                    return new CustomizeSkylandsLevelScreen(createWorldScreen, betaSettings);
+                }
+                
+            )
+            .build();
+    
+    
     private SkylandsGeneratorType() {
         super("skylands");
     }
 
     public static void register() {
-        GeneratorType.VALUES.add(SKYLANDS);
+        GeneratorType.VALUES.add(INSTANCE);
+        MixinGeneratorTypeAccessor.setScreenProviders(NEW_SCREEN_PROVIDERS);
+        
         ModernBeta.LOGGER.log(Level.INFO, "Registered Skylands world type.");
     }
 
