@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
 import com.bespectacled.modernbeta.gen.type.AlphaGeneratorType;
 import com.bespectacled.modernbeta.gen.type.BetaGeneratorType;
+import com.bespectacled.modernbeta.gen.type.IndevGeneratorType;
 import com.bespectacled.modernbeta.gen.type.SkylandsGeneratorType;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
 
@@ -26,6 +27,8 @@ import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.AlphaBiomes;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomes;
+import com.bespectacled.modernbeta.biome.IndevBiomeSource;
+import com.bespectacled.modernbeta.biome.IndevBiomes;
 import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.client.GoVote;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
@@ -33,6 +36,7 @@ import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
+import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
 
 public class ModernBeta implements ModInitializer {
     public static final String ID = "modern_beta";
@@ -63,13 +67,16 @@ public class ModernBeta implements ModInitializer {
 
         BetaBiomes.reserveBiomeIDs();
         AlphaBiomes.reserveBiomeIDs();
+        IndevBiomes.reserveBiomeIDs();
 
         BetaBiomeSource.register();
         AlphaBiomeSource.register();
+        IndevBiomeSource.register();
 
         BetaChunkGenerator.register();
         AlphaChunkGenerator.register();
         SkylandsChunkGenerator.register();
+        IndevChunkGenerator.register();
         
 
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -78,6 +85,7 @@ public class ModernBeta implements ModInitializer {
             BetaGeneratorType.register();
             AlphaGeneratorType.register();
             SkylandsGeneratorType.register();
+            IndevGeneratorType.register();
             
         }
 

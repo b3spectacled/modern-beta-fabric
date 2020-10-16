@@ -45,7 +45,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1685", at = @At("HEAD"), cancellable = true)
     private static void onReedColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (BETA_CONFIG.renderBetaBiomeColor && !defaultColors)
+        if (BETA_CONFIG.renderBetaBiomeColor)
             info.setReturnValue(0xFFFFFF);
     }
 

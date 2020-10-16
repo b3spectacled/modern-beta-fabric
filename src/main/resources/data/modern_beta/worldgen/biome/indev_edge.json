@@ -1,0 +1,45 @@
+{
+  "starts": [],
+  "spawners": {
+    "monster": [],
+    "creature": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "surface_builder": "minecraft:grass",
+  "carvers": {
+    "air": []
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ],
+  "scale": 0.0,
+  "temperature": 0.5,
+  "downfall": 0.5,
+  "effects": {
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+	"grass_color": 7390530,
+	"foliage_color": 5027090,
+	"sky_color": 10079487,
+    "fog_color": 16777215,
+    "water_color": 1323775,
+    "water_fog_color": 329011
+  },
+  "precipitation": "rain",
+  "category": "forest",
+  "depth": 0.0
+}

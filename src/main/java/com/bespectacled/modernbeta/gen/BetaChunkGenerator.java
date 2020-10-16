@@ -443,7 +443,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
         heightmap = generateHeightmap(heightmap, chunk.getPos().x * byte4, 0, chunk.getPos().z * byte4, int5_0, byte17,
                 int5_1);
-
+        
         // Noise is sampled in 4x16x4 sections?
         for (int i = 0; i < byte4; i++) { // [1.16] Limit appears to be equivalent to noiseSizeX, equal to 16 /
                                           // horizontalNoiseResolution // 16 / 1 * 4
