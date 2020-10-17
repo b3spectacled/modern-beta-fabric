@@ -5,7 +5,8 @@ public class IndevUtil {
         NORMAL,
         HELL,
         PARADISE,
-        WOODS
+        WOODS,
+        SNOWY
     }
     
     public enum Type {

@@ -146,10 +146,11 @@
     ],
     [],
     [
-      "modern_beta:trees_indev_bees",
+      "modern_beta:trees_indev_woods",
       "modern_beta:patch_grass_alpha_2",
       "modern_beta:patch_dandelion_2",
       "modern_beta:patch_poppy",
+      "modern_beta:mushroom_hell",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "modern_beta:patch_cactus_alpha",
@@ -180,7 +181,7 @@
     "water_fog_color": 329011
   },
   "player_spawn_friendly": true,
-  "precipitation": "rain",
+  "precipitation": "none",
   "category": "forest",
   "depth": 0.37
 }

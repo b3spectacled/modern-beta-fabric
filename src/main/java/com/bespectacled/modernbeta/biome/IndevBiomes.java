@@ -16,7 +16,16 @@ import net.minecraft.world.biome.DefaultBiomeCreator;
 public class IndevBiomes {
     public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(
         new Identifier(ModernBeta.ID, "indev_edge"),
-        new Identifier(ModernBeta.ID, "indev_normal")
+        new Identifier(ModernBeta.ID, "indev_hell_edge"),
+        new Identifier(ModernBeta.ID, "indev_paradise_edge"),
+        new Identifier(ModernBeta.ID, "indev_woods_edge"),
+        new Identifier(ModernBeta.ID, "indev_snowy_edge"),
+        
+        new Identifier(ModernBeta.ID, "indev_normal"),
+        new Identifier(ModernBeta.ID, "indev_hell"),
+        new Identifier(ModernBeta.ID, "indev_paradise"),
+        new Identifier(ModernBeta.ID, "indev_woods"),
+        new Identifier(ModernBeta.ID, "indev_snowy")
     );
 
     public static void reserveBiomeIDs() {

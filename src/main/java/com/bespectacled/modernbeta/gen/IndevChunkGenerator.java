@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.gen;
 
+import java.util.Arrays;
 import java.util.Random;
 import org.apache.logging.log4j.Level;
 
@@ -24,6 +25,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.IndevBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.IndevGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.IndevUtil.Theme;
 import com.bespectacled.modernbeta.util.IndevUtil.Type;
@@ -35,10 +37,10 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     public static final Codec<IndevChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
                     Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
-                    AlphaGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
+                    IndevGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
             .apply(instance, instance.stable(IndevChunkGenerator::new)));
 
-    private final AlphaGeneratorSettings settings;
+    private final IndevGeneratorSettings settings;
     
     private IndevNoiseGeneratorCombined heightNoise1;
     private IndevNoiseGeneratorCombined heightNoise2;
@@ -58,44 +60,49 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     private Block blockArr[][][];
     private int heightmap[]; // field_4180_q
     
-    private final int width;
-    private final int length;
-    private final int height;
-    private final int layers;
+    private int width;
+    private int length;
+    private int height;
+    private int layers;
     private int waterLevel;
     
     private boolean pregenerated = false;
     private Random rand;
 
     IndevBiomeSource biomeSource;
-    private final Theme theme;
-    private final Type type;
+    private Theme theme;
+    private Type type;
+    private final Block fluidBlock;
 
     public static long seed;
     
-    public IndevChunkGenerator(BiomeSource biomes, long seed, AlphaGeneratorSettings settings) {
+    public IndevChunkGenerator(BiomeSource biomes, long seed, IndevGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
         this.settings = settings;
         this.seed = seed;
         this.rand = new Random(seed);
         this.biomeSource = (IndevBiomeSource) biomes;
-        
-        theme = Theme.NORMAL;
-        type = Type.INLAND;
-        
+
+        this.theme = Theme.NORMAL;
+        this.type = Type.ISLAND;
+
         this.width = 256;
         this.length = 256;
-        this.height = 256;
+        this.height = 128;
+        
+        if (this.settings.settings.contains("levelType")) this.type = Type.values()[settings.settings.getInt("levelType")];
+        if (this.settings.settings.contains("levelTheme")) this.theme = Theme.values()[settings.settings.getInt("levelTheme")];
+        
+        if (this.settings.settings.contains("levelWidth")) this.width = settings.settings.getInt("levelWidth");
+        if (this.settings.settings.contains("levelLength")) this.length = settings.settings.getInt("levelLength");
+        if (this.settings.settings.contains("levelHeight")) this.height = settings.settings.getInt("levelHeight");
+        
+        this.fluidBlock = (this.theme == Theme.HELL) ? Blocks.LAVA : Blocks.WATER;
         this.waterLevel = this.height / 2;
         this.layers = (this.type == Type.FLOATING) ? (this.height - 64) / 48 + 1 : 1;
         
         this.pregenerated = false;
         
-        blockArr = new Block[this.width][this.height][this.length];
-        fillBlockArr(blockArr);
-        
-        
-
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
         ModernBeta.setBlockColorsSeed(0L, true);
@@ -159,6 +166,8 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     }
     
     private Block[][][] pregenerateTerrain(Block[][][] blockArr) {
+        blockArr = new Block[this.width][this.height][this.length];
+        fillBlockArr(blockArr);
         
         for (int l = 0; l < this.layers; ++l) { 
             // Floating island layer generation depends on water level being lowered on each iteration
@@ -270,7 +279,6 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                 
                 double heightResult = Math.max(heightLow, heightHigh) / 2.0;
                 
-                //if (islandGen) {
                 if (this.type == Type.ISLAND) {
                     double islandVar3 = Math.sqrt(islandVar1 * islandVar1 + islandVar2 * islandVar2) * 1.2000000476837158;
                     islandVar3 = Math.min(islandVar3, islandNoise.IndevNoiseGenerator(x * 0.05f, z * 0.05f) / 4.0 + 1.0);
@@ -324,6 +332,10 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     private void buildIndevSurface(Block[][][] blockArr, int[] heightmap) {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Growing..");
         
+        int seaLevel = this.waterLevel - 1;
+        
+        if (this.theme == Theme.PARADISE) seaLevel += 2;
+        
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
                 boolean genSand = sandNoiseOctaves.IndevNoiseGenerator(x, z) > 8.0;
@@ -333,11 +345,19 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                     genSand = sandNoiseOctaves.IndevNoiseGenerator(x, z) > -8.0;
                 }
                 
+                if (this.theme == Theme.PARADISE) {
+                    genSand = sandNoiseOctaves.IndevNoiseGenerator(x, z) > -32.0;
+                }
+                
+                if (this.theme == Theme.HELL || this.theme == Theme.WOODS) {
+                    genSand = sandNoiseOctaves.IndevNoiseGenerator(x, z) > -8.0;
+                }
+                
                 int heightResult = heightmap[x + z *  this.width];
                 Block block = blockArr[x][heightResult][z];
                 Block blockAbove = blockArr[x][heightResult + 1][z];
                 
-                if ((blockAbove.equals(Blocks.WATER) || blockAbove.equals(Blocks.AIR)) && heightResult <= this.waterLevel - 1 && genGravel) {
+                if ((blockAbove.equals(this.fluidBlock) || blockAbove.equals(Blocks.AIR)) && heightResult <= seaLevel && genGravel) {
                     blockArr[x][heightResult][z] = Blocks.GRAVEL;
                 }
                 
@@ -345,8 +365,8 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                 if (blockAbove.equals(Blocks.AIR)) {
                     Block surfaceBlock = null;
                     
-                    if (heightResult <= this.waterLevel - 1 && genSand) {
-                        surfaceBlock = Blocks.SAND; 
+                    if (heightResult <= seaLevel && genSand) {
+                        surfaceBlock = (this.theme == Theme.HELL) ? Blocks.GRASS_BLOCK : Blocks.SAND; 
                     }
                     
                     if (!block.equals(Blocks.AIR) && surfaceBlock != null) {
@@ -385,7 +405,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         Block someBlock = blockArr[x][y][z];
         
         if (someBlock.equals(Blocks.AIR)) {
-            blockArr[x][y][z] = Blocks.WATER;
+            blockArr[x][y][z] = this.fluidBlock;
             
             flood(blockArr, x, y - 1, z);
             flood(blockArr, x - 1, y, z);
@@ -402,7 +422,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                     Block someBlock = blockArr[x][y][z];
                     
                     if (someBlock.equals(Blocks.AIR) && y < waterLevel) {
-                        blockArr[x][y][z] = Blocks.WATER;
+                        blockArr[x][y][z] = this.fluidBlock;
                     }
                 }
             }
@@ -411,6 +431,8 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     
     private void plantIndevSurface(Block[][][] blockArr) {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Planting..");
+        
+        if (this.theme == Theme.HELL) return;
         
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
@@ -428,6 +450,9 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     
     private void generateWorldBorder(Chunk chunk) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
+        Block topBlock = Blocks.GRASS_BLOCK;
+        
+        if (this.theme == Theme.HELL) topBlock = Blocks.DIRT;
          
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
@@ -435,7 +460,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                     if (y < this.waterLevel) {
                         chunk.setBlockState(mutable.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
                     } else if (y == this.waterLevel) {
-                        chunk.setBlockState(mutable.set(x, y, z), Blocks.GRASS_BLOCK.getDefaultState(), false);
+                        chunk.setBlockState(mutable.set(x, y, z), topBlock .getDefaultState(), false);
                     }
                 }
             }
@@ -453,7 +478,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                     } else if (y == this.waterLevel - 10) {
                         chunk.setBlockState(mutable.set(x, y, z), Blocks.DIRT.getDefaultState(), false);
                     } else if (y < this.waterLevel) {
-                        chunk.setBlockState(mutable.set(x, y, z), Blocks.WATER.getDefaultState(), false);
+                        chunk.setBlockState(mutable.set(x, y, z), this.fluidBlock.getDefaultState(), false);
                     }
                 }
             }
@@ -510,7 +535,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     public int getHeight(int x, int z, Heightmap.Type type) {
         int height = this.waterLevel + 1;
         
-        if (x < 0 || x > 255 || z < 0 || z > 255) return height;
+        if (x < 0 || x >= this.width || z < 0 || z >= this.length) return height;
         
         if (!pregenerated) {
             blockArr = pregenerateTerrain(blockArr);

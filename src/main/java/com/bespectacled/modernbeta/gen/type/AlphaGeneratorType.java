@@ -69,6 +69,9 @@ public final class AlphaGeneratorType extends GeneratorType {
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings,
             long seed) {
+        alphaSettings.settings.putBoolean("alphaWinterMode", ModernBeta.BETA_CONFIG.alphaWinterMode);
+        alphaSettings.settings.putBoolean("alphaPlus", ModernBeta.BETA_CONFIG.alphaPlus);
+        
         return new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes, alphaSettings.settings), seed, alphaSettings);
     }
     

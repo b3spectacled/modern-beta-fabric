@@ -64,10 +64,8 @@ public class AlphaBiomeSource extends BiomeSource {
         this.biomeRegistry = registry;
         this.settings = settings;
         
-        if (settings == null) {
-            ModernBeta.LOGGER.log(Level.ERROR, "Save file does not have generator settings, probably created before v0.4.");
-            return;
-        }
+        this.alphaWinterMode = false;
+        this.alphaPlus = false;
         
         if (settings.contains("alphaWinterMode")) this.alphaWinterMode = settings.getBoolean("alphaWinterMode");
         if (settings.contains("alphaPlus")) this.alphaPlus = settings.getBoolean("alphaPlus");

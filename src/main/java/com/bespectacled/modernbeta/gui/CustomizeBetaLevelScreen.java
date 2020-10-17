@@ -17,8 +17,8 @@ public class CustomizeBetaLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private BetaGeneratorSettings generatorSettings;
     
-    private boolean generateOceans = false;
-    private boolean generateIceDesert = false;
+    private boolean generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
+    private boolean generateIceDesert = ModernBeta.BETA_CONFIG.generateIceDesert;
     
     private ButtonListWidget buttonList;
 
@@ -27,7 +27,7 @@ public class CustomizeBetaLevelScreen extends Screen {
         
         this.parent = parent;
         this.generatorSettings = generatorSettings;
-      
+        
         if (generatorSettings.settings.contains("generateOceans"))
             generateOceans = generatorSettings.settings.getBoolean("generateOceans");
         if (generatorSettings.settings.contains("generateIceDesert"))

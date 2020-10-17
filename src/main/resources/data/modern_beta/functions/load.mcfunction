@@ -1,0 +1,1 @@
+function modern_beta:setup

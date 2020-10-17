@@ -150,6 +150,7 @@
       "modern_beta:patch_grass_alpha_2",
       "modern_beta:patch_dandelion_2",
       "modern_beta:patch_poppy",
+      "modern_beta:mushroom_hell",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "modern_beta:patch_cactus_alpha",
@@ -174,8 +175,8 @@
     },
 	"grass_color": 7390530,
 	"foliage_color": 5027090,
-	"sky_color": 10079487,
-    "fog_color": 16777215,
+	"sky_color": 1049600,
+    "fog_color": 2164736,
     "water_color": 1323775,
     "water_fog_color": 329011
   },

@@ -74,9 +74,6 @@ public class BetaBiomeSource extends BiomeSource {
     public static Biome[] biomesInChunk = new Biome[256];
     public static Biome[] oceanBiomesInChunk = new Biome[256];
 
-    //private static final boolean GENERATE_OCEANS = ModernBetaConfigOld.loadConfig().generate_oceans;
-    //private static final boolean GENERATE_ICE_DESERT = ModernBetaConfigOld.loadConfig().generate_ice_desert;
-
     private boolean generateOceans = false;
     private boolean generateIceDesert = false;
     
@@ -86,11 +83,9 @@ public class BetaBiomeSource extends BiomeSource {
         this.seed = seed;
         this.biomeRegistry = registry;
         this.settings = settings;
-
-        if (settings == null) {
-            ModernBeta.LOGGER.log(Level.ERROR, "Save file does not have generator settings, probably created before v0.4.");
-            return;
-        }
+        
+        this.generateOceans = false;
+        this.generateIceDesert = false;
         
         if (settings.contains("generateOceans")) this.generateOceans = settings.getBoolean("generateOceans");
         if (settings.contains("generateIceDesert")) this.generateIceDesert = settings.getBoolean("generateIceDesert");

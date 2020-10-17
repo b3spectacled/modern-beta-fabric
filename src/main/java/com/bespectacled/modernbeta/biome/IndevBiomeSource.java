@@ -8,6 +8,8 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
+import com.bespectacled.modernbeta.util.IndevUtil.Theme;
+import com.bespectacled.modernbeta.util.IndevUtil.Type;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -34,11 +36,28 @@ public class IndevBiomeSource extends BiomeSource {
 
     private static final List<RegistryKey<Biome>> BIOMES = ImmutableList.of(
             RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_edge")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_normal")));
+            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_hell_edge")),
+            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_paradise_edge")),
+            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_woods_edge")),
+            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_snowy_edge")),
+            
+            
+            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_normal")),
+            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_hell")),
+            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_paradise")),
+            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_woods")),
+            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_snowy")));
 
     private final long seed;
     public final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
+    
+    private Type type;
+    private Theme theme;
+   
+    private int width;
+    private int length;
+    private int height;
 
     public IndevBiomeSource(long seed, Registry<Biome> registry, CompoundTag settings) {
         super(BIOMES.stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
@@ -47,12 +66,19 @@ public class IndevBiomeSource extends BiomeSource {
         this.biomeRegistry = registry;
         this.settings = settings;
         
-        if (settings == null) {
-            ModernBeta.LOGGER.log(Level.ERROR, "Save file does not have generator settings, probably created before v0.4.");
-            return;
-        }
+        this.theme = Theme.NORMAL;
+        this.type = Type.ISLAND;
 
-
+        this.width = 256;
+        this.length = 256;
+        this.height = 128;
+ 
+        if (this.settings.contains("levelType")) this.type = Type.values()[settings.getInt("levelType")];
+        if (this.settings.contains("levelTheme")) this.theme = Theme.values()[settings.getInt("levelTheme")];
+        
+        if (this.settings.contains("levelWidth")) this.width = settings.getInt("levelWidth");
+        if (this.settings.contains("levelLength")) this.length = settings.getInt("levelLength");
+        if (this.settings.contains("levelHeight")) this.height = settings.getInt("levelHeight");
     }
 
     @Override
@@ -60,16 +86,56 @@ public class IndevBiomeSource extends BiomeSource {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
+        Biome biome;
+        
         if (inIndevRegion(biomeX, biomeZ)) {
-            return biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_normal"));
+            switch(theme) {
+                case NORMAL:
+                    biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_normal"));
+                    break;
+                case HELL:
+                    biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_hell"));
+                    break;
+                case PARADISE:
+                    biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_paradise"));
+                    break;
+                case WOODS:
+                    biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_woods"));
+                    break;  
+                case SNOWY:
+                    biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_snowy"));
+                    break;
+                default:
+                    biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_normal"));
+            }
+        } else {
+            switch(theme) {
+            case NORMAL:
+                biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_edge"));
+                break;
+            case HELL:
+                biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_hell_edge"));
+                break;
+            case PARADISE:
+                biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_paradise_edge"));
+                break; 
+            case WOODS:
+                biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_woods_edge"));
+                break;  
+            case SNOWY:
+                biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_snowy_edge"));
+                break;
+            default:
+                biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_edge"));
+        }
         }
         
-        return biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_edge"));
+        return biome;
     }
     
     private boolean inIndevRegion(int biomeX, int biomeZ) {
-        int biomeWidth = 256 >> 2;
-        int biomeLength = 256 >> 2;
+        int biomeWidth = this.width >> 2;
+        int biomeLength = this.length >> 2;
         
         if (biomeX >= 0 && biomeX < biomeWidth && biomeZ >= 0 && biomeZ < biomeLength)
             return true;

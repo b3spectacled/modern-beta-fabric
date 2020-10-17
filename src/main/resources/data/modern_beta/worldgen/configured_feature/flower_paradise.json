@@ -1,0 +1,72 @@
+{
+  "config": {
+    "feature": {
+      "config": {
+        "feature": {
+          "config": {
+            "feature": {
+              "config": {
+                "can_replace": false,
+                "project": true,
+                "need_water": false,
+                "xspread": 9,
+                "yspread": 3,
+                "zspread": 9,
+                "whitelist": [],
+                "blacklist": [],
+                "tries": 64,
+                "state_provider": {
+                  "entries": [
+                    {
+                      "weight": 2,
+                      "data": {
+                        "Name": "minecraft:poppy"
+                      }
+                    },
+                    {
+                      "weight": 1,
+                      "data": {
+                        "Name": "minecraft:dandelion"
+                      }
+                    }
+                  ],
+                  "type": "minecraft:weighted_state_provider"
+                },
+                "block_placer": {
+                  "type": "minecraft:simple_block_placer"
+                }
+              },
+              "type": "minecraft:flower"
+            },
+            "decorator": {
+              "config": {},
+              "type": "minecraft:spread_32_above"
+            }
+          },
+          "type": "minecraft:decorated"
+        },
+        "decorator": {
+          "config": {
+            "outer": {
+              "config": {},
+              "type": "minecraft:square"
+            },
+            "inner": {
+              "config": {},
+              "type": "minecraft:heightmap"
+            }
+          },
+          "type": "minecraft:decorated"
+        }
+      },
+      "type": "minecraft:decorated"
+    },
+    "decorator": {
+      "config": {
+        "count": 20
+      },
+      "type": "minecraft:count"
+    }
+  },
+  "type": "minecraft:decorated"
+}

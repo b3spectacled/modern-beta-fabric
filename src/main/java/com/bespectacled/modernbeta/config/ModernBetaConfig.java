@@ -46,4 +46,21 @@ public class ModernBetaConfig implements ConfigData {
     //@ConfigEntry.Category(value = "betaGen")
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean alphaPlus = false;
+    
+    /* Indev Generation */
+    @ConfigEntry.Gui.Excluded
+    public int indevLevelType = 0;
+    
+    @ConfigEntry.Gui.Excluded
+    public int indevLevelTheme = 0;
+    
+    @ConfigEntry.Gui.Excluded
+    public int indevLevelWidth = 256;
+    
+    @ConfigEntry.Gui.Excluded
+    public int indevLevelLength = 256;
+    
+    @ConfigEntry.Gui.Excluded
+    public int indevLevelHeight = 128;
+    
 }

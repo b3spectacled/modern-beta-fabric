@@ -21,8 +21,8 @@ public class CustomizeAlphaLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private AlphaGeneratorSettings generatorSettings;
     
-    private boolean alphaWinterMode = false;
-    private boolean alphaPlus = false;
+    private boolean alphaWinterMode = ModernBeta.BETA_CONFIG.alphaWinterMode;
+    private boolean alphaPlus = ModernBeta.BETA_CONFIG.alphaPlus;
     
     private ButtonListWidget buttonList;
 
@@ -57,6 +57,8 @@ public class CustomizeAlphaLevelScreen extends Screen {
                 this.client.openScreen(this.parent);
             }
         ));
+        
+        
         
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         
