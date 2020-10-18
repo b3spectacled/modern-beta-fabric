@@ -157,9 +157,14 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                 for (int y = 0; y < this.height; ++y) {
                     Block someBlock = blockArr[offsetX + x][y][offsetZ + z];
                     
-                     if (!someBlock.equals(Blocks.AIR)) {
+                    if (!someBlock.equals(Blocks.AIR)) {
                         chunk.setBlockState(mutable.set(x, y, z), someBlock.getDefaultState(), false);
                     }
+                     
+                    if (y <= 1 && this.type != Type.FLOATING) {
+                        chunk.setBlockState(mutable.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
+                    }
+                        
                 }
             }
         }

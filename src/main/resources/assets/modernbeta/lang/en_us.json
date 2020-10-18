@@ -78,5 +78,17 @@
     "biome.modern_beta.frozen_ocean": "Beta Frozen Ocean",
     
     "biome.modern_beta.alpha": "Alpha",
-    "biome.modern_beta.alpha_winter": "Alpha Winter"
+    "biome.modern_beta.alpha_winter": "Alpha Winter",
+    
+    "biome.modern_beta.indev_edge": "Indev Edge",
+    "biome.modern_beta.indev_hell_edge": "Indev Hell Edge",
+    "biome.modern_beta.indev_paradise_edge": "Indev Paradise Edge",
+    "biome.modern_beta.indev_woods_edge": "Indev Woods Edge",
+    "biome.modern_beta.indev_snowy_edge": "Indev Snowy Edge",
+    
+    "biome.modern_beta.indev_normal": "Indev Normal",
+    "biome.modern_beta.indev_hell": "Indev Hell",
+    "biome.modern_beta.indev_paradise": "Indev Paradise",
+    "biome.modern_beta.indev_woods": "Indev Woods",
+    "biome.modern_beta.indev_snowy": "Indev Snowy"
 }
