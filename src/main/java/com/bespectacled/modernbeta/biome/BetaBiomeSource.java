@@ -242,10 +242,6 @@ public class BetaBiomeSource extends BiomeSource {
         // 46 = Cold Ocean
         // 10 = Frozen Ocean
 
-        if (!this.generateOceans) {
-            return getLiteOceanBiome(temp, humid, registry);
-        }
-
         if (temp < 0.1F) {
             return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
         }
@@ -289,6 +285,7 @@ public class BetaBiomeSource extends BiomeSource {
 
     }
 
+    /*
     private Biome getLiteOceanBiome(float temp, float humid, Registry<Biome> registry) {
         humid *= temp;
 
@@ -321,6 +318,7 @@ public class BetaBiomeSource extends BiomeSource {
         return registry.get(new Identifier(ModernBeta.ID, "ocean"));
 
     }
+    */
 
     public boolean hasStructureFeature(StructureFeature<?> structureFeature) {
         return this.structureFeatures.computeIfAbsent(structureFeature,

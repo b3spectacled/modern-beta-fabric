@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Level;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.block.Block;
@@ -14,6 +15,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
@@ -127,6 +129,9 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     @Override
     public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
         ChunkPos pos = chunk.getPos();
+        int spawnX = worldAccess.getLevelProperties().getSpawnX();
+        int spawnZ = worldAccess.getLevelProperties().getSpawnZ();
+        int spawnY = getHeight(spawnX, spawnZ, null);
         
         if (inIndevRegion(pos.x, pos.z)) {
             if (!pregenerated) {
@@ -136,8 +141,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             }
             
             setTerrain(chunk, blockArr);
-           
-            
+     
         } else if (this.type != Type.FLOATING) {
             if (this.type == Type.ISLAND)
                 generateWaterBorder(chunk);
@@ -542,8 +546,11 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         }
     }
     
-    /* Not ideal, unused
-    private void generateIndevHouse(Block[][][] blockArr, int spawnX, int spawnY, int spawnZ) {
+    // Not ideal, unused
+    /*
+    private void generateIndevHouse(WorldAccess world, int spawnX, int spawnY, int spawnZ) {
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        
         for (int x = spawnX - 3; x <= spawnX + 3; ++x) {
             for (int y = spawnY - 2; y <= spawnY + 2; ++y) {
                 for (int z = spawnZ - 3; z <= spawnZ + 3; ++z) {
@@ -558,13 +565,17 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                         blockToSet = Blocks.AIR;
                     }
                     if (x >= this.width || x < 0 || z >= this.length || z < 0) continue;
-                    blockArr[x][y][z] = blockToSet;
+                    //blockArr[x][y][z] = blockToSet;
+                    world.setBlockState(mutable.set(x, y, z), blockToSet.getDefaultState(), 1);
                 }
             }
         }
         
-        blockArr[spawnX - 3 + 1][spawnY][spawnZ] = Blocks.WALL_TORCH;
-        blockArr[spawnX + 3 - 1][spawnY][spawnZ] = Blocks.WALL_TORCH;
+        //blockArr[spawnX - 3 + 1][spawnY][spawnZ] = Blocks.WALL_TORCH;
+        //blockArr[spawnX + 3 - 1][spawnY][spawnZ] = Blocks.WALL_TORCH;
+        
+        world.setBlockState(mutable.set(spawnX - 3 + 1, spawnY, spawnZ), Blocks.WALL_TORCH.getDefaultState(), 1);
+        world.setBlockState(mutable.set(spawnX + 3 - 1, spawnY, spawnZ), Blocks.WALL_TORCH.getDefaultState(), 1);
     }
     */
     

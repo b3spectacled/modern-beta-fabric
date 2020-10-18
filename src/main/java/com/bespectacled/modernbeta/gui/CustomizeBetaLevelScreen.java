@@ -54,7 +54,7 @@ public class CustomizeBetaLevelScreen extends Screen {
         ));
         
  this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
-        
+        /*
         this.buttonList.addSingleOptionEntry(
             new BooleanOption(
                 "createWorld.customize.beta.generateOceans", 
@@ -64,7 +64,8 @@ public class CustomizeBetaLevelScreen extends Screen {
                     generatorSettings.settings.putBoolean("generateOceans", value);
                 }
         ));
-        
+        */
+ 
         this.buttonList.addSingleOptionEntry(
             new BooleanOption(
                 "createWorld.customize.beta.generateIceDesert", 
