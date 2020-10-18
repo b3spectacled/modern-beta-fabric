@@ -134,10 +134,13 @@ public class IndevBiomeSource extends BiomeSource {
     }
     
     private boolean inIndevRegion(int biomeX, int biomeZ) {
-        int biomeWidth = this.width >> 2;
-        int biomeLength = this.length >> 2;
+        int absX = biomeX << 2;
+        int absZ = biomeZ << 2;
         
-        if (biomeX >= 0 && biomeX < biomeWidth && biomeZ >= 0 && biomeZ < biomeLength)
+        int halfWidth = this.width / 2;
+        int halfLength = this.length / 2;
+        
+        if (absX >= -halfWidth && absX < halfWidth && absZ >= -halfLength && absZ < halfLength)
             return true;
         
         return false;

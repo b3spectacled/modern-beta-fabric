@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ChunkRegion;
@@ -57,8 +58,12 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     private IndevNoiseGeneratorOctaves sandNoiseOctaves;
     private IndevNoiseGeneratorOctaves gravelNoiseOctaves;
 
+    // Note:
+    // I considered using 1D array for block storage,
+    // but apparently 1D array is significantly slower,
+    // tested on 1024*1024*256 world
     private Block blockArr[][][];
-    private int heightmap[]; // field_4180_q
+    private int heightmap[]; 
     
     private int width;
     private int length;
@@ -142,28 +147,45 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         }
     }
     
+    private boolean inIndevRegion(int chunkX, int chunkZ) {
+        int chunkWidth = this.width / 16;
+        int chunkLength = this.length / 16;
+        
+        int chunkHalfWidth = chunkWidth / 2;
+        int chunkHalfLength = chunkLength / 2;
+        
+        if (chunkX >= -chunkHalfWidth && chunkX < chunkHalfWidth && chunkZ >= -chunkHalfLength && chunkZ < chunkHalfLength)
+            return true;
+        
+        return false;
+    }
+    
     private void setTerrain(Chunk chunk, Block[][][] blockArr) {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
-        int offsetX = chunkX * 16;
-        int offsetZ = chunkZ * 16;
+        int offsetX = (chunkX + this.width / 16 / 2) * 16;
+        int offsetZ = (chunkZ + this.length / 16 / 2) * 16;
         
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-        
+        Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
+        Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
                 for (int y = 0; y < this.height; ++y) {
-                    Block someBlock = blockArr[offsetX + x][y][offsetZ + z];
+                    Block blockToSet = blockArr[offsetX + x][y][offsetZ + z];
                     
-                    if (!someBlock.equals(Blocks.AIR)) {
-                        chunk.setBlockState(mutable.set(x, y, z), someBlock.getDefaultState(), false);
+                    if (!blockToSet.equals(Blocks.AIR)) {
+                        chunk.setBlockState(mutable.set(x, y, z), blockToSet.getDefaultState(), false);
                     }
                      
                     if (y <= 1 && this.type != Type.FLOATING) {
                         chunk.setBlockState(mutable.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
                     }
+                    
+                    heightmapOCEAN.trackUpdate(x, y, z, blockToSet.getDefaultState());
+                    heightmapSURFACE.trackUpdate(x, y, z, blockToSet.getDefaultState());
                         
                 }
             }
@@ -409,14 +431,14 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         
         Block someBlock = blockArr[x][y][z];
         
-        if (someBlock.equals(Blocks.AIR)) {
+        if (someBlock == Blocks.AIR) {
             blockArr[x][y][z] = this.fluidBlock;
             
-            flood(blockArr, x, y - 1, z);
-            flood(blockArr, x - 1, y, z);
-            flood(blockArr, x + 1, y, z);
-            flood(blockArr, x, y, z - 1);
-            flood(blockArr, x, y, z + 1);
+            if (y - 1 >= 0          && blockArr[x][y - 1][z] == Blocks.AIR) flood(blockArr, x, y - 1, z);
+            if (x - 1 >= 0          && blockArr[x - 1][y][z] == Blocks.AIR) flood(blockArr, x - 1, y, z);
+            if (x + 1 < this.width  && blockArr[x + 1][y][z] == Blocks.AIR) flood(blockArr, x + 1, y, z);
+            if (z - 1 >= 0          && blockArr[x][y][z - 1] == Blocks.AIR) flood(blockArr, x, y, z - 1);
+            if (z + 1 < this.length && blockArr[x][y][z + 1] == Blocks.AIR) flood(blockArr, x, y, z + 1);
         }
     }
     
@@ -507,7 +529,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             }
         }
         
-        System.out.println("Block count, stone/dirt/air: " + countStone + ", " + countDirt + ", " + countAir);
+        ModernBeta.LOGGER.log(Level.DEBUG, "Block count, stone/dirt/air: " + countStone + ", " + countDirt + ", " + countAir);
     }
     
     private void fillBlockArr(Block[][][] blockArr) {
@@ -520,16 +542,31 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         }
     }
     
-    
-    private boolean inIndevRegion(int chunkX, int chunkZ) {
-        int chunkWidth = this.width / 16;
-        int chunkLength = this.length / 16;
+    /* Not ideal, unused
+    private void generateIndevHouse(Block[][][] blockArr, int spawnX, int spawnY, int spawnZ) {
+        for (int x = spawnX - 3; x <= spawnX + 3; ++x) {
+            for (int y = spawnY - 2; y <= spawnY + 2; ++y) {
+                for (int z = spawnZ - 3; z <= spawnZ + 3; ++z) {
+                    Block blockToSet = (y < spawnY - 1) ? Blocks.OBSIDIAN : Blocks.AIR;
+                    if (x == spawnX - 3 || z == spawnZ - 3 || x == spawnX + 3 || z == spawnZ + 3 || y == spawnY - 2 || y == spawnY + 2) {
+                        blockToSet = Blocks.STONE;
+                        if (y >= spawnY - 1) {
+                            blockToSet = Blocks.OAK_PLANKS;
+                        }
+                    }
+                    if (z == spawnZ - 3 && x == spawnX && y >= spawnY - 1 && y <= spawnY) {
+                        blockToSet = Blocks.AIR;
+                    }
+                    if (x >= this.width || x < 0 || z >= this.length || z < 0) continue;
+                    blockArr[x][y][z] = blockToSet;
+                }
+            }
+        }
         
-        if (chunkX >= 0 && chunkX < chunkWidth && chunkZ >= 0 && chunkZ < chunkLength)
-            return true;
-        
-        return false;
+        blockArr[spawnX - 3 + 1][spawnY][spawnZ] = Blocks.WALL_TORCH;
+        blockArr[spawnX + 3 - 1][spawnY][spawnZ] = Blocks.WALL_TORCH;
     }
+    */
     
     @Override
     public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {
@@ -543,7 +580,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         if (x < 0 || x >= this.width || z < 0 || z >= this.length) return height;
         
         if (!pregenerated) {
-            blockArr = pregenerateTerrain(blockArr);
+            this.blockArr = pregenerateTerrain(this.blockArr);
             pregenerated = true;
         }
         
@@ -553,10 +590,13 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             if (!someBlock.equals(Blocks.AIR)) {
                 break;
             }
+            
             height = y;
         }
+        
+        if (height == 0) height = this.waterLevel;
          
-        return height;
+        return height - 1;
     }
 
     @Override
