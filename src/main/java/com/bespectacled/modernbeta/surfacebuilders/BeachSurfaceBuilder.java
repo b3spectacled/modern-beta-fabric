@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.surfacebuilders;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves;
+import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
@@ -26,8 +26,8 @@ public class BeachSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> {
     private Random rand;
     private long seed;
 
-    private BetaNoiseGeneratorOctaves beachNoiseOctaves; // field_909_n
-    private BetaNoiseGeneratorOctaves stoneNoiseOctaves; // field_908_o
+    private OldNoiseGeneratorOctaves beachNoiseOctaves; // field_909_n
+    private OldNoiseGeneratorOctaves stoneNoiseOctaves; // field_908_o
     protected OctavePerlinNoiseSampler noise;
 
     private double sandNoise[];
@@ -61,11 +61,11 @@ public class BeachSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> {
         BlockPos.Mutable mutableBlock = new BlockPos.Mutable();
 
         if (prevChunkX != chunkX && prevChunkZ != chunkZ) {
-            sandNoise = beachNoiseOctaves.generateNoiseOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+            sandNoise = beachNoiseOctaves.generateBetaNoiseOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                     eighth, eighth, 1.0D);
-            gravelNoise = beachNoiseOctaves.generateNoiseOctaves(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16,
+            gravelNoise = beachNoiseOctaves.generateBetaNoiseOctaves(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16,
                     1, 16, eighth, 1.0D, eighth);
-            stoneNoise = stoneNoiseOctaves.generateNoiseOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+            stoneNoise = stoneNoiseOctaves.generateBetaNoiseOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                     eighth * 2D, eighth * 2D, eighth * 2D);
 
             prevChunkX = chunkX;
@@ -157,8 +157,8 @@ public class BeachSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> {
     private void initOctaveGen(long seed) {
         rand = new Random(seed);
 
-        beachNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 4); // field_909_n
-        stoneNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 4); // field_908_o
+        beachNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 4, false); // field_909_n
+        stoneNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 4, false); // field_908_o
     }
 
     public void genNoise(Chunk chunk, long seed) {
@@ -171,11 +171,11 @@ public class BeachSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> {
             this.noise = new OctavePerlinNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
         }
 
-        sandNoise = beachNoiseOctaves.generateNoiseOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth,
+        sandNoise = beachNoiseOctaves.generateBetaNoiseOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth,
                 eighth, 1.0D);
-        gravelNoise = beachNoiseOctaves.generateNoiseOctaves(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16, 1,
+        gravelNoise = beachNoiseOctaves.generateBetaNoiseOctaves(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16, 1,
                 16, eighth, 1.0D, eighth);
-        stoneNoise = stoneNoiseOctaves.generateNoiseOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+        stoneNoise = stoneNoiseOctaves.generateBetaNoiseOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 eighth * 2D, eighth * 2D, eighth * 2D);
 
     }

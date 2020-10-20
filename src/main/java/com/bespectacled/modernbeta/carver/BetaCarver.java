@@ -26,8 +26,12 @@ public class BetaCarver {
     public static final Map<Identifier, ConfiguredCarver> CONFIGURED_CARVERS = new HashMap<>();
 
     public static final Carver BETA_CAVE_CARVER = add("beta_cave", new BetaCaveCarver(ProbabilityConfig.CODEC, 128));
+    public static final Carver INDEV_CAVE_CARVER = add("indev_cave", new IndevCaveCarver(ProbabilityConfig.CODEC, 128, 1f));
+    
     public static final ConfiguredCarver CONF_BETA_CAVE_CARVER = add("beta_cave",
             new ConfiguredCarver(BETA_CAVE_CARVER, new ProbabilityConfig(1f)));
+    public static final ConfiguredCarver CONF_INDEV_CAVE_CARVER = add("indev_cave",
+            new ConfiguredCarver(INDEV_CAVE_CARVER, new ProbabilityConfig(0.01f)));
 
     static <C extends Carver> C add(String name, C carver) {
         CARVERS.put(new Identifier(ModernBeta.ID, name), carver);

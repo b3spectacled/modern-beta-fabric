@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.util;
 
 import java.util.Random;
 
-import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
+import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves2;
 
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
@@ -16,11 +16,11 @@ public class BiomeMath {
     public static final int HORIZONTAL_BIT_MASK = (1 << HORIZONTAL_SECTION_COUNT) - 1;
     public static final int VERTICAL_BIT_MASK = (1 << VERTICAL_SECTION_COUNT) - 1;
 
-    private static BetaNoiseGeneratorOctaves2 tempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 9871L),
+    private static OldNoiseGeneratorOctaves2 tempNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 9871L),
             4);;
-    private static BetaNoiseGeneratorOctaves2 humidNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 39811L),
+    private static OldNoiseGeneratorOctaves2 humidNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 39811L),
             4);
-    private static BetaNoiseGeneratorOctaves2 noiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(0 * 543321L), 2);
+    private static OldNoiseGeneratorOctaves2 noiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 543321L), 2);
 
     public static double[] temps = null;
     public static double[] humids = null;
@@ -42,9 +42,9 @@ public class BiomeMath {
     }
 
     private static void initOctaves(long seed) {
-        tempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(seed * 9871L), 4);
-        humidNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(seed * 39811L), 4);
-        noiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(seed * 543321L), 2);
+        tempNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(seed * 9871L), 4);
+        humidNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(seed * 39811L), 4);
+        noiseOctaves = new OldNoiseGeneratorOctaves2(new Random(seed * 543321L), 2);
     }
 
     public static void fetchTempHumid(int x, int z, int sizeX, int sizeZ) {

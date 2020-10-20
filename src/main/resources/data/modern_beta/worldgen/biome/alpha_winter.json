@@ -152,7 +152,7 @@
     ],
     [],
     [
-      "modern_beta:trees_alpha_forest_bees",
+      "modern_beta:trees_alpha_bees",
       "modern_beta:patch_grass_alpha_2",
       "modern_beta:patch_dandelion_2",
       "modern_beta:patch_poppy",
@@ -180,8 +180,8 @@
     },
 	"grass_color": 11272039,
 	"foliage_color": 5242667,
-	"sky_color": 9158143,
-    "fog_color": 12572670,
+	"sky_color": 8961023,
+    "fog_color": 12638463,
     "water_color": 1323775,
     "water_fog_color": 329011
   },

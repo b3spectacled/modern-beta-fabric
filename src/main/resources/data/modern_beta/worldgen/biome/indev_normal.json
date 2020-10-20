@@ -119,7 +119,6 @@
   "surface_builder": "minecraft:grass",
   "carvers": {
     "air": [
-      "modern_beta:beta_cave"
     ]
   },
   "features": [

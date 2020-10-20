@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
-import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
+import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves2;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -64,9 +64,9 @@ public class BetaBiomeSource extends BiomeSource {
     public double humids[];
     public double noises[];
 
-    private BetaNoiseGeneratorOctaves2 tempNoiseOctaves;
-    private BetaNoiseGeneratorOctaves2 humidNoiseOctaves;
-    private BetaNoiseGeneratorOctaves2 noiseOctaves;
+    private OldNoiseGeneratorOctaves2 tempNoiseOctaves;
+    private OldNoiseGeneratorOctaves2 humidNoiseOctaves;
+    private OldNoiseGeneratorOctaves2 noiseOctaves;
 
     private static Biome biomeLookupTable[] = new Biome[4096];
     private static Biome oceanBiomeLookupTable[] = new Biome[4096];
@@ -90,9 +90,9 @@ public class BetaBiomeSource extends BiomeSource {
         if (settings.contains("generateOceans")) this.generateOceans = settings.getBoolean("generateOceans");
         if (settings.contains("generateIceDesert")) this.generateIceDesert = settings.getBoolean("generateIceDesert");
         
-        tempNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 9871L), 4);
-        humidNoiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 39811L), 4);
-        noiseOctaves = new BetaNoiseGeneratorOctaves2(new Random(this.seed * 543321L), 2);
+        tempNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(this.seed * 9871L), 4);
+        humidNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(this.seed * 39811L), 4);
+        noiseOctaves = new OldNoiseGeneratorOctaves2(new Random(this.seed * 543321L), 2);
         
         generateBiomeLookup(registry);
     }
@@ -104,7 +104,7 @@ public class BetaBiomeSource extends BiomeSource {
 
         // Sample biome at this one absolute coordinate.
         fetchTempHumid(absX, absZ, 1, 1);
-
+        
         return biomesInChunk[0];
     }
 

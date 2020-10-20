@@ -74,13 +74,13 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
     private final BetaGeneratorSettings settings;
 
-    private BetaNoiseGeneratorOctaves minLimitNoiseOctaves;
-    private BetaNoiseGeneratorOctaves maxLimitNoiseOctaves;
-    private BetaNoiseGeneratorOctaves mainNoiseOctaves;
-    private BetaNoiseGeneratorOctaves beachNoiseOctaves;
-    private BetaNoiseGeneratorOctaves stoneNoiseOctaves;
-    public BetaNoiseGeneratorOctaves scaleNoiseOctaves;
-    public BetaNoiseGeneratorOctaves depthNoiseOctaves;
+    private OldNoiseGeneratorOctaves minLimitNoiseOctaves;
+    private OldNoiseGeneratorOctaves maxLimitNoiseOctaves;
+    private OldNoiseGeneratorOctaves mainNoiseOctaves;
+    private OldNoiseGeneratorOctaves beachNoiseOctaves;
+    private OldNoiseGeneratorOctaves stoneNoiseOctaves;
+    public OldNoiseGeneratorOctaves scaleNoiseOctaves;
+    public OldNoiseGeneratorOctaves depthNoiseOctaves;
 
     // private final NoiseSampler surfaceDepthNoise;
 
@@ -117,13 +117,13 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         this.biomeSource = (BetaBiomeSource) biomes;
 
         // Noise Generators
-        minLimitNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 16);
-        maxLimitNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 16);
-        mainNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 8);
-        beachNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 4);
-        stoneNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 4);
-        scaleNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 10);
-        depthNoiseOctaves = new BetaNoiseGeneratorOctaves(rand, 16);
+        minLimitNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 16, false);
+        maxLimitNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 16, false);
+        mainNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 8, false);
+        beachNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 4, false);
+        stoneNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 4, false);
+        scaleNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 10, false);
+        depthNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 16, false);
 
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
@@ -400,13 +400,13 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
         coordinateScale *= 2D;
 
-        mainNoise = mainNoiseOctaves.generateNoiseOctaves(mainNoise, x, y, z, int5_0, byte33, int5_1,
+        mainNoise = mainNoiseOctaves.generateBetaNoiseOctaves(mainNoise, x, y, z, int5_0, byte33, int5_1,
                 coordinateScale / mainNoiseScaleX, heightScale / mainNoiseScaleY, coordinateScale / mainNoiseScaleZ);
 
-        minLimitNoise = minLimitNoiseOctaves.generateNoiseOctaves(minLimitNoise, x, y, z, int5_0, byte33, int5_1,
+        minLimitNoise = minLimitNoiseOctaves.generateBetaNoiseOctaves(minLimitNoise, x, y, z, int5_0, byte33, int5_1,
                 coordinateScale, heightScale, coordinateScale);
 
-        maxLimitNoise = maxLimitNoiseOctaves.generateNoiseOctaves(maxLimitNoise, x, y, z, int5_0, byte33, int5_1,
+        maxLimitNoise = maxLimitNoiseOctaves.generateBetaNoiseOctaves(maxLimitNoise, x, y, z, int5_0, byte33, int5_1,
                 coordinateScale, heightScale, coordinateScale);
 
         int i = 0;
@@ -515,21 +515,12 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         BlockPos.Mutable mutableBlock = new BlockPos.Mutable();
 
         Biome curBiome;
-
-        // sandNoise = beachNoiseOctaves.generateNoiseOctaves(sandNoise, chunkX * 16,
-        // chunkZ * 16, 0.0D, 16, 16, 1, thirtysecond, thirtysecond, 1.0D);
-        // gravelNoise = beachNoiseOctaves.generateNoiseOctaves(gravelNoise, chunkX *
-        // 16, 109.0134D, chunkZ * 16, 16, 1, 16, thirtysecond, 1.0D, thirtysecond);
-        stoneNoise = stoneNoiseOctaves.generateNoiseOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+        
+        stoneNoise = stoneNoiseOctaves.generateBetaNoiseOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
 
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
-
-                // boolean genSandBeach = sandNoise[i + j * 16] * rand.nextDouble() *
-                // 0.20000000000000001D > 0.0D;
-                // boolean genGravelBeach = gravelNoise[i + j * 16] + rand.nextDouble() *
-                // 0.20000000000000001D > 3D;
 
                 int genStone = (int) (stoneNoise[i + j * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;

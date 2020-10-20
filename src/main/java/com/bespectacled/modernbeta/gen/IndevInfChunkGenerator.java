@@ -95,27 +95,18 @@ public class IndevInfChunkGenerator extends NoiseChunkGenerator {
             .apply(instance, instance.stable(IndevInfChunkGenerator::new)));
 
     private final AlphaGeneratorSettings settings;
-
-    private AlphaNoiseGeneratorOctaves minLimitNoiseOctaves;
-    private AlphaNoiseGeneratorOctaves maxLimitNoiseOctaves;
-    private AlphaNoiseGeneratorOctaves mainNoiseOctaves;
-    //private AlphaNoiseGeneratorOctaves beachNoiseOctaves;
-    //private AlphaNoiseGeneratorOctaves stoneNoiseOctaves;
-    public AlphaNoiseGeneratorOctaves scaleNoiseOctaves;
-    public AlphaNoiseGeneratorOctaves depthNoiseOctaves;
     
+    private OldNoiseGeneratorCombined noise1;
+    private OldNoiseGeneratorCombined noise2;
     
-    private IndevNoiseGeneratorCombined noise1;
-    private IndevNoiseGeneratorCombined noise2;
+    private OldNoiseGeneratorOctaves noise3;
+    private OldNoiseGeneratorOctaves noise4;
     
-    private IndevNoiseGeneratorOctaves noise3;
-    private IndevNoiseGeneratorOctaves noise4;
+    private OldNoiseGeneratorOctaves noise5;
+    private OldNoiseGeneratorOctaves noise6;
     
-    private IndevNoiseGeneratorOctaves noise5;
-    private IndevNoiseGeneratorOctaves noise6;
-    
-    private IndevNoiseGeneratorOctaves sandNoiseOctaves;
-    private IndevNoiseGeneratorOctaves gravelNoiseOctaves;
+    private OldNoiseGeneratorOctaves sandNoiseOctaves;
+    private OldNoiseGeneratorOctaves gravelNoiseOctaves;
     
 
     // private final NoiseSampler surfaceDepthNoise;
@@ -152,28 +143,18 @@ public class IndevInfChunkGenerator extends NoiseChunkGenerator {
         this.rand = new Random(seed);
         this.biomeSource = (AlphaBiomeSource) biomes;
         // this.generateOceans = ModernBetaConfig.loadConfig().generate_oceans;
-
-        // Noise Generators
-        minLimitNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 16);
-        maxLimitNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 16);
-        mainNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 8);
-        //beachNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 4);
-        //stoneNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 4);
-        scaleNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 10);
-        depthNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 16);
         
+        noise1 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(this.rand, 8, true), new OldNoiseGeneratorOctaves(this.rand, 8, true));
+        noise2 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(this.rand, 8, true), new OldNoiseGeneratorOctaves(this.rand, 8, true));
         
-        noise1 = new IndevNoiseGeneratorCombined(new IndevNoiseGeneratorOctaves(this.rand, 8), new IndevNoiseGeneratorOctaves(this.rand, 8));
-        noise2 = new IndevNoiseGeneratorCombined(new IndevNoiseGeneratorOctaves(this.rand, 8), new IndevNoiseGeneratorOctaves(this.rand, 8));
+        noise3 = new OldNoiseGeneratorOctaves(this.rand, 6, true);
+        noise4 = new OldNoiseGeneratorOctaves(this.rand, 2, true);
         
-        noise3 = new IndevNoiseGeneratorOctaves(this.rand, 6);
-        noise4 = new IndevNoiseGeneratorOctaves(this.rand, 2);
+        noise5 = new OldNoiseGeneratorOctaves(this.rand, 8, true);
+        noise6 = new OldNoiseGeneratorOctaves(this.rand, 8, true);
         
-        noise5 = new IndevNoiseGeneratorOctaves(this.rand, 8);
-        noise6 = new IndevNoiseGeneratorOctaves(this.rand, 8);
-        
-        sandNoiseOctaves = new IndevNoiseGeneratorOctaves(this.rand, 8);
-        gravelNoiseOctaves = new IndevNoiseGeneratorOctaves(this.rand, 8);
+        sandNoiseOctaves = new OldNoiseGeneratorOctaves(this.rand, 8, true);
+        gravelNoiseOctaves = new OldNoiseGeneratorOctaves(this.rand, 8, true);
 
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
@@ -428,8 +409,8 @@ public class IndevInfChunkGenerator extends NoiseChunkGenerator {
             for (int z = 0; z <  16; ++z) {
                 int absZ = z + startZ;
                 
-                boolean genSand = sandNoiseOctaves.IndevNoiseGenerator(absX, absZ) > 8.0;
-                boolean genGravel = gravelNoiseOctaves.IndevNoiseGenerator(absX, absZ) > 12.0;
+                boolean genSand = sandNoiseOctaves.generateIndevNoiseOctaves(absX, absZ) > 8.0;
+                boolean genGravel = gravelNoiseOctaves.generateIndevNoiseOctaves(absX, absZ) > 12.0;
                 
                 /*
                 for (int y = height - 1; y >= 0; --y) {
@@ -527,7 +508,7 @@ public class IndevInfChunkGenerator extends NoiseChunkGenerator {
                 var2 = var2 * var2 * var2;
                 
                 int dirtTransition = heightmap[x + z * 16] + waterLevel;
-                int dirtThickness = (int)(noise5.IndevNoiseGenerator(x, z) / 24.0) - 4;
+                int dirtThickness = (int)(noise5.generateIndevNoiseOctaves(x, z) / 24.0) - 4;
             
                 int stoneTransition = dirtTransition + dirtThickness;
                 heightmap[x + z * 16] = Math.max(dirtTransition, stoneTransition);
@@ -540,7 +521,7 @@ public class IndevInfChunkGenerator extends NoiseChunkGenerator {
                     heightmap[x + z * 16] = 1;
                 }
                 
-                double var4 = noise6.IndevNoiseGenerator(x * 2.3, z * 2.3) / 24.0;
+                double var4 = noise6.generateIndevNoiseOctaves(x * 2.3, z * 2.3) / 24.0;
                 int var5 = (int)(Math.sqrt(Math.abs(var4)) * Math.signum(var4) * 20.0) + waterLevel;
                 var5 = (int)(var5 * (1.0 - var2) + var2 * height);
                 
@@ -601,10 +582,10 @@ public class IndevInfChunkGenerator extends NoiseChunkGenerator {
             for (int z = absZ; z < absZ + 16; ++z) {
                 double islandMod2 = Math.abs((1 / (chunkSizeZ - 1.0) - 0.5) * 2.0);
                 
-                double heightLow = noise1.IndevNoiseGenerator(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
-                double heightHigh = noise2.IndevNoiseGenerator(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
+                double heightLow = noise1.generateCombinedIndevNoiseOctaves(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
+                double heightHigh = noise2.generateCombinedIndevNoiseOctaves(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
                 
-                double heightCheck = noise3.IndevNoiseGenerator(x, z) / 8.0;
+                double heightCheck = noise3.generateIndevNoiseOctaves(x, z) / 8.0;
                 
                 if (heightCheck > 0.0) {
                     heightHigh = heightLow;

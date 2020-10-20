@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Level;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
-import com.bespectacled.modernbeta.noise.BetaNoiseGeneratorOctaves2;
+import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves2;
 import com.bespectacled.modernbeta.util.IndevUtil.Theme;
 import com.bespectacled.modernbeta.util.IndevUtil.Type;
 import com.google.common.collect.ImmutableList;

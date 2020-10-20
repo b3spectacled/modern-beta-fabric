@@ -37,20 +37,30 @@ import net.minecraft.world.gen.feature.SimpleRandomFeatureConfig;
 
 public class BetaFeature {
     public static final ImmutableList<Identifier> CONFIG_FEATURES = ImmutableList.of(
-            new Identifier(ModernBeta.ID, "ore_clay"), new Identifier(ModernBeta.ID, "patch_grass_rainforest_10"),
+            new Identifier(ModernBeta.ID, "ore_clay"), 
+            new Identifier(ModernBeta.ID, "patch_grass_rainforest_10"),
             new Identifier(ModernBeta.ID, "patch_grass_plains_10"),
             new Identifier(ModernBeta.ID, "patch_grass_taiga_1"),
             new Identifier(ModernBeta.ID, "trees_beta_forest_bees"),
             new Identifier(ModernBeta.ID, "trees_beta_rainforest_bees"),
             new Identifier(ModernBeta.ID, "trees_beta_seasonal_forest_bees"),
-            new Identifier(ModernBeta.ID, "trees_beta_forest"), new Identifier(ModernBeta.ID, "trees_beta_rainforest"),
+            
+            new Identifier(ModernBeta.ID, "trees_beta_forest"), 
+            new Identifier(ModernBeta.ID, "trees_beta_rainforest"),
             new Identifier(ModernBeta.ID, "trees_beta_seasonal_forest"),
-            new Identifier(ModernBeta.ID, "trees_beta_taiga"), new Identifier(ModernBeta.ID, "patch_dandelion_2"),
-            new Identifier(ModernBeta.ID, "patch_dandelion_3"), new Identifier(ModernBeta.ID, "patch_dandelion_4"),
-            new Identifier(ModernBeta.ID, "patch_poppy"), new Identifier(ModernBeta.ID, "ore_emerald_y95"),
-            new Identifier(ModernBeta.ID, "trees_alpha_forest_bees"),
-            new Identifier(ModernBeta.ID, "trees_alpha_forest"), new Identifier(ModernBeta.ID, "patch_grass_alpha_2"),
-            new Identifier(ModernBeta.ID, "patch_cactus_alpha"));
+            new Identifier(ModernBeta.ID, "trees_beta_taiga"), 
+            
+            new Identifier(ModernBeta.ID, "patch_dandelion_2"),
+            new Identifier(ModernBeta.ID, "patch_dandelion_3"),
+            new Identifier(ModernBeta.ID, "patch_dandelion_4"),
+            new Identifier(ModernBeta.ID, "patch_poppy"), 
+            
+            new Identifier(ModernBeta.ID, "ore_emerald_y95"),
+            new Identifier(ModernBeta.ID, "trees_alpha_bees"),
+            new Identifier(ModernBeta.ID, "trees_alpha"), 
+            new Identifier(ModernBeta.ID, "patch_grass_alpha_2"),
+            new Identifier(ModernBeta.ID, "patch_cactus_alpha"),
+            new Identifier(ModernBeta.ID, "trees_indev_bees"));
 
     public static final BetaFreezeTopLayerFeature BETA_FREEZE_TOP_LAYER = new BetaFreezeTopLayerFeature(
             DefaultFeatureConfig.CODEC);

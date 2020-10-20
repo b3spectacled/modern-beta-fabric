@@ -95,13 +95,13 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
 
     private final AlphaGeneratorSettings settings;
 
-    private AlphaNoiseGeneratorOctaves minLimitNoiseOctaves;
-    private AlphaNoiseGeneratorOctaves maxLimitNoiseOctaves;
-    private AlphaNoiseGeneratorOctaves mainNoiseOctaves;
-    private AlphaNoiseGeneratorOctaves beachNoiseOctaves;
-    private AlphaNoiseGeneratorOctaves stoneNoiseOctaves;
-    public AlphaNoiseGeneratorOctaves scaleNoiseOctaves;
-    public AlphaNoiseGeneratorOctaves depthNoiseOctaves;
+    private OldNoiseGeneratorOctaves minLimitNoiseOctaves;
+    private OldNoiseGeneratorOctaves maxLimitNoiseOctaves;
+    private OldNoiseGeneratorOctaves mainNoiseOctaves;
+    private OldNoiseGeneratorOctaves beachNoiseOctaves;
+    private OldNoiseGeneratorOctaves stoneNoiseOctaves;
+    public OldNoiseGeneratorOctaves scaleNoiseOctaves;
+    public OldNoiseGeneratorOctaves depthNoiseOctaves;
 
     // private final NoiseSampler surfaceDepthNoise;
 
@@ -139,13 +139,13 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         // this.generateOceans = ModernBetaConfig.loadConfig().generate_oceans;
 
         // Noise Generators
-        minLimitNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 16);
-        maxLimitNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 16);
-        mainNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 8);
-        beachNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 4);
-        stoneNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 4);
-        scaleNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 10);
-        depthNoiseOctaves = new AlphaNoiseGeneratorOctaves(rand, 16);
+        minLimitNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 16, false);
+        maxLimitNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 16, false);
+        mainNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 8, false);
+        beachNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 4, false);
+        stoneNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 4, false);
+        scaleNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 10, false);
+        depthNoiseOctaves = new OldNoiseGeneratorOctaves(rand, 16, false);
 
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
@@ -581,18 +581,35 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
 
-        scaleNoise = scaleNoiseOctaves.generateNoiseOctaves(scaleNoise, x, y, z, int5_0, 1, int5_1, 1.0D, 0.0D, 1.0D);
-        depthNoise = depthNoiseOctaves.generateNoiseOctaves(depthNoise, x, y, z, int5_0, 1, int5_1, depthNoiseScaleX,
-                0.0D, depthNoiseScaleZ);
+        scaleNoise = scaleNoiseOctaves.generateAlphaNoiseOctaves(scaleNoise, x, y, z, int5_0, 1, int5_1, 1.0D, 0.0D, 1.0D);
+        depthNoise = depthNoiseOctaves.generateAlphaNoiseOctaves(depthNoise, x, y, z, int5_0, 1, int5_1, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
 
-        mainNoise = mainNoiseOctaves.generateNoiseOctaves(mainNoise, x, y, z, int5_0, byte17, int5_1,
-                coordinateScale / mainNoiseScaleX, heightScale / mainNoiseScaleY, coordinateScale / mainNoiseScaleZ);
+        mainNoise = mainNoiseOctaves.generateAlphaNoiseOctaves(
+            mainNoise, 
+            x, y, z, 
+            int5_0, byte17, int5_1,
+            coordinateScale / mainNoiseScaleX, 
+            heightScale / mainNoiseScaleY, 
+            coordinateScale / mainNoiseScaleZ
+        );
 
-        minLimitNoise = minLimitNoiseOctaves.generateNoiseOctaves(minLimitNoise, x, y, z, int5_0, byte17, int5_1,
-                coordinateScale, heightScale, coordinateScale);
+        minLimitNoise = minLimitNoiseOctaves.generateAlphaNoiseOctaves(
+            minLimitNoise, 
+            x, y, z, 
+            int5_0, byte17, int5_1,
+            coordinateScale, 
+            heightScale, 
+            coordinateScale
+        );
 
-        maxLimitNoise = maxLimitNoiseOctaves.generateNoiseOctaves(maxLimitNoise, x, y, z, int5_0, byte17, int5_1,
-                coordinateScale, heightScale, coordinateScale);
+        maxLimitNoise = maxLimitNoiseOctaves.generateAlphaNoiseOctaves(
+            maxLimitNoise, 
+            x, y, z, 
+            int5_0, byte17, int5_1,
+            coordinateScale,
+            heightScale,
+            coordinateScale
+        );
 
         int i = 0;
         int j = 0;
@@ -698,11 +715,11 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
 
         Biome curBiome;
 
-        sandNoise = beachNoiseOctaves.generateNoiseOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+        sandNoise = beachNoiseOctaves.generateAlphaNoiseOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond, thirtysecond, 1.0D);
-        gravelNoise = beachNoiseOctaves.generateNoiseOctaves(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16, 1,
+        gravelNoise = beachNoiseOctaves.generateAlphaNoiseOctaves(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16, 1,
                 16, thirtysecond, 1.0D, thirtysecond);
-        stoneNoise = stoneNoiseOctaves.generateNoiseOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+        stoneNoise = stoneNoiseOctaves.generateAlphaNoiseOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
 
         for (int i = 0; i < 16; i++) {

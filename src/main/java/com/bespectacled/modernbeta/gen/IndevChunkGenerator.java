@@ -15,6 +15,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
@@ -45,20 +46,20 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
 
     private final IndevGeneratorSettings settings;
     
-    private IndevNoiseGeneratorCombined heightNoise1;
-    private IndevNoiseGeneratorCombined heightNoise2;
+    private OldNoiseGeneratorCombined heightNoise1;
+    private OldNoiseGeneratorCombined heightNoise2;
     
-    private IndevNoiseGeneratorOctaves heightNoise3;
-    private IndevNoiseGeneratorOctaves islandNoise;
+    private OldNoiseGeneratorOctaves heightNoise3;
+    private OldNoiseGeneratorOctaves islandNoise;
     
-    private IndevNoiseGeneratorOctaves noise5;
-    private IndevNoiseGeneratorOctaves noise6;
+    private OldNoiseGeneratorOctaves noise5;
+    private OldNoiseGeneratorOctaves noise6;
     
-    private IndevNoiseGeneratorCombined erodeNoise1;
-    private IndevNoiseGeneratorCombined erodeNoise2;
+    private OldNoiseGeneratorCombined erodeNoise1;
+    private OldNoiseGeneratorCombined erodeNoise2;
     
-    private IndevNoiseGeneratorOctaves sandNoiseOctaves;
-    private IndevNoiseGeneratorOctaves gravelNoiseOctaves;
+    private OldNoiseGeneratorOctaves sandNoiseOctaves;
+    private OldNoiseGeneratorOctaves gravelNoiseOctaves;
 
     // Note:
     // I considered using 1D array for block storage,
@@ -205,20 +206,20 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             this.waterLevel = (this.type == Type.FLOATING) ? this.height - 32 - l * 48 : this.waterLevel; 
             
             // Noise Generators (Here instead of constructor to randomize floating layer generation)    
-            heightNoise1 = new IndevNoiseGeneratorCombined(new IndevNoiseGeneratorOctaves(this.rand, 8), new IndevNoiseGeneratorOctaves(this.rand, 8));
-            heightNoise2 = new IndevNoiseGeneratorCombined(new IndevNoiseGeneratorOctaves(this.rand, 8), new IndevNoiseGeneratorOctaves(this.rand, 8));
+            heightNoise1 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(this.rand, 8, true), new OldNoiseGeneratorOctaves(this.rand, 8, true));
+            heightNoise2 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(this.rand, 8, true), new OldNoiseGeneratorOctaves(this.rand, 8, true));
             
-            heightNoise3 = new IndevNoiseGeneratorOctaves(this.rand, 6);
-            islandNoise = new IndevNoiseGeneratorOctaves(this.rand, 2);
+            heightNoise3 = new OldNoiseGeneratorOctaves(this.rand, 6, true);
+            islandNoise = new OldNoiseGeneratorOctaves(this.rand, 2, true);
             
-            noise5 = new IndevNoiseGeneratorOctaves(this.rand, 8);
-            noise6 = new IndevNoiseGeneratorOctaves(this.rand, 8);
+            noise5 = new OldNoiseGeneratorOctaves(this.rand, 8, true);
+            noise6 = new OldNoiseGeneratorOctaves(this.rand, 8, true);
             
-            erodeNoise1 = new IndevNoiseGeneratorCombined(new IndevNoiseGeneratorOctaves(this.rand, 8), new IndevNoiseGeneratorOctaves(this.rand, 8));
-            erodeNoise2 = new IndevNoiseGeneratorCombined(new IndevNoiseGeneratorOctaves(this.rand, 8), new IndevNoiseGeneratorOctaves(this.rand, 8));
+            erodeNoise1 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(this.rand, 8, true), new OldNoiseGeneratorOctaves(this.rand, 8, true));
+            erodeNoise2 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(this.rand, 8, true), new OldNoiseGeneratorOctaves(this.rand, 8, true));
             
-            sandNoiseOctaves = new IndevNoiseGeneratorOctaves(this.rand, 8);
-            gravelNoiseOctaves = new IndevNoiseGeneratorOctaves(this.rand, 8);
+            sandNoiseOctaves = new OldNoiseGeneratorOctaves(this.rand, 8, true);
+            gravelNoiseOctaves = new OldNoiseGeneratorOctaves(this.rand, 8, true);
             
             heightmap = generateHeightmap(heightmap);
             erodeTerrain(heightmap);
@@ -235,7 +236,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                      var2 = var2 * var2 * var2;
                      
                      int dirtTransition = heightmap[x + z * this.width] + this.waterLevel;
-                     int dirtThickness = (int)(noise5.IndevNoiseGenerator(x, z) / 24.0) - 4;
+                     int dirtThickness = (int)(noise5.generateIndevNoiseOctaves(x, z) / 24.0) - 4;
                  
                      int stoneTransition = dirtTransition + dirtThickness;
                      heightmap[x + z * this.width] = Math.max(dirtTransition, stoneTransition);
@@ -248,7 +249,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                          heightmap[x + z * this.width] = 1;
                      }
                      
-                     double var4 = noise6.IndevNoiseGenerator(x * 2.3, z * 2.3) / 24.0;
+                     double var4 = noise6.generateIndevNoiseOctaves(x * 2.3, z * 2.3) / 24.0;
                      int var5 = (int)(Math.sqrt(Math.abs(var4)) * Math.signum(var4) * 20.0) + this.waterLevel;
                      var5 = (int)(var5 * (1.0 - var2) + var2 * this.height);
                      
@@ -278,7 +279,8 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             }
             
             buildIndevSurface(blockArr, heightmap);
-            floodTerrain(blockArr);
+            floodTerrain(blockArr);            
+            carveTerrain(blockArr);
             plantIndevSurface(blockArr);
         }
         
@@ -299,10 +301,10 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             for (int z = 0; z < this.length; ++z) {
                 double islandVar2 = Math.abs((z / (this.length - 1.0) - 0.5) * 2.0);
                 
-                double heightLow = heightNoise1.IndevNoiseGenerator(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
-                double heightHigh = heightNoise2.IndevNoiseGenerator(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
+                double heightLow = heightNoise1.generateCombinedIndevNoiseOctaves(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
+                double heightHigh = heightNoise2.generateCombinedIndevNoiseOctaves(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
                 
-                double heightCheck = heightNoise3.IndevNoiseGenerator(x, z) / 8.0;
+                double heightCheck = heightNoise3.generateIndevNoiseOctaves(x, z) / 8.0;
                 
                 if (heightCheck > 0.0) {
                     heightHigh = heightLow;
@@ -312,7 +314,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                 
                 if (this.type == Type.ISLAND) {
                     double islandVar3 = Math.sqrt(islandVar1 * islandVar1 + islandVar2 * islandVar2) * 1.2000000476837158;
-                    islandVar3 = Math.min(islandVar3, islandNoise.IndevNoiseGenerator(x * 0.05f, z * 0.05f) / 4.0 + 1.0);
+                    islandVar3 = Math.min(islandVar3, islandNoise.generateIndevNoiseOctaves(x * 0.05f, z * 0.05f) / 4.0 + 1.0);
                     islandVar3 = Math.max(islandVar3, Math.max(islandVar1, islandVar2));
                     
                     if (islandVar3 > 1.0) {
@@ -347,8 +349,8 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
-                double var1 = erodeNoise1.IndevNoiseGenerator(x << 1, z << 1) / 8.0;
-                int var2 = erodeNoise2.IndevNoiseGenerator(x << 1, z << 1) > 0.0 ? 1 : 0;
+                double var1 = erodeNoise1.generateCombinedIndevNoiseOctaves(x << 1, z << 1) / 8.0;
+                int var2 = erodeNoise2.generateCombinedIndevNoiseOctaves(x << 1, z << 1) > 0.0 ? 1 : 0;
             
                 if (var1 > 2.0) {
                     int var3 = heightmap[x + z * this.width];
@@ -369,19 +371,19 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
-                boolean genSand = sandNoiseOctaves.IndevNoiseGenerator(x, z) > 8.0;
-                boolean genGravel = gravelNoiseOctaves.IndevNoiseGenerator(x, z) > 12.0;
+                boolean genSand = sandNoiseOctaves.generateIndevNoiseOctaves(x, z) > 8.0;
+                boolean genGravel = gravelNoiseOctaves.generateIndevNoiseOctaves(x, z) > 12.0;
                 
                 if (this.type == Type.ISLAND) {
-                    genSand = sandNoiseOctaves.IndevNoiseGenerator(x, z) > -8.0;
+                    genSand = sandNoiseOctaves.generateIndevNoiseOctaves(x, z) > -8.0;
                 }
                 
                 if (this.theme == Theme.PARADISE) {
-                    genSand = sandNoiseOctaves.IndevNoiseGenerator(x, z) > -32.0;
+                    genSand = sandNoiseOctaves.generateIndevNoiseOctaves(x, z) > -32.0;
                 }
                 
                 if (this.theme == Theme.HELL || this.theme == Theme.WOODS) {
-                    genSand = sandNoiseOctaves.IndevNoiseGenerator(x, z) > -8.0;
+                    genSand = sandNoiseOctaves.generateIndevNoiseOctaves(x, z) > -8.0;
                 }
                 
                 int heightResult = heightmap[x + z *  this.width];
@@ -402,6 +404,72 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                     
                     if (!block.equals(Blocks.AIR) && surfaceBlock != null) {
                         blockArr[x][heightResult][z] = surfaceBlock;
+                    }
+                }
+            }
+        }
+    }
+    
+    private void carveTerrain(Block[][][] blockArr) {
+        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Carving..");
+        
+        int caveCount = this.width * this.length * this.height / 256 / 64 << 1;
+        
+        for (int i = 0; i < caveCount; ++i) {
+            float caveX = this.rand.nextFloat() * this.width;
+            float caveY = this.rand.nextFloat() * this.height;
+            float caveZ = this.rand.nextFloat() * this.length;
+
+            int caveLen = (int)((this.rand.nextFloat() + this.rand.nextFloat()) * 200F);
+            
+            float theta = this.rand.nextFloat() * 3.1415927f * 2.0f;
+            float deltaTheta = 0.0f;
+            float phi = this.rand.nextFloat() * 3.1415927f * 2.0f;
+            float deltaPhi = 0.0f;
+            
+            float caveRadius = this.rand.nextFloat() * this.rand.nextFloat() * 1f;
+            
+            for (int len = 0; len < caveLen; ++len) {
+                caveX += MathHelper.sin(theta) * MathHelper.cos(phi);
+                caveZ += MathHelper.cos(theta) * MathHelper.cos(phi);
+                caveY += MathHelper.sin(phi);
+                
+                theta = theta + deltaTheta * 0.2f;
+                deltaTheta = (deltaTheta * 0.9f) + (this.rand.nextFloat() - this.rand.nextFloat());
+                phi = phi / 2 + deltaPhi / 4;
+                deltaPhi = (deltaPhi * 0.75f) + (this.rand.nextFloat() - this.rand.nextFloat());
+                
+                if (this.rand.nextFloat() >= 0.25f) {
+                    float centerX = caveX + (this.rand.nextFloat() * 4.0f - 2.0f) * 0.2f;
+                    float centerY = caveY + (this.rand.nextFloat() * 4.0f - 2.0f) * 0.2f;
+                    float centerZ = caveZ + (this.rand.nextFloat() * 4.0f - 2.0f) * 0.2f;
+                    
+                    float radius = (this.height - centerY) / this.height;
+                    radius = 1.2f + (radius * 3.5f + 1.0f) * caveRadius;
+                    radius = radius * MathHelper.sin(len * 3.1415927f / caveLen);
+                    
+                    fillOblateSpheroid(blockArr, centerX, centerY, centerZ, radius, Blocks.AIR);
+                }
+            }
+        }
+    }
+    
+    private void fillOblateSpheroid(Block[][][] blockArr, float centerX, float centerY, float centerZ, float radius, Block fillBlock) {
+        for (int x = (int)(centerX - radius); x < (int)(centerX + radius); ++x) {
+            for (int y = (int)(centerY - radius); y < (int)(centerY + radius); ++y) {
+                for (int z = (int)(centerZ - radius); z < (int)(centerZ + radius); ++z) {
+                
+                    float dx = x - centerX;
+                    float dy = y - centerY;
+                    float dz = z - centerZ;
+                    
+                    if ((dx * dx + dy * dy * 2.0f + dz * dz) < radius * radius && inLevelBounds(x, y, z)) {
+                        Block someBlock = blockArr[x][y][z];
+                        
+                        if (someBlock == Blocks.STONE) {
+                            blockArr[x][y][z] = fillBlock;
+                        }
+                        
                     }
                 }
             }
@@ -544,6 +612,14 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                 }
             }
         }
+    }
+    
+    private boolean inLevelBounds(int x, int y, int z) {
+        if (x < 0 || x >= this.width || y < 0 || y >= this.height || z < 0 || z >= this.length) {
+            return false;
+        }
+            
+        return true;
     }
     
     // Not ideal, unused

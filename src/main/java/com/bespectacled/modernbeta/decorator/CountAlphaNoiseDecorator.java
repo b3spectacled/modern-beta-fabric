@@ -4,27 +4,27 @@ import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.bespectacled.modernbeta.noise.AlphaNoiseGeneratorOctaves;
+import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.decorator.SimpleDecorator;
 
 public class CountAlphaNoiseDecorator extends SimpleDecorator<CountNoiseDecoratorConfig> {
-    public AlphaNoiseGeneratorOctaves forestNoise;
+    public OldNoiseGeneratorOctaves forestNoise;
 
     public CountAlphaNoiseDecorator(Codec<CountNoiseDecoratorConfig> codec) {
         super(codec);
     }
 
     public void setSeed(long seed) {
-        forestNoise = new AlphaNoiseGeneratorOctaves(new Random(seed), 8);
+        forestNoise = new OldNoiseGeneratorOctaves(new Random(seed), 8, false);
     }
 
     @Override
     protected Stream<BlockPos> getPositions(Random random, CountNoiseDecoratorConfig config, BlockPos pos) {
         if (forestNoise == null) {
-            forestNoise = new AlphaNoiseGeneratorOctaves(new Random(0), 8);
+            forestNoise = new OldNoiseGeneratorOctaves(new Random(0), 8, false);
         }
 
         int chunkX = (int) pos.getX() / 16;

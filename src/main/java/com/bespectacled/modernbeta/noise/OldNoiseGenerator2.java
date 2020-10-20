@@ -2,35 +2,42 @@ package com.bespectacled.modernbeta.noise;
 
 import java.util.Random;
 
-public class BetaNoiseGenerator {
+public class OldNoiseGenerator2 {
     private static int gradient_vec[][] = { { 1, 1, 0 }, { -1, 1, 0 }, { 1, -1, 0 }, { -1, -1, 0 }, { 1, 0, 1 },
             { -1, 0, 1 }, { 1, 0, -1 }, { -1, 0, -1 }, { 0, 1, 1 }, { 0, -1, 1 }, { 0, 1, -1 }, { 0, -1, -1 } };
-    private int field_4295_e[];
-    public double field_4292_a;
-    public double field_4291_b;
-    public double field_4297_c;
+    
+    private int permutations[];
+    
+    public double xCoord;
+    public double yCoord;
+    public double zCoord;
+    
     private static final double field_4294_f = 0.5D * (Math.sqrt(3D) - 1.0D);
     private static final double field_4293_g = (3D - Math.sqrt(3D)) / 6D;
 
-    public BetaNoiseGenerator() {
+    public OldNoiseGenerator2() {
         this(new Random());
     }
 
-    public BetaNoiseGenerator(Random random) {
-        field_4295_e = new int[512];
-        field_4292_a = random.nextDouble() * 256D;
-        field_4291_b = random.nextDouble() * 256D;
-        field_4297_c = random.nextDouble() * 256D;
+    public OldNoiseGenerator2(Random random) {
+        permutations = new int[512];
+        
+        xCoord = random.nextDouble() * 256D;
+        yCoord = random.nextDouble() * 256D;
+        zCoord = random.nextDouble() * 256D;
+        
         for (int i = 0; i < 256; i++) {
-            field_4295_e[i] = i;
+            permutations[i] = i;
         }
 
         for (int j = 0; j < 256; j++) {
             int k = random.nextInt(256 - j) + j;
-            int l = field_4295_e[j];
-            field_4295_e[j] = field_4295_e[k];
-            field_4295_e[k] = l;
-            field_4295_e[j + 256] = field_4295_e[j];
+            int l = permutations[j];
+            
+            permutations[j] = permutations[k];
+            permutations[k] = l;
+            
+            permutations[j + 256] = permutations[j];
         }
 
     }
@@ -46,9 +53,9 @@ public class BetaNoiseGenerator {
     public void func_4157_a(double ad[], double d, double d1, int i, int j, double d2, double d3, double d4) {
         int k = 0;
         for (int l = 0; l < i; l++) {
-            double d5 = (d + (double) l) * d2 + field_4292_a;
+            double d5 = (d + (double) l) * d2 + xCoord;
             for (int i1 = 0; i1 < j; i1++) {
-                double d6 = (d1 + (double) i1) * d3 + field_4291_b;
+                double d6 = (d1 + (double) i1) * d3 + yCoord;
                 double d10 = (d5 + d6) * field_4294_f;
                 int j1 = wrap(d5 + d10);
                 int k1 = wrap(d6 + d10);
@@ -72,9 +79,9 @@ public class BetaNoiseGenerator {
                 double d19 = (d15 - 1.0D) + 2D * field_4293_g;
                 int j2 = j1 & 0xff;
                 int k2 = k1 & 0xff;
-                int l2 = field_4295_e[j2 + field_4295_e[k2]] % 12;
-                int i3 = field_4295_e[j2 + l1 + field_4295_e[k2 + i2]] % 12;
-                int j3 = field_4295_e[j2 + 1 + field_4295_e[k2 + 1]] % 12;
+                int l2 = permutations[j2 + permutations[k2]] % 12;
+                int i3 = permutations[j2 + l1 + permutations[k2 + i2]] % 12;
+                int j3 = permutations[j2 + 1 + permutations[k2 + 1]] % 12;
                 double d20 = 0.5D - d14 * d14 - d15 * d15;
                 double d7;
                 if (d20 < 0.0D) {
