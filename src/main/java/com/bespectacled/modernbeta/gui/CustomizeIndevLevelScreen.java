@@ -34,6 +34,8 @@ public class CustomizeIndevLevelScreen extends Screen {
     private int levelLength = ModernBeta.BETA_CONFIG.indevLevelLength;
     private int levelHeight = ModernBeta.BETA_CONFIG.indevLevelHeight;
     
+    private float caveRadius = ModernBeta.BETA_CONFIG.indevCaveRadius;
+    
     private ButtonListWidget buttonList;
    
     private final Text themeNormal = new TranslatableText("createWorld.customize.indev.theme.normal");
@@ -58,6 +60,7 @@ public class CustomizeIndevLevelScreen extends Screen {
         if (generatorSettings.settings.contains("levelWidth")) this.levelWidth = generatorSettings.settings.getInt("levelWidth");
         if (generatorSettings.settings.contains("levelLength")) this.levelLength = generatorSettings.settings.getInt("levelLength");
         if (generatorSettings.settings.contains("levelHeight")) this.levelHeight = generatorSettings.settings.getInt("levelHeight");
+        if (generatorSettings.settings.contains("caveRadius")) this.caveRadius = generatorSettings.settings.getFloat("caveRadius");
     }
     
     @Override
@@ -218,6 +221,26 @@ public class CustomizeIndevLevelScreen extends Screen {
                     });
                 }
         ));
+        
+        this.buttonList.addSingleOptionEntry(
+                new DoubleOption(
+                    "createWorld.customize.indev.caveRadiusSlider", 
+                    1D, 3D, 0.1f,
+                    (gameOptions) -> { return (double) this.caveRadius; }, // Getter
+                    (gameOptions, value) -> { // Setter
+                        this.caveRadius = value.floatValue();
+                        generatorSettings.settings.putFloat("caveRadius", value.floatValue());
+                        return;
+                    },
+                    (gameOptions, doubleOptions) -> {
+                        return new TranslatableText(
+                            "options.generic_value", 
+                            new Object[] { 
+                                new TranslatableText("createWorld.customize.indev.caveRadius"), 
+                                Text.of(String.format("%.01f", this.caveRadius)) 
+                        });
+                    }
+            ));
 
  
         this.children.add(this.buttonList);

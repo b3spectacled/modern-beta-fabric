@@ -63,4 +63,7 @@ public class ModernBetaConfig implements ConfigData {
     @ConfigEntry.Gui.Excluded
     public int indevLevelHeight = 128;
     
+    @ConfigEntry.Gui.Excluded
+    public float indevCaveRadius = 1.0f;
+    
 }

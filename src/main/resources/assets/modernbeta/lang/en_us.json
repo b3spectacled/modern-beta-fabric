@@ -10,6 +10,7 @@
     "createWorld.customize.indev.levelWidth": "Level Width",
     "createWorld.customize.indev.levelLength": "Level Length",
     "createWorld.customize.indev.levelHeight": "Level Height",
+    "createWorld.customize.indev.caveRadius": "Cave Radius",
     
     "createWorld.customize.indev.theme.normal": "Normal",
     "createWorld.customize.indev.theme.hell": "Hell",

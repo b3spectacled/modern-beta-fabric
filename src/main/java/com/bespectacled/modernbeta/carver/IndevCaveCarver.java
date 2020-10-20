@@ -36,6 +36,8 @@ public class IndevCaveCarver extends Carver<ProbabilityConfig> {
     @Override
     public boolean carve(Chunk chunk, Function<BlockPos, Biome> posToBiome, Random random, int seaLevel, int chunkX,
             int chunkZ, int mainChunkX, int mainChunkZ, BitSet carvingMask, ProbabilityConfig carverConfig) {
+        random = new Random(); // Ehh...
+        
         float caveX = chunkX * 16 + random.nextInt(16);
         float caveY = getCaveY(random);
         float caveZ = chunkZ * 16 + random.nextInt(16);
@@ -50,7 +52,7 @@ public class IndevCaveCarver extends Carver<ProbabilityConfig> {
         
         carveTunnels(chunk, random, mainChunkX, mainChunkZ, caveX, caveY, caveZ, caveLen, caveRadius, theta, phi);
 
-        return false;
+        return true;
     }
     
     protected void carveTunnels(Chunk chunk, Random random, int mainChunkX, int mainChunkZ, double caveX, double caveY, double caveZ,

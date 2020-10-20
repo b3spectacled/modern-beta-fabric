@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.gen;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import org.apache.logging.log4j.Level;
@@ -16,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
@@ -73,6 +75,8 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     private int height;
     private int layers;
     private int waterLevel;
+    private int groundLevel;
+    private float caveRadius;
     
     private boolean pregenerated = false;
     private Random rand;
@@ -104,6 +108,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         if (this.settings.settings.contains("levelWidth")) this.width = settings.settings.getInt("levelWidth");
         if (this.settings.settings.contains("levelLength")) this.length = settings.settings.getInt("levelLength");
         if (this.settings.settings.contains("levelHeight")) this.height = settings.settings.getInt("levelHeight");
+        if (this.settings.settings.contains("caveRadius")) this.caveRadius = settings.settings.getFloat("caveRadius");
         
         this.fluidBlock = (this.theme == Theme.HELL) ? Blocks.LAVA : Blocks.WATER;
         this.waterLevel = this.height / 2;
@@ -184,8 +189,12 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                     if (!blockToSet.equals(Blocks.AIR)) {
                         chunk.setBlockState(mutable.set(x, y, z), blockToSet.getDefaultState(), false);
                     }
+                    
+                    if (this.type == Type.FLOATING) continue;
                      
-                    if (y <= 1 && this.type != Type.FLOATING) {
+                    if (y <= 1 && blockToSet == Blocks.AIR) {
+                        chunk.setBlockState(mutable.set(x, y, z), Blocks.LAVA.getDefaultState(), false);
+                    } else if (y <= 1) {
                         chunk.setBlockState(mutable.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
                     }
                     
@@ -204,6 +213,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         for (int l = 0; l < this.layers; ++l) { 
             // Floating island layer generation depends on water level being lowered on each iteration
             this.waterLevel = (this.type == Type.FLOATING) ? this.height - 32 - l * 48 : this.waterLevel; 
+            this.groundLevel = this.waterLevel - 2;
             
             // Noise Generators (Here instead of constructor to randomize floating layer generation)    
             heightNoise1 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(this.rand, 8, true), new OldNoiseGeneratorOctaves(this.rand, 8, true));
@@ -279,7 +289,8 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             }
             
             buildIndevSurface(blockArr, heightmap);
-            floodTerrain(blockArr);            
+            floodFluid(blockArr);   
+            floodLava(blockArr);
             carveTerrain(blockArr);
             plantIndevSurface(blockArr);
         }
@@ -427,7 +438,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             float phi = this.rand.nextFloat() * 3.1415927f * 2.0f;
             float deltaPhi = 0.0f;
             
-            float caveRadius = this.rand.nextFloat() * this.rand.nextFloat() * 1f;
+            float caveRadius = this.rand.nextFloat() * this.rand.nextFloat() * this.caveRadius;
             
             for (int len = 0; len < caveLen; ++len) {
                 caveX += MathHelper.sin(theta) * MathHelper.cos(phi);
@@ -476,56 +487,83 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         }
     }
     
-    private void floodTerrain(Block[][][] blockArr) {
+    // Using Classic generation algorithm
+    private void floodFluid(Block[][][] blockArr) {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Watering..");
+        Block toFill = this.fluidBlock;
         
         if (this.type == Type.FLOATING) {
             return;
         }
         
-        if (this.type == Type.ISLAND) {
-            floodIsland(blockArr);
+        for (int x = 0; x < this.width; ++x) {
+            flood(blockArr, x, this.waterLevel - 1, 0, toFill);
+            flood(blockArr, x, this.waterLevel - 1, this.length - 1, toFill);
         }
         
-        int waterSourceCount = this.width * this.length / 800;
+        for (int z = 0; z < this.length; ++z) {
+            flood(blockArr, this.width - 1, this.waterLevel - 1, z, toFill);
+            flood(blockArr, 0, this.waterLevel - 1, z, toFill);
+        }
+        
+        int waterSourceCount = this.width * this.length / 800; 
         
         for (int i = 0; i < waterSourceCount; ++i) {
             int randX = random.nextInt(this.width);
             int randZ = random.nextInt(this.length);
-            int y = random.nextBoolean() ? waterLevel - 1 : waterLevel - 2;
+            int randY = random.nextBoolean() ? waterLevel - 1 : waterLevel - 2;
             
-            flood(blockArr, randX, y, randZ);
+            flood(blockArr, randX, randY, randZ, toFill);
         }
     }
     
-    private void flood(Block[][][] blockArr, int x, int y, int z) {
-        if (x < 0 || z < 0 || x > this.width - 1 || z > this.length - 1) return;
+    private void floodLava(Block[][][] blockArr) {
+        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Melting..");
         
-        Block someBlock = blockArr[x][y][z];
-        
-        if (someBlock == Blocks.AIR) {
-            blockArr[x][y][z] = this.fluidBlock;
-            
-            if (y - 1 >= 0          && blockArr[x][y - 1][z] == Blocks.AIR) flood(blockArr, x, y - 1, z);
-            if (x - 1 >= 0          && blockArr[x - 1][y][z] == Blocks.AIR) flood(blockArr, x - 1, y, z);
-            if (x + 1 < this.width  && blockArr[x + 1][y][z] == Blocks.AIR) flood(blockArr, x + 1, y, z);
-            if (z - 1 >= 0          && blockArr[x][y][z - 1] == Blocks.AIR) flood(blockArr, x, y, z - 1);
-            if (z + 1 < this.length && blockArr[x][y][z + 1] == Blocks.AIR) flood(blockArr, x, y, z + 1);
+        if (this.type == Type.FLOATING) {
+            return;
         }
+
+        int lavaSourceCount = this.width * this.length * this.height / 2000;
+        int lavaHeight = this.groundLevel;
+        
+        for (int i = 0; i < lavaSourceCount; ++i) {
+            int randX = random.nextInt(this.width);
+            int randZ = random.nextInt(this.length);
+            int randY = Math.min(
+                Math.min(random.nextInt(lavaHeight), random.nextInt(lavaHeight)),
+                Math.min(random.nextInt(lavaHeight), random.nextInt(lavaHeight)));
+            
+            flood(blockArr, randX, randY, randZ, Blocks.LAVA);
+        }
+        
     }
     
-    private void floodIsland(Block[][][] blockArr) {
-        for (int x = 0; x < this.width; ++x) {
-            for (int z = 0; z < this.length; ++z) {
-                for (int y = 0; y < this.height; ++y) {
-                    Block someBlock = blockArr[x][y][z];
-                    
-                    if (someBlock.equals(Blocks.AIR) && y < waterLevel) {
-                        blockArr[x][y][z] = this.fluidBlock;
-                    }
-                }
+    private void flood(Block[][][] blockArr, int x, int y, int z, Block toFill) {
+        ArrayList<Vec3d> posToFill = new ArrayList<Vec3d>();
+        posToFill.add(new Vec3d(x, y, z));
+        
+        while (posToFill.size() > 0) {
+            Vec3d curPos = posToFill.get(0);
+            x = (int)curPos.x;
+            y = (int)curPos.y;
+            z = (int)curPos.z;
+            
+            Block someBlock = blockArr[x][y][z];
+
+            if (someBlock == Blocks.AIR) {
+                blockArr[x][y][z] = toFill;
+                
+                if (y - 1 >= 0)          posToFill.add(new Vec3d(x, y - 1, z));
+                if (x - 1 >= 0)          posToFill.add(new Vec3d(x - 1, y, z));
+                if (x + 1 < this.width)  posToFill.add(new Vec3d(x + 1, y, z));
+                if (z - 1 >= 0)          posToFill.add(new Vec3d(x, y, z - 1));
+                if (z + 1 < this.length) posToFill.add(new Vec3d(x, y, z + 1));
             }
+            
+            posToFill.remove(0);
         }
+        
     }
     
     private void plantIndevSurface(Block[][][] blockArr) {

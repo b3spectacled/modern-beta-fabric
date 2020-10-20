@@ -118,6 +118,7 @@ public class MixinGeneratorOptions {
             indevSettings.putInt("levelWidth", ModernBeta.BETA_CONFIG.indevLevelWidth);
             indevSettings.putInt("levelLength", ModernBeta.BETA_CONFIG.indevLevelLength);
             indevSettings.putInt("levelHeight", ModernBeta.BETA_CONFIG.indevLevelHeight);
+            indevSettings.putFloat("caveRadius", ModernBeta.BETA_CONFIG.indevCaveRadius);
    
             BetaGeneratorSettings betaGenSettings = new BetaGeneratorSettings(type, betaSettings);
             AlphaGeneratorSettings alphaGenSettings = new AlphaGeneratorSettings(type, alphaSettings);

@@ -87,6 +87,7 @@ public final class IndevGeneratorType extends GeneratorType {
         indevSettings.settings.putInt("levelWidth", ModernBeta.BETA_CONFIG.indevLevelWidth);
         indevSettings.settings.putInt("levelLength", ModernBeta.BETA_CONFIG.indevLevelLength);
         indevSettings.settings.putInt("levelHeight", ModernBeta.BETA_CONFIG.indevLevelHeight);
+        indevSettings.settings.putFloat("caveRadius", ModernBeta.BETA_CONFIG.indevCaveRadius);
         
         return new IndevChunkGenerator(new IndevBiomeSource(seed, biomes, indevSettings.settings), seed, indevSettings);
     }
