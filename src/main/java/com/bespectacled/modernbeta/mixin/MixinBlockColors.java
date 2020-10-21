@@ -37,8 +37,8 @@ public class MixinBlockColors implements MutableBlockColors {
     public void setSeed(long seed, boolean useDefaultColors) {
         if (!useDefaultColors)
             BiomeMath.setSeed(BETA_CONFIG.fixedSeed != 0L ? BETA_CONFIG.fixedSeed : seed);
-        else
-            defaultColors = useDefaultColors;
+        
+        defaultColors = useDefaultColors;
     }
 
     @Dynamic("Reed color lambda method")

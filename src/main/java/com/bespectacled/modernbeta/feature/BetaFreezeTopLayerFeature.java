@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.feature;
 
 import java.util.Random;
 
+import com.bespectacled.modernbeta.biome.*;
 import com.bespectacled.modernbeta.util.BiomeMath;
 import com.mojang.serialization.Codec;
 
@@ -33,25 +34,21 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
         seed = 0L;
     }
 
-    public void setSeed(long seed) {
-        BiomeMath.setSeed(seed);
-        this.seed = seed;
-    }
-
     @Override
     public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos,
             DefaultFeatureConfig defaultFeatureConfig) {
-        if (this.seed != world.getSeed())
-            setSeed(world.getSeed());
-
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutableDown = new BlockPos.Mutable();
 
         int chunkX = blockPos.getX() / 16; // Divide first to truncate to closest chunk coordinate
         int chunkZ = blockPos.getZ() / 16;
-
-        BiomeMath.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
-
+        
+        // Shouldn't be used if this isn't an instance of BetaBiomeSource
+        if (!(chunkGenerator.getBiomeSource() instanceof BetaBiomeSource)) return false;
+        
+        BetaBiomeSource biomeSource = (BetaBiomeSource) chunkGenerator.getBiomeSource();
+        biomeSource.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
+        
         int i = 0;
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
@@ -62,11 +59,11 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 mutable.set(curX, curY, curZ);
                 mutableDown.set(mutable).move(Direction.DOWN, 1);
 
-                if (canSetIce(world, mutableDown, false, BiomeMath.temps[i])) {
+                if (canSetIce(world, mutableDown, false, biomeSource.temps[i])) {
                     world.setBlockState(mutableDown, Blocks.ICE.getDefaultState(), 2);
                 }
 
-                if (canSetSnow(world, mutable, BiomeMath.temps[i])) {
+                if (canSetSnow(world, mutable, biomeSource.temps[i])) {
                     world.setBlockState(mutable, Blocks.SNOW.getDefaultState(), 2);
 
                     BlockState blockState = world.getBlockState(mutableDown);

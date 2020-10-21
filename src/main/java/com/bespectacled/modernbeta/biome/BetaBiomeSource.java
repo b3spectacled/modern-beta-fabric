@@ -285,40 +285,6 @@ public class BetaBiomeSource extends BiomeSource {
 
     }
 
-    /*
-    private Biome getLiteOceanBiome(float temp, float humid, Registry<Biome> registry) {
-        humid *= temp;
-
-        if (temp < 0.1F) {
-            if (this.generateIceDesert)
-                return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
-            else
-                return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
-        }
-
-        if (humid < 0.2F) {
-            if (temp < 0.5F) {
-                return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
-            }
-            if (temp < 0.95F) {
-                return registry.get(new Identifier(ModernBeta.ID, "ocean"));
-            } else {
-                return registry.get(new Identifier(ModernBeta.ID, "ocean"));
-            }
-        }
-
-        if (humid > 0.5F && temp < 0.7F) {
-            return registry.get(new Identifier(ModernBeta.ID, "ocean"));
-        }
-
-        if (temp < 0.5F) {
-            return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
-        }
-
-        return registry.get(new Identifier(ModernBeta.ID, "ocean"));
-
-    }
-    */
 
     public boolean hasStructureFeature(StructureFeature<?> structureFeature) {
         return this.structureFeatures.computeIfAbsent(structureFeature,
