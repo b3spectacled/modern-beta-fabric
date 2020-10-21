@@ -1,0 +1,6 @@
+{
+  "condition": "minecraft:location_check",
+  "predicate": {
+    "biome": "modern_beta:indev_snowy"
+  }
+}

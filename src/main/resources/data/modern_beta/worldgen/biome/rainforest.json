@@ -186,8 +186,7 @@
       "minecraft:patch_pumpkin",
       "minecraft:patch_melon",
       "minecraft:spring_water",
-      "minecraft:spring_lava",
-	  "minecraft:seagrass_river"
+      "minecraft:spring_lava"
     ],
     [
       "modern_beta:beta_freeze_top_layer"

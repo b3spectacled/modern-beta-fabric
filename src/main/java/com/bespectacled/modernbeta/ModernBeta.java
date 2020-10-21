@@ -18,6 +18,7 @@ import com.bespectacled.modernbeta.gen.type.AlphaGeneratorType;
 import com.bespectacled.modernbeta.gen.type.BetaGeneratorType;
 import com.bespectacled.modernbeta.gen.type.IndevGeneratorType;
 import com.bespectacled.modernbeta.gen.type.SkylandsGeneratorType;
+import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
@@ -64,6 +65,7 @@ public class ModernBeta implements ModInitializer {
         BetaDecorator.register();
         BetaFeature.reserveConfiguredFeatureIDs();
         BetaFeature.register();
+        BetaStructure.register();
 
         BetaBiomes.reserveBiomeIDs();
         AlphaBiomes.reserveBiomeIDs();

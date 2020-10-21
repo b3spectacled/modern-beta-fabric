@@ -1,24 +1,20 @@
 package com.bespectacled.modernbeta.gen;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import org.apache.logging.log4j.Level;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
@@ -27,10 +23,10 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
+import net.minecraft.world.gen.chunk.StructuresConfig;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.IndevBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
-import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.gen.settings.IndevGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.IndevUtil.Theme;
@@ -47,6 +43,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             .apply(instance, instance.stable(IndevChunkGenerator::new)));
 
     private final IndevGeneratorSettings settings;
+    private final StructuresConfig structuresConfig;
     
     private OldNoiseGeneratorCombined heightNoise1;
     private OldNoiseGeneratorCombined heightNoise2;
@@ -78,6 +75,9 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     private int groundLevel;
     private float caveRadius;
     
+    private int spawnX;
+    private int spawnZ;
+    
     private boolean pregenerated = false;
     private Random rand;
 
@@ -91,6 +91,8 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     public IndevChunkGenerator(BiomeSource biomes, long seed, IndevGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
         this.settings = settings;
+        this.structuresConfig = settings.wrapped.getStructuresConfig();
+        
         this.seed = seed;
         this.rand = new Random(seed);
         this.biomeSource = (IndevBiomeSource) biomes;
@@ -114,6 +116,9 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         this.waterLevel = this.height / 2;
         this.layers = (this.type == Type.FLOATING) ? (this.height - 64) / 48 + 1 : 1;
         
+        this.spawnX = 0;
+        this.spawnZ = 0;
+        
         this.pregenerated = false;
         
         // Yes this is messy. What else am I supposed to do?
@@ -135,18 +140,19 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     @Override
     public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
         ChunkPos pos = chunk.getPos();
-        int spawnX = worldAccess.getLevelProperties().getSpawnX();
-        int spawnZ = worldAccess.getLevelProperties().getSpawnZ();
-        int spawnY = getHeight(spawnX, spawnZ, null);
         
+        this.spawnX = worldAccess.getLevelProperties().getSpawnX();
+        this.spawnZ = worldAccess.getLevelProperties().getSpawnZ();
+
         if (inIndevRegion(pos.x, pos.z)) {
+
             if (!pregenerated) {
                 blockArr = pregenerateTerrain(blockArr);
                
                 pregenerated = true;   
             }
             
-            setTerrain(chunk, blockArr);
+            setTerrain(structureAccessor, chunk, blockArr);
      
         } else if (this.type != Type.FLOATING) {
             if (this.type == Type.ISLAND)
@@ -170,7 +176,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         return false;
     }
     
-    private void setTerrain(Chunk chunk, Block[][][] blockArr) {
+    private void setTerrain(StructureAccessor structureAccessor, Chunk chunk, Block[][][] blockArr) {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
@@ -660,39 +666,6 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         return true;
     }
     
-    // Not ideal, unused
-    /*
-    private void generateIndevHouse(WorldAccess world, int spawnX, int spawnY, int spawnZ) {
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        
-        for (int x = spawnX - 3; x <= spawnX + 3; ++x) {
-            for (int y = spawnY - 2; y <= spawnY + 2; ++y) {
-                for (int z = spawnZ - 3; z <= spawnZ + 3; ++z) {
-                    Block blockToSet = (y < spawnY - 1) ? Blocks.OBSIDIAN : Blocks.AIR;
-                    if (x == spawnX - 3 || z == spawnZ - 3 || x == spawnX + 3 || z == spawnZ + 3 || y == spawnY - 2 || y == spawnY + 2) {
-                        blockToSet = Blocks.STONE;
-                        if (y >= spawnY - 1) {
-                            blockToSet = Blocks.OAK_PLANKS;
-                        }
-                    }
-                    if (z == spawnZ - 3 && x == spawnX && y >= spawnY - 1 && y <= spawnY) {
-                        blockToSet = Blocks.AIR;
-                    }
-                    if (x >= this.width || x < 0 || z >= this.length || z < 0) continue;
-                    //blockArr[x][y][z] = blockToSet;
-                    world.setBlockState(mutable.set(x, y, z), blockToSet.getDefaultState(), 1);
-                }
-            }
-        }
-        
-        //blockArr[spawnX - 3 + 1][spawnY][spawnZ] = Blocks.WALL_TORCH;
-        //blockArr[spawnX + 3 - 1][spawnY][spawnZ] = Blocks.WALL_TORCH;
-        
-        world.setBlockState(mutable.set(spawnX - 3 + 1, spawnY, spawnZ), Blocks.WALL_TORCH.getDefaultState(), 1);
-        world.setBlockState(mutable.set(spawnX + 3 - 1, spawnY, spawnZ), Blocks.WALL_TORCH.getDefaultState(), 1);
-    }
-    */
-    
     @Override
     public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {
         // Do nothing, for now.
@@ -700,9 +673,12 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public int getHeight(int x, int z, Heightmap.Type type) {
-        int height = this.waterLevel + 1;
+        int height = this.height - 1;
         
-        if (x < 0 || x >= this.width || z < 0 || z >= this.length) return height;
+        x = x + this.width / 2;
+        z = z + this.length / 2;
+        
+        if (x < 0 || x >= this.width || z < 0 || z >= this.length) return waterLevel;
         
         if (!pregenerated) {
             this.blockArr = pregenerateTerrain(this.blockArr);
@@ -719,9 +695,9 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             height = y;
         }
         
-        if (height == 0) height = this.waterLevel;
+        if (height <= this.waterLevel) height = this.waterLevel;
          
-        return height - 1;
+        return height;
     }
 
     @Override
@@ -737,6 +713,14 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     @Override
     public ChunkGenerator withSeed(long seed) {
         return new IndevChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings);
+    }
+    
+    public int getSpawnX() {
+        return this.spawnX;
+    }
+    
+    public int getSpawnZ() {
+        return this.spawnZ;
     }
 
 }

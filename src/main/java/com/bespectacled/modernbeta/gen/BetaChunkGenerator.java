@@ -398,8 +398,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                         PoolStructurePiece poolStructurePiece;
                         StructurePool.Projection structureProjection;
 
-                        int integer13;
-                        int integer14;
+                        int jigsawX;
+                        int jigsawZ;
                         int n2 = arg2.x;
                         int n3 = arg2.z;
 
@@ -418,10 +418,10 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                                 jigsawJunctionIterator = poolStructurePiece.getJunctions().iterator();
                                 while (jigsawJunctionIterator.hasNext()) {
                                     jigsawJunction = jigsawJunctionIterator.next();
-                                    integer13 = jigsawJunction.getSourceX();
-                                    integer14 = jigsawJunction.getSourceZ();
-                                    if (integer13 > n2 - 12 && integer14 > n3 - 12 && integer13 < n2 + 15 + 12) {
-                                        if (integer14 >= n3 + 15 + 12) {
+                                    jigsawX = jigsawJunction.getSourceX();
+                                    jigsawZ = jigsawJunction.getSourceZ();
+                                    if (jigsawX > n2 - 12 && jigsawZ > n3 - 12 && jigsawX < n2 + 15 + 12) {
+                                        if (jigsawZ >= n3 + 15 + 12) {
                                             continue;
                                         } else {
                                             jigsawList.add(jigsawJunction);
