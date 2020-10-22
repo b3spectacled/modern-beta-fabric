@@ -45,8 +45,6 @@ public class ModernBeta implements ModInitializer {
     public static final ModernBetaConfig BETA_CONFIG = AutoConfig
             .register(ModernBetaConfig.class, GsonConfigSerializer::new).getConfig();
 
-    public static long SEED;
-
     // Ehh...
     public static void setBlockColorsSeed(long seed, boolean defaultColors) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {

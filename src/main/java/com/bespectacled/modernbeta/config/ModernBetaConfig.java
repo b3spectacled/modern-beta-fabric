@@ -30,7 +30,7 @@ public class ModernBetaConfig implements ConfigData {
     @ConfigEntry.Gui.Excluded
     //@ConfigEntry.Category(value = "betaGen")
     @ConfigEntry.Gui.Tooltip(count = 2)
-    public boolean generateOceans = true;
+    public boolean generateOceans = false;
 
     @ConfigEntry.Gui.Excluded
     //@ConfigEntry.Category(value = "betaGen")

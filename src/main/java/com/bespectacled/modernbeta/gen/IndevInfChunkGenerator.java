@@ -159,7 +159,6 @@ public class IndevInfChunkGenerator extends NoiseChunkGenerator {
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
         ModernBeta.setBlockColorsSeed(0L, true);
-        ModernBeta.SEED = seed;
     }
 
     public static void register() {

@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
@@ -44,6 +45,8 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
 
     private final IndevGeneratorSettings settings;
     private final StructuresConfig structuresConfig;
+    private final IndevBiomeSource biomeSource;
+    private final long seed;
     
     private OldNoiseGeneratorCombined heightNoise1;
     private OldNoiseGeneratorCombined heightNoise2;
@@ -67,6 +70,10 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     private Block blockArr[][][];
     private int heightmap[]; 
     
+    private Theme theme;
+    private Type type;
+    private Block fluidBlock;
+    
     private int width;
     private int length;
     private int height;
@@ -79,23 +86,18 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     private int spawnZ;
     
     private boolean pregenerated = false;
-    private Random rand;
 
-    IndevBiomeSource biomeSource;
-    private Theme theme;
-    private Type type;
-    private final Block fluidBlock;
+    private static final Mutable POS = new Mutable();
+    private static final Random RAND = new Random();
 
-    public static long seed;
-    
     public IndevChunkGenerator(BiomeSource biomes, long seed, IndevGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
         this.settings = settings;
         this.structuresConfig = settings.wrapped.getStructuresConfig();
-        
         this.seed = seed;
-        this.rand = new Random(seed);
         this.biomeSource = (IndevBiomeSource) biomes;
+        
+        RAND.setSeed(seed);
 
         this.theme = Theme.NORMAL;
         this.type = Type.ISLAND;
@@ -124,7 +126,6 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
         ModernBeta.setBlockColorsSeed(0L, true);
-        ModernBeta.SEED = seed;
     }
 
     public static void register() {
@@ -183,7 +184,6 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         int offsetX = (chunkX + this.width / 16 / 2) * 16;
         int offsetZ = (chunkZ + this.length / 16 / 2) * 16;
         
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
@@ -193,15 +193,15 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                     Block blockToSet = blockArr[offsetX + x][y][offsetZ + z];
                     
                     if (!blockToSet.equals(Blocks.AIR)) {
-                        chunk.setBlockState(mutable.set(x, y, z), blockToSet.getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), blockToSet.getDefaultState(), false);
                     }
                     
                     if (this.type == Type.FLOATING) continue;
                      
                     if (y <= 1 && blockToSet == Blocks.AIR) {
-                        chunk.setBlockState(mutable.set(x, y, z), Blocks.LAVA.getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), Blocks.LAVA.getDefaultState(), false);
                     } else if (y <= 1) {
-                        chunk.setBlockState(mutable.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
                     }
                     
                     heightmapOCEAN.trackUpdate(x, y, z, blockToSet.getDefaultState());
@@ -222,20 +222,20 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             this.groundLevel = this.waterLevel - 2;
             
             // Noise Generators (Here instead of constructor to randomize floating layer generation)    
-            heightNoise1 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(this.rand, 8, true), new OldNoiseGeneratorOctaves(this.rand, 8, true));
-            heightNoise2 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(this.rand, 8, true), new OldNoiseGeneratorOctaves(this.rand, 8, true));
+            heightNoise1 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(RAND, 8, true), new OldNoiseGeneratorOctaves(RAND, 8, true));
+            heightNoise2 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(RAND, 8, true), new OldNoiseGeneratorOctaves(RAND, 8, true));
             
-            heightNoise3 = new OldNoiseGeneratorOctaves(this.rand, 6, true);
-            islandNoise = new OldNoiseGeneratorOctaves(this.rand, 2, true);
+            heightNoise3 = new OldNoiseGeneratorOctaves(RAND, 6, true);
+            islandNoise = new OldNoiseGeneratorOctaves(RAND, 2, true);
             
-            noise5 = new OldNoiseGeneratorOctaves(this.rand, 8, true);
-            noise6 = new OldNoiseGeneratorOctaves(this.rand, 8, true);
+            noise5 = new OldNoiseGeneratorOctaves(RAND, 8, true);
+            noise6 = new OldNoiseGeneratorOctaves(RAND, 8, true);
             
-            erodeNoise1 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(this.rand, 8, true), new OldNoiseGeneratorOctaves(this.rand, 8, true));
-            erodeNoise2 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(this.rand, 8, true), new OldNoiseGeneratorOctaves(this.rand, 8, true));
+            erodeNoise1 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(RAND, 8, true), new OldNoiseGeneratorOctaves(RAND, 8, true));
+            erodeNoise2 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(RAND, 8, true), new OldNoiseGeneratorOctaves(RAND, 8, true));
             
-            sandNoiseOctaves = new OldNoiseGeneratorOctaves(this.rand, 8, true);
-            gravelNoiseOctaves = new OldNoiseGeneratorOctaves(this.rand, 8, true);
+            sandNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, true);
+            gravelNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, true);
             
             heightmap = generateHeightmap(heightmap);
             erodeTerrain(heightmap);
@@ -433,18 +433,18 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         int caveCount = this.width * this.length * this.height / 256 / 64 << 1;
         
         for (int i = 0; i < caveCount; ++i) {
-            float caveX = this.rand.nextFloat() * this.width;
-            float caveY = this.rand.nextFloat() * this.height;
-            float caveZ = this.rand.nextFloat() * this.length;
+            float caveX = RAND.nextFloat() * this.width;
+            float caveY = RAND.nextFloat() * this.height;
+            float caveZ = RAND.nextFloat() * this.length;
 
-            int caveLen = (int)((this.rand.nextFloat() + this.rand.nextFloat()) * 200F);
+            int caveLen = (int)((RAND.nextFloat() + RAND.nextFloat()) * 200F);
             
-            float theta = this.rand.nextFloat() * 3.1415927f * 2.0f;
+            float theta = RAND.nextFloat() * 3.1415927f * 2.0f;
             float deltaTheta = 0.0f;
-            float phi = this.rand.nextFloat() * 3.1415927f * 2.0f;
+            float phi = RAND.nextFloat() * 3.1415927f * 2.0f;
             float deltaPhi = 0.0f;
             
-            float caveRadius = this.rand.nextFloat() * this.rand.nextFloat() * this.caveRadius;
+            float caveRadius = RAND.nextFloat() * RAND.nextFloat() * this.caveRadius;
             
             for (int len = 0; len < caveLen; ++len) {
                 caveX += MathHelper.sin(theta) * MathHelper.cos(phi);
@@ -452,14 +452,14 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                 caveY += MathHelper.sin(phi);
                 
                 theta = theta + deltaTheta * 0.2f;
-                deltaTheta = (deltaTheta * 0.9f) + (this.rand.nextFloat() - this.rand.nextFloat());
+                deltaTheta = (deltaTheta * 0.9f) + (RAND.nextFloat() - RAND.nextFloat());
                 phi = phi / 2 + deltaPhi / 4;
-                deltaPhi = (deltaPhi * 0.75f) + (this.rand.nextFloat() - this.rand.nextFloat());
+                deltaPhi = (deltaPhi * 0.75f) + (RAND.nextFloat() - RAND.nextFloat());
                 
-                if (this.rand.nextFloat() >= 0.25f) {
-                    float centerX = caveX + (this.rand.nextFloat() * 4.0f - 2.0f) * 0.2f;
-                    float centerY = caveY + (this.rand.nextFloat() * 4.0f - 2.0f) * 0.2f;
-                    float centerZ = caveZ + (this.rand.nextFloat() * 4.0f - 2.0f) * 0.2f;
+                if (RAND.nextFloat() >= 0.25f) {
+                    float centerX = caveX + (RAND.nextFloat() * 4.0f - 2.0f) * 0.2f;
+                    float centerY = caveY + (RAND.nextFloat() * 4.0f - 2.0f) * 0.2f;
+                    float centerZ = caveZ + (RAND.nextFloat() * 4.0f - 2.0f) * 0.2f;
                     
                     float radius = (this.height - centerY) / this.height;
                     radius = 1.2f + (radius * 3.5f + 1.0f) * caveRadius;
@@ -515,9 +515,9 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         int waterSourceCount = this.width * this.length / 800; 
         
         for (int i = 0; i < waterSourceCount; ++i) {
-            int randX = random.nextInt(this.width);
-            int randZ = random.nextInt(this.length);
-            int randY = random.nextBoolean() ? waterLevel - 1 : waterLevel - 2;
+            int randX = RAND.nextInt(this.width);
+            int randZ = RAND.nextInt(this.length);
+            int randY = RAND.nextBoolean() ? waterLevel - 1 : waterLevel - 2;
             
             flood(blockArr, randX, randY, randZ, toFill);
         }
@@ -534,11 +534,11 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         int lavaHeight = this.groundLevel;
         
         for (int i = 0; i < lavaSourceCount; ++i) {
-            int randX = random.nextInt(this.width);
-            int randZ = random.nextInt(this.length);
+            int randX = RAND.nextInt(this.width);
+            int randZ = RAND.nextInt(this.length);
             int randY = Math.min(
-                Math.min(random.nextInt(lavaHeight), random.nextInt(lavaHeight)),
-                Math.min(random.nextInt(lavaHeight), random.nextInt(lavaHeight)));
+                Math.min(RAND.nextInt(lavaHeight), RAND.nextInt(lavaHeight)),
+                Math.min(RAND.nextInt(lavaHeight), RAND.nextInt(lavaHeight)));
             
             flood(blockArr, randX, randY, randZ, Blocks.LAVA);
         }
@@ -592,7 +592,6 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     }
     
     private void generateWorldBorder(Chunk chunk) {
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
         Block topBlock = Blocks.GRASS_BLOCK;
         
         if (this.theme == Theme.HELL) topBlock = Blocks.DIRT;
@@ -601,9 +600,9 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             for (int z = 0; z < 16; ++z) {
                 for (int y = 0; y < this.height; ++y) {
                     if (y < this.waterLevel) {
-                        chunk.setBlockState(mutable.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
                     } else if (y == this.waterLevel) {
-                        chunk.setBlockState(mutable.set(x, y, z), topBlock .getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), topBlock .getDefaultState(), false);
                     }
                 }
             }
@@ -611,17 +610,15 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     }
     
     private void generateWaterBorder(Chunk chunk) {
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-         
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
                 for (int y = 0; y < this.height; ++y) {
                     if (y < this.waterLevel - 10) {
-                        chunk.setBlockState(mutable.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
                     } else if (y == this.waterLevel - 10) {
-                        chunk.setBlockState(mutable.set(x, y, z), Blocks.DIRT.getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), Blocks.DIRT.getDefaultState(), false);
                     } else if (y < this.waterLevel) {
-                        chunk.setBlockState(mutable.set(x, y, z), this.fluidBlock.getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), this.fluidBlock.getDefaultState(), false);
                     }
                 }
             }

@@ -1,19 +1,27 @@
 package com.bespectacled.modernbeta.mixin;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.MutableWorldProperties;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
+
 import com.bespectacled.modernbeta.util.BiomeMath;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
+import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
+import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
+
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -31,8 +39,14 @@ public abstract class MixinClientWorld extends World {
     
     @Unique
     private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
+    
+    @Unique
+    private boolean isBetaWorld = false;
+    
+    @Shadow
+    private MinecraftClient client;
 
-    private MixinClientWorld() {
+    private MixinClientWorld(MutableWorldProperties properties, RegistryKey<World> registryRef, final DimensionType dimensionType, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed) {
         super(null, null, null, null, false, false, 0L);
     }
     
@@ -46,8 +60,16 @@ public abstract class MixinClientWorld extends World {
             RegistryKey<World> worldKey, DimensionType dimensionType, int loadDistance, Supplier<Profiler> profiler,
             WorldRenderer renderer, boolean debugWorld, long seed, CallbackInfo ci) {
         
-        long skySeed = BETA_CONFIG.fixedSeed == 0L ? ModernBeta.SEED : BETA_CONFIG.fixedSeed;
-        setSeed(skySeed);
+        ChunkGenerator generator = client.getServer().getOverworld().getChunkManager().getChunkGenerator();
+        isBetaWorld = generator instanceof BetaChunkGenerator || generator instanceof SkylandsChunkGenerator;
+
+        if (isBetaWorld) {
+            long worldSeed = generator.worldSeed;
+            
+            worldSeed = BETA_CONFIG.fixedSeed == 0L ? worldSeed : BETA_CONFIG.fixedSeed;
+            setSeed(worldSeed);
+        }
+        
     }
     
     @ModifyVariable(
@@ -67,7 +89,7 @@ public abstract class MixinClientWorld extends World {
         index = 6  
     )
     private int injectBetaSkyColor(int skyColor) {
-        if (BETA_CONFIG.renderBetaSkyColor && this.getDimension().hasSkyLight() && this.curBlockPos != null) {
+        if (isBetaWorld && BETA_CONFIG.renderBetaSkyColor && this.getDimension().hasSkyLight() && this.curBlockPos != null) {
             skyColor = getBetaSkyColor(curBlockPos);
         }
         
