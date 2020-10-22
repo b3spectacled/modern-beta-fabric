@@ -78,5 +78,23 @@ public class OldNoiseGeneratorOctaves extends OldNoiseGenerator {
         return double6;
     }
 
+    public final double generateInfdevOctaves(double double2, double double4) {
+        double double6 = 0.0;
+        double double8 = 1.0;
+        for (int i = 0; i < this.octaves; ++i) {
+            double6 += this.generatorCollection[i].func_801_a_infdev(double2 / double8, double4 / double8) * double8;
+            double8 *= 2.0;
+        }
+        return double6;
+    }
     
+    public final double a(double generateInfdevOctaves2, double double4, double double6) {
+        double double8 = 0.0;
+        double double10 = 1.0;
+        for (int i = 0; i < this.octaves; ++i) {
+            double8 += this.generatorCollection[i].infdevA(generateInfdevOctaves2 / double10, double4 / double10, double6 / double10) * double10;
+            double10 *= 2.0;
+        }
+        return double8;
+    }
 }

@@ -27,7 +27,7 @@ public class CountBetaNoiseDecorator extends SimpleDecorator<CountNoiseDecorator
     @Override
     protected Stream<BlockPos> getPositions(Random random, CountNoiseDecoratorConfig config, BlockPos pos) {
         if (forestNoise == null) {
-            forestNoise = new OldNoiseGeneratorOctaves(new Random(0), 8, false);
+            forestNoise = new OldNoiseGeneratorOctaves(random, 8, false);
         }
 
         int chunkX = (int) pos.getX() / 16;

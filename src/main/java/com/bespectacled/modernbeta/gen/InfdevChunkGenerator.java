@@ -165,8 +165,6 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
-        ChunkPos pos = chunk.getPos();
-
         rand.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
 
         generateTerrain(chunk, temps, structureAccessor);
@@ -460,15 +458,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
                     double var3 = heightmap[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 0)];
                     double var4 = heightmap[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 0)];
 
-                    double var5 = (heightmap[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var1) * eighth; // Lerped
-                                                                                                                // by
-                                                                                                                // this
-                                                                                                                // amount,
-                                                                                                                // (var5
-                                                                                                                // -
-                                                                                                                // var1)
-                                                                                                                // *
-                                                                                                                // 0.125D
+                    double var5 = (heightmap[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var1) * eighth;
                     double var6 = (heightmap[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var2) * eighth;
                     double var7 = (heightmap[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var3) * eighth;
                     double var8 = (heightmap[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var4) * eighth;

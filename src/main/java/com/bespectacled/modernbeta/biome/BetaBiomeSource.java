@@ -112,7 +112,10 @@ public class BetaBiomeSource extends BiomeSource {
         // Sample biome at this one absolute coordinate.
         fetchTempHumid(x, z, 1, 1);
 
-        return oceanBiomesInChunk[0];
+        if (this.generateOceans)
+            return oceanBiomesInChunk[0];
+        else
+            return biomesInChunk[0];
     }
 
     public Biome[] fetchTempHumid(int x, int z, int sizeX, int sizeZ) {

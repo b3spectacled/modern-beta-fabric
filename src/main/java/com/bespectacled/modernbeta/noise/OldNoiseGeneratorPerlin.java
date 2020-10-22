@@ -162,6 +162,14 @@ public class OldNoiseGeneratorPerlin extends OldNoiseGenerator {
     public double func_801_a(double d, double d1) {
         return generateNoise(d, d1, 0.0D);
     }
+    
+    public final double func_801_a_infdev(double double2, double double4) {
+        return this.sampleInfdevNoise(double2, double4, 0.0);
+    }
+    
+    public final double infdevA(double double2, double double4, double double6) {
+        return this.sampleInfdevNoise(double2, double4, double6);
+    }
 
     public void sampleBetaNoise(double ad[], double d, double d1, double d2, int i, int j, int k, double d3, double d4,
             double d5, double d6) {
@@ -335,6 +343,10 @@ public class OldNoiseGeneratorPerlin extends OldNoiseGenerator {
 
     }
     
+    private static double generateIndevNoise(double double1) {
+        return double1 * double1 * double1 * (double1 * (double1 * 6.0 - 15.0) + 10.0);
+    }
+    
     public final double sampleIndevNoise(double double2, double double4) {
         double double11 = 0.0;
         double double9 = double4;
@@ -360,32 +372,45 @@ public class OldNoiseGeneratorPerlin extends OldNoiseGenerator {
                 double18, 
                 lerp(
                     double16, 
-                    indevGrad(this.permutations[integer13], double7, double9, double11), 
-                    indevGrad(this.permutations[integer4], double7 - 1.0, double9, double11)), 
+                    grad(this.permutations[integer13], double7, double9, double11), 
+                    grad(this.permutations[integer4], double7 - 1.0, double9, double11)), 
                 lerp(
                     double16, 
-                    indevGrad(this.permutations[integer6], double7, double9 - 1.0, double11), 
-                    indevGrad(this.permutations[integer3], double7 - 1.0, double9 - 1.0, double11))), 
+                    grad(this.permutations[integer6], double7, double9 - 1.0, double11), 
+                    grad(this.permutations[integer3], double7 - 1.0, double9 - 1.0, double11))), 
             lerp(
                 double18, 
                 lerp(
                     double16, 
-                    indevGrad(this.permutations[integer13 + 1], double7, double9, double11 - 1.0), 
-                    indevGrad(this.permutations[integer4 + 1], double7 - 1.0, double9, double11 - 1.0)), 
+                    grad(this.permutations[integer13 + 1], double7, double9, double11 - 1.0), 
+                    grad(this.permutations[integer4 + 1], double7 - 1.0, double9, double11 - 1.0)), 
                 lerp(
                     double16, 
-                    indevGrad(this.permutations[integer6 + 1], double7, double9 - 1.0, double11 - 1.0), 
-                    indevGrad(this.permutations[integer3 + 1], double7 - 1.0, double9 - 1.0, double11 - 1.0))));
+                    grad(this.permutations[integer6 + 1], double7, double9 - 1.0, double11 - 1.0), 
+                    grad(this.permutations[integer3 + 1], double7 - 1.0, double9 - 1.0, double11 - 1.0))));
     }
 
-    private static double generateIndevNoise(double double1) {
-        return double1 * double1 * double1 * (double1 * (double1 * 6.0 - 15.0) + 10.0);
+    private double sampleInfdevNoise(double double2, double double4, double double6) {
+        double double8 = double2 + this.xCoord;
+        double double10 = double4 + this.yCoord;
+        double double12 = double6 + this.zCoord;
+        int integer2 = MathHelper.floor_double(double8) & 0xFF;
+        int integer3 = MathHelper.floor_double(double10) & 0xFF;
+        int integer4 = MathHelper.floor_double(double12) & 0xFF;
+        double8 -= MathHelper.floor_double(double8);
+        double10 -= MathHelper.floor_double(double10);
+        double12 -= MathHelper.floor_double(double12);
+        double double17 = generateIndevNoise(double8);
+        double double19 = generateIndevNoise(double10);
+        double double21 = generateIndevNoise(double12);
+        int integer5 = this.permutations[integer2] + integer3;
+        int integer6 = this.permutations[integer5] + integer4;
+        integer5 = this.permutations[integer5 + 1] + integer4;
+        integer2 = this.permutations[integer2 + 1] + integer3;
+        integer3 = this.permutations[integer2] + integer4;
+        integer2 = this.permutations[integer2 + 1] + integer4;
+        return lerp(double21, lerp(double19, lerp(double17, grad(this.permutations[integer6], double8, double10, double12), grad(this.permutations[integer3], double8 - 1.0, double10, double12)), lerp(double17, grad(this.permutations[integer5], double8, double10 - 1.0, double12), grad(this.permutations[integer2], double8 - 1.0, double10 - 1.0, double12))), lerp(double19, lerp(double17, grad(this.permutations[integer6 + 1], double8, double10, double12 - 1.0), grad(this.permutations[integer3 + 1], double8 - 1.0, double10, double12 - 1.0)), lerp(double17, grad(this.permutations[integer5 + 1], double8, double10 - 1.0, double12 - 1.0), grad(this.permutations[integer2 + 1], double8 - 1.0, double10 - 1.0, double12 - 1.0))));
     }
     
-    /* For some reason this grad implementation is different from the other one.... */
-    private static double indevGrad(int integer, double double2, double double4, double double6) {
-        double double9 = ((integer &= 0xF) < 8) ? double2 : double4;
-        double double11 = (integer < 4) ? double4 : ((integer == 12 || integer == 14) ? double2 : double6);
-        return (((integer & 0x1) == 0x0) ? double9 : (-double9)) + (((integer & 0x2) == 0x0) ? double11 : (-double11));
-    }
+    
 }
