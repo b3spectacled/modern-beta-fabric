@@ -85,9 +85,6 @@ public class BetaBiomeSource extends BiomeSource {
         this.biomeRegistry = registry;
         this.settings = settings;
         
-        this.generateOceans = false;
-        this.generateIceDesert = false;
-        
         if (settings.contains("generateOceans")) this.generateOceans = settings.getBoolean("generateOceans");
         if (settings.contains("generateBetaOceans")) this.generateBetaOceans = settings.getBoolean("generateBetaOceans");
         if (settings.contains("generateIceDesert")) this.generateIceDesert = settings.getBoolean("generateIceDesert");
@@ -114,7 +111,7 @@ public class BetaBiomeSource extends BiomeSource {
         // Sample biome at this one absolute coordinate.
         fetchTempHumid(x, z, 1, 1);
 
-        if (this.generateBetaOceans)
+        if (this.generateBetaOceans || this.generateOceans) // To maintain compat with old option
             return oceanBiomesInChunk[0];
         else
             return biomesInChunk[0];
