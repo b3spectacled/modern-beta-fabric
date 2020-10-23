@@ -69,6 +69,7 @@ public final class BetaGeneratorType extends GeneratorType {
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings,
             long seed) {
         betaSettings.settings.putBoolean("generateOceans", ModernBeta.BETA_CONFIG.generateOceans);
+        betaSettings.settings.putBoolean("generateBetaOceans", ModernBeta.BETA_CONFIG.generateBetaOceans);
         betaSettings.settings.putBoolean("generateIceDesert", ModernBeta.BETA_CONFIG.generateIceDesert);
         
         return new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaSettings.settings), seed, betaSettings);

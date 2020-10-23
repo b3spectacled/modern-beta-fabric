@@ -20,6 +20,9 @@ public class BetaDecorator {
 
     public static final CountAlphaNoiseDecorator COUNT_ALPHA_NOISE_DECORATOR = add("count_alpha_noise",
             new CountAlphaNoiseDecorator(CountNoiseDecoratorConfig.CODEC));
+    
+    public static final CountInfdevNoiseDecorator COUNT_INFDEV_NOISE_DECORATOR = add("count_infdev_noise",
+            new CountInfdevNoiseDecorator(CountNoiseDecoratorConfig.CODEC));
 
     static <D extends Decorator<? extends DecoratorConfig>> D add(String name, D decorator) {
         DECORATORS.put(new Identifier(ModernBeta.ID, name), decorator);

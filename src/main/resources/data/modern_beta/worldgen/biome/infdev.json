@@ -125,14 +125,12 @@
   "surface_builder": "minecraft:grass",
   "carvers": {
     "air": [
+      "modern_beta:beta_cave"
     ]
   },
   "features": [
     [],
-    [
-      "minecraft:lake_water",
-      "minecraft:lake_lava"
-    ],
+    [],
     [],
     [
       "minecraft:monster_room"
@@ -140,6 +138,8 @@
     [],
     [],
     [
+      "minecraft:ore_dirt",
+      "minecraft:ore_gravel",
       "minecraft:ore_coal",
       "minecraft:ore_iron",
       "minecraft:ore_gold",
@@ -151,7 +151,7 @@
     ],
     [],
     [
-      "modern_beta:trees_indev_bees",
+      "modern_beta:trees_infdev_bees",
       "modern_beta:patch_grass_alpha_2",
       "modern_beta:patch_dandelion_2",
       "modern_beta:patch_poppy",
@@ -180,11 +180,10 @@
 	"grass_color": 11272039,
 	"foliage_color": 5242667,
 	"sky_color": 10079487,
-    "fog_color": 16777215,
+    "fog_color": 11587839,
     "water_color": 2835199,
     "water_fog_color": 329011
   },
-  "player_spawn_friendly": true,
   "precipitation": "rain",
   "category": "forest",
   "depth": 0.37

@@ -253,8 +253,8 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
                                 chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
 
-                                // heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
-                                // heightmapSURFACE.trackUpdate(x, y, z, blockToSet);
+                                heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
+                                heightmapSURFACE.trackUpdate(x, y, z, blockToSet);
 
                                 ++z;
                                 density += var16;

@@ -1,7 +1,8 @@
 package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.InfdevGeneratorSettings;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -10,31 +11,33 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.BooleanOption;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.world.gen.GeneratorOptions;
 
-public class CustomizeBetaLevelScreen extends Screen {
+public class CustomizeInfdevLevelScreen extends Screen {
     private CreateWorldScreen parent;
-    private BetaGeneratorSettings generatorSettings;
+    private InfdevGeneratorSettings generatorSettings;
     
-    private boolean generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
-    private boolean generateBetaOceans = ModernBeta.BETA_CONFIG.generateBetaOceans;
-    private boolean generateIceDesert = ModernBeta.BETA_CONFIG.generateIceDesert;
+    private boolean infdevWinterMode = ModernBeta.BETA_CONFIG.infdevWinterMode;
+    private boolean infdevPlus = ModernBeta.BETA_CONFIG.infdevPlus;
     
     private ButtonListWidget buttonList;
 
-    public CustomizeBetaLevelScreen(CreateWorldScreen parent, BetaGeneratorSettings generatorSettings) {
-        super(new TranslatableText("createWorld.customize.beta.title"));
+    public CustomizeInfdevLevelScreen(CreateWorldScreen parent, InfdevGeneratorSettings generatorSettings) {
+        super(new TranslatableText("createWorld.customize.infdev.title"));
         
         this.parent = parent;
         this.generatorSettings = generatorSettings;
         
-        if (generatorSettings.settings.contains("generateOceans"))
-            generateOceans = generatorSettings.settings.getBoolean("generateOceans");
-        if (generatorSettings.settings.contains("generateBetaOceans"))
-            generateBetaOceans = generatorSettings.settings.getBoolean("generateBetaOceans");
-        if (generatorSettings.settings.contains("generateIceDesert"))
-            generateIceDesert = generatorSettings.settings.getBoolean("generateIceDesert");
+        if (generatorSettings.settings.contains("infdevWinterMode"))
+            infdevWinterMode = generatorSettings.settings.getBoolean("infdevWinterMode");
+        if (generatorSettings.settings.contains("infdevPlus"))
+            infdevPlus = generatorSettings.settings.getBoolean("infdevPlus");
+      
     }
     
     @Override
@@ -43,7 +46,7 @@ public class CustomizeBetaLevelScreen extends Screen {
             this.width / 2 - 155, this.height - 28, 150, 20, 
             ScreenTexts.DONE, 
             (buttonWidget) -> {
-                this.client.openScreen(parent);
+                this.client.openScreen(this.parent);
                 return;
             }
         ));
@@ -52,34 +55,35 @@ public class CustomizeBetaLevelScreen extends Screen {
             this.width / 2 + 5, this.height - 28, 150, 20, 
             ScreenTexts.CANCEL,
             (buttonWidget) -> {
-                this.client.openScreen(parent);
+                this.client.openScreen(this.parent);
             }
         ));
         
- this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        
+        
+        this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        
         this.buttonList.addSingleOptionEntry(
             new BooleanOption(
-                "createWorld.customize.beta.generateOceans", 
-                (gameOptions) -> { return generateBetaOceans; }, // Getter
+                "createWorld.customize.infdev.infdevWinterMode", 
+                (gameOptions) -> { return infdevWinterMode; }, // Getter
                 (gameOptions, value) -> { // Setter
-                    generateBetaOceans = value;
-                    generatorSettings.settings.putBoolean("generateBetaOceans", value);
+                    infdevWinterMode = value;
+                    generatorSettings.settings.putBoolean("infdevWinterMode", value);
                 }
         ));
         
- 
         this.buttonList.addSingleOptionEntry(
             new BooleanOption(
-                "createWorld.customize.beta.generateIceDesert", 
-                (gameOptions) -> { return generateIceDesert; }, 
+                "createWorld.customize.infdev.infdevPlus", 
+                (gameOptions) -> { return infdevPlus; }, 
                 (gameOptions, value) -> {
-                    generateIceDesert = value;
-                    generatorSettings.settings.putBoolean("generateIceDesert", value);
+                    infdevPlus = value;
+                    generatorSettings.settings.putBoolean("infdevPlus", value);
                 }
         ));
         
         this.children.add(this.buttonList);
-
     }
     
     @Override

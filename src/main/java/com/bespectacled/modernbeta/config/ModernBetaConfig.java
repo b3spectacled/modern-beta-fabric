@@ -25,17 +25,25 @@ public class ModernBetaConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip(count = 1)
     public boolean renderAlphaSunset = false;
     
-    /* Generation */
+    /* Beta Generation */
 
+    // Legacy option, replaced with generateBetaOceans
     @ConfigEntry.Gui.Excluded
     //@ConfigEntry.Category(value = "betaGen")
     @ConfigEntry.Gui.Tooltip(count = 2)
-    public boolean generateOceans = false;
+    public boolean generateOceans = false; 
+    
+    @ConfigEntry.Gui.Excluded
+    //@ConfigEntry.Category(value = "betaGen")
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean generateBetaOceans = true;
 
     @ConfigEntry.Gui.Excluded
     //@ConfigEntry.Category(value = "betaGen")
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean generateIceDesert = false;
+    
+    /* Alpha Generation */
 
     @ConfigEntry.Gui.Excluded
     //@ConfigEntry.Category(value = "betaGen")
@@ -47,7 +55,20 @@ public class ModernBetaConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean alphaPlus = false;
     
+    /* Infdev Generation */
+    
+    @ConfigEntry.Gui.Excluded
+    //@ConfigEntry.Category(value = "betaGen")
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean infdevWinterMode = false;
+
+    @ConfigEntry.Gui.Excluded
+    //@ConfigEntry.Category(value = "betaGen")
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean infdevPlus = false;
+    
     /* Indev Generation */
+    
     @ConfigEntry.Gui.Excluded
     public int indevLevelType = 0;
     

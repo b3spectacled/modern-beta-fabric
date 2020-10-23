@@ -75,6 +75,7 @@ public class BetaBiomeSource extends BiomeSource {
     public static Biome[] oceanBiomesInChunk = new Biome[256];
 
     private boolean generateOceans = false;
+    private boolean generateBetaOceans = true;
     private boolean generateIceDesert = false;
     
     public BetaBiomeSource(long seed, Registry<Biome> registry, CompoundTag settings) {
@@ -88,6 +89,7 @@ public class BetaBiomeSource extends BiomeSource {
         this.generateIceDesert = false;
         
         if (settings.contains("generateOceans")) this.generateOceans = settings.getBoolean("generateOceans");
+        if (settings.contains("generateBetaOceans")) this.generateBetaOceans = settings.getBoolean("generateBetaOceans");
         if (settings.contains("generateIceDesert")) this.generateIceDesert = settings.getBoolean("generateIceDesert");
         
         tempNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(this.seed * 9871L), 4);
@@ -112,7 +114,7 @@ public class BetaBiomeSource extends BiomeSource {
         // Sample biome at this one absolute coordinate.
         fetchTempHumid(x, z, 1, 1);
 
-        if (this.generateOceans)
+        if (this.generateBetaOceans)
             return oceanBiomesInChunk[0];
         else
             return biomesInChunk[0];

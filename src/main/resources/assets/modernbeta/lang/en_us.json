@@ -3,6 +3,7 @@
     "generator.skylands": "Skylands",
     "generator.alpha": "Alpha",
     "generator.indev": "Indev",
+    "generator.infdev": "Infdev",
     
     "createWorld.customize.indev.title": "Indev World Type Configuration",
     "createWorld.customize.indev.levelType": "Level Type",
@@ -25,6 +26,11 @@
     "createWorld.customize.alpha.title": "Alpha World Type Configuration",
     "createWorld.customize.alpha.alphaWinterMode": "Alpha Winter Mode",
     "createWorld.customize.alpha.alphaPlus": "Alpha Plus",
+    
+    "createWorld.customize.infdev.title": "Infdev World Type Configuration",
+    "createWorld.customize.infdev.infdevWinterMode": "Infdev Winter Mode",
+    "createWorld.customize.infdev.infdevPlus": "Infdev Plus",
+    
     "createWorld.customize.beta.title": "Beta World Type Configuration",
     "createWorld.customize.beta.generateOceans": "Generate Oceans",
     "createWorld.customize.beta.generateIceDesert": "Generate Ice Desert",

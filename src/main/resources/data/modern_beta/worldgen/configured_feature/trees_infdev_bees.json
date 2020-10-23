@@ -1,0 +1,44 @@
+{
+  "config": {
+    "feature": {
+      "config": {
+        "feature": {
+          "config": {
+            "features": [
+              {
+                "feature": "minecraft:fancy_oak_bees_0002",
+                "chance": 1.0
+              }
+            ],
+            "default": "minecraft:fancy_oak_bees_0002"
+          },
+          "type": "minecraft:random_selector"
+        },
+        "decorator": {
+          "config": {
+            "outer": {
+              "config": {},
+              "type": "minecraft:square"
+            },
+            "inner": {
+              "config": {},
+              "type": "minecraft:heightmap"
+            }
+          },
+          "type": "minecraft:decorated"
+        }
+      },
+      "type": "minecraft:decorated"
+    },
+    "decorator": {
+      "config": {
+        "density": 0,
+        "seed": 0,
+        "extra_chance": 0,
+        "extra_count": 0
+      },
+      "type": "modern_beta:count_infdev_noise"
+    }
+  },
+  "type": "minecraft:decorated"
+}

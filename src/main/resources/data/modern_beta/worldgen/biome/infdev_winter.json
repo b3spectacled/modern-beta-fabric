@@ -4,7 +4,8 @@
     "minecraft:pillager_outpost",
     "minecraft:mineshaft",
     "minecraft:stronghold",
-    "minecraft:ruined_portal"
+    "minecraft:ruined_portal",
+    "minecraft:igloo"
   ],
   "spawners": {
     "monster": [
@@ -89,6 +90,12 @@
         "maxCount": 4
       },
       {
+        "type": "minecraft:polar_bear",
+        "weight": 1,
+        "minCount": 1,
+        "maxCount": 2
+      },
+      {
         "type": "minecraft:wolf",
         "weight": 5,
         "minCount": 4,
@@ -113,7 +120,7 @@
     ],
     "water_ambient": [
       {
-        "type": "minecraft:cod",
+        "type": "minecraft:salmon",
         "weight": 10,
         "minCount": 3,
         "maxCount": 6
@@ -125,14 +132,12 @@
   "surface_builder": "minecraft:grass",
   "carvers": {
     "air": [
+      "modern_beta:beta_cave"
     ]
   },
   "features": [
     [],
-    [
-      "minecraft:lake_water",
-      "minecraft:lake_lava"
-    ],
+    [],
     [],
     [
       "minecraft:monster_room"
@@ -140,6 +145,8 @@
     [],
     [],
     [
+      "minecraft:ore_dirt",
+      "minecraft:ore_gravel",
       "minecraft:ore_coal",
       "minecraft:ore_iron",
       "minecraft:ore_gold",
@@ -151,7 +158,7 @@
     ],
     [],
     [
-      "modern_beta:trees_indev_bees",
+      "modern_beta:trees_infdev_bees",
       "modern_beta:patch_grass_alpha_2",
       "modern_beta:patch_dandelion_2",
       "modern_beta:patch_poppy",
@@ -168,8 +175,8 @@
     ]
   ],
   "scale": 0.4,
-  "temperature": 0.6,
-  "downfall": 0.6,
+  "temperature": 0.0,
+  "downfall": 0.0,
   "effects": {
     "mood_sound": {
       "sound": "minecraft:ambient.cave",
@@ -180,12 +187,11 @@
 	"grass_color": 11272039,
 	"foliage_color": 5242667,
 	"sky_color": 10079487,
-    "fog_color": 16777215,
+    "fog_color": 11587839,
     "water_color": 2835199,
     "water_fog_color": 329011
   },
-  "player_spawn_friendly": true,
-  "precipitation": "rain",
+  "precipitation": "snow",
   "category": "forest",
-  "depth": 0.37
+  "depth": 0.1 
 }

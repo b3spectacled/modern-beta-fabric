@@ -31,6 +31,8 @@ import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.biome.IndevBiomeSource;
 import com.bespectacled.modernbeta.biome.IndevBiomes;
+import com.bespectacled.modernbeta.biome.InfdevBiomeSource;
+import com.bespectacled.modernbeta.biome.InfdevBiomes;
 import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.client.GoVote;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
@@ -69,10 +71,12 @@ public class ModernBeta implements ModInitializer {
 
         BetaBiomes.reserveBiomeIDs();
         AlphaBiomes.reserveBiomeIDs();
+        InfdevBiomes.reserveBiomeIDs();
         IndevBiomes.reserveBiomeIDs();
 
         BetaBiomeSource.register();
         AlphaBiomeSource.register();
+        InfdevBiomeSource.register();
         IndevBiomeSource.register();
 
         BetaChunkGenerator.register();

@@ -87,6 +87,18 @@
         "weight": 8,
         "minCount": 4,
         "maxCount": 4
+      },
+      {
+        "type": "minecraft:wolf",
+        "weight": 5,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:polar_bear",
+        "weight": 1,
+        "minCount": 1,
+        "maxCount": 2
       }
     ],
     "ambient": [
@@ -179,7 +191,7 @@
     "water_fog_color": 329011
   },
   "player_spawn_friendly": true,
-  "precipitation": "rain",
+  "precipitation": "snow",
   "category": "forest",
   "depth": 0.37
 }

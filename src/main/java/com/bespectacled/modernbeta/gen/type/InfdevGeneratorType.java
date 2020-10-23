@@ -8,11 +8,14 @@ import org.apache.logging.log4j.Level;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
+import com.bespectacled.modernbeta.biome.InfdevBiomeSource;
 import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
 import com.bespectacled.modernbeta.gen.InfdevChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.InfdevGeneratorSettings;
 import com.bespectacled.modernbeta.gui.CustomizeAlphaLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeBetaLevelScreen;
+import com.bespectacled.modernbeta.gui.CustomizeInfdevLevelScreen;
 import com.bespectacled.modernbeta.mixin.MixinGeneratorTypeAccessor;
 import com.google.common.collect.ImmutableMap;
 
@@ -44,7 +47,7 @@ public final class InfdevGeneratorType extends GeneratorType {
     public static final ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise,
             Blocks.STONE.getDefaultState(), Blocks.WATER.getDefaultState(), -10, 0, 64, false);
     
-    public static final AlphaGeneratorSettings alphaSettings = new AlphaGeneratorSettings(type, new CompoundTag());
+    public static final InfdevGeneratorSettings infdevSettings = new InfdevGeneratorSettings(type, new CompoundTag());
     
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -52,7 +55,7 @@ public final class InfdevGeneratorType extends GeneratorType {
             .putAll(MixinGeneratorTypeAccessor.getScreenProviders())
             .put(
                 Optional.<GeneratorType>of(INSTANCE), (createWorldScreen, generatorSettings) -> {
-                    return new CustomizeAlphaLevelScreen(createWorldScreen, alphaSettings);
+                    return new CustomizeInfdevLevelScreen(createWorldScreen, infdevSettings);
                 }
             )
             .build();
@@ -70,10 +73,10 @@ public final class InfdevGeneratorType extends GeneratorType {
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings,
             long seed) {
-        alphaSettings.settings.putBoolean("alphaWinterMode", ModernBeta.BETA_CONFIG.alphaWinterMode);
-        alphaSettings.settings.putBoolean("alphaPlus", ModernBeta.BETA_CONFIG.alphaPlus);
+        infdevSettings.settings.putBoolean("infdevWinterMode", ModernBeta.BETA_CONFIG.infdevWinterMode);
+        infdevSettings.settings.putBoolean("infdevPlus", ModernBeta.BETA_CONFIG.infdevPlus);
         
-        return new InfdevChunkGenerator(new AlphaBiomeSource(seed, biomes, alphaSettings.settings), seed, alphaSettings);
+        return new InfdevChunkGenerator(new InfdevBiomeSource(seed, biomes, infdevSettings.settings), seed, infdevSettings);
     }
     
     

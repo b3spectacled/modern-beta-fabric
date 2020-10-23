@@ -334,17 +334,17 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         buildAlphaSurface(chunk);
     }
 
-    /*
-     * @Override public BlockPos locateStructure(ServerWorld world,
-     * StructureFeature<?> feature, BlockPos center, int radius, boolean
-     * skipExistingChunks) { if ((feature.equals(StructureFeature.OCEAN_RUIN) ||
-     * feature.equals(StructureFeature.SHIPWRECK)) && !generateOceans) { return
-     * null; }
-     * 
-     * return super.locateStructure(world, feature, center, radius,
-     * skipExistingChunks); }
-     */
-
+    @Override 
+    public BlockPos locateStructure(ServerWorld world,  StructureFeature<?> feature, BlockPos center, int radius, boolean skipExistingChunks) { 
+        if ((feature.equals(StructureFeature.OCEAN_RUIN) || 
+            feature.equals(StructureFeature.SHIPWRECK)) || 
+            feature.equals(StructureFeature.BURIED_TREASURE)) { 
+            return null; 
+        }
+    
+        return super.locateStructure(world, feature, center, radius, skipExistingChunks); 
+    }
+    
     public void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         byte byte4 = 4;
         // byte seaLevel = (byte)this.getSeaLevel();
@@ -356,77 +356,17 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
 
-        STRUCTURE_LIST.clear();
-        JIGSAW_LIST.clear();
-        
-        for (final StructureFeature<?> s : StructureFeature.JIGSAW_STRUCTURES) {
-
-            structureAccessor.getStructuresWithChildren(ChunkSectionPos.from(chunk.getPos(), 0), s)
-                    .forEach(structureStart -> {
-                        Iterator<StructurePiece> structurePieceIterator;
-                        StructurePiece structurePiece;
-
-                        Iterator<JigsawJunction> jigsawJunctionIterator;
-                        JigsawJunction jigsawJunction;
-
-                        ChunkPos arg2 = chunk.getPos();
-
-                        PoolStructurePiece poolStructurePiece;
-                        StructurePool.Projection structureProjection;
-
-                        int jigsawX;
-                        int jigsawZ;
-                        int n2 = arg2.x;
-                        int n3 = arg2.z;
-
-                        structurePieceIterator = structureStart.getChildren().iterator();
-                        while (structurePieceIterator.hasNext()) {
-                            structurePiece = structurePieceIterator.next();
-                            if (!structurePiece.intersectsChunk(arg2, 12)) {
-                                continue;
-                            } else if (structurePiece instanceof PoolStructurePiece) {
-                                poolStructurePiece = (PoolStructurePiece) structurePiece;
-                                structureProjection = poolStructurePiece.getPoolElement().getProjection();
-
-                                if (structureProjection == StructurePool.Projection.RIGID) {
-                                    STRUCTURE_LIST.add(poolStructurePiece);
-                                }
-                                jigsawJunctionIterator = poolStructurePiece.getJunctions().iterator();
-                                while (jigsawJunctionIterator.hasNext()) {
-                                    jigsawJunction = jigsawJunctionIterator.next();
-                                    jigsawX = jigsawJunction.getSourceX();
-                                    jigsawZ = jigsawJunction.getSourceZ();
-                                    
-                                    if (jigsawX > n2 - 12 && jigsawZ > n3 - 12 && jigsawX < n2 + 15 + 12) {
-                                        if (jigsawZ >= n3 + 15 + 12) {
-                                            continue;
-                                        } else {
-                                            JIGSAW_LIST.add(jigsawJunction);
-                                        }
-                                    }
-                                }
-                            } else {
-                                STRUCTURE_LIST.add(structurePiece);
-                            }
-                        }
-                        return;
-                    });
-        }
+        this.collectStructures(chunk, structureAccessor);
 
         ObjectListIterator<StructurePiece> structureListIterator = (ObjectListIterator<StructurePiece>) STRUCTURE_LIST.iterator();
         ObjectListIterator<JigsawJunction> jigsawListIterator = (ObjectListIterator<JigsawJunction>) JIGSAW_LIST.iterator();
 
         generateHeightmap(chunk.getPos().x * byte4, 0, chunk.getPos().z * byte4);
 
-        // Noise is sampled in 4x16x4 sections?
-        for (int i = 0; i < byte4; i++) { // [1.16] Limit appears to be equivalent to noiseSizeX, equal to 16 /
-                                          // horizontalNoiseResolution // 16 / 1 * 4
-            for (int j = 0; j < byte4; j++) { // [1.16] Limit appears to be equivalent to noiseSizeZ, equal to 16 /
-                                              // horizontalNoiseResolution // 16 / 1 * 4
-                for (int k = 0; k < 16; k++) { // [1.16] Appears to be similar to 'for (int q = this.noiseSizeY - 1; q
-                                               // >= 0; --q) {'
-                                               // where noiseSizeY is equal to generationShapeConfig.getHeight() /
-                                               // this.verticalNoiseResolution // 128 [for Beta] / (2 * 4)
+        for (int i = 0; i < byte4; i++) {
+            for (int j = 0; j < byte4; j++) {
+                for (int k = 0; k < 16; k++) {
+                    
                     double eighth = 0.125D;
 
                     double var1 = HEIGHTMAP[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 0)];
@@ -439,53 +379,36 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
                     double var7 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var3) * eighth;
                     double var8 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var4) * eighth;
 
-                    for (int l = 0; l < 8; l++) { // [1.16] Limit appears to be equivalent to verticalNoiseResolution,
-                                                  // equal to getSizeVertical() * 4 // 2 * 4
+                    for (int l = 0; l < 8; l++) {
                         double quarter = 0.25D;
                         double var10 = var1;
                         double var11 = var2;
                         double var12 = (var3 - var1) * quarter; // Lerp
                         double var13 = (var4 - var2) * quarter;
 
-                        int integer40 = k * 8 + l;
-
-                        for (int m = 0; m < 4; m++) { // [1.16] Limit appears to be equivalent to
-                                                      // horizontalNoiseResolution, equal to getSizeHorizontal() * 4 //
-                                                      // 1 * 4
+                        for (int m = 0; m < 4; m++) {
                             int x = (m + i * 4);
                             int y = k * 8 + l;
                             int z = (j * 4);
 
                             double var14 = 0.25D;
                             double density = var10; // var15
-                            double var16 = (var11 - var10) * var14; // More lerp
+                            double var16 = (var11 - var10) * var14;
 
-                            int integer54 = (chunk.getPos().x << 4) + i * 4 + m;
+                            int absX = (chunk.getPos().x << 4) + i * 4 + m;
 
-                            for (int n = 0; n < 4; n++) { // [1.16] Limit appears to be equivalent to
-                                                          // horizontalNoiseResolution, equal to getSizeHorizontal() * 4
-                                                          // // 1 * 4
-
-                                int integer63 = (chunk.getPos().z << 4) + j * 4 + n;
-
-                                // double temp = temps[(i * 4 + m) * 16 + (j * 4 + n)];
-
-                                double noiseWeight;
+                            for (int n = 0; n < 4; n++) { 
+                                int absZ = (chunk.getPos().z << 4) + j * 4 + n;
 
                                 while (structureListIterator.hasNext()) {
                                     StructurePiece curStructurePiece = (StructurePiece) structureListIterator.next();
                                     BlockBox blockBox = curStructurePiece.getBoundingBox();
 
-                                    int sX = Math.max(0,
-                                            Math.max(blockBox.minX - integer54, integer54 - blockBox.maxX));
+                                    int sX = Math.max(0, Math.max(blockBox.minX - absX, absX - blockBox.maxX));
                                     int sY = y - (blockBox.minY + ((curStructurePiece instanceof PoolStructurePiece)
-                                            ? ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta()
-                                            : 0));
-                                    int sZ = Math.max(0,
-                                            Math.max(blockBox.minZ - integer63, integer63 - blockBox.maxZ));
+                                            ? ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta() : 0));
+                                    int sZ = Math.max(0, Math.max(blockBox.minZ - absZ, absZ - blockBox.maxZ));
 
-                                    // density += getNoiseWeight(sX, sY, sZ) * 0.2;
-                                    // Temporary fix
                                     if (sY < 0 && sX == 0 && sZ == 0)
                                         density += density * density / 0.1;
                                 }
@@ -494,12 +417,10 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
                                 while (jigsawListIterator.hasNext()) {
                                     JigsawJunction curJigsawJunction = (JigsawJunction) jigsawListIterator.next();
 
-                                    int jX = integer54 - curJigsawJunction.getSourceX();
+                                    int jX = absX - curJigsawJunction.getSourceX();
                                     int jY = y - curJigsawJunction.getSourceGroundY();
-                                    int jZ = integer63 - curJigsawJunction.getSourceZ();
+                                    int jZ = absZ - curJigsawJunction.getSourceZ();
 
-                                    // density += getNoiseWeight(jX, jY, jZ) * 0.4;
-                                    // Temporary fix
                                     if (jY < 0 && jX == 0 && jZ == 0)
                                         density += density * density / 0.1;
                                 }
@@ -764,8 +685,8 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
                     flag--;
                     chunk.setBlockState(POS.set(j, y, i), fillerBlock.getDefaultState(), false);
 
-                    // Generates layer of sandstone starting at lowest block of sand, of height 1 to
-                    // 4.
+                    // Gens layer of sandstone starting at lowest block of sand, of height 1 to 4.
+                    // Beta backport.
                     if (flag == 0 && fillerBlock.equals(Blocks.SAND)) {
                         flag = RAND.nextInt(4);
                         fillerBlock = Blocks.SANDSTONE;
@@ -876,6 +797,64 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
                 POS.set((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
                 GROUND_CACHE_Y.put(POS, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
             }
+        }
+    }
+    
+    private void collectStructures(Chunk chunk, StructureAccessor accessor) {
+        STRUCTURE_LIST.clear();
+        JIGSAW_LIST.clear();
+        
+        for (final StructureFeature<?> s : StructureFeature.JIGSAW_STRUCTURES) {
+
+            accessor.getStructuresWithChildren(ChunkSectionPos.from(chunk.getPos(), 0), s)
+                .forEach(structureStart -> {
+                    Iterator<StructurePiece> structurePieceIterator;
+                    StructurePiece structurePiece;
+
+                    Iterator<JigsawJunction> jigsawJunctionIterator;
+                    JigsawJunction jigsawJunction;
+
+                    ChunkPos arg2 = chunk.getPos();
+
+                    PoolStructurePiece poolStructurePiece;
+                    StructurePool.Projection structureProjection;
+
+                    int jigsawX;
+                    int jigsawZ;
+                    int n2 = arg2.x;
+                    int n3 = arg2.z;
+
+                    structurePieceIterator = structureStart.getChildren().iterator();
+                    while (structurePieceIterator.hasNext()) {
+                        structurePiece = structurePieceIterator.next();
+                        if (!structurePiece.intersectsChunk(arg2, 12)) {
+                            continue;
+                        } else if (structurePiece instanceof PoolStructurePiece) {
+                            poolStructurePiece = (PoolStructurePiece) structurePiece;
+                            structureProjection = poolStructurePiece.getPoolElement().getProjection();
+
+                            if (structureProjection == StructurePool.Projection.RIGID) {
+                                STRUCTURE_LIST.add(poolStructurePiece);
+                            }
+                            jigsawJunctionIterator = poolStructurePiece.getJunctions().iterator();
+                            while (jigsawJunctionIterator.hasNext()) {
+                                jigsawJunction = jigsawJunctionIterator.next();
+                                jigsawX = jigsawJunction.getSourceX();
+                                jigsawZ = jigsawJunction.getSourceZ();
+                                if (jigsawX > n2 - 12 && jigsawZ > n3 - 12 && jigsawX < n2 + 15 + 12) {
+                                    if (jigsawZ >= n3 + 15 + 12) {
+                                        continue;
+                                    } else {
+                                        JIGSAW_LIST.add(jigsawJunction);
+                                    }
+                                }
+                            }
+                        } else {
+                            STRUCTURE_LIST.add(structurePiece);
+                        }
+                    }
+                    return;
+            });
         }
     }
 

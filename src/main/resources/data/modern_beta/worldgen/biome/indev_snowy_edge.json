@@ -40,7 +40,7 @@
     "water_fog_color": 329011
   },
   "player_spawn_friendly": false,
-  "precipitation": "rain",
+  "precipitation": "snow",
   "category": "forest",
   "depth": 0.0
 }
