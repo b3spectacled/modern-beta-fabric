@@ -87,6 +87,9 @@
     "biome.modern_beta.alpha": "Alpha",
     "biome.modern_beta.alpha_winter": "Alpha Winter",
     
+    "biome.modern_beta.infdev": "Infdev",
+    "biome.modern_beta.infdev_winter": "Infdev Winter",
+    
     "biome.modern_beta.indev_edge": "Indev Edge",
     "biome.modern_beta.indev_hell_edge": "Indev Hell Edge",
     "biome.modern_beta.indev_paradise_edge": "Indev Paradise Edge",
