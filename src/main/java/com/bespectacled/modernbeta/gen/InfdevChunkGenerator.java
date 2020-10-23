@@ -554,6 +554,13 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
                 Block fillerBlock = biomeFillerBlock;
                 
                 for (int y = 127; y >= 0; --y) {
+                    
+                    // Randomly place bedrock from y=0 to y=5
+                    if (y <= 0 + RAND.nextInt(5)) {
+                        chunk.setBlockState(POS.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
+                        continue;
+                    }
+                    
                     POS.set(x, y, z);
                     Block someBlock = chunk.getBlockState(POS).getBlock();
                     
