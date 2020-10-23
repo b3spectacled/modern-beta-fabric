@@ -24,9 +24,6 @@ public class CustomizeIndevLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private IndevGeneratorSettings generatorSettings;
     
-    private boolean alphaWinterMode = false;
-    private boolean alphaPlus = false;
-    
     private int levelType = ModernBeta.BETA_CONFIG.indevLevelType;
     private int levelTheme = ModernBeta.BETA_CONFIG.indevLevelTheme;
    

@@ -62,6 +62,8 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     
     private OldNoiseGeneratorOctaves sandNoiseOctaves;
     private OldNoiseGeneratorOctaves gravelNoiseOctaves;
+    
+    private OldNoiseGeneratorOctaves forestNoiseOctaves;
 
     // Note:
     // I considered using 1D array for block storage,
@@ -98,6 +100,8 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         this.biomeSource = (IndevBiomeSource) biomes;
         
         RAND.setSeed(seed);
+        
+        forestNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, false);
 
         this.theme = Theme.NORMAL;
         this.type = Type.ISLAND;
@@ -124,7 +128,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         this.pregenerated = false;
         
         // Yes this is messy. What else am I supposed to do?
-        BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
+        BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
         ModernBeta.setBlockColorsSeed(0L, true);
     }
 

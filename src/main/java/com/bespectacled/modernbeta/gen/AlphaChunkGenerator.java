@@ -89,6 +89,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
     private final OldNoiseGeneratorOctaves stoneNoiseOctaves;
     private final OldNoiseGeneratorOctaves scaleNoiseOctaves;
     private final OldNoiseGeneratorOctaves depthNoiseOctaves;
+    private final OldNoiseGeneratorOctaves forestNoiseOctaves;
 
     private double sandNoise[];
     private double gravelNoise[];
@@ -131,9 +132,10 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         stoneNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 4, false);
         scaleNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 10, false);
         depthNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 16, false);
+        forestNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, false);
 
         // Yes this is messy. What else am I supposed to do?
-        BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
+        BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
         ModernBeta.setBlockColorsSeed(0L, true);
     }
 
@@ -675,7 +677,6 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         int chunkZ = chunk.getPos().z;
 
         biomeSource.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
-
         Biome curBiome;
 
         sandNoise = beachNoiseOctaves.generateAlphaNoiseOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
@@ -779,13 +780,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         if (density > 0.0) {
             blockStateToSet = this.settings.wrapped.getDefaultBlock();
         } else if (y < this.getSeaLevel()) {
-            if (temp < 0.5D && y >= this.getSeaLevel() - 1) {
-                // blockStateToSet = Blocks.ICE.getDefaultState(); // Get chunk errors so
-                // disabled for now.
-                blockStateToSet = this.settings.wrapped.getDefaultFluid();
-            } else {
-                blockStateToSet = this.settings.wrapped.getDefaultFluid();
-            }
+            blockStateToSet = this.settings.wrapped.getDefaultFluid();
 
         }
         return blockStateToSet;
@@ -798,7 +793,6 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         POS.set(x, 0, z);
 
         if (GROUND_CACHE_Y.get(POS) == null) {
-            biomeSource.fetchTempHumid((x >> 4) * 16, (z >> 4) * 16, 16, 16);
             sampleHeightmap(x, z);
         }
 

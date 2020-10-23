@@ -17,8 +17,8 @@ public class CountAlphaNoiseDecorator extends SimpleDecorator<CountNoiseDecorato
         super(codec);
     }
 
-    public void setSeed(long seed) {
-        forestNoise = new OldNoiseGeneratorOctaves(new Random(seed), 8, false);
+    public void setOctaves(OldNoiseGeneratorOctaves octaves) {
+        forestNoise = octaves;
     }
 
     @Override
@@ -31,11 +31,11 @@ public class CountAlphaNoiseDecorator extends SimpleDecorator<CountNoiseDecorato
         int chunkZ = (int) pos.getZ() / 16;
 
         int noiseX = chunkX * 16;
-        int noiseY = chunkZ * 16;
+        int noiseZ = chunkZ * 16;
 
         double d = 0.5D;
 
-        int noiseCount = (int) ((forestNoise.func_806_a((double) noiseX * d, (double) noiseY * d) / 8D
+        int noiseCount = (int) ((forestNoise.func_806_a((double) noiseX * d, (double) noiseZ * d) / 8D
                 + random.nextDouble() * 4D + 4D) / 3D);
         if (noiseCount < 0)
             noiseCount = 0;

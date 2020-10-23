@@ -20,8 +20,8 @@ public class CountBetaNoiseDecorator extends SimpleDecorator<CountNoiseDecorator
         super(codec);
     }
 
-    public void setSeed(long seed) {
-        forestNoise = new OldNoiseGeneratorOctaves(new Random(seed), 8, false);
+    public void setOctaves(OldNoiseGeneratorOctaves octaves) {
+        forestNoise = octaves;
     }
 
     @Override
@@ -29,20 +29,25 @@ public class CountBetaNoiseDecorator extends SimpleDecorator<CountNoiseDecorator
         if (forestNoise == null) {
             forestNoise = new OldNoiseGeneratorOctaves(random, 8, false);
         }
-
+        
         int chunkX = (int) pos.getX() / 16;
         int chunkZ = (int) pos.getZ() / 16;
+       
 
         int noiseX = chunkX * 16;
-        int noiseY = chunkZ * 16;
+        int noiseZ = chunkZ * 16;
 
         double d = 0.5D;
 
-        int noiseCount = (int) ((forestNoise.func_806_a((double) noiseX * d, (double) noiseY * d) / 8D
+        int noiseCount = (int) ((forestNoise.func_806_a((double) noiseX * d, (double) noiseZ * d) / 8D
                 + random.nextDouble() * 4D + 4D) / 3D);
 
         int finalCount = noiseCount + config.density
                 + ((random.nextFloat() < config.extraChance) ? config.extraCount : 0);
+        
+        if (chunkX == 3 && chunkZ == 5) {
+            System.out.println("Tree density for chunk 2/2: " + finalCount);
+        }
 
         // Returns just the count, actual block pos placement handled by Square
         // decorator.

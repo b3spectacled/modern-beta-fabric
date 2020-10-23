@@ -25,6 +25,13 @@ public class MixinBlockColors implements MutableBlockColors {
     private static ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
 
     private static boolean defaultColors = false;
+    
+    private static final BlockState GRASS = Blocks.GRASS.getDefaultState();
+    private static final BlockState FERN = Blocks.FERN.getDefaultState();
+    private static final BlockState TALL_GRASS = Blocks.TALL_GRASS.getDefaultState();
+    private static final BlockState TALL_FERN = Blocks.LARGE_FERN.getDefaultState();
+    
+    private static final double[] TEMP_HUMID = new double[2];
 
     @Unique
     @Override
@@ -79,14 +86,11 @@ public class MixinBlockColors implements MutableBlockColors {
             return 8174955; // Default tint, from wiki
         }
 
-        double[] tempHumids;
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
 
-        if (state.equals(Blocks.GRASS.getDefaultState()) || state.equals(Blocks.FERN.getDefaultState())
-                || state.equals(Blocks.TALL_GRASS.getDefaultState())
-                || state.equals(Blocks.LARGE_FERN.getDefaultState())) {
+        if (state.equals(GRASS) || state.equals(FERN) || state.equals(TALL_GRASS) || state.equals(TALL_FERN)) {
             long shift = x * 0x2fc20f + z * 0x5d8875 + y;
             shift = shift * shift * 0x285b825L + shift * 11L;
             x = (int) ((long) x + (shift >> 14 & 31L));
@@ -94,8 +98,8 @@ public class MixinBlockColors implements MutableBlockColors {
             z = (int) ((long) z + (shift >> 24 & 31L));
         }
 
-        tempHumids = BiomeMath.fetchTempHumidAtPoint(x, z);
-        return GrassColors.getColor(tempHumids[0], tempHumids[1]);
+        BiomeMath.fetchTempHumidAtPoint(TEMP_HUMID, x, z);
+        return GrassColors.getColor(TEMP_HUMID[0], TEMP_HUMID[1]);
     }
 
     @Unique
@@ -104,11 +108,10 @@ public class MixinBlockColors implements MutableBlockColors {
             return 4764952; // Default tint, from wiki
         }
 
-        double[] tempHumids;
         int x = pos.getX();
         int z = pos.getZ();
 
-        tempHumids = BiomeMath.fetchTempHumidAtPoint(x, z);
-        return FoliageColors.getColor(tempHumids[0], tempHumids[1]);
+        BiomeMath.fetchTempHumidAtPoint(TEMP_HUMID, x, z);
+        return FoliageColors.getColor(TEMP_HUMID[0], TEMP_HUMID[1]);
     }
 }

@@ -17,6 +17,7 @@ import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
 import com.bespectacled.modernbeta.gen.type.AlphaGeneratorType;
 import com.bespectacled.modernbeta.gen.type.BetaGeneratorType;
 import com.bespectacled.modernbeta.gen.type.IndevGeneratorType;
+import com.bespectacled.modernbeta.gen.type.InfdevGeneratorType;
 import com.bespectacled.modernbeta.gen.type.SkylandsGeneratorType;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
@@ -38,6 +39,7 @@ import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
+import com.bespectacled.modernbeta.gen.InfdevChunkGenerator;
 
 public class ModernBeta implements ModInitializer {
     public static final String ID = "modern_beta";
@@ -74,8 +76,9 @@ public class ModernBeta implements ModInitializer {
         IndevBiomeSource.register();
 
         BetaChunkGenerator.register();
-        AlphaChunkGenerator.register();
         SkylandsChunkGenerator.register();
+        AlphaChunkGenerator.register();
+        InfdevChunkGenerator.register();
         IndevChunkGenerator.register();
         
 
@@ -83,8 +86,9 @@ public class ModernBeta implements ModInitializer {
             GoVote.init();
             
             BetaGeneratorType.register();
-            AlphaGeneratorType.register();
             SkylandsGeneratorType.register();
+            AlphaGeneratorType.register();
+            InfdevGeneratorType.register();
             IndevGeneratorType.register();
             
         }

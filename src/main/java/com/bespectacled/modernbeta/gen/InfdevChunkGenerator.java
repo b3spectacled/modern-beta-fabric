@@ -67,6 +67,7 @@ import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
+import com.bespectacled.modernbeta.util.IndevUtil.Type;
 
 //private final BetaGeneratorSettings settings;
 
@@ -82,13 +83,11 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
     private final AlphaBiomeSource biomeSource;
     private final long seed;
 
-    private final OldNoiseGeneratorOctaves minLimitNoiseOctaves;
-    private final OldNoiseGeneratorOctaves maxLimitNoiseOctaves;
-    private final OldNoiseGeneratorOctaves mainNoiseOctaves;
+    private final OldNoiseGeneratorOctaves noiseOctavesA;
+    private final OldNoiseGeneratorOctaves noiseOctavesB;
+    private final OldNoiseGeneratorOctaves noiseOctavesC;
     private final OldNoiseGeneratorOctaves beachNoiseOctaves;
     private final OldNoiseGeneratorOctaves stoneNoiseOctaves;
-    private final OldNoiseGeneratorOctaves scaleNoiseOctaves;
-    private final OldNoiseGeneratorOctaves depthNoiseOctaves;
 
     private double sandNoise[];
     private double gravelNoise[];
@@ -105,7 +104,8 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
     private static final Map<BlockPos, Integer> GROUND_CACHE_Y = new HashMap<>();
     private static final int[][] CHUNK_Y = new int[16][16];
     
-    private static final double HEIGHTMAP[] = new double[425];
+    private static final Block BLOCKS[] = new Block[16 * 16 * 128];
+    private static final double HEIGHTMAP[][] = new double[33][4];
     
     private static final Mutable POS = new Mutable();
     
@@ -124,27 +124,29 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
         RAND.setSeed(seed);
         
         // Noise Generators
-        minLimitNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 16, false);
-        maxLimitNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 16, false);
-        mainNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, false);
+        noiseOctavesA = new OldNoiseGeneratorOctaves(RAND, 16, false);
+        noiseOctavesB = new OldNoiseGeneratorOctaves(RAND, 16, false);
+        noiseOctavesC = new OldNoiseGeneratorOctaves(RAND, 8, false);
         beachNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 4, false);
         stoneNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 4, false);
-        scaleNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 10, false);
-        depthNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 16, false);
+        
+        new OldNoiseGeneratorOctaves(RAND, 5, false); // Unused in original source
+        
+        
 
         // Yes this is messy. What else am I supposed to do?
-        BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
+        //BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
         ModernBeta.setBlockColorsSeed(0L, true);
     }
 
     public static void register() {
-        Registry.register(Registry.CHUNK_GENERATOR, new Identifier(ModernBeta.ID, "alpha"), CODEC);
-        ModernBeta.LOGGER.log(Level.INFO, "Registered Alpha chunk generator.");
+        Registry.register(Registry.CHUNK_GENERATOR, new Identifier(ModernBeta.ID, "infdev"), CODEC);
+        ModernBeta.LOGGER.log(Level.INFO, "Registered Infdev chunk generator.");
     }
 
     @Override
     protected Codec<? extends ChunkGenerator> getCodec() {
-        return AlphaChunkGenerator.CODEC;
+        return InfdevChunkGenerator.CODEC;
     }
 
     @Override
@@ -154,6 +156,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
         RAND.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
 
         generateTerrain(chunk, structureAccessor);
+        //setTerrain(chunk);
 
         /*
          * MutableBiomeArray mutableBiomes =
@@ -174,6 +177,41 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
          * } }
          * 
          */
+    }
+    
+    private void setTerrain(Chunk chunk) {
+        int chunkX = chunk.getPos().x;
+        int chunkZ = chunk.getPos().z;
+        
+        Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
+        Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
+        
+        for (int x = 0; x < 16; ++x) {
+            for (int z = 0; z < 16; ++z) {
+                
+                int ndx = x << 11 | z << 7 | 0x7F;
+                
+                for (int y = 127; y >= 0; --y) {
+                    Block blockToSet = BLOCKS[ndx] == null ? Blocks.AIR : BLOCKS[ndx];
+                    POS.set(x, y, z);
+                    
+                    chunk.setBlockState(POS, blockToSet.getDefaultState(), false);
+                    
+                    /*
+                    if (y <= 1 && blockToSet == Blocks.AIR) {
+                        chunk.setBlockState(POS, Blocks.LAVA.getDefaultState(), false);
+                    } else if (y <= 1) {
+                        chunk.setBlockState(POS, Blocks.BEDROCK.getDefaultState(), false);
+                    }
+                    */
+                    
+                    heightmapOCEAN.trackUpdate(x, y, z, blockToSet.getDefaultState());
+                    heightmapSURFACE.trackUpdate(x, y, z, blockToSet.getDefaultState());
+
+                    ndx--;
+                }
+            }
+        }
     }
 
     // Modified to accommodate additional ocean biome replacements
@@ -329,7 +367,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
 
         // Do not use the built-in surface builders..
         // This works better for Beta-accurate surface generation anyway.
-        buildAlphaSurface(chunk);
+        buildInfdevSurface(chunk);
     }
 
     /*
@@ -344,330 +382,116 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
      */
 
     public void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
-        byte byte4 = 4;
-        // byte seaLevel = (byte)this.getSeaLevel();
-        byte byte17 = 17;
-
-        int int5_0 = byte4 + 1;
-        int int5_1 = byte4 + 1;
-
+        int chunkX = chunk.getPos().x;
+        int chunkZ = chunk.getPos().z;
+        
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
-
-        STRUCTURE_LIST.clear();
-        JIGSAW_LIST.clear();
         
-        for (final StructureFeature<?> s : StructureFeature.JIGSAW_STRUCTURES) {
-
-            structureAccessor.getStructuresWithChildren(ChunkSectionPos.from(chunk.getPos(), 0), s)
-                    .forEach(structureStart -> {
-                        Iterator<StructurePiece> structurePieceIterator;
-                        StructurePiece structurePiece;
-
-                        Iterator<JigsawJunction> jigsawJunctionIterator;
-                        JigsawJunction jigsawJunction;
-
-                        ChunkPos arg2 = chunk.getPos();
-
-                        PoolStructurePiece poolStructurePiece;
-                        StructurePool.Projection structureProjection;
-
-                        int jigsawX;
-                        int jigsawZ;
-                        int n2 = arg2.x;
-                        int n3 = arg2.z;
-
-                        structurePieceIterator = structureStart.getChildren().iterator();
-                        while (structurePieceIterator.hasNext()) {
-                            structurePiece = structurePieceIterator.next();
-                            if (!structurePiece.intersectsChunk(arg2, 12)) {
-                                continue;
-                            } else if (structurePiece instanceof PoolStructurePiece) {
-                                poolStructurePiece = (PoolStructurePiece) structurePiece;
-                                structureProjection = poolStructurePiece.getPoolElement().getProjection();
-
-                                if (structureProjection == StructurePool.Projection.RIGID) {
-                                    STRUCTURE_LIST.add(poolStructurePiece);
-                                }
-                                jigsawJunctionIterator = poolStructurePiece.getJunctions().iterator();
-                                while (jigsawJunctionIterator.hasNext()) {
-                                    jigsawJunction = jigsawJunctionIterator.next();
-                                    jigsawX = jigsawJunction.getSourceX();
-                                    jigsawZ = jigsawJunction.getSourceZ();
-                                    
-                                    if (jigsawX > n2 - 12 && jigsawZ > n3 - 12 && jigsawX < n2 + 15 + 12) {
-                                        if (jigsawZ >= n3 + 15 + 12) {
-                                            continue;
-                                        } else {
-                                            JIGSAW_LIST.add(jigsawJunction);
-                                        }
-                                    }
-                                }
-                            } else {
-                                STRUCTURE_LIST.add(structurePiece);
-                            }
-                        }
-                        return;
-                    });
-        }
-
-        ObjectListIterator<StructurePiece> structureListIterator = (ObjectListIterator<StructurePiece>) STRUCTURE_LIST.iterator();
-        ObjectListIterator<JigsawJunction> jigsawListIterator = (ObjectListIterator<JigsawJunction>) JIGSAW_LIST.iterator();
-
-        generateHeightmap(chunk.getPos().x * byte4, 0, chunk.getPos().z * byte4);
-
-        // Noise is sampled in 4x16x4 sections?
-        for (int i = 0; i < byte4; i++) { // [1.16] Limit appears to be equivalent to noiseSizeX, equal to 16 /
-                                          // horizontalNoiseResolution // 16 / 1 * 4
-            for (int j = 0; j < byte4; j++) { // [1.16] Limit appears to be equivalent to noiseSizeZ, equal to 16 /
-                                              // horizontalNoiseResolution // 16 / 1 * 4
-                for (int k = 0; k < 16; k++) { // [1.16] Appears to be similar to 'for (int q = this.noiseSizeY - 1; q
-                                               // >= 0; --q) {'
-                                               // where noiseSizeY is equal to generationShapeConfig.getHeight() /
-                                               // this.verticalNoiseResolution // 128 [for Beta] / (2 * 4)
-                    double eighth = 0.125D;
-
-                    double var1 = HEIGHTMAP[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 0)];
-                    double var2 = HEIGHTMAP[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 0)];
-                    double var3 = HEIGHTMAP[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 0)];
-                    double var4 = HEIGHTMAP[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 0)];
-
-                    double var5 = (HEIGHTMAP[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var1) * eighth;
-                    double var6 = (HEIGHTMAP[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var2) * eighth;
-                    double var7 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var3) * eighth;
-                    double var8 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var4) * eighth;
-
-                    for (int l = 0; l < 8; l++) { // [1.16] Limit appears to be equivalent to verticalNoiseResolution,
-                                                  // equal to getSizeVertical() * 4 // 2 * 4
-                        double quarter = 0.25D;
-                        double var10 = var1;
-                        double var11 = var2;
-                        double var12 = (var3 - var1) * quarter; // Lerp
-                        double var13 = (var4 - var2) * quarter;
-
-                        int integer40 = k * 8 + l;
-
-                        for (int m = 0; m < 4; m++) { // [1.16] Limit appears to be equivalent to
-                                                      // horizontalNoiseResolution, equal to getSizeHorizontal() * 4 //
-                                                      // 1 * 4
-                            int x = (m + i * 4);
-                            int y = k * 8 + l;
-                            int z = (j * 4);
-
-                            double var14 = 0.25D;
-                            double density = var10; // var15
-                            double var16 = (var11 - var10) * var14; // More lerp
-
-                            int integer54 = (chunk.getPos().x << 4) + i * 4 + m;
-
-                            for (int n = 0; n < 4; n++) { // [1.16] Limit appears to be equivalent to
-                                                          // horizontalNoiseResolution, equal to getSizeHorizontal() * 4
-                                                          // // 1 * 4
-
-                                int integer63 = (chunk.getPos().z << 4) + j * 4 + n;
-
-                                // double temp = temps[(i * 4 + m) * 16 + (j * 4 + n)];
-
-                                double noiseWeight;
-
-                                while (structureListIterator.hasNext()) {
-                                    StructurePiece curStructurePiece = (StructurePiece) structureListIterator.next();
-                                    BlockBox blockBox = curStructurePiece.getBoundingBox();
-
-                                    int sX = Math.max(0,
-                                            Math.max(blockBox.minX - integer54, integer54 - blockBox.maxX));
-                                    int sY = y - (blockBox.minY + ((curStructurePiece instanceof PoolStructurePiece)
-                                            ? ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta()
-                                            : 0));
-                                    int sZ = Math.max(0,
-                                            Math.max(blockBox.minZ - integer63, integer63 - blockBox.maxZ));
-
-                                    // density += getNoiseWeight(sX, sY, sZ) * 0.2;
-                                    // Temporary fix
-                                    if (sY < 0 && sX == 0 && sZ == 0)
-                                        density += density * density / 0.1;
-                                }
-                                structureListIterator.back(STRUCTURE_LIST.size());
-
-                                while (jigsawListIterator.hasNext()) {
-                                    JigsawJunction curJigsawJunction = (JigsawJunction) jigsawListIterator.next();
-
-                                    int jX = integer54 - curJigsawJunction.getSourceX();
-                                    int jY = y - curJigsawJunction.getSourceGroundY();
-                                    int jZ = integer63 - curJigsawJunction.getSourceZ();
-
-                                    // density += getNoiseWeight(jX, jY, jZ) * 0.4;
-                                    // Temporary fix
-                                    if (jY < 0 && jX == 0 && jZ == 0)
-                                        density += density * density / 0.1;
-                                }
-                                jigsawListIterator.back(JIGSAW_LIST.size());
-
-                                BlockState blockToSet = this.getBlockState(density, y, 0);
-
+        for (int i = 0; i < 4; ++i) {
+            for (int j = 0; j < 4; ++ j) {
+                int bX = (chunkX << 2) + i;
+                int bZ = (chunkZ << 2) + j;
+                
+                for (int bY = 0; bY < HEIGHTMAP.length; ++bY) {
+                    HEIGHTMAP[bY][0] = this.generateHeightmap(bX, bY, bZ);
+                    HEIGHTMAP[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
+                    HEIGHTMAP[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
+                    HEIGHTMAP[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
+                }
+                
+                for (int bY = 0; bY < 32; ++bY) {
+                    double n1 = HEIGHTMAP[bY][0];
+                    double n2 = HEIGHTMAP[bY][1];
+                    double n3 = HEIGHTMAP[bY][2];
+                    double n4 = HEIGHTMAP[bY][3];
+                    double n5 = HEIGHTMAP[bY + 1][0];
+                    double n7 = HEIGHTMAP[bY + 1][1];
+                    double n8 = HEIGHTMAP[bY + 1][2];
+                    double n9 = HEIGHTMAP[bY + 1][3];
+                    
+                    for (int pY = 0; pY < 4; ++pY) {
+                        double mixY = pY / 4.0;
+                        
+                        double nx1 = n1 + (n5 - n1) * mixY;
+                        double nx2 = n2 + (n7 - n2) * mixY;
+                        double nx3 = n3 + (n8 - n3) * mixY;
+                        double nx4 = n4 + (n9 - n4) * mixY;
+                        
+                        for (int pX = 0; pX < 4; ++pX) {
+                            double mixX = pX / 4.0;
+                            
+                            double nz1 = nx1 + (nx3 - nx1) * mixX;
+                            double nz2 = nx2 + (nx4 - nx2) * mixX;
+                            
+                            int x = pX + (i << 2);
+                            int z = 0 + (j << 2);
+                            int y = (bY << 2) + pY;
+                            
+                            for (int pZ = 0; pZ < 4; ++pZ) {
+                                double mixZ = pZ / 4.0;
+                                double density = nz1 + (nz2 - nz1) * mixZ;
+                                
+                                BlockState blockToSet = this.getBlockState(density, y);
                                 chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
-
+                                
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
                                 heightmapSURFACE.trackUpdate(x, y, z, blockToSet);
 
                                 ++z;
-                                density += var16;
                             }
-
-                            var10 += var12;
-                            var11 += var13;
                         }
-
-                        var1 += var5;
-                        var2 += var6;
-                        var3 += var7;
-                        var4 += var8;
                     }
                 }
             }
         }
     }
 
-    private void generateHeightmap(int x, int y, int z) {
-        byte byte4 = 4;
-        // byte seaLevel = (byte)this.getSeaLevel();
-        byte byte17 = 17;
-
-        int int5_0 = byte4 + 1;
-        int int5_1 = byte4 + 1;
-
-        double coordinateScale = 684.41200000000003D;
-        double heightScale = 684.41200000000003D;
-
-        double depthNoiseScaleX = 100D;
-        double depthNoiseScaleZ = 100D;
-
-        double mainNoiseScaleX = 80D;
-        double mainNoiseScaleY = 160D;
-        double mainNoiseScaleZ = 80D;
-
-        double lowerLimitScale = 512D;
-        double upperLimitScale = 512D;
-
-        scaleNoise = scaleNoiseOctaves.generateAlphaNoiseOctaves(scaleNoise, x, y, z, int5_0, 1, int5_1, 1.0D, 0.0D, 1.0D);
-        depthNoise = depthNoiseOctaves.generateAlphaNoiseOctaves(depthNoise, x, y, z, int5_0, 1, int5_1, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
-
-        mainNoise = mainNoiseOctaves.generateAlphaNoiseOctaves(
-            mainNoise, 
-            x, y, z, 
-            int5_0, byte17, int5_1,
-            coordinateScale / mainNoiseScaleX, 
-            heightScale / mainNoiseScaleY, 
-            coordinateScale / mainNoiseScaleZ
-        );
-
-        minLimitNoise = minLimitNoiseOctaves.generateAlphaNoiseOctaves(
-            minLimitNoise, 
-            x, y, z, 
-            int5_0, byte17, int5_1,
-            coordinateScale, 
-            heightScale, 
-            coordinateScale
-        );
-
-        maxLimitNoise = maxLimitNoiseOctaves.generateAlphaNoiseOctaves(
-            maxLimitNoise, 
-            x, y, z, 
-            int5_0, byte17, int5_1,
-            coordinateScale,
-            heightScale,
-            coordinateScale
-        );
-
-        int i = 0;
-        int j = 0;
-        for (int l = 0; l < int5_0; l++) {
-            for (int m = 0; m < int5_1; m++) {
-
-                double scaleMod = (scaleNoise[j] + 256D) / 512D;
-                if (scaleMod > 1.0D) {
-                    scaleMod = 1.0D;
-                }
-
-                double d3 = 0.0D;
-
-                double depthMod = depthNoise[j] / 8000D;
-                if (depthMod < 0.0D) {
-                    depthMod = -depthMod;
-                }
-
-                depthMod = depthMod * 3D - 3D;
-
-                if (depthMod < 0.0D) {
-                    depthMod /= 2D;
-                    if (depthMod < -1D) {
-                        depthMod = -1D;
-                    }
-
-                    depthMod /= 1.3999999999999999D;
-                    depthMod /= 2D;
-
-                    scaleMod = 0.0D;
-
-                } else {
-                    if (depthMod > 1.0D) {
-                        depthMod = 1.0D;
-                    }
-                    depthMod /= 6D;
-                }
-
-                scaleMod += 0.5D;
-                depthMod = (depthMod * (double) byte17) / 16D;
-
-                double depthMod2 = (double) byte17 / 2D + depthMod * 4D;
-
-                j++;
-
-                for (int n = 0; n < byte17; n++) {
-                    double heightVal = 0.0D;
-                    double scaleMod2 = (((double) n - depthMod2) * 12D) / scaleMod;
-
-                    if (scaleMod2 < 0.0D) {
-                        scaleMod2 *= 4D;
-                    }
-
-                    double minLimitMod = minLimitNoise[i] / lowerLimitScale;
-                    double maxLimitMod = maxLimitNoise[i] / upperLimitScale;
-                    double mainLimitMod = (mainNoise[i] / 10D + 1.0D) / 2D;
-
-                    if (mainLimitMod < 0.0D) {
-                        heightVal = minLimitMod;
-                    } else if (mainLimitMod > 1.0D) {
-                        heightVal = maxLimitMod;
-                    } else {
-                        heightVal = minLimitMod + (maxLimitMod - minLimitMod) * mainLimitMod;
-                    }
-                    heightVal -= scaleMod2;
-
-                    if (n > byte17 - 4) {
-                        double d11 = (float) (n - (byte17 - 4)) / 3F;
-                        heightVal = heightVal * (1.0D - d11) + -10D * d11;
-                    }
-
-                    if ((double) n < d3) {
-                        double d12 = (d3 - (double) n) / 4D;
-                        if (d12 < 0.0D) {
-                            d12 = 0.0D;
-                        }
-                        if (d12 > 1.0D) {
-                            d12 = 1.0D;
-                        }
-                        heightVal = heightVal * (1.0D - d12) + -10D * d12;
-                    }
-
-                    HEIGHTMAP[i] = heightVal;
-                    i++;
-                }
-            }
+    private double generateHeightmap(double x, double y, double z) {
+        double elevGrad;
+        if ((elevGrad = y * 4.0 - 64.0) < 0.0) {
+            elevGrad *= 3.0;
         }
+        
+        double noise;
+        double res;
+        
+        if ((noise = this.noiseOctavesC.generateInfdevOctaves(x * 8.55515, y * 1.71103, z * 8.55515) / 2.0) < -1) {
+            res = MathHelper.clamp(
+                this.noiseOctavesA.generateInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                -10.0, 
+                10.0
+            );
+            
+        } else if (noise > 1.0) {
+            res = MathHelper.clamp(
+                this.noiseOctavesB.generateInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                -10.0, 
+                10.0
+            );
+            
+        } else {
+            double noise2 = MathHelper.clamp(
+                this.noiseOctavesA.generateInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                -10.0, 
+                10.0
+            );
+            
+            double noise3 = MathHelper.clamp(
+                this.noiseOctavesB.generateInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                -10.0, 
+                10.0
+            );
+            
+            double mix = (noise + 1.0) / 2.0;
+            
+            res = noise2 + (noise3 - noise2) * mix;
+        }
+        
+        return res;
     }
 
-    private void buildAlphaSurface(Chunk chunk) {
+    private void buildInfdevSurface(Chunk chunk) {
         byte seaLevel = (byte) this.getSeaLevel();
         double thirtysecond = 0.03125D; // eighth
 
@@ -774,23 +598,19 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
         }
     }
 
-    protected BlockState getBlockState(double density, int y, double temp) {
+    
+    protected BlockState getBlockState(double density, int y) {
         BlockState blockStateToSet = Blocks.AIR.getDefaultState();
         if (density > 0.0) {
             blockStateToSet = this.settings.wrapped.getDefaultBlock();
         } else if (y < this.getSeaLevel()) {
-            if (temp < 0.5D && y >= this.getSeaLevel() - 1) {
-                // blockStateToSet = Blocks.ICE.getDefaultState(); // Get chunk errors so
-                // disabled for now.
-                blockStateToSet = this.settings.wrapped.getDefaultFluid();
-            } else {
-                blockStateToSet = this.settings.wrapped.getDefaultFluid();
-            }
+            blockStateToSet = this.settings.wrapped.getDefaultFluid();
 
         }
         return blockStateToSet;
     }
 
+    
     // Called only when generating structures
     @Override
     public int getHeight(int x, int z, Heightmap.Type type) {
@@ -798,7 +618,6 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
         POS.set(x, 0, z);
 
         if (GROUND_CACHE_Y.get(POS) == null) {
-            biomeSource.fetchTempHumid((x >> 4) * 16, (z >> 4) * 16, 16, 16);
             sampleHeightmap(x, z);
         }
 
@@ -812,70 +631,65 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
     }
 
     private void sampleHeightmap(int absX, int absZ) {
-        byte byte4 = 4;
-        // byte seaLevel = (byte)this.getSeaLevel();
-        byte byte17 = 17;
-
-        int int5_0 = byte4 + 1;
-        int int5_1 = byte4 + 1;
         
         int chunkX = absX >> 4;
         int chunkZ = absZ >> 4;
-
-        generateHeightmap(chunkX * byte4, 0, chunkZ * byte4);
-
-        for (int i = 0; i < byte4; i++) {
-            for (int j = 0; j < byte4; j++) {
-                for (int k = 0; k < 16; k++) {
-                    double eighth = 0.125D;
-
-                    double var1 = HEIGHTMAP[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 0)];
-                    double var2 = HEIGHTMAP[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 0)];
-                    double var3 = HEIGHTMAP[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 0)];
-                    double var4 = HEIGHTMAP[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 0)];
-
-                    double var5 = (HEIGHTMAP[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var1) * eighth;
-                    double var6 = (HEIGHTMAP[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var2) * eighth;
-                    double var7 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var3) * eighth;
-                    double var8 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var4) * eighth;
-
-                    for (int l = 0; l < 8; l++) {
-                        double var9 = 0.25D;
-                        double var10 = var1;
-                        double var11 = var2;
-                        double var12 = (var3 - var1) * var9;
-                        double var13 = (var4 - var2) * var9;
-
-                        for (int m = 0; m < 4; m++) {
-                            int x = (m + i * 4);
-                            int y = k * 8 + l;
-                            int z = (j * 4);
-
-                            double var14 = 0.25D;
-                            double density = var10; // var15
-                            double var16 = (var11 - var10) * var14;
-
-                            for (int n = 0; n < 4; n++) {
-                                if (density > 0.0) {
+        
+        for (int i = 0; i < 4; ++i) {
+            for (int j = 0; j < 4; ++ j) {
+                int bX = (chunkX << 2) + i;
+                int bZ = (chunkZ << 2) + j;
+                
+                for (int bY = 0; bY < HEIGHTMAP.length; ++bY) {
+                    HEIGHTMAP[bY][0] = this.generateHeightmap(bX, bY, bZ);
+                    HEIGHTMAP[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
+                    HEIGHTMAP[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
+                    HEIGHTMAP[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
+                }
+                
+                for (int bY = 0; bY < 32; ++bY) {
+                    double n1 = HEIGHTMAP[bY][0];
+                    double n2 = HEIGHTMAP[bY][1];
+                    double n3 = HEIGHTMAP[bY][2];
+                    double n4 = HEIGHTMAP[bY][3];
+                    double n5 = HEIGHTMAP[bY + 1][0];
+                    double n7 = HEIGHTMAP[bY + 1][1];
+                    double n8 = HEIGHTMAP[bY + 1][2];
+                    double n9 = HEIGHTMAP[bY + 1][3];
+                    
+                    for (int pY = 0; pY < 4; ++pY) {
+                        double mixY = pY / 4.0;
+                        
+                        double nx1 = n1 + (n5 - n1) * mixY;
+                        double nx2 = n2 + (n7 - n2) * mixY;
+                        double nx3 = n3 + (n8 - n3) * mixY;
+                        double nx4 = n4 + (n9 - n4) * mixY;
+                        
+                        for (int pX = 0; pX < 4; ++pX) {
+                            double mixX = pX / 4.0;
+                            
+                            double nz1 = nx1 + (nx3 - nx1) * mixX;
+                            double nz2 = nx2 + (nx4 - nx2) * mixX;
+                            
+                            int x = pX + (i << 2);
+                            int z = 0 + (j << 2);
+                            int y = (bY << 2) + pY;
+                            
+                            for (int pZ = 0; pZ < 4; ++pZ) {
+                                double mixZ = pZ / 4.0;
+                                double noiseValue = nz1 + (nz2 - nz1) * mixZ;
+                                if (noiseValue > 0.0D) {
                                     CHUNK_Y[x][z] = y;
                                 }
-
-                                ++z;
-                                density += var16;
+                                
+                                z++;
                             }
-
-                            var10 += var12;
-                            var11 += var13;
                         }
-
-                        var1 += var5;
-                        var2 += var6;
-                        var3 += var7;
-                        var4 += var8;
                     }
                 }
             }
         }
+        
 
         for (int pX = 0; pX < CHUNK_Y.length; pX++) {
             for (int pZ = 0; pZ < CHUNK_Y[pX].length; pZ++) {
@@ -884,7 +698,8 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
             }
         }
     }
-
+    
+    
     @Override
     public int getMaxY() {
         return 128;
@@ -897,7 +712,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public ChunkGenerator withSeed(long seed) {
-        return new AlphaChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings);
+        return new InfdevChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings);
     }
 
 }

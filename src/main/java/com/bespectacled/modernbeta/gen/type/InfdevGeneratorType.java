@@ -9,6 +9,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
+import com.bespectacled.modernbeta.gen.InfdevChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.gui.CustomizeAlphaLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeBetaLevelScreen;
@@ -31,8 +32,8 @@ import net.minecraft.world.gen.chunk.SlideConfig;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 
 @Environment(EnvType.CLIENT)
-public final class AlphaGeneratorType extends GeneratorType {
-    public static final GeneratorType INSTANCE = new AlphaGeneratorType();
+public final class InfdevGeneratorType extends GeneratorType {
+    public static final GeneratorType INSTANCE = new InfdevGeneratorType();
 
     public static final StructuresConfig structures = new StructuresConfig(true);
     public static final NoiseSamplingConfig noiseSampler = new NoiseSamplingConfig(1.0, 1.0, 40.0, 22.0);
@@ -56,8 +57,8 @@ public final class AlphaGeneratorType extends GeneratorType {
             )
             .build();
 
-    private AlphaGeneratorType() {
-        super("alpha");
+    private InfdevGeneratorType() {
+        super("infdev");
     }
 
     public static void register() {
@@ -72,7 +73,7 @@ public final class AlphaGeneratorType extends GeneratorType {
         alphaSettings.settings.putBoolean("alphaWinterMode", ModernBeta.BETA_CONFIG.alphaWinterMode);
         alphaSettings.settings.putBoolean("alphaPlus", ModernBeta.BETA_CONFIG.alphaPlus);
         
-        return new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes, alphaSettings.settings), seed, alphaSettings);
+        return new InfdevChunkGenerator(new AlphaBiomeSource(seed, biomes, alphaSettings.settings), seed, alphaSettings);
     }
     
     

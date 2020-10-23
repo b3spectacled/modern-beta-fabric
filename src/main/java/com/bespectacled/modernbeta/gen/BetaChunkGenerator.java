@@ -93,6 +93,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     private final OldNoiseGeneratorOctaves stoneNoiseOctaves;
     private final OldNoiseGeneratorOctaves scaleNoiseOctaves;
     private final OldNoiseGeneratorOctaves depthNoiseOctaves;
+    private final OldNoiseGeneratorOctaves forestNoiseOctaves;
 
     private double sandNoise[];
     private double gravelNoise[];
@@ -137,9 +138,10 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         stoneNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 4, false);
         scaleNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 10, false);
         depthNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 16, false);
+        forestNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, false);
 
         // Yes this is messy. What else am I supposed to do?
-        BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setSeed(seed);
+        BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
         ModernBeta.setBlockColorsSeed(seed, false);
     }
 
@@ -684,7 +686,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         int chunkZ = chunk.getPos().z;
 
         biomeSource.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
-
         Biome curBiome;
 
         sandNoise = beachNoiseOctaves.generateBetaNoiseOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,

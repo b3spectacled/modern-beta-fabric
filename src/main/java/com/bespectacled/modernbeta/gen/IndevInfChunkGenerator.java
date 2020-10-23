@@ -157,7 +157,7 @@ public class IndevInfChunkGenerator extends NoiseChunkGenerator {
         gravelNoiseOctaves = new OldNoiseGeneratorOctaves(this.rand, 8, true);
 
         // Yes this is messy. What else am I supposed to do?
-        BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
+        //BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setSeed(seed);
         ModernBeta.setBlockColorsSeed(0L, true);
     }
 
