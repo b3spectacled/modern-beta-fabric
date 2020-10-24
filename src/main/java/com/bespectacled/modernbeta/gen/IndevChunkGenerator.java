@@ -14,6 +14,7 @@ import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.PoolStructurePiece;
@@ -42,6 +43,7 @@ import com.bespectacled.modernbeta.biome.IndevBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.gen.settings.IndevGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
+import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.IndevUtil.Theme;
 import com.bespectacled.modernbeta.util.IndevUtil.Type;
 
@@ -86,7 +88,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     
     private Theme theme;
     private Type type;
-    private Block fluidBlock;
+    private BlockState fluidBlock;
     
     private int width;
     private int length;
@@ -133,7 +135,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         if (this.settings.settings.contains("levelHeight")) this.height = settings.settings.getInt("levelHeight");
         if (this.settings.settings.contains("caveRadius")) this.caveRadius = settings.settings.getFloat("caveRadius");
         
-        this.fluidBlock = (this.theme == Theme.HELL) ? Blocks.LAVA : Blocks.WATER;
+        this.fluidBlock = (this.theme == Theme.HELL) ? BlockStates.LAVA : BlockStates.WATER;
         this.waterLevel = this.height / 2;
         this.layers = (this.type == Type.FLOATING) ? (this.height - 64) / 48 + 1 : 1;
         
@@ -253,20 +255,20 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                     }
                     jigsawListIterator.back(JIGSAW_LIST.size());
 
-                    if (!blockToSet.equals(Blocks.AIR)) {
-                        chunk.setBlockState(POS.set(x, y, z), blockToSet.getDefaultState(), false);
+                    if (blockToSet != Blocks.AIR) {
+                        chunk.setBlockState(POS.set(x, y, z), BlockStates.getBlockState(blockToSet), false);
                     }
                     
                     if (this.type == Type.FLOATING) continue;
                      
                     if (y <= 1 && blockToSet == Blocks.AIR) {
-                        chunk.setBlockState(POS.set(x, y, z), Blocks.LAVA.getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), BlockStates.LAVA, false);
                     } else if (y <= 1) {
-                        chunk.setBlockState(POS.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
                     }
                     
-                    heightmapOCEAN.trackUpdate(x, y, z, blockToSet.getDefaultState());
-                    heightmapSURFACE.trackUpdate(x, y, z, blockToSet.getDefaultState());
+                    heightmapOCEAN.trackUpdate(x, y, z, BlockStates.getBlockState(blockToSet));
+                    heightmapSURFACE.trackUpdate(x, y, z, BlockStates.getBlockState(blockToSet));
                         
                 }
             }
@@ -468,19 +470,19 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                 Block block = blockArr[x][heightResult][z];
                 Block blockAbove = blockArr[x][heightResult + 1][z];
                 
-                if ((blockAbove.equals(this.fluidBlock) || blockAbove.equals(Blocks.AIR)) && heightResult <= seaLevel && genGravel) {
+                if ((blockAbove == this.fluidBlock.getBlock() || blockAbove == Blocks.AIR) && heightResult <= seaLevel && genGravel) {
                     blockArr[x][heightResult][z] = Blocks.GRAVEL;
                 }
                 
      
-                if (blockAbove.equals(Blocks.AIR)) {
+                if (blockAbove == Blocks.AIR) {
                     Block surfaceBlock = null;
                     
                     if (heightResult <= seaLevel && genSand) {
                         surfaceBlock = (this.theme == Theme.HELL) ? Blocks.GRASS_BLOCK : Blocks.SAND; 
                     }
                     
-                    if (!block.equals(Blocks.AIR) && surfaceBlock != null) {
+                    if (block != Blocks.AIR && surfaceBlock != null) {
                         blockArr[x][heightResult][z] = surfaceBlock;
                     }
                 }
@@ -557,7 +559,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     // Using Classic generation algorithm
     private void floodFluid(Block[][][] blockArr) {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Watering..");
-        Block toFill = this.fluidBlock;
+        Block toFill = this.fluidBlock.getBlock();
         
         if (this.type == Type.FLOATING) {
             return;
@@ -653,17 +655,17 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     }
     
     private void generateWorldBorder(Chunk chunk) {
-        Block topBlock = Blocks.GRASS_BLOCK;
+        BlockState topBlock = BlockStates.GRASS_BLOCK;
         
-        if (this.theme == Theme.HELL) topBlock = Blocks.DIRT;
+        if (this.theme == Theme.HELL) topBlock = BlockStates.DIRT;
          
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
                 for (int y = 0; y < this.height; ++y) {
                     if (y < this.waterLevel) {
-                        chunk.setBlockState(POS.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
                     } else if (y == this.waterLevel) {
-                        chunk.setBlockState(POS.set(x, y, z), topBlock .getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), topBlock, false);
                     }
                 }
             }
@@ -675,11 +677,11 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             for (int z = 0; z < 16; ++z) {
                 for (int y = 0; y < this.height; ++y) {
                     if (y < this.waterLevel - 10) {
-                        chunk.setBlockState(POS.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
                     } else if (y == this.waterLevel - 10) {
-                        chunk.setBlockState(POS.set(x, y, z), Blocks.DIRT.getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), BlockStates.DIRT, false);
                     } else if (y < this.waterLevel) {
-                        chunk.setBlockState(POS.set(x, y, z), this.fluidBlock.getDefaultState(), false);
+                        chunk.setBlockState(POS.set(x, y, z), this.fluidBlock, false);
                     }
                 }
             }

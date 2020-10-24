@@ -51,6 +51,7 @@ import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.BiomeMath;
+import com.bespectacled.modernbeta.util.BlockStates;
 
 //private final BetaGeneratorSettings settings;
 
@@ -428,11 +429,11 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
                 curBiome = biomeSource.biomesInChunk[i + j * 16];
 
-                Block biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial().getBlock();
-                Block biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial().getBlock();
+                BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
+                BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
 
-                Block topBlock = biomeTopBlock;
-                Block fillerBlock = biomeFillerBlock;
+                BlockState topBlock = biomeTopBlock;
+                BlockState fillerBlock = biomeFillerBlock;
 
                 // Generate from top to bottom of world
                 for (int y = 127; y >= 0; y--) {
@@ -450,16 +451,16 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
                     if (flag == -1) {
                         if (genStone <= 0) { // Generate stone basin if noise permits
-                            topBlock = Blocks.AIR;
-                            fillerBlock = Blocks.STONE;
+                            topBlock = BlockStates.AIR;
+                            fillerBlock = BlockStates.STONE;
                         }
 
                         // Main surface builder section
                         flag = genStone;
                         if (y >= 0) {
-                            chunk.setBlockState(POS.set(j, y, i), topBlock.getDefaultState(), false);
+                            chunk.setBlockState(POS.set(j, y, i), topBlock, false);
                         } else {
-                            chunk.setBlockState(POS.set(j, y, i), fillerBlock.getDefaultState(), false);
+                            chunk.setBlockState(POS.set(j, y, i), fillerBlock, false);
                         }
 
                         continue;
@@ -470,13 +471,13 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                     }
 
                     flag--;
-                    chunk.setBlockState(POS.set(j, y, i), fillerBlock.getDefaultState(), false);
+                    chunk.setBlockState(POS.set(j, y, i), fillerBlock, false);
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to
                     // 4.
-                    if (flag == 0 && fillerBlock.equals(Blocks.SAND)) {
+                    if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
                         flag = RAND.nextInt(4);
-                        fillerBlock = Blocks.SANDSTONE;
+                        fillerBlock = BlockStates.SANDSTONE;
                     }
                 }
             }
@@ -484,7 +485,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     }
 
     protected BlockState getBlockState(double density, int y, double temp) {
-        BlockState blockStateToSet = Blocks.AIR.getDefaultState();
+        BlockState blockStateToSet = BlockStates.AIR;
 
         if (density > 0.0) {
             blockStateToSet = this.settings.wrapped.getDefaultBlock();

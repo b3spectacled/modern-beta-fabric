@@ -68,6 +68,7 @@ import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.gen.settings.InfdevGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
+import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
 import com.bespectacled.modernbeta.util.IndevUtil.Type;
 
@@ -169,41 +170,6 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
          * } }
          * 
          */
-    }
-    
-    private void setTerrain(Chunk chunk) {
-        int chunkX = chunk.getPos().x;
-        int chunkZ = chunk.getPos().z;
-        
-        Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
-        Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
-        
-        for (int x = 0; x < 16; ++x) {
-            for (int z = 0; z < 16; ++z) {
-                
-                int ndx = x << 11 | z << 7 | 0x7F;
-                
-                for (int y = 127; y >= 0; --y) {
-                    Block blockToSet = BLOCKS[ndx] == null ? Blocks.AIR : BLOCKS[ndx];
-                    POS.set(x, y, z);
-                    
-                    chunk.setBlockState(POS, blockToSet.getDefaultState(), false);
-                    
-                    /*
-                    if (y <= 1 && blockToSet == Blocks.AIR) {
-                        chunk.setBlockState(POS, Blocks.LAVA.getDefaultState(), false);
-                    } else if (y <= 1) {
-                        chunk.setBlockState(POS, Blocks.BEDROCK.getDefaultState(), false);
-                    }
-                    */
-                    
-                    heightmapOCEAN.trackUpdate(x, y, z, blockToSet.getDefaultState());
-                    heightmapSURFACE.trackUpdate(x, y, z, blockToSet.getDefaultState());
-
-                    ndx--;
-                }
-            }
-        }
     }
 
     // Modified to accommodate additional ocean biome replacements
@@ -547,11 +513,11 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
                 
                 int flag = -1;
                 
-                Block biomeTopBlock = Blocks.GRASS_BLOCK;
-                Block biomeFillerBlock = Blocks.DIRT;
-                
-                Block topBlock = biomeTopBlock;
-                Block fillerBlock = biomeFillerBlock;
+                BlockState biomeTopBlock = BlockStates.GRASS_BLOCK;
+                BlockState biomeFillerBlock = BlockStates.DIRT;
+
+                BlockState topBlock = biomeTopBlock;
+                BlockState fillerBlock = biomeFillerBlock;
                 
                 for (int y = 127; y >= 0; --y) {
                     
@@ -570,44 +536,44 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
                     } else if (someBlock.equals(Blocks.STONE)) {
                         if (flag == -1) {
                             if (genStone <= 0) {
-                                topBlock = Blocks.AIR;
-                                fillerBlock = Blocks.STONE;
+                                topBlock = BlockStates.AIR;
+                                fillerBlock = BlockStates.STONE;
                             } else if (y >= 60 && y <= 65) {
                                 topBlock = biomeTopBlock;
                                 fillerBlock = biomeFillerBlock;
                                 
                                 if (genGravelBeach) {
-                                    topBlock = Blocks.AIR;
-                                    fillerBlock = Blocks.GRAVEL;
+                                    topBlock = BlockStates.AIR;
+                                    fillerBlock = BlockStates.GRAVEL;
                                 }
                                 
                                 if (genSandBeach) {
-                                    topBlock = Blocks.SAND;
-                                    fillerBlock = Blocks.SAND;
+                                    topBlock = BlockStates.SAND;
+                                    fillerBlock = BlockStates.SAND;
                                 }
                             }
                             
-                            if (y < this.getSeaLevel() && topBlock.equals(Blocks.AIR)) {
-                                topBlock = Blocks.WATER; // Will this ever happen?
+                            if (y < this.getSeaLevel() && topBlock.equals(BlockStates.AIR)) {
+                                topBlock = BlockStates.WATER; // Will this ever happen?
                             }
                             
                             flag = genStone;
                             
                             if (y >= this.getSeaLevel() - 1) {
-                                chunk.setBlockState(POS, topBlock.getDefaultState(), false);
+                                chunk.setBlockState(POS, topBlock, false);
                             } else {
-                                chunk.setBlockState(POS, fillerBlock.getDefaultState(), false);
+                                chunk.setBlockState(POS, fillerBlock, false);
                             }
                             
                         } else if (flag > 0) {
                             --flag;
-                            chunk.setBlockState(POS, fillerBlock.getDefaultState(), false);
+                            chunk.setBlockState(POS, fillerBlock, false);
                             
                             // Gens layer of sandstone starting at lowest block of sand, of height 1 to 4.
                             // Beta backport.
-                            if (flag == 0 && fillerBlock.equals(Blocks.SAND)) {
+                            if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
                                 flag = RAND.nextInt(4);
-                                fillerBlock = Blocks.SANDSTONE;
+                                fillerBlock = BlockStates.SANDSTONE;
                             }
                         }
                     }
@@ -618,7 +584,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
 
     
     protected BlockState getBlockState(double density, int y) {
-        BlockState blockStateToSet = Blocks.AIR.getDefaultState();
+        BlockState blockStateToSet = BlockStates.AIR;
         if (density > 0.0) {
             blockStateToSet = this.settings.wrapped.getDefaultBlock();
         } else if (y < this.getSeaLevel()) {
