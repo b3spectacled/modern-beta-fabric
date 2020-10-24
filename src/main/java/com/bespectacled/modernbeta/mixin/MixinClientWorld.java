@@ -41,10 +41,13 @@ public abstract class MixinClientWorld extends World {
     private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
     
     @Unique
-    private boolean isBetaWorld = false;
+    private boolean isBetaWorld = true;
     
     @Shadow
     private MinecraftClient client;
+    
+    @Unique
+    private long worldSeed = 0L;
 
     private MixinClientWorld(MutableWorldProperties properties, RegistryKey<World> registryRef, final DimensionType dimensionType, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed) {
         super(null, null, null, null, false, false, 0L);
@@ -60,12 +63,14 @@ public abstract class MixinClientWorld extends World {
             RegistryKey<World> worldKey, DimensionType dimensionType, int loadDistance, Supplier<Profiler> profiler,
             WorldRenderer renderer, boolean debugWorld, long seed, CallbackInfo ci) {
         
-        ChunkGenerator generator = client.getServer().getOverworld().getChunkManager().getChunkGenerator();
-        isBetaWorld = generator instanceof BetaChunkGenerator || generator instanceof SkylandsChunkGenerator;
+        if (client.getServer() != null) { // Server check
+           ChunkGenerator generator = client.getServer().getOverworld().getChunkManager().getChunkGenerator();
+           isBetaWorld = generator instanceof BetaChunkGenerator || generator instanceof SkylandsChunkGenerator;
+           
+           worldSeed = generator.worldSeed;
+        }
 
         if (isBetaWorld) {
-            long worldSeed = generator.worldSeed;
-            
             worldSeed = BETA_CONFIG.fixedSeed == 0L ? worldSeed : BETA_CONFIG.fixedSeed;
             setSeed(worldSeed);
         }
