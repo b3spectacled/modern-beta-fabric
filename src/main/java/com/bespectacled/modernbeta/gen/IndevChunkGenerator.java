@@ -1,18 +1,28 @@
 package com.bespectacled.modernbeta.gen;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 import org.apache.logging.log4j.Level;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.structure.JigsawJunction;
+import net.minecraft.structure.PoolStructurePiece;
+import net.minecraft.structure.StructurePiece;
+import net.minecraft.structure.pool.StructurePool;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.BlockPos.Mutable;
@@ -25,6 +35,8 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.chunk.StructuresConfig;
+import net.minecraft.world.gen.feature.StructureFeature;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.IndevBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
@@ -91,6 +103,9 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
 
     private static final Mutable POS = new Mutable();
     private static final Random RAND = new Random();
+    
+    private static final ObjectList<StructurePiece> STRUCTURE_LIST = (ObjectList<StructurePiece>) new ObjectArrayList(10);
+    private static final ObjectList<JigsawJunction> JIGSAW_LIST = (ObjectList<JigsawJunction>) new ObjectArrayList(32);
 
     public IndevChunkGenerator(BiomeSource biomes, long seed, IndevGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
@@ -191,11 +206,53 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
+        this.collectStructures(chunk, structureAccessor);
+        
+        ObjectListIterator<StructurePiece> structureListIterator = (ObjectListIterator<StructurePiece>) STRUCTURE_LIST.iterator();
+        ObjectListIterator<JigsawJunction> jigsawListIterator = (ObjectListIterator<JigsawJunction>) JIGSAW_LIST.iterator();
+        
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
+                
+                int absX = x + (chunkX << 4);
+                int absZ = z + (chunkZ << 4);
+                
                 for (int y = 0; y < this.height; ++y) {
                     Block blockToSet = blockArr[offsetX + x][y][offsetZ + z];
                     
+                    while (structureListIterator.hasNext()) {
+                        StructurePiece curStructurePiece = (StructurePiece) structureListIterator.next();
+                        BlockBox blockBox = curStructurePiece.getBoundingBox();
+
+                        int sX = Math.max(0, Math.max(blockBox.minX - absX, absX - blockBox.maxX));
+                        int sY = y - (blockBox.minY + ((curStructurePiece instanceof PoolStructurePiece)
+                                ? ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta() : 0));
+                        int sZ = Math.max(0, Math.max(blockBox.minZ - absZ, absZ - blockBox.maxZ));
+
+                        if (sY < 0 && sX == 0 && sZ == 0) {
+                            if (sY == -1) blockToSet = Blocks.GRASS_BLOCK;
+                            else if (sY >= -2) blockToSet = Blocks.DIRT;
+                            else if (sY >= -4) blockToSet = Blocks.STONE;
+                        }
+                            
+                    }
+                    structureListIterator.back(STRUCTURE_LIST.size());
+
+                    while (jigsawListIterator.hasNext()) {
+                        JigsawJunction curJigsawJunction = (JigsawJunction) jigsawListIterator.next();
+
+                        int jX = absX - curJigsawJunction.getSourceX();
+                        int jY = y - curJigsawJunction.getSourceGroundY();
+                        int jZ = absZ - curJigsawJunction.getSourceZ();
+
+                        if (jY < 0 && jX == 0 && jZ == 0) {
+                            if (jY == -1) blockToSet = Blocks.GRASS_BLOCK;
+                            else if (jY >= -2) blockToSet = Blocks.DIRT;
+                            else if (jY >= -4) blockToSet = Blocks.STONE;
+                        }
+                    }
+                    jigsawListIterator.back(JIGSAW_LIST.size());
+
                     if (!blockToSet.equals(Blocks.AIR)) {
                         chunk.setBlockState(POS.set(x, y, z), blockToSet.getDefaultState(), false);
                     }
@@ -670,6 +727,64 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     @Override
     public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {
         // Do nothing, for now.
+    }
+    
+    private void collectStructures(Chunk chunk, StructureAccessor accessor) {
+        STRUCTURE_LIST.clear();
+        JIGSAW_LIST.clear();
+        
+        for (final StructureFeature<?> s : StructureFeature.JIGSAW_STRUCTURES) {
+
+            accessor.getStructuresWithChildren(ChunkSectionPos.from(chunk.getPos(), 0), s)
+                .forEach(structureStart -> {
+                    Iterator<StructurePiece> structurePieceIterator;
+                    StructurePiece structurePiece;
+
+                    Iterator<JigsawJunction> jigsawJunctionIterator;
+                    JigsawJunction jigsawJunction;
+
+                    ChunkPos arg2 = chunk.getPos();
+
+                    PoolStructurePiece poolStructurePiece;
+                    StructurePool.Projection structureProjection;
+
+                    int jigsawX;
+                    int jigsawZ;
+                    int n2 = arg2.x;
+                    int n3 = arg2.z;
+
+                    structurePieceIterator = structureStart.getChildren().iterator();
+                    while (structurePieceIterator.hasNext()) {
+                        structurePiece = structurePieceIterator.next();
+                        if (!structurePiece.intersectsChunk(arg2, 12)) {
+                            continue;
+                        } else if (structurePiece instanceof PoolStructurePiece) {
+                            poolStructurePiece = (PoolStructurePiece) structurePiece;
+                            structureProjection = poolStructurePiece.getPoolElement().getProjection();
+
+                            if (structureProjection == StructurePool.Projection.RIGID) {
+                                STRUCTURE_LIST.add(poolStructurePiece);
+                            }
+                            jigsawJunctionIterator = poolStructurePiece.getJunctions().iterator();
+                            while (jigsawJunctionIterator.hasNext()) {
+                                jigsawJunction = jigsawJunctionIterator.next();
+                                jigsawX = jigsawJunction.getSourceX();
+                                jigsawZ = jigsawJunction.getSourceZ();
+                                if (jigsawX > n2 - 12 && jigsawZ > n3 - 12 && jigsawX < n2 + 15 + 12) {
+                                    if (jigsawZ >= n3 + 15 + 12) {
+                                        continue;
+                                    } else {
+                                        JIGSAW_LIST.add(jigsawJunction);
+                                    }
+                                }
+                            }
+                        } else {
+                            STRUCTURE_LIST.add(structurePiece);
+                        }
+                    }
+                    return;
+            });
+        }
     }
     
     @Override
