@@ -115,6 +115,12 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     
     private static final double HEIGHTMAP[] = new double[425];
     
+    private static final Biome BIOMES_IN_CHUNK[] = new Biome[16 * 16];
+    private static final Biome OCEAN_BIOMES_IN_CHUNK[] = new Biome[16 * 16];
+    
+    private static final double TEMPS[] = new double[16 * 16];
+    private static final double HUMIDS[] = new double[16 * 16];
+    
     private static final Mutable POS = new Mutable();
     
     private static final Random RAND = new Random();
@@ -160,11 +166,19 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
         ChunkPos pos = chunk.getPos();
 
-        RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
+        RAND.setSeed((long)chunk.getPos().x * 0x4f9939f508L + (long)chunk.getPos().z * 0x1ef1565bd5L);
 
-        biomeSource.fetchTempHumid(chunk.getPos().x * 16, chunk.getPos().z * 16, 16, 16);
-        temps = biomeSource.temps;
-        generateTerrain(chunk, temps, structureAccessor);
+        biomeSource.fetchTempHumid16(
+            chunk.getPos().getStartX(), 
+            chunk.getPos().getStartZ(), 
+            BIOMES_IN_CHUNK, 
+            OCEAN_BIOMES_IN_CHUNK,
+            TEMPS,
+            HUMIDS);
+        
+        generateTerrain(chunk, TEMPS, structureAccessor);
+        
+        buildBetaSurface(chunk);
 
         MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
         
@@ -245,7 +259,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
         int thisY = CHUNK_Y[Math.abs(absX % 16)][Math.abs(absZ % 16)];
 
-        if (thisY <= this.getSeaLevel() - 4) {
+        if (thisY <= this.getSeaLevel() - 6) {
             biome = this.biomeSource.getOceanBiomeForNoiseGen(absX, 0, absZ);
         }
 
@@ -333,7 +347,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
         // Do not use the built-in surface builders..
         // This works better for Beta-accurate surface generation anyway.
-        buildBetaSurface(chunk);
+        //buildBetaSurface(chunk);
     }
 
     /*
@@ -476,8 +490,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
 
-        double temps[] = biomeSource.temps;
-        double humids[] = biomeSource.humids;
+        double temps[] = TEMPS;
+        double humids[] = HUMIDS;
 
         scaleNoise = scaleNoiseOctaves.func_4109_a(scaleNoise, x, z, int5_0, int5_1, 1.121D, 1.121D, 0.5D);
         depthNoise = depthNoiseOctaves.func_4109_a(depthNoise, x, z, int5_0, int5_1, depthNoiseScaleX, depthNoiseScaleZ, depthNoiseScaleExponent);
@@ -612,7 +626,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        biomeSource.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
+        //biomeSource.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
         Biome curBiome;
 
         sandNoise = beachNoiseOctaves.generateBetaNoiseOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
@@ -631,7 +645,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                 int genStone = (int) (stoneNoise[i + j * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
                 int flag = -1;
 
-                curBiome = biomeSource.biomesInChunk[i + j * 16];
+                curBiome = BIOMES_IN_CHUNK[i + j * 16];
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -718,8 +732,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         } else if (y < this.getSeaLevel()) {
             if (temp < 0.5D && y >= this.getSeaLevel() - 1) {
                 // Get chunk errors so disabled for now.
-                // blockStateToSet = Blocks.ICE.getDefaultState(); 
-                blockStateToSet = this.settings.wrapped.getDefaultFluid();
+                blockStateToSet = BlockStates.ICE;
+                //blockStateToSet = this.settings.wrapped.getDefaultFluid();
             } else {
                 blockStateToSet = this.settings.wrapped.getDefaultFluid();
             }

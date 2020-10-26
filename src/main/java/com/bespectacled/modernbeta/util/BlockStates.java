@@ -15,6 +15,7 @@ public class BlockStates {
     public static BlockState STONE = Blocks.STONE.getDefaultState();
     public static BlockState AIR = Blocks.AIR.getDefaultState();
     public static BlockState WATER = Blocks.WATER.getDefaultState();
+    public static BlockState ICE = Blocks.ICE.getDefaultState();
     public static BlockState LAVA = Blocks.LAVA.getDefaultState();
     public static BlockState BEDROCK = Blocks.BEDROCK.getDefaultState();
     
@@ -29,6 +30,7 @@ public class BlockStates {
         else if (b == Blocks.STONE) state = STONE;
         else if (b == Blocks.AIR) state = AIR;
         else if (b == Blocks.WATER) state = WATER;
+        else if (b == Blocks.ICE) state = ICE;
         else if (b == Blocks.LAVA) state = LAVA;
         else if (b == Blocks.BEDROCK) state = BEDROCK;
         else state = b.getDefaultState();
