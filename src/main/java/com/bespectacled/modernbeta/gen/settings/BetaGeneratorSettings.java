@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.gen.settings;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -18,5 +19,15 @@ public class BetaGeneratorSettings {
     public BetaGeneratorSettings(ChunkGeneratorSettings wrapped, CompoundTag settings) {
         this.wrapped = wrapped;
         this.settings = settings;
+    }
+    
+    public static CompoundTag createSettings() {
+        CompoundTag settings = new CompoundTag();
+        
+        settings.putBoolean("generateOceans", ModernBeta.BETA_CONFIG.generateOceans);
+        settings.putBoolean("generateBetaOceans", ModernBeta.BETA_CONFIG.generateBetaOceans);
+        settings.putBoolean("generateIceDesert", ModernBeta.BETA_CONFIG.generateIceDesert);
+        
+        return settings;
     }
 }

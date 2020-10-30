@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.gen.settings;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -18,5 +19,14 @@ public class AlphaGeneratorSettings {
     public AlphaGeneratorSettings(ChunkGeneratorSettings wrapped, CompoundTag settings) {
         this.wrapped = wrapped;
         this.settings = settings;
+    }
+    
+    public static CompoundTag createSettings() {
+        CompoundTag settings = new CompoundTag();
+        
+        settings.putBoolean("alphaWinterMode", ModernBeta.BETA_CONFIG.alphaWinterMode);
+        settings.putBoolean("alphaPlus", ModernBeta.BETA_CONFIG.alphaPlus);
+        
+        return settings;
     }
 }

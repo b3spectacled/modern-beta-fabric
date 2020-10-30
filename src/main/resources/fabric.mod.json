@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "modernbeta",
+  "id": "modern_beta",
   "version": "${version}",
 
   "name": "Modern Beta Fabric",
@@ -14,7 +14,7 @@
   },
 
   "license": "LGPLv3",
-  "icon": "assets/modernbeta/icon.png",
+  "icon": "assets/modern_beta/icon.png",
 
   "environment": "*",
   "entrypoints": {

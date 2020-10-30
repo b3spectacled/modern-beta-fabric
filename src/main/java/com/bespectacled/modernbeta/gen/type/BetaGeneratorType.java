@@ -40,7 +40,7 @@ public final class BetaGeneratorType extends GeneratorType {
     public static final ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise,
             Blocks.STONE.getDefaultState(), Blocks.WATER.getDefaultState(), -10, 0, 64, false);
     
-    public static BetaGeneratorSettings betaSettings = new BetaGeneratorSettings(type, new CompoundTag());
+    public static BetaGeneratorSettings betaSettings = new BetaGeneratorSettings(type, BetaGeneratorSettings.createSettings());
     
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -68,10 +68,6 @@ public final class BetaGeneratorType extends GeneratorType {
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings,
             long seed) {
-        betaSettings.settings.putBoolean("generateOceans", ModernBeta.BETA_CONFIG.generateOceans);
-        betaSettings.settings.putBoolean("generateBetaOceans", ModernBeta.BETA_CONFIG.generateBetaOceans);
-        betaSettings.settings.putBoolean("generateIceDesert", ModernBeta.BETA_CONFIG.generateIceDesert);
-        
         return new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaSettings.settings), seed, betaSettings);
     }
 }

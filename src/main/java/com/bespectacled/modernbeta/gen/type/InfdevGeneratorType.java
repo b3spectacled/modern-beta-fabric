@@ -47,7 +47,7 @@ public final class InfdevGeneratorType extends GeneratorType {
     public static final ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise,
             Blocks.STONE.getDefaultState(), Blocks.WATER.getDefaultState(), -10, 0, 64, false);
     
-    public static final InfdevGeneratorSettings infdevSettings = new InfdevGeneratorSettings(type, new CompoundTag());
+    public static final InfdevGeneratorSettings infdevSettings = new InfdevGeneratorSettings(type, InfdevGeneratorSettings.createSettings());
     
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -73,9 +73,6 @@ public final class InfdevGeneratorType extends GeneratorType {
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings,
             long seed) {
-        infdevSettings.settings.putBoolean("infdevWinterMode", ModernBeta.BETA_CONFIG.infdevWinterMode);
-        infdevSettings.settings.putBoolean("infdevPlus", ModernBeta.BETA_CONFIG.infdevPlus);
-        
         return new InfdevChunkGenerator(new InfdevBiomeSource(seed, biomes, infdevSettings.settings), seed, infdevSettings);
     }
     

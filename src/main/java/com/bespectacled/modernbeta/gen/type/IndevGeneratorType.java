@@ -56,7 +56,7 @@ public final class IndevGeneratorType extends GeneratorType {
     public static final ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise,
             Blocks.STONE.getDefaultState(), Blocks.WATER.getDefaultState(), -10, 0, 64, false);
     
-    public static final IndevGeneratorSettings indevSettings = new IndevGeneratorSettings(type, new CompoundTag());
+    public static final IndevGeneratorSettings indevSettings = new IndevGeneratorSettings(type, IndevGeneratorSettings.createSettings());
     
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -82,13 +82,6 @@ public final class IndevGeneratorType extends GeneratorType {
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings,
             long seed) {
-        indevSettings.settings.putInt("levelType", ModernBeta.BETA_CONFIG.indevLevelType);
-        indevSettings.settings.putInt("levelTheme", ModernBeta.BETA_CONFIG.indevLevelTheme);
-        indevSettings.settings.putInt("levelWidth", ModernBeta.BETA_CONFIG.indevLevelWidth);
-        indevSettings.settings.putInt("levelLength", ModernBeta.BETA_CONFIG.indevLevelLength);
-        indevSettings.settings.putInt("levelHeight", ModernBeta.BETA_CONFIG.indevLevelHeight);
-        indevSettings.settings.putFloat("caveRadius", ModernBeta.BETA_CONFIG.indevCaveRadius);
-        
         return new IndevChunkGenerator(new IndevBiomeSource(seed, biomes, indevSettings.settings), seed, indevSettings);
     }
     

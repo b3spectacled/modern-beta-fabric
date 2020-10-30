@@ -107,51 +107,34 @@ public class MixinGeneratorOptions {
             
             ChunkGenerator generator;
             
-            CompoundTag betaSettings = new CompoundTag();
-            CompoundTag alphaSettings = new CompoundTag();
-            CompoundTag indevSettings = new CompoundTag();
-            CompoundTag infdevSettings = new CompoundTag();
-            
-            betaSettings.putBoolean("generateOceans", ModernBeta.BETA_CONFIG.generateOceans);
-            betaSettings.putBoolean("generateBetaOceans", ModernBeta.BETA_CONFIG.generateBetaOceans);
-            betaSettings.putBoolean("generateIceDesert", ModernBeta.BETA_CONFIG.generateIceDesert);
-            
-            alphaSettings.putBoolean("alphaWinterMode", ModernBeta.BETA_CONFIG.alphaWinterMode);
-            alphaSettings.putBoolean("alphaPlus", ModernBeta.BETA_CONFIG.alphaPlus);     
-            
-            infdevSettings.putBoolean("infdevWinterMode", ModernBeta.BETA_CONFIG.infdevWinterMode);
-            infdevSettings.putBoolean("infdevPlus", ModernBeta.BETA_CONFIG.infdevPlus);
-            
-            indevSettings.putInt("levelType", ModernBeta.BETA_CONFIG.indevLevelType);
-            indevSettings.putInt("levelTheme", ModernBeta.BETA_CONFIG.indevLevelTheme);
-            indevSettings.putInt("levelWidth", ModernBeta.BETA_CONFIG.indevLevelWidth);
-            indevSettings.putInt("levelLength", ModernBeta.BETA_CONFIG.indevLevelLength);
-            indevSettings.putInt("levelHeight", ModernBeta.BETA_CONFIG.indevLevelHeight);
-            indevSettings.putFloat("caveRadius", ModernBeta.BETA_CONFIG.indevCaveRadius);
-   
+            CompoundTag betaSettings = BetaGeneratorSettings.createSettings();
+            CompoundTag alphaSettings = AlphaGeneratorSettings.createSettings();
+            CompoundTag indevSettings = IndevGeneratorSettings.createSettings();
+            CompoundTag infdevSettings = InfdevGeneratorSettings.createSettings();
+
             BetaGeneratorSettings betaGenSettings = new BetaGeneratorSettings(type, betaSettings);
             AlphaGeneratorSettings alphaGenSettings = new AlphaGeneratorSettings(type, alphaSettings);
             IndevGeneratorSettings indevGenSettings = new IndevGeneratorSettings(type, indevSettings);
             InfdevGeneratorSettings infdevGenSettings = new InfdevGeneratorSettings(type, infdevSettings);
 
             switch (levelType) {
-            case "beta":
-                generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
-                break;
-            case "skylands":
-                generator = new SkylandsChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
-                break;
-            case "alpha":
-                generator = new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes, alphaGenSettings.settings), seed, alphaGenSettings);
-                break;
-            case "indev":
-                generator = new IndevChunkGenerator(new IndevBiomeSource(seed, biomes, indevGenSettings.settings), seed, indevGenSettings);
-                break;
-            case "infdev":
-                generator = new InfdevChunkGenerator(new InfdevBiomeSource(seed, biomes, infdevGenSettings.settings), seed, infdevGenSettings);
-                break;
-            default:
-                generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
+                case "beta":
+                    generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
+                    break;
+                case "skylands":
+                    generator = new SkylandsChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
+                    break;
+                case "alpha":
+                    generator = new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes, alphaGenSettings.settings), seed, alphaGenSettings);
+                    break;
+                case "indev":
+                    generator = new IndevChunkGenerator(new IndevBiomeSource(seed, biomes, indevGenSettings.settings), seed, indevGenSettings);
+                    break;
+                case "infdev":
+                    generator = new InfdevChunkGenerator(new InfdevBiomeSource(seed, biomes, infdevGenSettings.settings), seed, infdevGenSettings);
+                    break;
+                default:
+                    generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
             }
 
             // return our chunk generator

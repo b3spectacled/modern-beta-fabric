@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.colormap.WaterColors;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.util.BiomeMath;
 import com.bespectacled.modernbeta.util.MutableBlockColors;

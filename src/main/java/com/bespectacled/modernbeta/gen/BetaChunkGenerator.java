@@ -259,7 +259,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
         int thisY = CHUNK_Y[Math.abs(absX % 16)][Math.abs(absZ % 16)];
 
-        if (thisY <= this.getSeaLevel() - 6) {
+        if (thisY <= this.getSeaLevel() - 8) {
             biome = this.biomeSource.getOceanBiomeForNoiseGen(absX, 0, absZ);
         }
 
