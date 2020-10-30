@@ -32,10 +32,6 @@ public class AlphaBiomeSource extends BiomeSource {
                 CompoundTag.CODEC.fieldOf("settings").forGetter(settings -> settings.settings)
             ).apply(instance, (instance).stable(AlphaBiomeSource::new)));
 
-    private static final List<RegistryKey<Biome>> BIOMES = ImmutableList.of(
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "alpha")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "alpha_winter")));
-
     private final long seed;
     public final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
@@ -58,7 +54,7 @@ public class AlphaBiomeSource extends BiomeSource {
     private boolean alphaPlus = false;
 
     public AlphaBiomeSource(long seed, Registry<Biome> registry, CompoundTag settings) {
-        super(BIOMES.stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
+        super(AlphaBiomes.getBiomeList().stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
 
         this.seed = seed;
         this.biomeRegistry = registry;

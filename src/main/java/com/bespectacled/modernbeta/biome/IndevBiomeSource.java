@@ -34,20 +34,6 @@ public class IndevBiomeSource extends BiomeSource {
                 CompoundTag.CODEC.fieldOf("settings").forGetter(indevBiomeSource -> indevBiomeSource.settings)
             ).apply(instance, (instance).stable(IndevBiomeSource::new)));
 
-    private static final List<RegistryKey<Biome>> BIOMES = ImmutableList.of(
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_edge")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_hell_edge")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_paradise_edge")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_woods_edge")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_snowy_edge")),
-            
-            
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_normal")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_hell")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_paradise")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_woods")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "indev_snowy")));
-
     private final long seed;
     public final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
@@ -60,7 +46,7 @@ public class IndevBiomeSource extends BiomeSource {
     private int height;
 
     public IndevBiomeSource(long seed, Registry<Biome> registry, CompoundTag settings) {
-        super(BIOMES.stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
+        super(IndevBiomes.getBiomeList().stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
 
         this.seed = seed;
         this.biomeRegistry = registry;

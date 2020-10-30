@@ -1,16 +1,18 @@
 package com.bespectacled.modernbeta.biome;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.types.templates.List;
-
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class BetaBiomes {
@@ -41,6 +43,16 @@ public class BetaBiomes {
         }
 
         ModernBeta.LOGGER.log(Level.INFO, "Reserved Beta biome IDs.");
+    }
+    
+    public static List<RegistryKey<Biome>> getBiomeList() {
+        ArrayList<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
+        
+        for (Identifier i : BIOMES) {
+            biomeList.add(RegistryKey.of(Registry.BIOME_KEY, i));
+        }
+        
+        return Collections.unmodifiableList(biomeList);
     }
 
 }

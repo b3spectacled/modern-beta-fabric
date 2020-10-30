@@ -32,10 +32,6 @@ public class InfdevBiomeSource extends BiomeSource {
                 CompoundTag.CODEC.fieldOf("settings").forGetter(infdevBiomeSource -> infdevBiomeSource.settings)
             ).apply(instance, (instance).stable(InfdevBiomeSource::new)));
 
-    private static final List<RegistryKey<Biome>> BIOMES = ImmutableList.of(
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "infdev")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "infdev_winter")));
-
     private final long seed;
     public final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
@@ -58,7 +54,7 @@ public class InfdevBiomeSource extends BiomeSource {
     private boolean infdevPlus = false;
 
     public InfdevBiomeSource(long seed, Registry<Biome> registry, CompoundTag settings) {
-        super(BIOMES.stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
+        super(InfdevBiomes.getBiomeList().stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
 
         this.seed = seed;
         this.biomeRegistry = registry;

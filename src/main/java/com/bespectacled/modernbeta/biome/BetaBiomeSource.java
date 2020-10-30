@@ -35,27 +35,6 @@ public class BetaBiomeSource extends BiomeSource {
                 CompoundTag.CODEC.fieldOf("settings").forGetter(settings -> settings.settings)
             ).apply(instance, (instance).stable(BetaBiomeSource::new)));
 
-    private static final List<RegistryKey<Biome>> BIOMES = ImmutableList.of(
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "forest")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "desert")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "plains")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "savanna")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "shrubland")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "seasonal_forest")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "rainforest")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "swampland")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "taiga")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "tundra")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "ice_desert")),
-
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "ocean")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "lukewarm_ocean")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "warm_ocean")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "cold_ocean")),
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "frozen_ocean")),
-
-            RegistryKey.of(Registry.BIOME_KEY, new Identifier(ModernBeta.ID, "sky")));
-
     private final long seed;
     public final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
@@ -79,7 +58,7 @@ public class BetaBiomeSource extends BiomeSource {
     private boolean generateIceDesert = false;
     
     public BetaBiomeSource(long seed, Registry<Biome> registry, CompoundTag settings) {
-        super(BIOMES.stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
+        super(BetaBiomes.getBiomeList().stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
 
         this.seed = seed;
         this.biomeRegistry = registry;
