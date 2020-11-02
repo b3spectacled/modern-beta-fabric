@@ -17,10 +17,11 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
+import net.minecraft.world.gen.feature.OceanMonumentFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig> {
-    private static final List<SpawnSettings.SpawnEntry> MONSTER_SPAWNS = ImmutableList.<SpawnSettings.SpawnEntry>of(new SpawnSettings.SpawnEntry(EntityType.GUARDIAN, 100, 2, 4));
+    private static final List<SpawnSettings.SpawnEntry> MONSTER_SPAWNS;
     
     public OceanShrineStructure(Codec<DefaultFeatureConfig> codec) {
         super(codec);
@@ -60,5 +61,9 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
             OceanShrineGenerator.addPieces(structureManager, pos, rot, this.children);
             this.setBoundingBoxFromChildren();
         }
+    }
+    
+    static {
+        MONSTER_SPAWNS = ImmutableList.<SpawnSettings.SpawnEntry>of(new SpawnSettings.SpawnEntry(EntityType.GUARDIAN, 1, 2, 4));
     }
 }

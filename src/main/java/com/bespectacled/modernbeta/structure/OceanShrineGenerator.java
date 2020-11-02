@@ -7,8 +7,15 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.structure.IndevHouseGenerator.HousePiece;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.state.State;
+import net.minecraft.state.property.Property;
 import net.minecraft.structure.SimpleStructurePiece;
 import net.minecraft.structure.Structure;
 import net.minecraft.structure.StructureManager;
@@ -78,7 +85,18 @@ public class OceanShrineGenerator {
         @Override
         protected void handleMetadata(String metadata, BlockPos pos, ServerWorldAccess serverWorldAccess, Random random,
             BlockBox boundingBox) {
-            // Handle stuff like loot in chests
+            if ("chest".equals(metadata)) {
+                serverWorldAccess.setBlockState(
+                    pos, 
+                    Blocks.CHEST.getDefaultState().with(
+                        ChestBlock.WATERLOGGED, 
+                        serverWorldAccess.getFluidState(pos).isIn(FluidTags.WATER)), 
+                    2);
+                BlockEntity blockEnt = serverWorldAccess.getBlockEntity(pos);
+                if (blockEnt instanceof ChestBlockEntity) {
+                    ((ChestBlockEntity)blockEnt).setLootTable(LootTables.BURIED_TREASURE_CHEST, random.nextLong());
+                }
+            }
         }
         
         @Override

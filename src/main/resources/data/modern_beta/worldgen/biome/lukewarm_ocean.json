@@ -4,7 +4,8 @@
     "minecraft:mineshaft",
     "minecraft:shipwreck",
     "minecraft:ruined_portal_ocean",
-    "minecraft:buried_treasure"
+    "minecraft:buried_treasure",
+    "modern_beta:ocean_shrine"
   ],
   "spawners": {
     "monster": [

@@ -23,6 +23,7 @@ import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.PoolStructurePiece;
@@ -46,6 +47,7 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.ProtoChunk;
@@ -69,6 +71,7 @@ import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
 import com.bespectacled.modernbeta.mixin.MixinBlockColors;
 import com.bespectacled.modernbeta.noise.*;
+import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.BiomeMath;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
@@ -236,8 +239,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         int biomeX = (chunkPos.x << 2) + 2;
         int biomeZ = (chunkPos.z << 2) + 2;
 
-        int absX = biomeX << 2;
-        int absZ = biomeZ << 2;
+        int absX = chunkPos.x << 4;
+        int absZ = chunkPos.z << 4;
 
         Biome biome = this.biomeSource.getBiomeForNoiseGen(biomeX, 0, biomeZ);
 
@@ -878,6 +881,17 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                     return;
             });
         }
+    }
+    
+    @Override
+    public List<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {
+        if (spawnGroup == SpawnGroup.MONSTER) {
+            if (structureAccessor.getStructureAt(blockPos, false, BetaStructure.OCEAN_SHRINE_STRUCTURE).hasChildren()) {
+                return BetaStructure.OCEAN_SHRINE_STRUCTURE.getMonsterSpawns();
+            }
+        }
+
+        return super.getEntitySpawnList(biome, structureAccessor, spawnGroup, blockPos);
     }
 
     @Override

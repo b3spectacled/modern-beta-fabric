@@ -5,7 +5,8 @@
     "minecraft:ocean_ruin_cold",
     "minecraft:ruined_portal_ocean",
     "minecraft:shipwreck",
-    "minecraft:buried_treasure"
+    "minecraft:buried_treasure",
+    "modern_beta:ocean_shrine"
   ],
   "spawners": {
     "monster": [
