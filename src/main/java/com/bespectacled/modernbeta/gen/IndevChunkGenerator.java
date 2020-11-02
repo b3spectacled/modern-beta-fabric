@@ -358,9 +358,9 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             }
             
             buildIndevSurface(blockArr, heightmap);
+            carveTerrain(blockArr);
             floodFluid(blockArr);   
             floodLava(blockArr);
-            carveTerrain(blockArr);
             plantIndevSurface(blockArr);
         }
         
@@ -470,7 +470,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                 Block block = blockArr[x][heightResult][z];
                 Block blockAbove = blockArr[x][heightResult + 1][z];
                 
-                if ((blockAbove == this.fluidBlock.getBlock() || blockAbove == Blocks.AIR) && heightResult <= seaLevel && genGravel) {
+                if ((blockAbove == this.fluidBlock.getBlock() || blockAbove == Blocks.AIR) && heightResult <= this.waterLevel - 1 && genGravel) {
                     blockArr[x][heightResult][z] = Blocks.GRAVEL;
                 }
                 
@@ -586,6 +586,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         }
     }
     
+    // Using Classic generation algorithm
     private void floodLava(Block[][][] blockArr) {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Melting..");
         
@@ -593,15 +594,19 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             return;
         }
 
-        int lavaSourceCount = this.width * this.length * this.height / 2000;
+        //int lavaSourceCount = this.width * this.length * this.height / 2000;
+        int lavaSourceCount = this.width * this.length * this.height / 20000;
         int lavaHeight = this.groundLevel;
         
         for (int i = 0; i < lavaSourceCount; ++i) {
             int randX = RAND.nextInt(this.width);
             int randZ = RAND.nextInt(this.length);
+            int randY = (int)((this.waterLevel - 3) * RAND.nextFloat() * RAND.nextFloat());
+            /*
             int randY = Math.min(
                 Math.min(RAND.nextInt(lavaHeight), RAND.nextInt(lavaHeight)),
                 Math.min(RAND.nextInt(lavaHeight), RAND.nextInt(lavaHeight)));
+            */
             
             flood(blockArr, randX, randY, randZ, Blocks.LAVA);
         }

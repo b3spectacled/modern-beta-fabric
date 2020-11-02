@@ -44,10 +44,6 @@ public class CountBetaNoiseDecorator extends SimpleDecorator<CountNoiseDecorator
 
         int finalCount = noiseCount + config.density
                 + ((random.nextFloat() < config.extraChance) ? config.extraCount : 0);
-        
-        if (chunkX == 3 && chunkZ == 5) {
-            System.out.println("Tree density for chunk 2/2: " + finalCount);
-        }
 
         // Returns just the count, actual block pos placement handled by Square
         // decorator.

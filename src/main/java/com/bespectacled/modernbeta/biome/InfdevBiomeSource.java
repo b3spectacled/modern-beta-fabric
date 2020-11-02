@@ -8,6 +8,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves2;
+import com.bespectacled.modernbeta.util.BiomeMath;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -52,6 +53,8 @@ public class InfdevBiomeSource extends BiomeSource {
     
     private boolean infdevWinterMode = false;
     private boolean infdevPlus = false;
+    
+    private static final double[] TEMP_HUMID_POINT = new double[2];
 
     public InfdevBiomeSource(long seed, Registry<Biome> registry, CompoundTag settings) {
         super(InfdevBiomes.getBiomeList().stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
@@ -70,8 +73,8 @@ public class InfdevBiomeSource extends BiomeSource {
         humidNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(this.seed * 39811L), 4);
         noiseOctaves = new OldNoiseGeneratorOctaves2(new Random(this.seed * 543321L), 2);
 
+        BiomeMath.setSeed(this.seed);
         generateBiomeLookup(registry);
-
     }
 
     @Override
@@ -82,13 +85,13 @@ public class InfdevBiomeSource extends BiomeSource {
 
         if (this.infdevPlus) {
             // Sample biome at this one absolute coordinate.
-            fetchTempHumid(absX, absZ, 1, 1);
+            BiomeMath.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
 
-            biome = biomesInChunk[0];
+            biome = fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1]);
         } else if (infdevWinterMode) {
-            biome = this.biomeRegistry.get(new Identifier(ModernBeta.ID, "infdev_winter"));
+            biome = this.biomeRegistry.get(InfdevBiomes.INFDEV_WINTER_ID);
         } else {
-            biome = this.biomeRegistry.get(new Identifier(ModernBeta.ID, "infdev"));
+            biome = this.biomeRegistry.get(InfdevBiomes.INFDEV_ID);
         }
 
         return biome;
@@ -99,9 +102,9 @@ public class InfdevBiomeSource extends BiomeSource {
 
         if (this.infdevPlus) {
             // Sample biome at this one absolute coordinate.
-            fetchTempHumid(x, y, 1, 1);
+            BiomeMath.fetchTempHumidAtPoint(TEMP_HUMID_POINT, x, z);
 
-            biome = oceanBiomesInChunk[0];
+            biome = fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1]);
         } else if (infdevWinterMode) {
             biome = this.biomeRegistry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
         } else {
@@ -110,53 +113,20 @@ public class InfdevBiomeSource extends BiomeSource {
 
         return biome;
     }
-
-    public Biome[] fetchTempHumid(int x, int z, int sizeX, int sizeZ) {
-        temps = tempNoiseOctaves.func_4112_a(temps, x, z, sizeX, sizeX, 0.02500000037252903D, 0.02500000037252903D,
-                0.25D);
-        humids = humidNoiseOctaves.func_4112_a(humids, x, z, sizeX, sizeX, 0.05000000074505806D, 0.05000000074505806D,
-                0.33333333333333331D);
-        noises = noiseOctaves.func_4112_a(noises, x, z, sizeX, sizeX, 0.25D, 0.25D, 0.58823529411764708D);
-
-        int i = 0;
-        for (int j = 0; j < sizeX; j++) {
-            for (int k = 0; k < sizeZ; k++) {
-                double d = noises[i] * 1.1000000000000001D + 0.5D;
-                double d1 = 0.01D;
-                double d2 = 1.0D - d1;
-
-                double temp = (temps[i] * 0.14999999999999999D + 0.69999999999999996D) * d2 + d * d1;
-
-                d1 = 0.002D;
-                d2 = 1.0D - d1;
-
-                double humid = (humids[i] * 0.14999999999999999D + 0.5D) * d2 + d * d1;
-                temp = 1.0D - (1.0D - temp) * (1.0D - temp);
-
-                if (temp < 0.0D) {
-                    temp = 0.0D;
-                }
-                if (humid < 0.0D) {
-                    humid = 0.0D;
-                }
-                if (temp > 1.0D) {
-                    temp = 1.0D;
-                }
-                if (humid > 1.0D) {
-                    humid = 1.0D;
-                }
-                temps[i] = temp;
-                humids[i] = humid;
-                
-                biomesInChunk[i] = getBiomeFromLookup(temp, humid);
-                oceanBiomesInChunk[i] = getOceanBiomeFromLookup(temp, humid);
-                
-                ++i;
-            }
-        }
-
-        return biomesInChunk;
+    
+    private Biome fetchBiome(double temp, double humid) {
+        return getBiomeFromLookup(temp, humid);
     }
+    
+    public void fetchBiomes(double[] temps, double[] humids, Biome[] biomes) {
+        int sizeX = 16;
+        int sizeZ = 16;
+        
+        for (int i = 0; i < sizeX * sizeZ; ++i) {
+            biomes[i] = getBiomeFromLookup(temps[i], humids[i]);
+        }
+    }
+
 
     private void generateBiomeLookup(Registry<Biome> registry) {
         for (int i = 0; i < 64; i++) {
@@ -183,10 +153,10 @@ public class InfdevBiomeSource extends BiomeSource {
 
     public static Biome getBiome(float temp, float humid, Registry<Biome> registry) {
         if (temp < 0.5F) {
-            return registry.get(new Identifier(ModernBeta.ID, "infdev_winter"));
+            return registry.get(InfdevBiomes.INFDEV_WINTER_ID);
         }
 
-        return registry.get(new Identifier(ModernBeta.ID, "infdev"));
+        return registry.get(InfdevBiomes.INFDEV_ID);
     }
 
     public static Biome getOceanBiome(float temp, float humid, Registry<Biome> registry) {

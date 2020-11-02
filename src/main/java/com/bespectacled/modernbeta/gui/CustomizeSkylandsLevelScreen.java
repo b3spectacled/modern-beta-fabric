@@ -18,6 +18,7 @@ public class CustomizeSkylandsLevelScreen extends Screen {
     private BetaGeneratorSettings generatorSettings;
     
     private boolean generateIceDesert = false;
+    private boolean generateSkyDim = false;
     
     private ButtonListWidget buttonList;
 
@@ -29,6 +30,8 @@ public class CustomizeSkylandsLevelScreen extends Screen {
       
         if (generatorSettings.settings.contains("generateIceDesert"))
             generateIceDesert = generatorSettings.settings.getBoolean("generateIceDesert");
+        if (generatorSettings.settings.contains("generateSkyDim"))
+            generateSkyDim = generatorSettings.settings.getBoolean("generateSkyDim");
     }
     
     @Override
@@ -51,6 +54,16 @@ public class CustomizeSkylandsLevelScreen extends Screen {
         ));
         
  this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+ 
+         this.buttonList.addSingleOptionEntry(
+             new BooleanOption(
+                 "createWorld.customize.beta.generateSkyDim", 
+                 (gameOptions) -> { return generateSkyDim; }, 
+                 (gameOptions, value) -> {
+                     generateSkyDim = value;
+                     generatorSettings.settings.putBoolean("generateSkyDim", value);
+                 }
+         ));
         
         this.buttonList.addSingleOptionEntry(
             new BooleanOption(

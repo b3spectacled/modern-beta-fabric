@@ -88,6 +88,8 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     private double depthNoise[];
     
     private double temps[];
+    
+    private boolean generateSkyDim;
 
     // Block Y-height cache, from Beta+
     private static final Map<BlockPos, Integer> GROUND_CACHE_Y = new HashMap<>();
@@ -102,6 +104,12 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     
     private static final ObjectList<StructurePiece> STRUCTURE_LIST = (ObjectList<StructurePiece>) new ObjectArrayList(10);
     private static final ObjectList<JigsawJunction> JIGSAW_LIST = (ObjectList<JigsawJunction>) new ObjectArrayList(32);
+    
+    private static final double[] TEMPS = new double[256];
+    private static final double[] HUMIDS = new double[256];
+    
+    private static final Biome[] BIOMES = new Biome[256];
+    private static final Biome[] OCEAN_BIOMES = new Biome[256];
 
     public SkylandsChunkGenerator(BiomeSource biomes, long seed, BetaGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
@@ -121,10 +129,12 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         depthNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 16, false);
         forestNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, false);
 
+        if (settings.settings.contains("generateSkyDim"))
+            this.generateSkyDim = settings.settings.getBoolean("generateSkyDim");
 
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
-        ModernBeta.setBlockColorsSeed(seed, false);
+        ModernBeta.setBlockColorsSeed(seed, this.generateSkyDim);
     }
 
     public static void register() {
@@ -143,9 +153,8 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
         RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
 
-        biomeSource.fetchTempHumid(chunk.getPos().x * 16, chunk.getPos().z * 16, 16, 16);
-        temps = biomeSource.temps;
-        generateTerrain(chunk, temps, structureAccessor);
+        BiomeMath.fetchTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
+        generateTerrain(chunk, TEMPS, structureAccessor);
     }
 
     @Override
@@ -298,8 +307,8 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
 
-        double temps[] = biomeSource.temps;
-        double humids[] = biomeSource.humids;
+        double temps[] = TEMPS;
+        double humids[] = HUMIDS;
 
         scaleNoise = scaleNoiseOctaves.func_4109_a(scaleNoise, x, z, int3_0, int3_1, 1.121D, 1.121D, 0.5D);
         depthNoise = depthNoiseOctaves.func_4109_a(depthNoise, x, z, int3_0, int3_1, depthNoiseScaleX, depthNoiseScaleZ,
@@ -413,8 +422,9 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
-
-        biomeSource.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
+        
+        BiomeMath.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
+        biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES, OCEAN_BIOMES);
 
         Biome curBiome;
         
@@ -427,7 +437,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                 int genStone = (int) (stoneNoise[i + j * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
                 int flag = -1;
 
-                curBiome = biomeSource.biomesInChunk[i + j * 16];
+                curBiome = BIOMES[i + j * 16];
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -501,7 +511,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         POS.set(x, 0, z);
 
         if (GROUND_CACHE_Y.get(POS) == null) {
-            biomeSource.fetchTempHumid((x >> 4) * 16, (z >> 4) * 16, 16, 16);
+            BiomeMath.fetchTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
             sampleHeightmap(x, z);
         }
 
@@ -612,6 +622,10 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     @Override
     public ChunkGenerator withSeed(long seed) {
         return new SkylandsChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings);
+    }
+    
+    public boolean isSkyDim() {
+        return this.generateSkyDim;
     }
 
 }

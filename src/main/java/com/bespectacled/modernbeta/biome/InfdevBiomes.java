@@ -18,9 +18,12 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class InfdevBiomes {
+    public static final Identifier INFDEV_ID = new Identifier(ModernBeta.ID, "infdev");
+    public static final Identifier INFDEV_WINTER_ID = new Identifier(ModernBeta.ID, "infdev_winter");
+    
     public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(
-        new Identifier(ModernBeta.ID, "infdev"),
-        new Identifier(ModernBeta.ID, "infdev_winter")
+        INFDEV_ID,
+        INFDEV_WINTER_ID
     );
 
     public static void reserveBiomeIDs() {

@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.feature;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.biome.*;
@@ -27,6 +28,9 @@ import net.minecraft.world.LightType;
 
 public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
     private Long seed;
+    
+    private static final double[] TEMPS = new double[256];
+    private static final double[] HUMIDS = new double[256];
 
     public BetaFreezeTopLayerFeature(Codec<DefaultFeatureConfig> codec) {
         super(codec);
@@ -37,17 +41,24 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
     @Override
     public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos,
             DefaultFeatureConfig defaultFeatureConfig) {
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        BlockPos.Mutable mutableDown = new BlockPos.Mutable();
-
-        int chunkX = blockPos.getX() / 16; // Divide first to truncate to closest chunk coordinate
-        int chunkZ = blockPos.getZ() / 16;
-        
         // Shouldn't be used if this isn't an instance of BetaBiomeSource
         if (!(chunkGenerator.getBiomeSource() instanceof BetaBiomeSource)) return false;
         
-        BetaBiomeSource biomeSource = (BetaBiomeSource) chunkGenerator.getBiomeSource();
-        biomeSource.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos.Mutable mutableDown = new BlockPos.Mutable();
+
+        int chunkX = blockPos.getX() >> 4; // Divide first to truncate to closest chunk coordinate
+        int chunkZ = blockPos.getZ() >> 4;
+        
+        BetaBiomeSource betaSource = (BetaBiomeSource)chunkGenerator.getBiomeSource();
+
+        if (betaSource.isSkyDim()) {
+            Arrays.fill(TEMPS, 0, TEMPS.length, betaSource.biomeRegistry.get(BetaBiomes.SKY_ID).getTemperature());
+            Arrays.fill(HUMIDS, 0, HUMIDS.length, betaSource.biomeRegistry.get(BetaBiomes.SKY_ID).getDownfall());
+        } else {
+            BiomeMath.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
+        }
+        
         
         int i = 0;
         for (int x = 0; x < 16; ++x) {
@@ -59,11 +70,13 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 mutable.set(curX, curY, curZ);
                 mutableDown.set(mutable).move(Direction.DOWN, 1);
 
-                if (canSetIce(world, mutableDown, false, biomeSource.temps[i])) {
+                //if (canSetIce(world, mutableDown, false, biomeSource.temps[i])) {
+                if (canSetIce(world, mutableDown, false, TEMPS[i])) {
                     world.setBlockState(mutableDown, Blocks.ICE.getDefaultState(), 2);
                 }
 
-                if (canSetSnow(world, mutable, biomeSource.temps[i])) {
+                //if (canSetSnow(world, mutable, biomeSource.temps[i])) {
+                if (canSetSnow(world, mutable, TEMPS[i])) {
                     world.setBlockState(mutable, Blocks.SNOW.getDefaultState(), 2);
 
                     BlockState blockState = world.getBlockState(mutableDown);

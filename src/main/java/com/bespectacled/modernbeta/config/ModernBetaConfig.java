@@ -43,6 +43,9 @@ public class ModernBetaConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean generateIceDesert = false;
     
+    @ConfigEntry.Gui.Excluded
+    public boolean generateSkyDim = false;
+    
     /* Alpha Generation */
 
     @ConfigEntry.Gui.Excluded

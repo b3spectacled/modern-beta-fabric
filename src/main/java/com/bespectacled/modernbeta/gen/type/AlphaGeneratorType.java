@@ -43,7 +43,7 @@ public final class AlphaGeneratorType extends GeneratorType {
     public static final ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise,
             Blocks.STONE.getDefaultState(), Blocks.WATER.getDefaultState(), -10, 0, 64, false);
     
-    public static final AlphaGeneratorSettings alphaSettings = new AlphaGeneratorSettings(type, AlphaGeneratorSettings.createSettings());
+    public static final AlphaGeneratorSettings alphaSettings = new AlphaGeneratorSettings(type, new CompoundTag());
     
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -69,6 +69,7 @@ public final class AlphaGeneratorType extends GeneratorType {
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings,
             long seed) {
+        alphaSettings.settings = AlphaGeneratorSettings.createSettings();
         return new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes, alphaSettings.settings), seed, alphaSettings);
     }
     

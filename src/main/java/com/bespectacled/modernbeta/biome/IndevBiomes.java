@@ -18,18 +18,30 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class IndevBiomes {
+    public static final Identifier INDEV_EDGE_ID = new Identifier(ModernBeta.ID, "indev_edge");
+    public static final Identifier INDEV_HELL_EDGE_ID = new Identifier(ModernBeta.ID, "indev_hell_edge");
+    public static final Identifier INDEV_PARADISE_EDGE_ID = new Identifier(ModernBeta.ID, "indev_paradise_edge");
+    public static final Identifier INDEV_WOODS_EDGE_ID = new Identifier(ModernBeta.ID, "indev_woods_edge");
+    public static final Identifier INDEV_SNOWY_EDGE_ID = new Identifier(ModernBeta.ID, "indev_snowy_edge");
+    
+    public static final Identifier INDEV_NORMAL_ID = new Identifier(ModernBeta.ID, "indev_normal");
+    public static final Identifier INDEV_HELL_ID = new Identifier(ModernBeta.ID, "indev_hell");
+    public static final Identifier INDEV_PARADISE_ID = new Identifier(ModernBeta.ID, "indev_paradise");
+    public static final Identifier INDEV_WOODS_ID = new Identifier(ModernBeta.ID, "indev_woods");
+    public static final Identifier INDEV_SNOWY_ID = new Identifier(ModernBeta.ID, "indev_snowy");
+    
     public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(
-        new Identifier(ModernBeta.ID, "indev_edge"),
-        new Identifier(ModernBeta.ID, "indev_hell_edge"),
-        new Identifier(ModernBeta.ID, "indev_paradise_edge"),
-        new Identifier(ModernBeta.ID, "indev_woods_edge"),
-        new Identifier(ModernBeta.ID, "indev_snowy_edge"),
+        INDEV_EDGE_ID,
+        INDEV_HELL_EDGE_ID,
+        INDEV_PARADISE_EDGE_ID,
+        INDEV_WOODS_EDGE_ID,
+        INDEV_SNOWY_EDGE_ID,
         
-        new Identifier(ModernBeta.ID, "indev_normal"),
-        new Identifier(ModernBeta.ID, "indev_hell"),
-        new Identifier(ModernBeta.ID, "indev_paradise"),
-        new Identifier(ModernBeta.ID, "indev_woods"),
-        new Identifier(ModernBeta.ID, "indev_snowy")
+        INDEV_NORMAL_ID,
+        INDEV_HELL_ID,
+        INDEV_PARADISE_ID,
+        INDEV_WOODS_ID,
+        INDEV_SNOWY_ID
     );
 
     public static void reserveBiomeIDs() {

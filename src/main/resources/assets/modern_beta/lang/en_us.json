@@ -34,6 +34,7 @@
     "createWorld.customize.beta.title": "Beta World Type Configuration",
     "createWorld.customize.beta.generateOceans": "Generate Oceans",
     "createWorld.customize.beta.generateIceDesert": "Generate Ice Desert",
+    "createWorld.customize.beta.generateSkyDim": "Generate Old Sky Dimension",
     
     "text.autoconfig.modernbeta.title": "Modern Beta Configuration",
     "text.autoconfig.modernbeta.category.betaRender": "Render Options",

@@ -42,7 +42,7 @@ public final class SkylandsGeneratorType extends GeneratorType {
     public static final ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise,
             Blocks.STONE.getDefaultState(), Blocks.WATER.getDefaultState(), -10, 0, 64, false);
     
-    public static BetaGeneratorSettings betaSettings = new BetaGeneratorSettings(type, BetaGeneratorSettings.createSettings());
+    public static BetaGeneratorSettings betaSettings = new BetaGeneratorSettings(type, new CompoundTag());
 
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -71,6 +71,7 @@ public final class SkylandsGeneratorType extends GeneratorType {
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings,
             long seed) {
+        betaSettings.settings = BetaGeneratorSettings.createSettings();
         return new SkylandsChunkGenerator(new BetaBiomeSource(seed, biomes, betaSettings.settings), seed, betaSettings);
     }
 }

@@ -18,9 +18,12 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class AlphaBiomes {
+    public static final Identifier ALPHA_ID = new Identifier(ModernBeta.ID, "alpha");
+    public static final Identifier ALPHA_WINTER_ID = new Identifier(ModernBeta.ID, "alpha_winter");
+    
     public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(
-        new Identifier(ModernBeta.ID, "alpha"),
-        new Identifier(ModernBeta.ID, "alpha_winter")
+        ALPHA_ID,
+        ALPHA_WINTER_ID
     );
 
     public static void reserveBiomeIDs() {

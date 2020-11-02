@@ -65,7 +65,7 @@ public abstract class MixinClientWorld extends World {
         
         if (client.getServer() != null) { // Server check
            ChunkGenerator generator = client.getServer().getOverworld().getChunkManager().getChunkGenerator();
-           isBetaWorld = generator instanceof BetaChunkGenerator || generator instanceof SkylandsChunkGenerator;
+           isBetaWorld = generator instanceof BetaChunkGenerator || (generator instanceof SkylandsChunkGenerator && !((SkylandsChunkGenerator)generator).isSkyDim());
            
            worldSeed = generator.worldSeed;
         }

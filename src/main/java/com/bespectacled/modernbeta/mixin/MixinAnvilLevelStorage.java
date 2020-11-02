@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
+import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
 
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -44,19 +45,19 @@ public class MixinAnvilLevelStorage {
         return null;
     }*/
     
-    /*
+    
     @ModifyVariable(
-        method = "convertRegions",
-        at = @At("HEAD"),
-        index = 3
+        method = "convertRegion",
+        at = @At("HEAD")
     )
     private static BiomeSource injectConvertRegions(BiomeSource biomeSource) {
         if (biomeSource instanceof VanillaLayeredBiomeSource) {
             System.out.println("Found vanilla biome source");
-            biomeSource = new BetaBiomeSource(0, DynamicRegistryManager.create().get(Registry.BIOME_KEY), new CompoundTag());
+            biomeSource = new BetaBiomeSource(0, DynamicRegistryManager.create().get(Registry.BIOME_KEY), BetaGeneratorSettings.createSettings());
         }
+        
         return biomeSource;
     }
     
-    */
+
 }

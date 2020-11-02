@@ -77,42 +77,42 @@ public class IndevBiomeSource extends BiomeSource {
         if (inIndevRegion(biomeX, biomeZ)) {
             switch(theme) {
                 case NORMAL:
-                    biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_normal"));
+                    biome = biomeRegistry.get(IndevBiomes.INDEV_NORMAL_ID);
                     break;
                 case HELL:
-                    biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_hell"));
+                    biome = biomeRegistry.get(IndevBiomes.INDEV_HELL_ID);
                     break;
                 case PARADISE:
-                    biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_paradise"));
+                    biome = biomeRegistry.get(IndevBiomes.INDEV_PARADISE_ID);
                     break;
                 case WOODS:
-                    biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_woods"));
+                    biome = biomeRegistry.get(IndevBiomes.INDEV_WOODS_ID);
                     break;  
                 case SNOWY:
-                    biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_snowy"));
+                    biome = biomeRegistry.get(IndevBiomes.INDEV_SNOWY_ID);
                     break;
                 default:
-                    biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_normal"));
+                    biome = biomeRegistry.get(IndevBiomes.INDEV_NORMAL_ID);
             }
         } else {
             switch(theme) {
             case NORMAL:
-                biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_edge"));
+                biome = biomeRegistry.get(IndevBiomes.INDEV_EDGE_ID);
                 break;
             case HELL:
-                biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_hell_edge"));
+                biome = biomeRegistry.get(IndevBiomes.INDEV_HELL_EDGE_ID);
                 break;
             case PARADISE:
-                biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_paradise_edge"));
+                biome = biomeRegistry.get(IndevBiomes.INDEV_PARADISE_EDGE_ID);
                 break; 
             case WOODS:
-                biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_woods_edge"));
+                biome = biomeRegistry.get(IndevBiomes.INDEV_WOODS_EDGE_ID);
                 break;  
             case SNOWY:
-                biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_snowy_edge"));
+                biome = biomeRegistry.get(IndevBiomes.INDEV_SNOWY_EDGE_ID);
                 break;
             default:
-                biome = biomeRegistry.get(new Identifier(ModernBeta.ID, "indev_edge"));
+                biome = biomeRegistry.get(IndevBiomes.INDEV_EDGE_ID);
         }
         }
         

@@ -159,7 +159,7 @@
     "water_color": 2835199,
     "water_fog_color": 329011
   },
-  "precipitation": "rain",
+  "precipitation": "none",
   "category": "taiga",
   "depth": 0.37
 }

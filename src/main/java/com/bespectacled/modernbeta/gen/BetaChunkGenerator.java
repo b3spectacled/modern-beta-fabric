@@ -106,20 +106,12 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
     private double scaleNoise[];
     private double depthNoise[];
-    
-    private double temps[];
 
     // Block Y-height cache, from Beta+
     private static final Map<BlockPos, Integer> GROUND_CACHE_Y = new HashMap<>();
     private static final int[][] CHUNK_Y = new int[16][16];
     
     private static final double HEIGHTMAP[] = new double[425];
-    
-    private static final Biome BIOMES_IN_CHUNK[] = new Biome[16 * 16];
-    private static final Biome OCEAN_BIOMES_IN_CHUNK[] = new Biome[16 * 16];
-    
-    private static final double TEMPS[] = new double[16 * 16];
-    private static final double HUMIDS[] = new double[16 * 16];
     
     private static final Mutable POS = new Mutable();
     
@@ -128,6 +120,12 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     
     private static final ObjectList<StructurePiece> STRUCTURE_LIST = (ObjectList<StructurePiece>) new ObjectArrayList(10);
     private static final ObjectList<JigsawJunction> JIGSAW_LIST = (ObjectList<JigsawJunction>) new ObjectArrayList(32);
+    
+    private static final double[] TEMPS = new double[256];
+    private static final double[] HUMIDS = new double[256];
+    
+    private static final Biome[] BIOMES = new Biome[256];
+    private static final Biome[] OCEAN_BIOMES = new Biome[256];
 
     public BetaChunkGenerator(BiomeSource biomes, long seed, BetaGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
@@ -148,6 +146,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         forestNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, false);
 
         // Yes this is messy. What else am I supposed to do?
+        BiomeMath.setSeed(this.seed);
         BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
         ModernBeta.setBlockColorsSeed(seed, false);
     }
@@ -166,19 +165,10 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
         ChunkPos pos = chunk.getPos();
 
-        RAND.setSeed((long)chunk.getPos().x * 0x4f9939f508L + (long)chunk.getPos().z * 0x1ef1565bd5L);
+        RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
 
-        biomeSource.fetchTempHumid16(
-            chunk.getPos().getStartX(), 
-            chunk.getPos().getStartZ(), 
-            BIOMES_IN_CHUNK, 
-            OCEAN_BIOMES_IN_CHUNK,
-            TEMPS,
-            HUMIDS);
-        
+        BiomeMath.fetchTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
         generateTerrain(chunk, TEMPS, structureAccessor);
-        
-        buildBetaSurface(chunk);
 
         MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
         
@@ -253,13 +243,9 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
         // Cannot simply just check blockstate for chunks that do not yet exist...
         // Will have to simulate heightmap for some distant chunk
+        int height = getHeight(absX, absZ, Heightmap.Type.OCEAN_FLOOR_WG);
 
-        biomeSource.fetchTempHumid(chunkPos.x * 16, chunkPos.z * 16, 16, 16);
-        sampleHeightmap(chunkPos.getStartX(), chunkPos.getStartZ());
-
-        int thisY = CHUNK_Y[Math.abs(absX % 16)][Math.abs(absZ % 16)];
-
-        if (thisY <= this.getSeaLevel() - 8) {
+        if (height <= this.getSeaLevel() - 6) {
             biome = this.biomeSource.getOceanBiomeForNoiseGen(absX, 0, absZ);
         }
 
@@ -307,8 +293,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
 
-        GenerationSettings generationSettings = this.biomeSource.getBiomeForNoiseGen(biomeX, 0, biomeZ)
-                .getGenerationSettings();
+        GenerationSettings generationSettings = this.biomeSource.getBiomeForNoiseGen(biomeX, 0, biomeZ).getGenerationSettings();
         BitSet bitSet = ((ProtoChunk) chunk).getOrCreateCarvingMask(carver);
 
         POS.set(absX, 62, absZ);
@@ -347,7 +332,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
         // Do not use the built-in surface builders..
         // This works better for Beta-accurate surface generation anyway.
-        //buildBetaSurface(chunk);
+        buildBetaSurface(chunk);
     }
 
     /*
@@ -490,9 +475,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
 
-        double temps[] = TEMPS;
-        double humids[] = HUMIDS;
-
         scaleNoise = scaleNoiseOctaves.func_4109_a(scaleNoise, x, z, int5_0, int5_1, 1.121D, 1.121D, 0.5D);
         depthNoise = depthNoiseOctaves.func_4109_a(depthNoise, x, z, int5_0, int5_1, depthNoiseScaleX, depthNoiseScaleZ, depthNoiseScaleExponent);
 
@@ -533,8 +515,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
             for (int m = 0; m < int5_1; m++) {
                 int idx1 = m * k + k / 2;
 
-                double curTemp = temps[idx0 * 16 + idx1];
-                double curHumid = humids[idx0 * 16 + idx1] * curTemp;
+                double curTemp = TEMPS[idx0 * 16 + idx1];
+                double curHumid = HUMIDS[idx0 * 16 + idx1] * curTemp;
 
                 double humidMod = 1.0D - curHumid;
                 humidMod *= humidMod;
@@ -626,7 +608,9 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        //biomeSource.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
+        BiomeMath.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
+        biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES, OCEAN_BIOMES);
+        
         Biome curBiome;
 
         sandNoise = beachNoiseOctaves.generateBetaNoiseOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
@@ -645,8 +629,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                 int genStone = (int) (stoneNoise[i + j * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
                 int flag = -1;
 
-                curBiome = BIOMES_IN_CHUNK[i + j * 16];
-
+                curBiome = BIOMES[i + j * 16];
+                
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
 
@@ -732,8 +716,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         } else if (y < this.getSeaLevel()) {
             if (temp < 0.5D && y >= this.getSeaLevel() - 1) {
                 // Get chunk errors so disabled for now.
-                blockStateToSet = BlockStates.ICE;
-                //blockStateToSet = this.settings.wrapped.getDefaultFluid();
+                //blockStateToSet = Blocks.ICE.getDefaultState(); 
+                blockStateToSet = this.settings.wrapped.getDefaultFluid();
             } else {
                 blockStateToSet = this.settings.wrapped.getDefaultFluid();
             }
@@ -746,15 +730,16 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     @Override
     public int getHeight(int x, int z, Heightmap.Type type) {
 
-        POS.set(x, 0, z);
-
-        if (GROUND_CACHE_Y.get(POS) == null) {
-            biomeSource.fetchTempHumid((x >> 4) * 16, (z >> 4) * 16, 16, 16);
+        if (GROUND_CACHE_Y.get(POS.set(x, 0, z)) == null) {
+            //System.out.println("Cache miss");
+            BiomeMath.fetchTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
             sampleHeightmap(x, z);
+        } else {
+            //System.out.println("Cache hit");
         }
 
-        int groundHeight = GROUND_CACHE_Y.get(POS);
-
+        int groundHeight = GROUND_CACHE_Y.get(POS.set(x, 0, z));
+        
         // Not ideal
         if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.getSeaLevel())
             groundHeight = this.getSeaLevel();
@@ -830,8 +815,9 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
         for (int pX = 0; pX < CHUNK_Y.length; pX++) {
             for (int pZ = 0; pZ < CHUNK_Y[pX].length; pZ++) {
-                POS.set((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
-                GROUND_CACHE_Y.put(POS, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
+                BlockPos cachedPos = new BlockPos((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
+                //POS.set((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
+                GROUND_CACHE_Y.put(cachedPos, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
             }
         }
     }

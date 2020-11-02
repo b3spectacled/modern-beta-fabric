@@ -15,30 +15,39 @@ public class OldNoiseGeneratorOctaves2 extends OldNoiseGenerator {
 
     }
 
-    public double[] func_4112_a(double ad[], double d, double d1, int i, int j, double d2, double d3, double d4) {
-        return generateBetaNoiseOctaves2(ad, d, d1, i, j, d2, d3, d4, 0.5D);
+    public double[] func_4112_a(double noise[], double x, double z, int sizeX, int sizeZ, double d1, double d2, double d3) {
+        return generateBetaNoiseOctaves2(noise, x, z, sizeX, sizeZ, d1, d2, d3, 0.5D);
     }
 
-    public double[] generateBetaNoiseOctaves2(double ad[], double d, double d1, int i, int j, double d2, double d3, double d4,
-            double d5) {
+    public double[] generateBetaNoiseOctaves2(
+        double noise[], 
+        double x, 
+        double z, 
+        int sizeX, 
+        int sizeZ, 
+        double d1, 
+        double d2, 
+        double d3, 
+        double d4
+    ) {
+        d1 /= 1.5D;
         d2 /= 1.5D;
-        d3 /= 1.5D;
-        if (ad == null || ad.length < i * j) {
-            ad = new double[i * j];
+        if (noise == null || noise.length < sizeX * sizeZ) {
+            noise = new double[sizeX * sizeZ];
         } else {
-            for (int k = 0; k < ad.length; k++) {
-                ad[k] = 0.0D;
+            for (int k = 0; k < noise.length; k++) {
+                noise[k] = 0.0D;
             }
 
         }
-        double d6 = 1.0D;
-        double d7 = 1.0D;
+        double amp1 = 1.0D;
+        double amp2 = 1.0D;
         for (int l = 0; l < octaves; l++) {
-            generatorCollection[l].func_4157_a(ad, d, d1, i, j, d2 * d7, d3 * d7, 0.55000000000000004D / d6);
-            d7 *= d4;
-            d6 *= d5;
+            generatorCollection[l].func_4157_a(noise, x, z, sizeX, sizeZ, d1 * amp2, d2 * amp2, 0.55000000000000004D / amp1);
+            amp2 *= d3;
+            amp1 *= d4;
         }
 
-        return ad;
+        return noise;
     }
 }

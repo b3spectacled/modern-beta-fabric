@@ -67,6 +67,7 @@ import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
+import com.bespectacled.modernbeta.util.BiomeMath;
 import com.bespectacled.modernbeta.util.BlockStates;
 
 //private final BetaGeneratorSettings settings;
@@ -116,6 +117,11 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
     
     private static final ObjectList<StructurePiece> STRUCTURE_LIST = (ObjectList<StructurePiece>) new ObjectArrayList(10);
     private static final ObjectList<JigsawJunction> JIGSAW_LIST = (ObjectList<JigsawJunction>) new ObjectArrayList(32);
+    
+    private static final double[] TEMPS = new double[256];
+    private static final double[] HUMIDS = new double[256];
+    
+    private static final Biome[] BIOMES = new Biome[256];
 
     public AlphaChunkGenerator(BiomeSource biomes, long seed, AlphaGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
@@ -598,7 +604,9 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        biomeSource.fetchTempHumid(chunkX * 16, chunkZ * 16, 16, 16);
+        BiomeMath.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
+        biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES);
+        
         Biome curBiome;
 
         sandNoise = beachNoiseOctaves.generateAlphaNoiseOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
@@ -617,7 +625,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
                 int genStone = (int) (stoneNoise[i + j * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
                 int flag = -1;
 
-                curBiome = biomeSource.biomesInChunk[i + j * 16];
+                curBiome = BIOMES[i + j * 16];
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
