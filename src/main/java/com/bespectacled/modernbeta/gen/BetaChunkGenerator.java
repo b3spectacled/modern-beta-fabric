@@ -151,7 +151,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         // Yes this is messy. What else am I supposed to do?
         BiomeMath.setSeed(this.seed);
         BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
-        ModernBeta.setBlockColorsSeed(seed, false);
     }
 
     public static void register() {

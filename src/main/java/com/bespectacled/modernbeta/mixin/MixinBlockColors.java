@@ -25,7 +25,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Unique
     private static ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
 
-    private static boolean defaultColors = false;
+    private static boolean useBetaColors = false;
     
     private static final BlockState GRASS = Blocks.GRASS.getDefaultState();
     private static final BlockState FERN = Blocks.FERN.getDefaultState();
@@ -42,11 +42,11 @@ public class MixinBlockColors implements MutableBlockColors {
 
     @Unique
     @Override
-    public void setSeed(long seed, boolean useDefaultColors) {
-        if (!useDefaultColors)
+    public void setSeed(long seed, boolean isBetaWorld) {
+        if (isBetaWorld)
             BiomeMath.setSeed(BETA_CONFIG.fixedSeed != 0L ? BETA_CONFIG.fixedSeed : seed);
         
-        defaultColors = useDefaultColors;
+        useBetaColors = isBetaWorld;
     }
 
     @Dynamic("Reed color lambda method")
@@ -61,7 +61,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1686", at = @At("HEAD"), cancellable = true)
     private static void onDoubleTallGrassColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (BETA_CONFIG.renderBetaBiomeColor && !defaultColors)
+        if (BETA_CONFIG.renderBetaBiomeColor && useBetaColors)
             info.setReturnValue(getGrassColor(state, world, pos));
     }
 
@@ -69,7 +69,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1693", at = @At("HEAD"), cancellable = true)
     private static void onGrassColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (BETA_CONFIG.renderBetaBiomeColor && !defaultColors)
+        if (BETA_CONFIG.renderBetaBiomeColor && useBetaColors)
             info.setReturnValue(getGrassColor(state, world, pos));
     }
 
@@ -77,7 +77,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1692", at = @At("HEAD"), cancellable = true)
     private static void onFoliageColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (BETA_CONFIG.renderBetaBiomeColor && !defaultColors)
+        if (BETA_CONFIG.renderBetaBiomeColor && useBetaColors)
             info.setReturnValue(getFoliageColor(world, pos));
     }
 

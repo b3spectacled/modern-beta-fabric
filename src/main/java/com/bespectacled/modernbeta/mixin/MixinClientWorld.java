@@ -4,18 +4,22 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.world.ClientWorld.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.MutableWorldProperties;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 import com.bespectacled.modernbeta.util.BiomeMath;
+import com.bespectacled.modernbeta.util.IndevUtil;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
+import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
 import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
 
 import java.util.function.Supplier;
@@ -35,7 +39,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class MixinClientWorld extends World {
     
     @Unique
-    private BlockPos curBlockPos = null;
+    private BlockPos curBlockPos = new BlockPos(0, 0, 0);
     
     @Unique
     private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
@@ -43,14 +47,21 @@ public abstract class MixinClientWorld extends World {
     @Unique
     private boolean isBetaWorld = true;
     
+    @Unique
+    private boolean isOverworld = false;
+    
     @Shadow
     private MinecraftClient client;
+    
+    @Shadow
+    private Properties clientWorldProperties;
     
     @Unique
     private long worldSeed = 0L;
 
-    private MixinClientWorld(MutableWorldProperties properties, RegistryKey<World> registryRef, final DimensionType dimensionType, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed) {
+    private MixinClientWorld() {
         super(null, null, null, null, false, false, 0L);
+        
     }
     
     @Unique
@@ -62,19 +73,42 @@ public abstract class MixinClientWorld extends World {
     private void init(ClientPlayNetworkHandler netHandler, ClientWorld.Properties properties,
             RegistryKey<World> worldKey, DimensionType dimensionType, int loadDistance, Supplier<Profiler> profiler,
             WorldRenderer renderer, boolean debugWorld, long seed, CallbackInfo ci) {
-        
+
         if (client.getServer() != null) { // Server check
            ChunkGenerator generator = client.getServer().getOverworld().getChunkManager().getChunkGenerator();
-           isBetaWorld = generator instanceof BetaChunkGenerator || (generator instanceof SkylandsChunkGenerator && !((SkylandsChunkGenerator)generator).isSkyDim());
-           
-           worldSeed = generator.worldSeed;
+           this.setWorldProperties(generator, generator.worldSeed);
         }
 
-        if (isBetaWorld) {
-            worldSeed = BETA_CONFIG.fixedSeed == 0L ? worldSeed : BETA_CONFIG.fixedSeed;
-            setSeed(worldSeed);
+        this.isOverworld = worldKey.getValue().equals(DimensionType.OVERWORLD_REGISTRY_KEY.getValue());
+        
+        ModernBeta.setBlockColorsSeed(worldSeed, isBetaWorld);
+    }
+    
+    @Unique
+    private void setWorldProperties(ChunkGenerator gen, long seed) {
+        this.worldSeed = seed;
+        this.isBetaWorld = false;
+        
+        if (gen instanceof BetaChunkGenerator || (gen instanceof SkylandsChunkGenerator &&  !((SkylandsChunkGenerator)gen).isSkyDim())) {
+            this.isBetaWorld = true;
+            
+            this.worldSeed = BETA_CONFIG.fixedSeed == 0L ? worldSeed : BETA_CONFIG.fixedSeed;
+            setSeed(this.worldSeed);
         }
         
+        /*
+        if (gen instanceof IndevChunkGenerator) {
+            IndevChunkGenerator indevGen = (IndevChunkGenerator)gen;
+            
+            if (indevGen.getTheme() == IndevUtil.Theme.PARADISE) {
+                System.out.println("Setting...");
+                this.clientWorldProperties.setTime(12000);
+                this.getGameRules().<GameRules.BooleanRule>get(GameRules.DO_DAYLIGHT_CYCLE).set(false, null);
+                System.out.println(this.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE));
+            }
+            
+        }
+        */
     }
     
     @ModifyVariable(
@@ -94,7 +128,7 @@ public abstract class MixinClientWorld extends World {
         index = 6  
     )
     private int injectBetaSkyColor(int skyColor) {
-        if (isBetaWorld && BETA_CONFIG.renderBetaSkyColor && this.getDimension().hasSkyLight() && this.curBlockPos != null) {
+        if (isBetaWorld && BETA_CONFIG.renderBetaSkyColor && this.isOverworld) {
             skyColor = getBetaSkyColor(curBlockPos);
         }
         

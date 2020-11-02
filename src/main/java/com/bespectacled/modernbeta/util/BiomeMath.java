@@ -15,10 +15,8 @@ public class BiomeMath {
     public static final int HORIZONTAL_BIT_MASK = (1 << HORIZONTAL_SECTION_COUNT) - 1;
     public static final int VERTICAL_BIT_MASK = (1 << VERTICAL_SECTION_COUNT) - 1;
 
-    private static OldNoiseGeneratorOctaves2 tempNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 9871L),
-            4);;
-    private static OldNoiseGeneratorOctaves2 humidNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 39811L),
-            4);
+    private static OldNoiseGeneratorOctaves2 tempNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 9871L), 4);
+    private static OldNoiseGeneratorOctaves2 humidNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 39811L), 4);
     private static OldNoiseGeneratorOctaves2 noiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 543321L), 2);
 
     //public static double[] temps = null;

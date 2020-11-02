@@ -143,7 +143,6 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
 
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
-        ModernBeta.setBlockColorsSeed(0L, true);
     }
 
     public static void register() {

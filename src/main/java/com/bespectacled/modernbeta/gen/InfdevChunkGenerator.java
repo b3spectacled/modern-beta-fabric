@@ -129,7 +129,6 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
 
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_INFDEV_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
-        ModernBeta.setBlockColorsSeed(0L, true);
     }
 
     public static void register() {
@@ -755,5 +754,4 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
     public ChunkGenerator withSeed(long seed) {
         return new InfdevChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings);
     }
-
 }

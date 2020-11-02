@@ -134,7 +134,6 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
-        ModernBeta.setBlockColorsSeed(seed, this.generateSkyDim);
     }
 
     public static void register() {
