@@ -114,8 +114,6 @@ public class OceanShrineGenerator {
             int y = world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, this.pos.getX(), this.pos.getZ());
             this.pos = new BlockPos(this.pos.getX(), y, this.pos.getZ());
             
-            System.out.println("Placing ruin at y: " + world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, this.pos.getX(), this.pos.getZ()));
-            
             BlockPos structPos = Structure.transformAround(new BlockPos(this.structure.getSize().getX() - 1, 0, this.structure.getSize().getZ() - 1), BlockMirror.NONE, this.rot, BlockPos.ORIGIN).add(this.pos);
             this.pos = new BlockPos(this.pos.getX(), this.method_14829(this.pos, world, structPos), this.pos.getZ());
             return super.generate(world, accessor, chunkGenerator, random, blockBox, chunkPos, blockPos);

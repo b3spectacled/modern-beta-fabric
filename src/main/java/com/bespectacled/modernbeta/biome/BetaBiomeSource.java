@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.biome;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import org.apache.logging.log4j.Level;
 
@@ -27,7 +28,7 @@ import net.minecraft.world.gen.feature.StructureFeature;
 public class BetaBiomeSource extends BiomeSource {
 
     enum BiomeType {
-        LAND, OCEAN
+        LAND, OCEAN, BEACH
     }
 
     public static final Codec<BetaBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance
@@ -43,21 +44,25 @@ public class BetaBiomeSource extends BiomeSource {
 
     private static Biome biomeLookupTable[] = new Biome[4096];
     private static Biome oceanBiomeLookupTable[] = new Biome[4096];
-
-    public static Biome[] biomesInChunk = new Biome[256];
-    public static Biome[] oceanBiomesInChunk = new Biome[256];
+    private static Biome beachBiomeLookupTable[] = new Biome[4096];
+    
+    private final Map<String, Identifier> biomeMappings;
 
     private boolean generateOceans = false;
     private boolean generateBetaOceans = true;
     private boolean generateIceDesert = false;
     private boolean generateSkyDim = false;
+    private boolean generateVanillaBiomesBeta = false;
     
     private static final double[] TEMP_HUMID_POINT = new double[2];
     
-    private static final Identifier SKY_ID = new Identifier(ModernBeta.ID, "sky");
-    
     public BetaBiomeSource(long seed, Registry<Biome> registry, CompoundTag settings) {
-        super(BetaBiomes.getBiomeList().stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
+        super(
+            BetaBiomes.getBiomeList(
+                settings.contains("generateVanillaBiomesInBeta") ? 
+                    settings.getBoolean("generateVanillaBiomesInBeta") : 
+                    false
+            ).stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
 
         this.seed = seed;
         this.biomeRegistry = registry;
@@ -67,6 +72,9 @@ public class BetaBiomeSource extends BiomeSource {
         if (settings.contains("generateBetaOceans")) this.generateBetaOceans = settings.getBoolean("generateBetaOceans");
         if (settings.contains("generateIceDesert")) this.generateIceDesert = settings.getBoolean("generateIceDesert");
         if (settings.contains("generateSkyDim")) this.generateSkyDim = settings.getBoolean("generateSkyDim");
+        if (settings.contains("generateVanillaBiomesBeta")) this.generateVanillaBiomesBeta = settings.getBoolean("generateVanillaBiomesBeta");
+        
+        this.biomeMappings = this.generateVanillaBiomesBeta ? BetaBiomes.VANILLA_MAPPINGS : BetaBiomes.BETA_MAPPINGS;
         
         BiomeMath.setSeed(this.seed);
         generateBiomeLookup(registry);
@@ -77,7 +85,7 @@ public class BetaBiomeSource extends BiomeSource {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        if (this.generateSkyDim) return biomeRegistry.get(SKY_ID);
+        if (this.generateSkyDim) return biomeRegistry.get(BetaBiomes.SKY_ID);
 
         // Sample biome at this one absolute coordinate.
         BiomeMath.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
@@ -94,18 +102,29 @@ public class BetaBiomeSource extends BiomeSource {
         else
             return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeType.LAND);
     }
+    
+    public Biome getBeachBiomeForNoiseGen(int x, int y, int z) {
+     // Sample biome at this one absolute coordinate.
+        BiomeMath.fetchTempHumidAtPoint(TEMP_HUMID_POINT, x, z);
+
+        if (this.generateBetaOceans || this.generateOceans) // To maintain compat with old option
+            return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeType.BEACH);
+        else
+            return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeType.LAND);
+    }
 
     private Biome fetchBiome(double temp, double humid, BiomeType type) {
         return getBiomeFromLookup(temp, humid, type);
     }
     
-    public void fetchBiomes(double[] temps, double[] humids, Biome[] landBiomes, Biome[] oceanBiomes) {
+    public void fetchBiomes(double[] temps, double[] humids, Biome[] landBiomes, Biome[] oceanBiomes, Biome[] beachBiomes) {
         int sizeX = 16;
         int sizeZ = 16;
         
         for (int i = 0; i < sizeX * sizeZ; ++i) {
-            landBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeType.LAND);
-            oceanBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeType.OCEAN);
+            if (landBiomes != null) landBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeType.LAND);
+            if (oceanBiomes != null) oceanBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeType.OCEAN);
+            if (beachBiomes != null) beachBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeType.BEACH);
         }
     }
 
@@ -114,6 +133,7 @@ public class BetaBiomeSource extends BiomeSource {
             for (int j = 0; j < 64; j++) {
                 biomeLookupTable[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F, registry);
                 oceanBiomeLookupTable[i + j * 64] = getOceanBiome((float) i / 63F, (float) j / 63F, registry);
+                beachBiomeLookupTable[i + j * 64] = getBeachBiome((float) i / 63F, (float) j / 63F, registry);
             }
         }
     }
@@ -121,67 +141,73 @@ public class BetaBiomeSource extends BiomeSource {
     private Biome getBiomeFromLookup(double temp, double humid, BiomeType type) {
         int i = (int) (temp * 63D);
         int j = (int) (humid * 63D);
+        
+        Biome biome = biomeLookupTable[i + j * 64];
+        
+        switch(type) {
+            case OCEAN:
+                biome = oceanBiomeLookupTable[i + j * 64];
+                break;
+            case BEACH:
+                biome = beachBiomeLookupTable[i + j * 64];
+                break;
+        }
 
-        if (type == BiomeType.LAND)
-            return biomeLookupTable[i + j * 64];
-        if (type == BiomeType.OCEAN)
-            return oceanBiomeLookupTable[i + j * 64];
-
-        return biomeLookupTable[i + j * 64];
+        return biome;
     }
 
-    public Biome getBiome(float temp, float humid, Registry<Biome> registry) {
+    private Biome getBiome(float temp, float humid, Registry<Biome> registry) {
         humid *= temp;
         
-        if (this.generateSkyDim) return registry.get(SKY_ID);
+        if (this.generateSkyDim) return registry.get(BetaBiomes.SKY_ID);
 
         if (temp < 0.1F) {
             if (this.generateIceDesert)
-                return registry.get(BetaBiomes.ICE_DESERT_ID);
+                return registry.get(biomeMappings.get("ice_desert"));
             else
-                return registry.get(BetaBiomes.TUNDRA_ID);
+                return registry.get(biomeMappings.get("tundra"));
         }
 
         if (humid < 0.2F) {
             if (temp < 0.5F) {
-                return registry.get(BetaBiomes.TUNDRA_ID);
+                return registry.get(biomeMappings.get("tundra"));
             }
             if (temp < 0.95F) {
-                return registry.get(BetaBiomes.SAVANNA_ID);
+                return registry.get(biomeMappings.get("savanna"));
             } else {
-                return registry.get(BetaBiomes.DESERT_ID);
+                return registry.get(biomeMappings.get("desert"));
             }
         }
 
         if (humid > 0.5F && temp < 0.7F) {
-            return registry.get(BetaBiomes.SWAMPLAND_ID);
+            return registry.get(biomeMappings.get("swampland"));
         }
 
         if (temp < 0.5F) {
-            return registry.get(BetaBiomes.TAIGA_ID);
+            return registry.get(biomeMappings.get("taiga"));
         }
 
         if (temp < 0.97F) {
             if (humid < 0.35F) {
-                return registry.get(BetaBiomes.SHRUBLAND_ID);
+                return registry.get(biomeMappings.get("shrubland"));
             } else {
-                return registry.get(BetaBiomes.FOREST_ID);
+                return registry.get(biomeMappings.get("forest"));
             }
         }
 
         if (humid < 0.45F) {
-            return registry.get(BetaBiomes.PLAINS_ID);
+            return registry.get(biomeMappings.get("plains"));
         }
 
         if (humid < 0.9F) {
-            return registry.get(BetaBiomes.SEASONAL_FOREST_ID);
+            return registry.get(biomeMappings.get("seasonal_forest"));
         } else {
-            return registry.get(BetaBiomes.RAINFOREST_ID);
+            return registry.get(biomeMappings.get("rainforest"));
         }
 
     }
 
-    public Biome getOceanBiome(float temp, float humid, Registry<Biome> registry) {
+    private Biome getOceanBiome(float temp, float humid, Registry<Biome> registry) {
         humid *= temp;
 
         // == Vanilla Biome IDs ==
@@ -192,46 +218,53 @@ public class BetaBiomeSource extends BiomeSource {
         // 10 = Frozen Ocean
 
         if (temp < 0.1F) {
-            return registry.get(BetaBiomes.FROZEN_OCEAN_ID);
+            return registry.get(biomeMappings.get("frozen_ocean"));
         }
 
         if (humid < 0.2F) {
             if (temp < 0.5F) {
-                return registry.get(BetaBiomes.FROZEN_OCEAN_ID);
+                return registry.get(biomeMappings.get("frozen_ocean"));
             }
             if (temp < 0.95F) {
-                return registry.get(BetaBiomes.OCEAN_ID);
+                return registry.get(biomeMappings.get("ocean"));
             } else {
-                return registry.get(BetaBiomes.OCEAN_ID);
+                return registry.get(biomeMappings.get("ocean"));
             }
         }
 
         if (humid > 0.5F && temp < 0.7F) {
-            return registry.get(BetaBiomes.COLD_OCEAN_ID);
+            return registry.get(biomeMappings.get("cold_ocean"));
         }
 
         if (temp < 0.5F) {
-            return registry.get(BetaBiomes.FROZEN_OCEAN_ID);
+            return registry.get(biomeMappings.get("frozen_ocean"));
         }
 
         if (temp < 0.97F) {
             if (humid < 0.35F) {
-                return registry.get(BetaBiomes.OCEAN_ID);
+                return registry.get(biomeMappings.get("ocean"));
             } else {
-                return registry.get(BetaBiomes.OCEAN_ID);
+                return registry.get(biomeMappings.get("ocean"));
             }
         }
 
         if (humid < 0.45F) {
-            return registry.get(BetaBiomes.OCEAN_ID);
+            return registry.get(biomeMappings.get("ocean"));
         }
 
         if (humid < 0.9F) {
-            return registry.get(BetaBiomes.LUKEWARM_OCEAN_ID);
+            return registry.get(biomeMappings.get("lukewarm_ocean"));
         } else {
-            return registry.get(BetaBiomes.WARM_OCEAN_ID);
+            return registry.get(biomeMappings.get("warm_ocean"));
         }
 
+    }
+    
+    private Biome getBeachBiome(float temp, float humid, Registry<Biome> registry) {
+        if (temp < 0.5F)
+            return registry.get(biomeMappings.get("snowy_beach"));
+    
+        return registry.get(biomeMappings.get("beach"));
     }
     
     public boolean isSkyDim() {

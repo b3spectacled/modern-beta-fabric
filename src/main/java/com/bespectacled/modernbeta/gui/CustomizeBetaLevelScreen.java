@@ -20,6 +20,7 @@ public class CustomizeBetaLevelScreen extends Screen {
     private boolean generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
     private boolean generateBetaOceans = ModernBeta.BETA_CONFIG.generateBetaOceans;
     private boolean generateIceDesert = ModernBeta.BETA_CONFIG.generateIceDesert;
+    private boolean generateVanillaBiomesBeta = ModernBeta.BETA_CONFIG.generateVanillaBiomesBeta;
     
     private ButtonListWidget buttonList;
 
@@ -35,6 +36,8 @@ public class CustomizeBetaLevelScreen extends Screen {
             generateBetaOceans = generatorSettings.settings.getBoolean("generateBetaOceans");
         if (generatorSettings.settings.contains("generateIceDesert"))
             generateIceDesert = generatorSettings.settings.getBoolean("generateIceDesert");
+        if (generatorSettings.settings.contains("generateVanillaBiomesBeta"))
+            generateVanillaBiomesBeta = generatorSettings.settings.getBoolean("generateVanillaBiomesBeta");
     }
     
     @Override
@@ -77,6 +80,17 @@ public class CustomizeBetaLevelScreen extends Screen {
                     generatorSettings.settings.putBoolean("generateIceDesert", value);
                 }
         ));
+        
+        this.buttonList.addSingleOptionEntry(
+                new BooleanOption(
+                    "createWorld.customize.beta.generateVanillaBiomesBeta", 
+                    (gameOptions) -> { return generateVanillaBiomesBeta; }, 
+                    (gameOptions, value) -> {
+                        generateVanillaBiomesBeta = value;
+                        generatorSettings.settings.putBoolean("generateVanillaBiomesBeta", value);
+                    }
+            ));
+            
         
         this.children.add(this.buttonList);
 

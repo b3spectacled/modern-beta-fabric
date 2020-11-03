@@ -46,6 +46,9 @@ public class ModernBetaConfig implements ConfigData {
     @ConfigEntry.Gui.Excluded
     public boolean generateSkyDim = false;
     
+    @ConfigEntry.Gui.Excluded
+    public boolean generateVanillaBiomesBeta = false;
+    
     /* Alpha Generation */
 
     @ConfigEntry.Gui.Excluded

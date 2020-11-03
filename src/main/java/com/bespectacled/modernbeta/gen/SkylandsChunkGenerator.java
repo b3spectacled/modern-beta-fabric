@@ -110,6 +110,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     
     private static final Biome[] BIOMES = new Biome[256];
     private static final Biome[] OCEAN_BIOMES = new Biome[256];
+    private static final Biome[] BEACH_BIOMES = new Biome[256];
 
     public SkylandsChunkGenerator(BiomeSource biomes, long seed, BetaGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
@@ -423,7 +424,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         int chunkZ = chunk.getPos().z;
         
         BiomeMath.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
-        biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES, OCEAN_BIOMES);
+        biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES, null, null);
 
         Biome curBiome;
         

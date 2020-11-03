@@ -35,13 +35,11 @@ public class MixinBlockColors implements MutableBlockColors {
     private static final double[] TEMP_HUMID = new double[2];
 
     @Unique
-    @Override
     public void setSeed(long seed) {
         BiomeMath.setSeed(BETA_CONFIG.fixedSeed != 0L ? BETA_CONFIG.fixedSeed : seed);
     }
 
     @Unique
-    @Override
     public void setSeed(long seed, boolean isBetaWorld) {
         if (isBetaWorld)
             BiomeMath.setSeed(BETA_CONFIG.fixedSeed != 0L ? BETA_CONFIG.fixedSeed : seed);

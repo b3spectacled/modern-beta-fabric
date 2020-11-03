@@ -53,9 +53,6 @@ public abstract class MixinClientWorld extends World {
     @Shadow
     private MinecraftClient client;
     
-    @Shadow
-    private Properties clientWorldProperties;
-    
     @Unique
     private long worldSeed = 0L;
 
@@ -95,20 +92,6 @@ public abstract class MixinClientWorld extends World {
             this.worldSeed = BETA_CONFIG.fixedSeed == 0L ? worldSeed : BETA_CONFIG.fixedSeed;
             setSeed(this.worldSeed);
         }
-        
-        /*
-        if (gen instanceof IndevChunkGenerator) {
-            IndevChunkGenerator indevGen = (IndevChunkGenerator)gen;
-            
-            if (indevGen.getTheme() == IndevUtil.Theme.PARADISE) {
-                System.out.println("Setting...");
-                this.clientWorldProperties.setTime(12000);
-                this.getGameRules().<GameRules.BooleanRule>get(GameRules.DO_DAYLIGHT_CYCLE).set(false, null);
-                System.out.println(this.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE));
-            }
-            
-        }
-        */
     }
     
     @ModifyVariable(

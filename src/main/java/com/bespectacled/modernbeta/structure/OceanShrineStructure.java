@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.structure;
 
 import java.util.List;
 
+import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 
@@ -51,6 +52,9 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
             Biome biome, 
             DefaultFeatureConfig defaultFeatureConfig
         ) {
+            // Should only generate in Beta worlds
+            if (!(chunkGenerator instanceof BetaChunkGenerator)) return;
+            
             int x = chunkX * 16;
             int z = chunkZ * 16;
             int y = chunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);

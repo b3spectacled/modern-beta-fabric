@@ -28,6 +28,7 @@ public class BetaGeneratorSettings {
         settings.putBoolean("generateBetaOceans", ModernBeta.BETA_CONFIG.generateBetaOceans);
         settings.putBoolean("generateIceDesert", ModernBeta.BETA_CONFIG.generateIceDesert);
         settings.putBoolean("generateSkyDim", ModernBeta.BETA_CONFIG.generateSkyDim);
+        settings.putBoolean("generateVanillaBiomesBeta", ModernBeta.BETA_CONFIG.generateVanillaBiomesBeta);
         
         return settings;
     }
