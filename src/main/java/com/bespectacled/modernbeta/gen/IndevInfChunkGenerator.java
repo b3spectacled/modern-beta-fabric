@@ -786,7 +786,7 @@ public class IndevInfChunkGenerator extends NoiseChunkGenerator {
     */
 
     @Override
-    public int getMaxY() {
+    public int getWorldHeight() {
         return 128;
     }
 

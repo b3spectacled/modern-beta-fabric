@@ -18,20 +18,16 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.util.Util;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockBox;
@@ -39,8 +35,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
@@ -66,11 +60,8 @@ import net.minecraft.world.gen.feature.StructureFeature;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
-import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
-import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
-import com.bespectacled.modernbeta.mixin.MixinBlockColors;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.BiomeMath;
@@ -91,7 +82,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     private final BetaBiomeSource biomeSource;
     private final long seed;
     private boolean generateVanillaBiomes = true;
-    private final int seaThreshold;
 
     private final OldNoiseGeneratorOctaves minLimitNoiseOctaves;
     private final OldNoiseGeneratorOctaves maxLimitNoiseOctaves;
@@ -124,8 +114,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     private static final Random RAND = new Random();
     private static final ChunkRandom FEATURE_RAND = new ChunkRandom();
     
-    private static final ObjectList<StructurePiece> STRUCTURE_LIST = (ObjectList<StructurePiece>) new ObjectArrayList(10);
-    private static final ObjectList<JigsawJunction> JIGSAW_LIST = (ObjectList<JigsawJunction>) new ObjectArrayList(32);
+    private static final ObjectList<StructurePiece> STRUCTURE_LIST = (ObjectList<StructurePiece>) new ObjectArrayList<StructurePiece>(10);
+    private static final ObjectList<JigsawJunction> JIGSAW_LIST = (ObjectList<JigsawJunction>) new ObjectArrayList<JigsawJunction>(32);
     
     private static final double[] TEMPS = new double[256];
     private static final double[] HUMIDS = new double[256];
@@ -141,7 +131,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         this.biomeSource = (BetaBiomeSource) biomes;
         if (settings.settings.contains("generateVanillaBiomesBeta")) 
             this.generateVanillaBiomes = settings.settings.getBoolean("generateVanillaBiomesBeta");
-        this.seaThreshold = this.generateVanillaBiomes ? 63 : 60;
         
         RAND.setSeed(seed);
 
@@ -200,18 +189,18 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                     mutableBiomes.setBiome(absX, 0, absZ, oceanBiome);
                 }
                 
-                if (!this.generateVanillaBiomes) continue;
-                
-                // Assign beach biomes
-                int y = this.getHeight(absX, absZ, Type.OCEAN_FLOOR_WG) - 1;
-                
-                POS.set(absX, y, absZ);
-                blockState = chunk.getBlockState(POS);
-                
-                if (y < 67 && (blockState.isOf(Blocks.SAND) || blockState.isOf(Blocks.GRAVEL))) {
-                    Biome beachBiome = biomeSource.getBeachBiomeForNoiseGen(absX, 0, absZ);
+                if (this.generateVanillaBiomes) {
+                    // Assign beach biomes
+                    int y = this.getHeight(absX, absZ, Type.OCEAN_FLOOR_WG) - 1;
                     
-                    mutableBiomes.setBiome(absX, 0, absZ, beachBiome);
+                    POS.set(absX, y, absZ);
+                    blockState = chunk.getBlockState(POS);
+                    
+                    if (y < 67 && (blockState.isOf(Blocks.SAND) || blockState.isOf(Blocks.GRAVEL))) {
+                        Biome beachBiome = biomeSource.getBeachBiomeForNoiseGen(absX, 0, absZ);
+                        
+                        mutableBiomes.setBiome(absX, 0, absZ, beachBiome);
+                    }
                 }
             }
         }
@@ -227,10 +216,12 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
         Chunk ctrChunk = chunkRegion.getChunk(ctrX, ctrZ);
 
-        int biomeX = (ctrX << 2) + 2;
-        int biomeZ = (ctrZ << 2) + 2;
+        //int biomeX = (ctrX << 2) + 2;
+        //int biomeZ = (ctrZ << 2) + 2;
         
-        Biome biome = ctrChunk.getBiomeArray().getBiomeForNoiseGen(biomeX, 0, biomeZ);
+        //Biome biome = ctrChunk.getBiomeArray().getBiomeForNoiseGen(biomeX, 0, biomeZ);
+        
+        Biome biome = this.getLayeredBiome(ctrChunk, true);
 
         long popSeed = FEATURE_RAND.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
         
@@ -249,7 +240,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     public void setStructureStarts(DynamicRegistryManager dynamicRegistryManager, StructureAccessor structureAccessor,
             Chunk chunk, StructureManager structureManager, long seed) {
         ChunkPos chunkPos = chunk.getPos();
-
+        
+        /*
         int biomeX = (chunkPos.x << 2) + 2;
         int biomeZ = (chunkPos.z << 2) + 2;
 
@@ -264,7 +256,9 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
         if (height <= this.getSeaLevel() - 6) {
             biome = this.biomeSource.getOceanBiomeForNoiseGen(absX, 0, absZ);
-        }
+        }*/
+        
+        Biome biome = this.getLayeredBiome(chunk, false);
 
         this.setStructureStart(ConfiguredStructureFeatures.STRONGHOLD, dynamicRegistryManager, structureAccessor, chunk,
                 structureManager, seed, chunkPos, biome);
@@ -308,10 +302,29 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         int mainChunkX = chunkPos.x;
         int mainChunkZ = chunkPos.z;
 
+        /*
         int biomeX = mainChunkX << 2;
         int biomeZ = mainChunkZ << 2;
+        
+        int absX = biomeX << 2;
+        int absZ = biomeZ << 2;
 
-        GenerationSettings genSettings = chunk.getBiomeArray().getBiomeForNoiseGen(biomeX, 0, biomeZ).getGenerationSettings();
+        Biome biome = this.biomeSource.getBiomeForNoiseGen(biomeX, 0, biomeZ);
+        
+        POS.set(absX, 62, absZ);
+        BlockState blockstate = chunk.getBlockState(POS);
+
+        if (blockstate.isOf(Blocks.WATER)) {
+            biome = this.biomeSource.getOceanBiomeForNoiseGen(absX, 0, absZ);
+        }
+        
+        //GenerationSettings genSettings = chunk.getBiomeArray().getBiomeForNoiseGen(biomeX, 0, biomeZ).getGenerationSettings();
+        */
+        
+        Biome biome = this.getLayeredBiome(chunk, true);
+        GenerationSettings genSettings = biome.getGenerationSettings();
+        
+        
         BitSet bitSet = ((ProtoChunk) chunk).getOrCreateCarvingMask(carver);
 
         RAND.setSeed(this.seed);
@@ -346,16 +359,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         //buildBetaSurface(chunk);
     }
 
-    /*
-     * @Override public BlockPos locateStructure(ServerWorld world,
-     * StructureFeature<?> feature, BlockPos center, int radius, boolean
-     * skipExistingChunks) { if ((feature.equals(StructureFeature.OCEAN_RUIN) ||
-     * feature.equals(StructureFeature.SHIPWRECK)) && !generateOceans) { return
-     * null; }
-     * 
-     * return super.locateStructure(world, feature, center, radius,
-     * skipExistingChunks); }
-     */
 
     public void generateTerrain(Chunk chunk, double[] temps, StructureAccessor structureAccessor) {
         byte byte4 = 4;
@@ -891,6 +894,31 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         }
     }
     
+    private Biome getLayeredBiome(Chunk chunk, boolean pregen) {
+        int biomeX = (chunk.getPos().x << 2) + 2;
+        int biomeZ = (chunk.getPos().z << 2) + 2;
+        
+        int x = chunk.getPos().x << 4;
+        int z = chunk.getPos().z << 4;
+        
+        boolean isOcean = false;
+        
+        Biome biome = this.biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
+        
+        if (pregen) {
+            if (chunk.getBlockState(POS.set(x, this.getSeaLevel() - 4, z)).isOf(Blocks.WATER))
+                isOcean = true;
+        } else {
+            if (this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < this.getSeaLevel() - 4) {
+                isOcean = true;
+            }
+        }
+        
+        biome = isOcean ? this.biomeSource.getOceanBiomeForNoiseGen(x, 0, z) : biome;
+        
+        return biome;
+    }
+    
     @Override
     public List<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {
         if (spawnGroup == SpawnGroup.MONSTER) {
@@ -903,7 +931,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     }
 
     @Override
-    public int getMaxY() {
+    public int getWorldHeight() {
         return 128;
     }
 

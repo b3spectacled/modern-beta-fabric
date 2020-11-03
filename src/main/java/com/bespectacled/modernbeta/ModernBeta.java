@@ -30,7 +30,6 @@ import com.bespectacled.modernbeta.biome.IndevBiomes;
 import com.bespectacled.modernbeta.biome.InfdevBiomeSource;
 import com.bespectacled.modernbeta.biome.InfdevBiomes;
 import com.bespectacled.modernbeta.carver.BetaCarver;
-import com.bespectacled.modernbeta.client.GoVote;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
@@ -83,8 +82,6 @@ public class ModernBeta implements ModInitializer {
         
 
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            GoVote.init();
-            
             BetaGeneratorType.register();
             SkylandsGeneratorType.register();
             AlphaGeneratorType.register();

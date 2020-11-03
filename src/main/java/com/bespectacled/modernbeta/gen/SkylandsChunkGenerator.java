@@ -515,7 +515,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
             sampleHeightmap(x, z);
         }
 
-        int groundHeight = GROUND_CACHE_Y.get(POS);
+        int groundHeight = GROUND_CACHE_Y.get(POS.set(x, 0, z));
 
         // Not ideal
         if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.getSeaLevel())
@@ -592,8 +592,9 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
         for (int pX = 0; pX < CHUNK_Y.length; pX++) {
             for (int pZ = 0; pZ < CHUNK_Y[pX].length; pZ++) {
-                POS.set((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
-                GROUND_CACHE_Y.put(POS, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
+                BlockPos cachedPos = new BlockPos((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
+                //POS.set((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
+                GROUND_CACHE_Y.put(cachedPos, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
             }
         }
     }
@@ -610,7 +611,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     }
 
     @Override
-    public int getMaxY() {
+    public int getWorldHeight() {
         return 128;
     }
 

@@ -17,7 +17,7 @@ public class MixinWorldRenderer {
 	
 	@ModifyVariable(
         method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;F)V",
-        at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/SkyProperties;getSkyColor(FF)[F")
+        at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/SkyProperties;getFogColorOverride(FF)[F")
     )
     private float[] modifySkySunsetCols(float[] skyCols) {
 	    return BETA_CONFIG.renderAlphaSunset ? null : skyCols;
