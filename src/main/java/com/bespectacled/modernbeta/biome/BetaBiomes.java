@@ -20,6 +20,9 @@ import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class BetaBiomes {
     
+    public static final Map<String, Identifier> BETA_MAPPINGS = new HashMap<String, Identifier>();
+    public static final Map<String, Identifier> VANILLA_MAPPINGS = new HashMap<String, Identifier>();
+    
     public static final Identifier FOREST_ID = new Identifier(ModernBeta.ID, "forest");
     public static final Identifier SHRUBLAND_ID = new Identifier(ModernBeta.ID, "shrubland");
     public static final Identifier DESERT_ID = new Identifier(ModernBeta.ID, "desert");
@@ -62,8 +65,7 @@ public class BetaBiomes {
         SKY_ID
     );
 
-    public static final Map<String, Identifier> BETA_MAPPINGS = new HashMap<String, Identifier>();
-    public static final Map<String, Identifier> VANILLA_MAPPINGS = new HashMap<String, Identifier>();
+    private static Map<String, Biome> biomeMappings = new HashMap();
     
     public static void reserveBiomeIDs() {
         for (Identifier i : BIOMES) {
@@ -72,7 +74,7 @@ public class BetaBiomes {
 
         ModernBeta.LOGGER.log(Level.INFO, "Reserved Beta biome IDs.");
     }
-    
+
     public static List<RegistryKey<Biome>> getBiomeList(boolean useVanillaBiomes) {
         ArrayList<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
         
@@ -83,8 +85,8 @@ public class BetaBiomes {
         return Collections.unmodifiableList(biomeList);
     }
     
-    public static Identifier getMappedBiome(String biomeType) {
-        return BETA_MAPPINGS.get(biomeType);
+    public static Biome getMappedBiome(String biomeType) {
+        return biomeMappings.get(biomeType);
     }
     
     static {

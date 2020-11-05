@@ -57,13 +57,14 @@ public class BetaBiomeSource extends BiomeSource {
     private static final double[] TEMP_HUMID_POINT = new double[2];
     
     public BetaBiomeSource(long seed, Registry<Biome> registry, CompoundTag settings) {
+        
         super(
             BetaBiomes.getBiomeList(
                 settings.contains("generateVanillaBiomesInBeta") ? 
                     settings.getBoolean("generateVanillaBiomesInBeta") : 
                     false
             ).stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
-
+            
         this.seed = seed;
         this.biomeRegistry = registry;
         this.settings = settings;
@@ -75,6 +76,7 @@ public class BetaBiomeSource extends BiomeSource {
         if (settings.contains("generateVanillaBiomesBeta")) this.generateVanillaBiomesBeta = settings.getBoolean("generateVanillaBiomesBeta");
         
         this.biomeMappings = this.generateVanillaBiomesBeta ? BetaBiomes.VANILLA_MAPPINGS : BetaBiomes.BETA_MAPPINGS;
+        //this.biomeMappings = BetaBiomes.BETA_MAPPINGS;
         
         BiomeMath.setSeed(this.seed);
         generateBiomeLookup(registry);

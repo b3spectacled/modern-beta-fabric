@@ -425,7 +425,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         
         BiomeMath.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
         biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES, null, null);
-
+        
         Biome curBiome;
         
         stoneNoise = stoneNoiseOctaves.generateBetaNoiseOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,

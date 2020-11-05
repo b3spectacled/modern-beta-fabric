@@ -5,8 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinBiomeArray",
-    "MixinGeneratorOptions",
-    "MixinServerWorld"
+    "MixinGeneratorOptions"
   ],
   "client": [
     "MixinBlockColors",
