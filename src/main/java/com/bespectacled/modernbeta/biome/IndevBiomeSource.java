@@ -1,16 +1,9 @@
 package com.bespectacled.modernbeta.biome;
 
-import java.util.List;
-import java.util.Random;
-import org.apache.logging.log4j.Level;
-
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
-import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
-import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves2;
+import com.bespectacled.modernbeta.util.IndevUtil;
 import com.bespectacled.modernbeta.util.IndevUtil.Theme;
 import com.bespectacled.modernbeta.util.IndevUtil.Type;
-import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -19,11 +12,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.gen.feature.StructureFeature;
 
 public class IndevBiomeSource extends BiomeSource {
 
@@ -74,7 +65,7 @@ public class IndevBiomeSource extends BiomeSource {
         
         Biome biome;
         
-        if (inIndevRegion(biomeX, biomeZ)) {
+        if (IndevUtil.inIndevRegion(absX, absZ, this.width, this.length)) {
             switch(theme) {
                 case NORMAL:
                     biome = biomeRegistry.get(IndevBiomes.INDEV_NORMAL_ID);
@@ -118,20 +109,6 @@ public class IndevBiomeSource extends BiomeSource {
         
         return biome;
     }
-    
-    private boolean inIndevRegion(int biomeX, int biomeZ) {
-        int absX = biomeX << 2;
-        int absZ = biomeZ << 2;
-        
-        int halfWidth = this.width / 2;
-        int halfLength = this.length / 2;
-        
-        if (absX >= -halfWidth && absX < halfWidth && absZ >= -halfLength && absZ < halfLength)
-            return true;
-        
-        return false;
-    }
-    
 
     @Override
     protected Codec<? extends BiomeSource> getCodec() {

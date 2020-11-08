@@ -144,9 +144,9 @@ public class BetaBiomes {
         MUTATED_MAPPINGS.put("savanna", BiomeKeys.SUNFLOWER_PLAINS.getValue());
         MUTATED_MAPPINGS.put("desert", BiomeKeys.DESERT.getValue());
         MUTATED_MAPPINGS.put("swampland", BiomeKeys.TAIGA.getValue());
-        MUTATED_MAPPINGS.put("taiga", BiomeKeys.GIANT_TREE_TAIGA.getValue());
-        MUTATED_MAPPINGS.put("shrubland", BiomeKeys.FLOWER_FOREST.getValue());
-        MUTATED_MAPPINGS.put("forest", BiomeKeys.BIRCH_FOREST.getValue());
+        MUTATED_MAPPINGS.put("taiga", BiomeKeys.GIANT_SPRUCE_TAIGA.getValue());
+        MUTATED_MAPPINGS.put("shrubland", BiomeKeys.SUNFLOWER_PLAINS.getValue());
+        MUTATED_MAPPINGS.put("forest", BiomeKeys.FLOWER_FOREST.getValue());
         MUTATED_MAPPINGS.put("plains", BiomeKeys.PLAINS.getValue());
         MUTATED_MAPPINGS.put("seasonal_forest", BiomeKeys.JUNGLE_EDGE.getValue());
         MUTATED_MAPPINGS.put("rainforest", BiomeKeys.BAMBOO_JUNGLE.getValue());

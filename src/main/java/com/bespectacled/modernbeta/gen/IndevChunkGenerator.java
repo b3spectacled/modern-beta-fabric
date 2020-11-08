@@ -44,6 +44,7 @@ import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.gen.settings.IndevGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.IndevUtil;
 import com.bespectacled.modernbeta.util.IndevUtil.Theme;
 import com.bespectacled.modernbeta.util.IndevUtil.Type;
 
@@ -165,7 +166,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         this.spawnX = worldAccess.getLevelProperties().getSpawnX();
         this.spawnZ = worldAccess.getLevelProperties().getSpawnZ();
 
-        if (inIndevRegion(pos.x, pos.z)) {
+        if (IndevUtil.inIndevRegion(pos.getStartX(), pos.getStartZ(), this.width, this.length)) {
 
             if (!pregenerated) {
                 blockArr = pregenerateTerrain(blockArr);
@@ -182,19 +183,6 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                 generateWorldBorder(chunk);
             }
         }
-    }
-    
-    private boolean inIndevRegion(int chunkX, int chunkZ) {
-        int chunkWidth = this.width / 16;
-        int chunkLength = this.length / 16;
-        
-        int chunkHalfWidth = chunkWidth / 2;
-        int chunkHalfLength = chunkLength / 2;
-        
-        if (chunkX >= -chunkHalfWidth && chunkX < chunkHalfWidth && chunkZ >= -chunkHalfLength && chunkZ < chunkHalfLength)
-            return true;
-        
-        return false;
     }
     
     private void setTerrain(StructureAccessor structureAccessor, Chunk chunk, Block[][][] blockArr) {

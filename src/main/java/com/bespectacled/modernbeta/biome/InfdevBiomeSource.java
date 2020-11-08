@@ -41,10 +41,6 @@ public class InfdevBiomeSource extends BiomeSource {
     public double humids[];
     public double noises[];
 
-    private OldNoiseGeneratorOctaves2 tempNoiseOctaves;
-    private OldNoiseGeneratorOctaves2 humidNoiseOctaves;
-    private OldNoiseGeneratorOctaves2 noiseOctaves;
-
     private static Biome biomeLookupTable[] = new Biome[4096];
     private static Biome oceanBiomeLookupTable[] = new Biome[4096];
 
@@ -68,10 +64,6 @@ public class InfdevBiomeSource extends BiomeSource {
         
         if (settings.contains("infdevWinterMode")) this.infdevWinterMode = settings.getBoolean("infdevWinterMode");
         if (settings.contains("infdevPlus")) this.infdevPlus = settings.getBoolean("infdevPlus");
-
-        tempNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(this.seed * 9871L), 4);
-        humidNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(this.seed * 39811L), 4);
-        noiseOctaves = new OldNoiseGeneratorOctaves2(new Random(this.seed * 543321L), 2);
 
         BiomeMath.setSeed(this.seed);
         generateBiomeLookup(registry);
