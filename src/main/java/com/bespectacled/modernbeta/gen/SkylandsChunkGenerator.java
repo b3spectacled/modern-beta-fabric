@@ -149,12 +149,12 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
-        ChunkPos pos = chunk.getPos();
-
         RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
 
         BiomeMath.fetchTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
         generateTerrain(chunk, TEMPS, structureAccessor);
+        
+        BetaFeature.OLD_FANCY_OAK.chunkReset();
     }
 
     @Override

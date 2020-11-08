@@ -6,11 +6,11 @@
           "config": {
             "features": [
               {
-                "feature": "minecraft:fancy_oak_bees_0002",
-                "chance": 1.0
+                "feature": "minecraft:fancy_oak_bees_002",
+                "chance": 0.1
               }
             ],
-            "default": "minecraft:fancy_oak_bees_0002"
+            "default": "modern_beta:old_fancy_oak"
           },
           "type": "minecraft:random_selector"
         },

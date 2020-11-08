@@ -65,6 +65,7 @@ import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.InfdevBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
+import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.gen.settings.InfdevGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
@@ -143,129 +144,13 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
-        ChunkPos pos = chunk.getPos();
-
         RAND.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
 
         generateTerrain(chunk, structureAccessor);
-        //setTerrain(chunk);
-
-        /*
-         * MutableBiomeArray mutableBiomes =
-         * MutableBiomeArray.inject(chunk.getBiomeArray()); BlockPos.Mutable
-         * 
-         * // Replace biomes in bodies of water at least four deep with ocean biomes for
-         * (int x = 0; x < 4; x++) { for (int z = 0; z < 4; z++) { int absX =
-         * pos.getStartX() + (x * 4); int absZ = pos.getStartZ() + (z * 4);
-         * 
-         * mutableBlock.set(absX, this.getSeaLevel() - 4, absZ); BlockState blockstate =
-         * chunk.getBlockState(mutableBlock);
-         * 
-         * if (blockstate.isOf(Blocks.WATER)) { Biome oceanBiome =
-         * biomeSource.getOceanBiomeForNoiseGen(absX, 0, absZ);
-         * 
-         * mutableBiomes.setBiome(absX, 0, absZ, oceanBiome); }
-         * 
-         * } }
-         * 
-         */
-    }
-
-    // Modified to accommodate additional ocean biome replacements
-    @Override
-    public void generateFeatures(ChunkRegion chunkRegion, StructureAccessor structureAccessor) {
-        int ctrX = chunkRegion.getCenterChunkX();
-        int ctrZ = chunkRegion.getCenterChunkZ();
-        int ctrAbsX = ctrX * 16;
-        int ctrAbsZ = ctrZ * 16;
         
-        Chunk ctrChunk = chunkRegion.getChunk(ctrX, ctrZ);
-
-        int biomeX = (ctrX << 2) + 2;
-        int biomeZ = (ctrZ << 2) + 2;
-
-        int absX = biomeX << 2;
-        int absZ = biomeZ << 2;
-
-        Biome biome = this.biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
-
-        /*
-         * mutableBlock.set(absX, 62, absZ); BlockState blockstate =
-         * ctrChunk.getBlockState(mutableBlock);
-         * 
-         * if (blockstate.isOf(Blocks.WATER)) { biome =
-         * this.biomeSource.getOceanBiomeForNoiseGen(absX, 2, absZ); }
-         */
-
-        long popSeed = FEATURE_RAND.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
-        
-        try {
-            biome.generateFeatureStep(structureAccessor, this, chunkRegion, popSeed, FEATURE_RAND, POS.set(ctrAbsX, 0, ctrAbsZ));
-        } catch (Exception exception) {
-            CrashReport report = CrashReport.create(exception, "Biome decoration");
-            report.addElement("Generation").add("CenterX", ctrX).add("CenterZ", ctrZ).add("Seed", popSeed).add("Biome",
-                    biome);
-            throw new CrashException(report);
-        }
+        BetaFeature.OLD_FANCY_OAK.chunkReset();
     }
 
-    // Modified to accommodate additional ocean biome replacements
-    @Override
-    public void setStructureStarts(DynamicRegistryManager dynamicRegistryManager, StructureAccessor structureAccessor,
-            Chunk chunk, StructureManager structureManager, long seed) {
-        ChunkPos chunkPos = chunk.getPos();
-
-        int biomeX = (chunkPos.x << 2) + 2;
-        int biomeZ = (chunkPos.z << 2) + 2;
-
-        int absX = biomeX << 2;
-        int absZ = biomeZ << 2;
-
-        Biome biome = this.biomeSource.getBiomeForNoiseGen(biomeX, 0, biomeZ);
-
-        // Cannot simply just check blockstate for chunks that do not yet exist...
-        // Will have to simulate heightmap for some distant chunk
-
-        /*
-        biomeSource.fetchTempHumid(chunkPos.x * 16, chunkPos.z * 16, 16, 16);
-        sampleHeightmap(chunkPos.getStartX(), chunkPos.getStartZ());
-
-        int thisY = CHUNK_Y[Math.abs(absX % 16)][Math.abs(absZ % 16)];
-
-        if (thisY <= this.getSeaLevel() - 4) {
-            biome = this.biomeSource.getOceanBiomeForNoiseGen(absX, 0, absZ);
-        }
-         */
-
-        this.setStructureStart(ConfiguredStructureFeatures.STRONGHOLD, dynamicRegistryManager, structureAccessor, chunk,
-                structureManager, seed, chunkPos, biome);
-        for (final Supplier<ConfiguredStructureFeature<?, ?>> supplier : biome.getGenerationSettings()
-                .getStructureFeatures()) {
-            this.setStructureStart(supplier.get(), dynamicRegistryManager, structureAccessor, chunk, structureManager,
-                    seed, chunkPos, biome);
-        }
-    }
-
-    // Modified to accommodate additional ocean biome replacements
-    private void setStructureStart(ConfiguredStructureFeature<?, ?> configuredStructureFeature,
-            DynamicRegistryManager dynamicRegistryManager, StructureAccessor structureAccessor, Chunk chunk,
-            StructureManager structureManager, long long7, ChunkPos chunkPos, Biome biome) {
-        StructureStart<?> structureStart = structureAccessor.getStructureStart(ChunkSectionPos.from(chunk.getPos(), 0),
-                configuredStructureFeature.feature, chunk);
-        int refs = (structureStart != null) ? structureStart.getReferences() : 0;
-
-        // StructureConfig structureConfig13 =
-        // this.structuresConfig.getForType(configuredStructureFeature.feature);
-        StructureConfig structureConfig = this.settings.wrapped.getStructuresConfig()
-                .getForType(configuredStructureFeature.feature);
-
-        if (structureConfig != null) {
-            StructureStart<?> gotStart = configuredStructureFeature.tryPlaceStart(dynamicRegistryManager, this,
-                    this.biomeSource, structureManager, long7, chunkPos, biome, refs, structureConfig);
-            structureAccessor.setStructureStart(ChunkSectionPos.from(chunk.getPos(), 0),
-                    configuredStructureFeature.feature, gotStart, chunk);
-        }
-    }
 
     @Override
     public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
@@ -284,17 +169,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
         GenerationSettings generationSettings = this.biomeSource.getBiomeForNoiseGen(biomeX, 0, biomeZ)
                 .getGenerationSettings();
         BitSet bitSet = ((ProtoChunk) chunk).getOrCreateCarvingMask(carver);
-
-        /*
-         POS.set(absX, 62, absZ);
-        BlockState blockstate = chunk.getBlockState(POS);
-
-        if (blockstate.isOf(Blocks.WATER)) {
-            generationSettings = this.biomeSource.getOceanBiomeForNoiseGen(absX, 0, absZ).getGenerationSettings();
-        }
-
-         */
-
+        
         RAND.setSeed(this.seed);
         long l = (RAND.nextLong() / 2L) * 2L + 1L;
         long l1 = (RAND.nextLong() / 2L) * 2L + 1L;

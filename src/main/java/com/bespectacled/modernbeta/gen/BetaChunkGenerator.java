@@ -62,6 +62,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeType;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
+import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.structure.BetaStructure;
@@ -208,6 +209,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                 }
             }
         }
+        
+        BetaFeature.OLD_FANCY_OAK.chunkReset();
     }
 
     // Modified to accommodate additional ocean biome replacements

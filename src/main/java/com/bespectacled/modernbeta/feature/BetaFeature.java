@@ -71,10 +71,12 @@ public class BetaFeature {
             .configure(FeatureConfig.DEFAULT);
     
     public static final IndevHouseFeature INDEV_HOUSE_FEATURE = new IndevHouseFeature(DefaultFeatureConfig.CODEC);
-
     public static ConfiguredFeature<?, ?> getFeature(String name) {
         return BuiltinRegistries.CONFIGURED_FEATURE.get(new Identifier(ModernBeta.ID, name));
     }
+    
+    public static final OldFancyOakFeature OLD_FANCY_OAK = new OldFancyOakFeature(DefaultFeatureConfig.CODEC);
+    private static final ConfiguredFeature<?, ?> OLD_FANCY_OAK_CONF = OLD_FANCY_OAK.configure(FeatureConfig.DEFAULT);
 
     public static void reserveConfiguredFeatureIDs() {
         for (Identifier i : CONFIG_FEATURES) {
@@ -90,6 +92,11 @@ public class BetaFeature {
                 BETA_FREEZE_TOP_LAYER);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(ModernBeta.ID, "beta_freeze_top_layer"),
                 BETA_FREEZE_TOP_LAYER_CONF);
+        
+        Registry.register(Registry.FEATURE, new Identifier(ModernBeta.ID, "old_fancy_oak"),
+                OLD_FANCY_OAK);
+        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(ModernBeta.ID, "old_fancy_oak"),
+                OLD_FANCY_OAK_CONF);
         
         //Registry.register(Registry.FEATURE, new Identifier(ModernBeta.ID, "indev_house"), INDEV_HOUSE_FEATURE);
 

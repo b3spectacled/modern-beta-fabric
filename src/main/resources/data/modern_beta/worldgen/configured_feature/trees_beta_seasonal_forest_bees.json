@@ -6,7 +6,7 @@
           "config": {
             "features": [
               {
-                "feature": "minecraft:fancy_oak_bees_002",
+                "feature": "modern_beta:old_fancy_oak",
                 "chance": 0.1
               }
             ],
