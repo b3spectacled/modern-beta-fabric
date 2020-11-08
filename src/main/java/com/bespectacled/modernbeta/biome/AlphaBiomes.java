@@ -31,7 +31,7 @@ public class AlphaBiomes {
             Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createNormalOcean(false));
         }
 
-        ModernBeta.LOGGER.log(Level.INFO, "Reserved Alpha biome IDs.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Reserved Alpha biome IDs.");
     }
     
     public static List<RegistryKey<Biome>> getBiomeList() {

@@ -31,7 +31,7 @@ public class InfdevBiomes {
             Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createNormalOcean(false));
         }
 
-        ModernBeta.LOGGER.log(Level.INFO, "Reserved Infdev biome IDs.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Reserved Infdev biome IDs.");
     }
     
     public static List<RegistryKey<Biome>> getBiomeList() {

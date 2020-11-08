@@ -65,7 +65,7 @@ public final class SkylandsGeneratorType extends GeneratorType {
         GeneratorType.VALUES.add(INSTANCE);
         MixinGeneratorTypeAccessor.setScreenProviders(NEW_SCREEN_PROVIDERS);
         
-        ModernBeta.LOGGER.log(Level.INFO, "Registered Skylands world type.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Registered Skylands world type.");
     }
 
     @Override

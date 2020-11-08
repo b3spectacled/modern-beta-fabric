@@ -34,6 +34,6 @@ public class BetaDecorator {
             Registry.register(Registry.DECORATOR, id, DECORATORS.get(id));
         }
 
-        ModernBeta.LOGGER.log(Level.INFO, "Registered decorators.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Registered decorators.");
     }
 }

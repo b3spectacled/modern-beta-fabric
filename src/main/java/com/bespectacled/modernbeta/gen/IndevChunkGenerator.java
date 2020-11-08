@@ -150,7 +150,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
 
     public static void register() {
         Registry.register(Registry.CHUNK_GENERATOR, new Identifier(ModernBeta.ID, "indev"), CODEC);
-        ModernBeta.LOGGER.log(Level.INFO, "Registered Indev chunk generator.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Registered Indev chunk generator.");
     }
 
     @Override

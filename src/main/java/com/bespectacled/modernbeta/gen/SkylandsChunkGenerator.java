@@ -139,7 +139,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
     public static void register() {
         Registry.register(Registry.CHUNK_GENERATOR, new Identifier(ModernBeta.ID, "skylands"), CODEC);
-        ModernBeta.LOGGER.log(Level.INFO, "Registered Skylands chunk generator.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Registered Skylands chunk generator.");
     }
 
     @Override
@@ -424,7 +424,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         int chunkZ = chunk.getPos().z;
         
         BiomeMath.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
-        biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES, null, null);
+        biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES, null, null, null);
         
         Biome curBiome;
         

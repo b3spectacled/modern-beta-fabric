@@ -181,7 +181,7 @@ public class InfdevBiomeSource extends BiomeSource {
 
     public static void register() {
         Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "infdev_biome_source"), CODEC);
-        ModernBeta.LOGGER.log(Level.INFO, "Registered Infdev biome source.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Registered Infdev biome source.");
     }
 
 }

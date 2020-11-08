@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.biome;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +20,13 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class BetaBiomes {
+    public enum BiomeType {
+        LAND, OCEAN, BEACH, MUTATED
+    }
     
     public static final Map<String, Identifier> BETA_MAPPINGS = new HashMap<String, Identifier>();
     public static final Map<String, Identifier> VANILLA_MAPPINGS = new HashMap<String, Identifier>();
+    public static final Map<String, Identifier> MUTATED_MAPPINGS = new HashMap<String, Identifier>();
     
     public static final Identifier FOREST_ID = new Identifier(ModernBeta.ID, "forest");
     public static final Identifier SHRUBLAND_ID = new Identifier(ModernBeta.ID, "shrubland");
@@ -72,13 +77,16 @@ public class BetaBiomes {
             Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createNormalOcean(false));
         }
 
-        ModernBeta.LOGGER.log(Level.INFO, "Reserved Beta biome IDs.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Reserved Beta biome IDs.");
     }
 
     public static List<RegistryKey<Biome>> getBiomeList(boolean useVanillaBiomes) {
         ArrayList<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
         
-        for (Identifier i : useVanillaBiomes ? VANILLA_MAPPINGS.values() : BETA_MAPPINGS.values()) {
+        List<Identifier> vanillaMappings = new ArrayList<Identifier>(VANILLA_MAPPINGS.values());
+        vanillaMappings.addAll(MUTATED_MAPPINGS.values());
+        
+        for (Identifier i : useVanillaBiomes ? vanillaMappings : BETA_MAPPINGS.values()) {
             biomeList.add(RegistryKey.of(Registry.BIOME_KEY, i));
         }
         
@@ -110,7 +118,7 @@ public class BetaBiomes {
         
         BETA_MAPPINGS.put("sky", SKY_ID);
         
-        VANILLA_MAPPINGS.put("ice_desert", BiomeKeys.ICE_SPIKES.getValue());
+        VANILLA_MAPPINGS.put("ice_desert", BiomeKeys.SNOWY_TUNDRA.getValue());
         VANILLA_MAPPINGS.put("tundra", BiomeKeys.SNOWY_TUNDRA.getValue());
         VANILLA_MAPPINGS.put("savanna", BiomeKeys.SAVANNA.getValue());
         VANILLA_MAPPINGS.put("desert", BiomeKeys.DESERT.getValue());
@@ -130,5 +138,17 @@ public class BetaBiomes {
         
         VANILLA_MAPPINGS.put("beach", BiomeKeys.BEACH.getValue());
         VANILLA_MAPPINGS.put("snowy_beach", BiomeKeys.SNOWY_BEACH.getValue());
+        
+        MUTATED_MAPPINGS.put("ice_desert", BiomeKeys.ICE_SPIKES.getValue());
+        MUTATED_MAPPINGS.put("tundra", BiomeKeys.GIANT_SPRUCE_TAIGA.getValue());
+        MUTATED_MAPPINGS.put("savanna", BiomeKeys.SUNFLOWER_PLAINS.getValue());
+        MUTATED_MAPPINGS.put("desert", BiomeKeys.DESERT.getValue());
+        MUTATED_MAPPINGS.put("swampland", BiomeKeys.TAIGA.getValue());
+        MUTATED_MAPPINGS.put("taiga", BiomeKeys.GIANT_TREE_TAIGA.getValue());
+        MUTATED_MAPPINGS.put("shrubland", BiomeKeys.FLOWER_FOREST.getValue());
+        MUTATED_MAPPINGS.put("forest", BiomeKeys.BIRCH_FOREST.getValue());
+        MUTATED_MAPPINGS.put("plains", BiomeKeys.PLAINS.getValue());
+        MUTATED_MAPPINGS.put("seasonal_forest", BiomeKeys.JUNGLE_EDGE.getValue());
+        MUTATED_MAPPINGS.put("rainforest", BiomeKeys.BAMBOO_JUNGLE.getValue());
     }
 }

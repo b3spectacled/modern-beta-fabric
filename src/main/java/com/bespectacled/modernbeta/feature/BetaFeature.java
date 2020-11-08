@@ -82,7 +82,7 @@ public class BetaFeature {
                     Feature.FLOWER.configure(Configs.DEFAULT_FLOWER_CONFIG));
         }
 
-        ModernBeta.LOGGER.log(Level.INFO, "Reserved feature IDs.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Reserved feature IDs.");
     }
 
     public static void register() {
@@ -91,8 +91,8 @@ public class BetaFeature {
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier(ModernBeta.ID, "beta_freeze_top_layer"),
                 BETA_FREEZE_TOP_LAYER_CONF);
         
-        Registry.register(Registry.FEATURE, new Identifier(ModernBeta.ID, "indev_house"), INDEV_HOUSE_FEATURE);
+        //Registry.register(Registry.FEATURE, new Identifier(ModernBeta.ID, "indev_house"), INDEV_HOUSE_FEATURE);
 
-        ModernBeta.LOGGER.log(Level.INFO, "Registered features.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Registered features.");
     }
 }

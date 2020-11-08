@@ -29,6 +29,7 @@ import com.bespectacled.modernbeta.biome.IndevBiomeSource;
 import com.bespectacled.modernbeta.biome.IndevBiomes;
 import com.bespectacled.modernbeta.biome.InfdevBiomeSource;
 import com.bespectacled.modernbeta.biome.InfdevBiomes;
+import com.bespectacled.modernbeta.biome.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
@@ -63,16 +64,22 @@ public class ModernBeta implements ModInitializer {
         BetaFeature.reserveConfiguredFeatureIDs();
         BetaFeature.register();
         BetaStructure.register();
+        
+        LOGGER.log(Level.INFO, "Registered Modern Beta features!");
 
         BetaBiomes.reserveBiomeIDs();
         AlphaBiomes.reserveBiomeIDs();
         InfdevBiomes.reserveBiomeIDs();
         IndevBiomes.reserveBiomeIDs();
+        
+        LOGGER.log(Level.INFO, "Registered Modern Beta biomes!");
 
         BetaBiomeSource.register();
         AlphaBiomeSource.register();
         InfdevBiomeSource.register();
         IndevBiomeSource.register();
+        
+        LOGGER.log(Level.INFO, "Registered Modern Beta biome providers!");
 
         BetaChunkGenerator.register();
         SkylandsChunkGenerator.register();
@@ -80,6 +87,9 @@ public class ModernBeta implements ModInitializer {
         InfdevChunkGenerator.register();
         IndevChunkGenerator.register();
         
+        LOGGER.log(Level.INFO, "Registered Modern Beta chunk generators!");
+        
+        VanillaBiomeModifier.addShrineToOceans();
 
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             BetaGeneratorType.register();
@@ -88,6 +98,7 @@ public class ModernBeta implements ModInitializer {
             InfdevGeneratorType.register();
             IndevGeneratorType.register();
             
+            LOGGER.log(Level.INFO, "Registered Modern Beta world types!");            
         }
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");

@@ -18,7 +18,7 @@ public class BiomeMath {
     private static OldNoiseGeneratorOctaves2 tempNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 9871L), 4);
     private static OldNoiseGeneratorOctaves2 humidNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 39811L), 4);
     private static OldNoiseGeneratorOctaves2 noiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 543321L), 2);
-
+    
     //public static double[] temps = null;
     //public static double[] humids = null;
     public static double[] noises = null;
@@ -42,6 +42,14 @@ public class BiomeMath {
         tempNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(seed * 9871L), 4);
         humidNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(seed * 39811L), 4);
         noiseOctaves = new OldNoiseGeneratorOctaves2(new Random(seed * 543321L), 2);
+    }
+    
+    public static double fetchNoiseAtPoint(int x, int z) {
+        double[] noises = null;
+        
+        noises = noiseOctaves.func_4112_a(noises, x, z, 1, 1, 0.05D, 0.05D, 0.3334D);
+        
+        return noises[0];
     }
 
     public static void fetchTempHumidAtPoint(double[] arr, int x, int z) {

@@ -76,7 +76,8 @@ public final class IndevGeneratorType extends GeneratorType {
     public static void register() {
         GeneratorType.VALUES.add(INSTANCE);
         MixinGeneratorTypeAccessor.setScreenProviders(NEW_SCREEN_PROVIDERS);
-        ModernBeta.LOGGER.log(Level.INFO, "Registered Indev world type.");
+        
+        //ModernBeta.LOGGER.log(Level.INFO, "Registered Indev world type.");
     }
 
     @Override

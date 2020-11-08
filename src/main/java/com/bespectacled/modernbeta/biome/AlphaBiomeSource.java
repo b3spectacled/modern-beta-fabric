@@ -1,16 +1,7 @@
 package com.bespectacled.modernbeta.biome;
 
-import java.util.List;
-import java.util.Random;
-import org.apache.logging.log4j.Level;
-
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.BetaBiomeSource.BiomeType;
-import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
-import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
-import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves2;
 import com.bespectacled.modernbeta.util.BiomeMath;
-import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -19,11 +10,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.gen.feature.StructureFeature;
 
 public class AlphaBiomeSource extends BiomeSource {
 
@@ -170,7 +159,7 @@ public class AlphaBiomeSource extends BiomeSource {
 
     public static void register() {
         Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "alpha_biome_source"), CODEC);
-        ModernBeta.LOGGER.log(Level.INFO, "Registered Alpha biome source.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Registered Alpha biome source.");
     }
 
 }

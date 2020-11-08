@@ -51,6 +51,6 @@ public class BetaCarver {
             Registry.register(BuiltinRegistries.CONFIGURED_CARVER, id, CONFIGURED_CARVERS.get(id));
         }
 
-        ModernBeta.LOGGER.log(Level.INFO, "Registered carvers.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Registered carvers.");
     }
 }

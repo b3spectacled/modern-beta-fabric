@@ -62,7 +62,7 @@ public final class BetaGeneratorType extends GeneratorType {
         GeneratorType.VALUES.add(INSTANCE);
         MixinGeneratorTypeAccessor.setScreenProviders(NEW_SCREEN_PROVIDERS);
         
-        ModernBeta.LOGGER.log(Level.INFO, "Registered Beta world type.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Registered Beta world type.");
     }
 
     @Override

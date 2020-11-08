@@ -133,7 +133,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
 
     public static void register() {
         Registry.register(Registry.CHUNK_GENERATOR, new Identifier(ModernBeta.ID, "infdev"), CODEC);
-        ModernBeta.LOGGER.log(Level.INFO, "Registered Infdev chunk generator.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Registered Infdev chunk generator.");
     }
 
     @Override
@@ -597,14 +597,13 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
     // Called only when generating structures
     @Override
     public int getHeight(int x, int z, Heightmap.Type type) {
+        BlockPos structPos = new BlockPos(x, 0, z);
 
-        POS.set(x, 0, z);
-
-        if (GROUND_CACHE_Y.get(POS) == null) {
+        if (GROUND_CACHE_Y.get(structPos) == null) {
             sampleHeightmap(x, z);
         }
 
-        int groundHeight = GROUND_CACHE_Y.get(POS.set(x, 0, z));
+        int groundHeight = GROUND_CACHE_Y.get(structPos);
 
         // Not ideal
         if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.getSeaLevel())
