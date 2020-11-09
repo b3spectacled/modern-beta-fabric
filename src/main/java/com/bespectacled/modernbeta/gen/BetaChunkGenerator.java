@@ -43,6 +43,7 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
+import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.ProtoChunk;
@@ -121,6 +122,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     
     private static final double[] TEMPS = new double[256];
     private static final double[] HUMIDS = new double[256];
+    private static final double[] TEMP_HUMID = new double[2];
     
     private static final Biome[] BIOMES = new Biome[256];
     private static final Biome[] OCEAN_BIOMES = new Biome[256];
@@ -197,11 +199,12 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                 if (this.generateVanillaBiomes) {
                     // Assign beach biomes
                     int y = this.getHeight(absX, absZ, Type.OCEAN_FLOOR_WG) - 1;
+                    biome = biomeSource.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeType.LAND);
                     
                     POS.set(absX, y, absZ);
                     blockState = chunk.getBlockState(POS);
                     
-                    if (y < 67 && (blockState.isOf(Blocks.SAND) || blockState.isOf(Blocks.GRAVEL))) {
+                    if (y < 67 && (blockState.isOf(Blocks.SAND) || blockState.isOf(Blocks.GRAVEL)) && biome.getCategory() != Category.DESERT) {
                         biome = biomeSource.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeType.BEACH);
                         
                         mutableBiomes.setBiome(absX, 0, absZ, biome);

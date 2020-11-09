@@ -140,8 +140,8 @@ public class BetaBiomes {
         VANILLA_MAPPINGS.put("snowy_beach", BiomeKeys.SNOWY_BEACH.getValue());
         
         MUTATED_MAPPINGS.put("ice_desert", BiomeKeys.ICE_SPIKES.getValue());
-        MUTATED_MAPPINGS.put("tundra", BiomeKeys.GIANT_SPRUCE_TAIGA.getValue());
-        MUTATED_MAPPINGS.put("savanna", BiomeKeys.SUNFLOWER_PLAINS.getValue());
+        MUTATED_MAPPINGS.put("tundra", BiomeKeys.GIANT_TREE_TAIGA.getValue());
+        MUTATED_MAPPINGS.put("savanna", BiomeKeys.PLAINS.getValue());
         MUTATED_MAPPINGS.put("desert", BiomeKeys.DESERT.getValue());
         MUTATED_MAPPINGS.put("swampland", BiomeKeys.TAIGA.getValue());
         MUTATED_MAPPINGS.put("taiga", BiomeKeys.GIANT_SPRUCE_TAIGA.getValue());
