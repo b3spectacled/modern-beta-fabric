@@ -111,6 +111,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     private static final int[][] CHUNK_Y = new int[16][16];
     
     private static final double HEIGHTMAP[] = new double[425];
+    private static final double HEIGHTMAP_STRUCT[] = new double[425];
     
     private static final Mutable POS = new Mutable();
     
@@ -351,7 +352,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         ObjectListIterator<StructurePiece> structureListIterator = (ObjectListIterator<StructurePiece>) STRUCTURE_LIST.iterator();
         ObjectListIterator<JigsawJunction> jigsawListIterator = (ObjectListIterator<JigsawJunction>) JIGSAW_LIST.iterator();
 
-        generateHeightmap(chunk.getPos().x * byte4, 0, chunk.getPos().z * byte4);
+        generateHeightmap(chunk.getPos().x * byte4, 0, chunk.getPos().z * byte4, TEMPS, HUMIDS, HEIGHTMAP);
         
         for (int i = 0; i < byte4; i++) {
             for (int j = 0; j < byte4; j++) {
@@ -442,7 +443,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         }
     }
 
-    private void generateHeightmap(int x, int y, int z) {
+    private void generateHeightmap(int x, int y, int z, double[] temps, double[] humids, double[] heightmap) {
         byte byte4 = 4;
         byte byte17 = 17;
 
@@ -504,8 +505,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
             for (int m = 0; m < int5_1; m++) {
                 int idx1 = m * k + k / 2;
 
-                double curTemp = TEMPS[idx0 * 16 + idx1];
-                double curHumid = HUMIDS[idx0 * 16 + idx1] * curTemp;
+                double curTemp = temps[idx0 * 16 + idx1];
+                double curHumid = humids[idx0 * 16 + idx1] * curTemp;
 
                 double humidMod = 1.0D - curHumid;
                 humidMod *= humidMod;
@@ -583,7 +584,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                         heightVal = heightVal * (1.0D - d13) + -10D * d13;
                     }
                     
-                    HEIGHTMAP[i] = heightVal;
+                    heightmap[i] = heightVal;
                     i++;
                 }
             }
@@ -724,12 +725,14 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     @Override
     public int getHeight(int x, int z, Heightmap.Type type) {
         BlockPos structPos = new BlockPos(x, 0, z);
+        double[] temps = new double[16 * 16];
+        double[] humids = new double[16 * 16];
         
         if (GROUND_CACHE_Y.get(structPos) == null) {
             //System.out.println(Fetching height for x/z: " + x + ", " + z);
-            BiomeMath.fetchTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
+            BiomeMath.fetchTempHumid((x >> 4) << 4, (z >> 4) << 4, temps, humids);
             
-            sampleHeightmap(x, z);
+            sampleHeightmap(x, z, temps, humids, HEIGHTMAP_STRUCT);
         } else {
             //System.out.println("Cache hit");
         }
@@ -743,7 +746,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         return groundHeight;
     }
 
-    private void sampleHeightmap(int absX, int absZ) {
+    private void sampleHeightmap(int absX, int absZ, double[] temps, double[] humids, double[] heightmap) {
         byte byte4 = 4;
         // byte seaLevel = (byte)this.getSeaLevel();
         byte byte17 = 17;
@@ -754,22 +757,22 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         int chunkX = absX >> 4;
         int chunkZ = absZ >> 4;
 
-        generateHeightmap(chunkX * byte4, 0, chunkZ * byte4);
+        generateHeightmap(chunkX * byte4, 0, chunkZ * byte4, temps, humids, heightmap);
 
         for (int i = 0; i < byte4; i++) {
             for (int j = 0; j < byte4; j++) {
                 for (int k = 0; k < 16; k++) {
                     double eighth = 0.125D;
 
-                    double var1 = HEIGHTMAP[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 0)];
-                    double var2 = HEIGHTMAP[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 0)];
-                    double var3 = HEIGHTMAP[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 0)];
-                    double var4 = HEIGHTMAP[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 0)];
+                    double var1 = heightmap[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 0)];
+                    double var2 = heightmap[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 0)];
+                    double var3 = heightmap[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 0)];
+                    double var4 = heightmap[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 0)];
 
-                    double var5 = (HEIGHTMAP[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var1) * eighth;
-                    double var6 = (HEIGHTMAP[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var2) * eighth;
-                    double var7 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var3) * eighth;
-                    double var8 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var4) * eighth;
+                    double var5 = (heightmap[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var1) * eighth;
+                    double var6 = (heightmap[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var2) * eighth;
+                    double var7 = (heightmap[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var3) * eighth;
+                    double var8 = (heightmap[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var4) * eighth;
 
                     for (int l = 0; l < 8; l++) {
                         double var9 = 0.25D;

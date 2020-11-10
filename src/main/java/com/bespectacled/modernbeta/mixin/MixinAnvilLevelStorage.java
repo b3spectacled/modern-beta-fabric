@@ -26,13 +26,14 @@ import net.minecraft.world.level.storage.AnvilLevelStorage;
 
 @Mixin(AnvilLevelStorage.class)
 public class MixinAnvilLevelStorage {
+    /*
     @Unique
     private static DynamicRegistryManager.Impl registry;
     
     @Unique
     private static long storedSeed;
     
-    /*
+    
     @ModifyVariable(
         method = "convertLevel", 
         at = @At(
@@ -43,7 +44,7 @@ public class MixinAnvilLevelStorage {
     private static BiomeSource injectBetaBiomeSource(BiomeSource original) {
         
         return null;
-    }*/
+    }
     
     
     @ModifyVariable(
@@ -58,6 +59,6 @@ public class MixinAnvilLevelStorage {
         
         return biomeSource;
     }
-    
+    */
 
 }

@@ -19,6 +19,9 @@ public class BiomeMath {
     private static OldNoiseGeneratorOctaves2 humidNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 39811L), 4);
     private static OldNoiseGeneratorOctaves2 noiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 543321L), 2);
     
+    private static final double[] TEMPS = new double[16];
+    private static final double[] HUMIDS = new double[16];
+    
     //public static double[] temps = null;
     //public static double[] humids = null;
     public static double[] noises = null;
@@ -47,20 +50,19 @@ public class BiomeMath {
     public static double fetchNoiseAtPoint(int x, int z) {
         double[] noises = null;
         
-        noises = noiseOctaves.func_4112_a(noises, x, z, 1, 1, 0.05D, 0.05D, 0.3334D);
+        noises = noiseOctaves.sample(noises, x, z, 1, 1, 0.05D, 0.05D, 0.3334D);
         
         return noises[0];
     }
 
     public static void fetchTempHumidAtPoint(double[] arr, int x, int z) {
-        double[] temps = null;
-        double[] humids = null;
-        double[] noises = null;
+        double[] temps;
+        double[] humids;
+        double[] noises;
 
-        temps = tempNoiseOctaves.func_4112_a(temps, x, z, 1, 1, 0.02500000037252903D, 0.02500000037252903D, 0.25D);
-        humids = humidNoiseOctaves.func_4112_a(humids, x, z, 1, 1, 0.05000000074505806D, 0.05000000074505806D,
-                0.33333333333333331D);
-        noises = noiseOctaves.func_4112_a(noises, x, z, 1, 1, 0.25D, 0.25D, 0.58823529411764708D);
+        temps = tempNoiseOctaves.sample(null, x, z, 1, 1, 0.02500000037252903D, 0.02500000037252903D, 0.25D);
+        humids = humidNoiseOctaves.sample(null, x, z, 1, 1, 0.05000000074505806D, 0.05000000074505806D, 0.33333333333333331D);
+        noises = noiseOctaves.sample(null, x, z, 1, 1, 0.25D, 0.25D, 0.58823529411764708D);
 
         double d = noises[0] * 1.1000000000000001D + 0.5D;
         double d1 = 0.01D;
@@ -95,9 +97,9 @@ public class BiomeMath {
         int sizeX = 16;
         int sizeZ = 16;
         
-        temps = tempNoiseOctaves.func_4112_a(temps, x, z, sizeX, sizeX, 0.02500000037252903D, 0.02500000037252903D, 0.25D);
-        humids = humidNoiseOctaves.func_4112_a(humids, x, z, sizeX, sizeX, 0.05000000074505806D, 0.05000000074505806D, 0.33333333333333331D);
-        noises = noiseOctaves.func_4112_a(noises, x, z, sizeX, sizeX, 0.25D, 0.25D, 0.58823529411764708D);
+        temps = tempNoiseOctaves.sample(temps, x, z, sizeX, sizeX, 0.02500000037252903D, 0.02500000037252903D, 0.25D);
+        humids = humidNoiseOctaves.sample(humids, x, z, sizeX, sizeX, 0.05000000074505806D, 0.05000000074505806D, 0.33333333333333331D);
+        noises = noiseOctaves.sample(noises, x, z, sizeX, sizeX, 0.25D, 0.25D, 0.58823529411764708D);
 
         int i = 0;
         for (int j = 0; j < sizeX; j++) {
@@ -138,7 +140,7 @@ public class BiomeMath {
     public static double fetchSkyTemp(int x, int z) {
         double[] skyTemps = null;
 
-        skyTemps = tempNoiseOctaves.func_4112_a(skyTemps, x, z, 1, 1, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
+        skyTemps = tempNoiseOctaves.sample(skyTemps, x, z, 1, 1, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
         return skyTemps[0];
     }
 }

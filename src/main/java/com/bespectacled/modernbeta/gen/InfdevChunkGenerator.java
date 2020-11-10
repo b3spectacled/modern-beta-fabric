@@ -98,8 +98,8 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
     private static final Map<BlockPos, Integer> GROUND_CACHE_Y = new HashMap<>();
     private static final int[][] CHUNK_Y = new int[16][16];
     
-    private static final Block BLOCKS[] = new Block[16 * 16 * 128];
     private static final double HEIGHTMAP[][] = new double[33][4];
+    private static final double HEIGHTMAP_STRUCT[][] = new double[33][4];
     
     private static final Mutable POS = new Mutable();
     
@@ -475,7 +475,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
         BlockPos structPos = new BlockPos(x, 0, z);
 
         if (GROUND_CACHE_Y.get(structPos) == null) {
-            sampleHeightmap(x, z);
+            sampleHeightmap(x, z, HEIGHTMAP_STRUCT);
         }
 
         int groundHeight = GROUND_CACHE_Y.get(structPos);
@@ -487,7 +487,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
         return groundHeight;
     }
 
-    private void sampleHeightmap(int absX, int absZ) {
+    private void sampleHeightmap(int absX, int absZ, double[][] heightmap) {
         
         int chunkX = absX >> 4;
         int chunkZ = absZ >> 4;
@@ -498,21 +498,21 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
                 int bZ = (chunkZ << 2) + j;
                 
                 for (int bY = 0; bY < HEIGHTMAP.length; ++bY) {
-                    HEIGHTMAP[bY][0] = this.generateHeightmap(bX, bY, bZ);
-                    HEIGHTMAP[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
-                    HEIGHTMAP[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
-                    HEIGHTMAP[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
+                    heightmap[bY][0] = this.generateHeightmap(bX, bY, bZ);
+                    heightmap[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
+                    heightmap[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
+                    heightmap[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
                 }
                 
                 for (int bY = 0; bY < 32; ++bY) {
-                    double n1 = HEIGHTMAP[bY][0];
-                    double n2 = HEIGHTMAP[bY][1];
-                    double n3 = HEIGHTMAP[bY][2];
-                    double n4 = HEIGHTMAP[bY][3];
-                    double n5 = HEIGHTMAP[bY + 1][0];
-                    double n7 = HEIGHTMAP[bY + 1][1];
-                    double n8 = HEIGHTMAP[bY + 1][2];
-                    double n9 = HEIGHTMAP[bY + 1][3];
+                    double n1 = heightmap[bY][0];
+                    double n2 = heightmap[bY][1];
+                    double n3 = heightmap[bY][2];
+                    double n4 = heightmap[bY][3];
+                    double n5 = heightmap[bY + 1][0];
+                    double n7 = heightmap[bY + 1][1];
+                    double n8 = heightmap[bY + 1][2];
+                    double n9 = heightmap[bY + 1][3];
                     
                     for (int pY = 0; pY < 4; ++pY) {
                         double mixY = pY / 4.0;

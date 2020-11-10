@@ -15,7 +15,7 @@ public class OldNoiseGeneratorOctaves2 extends OldNoiseGenerator {
 
     }
 
-    public double[] func_4112_a(double noise[], double x, double z, int sizeX, int sizeZ, double d1, double d2, double d3) {
+    public double[] sample(double noise[], double x, double z, int sizeX, int sizeZ, double d1, double d2, double d3) {
         return generateBetaNoiseOctaves2(noise, x, z, sizeX, sizeZ, d1, d2, d3, 0.5D);
     }
 
