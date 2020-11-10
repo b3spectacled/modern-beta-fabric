@@ -50,6 +50,7 @@ import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
+import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.BiomeMath;
 import com.bespectacled.modernbeta.util.BlockStates;
 
@@ -135,6 +136,8 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
+        
+        GROUND_CACHE_Y.clear();
     }
 
     public static void register() {
@@ -507,10 +510,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     // Called only when generating structures
     @Override
     public int getHeight(int x, int z, Heightmap.Type type) {
-
-        POS.set(x, 0, z);
-
-        if (GROUND_CACHE_Y.get(POS) == null) {
+        if (GROUND_CACHE_Y.get(POS.set(x, 0, z)) == null) {
             BiomeMath.fetchTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
             sampleHeightmap(x, z);
         }
@@ -592,9 +592,9 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
         for (int pX = 0; pX < CHUNK_Y.length; pX++) {
             for (int pZ = 0; pZ < CHUNK_Y[pX].length; pZ++) {
-                BlockPos cachedPos = new BlockPos((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
-                //POS.set((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
-                GROUND_CACHE_Y.put(cachedPos, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
+                POS.set((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
+                
+                GROUND_CACHE_Y.put(POS, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
             }
         }
     }
@@ -602,8 +602,10 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     @Override
     public BlockPos locateStructure(ServerWorld world, StructureFeature<?> feature, BlockPos center, int radius,
             boolean skipExistingChunks) {
-        if (feature.equals(StructureFeature.OCEAN_RUIN) || feature.equals(StructureFeature.SHIPWRECK)
-                || feature.equals(StructureFeature.BURIED_TREASURE)) {
+        if (feature.equals(StructureFeature.OCEAN_RUIN) || 
+            feature.equals(StructureFeature.SHIPWRECK) || 
+            feature.equals(StructureFeature.BURIED_TREASURE) ||
+            feature.equals(BetaStructure.OCEAN_SHRINE_STRUCTURE)) {
             return null;
         }
 

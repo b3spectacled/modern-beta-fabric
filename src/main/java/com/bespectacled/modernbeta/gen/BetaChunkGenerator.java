@@ -111,7 +111,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     private static final int[][] CHUNK_Y = new int[16][16];
     
     private static final double HEIGHTMAP[] = new double[425];
-    private static final double HEIGHTMAP_STRUCT[] = new double[425];
     
     private static final Mutable POS = new Mutable();
     
@@ -153,6 +152,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         // Yes this is messy. What else am I supposed to do?
         BiomeMath.setSeed(this.seed);
         BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
+        
+        GROUND_CACHE_Y.clear();
     }
 
     public static void register() {
@@ -352,7 +353,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         ObjectListIterator<StructurePiece> structureListIterator = (ObjectListIterator<StructurePiece>) STRUCTURE_LIST.iterator();
         ObjectListIterator<JigsawJunction> jigsawListIterator = (ObjectListIterator<JigsawJunction>) JIGSAW_LIST.iterator();
 
-        generateHeightmap(chunk.getPos().x * byte4, 0, chunk.getPos().z * byte4, TEMPS, HUMIDS, HEIGHTMAP);
+        generateHeightmap(chunk.getPos().x * byte4, 0, chunk.getPos().z * byte4);
         
         for (int i = 0; i < byte4; i++) {
             for (int j = 0; j < byte4; j++) {
@@ -443,7 +444,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         }
     }
 
-    private void generateHeightmap(int x, int y, int z, double[] temps, double[] humids, double[] heightmap) {
+    private void generateHeightmap(int x, int y, int z) {
         byte byte4 = 4;
         byte byte17 = 17;
 
@@ -505,8 +506,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
             for (int m = 0; m < int5_1; m++) {
                 int idx1 = m * k + k / 2;
 
-                double curTemp = temps[idx0 * 16 + idx1];
-                double curHumid = humids[idx0 * 16 + idx1] * curTemp;
+                double curTemp = TEMPS[idx0 * 16 + idx1];
+                double curHumid = HUMIDS[idx0 * 16 + idx1] * curTemp;
 
                 double humidMod = 1.0D - curHumid;
                 humidMod *= humidMod;
@@ -584,7 +585,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
                         heightVal = heightVal * (1.0D - d13) + -10D * d13;
                     }
                     
-                    heightmap[i] = heightVal;
+                    HEIGHTMAP[i] = heightVal;
                     i++;
                 }
             }
@@ -724,20 +725,18 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     // Called only when generating structures
     @Override
     public int getHeight(int x, int z, Heightmap.Type type) {
-        BlockPos structPos = new BlockPos(x, 0, z);
-        double[] temps = new double[16 * 16];
-        double[] humids = new double[16 * 16];
+        //BlockPos structPos = new BlockPos(x, 0, z);
         
-        if (GROUND_CACHE_Y.get(structPos) == null) {
+        if (GROUND_CACHE_Y.get(POS.set(x, 0, z)) == null) {
             //System.out.println(Fetching height for x/z: " + x + ", " + z);
-            BiomeMath.fetchTempHumid((x >> 4) << 4, (z >> 4) << 4, temps, humids);
+            BiomeMath.fetchTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
             
-            sampleHeightmap(x, z, temps, humids, HEIGHTMAP_STRUCT);
+            sampleHeightmap(x, z);
         } else {
             //System.out.println("Cache hit");
         }
 
-        int groundHeight = GROUND_CACHE_Y.get(structPos);
+        int groundHeight = GROUND_CACHE_Y.get(POS.set(x, 0, z));
         
         // Not ideal
         if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.getSeaLevel())
@@ -746,7 +745,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         return groundHeight;
     }
 
-    private void sampleHeightmap(int absX, int absZ, double[] temps, double[] humids, double[] heightmap) {
+    private void sampleHeightmap(int absX, int absZ) {
         byte byte4 = 4;
         // byte seaLevel = (byte)this.getSeaLevel();
         byte byte17 = 17;
@@ -757,22 +756,22 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         int chunkX = absX >> 4;
         int chunkZ = absZ >> 4;
 
-        generateHeightmap(chunkX * byte4, 0, chunkZ * byte4, temps, humids, heightmap);
+        generateHeightmap(chunkX * byte4, 0, chunkZ * byte4);
 
         for (int i = 0; i < byte4; i++) {
             for (int j = 0; j < byte4; j++) {
                 for (int k = 0; k < 16; k++) {
                     double eighth = 0.125D;
 
-                    double var1 = heightmap[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 0)];
-                    double var2 = heightmap[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 0)];
-                    double var3 = heightmap[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 0)];
-                    double var4 = heightmap[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 0)];
+                    double var1 = HEIGHTMAP[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 0)];
+                    double var2 = HEIGHTMAP[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 0)];
+                    double var3 = HEIGHTMAP[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 0)];
+                    double var4 = HEIGHTMAP[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 0)];
 
-                    double var5 = (heightmap[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var1) * eighth;
-                    double var6 = (heightmap[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var2) * eighth;
-                    double var7 = (heightmap[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var3) * eighth;
-                    double var8 = (heightmap[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var4) * eighth;
+                    double var5 = (HEIGHTMAP[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var1) * eighth;
+                    double var6 = (HEIGHTMAP[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var2) * eighth;
+                    double var7 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var3) * eighth;
+                    double var8 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var4) * eighth;
 
                     for (int l = 0; l < 8; l++) {
                         double var9 = 0.25D;
@@ -814,13 +813,9 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
         for (int pX = 0; pX < CHUNK_Y.length; pX++) {
             for (int pZ = 0; pZ < CHUNK_Y[pX].length; pZ++) {
-                BlockPos cachedPos = new BlockPos((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
+                POS.set((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
                 
-                if (absX == cachedPos.getX() && absZ == cachedPos.getZ()) {
-                   // System.out.println("Got height for x/z: " + cachedPos.getX() + ", " + cachedPos.getZ() + "; " + CHUNK_Y[pX][pZ] + 1);
-                }
-
-                GROUND_CACHE_Y.put(cachedPos, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
+                GROUND_CACHE_Y.put(POS, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
             }
         }
     }
@@ -928,7 +923,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     public int getSeaLevel() {
         return 64;
     }
-
+    
     @Override
     public ChunkGenerator withSeed(long seed) {
         return new BetaChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings);

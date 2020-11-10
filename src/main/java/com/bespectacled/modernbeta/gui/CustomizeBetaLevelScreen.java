@@ -82,14 +82,14 @@ public class CustomizeBetaLevelScreen extends Screen {
         ));
         
         this.buttonList.addSingleOptionEntry(
-                new BooleanOption(
-                    "createWorld.customize.beta.generateVanillaBiomesBeta", 
-                    (gameOptions) -> { return generateVanillaBiomesBeta; }, 
-                    (gameOptions, value) -> {
-                        generateVanillaBiomesBeta = value;
-                        generatorSettings.settings.putBoolean("generateVanillaBiomesBeta", value);
-                    }
-            ));
+            new BooleanOption(
+                "createWorld.customize.beta.generateVanillaBiomesBeta", 
+                (gameOptions) -> { return generateVanillaBiomesBeta; }, 
+                (gameOptions, value) -> {
+                    generateVanillaBiomesBeta = value;
+                    generatorSettings.settings.putBoolean("generateVanillaBiomesBeta", value);
+                }
+        ));
             
         
         this.children.add(this.buttonList);

@@ -17,8 +17,9 @@ public class CustomizeSkylandsLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private BetaGeneratorSettings generatorSettings;
     
-    private boolean generateIceDesert = false;
-    private boolean generateSkyDim = false;
+    private boolean generateIceDesert = ModernBeta.BETA_CONFIG.generateIceDesert;
+    private boolean generateSkyDim = ModernBeta.BETA_CONFIG.generateSkyDim;
+    private boolean generateVanillaBiomesBeta = ModernBeta.BETA_CONFIG.generateVanillaBiomesBeta;
     
     private ButtonListWidget buttonList;
 
@@ -32,6 +33,8 @@ public class CustomizeSkylandsLevelScreen extends Screen {
             generateIceDesert = generatorSettings.settings.getBoolean("generateIceDesert");
         if (generatorSettings.settings.contains("generateSkyDim"))
             generateSkyDim = generatorSettings.settings.getBoolean("generateSkyDim");
+        if (generatorSettings.settings.contains("generateVanillaBiomesBeta"))
+            generateVanillaBiomesBeta = generatorSettings.settings.getBoolean("generateVanillaBiomesBeta");
     }
     
     @Override
@@ -72,6 +75,16 @@ public class CustomizeSkylandsLevelScreen extends Screen {
                 (gameOptions, value) -> {
                     generateIceDesert = value;
                     generatorSettings.settings.putBoolean("generateIceDesert", value);
+                }
+        ));
+        
+        this.buttonList.addSingleOptionEntry(
+            new BooleanOption(
+                "createWorld.customize.beta.generateVanillaBiomesBeta", 
+                (gameOptions) -> { return generateVanillaBiomesBeta; }, 
+                (gameOptions, value) -> {
+                    generateVanillaBiomesBeta = value;
+                    generatorSettings.settings.putBoolean("generateVanillaBiomesBeta", value);
                 }
         ));
         
