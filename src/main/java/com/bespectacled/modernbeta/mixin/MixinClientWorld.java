@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
-import com.bespectacled.modernbeta.util.BiomeMath;
+import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.IndevUtil;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
@@ -63,7 +63,7 @@ public abstract class MixinClientWorld extends World {
     
     @Unique
     private static void setSeed(long seed) {
-        BiomeMath.setSeed(seed);
+        BiomeUtil.setSeed(seed);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
@@ -122,7 +122,7 @@ public abstract class MixinClientWorld extends World {
         int x = pos.getX();
         int z = pos.getZ();
 
-        float temp = (float) BiomeMath.fetchSkyTemp(x, z);
+        float temp = (float) BiomeUtil.fetchSkyTemp(x, z);
         int skyColor = getSkyColorByTemp(temp);
 
         return skyColor;

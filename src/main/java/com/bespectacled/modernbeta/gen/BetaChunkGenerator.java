@@ -68,7 +68,7 @@ import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.structure.BetaStructure;
-import com.bespectacled.modernbeta.util.BiomeMath;
+import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
@@ -152,7 +152,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         forestNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, false);
 
         // Yes this is messy. What else am I supposed to do?
-        BiomeMath.setSeed(this.seed);
+        BiomeUtil.setSeed(this.seed);
         BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
         
         GROUND_CACHE_Y.clear();
@@ -174,7 +174,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
         RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
 
-        BiomeMath.fetchTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
+        BiomeUtil.fetchTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
         generateTerrain(chunk, TEMPS, structureAccessor);
         buildBetaSurface(chunk);
 
@@ -601,7 +601,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        BiomeMath.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
+        BiomeUtil.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
         biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES, null, null, MUTATED_BIOMES);
         //biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES, OCEAN_BIOMES);
         
@@ -625,7 +625,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
                 curBiome = BIOMES[i + j * 16];
                 
-                if (this.generateVanillaBiomes && BiomeMath.fetchNoiseAtPoint(chunkX * 16 + j, chunkZ * 16 + i) < 0.0D) {
+                if (this.generateVanillaBiomes && BiomeUtil.fetchNoiseAtPoint(chunkX * 16 + j, chunkZ * 16 + i) < 0.0D) {
                     curBiome = MUTATED_BIOMES[i + j * 16];
                 }
                 
@@ -727,18 +727,15 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
     // Called only when generating structures
     @Override
     public int getHeight(int x, int z, Heightmap.Type type) {
-        //BlockPos structPos = new BlockPos(x, 0, z);
+        BlockPos structPos = new BlockPos(x, 0, z);
         
-        if (GROUND_CACHE_Y.get(POS.set(x, 0, z)) == null) {
-            //System.out.println(Fetching height for x/z: " + x + ", " + z);
-            BiomeMath.fetchTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
+        if (GROUND_CACHE_Y.get(structPos) == null) {
+            BiomeUtil.fetchTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
             
             sampleHeightmap(x, z);
-        } else {
-            //System.out.println("Cache hit");
         }
 
-        int groundHeight = GROUND_CACHE_Y.get(POS.set(x, 0, z));
+        int groundHeight = GROUND_CACHE_Y.get(structPos);
         
         // Not ideal
         if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.getSeaLevel())
@@ -815,9 +812,10 @@ public class BetaChunkGenerator extends NoiseChunkGenerator {
 
         for (int pX = 0; pX < CHUNK_Y.length; pX++) {
             for (int pZ = 0; pZ < CHUNK_Y[pX].length; pZ++) {
-                POS.set((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
+                BlockPos structPos = new BlockPos((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
+                //POS.set((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
                 
-                GROUND_CACHE_Y.put(POS, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
+                GROUND_CACHE_Y.put(structPos, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
             }
         }
     }

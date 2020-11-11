@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.biome;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.util.BiomeMath;
+import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -47,7 +47,7 @@ public class AlphaBiomeSource extends BiomeSource {
         if (settings.contains("alphaWinterMode")) this.alphaWinterMode = settings.getBoolean("alphaWinterMode");
         if (settings.contains("alphaPlus")) this.alphaPlus = settings.getBoolean("alphaPlus");
         
-        BiomeMath.setSeed(this.seed);
+        BiomeUtil.setSeed(this.seed);
         generateBiomeLookup(registry);
 
     }
@@ -60,7 +60,7 @@ public class AlphaBiomeSource extends BiomeSource {
 
         if (this.alphaPlus) {
             // Sample biome at this one absolute coordinate.
-            BiomeMath.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
+            BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
 
             biome = fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1]);
         } else if (alphaWinterMode) {

@@ -4,15 +4,12 @@ import java.util.BitSet;
 import java.util.Random;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.mutable.MutableBoolean;
-
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ProbabilityConfig;

@@ -9,7 +9,7 @@ import net.minecraft.util.math.MathHelper;
 /*
  * From WorldEdit
  */
-public class BiomeMath {
+public class BiomeUtil {
     public static final int HORIZONTAL_SECTION_COUNT = (int) Math.round(Math.log(16.0D) / Math.log(2.0D)) - 2;
     public static final int VERTICAL_SECTION_COUNT = (int) Math.round(Math.log(256.0D) / Math.log(2.0D)) - 2;
     public static final int HORIZONTAL_BIT_MASK = (1 << HORIZONTAL_SECTION_COUNT) - 1;

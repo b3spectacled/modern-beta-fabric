@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.biome;
 import java.util.Map;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.util.BiomeMath;
+import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -68,7 +68,7 @@ public class BetaBiomeSource extends BiomeSource {
         
         this.biomeMappings = this.generateVanillaBiomesBeta ? BetaBiomes.VANILLA_MAPPINGS : BetaBiomes.BETA_MAPPINGS;
         
-        BiomeMath.setSeed(this.seed);
+        BiomeUtil.setSeed(this.seed);
         generateBiomeLookup(registry);
     }
 
@@ -81,9 +81,9 @@ public class BetaBiomeSource extends BiomeSource {
         if (this.generateSkyDim) return biomeRegistry.get(BetaBiomes.SKY_ID);
 
         // Sample biome at this one absolute coordinate.
-        BiomeMath.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
+        BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
         
-        if (this.generateVanillaBiomesBeta && BiomeMath.fetchNoiseAtPoint(absX, absZ) < 0.0D) 
+        if (this.generateVanillaBiomesBeta && BiomeUtil.fetchNoiseAtPoint(absX, absZ) < 0.0D) 
             type = BiomeType.MUTATED;
         
         return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], type);
@@ -91,7 +91,7 @@ public class BetaBiomeSource extends BiomeSource {
     
     public Biome getLayeredBiomeForNoiseGen(int x, int y, int z, BiomeType type) {
         // Sample biome at this one absolute coordinate.
-        BiomeMath.fetchTempHumidAtPoint(TEMP_HUMID_POINT, x, z);
+        BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, x, z);
 
         if (this.generateBetaOceans || this.generateOceans) // To maintain compat with old option
             return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], type);

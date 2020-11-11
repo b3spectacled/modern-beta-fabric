@@ -8,7 +8,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves2;
-import com.bespectacled.modernbeta.util.BiomeMath;
+import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -57,7 +57,7 @@ public class InfdevBiomeSource extends BiomeSource {
         if (settings.contains("infdevWinterMode")) this.infdevWinterMode = settings.getBoolean("infdevWinterMode");
         if (settings.contains("infdevPlus")) this.infdevPlus = settings.getBoolean("infdevPlus");
 
-        BiomeMath.setSeed(this.seed);
+        BiomeUtil.setSeed(this.seed);
         generateBiomeLookup(registry);
     }
 
@@ -69,7 +69,7 @@ public class InfdevBiomeSource extends BiomeSource {
 
         if (this.infdevPlus) {
             // Sample biome at this one absolute coordinate.
-            BiomeMath.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
+            BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
 
             biome = fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1]);
         } else if (infdevWinterMode) {

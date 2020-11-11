@@ -6,8 +6,6 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.SinglePreparationResourceReloadListener;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
-import net.minecraft.world.SpawnHelper;
-
 import java.io.IOException;
 
 import com.bespectacled.modernbeta.ModernBeta;

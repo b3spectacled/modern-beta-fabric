@@ -68,7 +68,7 @@ import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
-import com.bespectacled.modernbeta.util.BiomeMath;
+import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 
@@ -480,7 +480,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        BiomeMath.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
+        BiomeUtil.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
         biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES);
         
         Biome curBiome;
@@ -595,11 +595,13 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
     // Called only when generating structures
     @Override
     public int getHeight(int x, int z, Heightmap.Type type) {
-        if (GROUND_CACHE_Y.get(POS.set(x, 0, z)) == null) {
+        BlockPos structPos = new BlockPos(x, 0, z);
+        
+        if (GROUND_CACHE_Y.get(structPos) == null) {
             sampleHeightmap(x, z);
         }
 
-        int groundHeight = GROUND_CACHE_Y.get(POS.set(x, 0, z));
+        int groundHeight = GROUND_CACHE_Y.get(structPos);
 
         // Not ideal
         if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.getSeaLevel())
@@ -676,9 +678,10 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
 
         for (int pX = 0; pX < CHUNK_Y.length; pX++) {
             for (int pZ = 0; pZ < CHUNK_Y[pX].length; pZ++) {
-                POS.set((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
+                BlockPos structPos = new BlockPos((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
+                //POS.set((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
                 
-                GROUND_CACHE_Y.put(POS, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
+                GROUND_CACHE_Y.put(structPos, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
             }
         }
     }

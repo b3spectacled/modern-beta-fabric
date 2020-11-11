@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.biome.*;
-import com.bespectacled.modernbeta.util.BiomeMath;
+import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
@@ -56,7 +56,7 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
             Arrays.fill(TEMPS, 0, TEMPS.length, betaSource.biomeRegistry.get(BetaBiomes.SKY_ID).getTemperature());
             Arrays.fill(HUMIDS, 0, HUMIDS.length, betaSource.biomeRegistry.get(BetaBiomes.SKY_ID).getDownfall());
         } else {
-            BiomeMath.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
+            BiomeUtil.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
         }
         
         
