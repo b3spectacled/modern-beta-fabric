@@ -70,6 +70,7 @@ import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
 import com.bespectacled.modernbeta.util.BiomeMath;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.GenUtil;
 
 //private final BetaGeneratorSettings settings;
 
@@ -237,7 +238,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
 
-        this.collectStructures(chunk, structureAccessor);
+        GenUtil.collectStructures(chunk, structureAccessor, STRUCTURE_LIST, JIGSAW_LIST);
 
         ObjectListIterator<StructurePiece> structureListIterator = (ObjectListIterator<StructurePiece>) STRUCTURE_LIST.iterator();
         ObjectListIterator<JigsawJunction> jigsawListIterator = (ObjectListIterator<JigsawJunction>) JIGSAW_LIST.iterator();
@@ -280,6 +281,9 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
 
                             for (int n = 0; n < 4; n++) { 
                                 int absZ = (chunk.getPos().z << 4) + j * 4 + n;
+                                
+                                double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
+                                clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
 
                                 while (structureListIterator.hasNext()) {
                                     StructurePiece curStructurePiece = (StructurePiece) structureListIterator.next();
@@ -290,8 +294,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
                                             ? ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta() : 0));
                                     int sZ = Math.max(0, Math.max(blockBox.minZ - absZ, absZ - blockBox.maxZ));
 
-                                    if (sY < 0 && sX == 0 && sZ == 0)
-                                        density += density * density / 0.1;
+                                    clampedDensity += GenUtil.getNoiseWeight(sX, sY, sZ) * 0.8;
                                 }
                                 structureListIterator.back(STRUCTURE_LIST.size());
 
@@ -302,12 +305,11 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
                                     int jY = y - curJigsawJunction.getSourceGroundY();
                                     int jZ = absZ - curJigsawJunction.getSourceZ();
 
-                                    if (jY < 0 && jX == 0 && jZ == 0)
-                                        density += density * density / 0.1;
+                                    clampedDensity += GenUtil.getNoiseWeight(jX, jY, jZ) * 0.4;
                                 }
                                 jigsawListIterator.back(JIGSAW_LIST.size());
 
-                                BlockState blockToSet = this.getBlockState(density, y, 0);
+                                BlockState blockToSet = this.getBlockState(clampedDensity, y, 0);
 
                                 chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
 
@@ -678,64 +680,6 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator {
                 
                 GROUND_CACHE_Y.put(POS, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
             }
-        }
-    }
-    
-    private void collectStructures(Chunk chunk, StructureAccessor accessor) {
-        STRUCTURE_LIST.clear();
-        JIGSAW_LIST.clear();
-        
-        for (final StructureFeature<?> s : StructureFeature.JIGSAW_STRUCTURES) {
-
-            accessor.getStructuresWithChildren(ChunkSectionPos.from(chunk.getPos(), 0), s)
-                .forEach(structureStart -> {
-                    Iterator<StructurePiece> structurePieceIterator;
-                    StructurePiece structurePiece;
-
-                    Iterator<JigsawJunction> jigsawJunctionIterator;
-                    JigsawJunction jigsawJunction;
-
-                    ChunkPos arg2 = chunk.getPos();
-
-                    PoolStructurePiece poolStructurePiece;
-                    StructurePool.Projection structureProjection;
-
-                    int jigsawX;
-                    int jigsawZ;
-                    int n2 = arg2.x;
-                    int n3 = arg2.z;
-
-                    structurePieceIterator = structureStart.getChildren().iterator();
-                    while (structurePieceIterator.hasNext()) {
-                        structurePiece = structurePieceIterator.next();
-                        if (!structurePiece.intersectsChunk(arg2, 12)) {
-                            continue;
-                        } else if (structurePiece instanceof PoolStructurePiece) {
-                            poolStructurePiece = (PoolStructurePiece) structurePiece;
-                            structureProjection = poolStructurePiece.getPoolElement().getProjection();
-
-                            if (structureProjection == StructurePool.Projection.RIGID) {
-                                STRUCTURE_LIST.add(poolStructurePiece);
-                            }
-                            jigsawJunctionIterator = poolStructurePiece.getJunctions().iterator();
-                            while (jigsawJunctionIterator.hasNext()) {
-                                jigsawJunction = jigsawJunctionIterator.next();
-                                jigsawX = jigsawJunction.getSourceX();
-                                jigsawZ = jigsawJunction.getSourceZ();
-                                if (jigsawX > n2 - 12 && jigsawZ > n3 - 12 && jigsawX < n2 + 15 + 12) {
-                                    if (jigsawZ >= n3 + 15 + 12) {
-                                        continue;
-                                    } else {
-                                        JIGSAW_LIST.add(jigsawJunction);
-                                    }
-                                }
-                            }
-                        } else {
-                            STRUCTURE_LIST.add(structurePiece);
-                        }
-                    }
-                    return;
-            });
         }
     }
 

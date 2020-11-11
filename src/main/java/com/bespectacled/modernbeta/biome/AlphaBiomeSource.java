@@ -28,10 +28,6 @@ public class AlphaBiomeSource extends BiomeSource {
     private final CompoundTag settings;
 
     private static Biome biomeLookupTable[] = new Biome[4096];
-    private static Biome oceanBiomeLookupTable[] = new Biome[4096];
-
-    public static Biome[] biomesInChunk = new Biome[256];
-    public static Biome[] oceanBiomesInChunk = new Biome[256];
     
     private boolean alphaWinterMode = false;
     private boolean alphaPlus = false;
@@ -76,23 +72,6 @@ public class AlphaBiomeSource extends BiomeSource {
         return biome;
     }
 
-    public Biome getOceanBiomeForNoiseGen(int x, int y, int z) {
-        Biome biome;
-
-        if (this.alphaPlus) {
-            // Sample biome at this one absolute coordinate.
-            BiomeMath.fetchTempHumidAtPoint(TEMP_HUMID_POINT, x, z);
-
-            biome = fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1]);
-        } else if (alphaWinterMode) {
-            biome = this.biomeRegistry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
-        } else {
-            biome = this.biomeRegistry.get(new Identifier(ModernBeta.ID, "ocean"));
-        }
-
-        return biome;
-    }
-    
     private Biome fetchBiome(double temp, double humid) {
         return getBiomeFromLookup(temp, humid);
     }
@@ -110,7 +89,6 @@ public class AlphaBiomeSource extends BiomeSource {
         for (int i = 0; i < 64; i++) {
             for (int j = 0; j < 64; j++) {
                 biomeLookupTable[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F, registry);
-                oceanBiomeLookupTable[i + j * 64] = getOceanBiome((float) i / 63F, (float) j / 63F, registry);
             }
         }
     }
@@ -122,28 +100,12 @@ public class AlphaBiomeSource extends BiomeSource {
         return biomeLookupTable[i + j * 64];
     }
 
-    public Biome getOceanBiomeFromLookup(double temp, double humid) {
-        int i = (int) (temp * 63D);
-        int j = (int) (humid * 63D);
-
-        return oceanBiomeLookupTable[i + j * 64];
-    }
-
     public static Biome getBiome(float temp, float humid, Registry<Biome> registry) {
         if (temp < 0.5F) {
             return registry.get(AlphaBiomes.ALPHA_WINTER_ID);
         }
 
         return registry.get(AlphaBiomes.ALPHA_ID);
-    }
-
-    public static Biome getOceanBiome(float temp, float humid, Registry<Biome> registry) {
-        if (temp < 0.5F) {
-            return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
-        }
-
-        return registry.get(new Identifier(ModernBeta.ID, "ocean"));
-
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.gen;
 
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.block.Block;
@@ -21,8 +23,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.JigsawJunction;
+import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -53,6 +57,7 @@ import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.BiomeMath;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.GenUtil;
 
 //private final BetaGeneratorSettings settings;
 
@@ -220,6 +225,11 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
+        
+        GenUtil.collectStructures(chunk, structureAccessor, STRUCTURE_LIST, JIGSAW_LIST);
+        
+        ObjectListIterator<StructurePiece> structureListIterator = (ObjectListIterator<StructurePiece>) STRUCTURE_LIST.iterator();
+        ObjectListIterator<JigsawJunction> jigsawListIterator = (ObjectListIterator<JigsawJunction>) JIGSAW_LIST.iterator();
 
         generateHeightmap(chunk.getPos().x * byte2, 0, chunk.getPos().z * byte2);
 
@@ -244,10 +254,8 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                         double eighth = 0.125D;
                         double var10 = var1;
                         double var11 = var2;
-                        double var12 = (var3 - var1) * eighth; // Lerp
+                        double var12 = (var3 - var1) * eighth; 
                         double var13 = (var4 - var2) * eighth;
-
-                        int integer40 = k * 8 + l;
 
                         for (int m = 0; m < 8; m++) {
                             int x = (m + i * 8);
@@ -256,13 +264,43 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
                             double var14 = 0.125D;
                             double density = var10; // var15
-                            double var16 = (var11 - var10) * var14; // More lerp
+                            double var16 = (var11 - var10) * var14; 
+                            
+                            int absX = (chunk.getPos().x << 4) + x;
                             
                             for (int n = 0; n < 8; n++) {
+                                int absZ = (chunk.getPos().z << 4) + z;
                                 double temp = 0;
-                                double noiseWeight;
+                                
+                                double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
+                                clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
+                                
+                                while (structureListIterator.hasNext()) {
+                                    StructurePiece curStructurePiece = (StructurePiece) structureListIterator.next();
+                                    BlockBox blockBox = curStructurePiece.getBoundingBox();
 
-                                BlockState blockToSet = this.getBlockState(density, y, temp);
+                                    int sX = Math.max(0, Math.max(blockBox.minX - absX, absX - blockBox.maxX));
+                                    int sY = y - (blockBox.minY + ((curStructurePiece instanceof PoolStructurePiece) ? 
+                                            ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta() : 0));
+                                    int sZ = Math.max(0, Math.max(blockBox.minZ - absZ, absZ - blockBox.maxZ));
+
+                                    clampedDensity += GenUtil.getNoiseWeight(sX, sY, sZ) * 0.8;
+                                }
+                                structureListIterator.back(STRUCTURE_LIST.size());
+
+                                while (jigsawListIterator.hasNext()) {
+                                    JigsawJunction curJigsawJunction = (JigsawJunction) jigsawListIterator.next();
+
+                                    int jX = absX - curJigsawJunction.getSourceX();
+                                    int jY = y - curJigsawJunction.getSourceGroundY();
+                                    int jZ = absZ - curJigsawJunction.getSourceZ();
+
+                                    clampedDensity += GenUtil.getNoiseWeight(jX, jY, jZ) * 0.4;
+                                }
+                                jigsawListIterator.back(JIGSAW_LIST.size());
+
+
+                                BlockState blockToSet = this.getBlockState(clampedDensity, y, temp);
 
                                 chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
 
@@ -510,6 +548,8 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     // Called only when generating structures
     @Override
     public int getHeight(int x, int z, Heightmap.Type type) {
+        fillChunkY();
+        
         if (GROUND_CACHE_Y.get(POS.set(x, 0, z)) == null) {
             BiomeMath.fetchTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
             sampleHeightmap(x, z);
@@ -517,11 +557,15 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
         int groundHeight = GROUND_CACHE_Y.get(POS.set(x, 0, z));
 
-        // Not ideal
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.getSeaLevel())
-            groundHeight = this.getSeaLevel();
-
         return groundHeight;
+    }
+    
+    private static void fillChunkY() {
+        for (int z = 0; z < 16; ++z) {
+            for (int x = 0; x < 16; ++x) {
+                CHUNK_Y[x][z] = 16;
+            }
+        }
     }
 
     private void sampleHeightmap(int absX, int absZ) {

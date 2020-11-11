@@ -36,16 +36,8 @@ public class InfdevBiomeSource extends BiomeSource {
     private final long seed;
     public final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
-    
-    public double temps[];
-    public double humids[];
-    public double noises[];
 
     private static Biome biomeLookupTable[] = new Biome[4096];
-    private static Biome oceanBiomeLookupTable[] = new Biome[4096];
-
-    public static Biome[] biomesInChunk = new Biome[256];
-    public static Biome[] oceanBiomesInChunk = new Biome[256];
     
     private boolean infdevWinterMode = false;
     private boolean infdevPlus = false;
@@ -88,23 +80,6 @@ public class InfdevBiomeSource extends BiomeSource {
 
         return biome;
     }
-
-    public Biome getOceanBiomeForNoiseGen(int x, int y, int z) {
-        Biome biome;
-
-        if (this.infdevPlus) {
-            // Sample biome at this one absolute coordinate.
-            BiomeMath.fetchTempHumidAtPoint(TEMP_HUMID_POINT, x, z);
-
-            biome = fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1]);
-        } else if (infdevWinterMode) {
-            biome = this.biomeRegistry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
-        } else {
-            biome = this.biomeRegistry.get(new Identifier(ModernBeta.ID, "ocean"));
-        }
-
-        return biome;
-    }
     
     private Biome fetchBiome(double temp, double humid) {
         return getBiomeFromLookup(temp, humid);
@@ -124,7 +99,6 @@ public class InfdevBiomeSource extends BiomeSource {
         for (int i = 0; i < 64; i++) {
             for (int j = 0; j < 64; j++) {
                 biomeLookupTable[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F, registry);
-                oceanBiomeLookupTable[i + j * 64] = getOceanBiome((float) i / 63F, (float) j / 63F, registry);
             }
         }
     }
@@ -136,28 +110,12 @@ public class InfdevBiomeSource extends BiomeSource {
         return biomeLookupTable[i + j * 64];
     }
 
-    public Biome getOceanBiomeFromLookup(double temp, double humid) {
-        int i = (int) (temp * 63D);
-        int j = (int) (humid * 63D);
-
-        return oceanBiomeLookupTable[i + j * 64];
-    }
-
     public static Biome getBiome(float temp, float humid, Registry<Biome> registry) {
         if (temp < 0.5F) {
             return registry.get(InfdevBiomes.INFDEV_WINTER_ID);
         }
 
         return registry.get(InfdevBiomes.INFDEV_ID);
-    }
-
-    public static Biome getOceanBiome(float temp, float humid, Registry<Biome> registry) {
-        if (temp < 0.5F) {
-            return registry.get(new Identifier(ModernBeta.ID, "frozen_ocean"));
-        }
-
-        return registry.get(new Identifier(ModernBeta.ID, "ocean"));
-
     }
 
     @Override
