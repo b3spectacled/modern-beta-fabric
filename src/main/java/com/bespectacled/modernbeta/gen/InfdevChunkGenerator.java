@@ -59,6 +59,8 @@ import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
+import net.minecraft.world.gen.surfacebuilder.SurfaceConfig;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
@@ -76,7 +78,7 @@ import com.bespectacled.modernbeta.util.IndevUtil.Type;
 
 //private final BetaGeneratorSettings settings;
 
-public class InfdevChunkGenerator extends NoiseChunkGenerator {
+public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChunkGenerator {
 
     public static final Codec<InfdevChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
@@ -87,6 +89,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
     private final InfdevGeneratorSettings settings;
     private final InfdevBiomeSource biomeSource;
     private final long seed;
+    private boolean generateVanillaBiomes = false;
 
     private final OldNoiseGeneratorOctaves noiseOctavesA;
     private final OldNoiseGeneratorOctaves noiseOctavesB;
@@ -114,6 +117,8 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
         this.settings = settings;
         this.biomeSource = (InfdevBiomeSource) biomes;
         this.seed = seed;
+        if (settings.settings.contains("generateVanillaBiomesInfdev")) 
+            this.generateVanillaBiomes = settings.settings.getBoolean("generateVanillaBiomesInfdev");
         
         RAND.setSeed(seed);
         
@@ -150,7 +155,129 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
 
         generateTerrain(chunk, structureAccessor);
         
+        if (this.generateVanillaBiomes) {
+            MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
+            ChunkPos pos = chunk.getPos();
+            BlockState blockState;
+            Biome biome;
+            
+            // Replace biomes in bodies of water at least four deep with ocean biomes
+            for (int x = 0; x < 4; x++) {
+                
+                for (int z = 0; z < 4; z++) {
+                    int absX = pos.getStartX() + (x << 2);
+                    int absZ = pos.getStartZ() + (z << 2);
+
+                    // Assign ocean biomes
+                    //POS.set(absX, this.getSeaLevel() - 4, absZ);
+                    //blockState = chunk.getBlockState(POS);
+                    
+                    int y = GenUtil.getSolidHeight(chunk, absX, absZ);
+
+                    if (y < 60) {
+                        //biome = biomeSource.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeType.OCEAN);
+                        biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, absZ >> 2);
+                        
+                        mutableBiomes.setBiome(absX, 0, absZ, biome);
+                    }
+                    
+                    /*
+                    if (this.generateVanillaBiomes) {
+                        // Assign beach biomes
+                        int y = this.getHeight(absX, absZ, Type.OCEAN_FLOOR_WG) - 1;
+                        biome = biomeSource.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeType.LAND);
+                        
+                        POS.set(absX, y, absZ);
+                        blockState = chunk.getBlockState(POS);
+                        
+                        if (y < 67 && (blockState.isOf(Blocks.SAND) || blockState.isOf(Blocks.GRAVEL)) && biome.getCategory() != Category.DESERT) {
+                            biome = biomeSource.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeType.BEACH);
+                            
+                            mutableBiomes.setBiome(absX, 0, absZ, biome);
+                        }
+                    }
+                    */
+                }   
+            }
+        }
+        
         BetaFeature.OLD_FANCY_OAK.chunkReset();
+    }
+    
+    // Modified to accommodate additional ocean biome replacements
+    @Override
+    public void generateFeatures(ChunkRegion chunkRegion, StructureAccessor structureAccessor) {
+        int ctrX = chunkRegion.getCenterChunkX();
+        int ctrZ = chunkRegion.getCenterChunkZ();
+        int ctrAbsX = ctrX * 16;
+        int ctrAbsZ = ctrZ * 16;
+
+        Chunk ctrChunk = chunkRegion.getChunk(ctrX, ctrZ);
+        
+        Biome biome = GenUtil.getOceanBiome(ctrChunk, this, biomeSource);
+
+        long popSeed = FEATURE_RAND.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
+        
+        try {
+            biome.generateFeatureStep(structureAccessor, this, chunkRegion, popSeed, FEATURE_RAND, new BlockPos(ctrAbsX, 0, ctrAbsZ));
+        } catch (Exception exception) {
+            CrashReport report = CrashReport.create(exception, "Biome decoration");
+            report.addElement("Generation").add("CenterX", ctrX).add("CenterZ", ctrZ).add("Seed", popSeed).add("Biome", biome);
+            throw new CrashException(report);
+        }
+    }
+    
+ // Modified to accommodate additional ocean biome replacements
+    @Override
+    public void setStructureStarts(
+        DynamicRegistryManager dynamicRegistryManager, 
+        StructureAccessor structureAccessor,   
+        Chunk chunk, 
+        StructureManager structureManager, 
+        long seed
+    ) {
+        ChunkPos chunkPos = chunk.getPos();
+        
+        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource);
+
+        this.setStructureStart(ConfiguredStructureFeatures.STRONGHOLD, dynamicRegistryManager, structureAccessor, chunk,
+                structureManager, seed, chunkPos, biome);
+        
+        for (final Supplier<ConfiguredStructureFeature<?, ?>> supplier : biome.getGenerationSettings()
+                .getStructureFeatures()) {
+            this.setStructureStart(supplier.get(), dynamicRegistryManager, structureAccessor, chunk, structureManager,
+                    seed, chunkPos, biome);
+        }
+        
+    }
+
+    
+    // Modified to accommodate additional ocean biome replacements
+    private void setStructureStart(
+        ConfiguredStructureFeature<?, ?> configuredStructureFeature,
+        DynamicRegistryManager dynamicRegistryManager, 
+        StructureAccessor structureAccessor, 
+        Chunk chunk,
+        StructureManager structureManager, 
+        long long7, 
+        ChunkPos chunkPos, 
+        Biome biome
+    ) {
+        StructureStart<?> structureStart = structureAccessor.getStructureStart(ChunkSectionPos.from(chunk.getPos(), 0),
+                configuredStructureFeature.feature, chunk);
+        int refs = (structureStart != null) ? structureStart.getReferences() : 0;
+
+        // StructureConfig structureConfig13 =
+        // this.structuresConfig.getForType(configuredStructureFeature.feature);
+        StructureConfig structureConfig = this.settings.wrapped.getStructuresConfig()
+                .getForType(configuredStructureFeature.feature);
+
+        if (structureConfig != null) {
+            StructureStart<?> gotStart = configuredStructureFeature.tryPlaceStart(dynamicRegistryManager, this,
+                    this.biomeSource, structureManager, long7, chunkPos, biome, refs, structureConfig);
+            structureAccessor.setStructureStart(ChunkSectionPos.from(chunk.getPos(), 0),
+                    configuredStructureFeature.feature, gotStart, chunk);
+        }
     }
 
 
@@ -168,8 +295,9 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
 
-        GenerationSettings generationSettings = this.biomeSource.getBiomeForNoiseGen(biomeX, 0, biomeZ)
-                .getGenerationSettings();
+        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource);
+        GenerationSettings genSettings = biome.getGenerationSettings();
+        
         BitSet bitSet = ((ProtoChunk) chunk).getOrCreateCarvingMask(carver);
         
         RAND.setSeed(this.seed);
@@ -178,7 +306,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
         
         for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
             for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
-                List<Supplier<ConfiguredCarver<?>>> carverList = generationSettings.getCarversForStep(carver);
+                List<Supplier<ConfiguredCarver<?>>> carverList = genSettings.getCarversForStep(carver);
                 ListIterator<Supplier<ConfiguredCarver<?>>> carverIterator = carverList.listIterator();
 
                 while (carverIterator.hasNext()) {
@@ -198,23 +326,11 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {
-
-        // Do not use the built-in surface builders..
-        // This works better for Beta-accurate surface generation anyway.
-        buildInfdevSurface(chunk);
+        if (this.generateVanillaBiomes) 
+            super.buildSurface(chunkRegion, chunk);
+        else
+            buildInfdevSurface(chunkRegion, chunk);
     }
-
- 
-     @Override 
-     public BlockPos locateStructure(ServerWorld world,  StructureFeature<?> feature, BlockPos center, int radius, boolean skipExistingChunks) { 
-         if ((feature.equals(StructureFeature.OCEAN_RUIN) || 
-             feature.equals(StructureFeature.SHIPWRECK)) || 
-             feature.equals(StructureFeature.BURIED_TREASURE)) { 
-             return null; 
-         }
-     
-         return super.locateStructure(world, feature, center, radius, skipExistingChunks); 
-     }
      
 
     public void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
@@ -289,7 +405,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
                                             ? ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta() : 0));
                                     int sZ = Math.max(0, Math.max(blockBox.minZ - absZ, absZ - blockBox.maxZ));
 
-                                    clampedDensity += GenUtil.getNoiseWeight(sX, sY, sZ) * 0.8;
+                                    clampedDensity += super.getNoiseWeight(sX, sY, sZ) * 0.8;
                                 }
                                 structureListIterator.back(STRUCTURE_LIST.size());
 
@@ -300,7 +416,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
                                     int jY = y - curJigsawJunction.getSourceGroundY();
                                     int jZ = absZ - curJigsawJunction.getSourceZ();
 
-                                    clampedDensity += GenUtil.getNoiseWeight(jX, jY, jZ) * 0.4;
+                                    clampedDensity += super.getNoiseWeight(jX, jY, jZ) * 0.4;
                                 }
                                 jigsawListIterator.back(JIGSAW_LIST.size());
                                 
@@ -363,7 +479,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
         return res;
     }
 
-    private void buildInfdevSurface(Chunk chunk) {
+    private void buildInfdevSurface(ChunkRegion region, Chunk chunk) {
         double thirtysecond = 0.03125D; // eighth
         
         int chunkX = chunk.getPos().x;
@@ -389,6 +505,22 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator {
                     absZ * thirtysecond * 2.0) / 3.0 + 3.0 + this.random.nextDouble() * 0.25);
                 
                 int flag = -1;
+                
+                //Biome curBiome = region.getBiome(POS.set(chunkX * 16 + x, 0, chunkZ * 16 + z));
+                
+                /*
+                if (this.generateVanillaBiomes) {
+                    SurfaceBuilder<SurfaceConfig> builder =  (SurfaceBuilder<SurfaceConfig>) curBiome.getGenerationSettings().getSurfaceBuilder().get().surfaceBuilder;
+                    boolean usesDefault = builder.equals(SurfaceBuilder.DEFAULT);
+                    
+                    if (!usesDefault) {
+                        curBiome.buildSurface(RAND, chunk, x, z, 128, genStone, defaultBlock, defaultFluid, this.getSeaLevel(), seed);
+                        continue;
+                    }
+                }*/
+
+                //BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
+                //BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
                 
                 BlockState biomeTopBlock = BlockStates.GRASS_BLOCK;
                 BlockState biomeFillerBlock = BlockStates.DIRT;

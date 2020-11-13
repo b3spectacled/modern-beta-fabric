@@ -24,6 +24,7 @@ public class CustomizeInfdevLevelScreen extends Screen {
     
     private boolean infdevWinterMode = ModernBeta.BETA_CONFIG.infdevWinterMode;
     private boolean infdevPlus = ModernBeta.BETA_CONFIG.infdevPlus;
+    private boolean generateVanillaBiomesInfdev = ModernBeta.BETA_CONFIG.generateVanillaBiomesInfdev;
     
     private ButtonListWidget buttonList;
 
@@ -80,6 +81,16 @@ public class CustomizeInfdevLevelScreen extends Screen {
                 (gameOptions, value) -> {
                     infdevPlus = value;
                     generatorSettings.settings.putBoolean("infdevPlus", value);
+                }
+        ));
+        
+        this.buttonList.addSingleOptionEntry(
+            new BooleanOption(
+                "createWorld.customize.infdev.generateVanillaBiomesInfdev", 
+                (gameOptions) -> { return generateVanillaBiomesInfdev; }, 
+                (gameOptions, value) -> {
+                    generateVanillaBiomesInfdev = value;
+                    generatorSettings.settings.putBoolean("generateVanillaBiomesInfdev", value);
                 }
         ));
         

@@ -1,15 +1,9 @@
 package com.bespectacled.modernbeta.biome;
 
-import java.util.List;
-import java.util.Random;
-import org.apache.logging.log4j.Level;
-
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
-import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
-import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves2;
+import com.bespectacled.modernbeta.biome.layer.BetaBiomeLayer;
+import com.bespectacled.modernbeta.biome.layer.BetaOceanLayer;
 import com.bespectacled.modernbeta.util.BiomeUtil;
-import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -18,13 +12,12 @@ import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.gen.feature.StructureFeature;
 
-public class InfdevBiomeSource extends BiomeSource {
+public class InfdevBiomeSource extends BiomeSource implements IOldBiomeSource {
 
     public static final Codec<InfdevBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
@@ -36,16 +29,22 @@ public class InfdevBiomeSource extends BiomeSource {
     private final long seed;
     public final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
-
-    private static Biome biomeLookupTable[] = new Biome[4096];
+    private final BiomeLayerSampler biomeSampler;
+    private final BiomeLayerSampler oceanSampler;
     
     private boolean infdevWinterMode = false;
     private boolean infdevPlus = false;
+    private boolean generateVanillaBiomesInfdev = false;
     
     private static final double[] TEMP_HUMID_POINT = new double[2];
 
     public InfdevBiomeSource(long seed, Registry<Biome> registry, CompoundTag settings) {
-        super(InfdevBiomes.getBiomeList().stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
+        super(
+            InfdevBiomes.getBiomeList(
+                settings.contains("generateVanillaBiomesInfdev") ? 
+                    settings.getBoolean("generateVanillaBiomesInfdev") : 
+                    false
+        ).stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
 
         this.seed = seed;
         this.biomeRegistry = registry;
@@ -56,9 +55,12 @@ public class InfdevBiomeSource extends BiomeSource {
         
         if (settings.contains("infdevWinterMode")) this.infdevWinterMode = settings.getBoolean("infdevWinterMode");
         if (settings.contains("infdevPlus")) this.infdevPlus = settings.getBoolean("infdevPlus");
+        if (settings.contains("generateVanillaBiomesInfdev")) this.generateVanillaBiomesInfdev = settings.getBoolean("generateVanillaBiomesInfdev");
+        
+        this.biomeSampler = this.generateVanillaBiomesInfdev ? BetaBiomeLayer.build(seed, false, 4, -1) : null;
+        this.oceanSampler = this.generateVanillaBiomesInfdev ? BetaOceanLayer.build(seed, false, 6, -1) : null;
 
         BiomeUtil.setSeed(this.seed);
-        generateBiomeLookup(registry);
     }
 
     @Override
@@ -67,11 +69,13 @@ public class InfdevBiomeSource extends BiomeSource {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
 
-        if (this.infdevPlus) {
+        if (this.generateVanillaBiomesInfdev) {
+            biome = this.biomeSampler.sample(this.biomeRegistry, biomeX, biomeZ);
+        } else if (this.infdevPlus) {
             // Sample biome at this one absolute coordinate.
             BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
 
-            biome = fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1]);
+            biome = getBiome((float)TEMP_HUMID_POINT[0], (float)TEMP_HUMID_POINT[1], this.biomeRegistry);
         } else if (infdevWinterMode) {
             biome = this.biomeRegistry.get(InfdevBiomes.INFDEV_WINTER_ID);
         } else {
@@ -81,33 +85,9 @@ public class InfdevBiomeSource extends BiomeSource {
         return biome;
     }
     
-    private Biome fetchBiome(double temp, double humid) {
-        return getBiomeFromLookup(temp, humid);
-    }
-    
-    public void fetchBiomes(double[] temps, double[] humids, Biome[] biomes) {
-        int sizeX = 16;
-        int sizeZ = 16;
-        
-        for (int i = 0; i < sizeX * sizeZ; ++i) {
-            biomes[i] = getBiomeFromLookup(temps[i], humids[i]);
-        }
-    }
-
-
-    private void generateBiomeLookup(Registry<Biome> registry) {
-        for (int i = 0; i < 64; i++) {
-            for (int j = 0; j < 64; j++) {
-                biomeLookupTable[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F, registry);
-            }
-        }
-    }
-
-    private Biome getBiomeFromLookup(double temp, double humid) {
-        int i = (int) (temp * 63D);
-        int j = (int) (humid * 63D);
-
-        return biomeLookupTable[i + j * 64];
+    @Override
+    public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeZ) {
+        return this.oceanSampler.sample(this.biomeRegistry, biomeX, biomeZ);
     }
 
     public static Biome getBiome(float temp, float humid, Registry<Biome> registry) {
@@ -132,6 +112,11 @@ public class InfdevBiomeSource extends BiomeSource {
     public static void register() {
         Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "infdev_biome_source"), CODEC);
         //ModernBeta.LOGGER.log(Level.INFO, "Registered Infdev biome source.");
+    }
+
+    @Override
+    public boolean usesVanillaBiomes() {
+        return this.generateVanillaBiomesInfdev;
     }
 
 }

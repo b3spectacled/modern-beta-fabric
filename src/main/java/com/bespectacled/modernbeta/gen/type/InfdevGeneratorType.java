@@ -72,8 +72,7 @@ public final class InfdevGeneratorType extends GeneratorType {
     }
 
     @Override
-    protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings,
-            long seed) {
+    protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
         infdevSettings.settings = InfdevGeneratorSettings.createSettings();
         return new InfdevChunkGenerator(new InfdevBiomeSource(seed, biomes, infdevSettings.settings), seed, infdevSettings);
     }

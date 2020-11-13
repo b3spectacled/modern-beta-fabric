@@ -17,6 +17,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.IndevUtil;
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.biome.IOldBiomeSource;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
@@ -88,6 +89,8 @@ public abstract class MixinClientWorld extends World {
         
         if (gen instanceof BetaChunkGenerator || (gen instanceof SkylandsChunkGenerator &&  !((SkylandsChunkGenerator)gen).isSkyDim())) {
             this.isBetaWorld = true;
+            
+            if (((IOldBiomeSource)gen.getBiomeSource()).usesVanillaBiomes()) this.isBetaWorld = false;
             
             this.worldSeed = BETA_CONFIG.fixedSeed == 0L ? worldSeed : BETA_CONFIG.fixedSeed;
             setSeed(this.worldSeed);

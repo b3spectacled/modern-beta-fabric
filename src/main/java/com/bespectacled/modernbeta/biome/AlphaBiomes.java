@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.util.Identifier;
@@ -34,8 +35,12 @@ public class AlphaBiomes {
         //ModernBeta.LOGGER.log(Level.INFO, "Reserved Alpha biome IDs.");
     }
     
-    public static List<RegistryKey<Biome>> getBiomeList() {
+    public static List<RegistryKey<Biome>> getBiomeList(boolean useVanillaBiomes) {
         ArrayList<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
+        
+        if (useVanillaBiomes) {
+            return BiomeUtil.VANILLA_BIOMES;
+        }
         
         for (Identifier i : BIOMES) {
             biomeList.add(RegistryKey.of(Registry.BIOME_KEY, i));

@@ -44,6 +44,7 @@ import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.gen.settings.IndevGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.IndevUtil;
 import com.bespectacled.modernbeta.util.IndevUtil.Theme;
 import com.bespectacled.modernbeta.util.IndevUtil.Type;
@@ -195,7 +196,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
-        this.collectStructures(chunk, structureAccessor);
+        GenUtil.collectStructures(chunk, structureAccessor, STRUCTURE_LIST, JIGSAW_LIST);
         
         ObjectListIterator<StructurePiece> structureListIterator = (ObjectListIterator<StructurePiece>) STRUCTURE_LIST.iterator();
         ObjectListIterator<JigsawJunction> jigsawListIterator = (ObjectListIterator<JigsawJunction>) JIGSAW_LIST.iterator();
@@ -721,64 +722,6 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     @Override
     public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {
         // Do nothing, for now.
-    }
-    
-    private void collectStructures(Chunk chunk, StructureAccessor accessor) {
-        STRUCTURE_LIST.clear();
-        JIGSAW_LIST.clear();
-        
-        for (final StructureFeature<?> s : StructureFeature.JIGSAW_STRUCTURES) {
-
-            accessor.getStructuresWithChildren(ChunkSectionPos.from(chunk.getPos(), 0), s)
-                .forEach(structureStart -> {
-                    Iterator<StructurePiece> structurePieceIterator;
-                    StructurePiece structurePiece;
-
-                    Iterator<JigsawJunction> jigsawJunctionIterator;
-                    JigsawJunction jigsawJunction;
-
-                    ChunkPos arg2 = chunk.getPos();
-
-                    PoolStructurePiece poolStructurePiece;
-                    StructurePool.Projection structureProjection;
-
-                    int jigsawX;
-                    int jigsawZ;
-                    int n2 = arg2.x;
-                    int n3 = arg2.z;
-
-                    structurePieceIterator = structureStart.getChildren().iterator();
-                    while (structurePieceIterator.hasNext()) {
-                        structurePiece = structurePieceIterator.next();
-                        if (!structurePiece.intersectsChunk(arg2, 12)) {
-                            continue;
-                        } else if (structurePiece instanceof PoolStructurePiece) {
-                            poolStructurePiece = (PoolStructurePiece) structurePiece;
-                            structureProjection = poolStructurePiece.getPoolElement().getProjection();
-
-                            if (structureProjection == StructurePool.Projection.RIGID) {
-                                STRUCTURE_LIST.add(poolStructurePiece);
-                            }
-                            jigsawJunctionIterator = poolStructurePiece.getJunctions().iterator();
-                            while (jigsawJunctionIterator.hasNext()) {
-                                jigsawJunction = jigsawJunctionIterator.next();
-                                jigsawX = jigsawJunction.getSourceX();
-                                jigsawZ = jigsawJunction.getSourceZ();
-                                if (jigsawX > n2 - 12 && jigsawZ > n3 - 12 && jigsawX < n2 + 15 + 12) {
-                                    if (jigsawZ >= n3 + 15 + 12) {
-                                        continue;
-                                    } else {
-                                        JIGSAW_LIST.add(jigsawJunction);
-                                    }
-                                }
-                            }
-                        } else {
-                            STRUCTURE_LIST.add(structurePiece);
-                        }
-                    }
-                    return;
-            });
-        }
     }
     
     @Override

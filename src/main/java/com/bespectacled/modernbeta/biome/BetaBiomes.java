@@ -21,12 +21,10 @@ import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class BetaBiomes {
     public enum BiomeType {
-        LAND, OCEAN, BEACH, MUTATED
+        LAND, OCEAN
     }
     
     public static final Map<String, Identifier> BETA_MAPPINGS = new HashMap<String, Identifier>();
-    public static final Map<String, Identifier> VANILLA_MAPPINGS = new HashMap<String, Identifier>();
-    public static final Map<String, Identifier> MUTATED_MAPPINGS = new HashMap<String, Identifier>();
     
     public static final Identifier FOREST_ID = new Identifier(ModernBeta.ID, "forest");
     public static final Identifier SHRUBLAND_ID = new Identifier(ModernBeta.ID, "shrubland");
@@ -69,8 +67,6 @@ public class BetaBiomes {
 
         SKY_ID
     );
-
-    private static Map<String, Biome> biomeMappings = new HashMap();
     
     public static void reserveBiomeIDs() {
         for (Identifier i : BIOMES) {
@@ -82,19 +78,12 @@ public class BetaBiomes {
 
     public static List<RegistryKey<Biome>> getBiomeList(boolean useVanillaBiomes) {
         ArrayList<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
-        
-        List<Identifier> vanillaMappings = new ArrayList<Identifier>(VANILLA_MAPPINGS.values());
-        vanillaMappings.addAll(MUTATED_MAPPINGS.values());
-        
-        for (Identifier i : useVanillaBiomes ? vanillaMappings : BETA_MAPPINGS.values()) {
+
+        for (Identifier i : BETA_MAPPINGS.values()) {
             biomeList.add(RegistryKey.of(Registry.BIOME_KEY, i));
         }
         
         return Collections.unmodifiableList(biomeList);
-    }
-    
-    public static Biome getMappedBiome(String biomeType) {
-        return biomeMappings.get(biomeType);
     }
     
     static {
@@ -117,38 +106,5 @@ public class BetaBiomes {
         BETA_MAPPINGS.put("warm_ocean", WARM_OCEAN_ID);
         
         BETA_MAPPINGS.put("sky", SKY_ID);
-        
-        VANILLA_MAPPINGS.put("ice_desert", BiomeKeys.SNOWY_TUNDRA.getValue());
-        VANILLA_MAPPINGS.put("tundra", BiomeKeys.SNOWY_TUNDRA.getValue());
-        VANILLA_MAPPINGS.put("savanna", BiomeKeys.SAVANNA.getValue());
-        VANILLA_MAPPINGS.put("desert", BiomeKeys.DESERT.getValue());
-        VANILLA_MAPPINGS.put("swampland", BiomeKeys.SWAMP.getValue());
-        VANILLA_MAPPINGS.put("taiga", BiomeKeys.SNOWY_TAIGA.getValue());
-        VANILLA_MAPPINGS.put("shrubland", BiomeKeys.PLAINS.getValue());
-        VANILLA_MAPPINGS.put("forest", BiomeKeys.FOREST.getValue());
-        VANILLA_MAPPINGS.put("plains", BiomeKeys.SUNFLOWER_PLAINS.getValue());
-        VANILLA_MAPPINGS.put("seasonal_forest", BiomeKeys.DARK_FOREST.getValue());
-        VANILLA_MAPPINGS.put("rainforest", BiomeKeys.JUNGLE.getValue());
-        
-        VANILLA_MAPPINGS.put("ocean", BiomeKeys.OCEAN.getValue());
-        VANILLA_MAPPINGS.put("cold_ocean", BiomeKeys.COLD_OCEAN.getValue());
-        VANILLA_MAPPINGS.put("frozen_ocean", BiomeKeys.FROZEN_OCEAN.getValue());
-        VANILLA_MAPPINGS.put("lukewarm_ocean", BiomeKeys.LUKEWARM_OCEAN.getValue());
-        VANILLA_MAPPINGS.put("warm_ocean", BiomeKeys.WARM_OCEAN.getValue());
-        
-        VANILLA_MAPPINGS.put("beach", BiomeKeys.BEACH.getValue());
-        VANILLA_MAPPINGS.put("snowy_beach", BiomeKeys.SNOWY_BEACH.getValue());
-        
-        MUTATED_MAPPINGS.put("ice_desert", BiomeKeys.ICE_SPIKES.getValue());
-        MUTATED_MAPPINGS.put("tundra", BiomeKeys.GIANT_TREE_TAIGA.getValue());
-        MUTATED_MAPPINGS.put("savanna", BiomeKeys.PLAINS.getValue());
-        MUTATED_MAPPINGS.put("desert", BiomeKeys.DESERT.getValue());
-        MUTATED_MAPPINGS.put("swampland", BiomeKeys.TAIGA.getValue());
-        MUTATED_MAPPINGS.put("taiga", BiomeKeys.GIANT_SPRUCE_TAIGA.getValue());
-        MUTATED_MAPPINGS.put("shrubland", BiomeKeys.SUNFLOWER_PLAINS.getValue());
-        MUTATED_MAPPINGS.put("forest", BiomeKeys.FLOWER_FOREST.getValue());
-        MUTATED_MAPPINGS.put("plains", BiomeKeys.PLAINS.getValue());
-        MUTATED_MAPPINGS.put("seasonal_forest", BiomeKeys.JUNGLE_EDGE.getValue());
-        MUTATED_MAPPINGS.put("rainforest", BiomeKeys.BAMBOO_JUNGLE.getValue());
     }
 }

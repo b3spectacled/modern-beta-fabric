@@ -26,6 +26,7 @@ public class AlphaGeneratorSettings {
         
         settings.putBoolean("alphaWinterMode", ModernBeta.BETA_CONFIG.alphaWinterMode);
         settings.putBoolean("alphaPlus", ModernBeta.BETA_CONFIG.alphaPlus);
+        settings.putBoolean("generateVanillaBiomesAlpha", ModernBeta.BETA_CONFIG.generateVanillaBiomesAlpha);
         
         return settings;
     }

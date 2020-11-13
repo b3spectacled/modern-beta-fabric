@@ -1,10 +1,24 @@
 package com.bespectacled.modernbeta.util;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves2;
+import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.Category;
+import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 
 /*
  * From WorldEdit
@@ -27,6 +41,8 @@ public class BiomeUtil {
     public static double[] noises = null;
 
     public static double[][] temps2D = new double[16][16];
+    
+    public static final List<RegistryKey<Biome>> VANILLA_BIOMES;
 
     // Convert absolute coordinates to BiomeArray index
     public static int computeBiomeIndex(int x, int y, int z) {
@@ -142,5 +158,29 @@ public class BiomeUtil {
 
         skyTemps = tempNoiseOctaves.sample(skyTemps, x, z, 1, 1, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
         return skyTemps[0];
+    }
+    
+    private static boolean isValidCategory(Category category)
+    {
+        return  category != Category.NONE &&
+                category != Category.BEACH &&
+                //category != Category.OCEAN &&
+                category != Category.NETHER &&
+                category != Category.THEEND;
+    }
+    
+    static {
+        List<RegistryKey<Biome>> biomes = new ArrayList<RegistryKey<Biome>>();
+        
+        Iterator biomeIter = BuiltinRegistries.BIOME.getEntries().iterator();
+        while (biomeIter.hasNext()) {
+            Entry<RegistryKey<Biome>, Biome> entry = (Entry<RegistryKey<Biome>, Biome>)biomeIter.next();
+            
+            if (isValidCategory(entry.getValue().getCategory())) {
+                biomes.add(entry.getKey());
+            }
+        }
+        
+        VANILLA_BIOMES = biomes;
     }
 }

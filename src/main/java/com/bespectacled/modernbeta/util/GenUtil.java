@@ -2,60 +2,56 @@ package com.bespectacled.modernbeta.util;
 
 import java.util.Iterator;
 
+import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeType;
+import com.bespectacled.modernbeta.biome.IOldBiomeSource;
+
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.BlockPos.Mutable;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 public class GenUtil {
-    private static final float[] NOISE_WEIGHT_TABLE;
-    private static final int NOISE_MAX_LIM = 24; 
+    private static final BlockPos.Mutable POS = new BlockPos.Mutable();
     
-    static {
-        NOISE_WEIGHT_TABLE = Util.<float[]>make(new float[NOISE_MAX_LIM * NOISE_MAX_LIM * NOISE_MAX_LIM], arr -> {
-            for (int x = 0; x < NOISE_MAX_LIM; ++x) {
-                for (int z = 0; z < NOISE_MAX_LIM; ++z) {
-                    for (int y = 0; y < NOISE_MAX_LIM; ++y) {
-                        arr[x * NOISE_MAX_LIM * NOISE_MAX_LIM + z * NOISE_MAX_LIM + y] = 
-                            (float) calculateNoiseWeight(z - NOISE_MAX_LIM / 2, y - NOISE_MAX_LIM / 2, x - NOISE_MAX_LIM / 2);
-                    }
-                }
-            }
-            return;
-        });
+    public static int getSolidHeight(Chunk chunk, int x, int z) {
+        for (int y = 127; y >= 0; y--) {
+            BlockState someBlock = chunk.getBlockState(POS.set(x, y, z));
+            if (!(someBlock.equals(BlockStates.AIR) || someBlock.equals(BlockStates.WATER)))
+                return y;
+        }
+        return 0;
     }
     
-    private static double calculateNoiseWeight(int x, int y, int z) {
-        double double4 = x * x + z * z;
-        double double6 = y + 0.5;
-        double double8 = double6 * double6;
-        double double10 = Math.pow(2.718281828459045, -(double8 / 16.0 + double4 / 16.0));
-        double double12 = -double6 * MathHelper.fastInverseSqrt(double8 / 2.0 + double4 / 2.0) / 2.0;
-        return double12 * double10;
-    }
-    
-    public static double getNoiseWeight(int integer1, int integer2, int integer3) {
-        int integer4 = integer1 + NOISE_MAX_LIM / 2;
-        int integer5 = integer2 + NOISE_MAX_LIM / 2;
-        int integer6 = integer3 + NOISE_MAX_LIM / 2;
-        if (integer4 < 0 || integer4 >= NOISE_MAX_LIM) {
-            return 0.0;
+    public static Biome getOceanBiome(Chunk chunk, ChunkGenerator gen, BiomeSource biomeSource) {
+        int biomeX = (chunk.getPos().x << 2) + 2;
+        int biomeZ = (chunk.getPos().z << 2) + 2;
+        
+        int x = chunk.getPos().x << 4;
+        int z = chunk.getPos().z << 4;
+        
+        Biome biome = biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
+
+        if (gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < 60) {
+            biome = ((IOldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, biomeZ);
         }
-        if (integer5 < 0 || integer5 >= NOISE_MAX_LIM) {
-            return 0.0;
-        }
-        if (integer6 < 0 || integer6 >= NOISE_MAX_LIM) {
-            return 0.0;
-        }
-        return NOISE_WEIGHT_TABLE[integer6 * NOISE_MAX_LIM * NOISE_MAX_LIM + integer4 * NOISE_MAX_LIM + integer5];
+
+        return biome;
     }
     
     public static void collectStructures(

@@ -284,7 +284,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                                             ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta() : 0));
                                     int sZ = Math.max(0, Math.max(blockBox.minZ - absZ, absZ - blockBox.maxZ));
 
-                                    clampedDensity += GenUtil.getNoiseWeight(sX, sY, sZ) * 0.8;
+                                    clampedDensity += super.getNoiseWeight(sX, sY, sZ) * 0.8;
                                 }
                                 structureListIterator.back(STRUCTURE_LIST.size());
 
@@ -295,7 +295,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                                     int jY = y - curJigsawJunction.getSourceGroundY();
                                     int jZ = absZ - curJigsawJunction.getSourceZ();
 
-                                    clampedDensity += GenUtil.getNoiseWeight(jX, jY, jZ) * 0.4;
+                                    clampedDensity += super.getNoiseWeight(jX, jY, jZ) * 0.4;
                                 }
                                 jigsawListIterator.back(JIGSAW_LIST.size());
 
@@ -465,7 +465,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         int chunkZ = chunk.getPos().z;
         
         BiomeUtil.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
-        biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES, null, null, null);
+        biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES, null);
         
         Biome curBiome;
         

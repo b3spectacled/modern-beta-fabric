@@ -4,6 +4,7 @@ extendable class net/minecraft/world/gen/chunk/NoiseChunkGenerator
 extendable method net/minecraft/world/gen/chunk/NoiseChunkGenerator sampleNoiseColumn ([DII)V
 extendable method net/minecraft/world/gen/chunk/NoiseChunkGenerator sampleNoiseColumn (II)[D
 extendable method net/minecraft/world/gen/chunk/NoiseChunkGenerator method_28553 (II)D
+accessible method net/minecraft/world/gen/chunk/NoiseChunkGenerator getNoiseWeight (III)D
 
 accessible field net/minecraft/world/gen/chunk/NoiseChunkGenerator worldSeed J
 accessible field net/minecraft/world/gen/chunk/NoiseChunkGenerator settings Ljava/util/function/Supplier;

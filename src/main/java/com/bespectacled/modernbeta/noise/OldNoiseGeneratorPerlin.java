@@ -409,7 +409,28 @@ public class OldNoiseGeneratorPerlin extends OldNoiseGenerator {
         integer2 = this.permutations[integer2 + 1] + integer3;
         integer3 = this.permutations[integer2] + integer4;
         integer2 = this.permutations[integer2 + 1] + integer4;
-        return lerp(double21, lerp(double19, lerp(double17, grad(this.permutations[integer6], double8, double10, double12), grad(this.permutations[integer3], double8 - 1.0, double10, double12)), lerp(double17, grad(this.permutations[integer5], double8, double10 - 1.0, double12), grad(this.permutations[integer2], double8 - 1.0, double10 - 1.0, double12))), lerp(double19, lerp(double17, grad(this.permutations[integer6 + 1], double8, double10, double12 - 1.0), grad(this.permutations[integer3 + 1], double8 - 1.0, double10, double12 - 1.0)), lerp(double17, grad(this.permutations[integer5 + 1], double8, double10 - 1.0, double12 - 1.0), grad(this.permutations[integer2 + 1], double8 - 1.0, double10 - 1.0, double12 - 1.0))));
+        return lerp(
+            double21, 
+            lerp(
+                double19, 
+                lerp(
+                    double17, 
+                    grad(this.permutations[integer6], double8, double10, double12), 
+                    grad(this.permutations[integer3], double8 - 1.0, double10, double12)), 
+                lerp(
+                    double17, 
+                    grad(this.permutations[integer5], double8, double10 - 1.0, double12), 
+                    grad(this.permutations[integer2], double8 - 1.0, double10 - 1.0, double12))), 
+            lerp(
+                double19, 
+                lerp(
+                    double17, 
+                    grad(this.permutations[integer6 + 1], double8, double10, double12 - 1.0), 
+                    grad(this.permutations[integer3 + 1], double8 - 1.0, double10, double12 - 1.0)), 
+                lerp(
+                    double17, 
+                    grad(this.permutations[integer5 + 1], double8, double10 - 1.0, double12 - 1.0), 
+                    grad(this.permutations[integer2 + 1], double8 - 1.0, double10 - 1.0, double12 - 1.0))));
     }
     
     

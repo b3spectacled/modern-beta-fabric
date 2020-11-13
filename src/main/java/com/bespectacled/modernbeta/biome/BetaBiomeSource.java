@@ -14,12 +14,15 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeType; 
+import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeType;
+import com.bespectacled.modernbeta.biome.layer.BetaBiomeLayer;
+import com.bespectacled.modernbeta.biome.layer.BetaOceanLayer; 
 
-public class BetaBiomeSource extends BiomeSource {
+public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
 
     public static final Codec<BetaBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
@@ -31,11 +34,11 @@ public class BetaBiomeSource extends BiomeSource {
     private final long seed;
     public final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
+    private final BiomeLayerSampler biomeSampler;
+    private final BiomeLayerSampler oceanSampler;
 
     private static Biome landBiomeLookupTable[] = new Biome[4096];
-    private static Biome mutatedBiomeLookupTable[] = new Biome[4096];
     private static Biome oceanBiomeLookupTable[] = new Biome[4096];
-    private static Biome beachBiomeLookupTable[] = new Biome[4096];
     
     private final Map<String, Identifier> biomeMappings;
 
@@ -51,8 +54,8 @@ public class BetaBiomeSource extends BiomeSource {
         
         super(
             BetaBiomes.getBiomeList(
-                settings.contains("generateVanillaBiomesInBeta") ? 
-                    settings.getBoolean("generateVanillaBiomesInBeta") : 
+                settings.contains("generateVanillaBiomesBeta") ? 
+                    settings.getBoolean("generateVanillaBiomesBeta") : 
                     false
             ).stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
             
@@ -66,7 +69,9 @@ public class BetaBiomeSource extends BiomeSource {
         if (settings.contains("generateSkyDim")) this.generateSkyDim = settings.getBoolean("generateSkyDim");
         if (settings.contains("generateVanillaBiomesBeta")) this.generateVanillaBiomesBeta = settings.getBoolean("generateVanillaBiomesBeta");
         
-        this.biomeMappings = this.generateVanillaBiomesBeta ? BetaBiomes.VANILLA_MAPPINGS : BetaBiomes.BETA_MAPPINGS;
+        this.biomeMappings = BetaBiomes.BETA_MAPPINGS;
+        this.biomeSampler = this.generateVanillaBiomesBeta ? BetaBiomeLayer.build(seed, false, 4, -1) : null;
+        this.oceanSampler = this.generateVanillaBiomesBeta ? BetaOceanLayer.build(seed, false, 6, -1) : null;
         
         BiomeUtil.setSeed(this.seed);
         generateBiomeLookup(registry);
@@ -76,20 +81,29 @@ public class BetaBiomeSource extends BiomeSource {
     public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
-        BiomeType type = BiomeType.LAND;
         
         if (this.generateSkyDim) return biomeRegistry.get(BetaBiomes.SKY_ID);
+        
+        if (this.generateVanillaBiomesBeta) return this.biomeSampler.sample(this.biomeRegistry, biomeX, biomeZ);
 
         // Sample biome at this one absolute coordinate.
         BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
-        
-        if (this.generateVanillaBiomesBeta && BiomeUtil.fetchNoiseAtPoint(absX, absZ) < 0.0D) 
-            type = BiomeType.MUTATED;
-        
-        return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], type);
+        return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeType.LAND);
     }
     
-    public Biome getLayeredBiomeForNoiseGen(int x, int y, int z, BiomeType type) {
+    @Override
+    public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeZ) {
+        int absX = biomeX << 2;
+        int absZ = biomeZ << 2;
+        
+        if (this.generateVanillaBiomesBeta) {
+            return this.oceanSampler.sample(this.biomeRegistry, biomeX, biomeZ);
+        }
+        
+        return this.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeType.OCEAN);
+    }
+    
+    private Biome getLayeredBiomeForNoiseGen(int x, int y, int z, BiomeType type) {
         // Sample biome at this one absolute coordinate.
         BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, x, z);
 
@@ -103,15 +117,13 @@ public class BetaBiomeSource extends BiomeSource {
         return getBiomeFromLookup(temp, humid, type);
     }
     
-    public void fetchBiomes(double[] temps, double[] humids, Biome[] landBiomes, Biome[] oceanBiomes, Biome[] beachBiomes, Biome[] mutatedBiomes) {
+    public void fetchBiomes(double[] temps, double[] humids, Biome[] landBiomes, Biome[] oceanBiomes) {
         int sizeX = 16;
         int sizeZ = 16;
         
         for (int i = 0; i < sizeX * sizeZ; ++i) {
             if (landBiomes != null) landBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeType.LAND);
             if (oceanBiomes != null) oceanBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeType.OCEAN);
-            if (beachBiomes != null) beachBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeType.BEACH);
-            if (mutatedBiomes != null) mutatedBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeType.MUTATED);
         }
     }
 
@@ -120,8 +132,6 @@ public class BetaBiomeSource extends BiomeSource {
             for (int j = 0; j < 64; j++) {
                 landBiomeLookupTable[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F, registry, BiomeType.LAND);
                 oceanBiomeLookupTable[i + j * 64] = getOceanBiome((float) i / 63F, (float) j / 63F, registry);
-                beachBiomeLookupTable[i + j * 64] = getBeachBiome((float) i / 63F, (float) j / 63F, registry);
-                mutatedBiomeLookupTable[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F, registry, BiomeType.MUTATED);
             }
         }
     }
@@ -136,30 +146,16 @@ public class BetaBiomeSource extends BiomeSource {
             case OCEAN:
                 biome = oceanBiomeLookupTable[i + j * 64];
                 break;
-            case BEACH:
-                biome = beachBiomeLookupTable[i + j * 64];
-                break;
-            case MUTATED:
-                biome = mutatedBiomeLookupTable[i + j * 64];
-                break;
         }
 
         return biome;
     }
 
     private Biome getBiome(float temp, float humid, Registry<Biome> registry, BiomeType type) {
-        Map<String, Identifier> mappings;
+        Map<String, Identifier> mappings = this.biomeMappings;
         humid *= temp;
         
         if (this.generateSkyDim) return registry.get(BetaBiomes.SKY_ID);
-        
-        switch(type) {
-            case MUTATED:
-                mappings = BetaBiomes.MUTATED_MAPPINGS;
-                break;
-            default:
-                mappings = this.biomeMappings;
-        }
 
         if (temp < 0.1F) {
             if (this.generateIceDesert)
@@ -260,13 +256,6 @@ public class BetaBiomeSource extends BiomeSource {
 
     }
     
-    private Biome getBeachBiome(float temp, float humid, Registry<Biome> registry) {
-        if (temp < 0.5F)
-            return registry.get(biomeMappings.get("snowy_beach"));
-    
-        return registry.get(biomeMappings.get("beach"));
-    }
-    
     public boolean isSkyDim() {
         return this.generateSkyDim;
     }
@@ -277,6 +266,11 @@ public class BetaBiomeSource extends BiomeSource {
     }
 
     @Override
+    public boolean usesVanillaBiomes() {
+        return this.generateVanillaBiomesBeta;
+    }
+    
+    @Override
     protected Codec<? extends BiomeSource> getCodec() {
         return BetaBiomeSource.CODEC;
     }
@@ -286,6 +280,8 @@ public class BetaBiomeSource extends BiomeSource {
     public BiomeSource withSeed(long seed) {
         return new BetaBiomeSource(seed, this.biomeRegistry, this.settings);
     }
+    
+    
 
     public static void register() {
         Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "beta_biome_source"), CODEC);

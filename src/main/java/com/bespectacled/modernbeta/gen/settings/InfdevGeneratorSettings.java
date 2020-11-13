@@ -26,6 +26,7 @@ public class InfdevGeneratorSettings {
         
         settings.putBoolean("infdevWinterMode", ModernBeta.BETA_CONFIG.infdevWinterMode);
         settings.putBoolean("infdevPlus", ModernBeta.BETA_CONFIG.infdevPlus);
+        settings.putBoolean("generateVanillaBiomesInfdev", ModernBeta.BETA_CONFIG.generateVanillaBiomesInfdev);
         
         return settings;
     }

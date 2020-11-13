@@ -23,6 +23,7 @@ public class CustomizeAlphaLevelScreen extends Screen {
     
     private boolean alphaWinterMode = ModernBeta.BETA_CONFIG.alphaWinterMode;
     private boolean alphaPlus = ModernBeta.BETA_CONFIG.alphaPlus;
+    private boolean generateVanillaBiomesAlpha = ModernBeta.BETA_CONFIG.generateVanillaBiomesAlpha;
     
     private ButtonListWidget buttonList;
 
@@ -79,6 +80,16 @@ public class CustomizeAlphaLevelScreen extends Screen {
                 (gameOptions, value) -> {
                     alphaPlus = value;
                     generatorSettings.settings.putBoolean("alphaPlus", value);
+                }
+        ));
+        
+        this.buttonList.addSingleOptionEntry(
+            new BooleanOption(
+                "createWorld.customize.alpha.generateVanillaBiomesAlpha", 
+                (gameOptions) -> { return generateVanillaBiomesAlpha; }, 
+                (gameOptions, value) -> {
+                    generateVanillaBiomesAlpha = value;
+                    generatorSettings.settings.putBoolean("generateVanillaBiomesAlpha", value);
                 }
         ));
         

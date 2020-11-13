@@ -29,18 +29,12 @@ public class ModernBetaConfig implements ConfigData {
 
     // Legacy option, replaced with generateBetaOceans
     @ConfigEntry.Gui.Excluded
-    //@ConfigEntry.Category(value = "betaGen")
-    @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean generateOceans = false; 
     
     @ConfigEntry.Gui.Excluded
-    //@ConfigEntry.Category(value = "betaGen")
-    @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean generateBetaOceans = true;
 
     @ConfigEntry.Gui.Excluded
-    //@ConfigEntry.Category(value = "betaGen")
-    @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean generateIceDesert = false;
     
     @ConfigEntry.Gui.Excluded
@@ -52,26 +46,24 @@ public class ModernBetaConfig implements ConfigData {
     /* Alpha Generation */
 
     @ConfigEntry.Gui.Excluded
-    //@ConfigEntry.Category(value = "betaGen")
-    @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean alphaWinterMode = false;
 
     @ConfigEntry.Gui.Excluded
-    //@ConfigEntry.Category(value = "betaGen")
-    @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean alphaPlus = false;
+    
+    @ConfigEntry.Gui.Excluded
+    public boolean generateVanillaBiomesAlpha = false;
     
     /* Infdev Generation */
     
     @ConfigEntry.Gui.Excluded
-    //@ConfigEntry.Category(value = "betaGen")
-    @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean infdevWinterMode = false;
 
     @ConfigEntry.Gui.Excluded
-    //@ConfigEntry.Category(value = "betaGen")
-    @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean infdevPlus = false;
+    
+    @ConfigEntry.Gui.Excluded
+    public boolean generateVanillaBiomesInfdev = false;
     
     /* Indev Generation */
     
