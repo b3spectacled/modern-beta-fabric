@@ -72,6 +72,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     private final BetaGeneratorSettings settings;
     private final BetaBiomeSource biomeSource;
     private final long seed;
+    private boolean generateVanillaBiomes = false;
 
     private final OldNoiseGeneratorOctaves minLimitNoiseOctaves;
     private final OldNoiseGeneratorOctaves maxLimitNoiseOctaves;
@@ -123,6 +124,8 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         this.settings = settings;
         this.biomeSource = (BetaBiomeSource) biomes;
         this.seed = seed;
+        if (settings.settings.contains("generateVanillaBiomesBeta")) 
+            this.generateVanillaBiomes = settings.settings.getBoolean("generateVanillaBiomesBeta");
 
         RAND.setSeed(seed);
 
@@ -212,7 +215,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
         // Do not use the built-in surface builders..
         // This works better for Beta-accurate surface generation anyway.
-        buildBetaSurface(chunk);
+        buildBetaSurface(chunkRegion, chunk);
     }
 
     public void generateTerrain(Chunk chunk, double[] temps, StructureAccessor structureAccessor) {
@@ -457,7 +460,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         }
     }
 
-    private void buildBetaSurface(Chunk chunk) {
+    private void buildBetaSurface(ChunkRegion region, Chunk chunk) {
         byte seaLevel = (byte) this.getSeaLevel();
         double thirtysecond = 0.03125D;
 
@@ -472,13 +475,16 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         stoneNoise = stoneNoiseOctaves.generateBetaNoiseOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
 
-        for (int i = 0; i < 16; i++) {
-            for (int j = 0; j < 16; j++) {
+        for (int z = 0; z < 16; z++) {
+            for (int x = 0; x < 16; x++) {
 
-                int genStone = (int) (stoneNoise[i + j * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
+                int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
                 int flag = -1;
+                
+                int absX = (chunkX << 4) + x;
+                int absZ = (chunkZ << 4) + z;
 
-                curBiome = BIOMES[i + j * 16];
+                curBiome = this.generateVanillaBiomes ? region.getBiome(POS.set(absX, 0, absZ)) : BIOMES[z + x * 16];
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -489,7 +495,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                 // Generate from top to bottom of world
                 for (int y = 127; y >= 0; y--) {
 
-                    Block someBlock = chunk.getBlockState(POS.set(j, y, i)).getBlock();
+                    Block someBlock = chunk.getBlockState(POS.set(x, y, z)).getBlock();
 
                     if (someBlock.equals(Blocks.AIR)) { // Skip if air block
                         flag = -1;
@@ -509,9 +515,9 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                         // Main surface builder section
                         flag = genStone;
                         if (y >= 0) {
-                            chunk.setBlockState(POS.set(j, y, i), topBlock, false);
+                            chunk.setBlockState(POS.set(x, y, z), topBlock, false);
                         } else {
-                            chunk.setBlockState(POS.set(j, y, i), fillerBlock, false);
+                            chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
                         }
 
                         continue;
@@ -522,7 +528,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                     }
 
                     flag--;
-                    chunk.setBlockState(POS.set(j, y, i), fillerBlock, false);
+                    chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to
                     // 4.

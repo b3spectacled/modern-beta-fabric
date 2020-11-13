@@ -224,7 +224,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
 
         Chunk ctrChunk = chunkRegion.getChunk(ctrX, ctrZ);
         
-        Biome biome = GenUtil.getOceanBiome(ctrChunk, this, biomeSource);
+        Biome biome = GenUtil.getOceanBiome(ctrChunk, this, biomeSource, this.generateVanillaBiomes);
 
         long popSeed = FEATURE_RAND.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
         
@@ -248,7 +248,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
     ) {
         ChunkPos chunkPos = chunk.getPos();
         
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource);
+        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, this.generateVanillaBiomes);
 
         this.setStructureStart(ConfiguredStructureFeatures.STRONGHOLD, dynamicRegistryManager, structureAccessor, chunk,
                 structureManager, seed, chunkPos, biome);
@@ -304,7 +304,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
 
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource);
+        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, this.generateVanillaBiomes);
         GenerationSettings genSettings = biome.getGenerationSettings();
         
         BitSet bitSet = ((ProtoChunk) chunk).getOrCreateCarvingMask(carver);

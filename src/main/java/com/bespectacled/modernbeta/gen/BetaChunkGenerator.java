@@ -235,7 +235,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
 
         Chunk ctrChunk = chunkRegion.getChunk(ctrX, ctrZ);
         
-        Biome biome = GenUtil.getOceanBiome(ctrChunk, this, biomeSource);
+        Biome biome = GenUtil.getOceanBiome(ctrChunk, this, biomeSource, true);
 
         long popSeed = FEATURE_RAND.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
         
@@ -259,7 +259,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
     ) {
         ChunkPos chunkPos = chunk.getPos();
         
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource);
+        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, true);
 
         this.setStructureStart(ConfiguredStructureFeatures.STRONGHOLD, dynamicRegistryManager, structureAccessor, chunk,
                 structureManager, seed, chunkPos, biome);
@@ -310,7 +310,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
         int mainChunkX = chunkPos.x;
         int mainChunkZ = chunkPos.z;
 
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource);
+        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, true);
         GenerationSettings genSettings = biome.getGenerationSettings();
         
         BitSet bitSet = ((ProtoChunk) chunk).getOrCreateCarvingMask(carver);
@@ -341,7 +341,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
 
     @Override
     public void buildSurface(ChunkRegion region, Chunk chunk) {
-        buildBetaSurface(region, chunk);
+        buildBetaSurface(region, chunk);        
     }
 
 

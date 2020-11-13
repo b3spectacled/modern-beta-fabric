@@ -38,7 +38,7 @@ public class GenUtil {
         return 0;
     }
     
-    public static Biome getOceanBiome(Chunk chunk, ChunkGenerator gen, BiomeSource biomeSource) {
+    public static Biome getOceanBiome(Chunk chunk, ChunkGenerator gen, BiomeSource biomeSource, boolean vanillaGen) {
         int biomeX = (chunk.getPos().x << 2) + 2;
         int biomeZ = (chunk.getPos().z << 2) + 2;
         
@@ -47,7 +47,7 @@ public class GenUtil {
         
         Biome biome = biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
 
-        if (gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < 60) {
+        if (vanillaGen && gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < 60) {
             biome = ((IOldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, biomeZ);
         }
 

@@ -214,7 +214,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
 
         Chunk ctrChunk = chunkRegion.getChunk(ctrX, ctrZ);
         
-        Biome biome = GenUtil.getOceanBiome(ctrChunk, this, biomeSource);
+        Biome biome = GenUtil.getOceanBiome(ctrChunk, this, biomeSource, this.generateVanillaBiomes);
 
         long popSeed = FEATURE_RAND.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
         
@@ -238,7 +238,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
     ) {
         ChunkPos chunkPos = chunk.getPos();
         
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource);
+        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, this.generateVanillaBiomes);
 
         this.setStructureStart(ConfiguredStructureFeatures.STRONGHOLD, dynamicRegistryManager, structureAccessor, chunk,
                 structureManager, seed, chunkPos, biome);
@@ -295,7 +295,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
 
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource);
+        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, this.generateVanillaBiomes);
         GenerationSettings genSettings = biome.getGenerationSettings();
         
         BitSet bitSet = ((ProtoChunk) chunk).getOrCreateCarvingMask(carver);
