@@ -54,6 +54,19 @@ public class GenUtil {
         return biome;
     }
     
+    public static Biome getOceanBiomeAt(int biomeX, int biomeZ, ChunkGenerator gen, BiomeSource biomeSource) {
+        int x = biomeX << 2;
+        int z = biomeZ << 2;
+        
+        Biome biome = biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
+
+        if (gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < 60) {
+            biome = ((IOldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, biomeZ);
+        }
+
+        return biome;
+    }
+    
     public static void collectStructures(
         Chunk chunk, 
         StructureAccessor accessor, 

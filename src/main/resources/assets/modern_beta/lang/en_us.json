@@ -26,10 +26,12 @@
     "createWorld.customize.alpha.title": "Alpha World Type Configuration",
     "createWorld.customize.alpha.alphaWinterMode": "Alpha Winter Mode",
     "createWorld.customize.alpha.alphaPlus": "Alpha Plus",
+    "createWorld.customize.alpha.generateVanillaBiomesAlpha": "Generate Vanilla Biomes",
     
     "createWorld.customize.infdev.title": "Infdev World Type Configuration",
     "createWorld.customize.infdev.infdevWinterMode": "Infdev Winter Mode",
     "createWorld.customize.infdev.infdevPlus": "Infdev Plus",
+    "createWorld.customize.infdev.generateVanillaBiomesInfdev": "Generate Vanilla Biomes",
     
     "createWorld.customize.beta.title": "Beta World Type Configuration",
     "createWorld.customize.beta.generateOceans": "Generate Oceans",

@@ -36,12 +36,14 @@ import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.Biome.Category;
@@ -339,12 +341,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
 
     @Override
     public void buildSurface(ChunkRegion region, Chunk chunk) {
-        if (this.generateVanillaBiomes) {
-            super.buildSurface(region, chunk);
-        } else {
-            buildBetaSurface(region, chunk);
-        }
-        
+        buildBetaSurface(region, chunk);
     }
 
 
@@ -622,17 +619,20 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
         stoneNoise = stoneNoiseOctaves.generateBetaNoiseOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
 
-        for (int i = 0; i < 16; i++) {
-            for (int j = 0; j < 16; j++) {
+        for (int z = 0; z < 16; z++) {
+            for (int x = 0; x < 16; x++) {
 
-                boolean genSandBeach = sandNoise[i + j * 16] + RAND.nextDouble() * 0.20000000000000001D > 0.0D;
-                boolean genGravelBeach = gravelNoise[i + j * 16] + RAND.nextDouble() * 0.20000000000000001D > 3D;
+                boolean genSandBeach = sandNoise[z + x * 16] + RAND.nextDouble() * 0.20000000000000001D > 0.0D;
+                boolean genGravelBeach = gravelNoise[z + x * 16] + RAND.nextDouble() * 0.20000000000000001D > 3D;
 
-                int genStone = (int) (stoneNoise[i + j * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
+                int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
                 int flag = -1;
-
-                curBiome = BIOMES[i + j * 16];
                 
+                int absX = (chunkX << 4) + x;
+                int absZ = (chunkZ << 4) + z;
+
+                curBiome = this.generateVanillaBiomes ? region.getBiome(POS.set(absX, 0, absZ)) : BIOMES[z + x * 16];
+
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
 
@@ -644,11 +644,11 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
 
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= 0 + RAND.nextInt(5)) {
-                        chunk.setBlockState(POS.set(j, y, i), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
                         continue;
                     }
 
-                    Block someBlock = chunk.getBlockState(POS.set(j, y, i)).getBlock();
+                    Block someBlock = chunk.getBlockState(POS.set(x, y, z)).getBlock();
 
                     if (someBlock.equals(Blocks.AIR)) { // Skip if air block
                         flag = -1;
@@ -685,9 +685,9 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
                         // Main surface builder section
                         flag = genStone;
                         if (y >= seaLevel - 1) {
-                            chunk.setBlockState(POS.set(j, y, i), topBlock, false);
+                            chunk.setBlockState(POS.set(x, y, z), topBlock, false);
                         } else {
-                            chunk.setBlockState(POS.set(j, y, i), fillerBlock, false);
+                            chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
                         }
 
                         continue;
@@ -698,7 +698,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
                     }
 
                     flag--;
-                    chunk.setBlockState(POS.set(j, y, i), fillerBlock, false);
+                    chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to
                     // 4.

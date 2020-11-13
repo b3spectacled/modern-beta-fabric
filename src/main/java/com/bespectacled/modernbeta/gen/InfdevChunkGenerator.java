@@ -326,10 +326,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
 
     @Override
     public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {
-        if (this.generateVanillaBiomes) 
-            super.buildSurface(chunkRegion, chunk);
-        else
-            buildInfdevSurface(chunkRegion, chunk);
+        buildInfdevSurface(chunkRegion, chunk);
     }
      
 
@@ -487,8 +484,8 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
         
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
-                double absX = (chunkX << 4) + x;
-                double absZ = (chunkZ << 4) + z;
+                int absX = (chunkX << 4) + x;
+                int absZ = (chunkZ << 4) + z;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.generateInfdevOctaves(
                     absX * thirtysecond, 
@@ -506,25 +503,11 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
                 
                 int flag = -1;
                 
-                //Biome curBiome = region.getBiome(POS.set(chunkX * 16 + x, 0, chunkZ * 16 + z));
+                Biome curBiome = region.getBiome(POS.set(absX, 0, absZ));
                 
-                /*
-                if (this.generateVanillaBiomes) {
-                    SurfaceBuilder<SurfaceConfig> builder =  (SurfaceBuilder<SurfaceConfig>) curBiome.getGenerationSettings().getSurfaceBuilder().get().surfaceBuilder;
-                    boolean usesDefault = builder.equals(SurfaceBuilder.DEFAULT);
-                    
-                    if (!usesDefault) {
-                        curBiome.buildSurface(RAND, chunk, x, z, 128, genStone, defaultBlock, defaultFluid, this.getSeaLevel(), seed);
-                        continue;
-                    }
-                }*/
-
-                //BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
-                //BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
+                BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
+                BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
                 
-                BlockState biomeTopBlock = BlockStates.GRASS_BLOCK;
-                BlockState biomeFillerBlock = BlockStates.DIRT;
-
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
                 

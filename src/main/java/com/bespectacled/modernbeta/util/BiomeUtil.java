@@ -163,7 +163,7 @@ public class BiomeUtil {
     private static boolean isValidCategory(Category category)
     {
         return  category != Category.NONE &&
-                category != Category.BEACH &&
+                //category != Category.BEACH &&
                 //category != Category.OCEAN &&
                 category != Category.NETHER &&
                 category != Category.THEEND;
