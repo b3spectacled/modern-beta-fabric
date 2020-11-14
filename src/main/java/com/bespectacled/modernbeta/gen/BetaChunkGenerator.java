@@ -91,7 +91,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
     private final BetaGeneratorSettings settings;
     private final BetaBiomeSource biomeSource;
     private final long seed;
-    private boolean generateVanillaBiomes = false;
 
     private final OldNoiseGeneratorOctaves minLimitNoiseOctaves;
     private final OldNoiseGeneratorOctaves maxLimitNoiseOctaves;
@@ -139,8 +138,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
         this.settings = settings;
         this.seed = seed;
         this.biomeSource = (BetaBiomeSource) biomes;
-        if (settings.settings.contains("generateVanillaBiomesBeta")) 
-            this.generateVanillaBiomes = settings.settings.getBoolean("generateVanillaBiomesBeta");
         
         RAND.setSeed(seed);
 
@@ -609,7 +606,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
                 int absX = chunk.getPos().getStartX() + x;
                 int absZ = chunk.getPos().getStartZ() + z;
 
-                curBiome = this.generateVanillaBiomes ? region.getBiome(POS.set(absX, 0, absZ)) : BIOMES[z + x * 16];
+                curBiome = this.biomeSource.usesVanillaBiomes() ? region.getBiome(POS.set(absX, 0, absZ)) : BIOMES[z + x * 16];
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -660,7 +657,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
                             topBlock = BlockStates.WATER;
                         }
 
-                        // Main surface builder section
                         flag = genStone;
                         if (y >= seaLevel - 1) {
                             chunk.setBlockState(POS.set(x, y, z), topBlock, false);

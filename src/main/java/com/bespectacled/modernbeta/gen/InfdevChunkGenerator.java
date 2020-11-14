@@ -89,7 +89,6 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
     private final InfdevGeneratorSettings settings;
     private final InfdevBiomeSource biomeSource;
     private final long seed;
-    private boolean generateVanillaBiomes = false;
 
     private final OldNoiseGeneratorOctaves noiseOctavesA;
     private final OldNoiseGeneratorOctaves noiseOctavesB;
@@ -117,8 +116,6 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
         this.settings = settings;
         this.biomeSource = (InfdevBiomeSource) biomes;
         this.seed = seed;
-        if (settings.settings.contains("generateVanillaBiomesInfdev")) 
-            this.generateVanillaBiomes = settings.settings.getBoolean("generateVanillaBiomesInfdev");
         
         RAND.setSeed(seed);
         
@@ -168,7 +165,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
 
         Chunk ctrChunk = chunkRegion.getChunk(ctrX, ctrZ);
         
-        Biome biome = GenUtil.getOceanBiome(ctrChunk, this, biomeSource, this.generateVanillaBiomes);
+        Biome biome = GenUtil.getOceanBiome(ctrChunk, this, biomeSource, this.biomeSource.usesVanillaBiomes());
 
         long popSeed = FEATURE_RAND.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
         
@@ -192,7 +189,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
     ) {
         ChunkPos chunkPos = chunk.getPos();
         
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, this.generateVanillaBiomes);
+        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, this.biomeSource.usesVanillaBiomes());
 
         this.setStructureStart(ConfiguredStructureFeatures.STRONGHOLD, dynamicRegistryManager, structureAccessor, chunk,
                 structureManager, seed, chunkPos, biome);
@@ -249,7 +246,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
 
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, this.generateVanillaBiomes);
+        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, this.biomeSource.usesVanillaBiomes());
         GenerationSettings genSettings = biome.getGenerationSettings();
         
         BitSet bitSet = ((ProtoChunk) chunk).getOrCreateCarvingMask(carver);
@@ -282,7 +279,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
     public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {
         buildInfdevSurface(chunkRegion, chunk);
 
-        if (this.generateVanillaBiomes) {
+        if (this.biomeSource.usesVanillaBiomes()) {
             MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
             ChunkPos pos = chunk.getPos();
             Biome biome;

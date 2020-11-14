@@ -72,7 +72,6 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     private final BetaGeneratorSettings settings;
     private final BetaBiomeSource biomeSource;
     private final long seed;
-    private boolean generateVanillaBiomes = false;
 
     private final OldNoiseGeneratorOctaves minLimitNoiseOctaves;
     private final OldNoiseGeneratorOctaves maxLimitNoiseOctaves;
@@ -124,8 +123,6 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         this.settings = settings;
         this.biomeSource = (BetaBiomeSource) biomes;
         this.seed = seed;
-        if (settings.settings.contains("generateVanillaBiomesBeta")) 
-            this.generateVanillaBiomes = settings.settings.getBoolean("generateVanillaBiomesBeta");
 
         RAND.setSeed(seed);
 
@@ -484,7 +481,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
 
-                curBiome = this.generateVanillaBiomes ? region.getBiome(POS.set(absX, 0, absZ)) : BIOMES[z + x * 16];
+                curBiome = this.biomeSource.usesVanillaBiomes() ? region.getBiome(POS.set(absX, 0, absZ)) : BIOMES[z + x * 16];
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -512,7 +509,6 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                             fillerBlock = BlockStates.STONE;
                         }
 
-                        // Main surface builder section
                         flag = genStone;
                         if (y >= 0) {
                             chunk.setBlockState(POS.set(x, y, z), topBlock, false);
@@ -530,8 +526,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                     flag--;
                     chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
 
-                    // Generates layer of sandstone starting at lowest block of sand, of height 1 to
-                    // 4.
+                    // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
                     if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
                         flag = RAND.nextInt(4);
                         fillerBlock = BlockStates.SANDSTONE;
