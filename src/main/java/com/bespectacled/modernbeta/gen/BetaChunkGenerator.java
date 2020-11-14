@@ -173,54 +173,10 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
 
     @Override
     public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
-        ChunkPos pos = chunk.getPos();
-
         RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
 
         BiomeUtil.fetchTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
         generateTerrain(chunk, TEMPS, structureAccessor);
-        
-        MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
-        
-        // Replace biomes in bodies of water at least four deep with ocean biomes
-        for (int x = 0; x < 4; x++) {
-            
-            for (int z = 0; z < 4; z++) {
-                int absX = pos.getStartX() + (x << 2);
-                int absZ = pos.getStartZ() + (z << 2);
-
-                BlockState blockState;
-                Biome biome;
-                
-                // Assign ocean biomes
-                POS.set(absX, this.getSeaLevel() - 4, absZ);
-                blockState = chunk.getBlockState(POS);
-
-                if (blockState.isOf(Blocks.WATER)) {
-                    //biome = biomeSource.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeType.OCEAN);
-                    biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, absZ >> 2);
-                    
-                    mutableBiomes.setBiome(absX, 0, absZ, biome);
-                }
-                
-                /*
-                if (this.generateVanillaBiomes) {
-                    // Assign beach biomes
-                    int y = this.getHeight(absX, absZ, Type.OCEAN_FLOOR_WG) - 1;
-                    biome = biomeSource.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeType.LAND);
-                    
-                    POS.set(absX, y, absZ);
-                    blockState = chunk.getBlockState(POS);
-                    
-                    if (y < 67 && (blockState.isOf(Blocks.SAND) || blockState.isOf(Blocks.GRAVEL)) && biome.getCategory() != Category.DESERT) {
-                        biome = biomeSource.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeType.BEACH);
-                        
-                        mutableBiomes.setBiome(absX, 0, absZ, biome);
-                    }
-                }
-                */
-            }
-        }
         
         BetaFeature.OLD_FANCY_OAK.chunkReset();
     }
@@ -341,7 +297,29 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
 
     @Override
     public void buildSurface(ChunkRegion region, Chunk chunk) {
-        buildBetaSurface(region, chunk);        
+        buildBetaSurface(region, chunk);
+        
+        ChunkPos pos = chunk.getPos();
+        MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
+        Biome biome;
+        
+        // Replace biomes in bodies of water at least four deep with ocean biomes
+        for (int x = 0; x < 4; x++) {
+            
+            for (int z = 0; z < 4; z++) {
+                int absX = pos.getStartX() + (x << 2);
+                int absZ = pos.getStartZ() + (z << 2);
+                
+                int y = GenUtil.getSolidHeight(chunk, absX, absZ);
+
+                if (y < 60) {
+                    biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, absZ >> 2);
+                    
+                    mutableBiomes.setBiome(absX, 0, absZ, biome);
+                }
+            }
+        }
+        
     }
 
 
@@ -628,8 +606,8 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
                 int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
                 int flag = -1;
                 
-                int absX = (chunkX << 4) + x;
-                int absZ = (chunkZ << 4) + z;
+                int absX = chunk.getPos().getStartX() + x;
+                int absZ = chunk.getPos().getStartZ() + z;
 
                 curBiome = this.generateVanillaBiomes ? region.getBiome(POS.set(absX, 0, absZ)) : BIOMES[z + x * 16];
 
@@ -700,8 +678,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
                     flag--;
                     chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
 
-                    // Generates layer of sandstone starting at lowest block of sand, of height 1 to
-                    // 4.
+                    // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
                     if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
                         flag = RAND.nextInt(4);
                         fillerBlock = BlockStates.SANDSTONE;

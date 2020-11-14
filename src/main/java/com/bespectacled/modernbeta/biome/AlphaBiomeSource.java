@@ -89,7 +89,7 @@ public class AlphaBiomeSource extends BiomeSource implements IOldBiomeSource {
     
     @Override
     public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeZ) {
-        return this.oceanSampler.sample(this.biomeRegistry, biomeX, biomeZ);
+        return this.generateVanillaBiomesAlpha ? this.oceanSampler.sample(this.biomeRegistry, biomeX, biomeZ) : this.getBiomeForNoiseGen(biomeX, 0, biomeZ);
     }
 
     public static Biome getBiome(float temp, float humid, Registry<Biome> registry) {

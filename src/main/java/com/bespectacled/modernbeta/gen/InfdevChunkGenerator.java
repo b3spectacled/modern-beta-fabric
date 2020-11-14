@@ -153,53 +153,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
     public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
         RAND.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
 
-        generateTerrain(chunk, structureAccessor);
-        
-        if (this.generateVanillaBiomes) {
-            MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
-            ChunkPos pos = chunk.getPos();
-            BlockState blockState;
-            Biome biome;
-            
-            // Replace biomes in bodies of water at least four deep with ocean biomes
-            for (int x = 0; x < 4; x++) {
-                
-                for (int z = 0; z < 4; z++) {
-                    int absX = pos.getStartX() + (x << 2);
-                    int absZ = pos.getStartZ() + (z << 2);
-
-                    // Assign ocean biomes
-                    //POS.set(absX, this.getSeaLevel() - 4, absZ);
-                    //blockState = chunk.getBlockState(POS);
-                    
-                    int y = GenUtil.getSolidHeight(chunk, absX, absZ);
-
-                    if (y < 60) {
-                        //biome = biomeSource.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeType.OCEAN);
-                        biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, absZ >> 2);
-                        
-                        mutableBiomes.setBiome(absX, 0, absZ, biome);
-                    }
-                    
-                    /*
-                    if (this.generateVanillaBiomes) {
-                        // Assign beach biomes
-                        int y = this.getHeight(absX, absZ, Type.OCEAN_FLOOR_WG) - 1;
-                        biome = biomeSource.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeType.LAND);
-                        
-                        POS.set(absX, y, absZ);
-                        blockState = chunk.getBlockState(POS);
-                        
-                        if (y < 67 && (blockState.isOf(Blocks.SAND) || blockState.isOf(Blocks.GRAVEL)) && biome.getCategory() != Category.DESERT) {
-                            biome = biomeSource.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeType.BEACH);
-                            
-                            mutableBiomes.setBiome(absX, 0, absZ, biome);
-                        }
-                    }
-                    */
-                }   
-            }
-        }
+        generateTerrain(chunk, structureAccessor);  
         
         BetaFeature.OLD_FANCY_OAK.chunkReset();
     }
@@ -327,6 +281,29 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
     @Override
     public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {
         buildInfdevSurface(chunkRegion, chunk);
+
+        if (this.generateVanillaBiomes) {
+            MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
+            ChunkPos pos = chunk.getPos();
+            Biome biome;
+            
+            // Replace biomes in bodies of water at least four deep with ocean biomes
+            for (int x = 0; x < 4; x++) {
+                
+                for (int z = 0; z < 4; z++) {
+                    int absX = pos.getStartX() + (x << 2);
+                    int absZ = pos.getStartZ() + (z << 2);
+                    
+                    int y = GenUtil.getSolidHeight(chunk, absX, absZ);
+
+                    if (y < 60) {
+                        biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, absZ >> 2);
+                        
+                        mutableBiomes.setBiome(absX, 0, absZ, biome);
+                    }
+                }   
+            }
+        }
     }
      
 
@@ -546,7 +523,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
                             }
                             
                             if (y < this.getSeaLevel() && topBlock.equals(BlockStates.AIR)) {
-                                topBlock = BlockStates.WATER; // Will this ever happen?
+                                topBlock = BlockStates.WATER;
                             }
                             
                             flag = genStone;
