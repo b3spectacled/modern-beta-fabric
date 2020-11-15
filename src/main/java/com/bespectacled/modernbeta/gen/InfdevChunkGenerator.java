@@ -90,12 +90,12 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
     private final InfdevBiomeSource biomeSource;
     private final long seed;
 
-    private final OldNoiseGeneratorOctaves noiseOctavesA;
-    private final OldNoiseGeneratorOctaves noiseOctavesB;
-    private final OldNoiseGeneratorOctaves noiseOctavesC;
-    private final OldNoiseGeneratorOctaves beachNoiseOctaves;
-    private final OldNoiseGeneratorOctaves stoneNoiseOctaves;
-    private final OldNoiseGeneratorOctaves forestNoiseOctaves;
+    private final PerlinOctaveNoise noiseOctavesA;
+    private final PerlinOctaveNoise noiseOctavesB;
+    private final PerlinOctaveNoise noiseOctavesC;
+    private final PerlinOctaveNoise beachNoiseOctaves;
+    private final PerlinOctaveNoise stoneNoiseOctaves;
+    private final PerlinOctaveNoise forestNoiseOctaves;
 
     // Block Y-height cache, from Beta+
     private static final Map<BlockPos, Integer> GROUND_CACHE_Y = new HashMap<>();
@@ -120,15 +120,15 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
         RAND.setSeed(seed);
         
         // Noise Generators
-        noiseOctavesA = new OldNoiseGeneratorOctaves(RAND, 16, false);
-        noiseOctavesB = new OldNoiseGeneratorOctaves(RAND, 16, false);
-        noiseOctavesC = new OldNoiseGeneratorOctaves(RAND, 8, false);
-        beachNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 4, false);
-        stoneNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 4, false);
+        noiseOctavesA = new PerlinOctaveNoise(RAND, 16, false);
+        noiseOctavesB = new PerlinOctaveNoise(RAND, 16, false);
+        noiseOctavesC = new PerlinOctaveNoise(RAND, 8, false);
+        beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, false);
+        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, false);
 
-        new OldNoiseGeneratorOctaves(RAND, 5, false); // Unused in original source
+        new PerlinOctaveNoise(RAND, 5, false); // Unused in original source
         
-        forestNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 5, false);
+        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 5, false);
 
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_INFDEV_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
@@ -415,29 +415,29 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
         double noise;
         double res;
         
-        if ((noise = this.noiseOctavesC.generateInfdevOctaves(x * 8.55515, y * 1.71103, z * 8.55515) / 2.0) < -1) {
+        if ((noise = this.noiseOctavesC.sampleInfdevOctaves(x * 8.55515, y * 1.71103, z * 8.55515) / 2.0) < -1) {
             res = MathHelper.clamp(
-                this.noiseOctavesA.generateInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                this.noiseOctavesA.sampleInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
                 -10.0, 
                 10.0
             );
             
         } else if (noise > 1.0) {
             res = MathHelper.clamp(
-                this.noiseOctavesB.generateInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                this.noiseOctavesB.sampleInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
                 -10.0, 
                 10.0
             );
             
         } else {
             double noise2 = MathHelper.clamp(
-                this.noiseOctavesA.generateInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                this.noiseOctavesA.sampleInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
                 -10.0, 
                 10.0
             );
             
             double noise3 = MathHelper.clamp(
-                this.noiseOctavesB.generateInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                this.noiseOctavesB.sampleInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
                 -10.0, 
                 10.0
             );
@@ -461,17 +461,17 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
                 
-                boolean genSandBeach = this.beachNoiseOctaves.generateInfdevOctaves(
+                boolean genSandBeach = this.beachNoiseOctaves.sampleInfdevOctaves(
                     absX * thirtysecond, 
                     absZ * thirtysecond, 
                     0.0) + RAND.nextDouble() * 0.2 > 0.0;
                 
-                boolean genGravelBeach = this.beachNoiseOctaves.generateInfdevOctaves(
+                boolean genGravelBeach = this.beachNoiseOctaves.sampleInfdevOctaves(
                     absZ * thirtysecond, 
                     109.0134,
                     absX * thirtysecond) + RAND.nextDouble() * 0.2 > 3.0;
                 
-                int genStone = (int)(this.stoneNoiseOctaves.generateInfdevOctaves(
+                int genStone = (int)(this.stoneNoiseOctaves.sampleInfdevOctaves(
                     absX * thirtysecond * 2.0, 
                     absZ * thirtysecond * 2.0) / 3.0 + 3.0 + this.random.nextDouble() * 0.25);
                 

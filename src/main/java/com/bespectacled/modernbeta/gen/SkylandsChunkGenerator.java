@@ -73,14 +73,14 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     private final BetaBiomeSource biomeSource;
     private final long seed;
 
-    private final OldNoiseGeneratorOctaves minLimitNoiseOctaves;
-    private final OldNoiseGeneratorOctaves maxLimitNoiseOctaves;
-    private final OldNoiseGeneratorOctaves mainNoiseOctaves;
-    private final OldNoiseGeneratorOctaves beachNoiseOctaves;
-    private final OldNoiseGeneratorOctaves stoneNoiseOctaves;
-    private final OldNoiseGeneratorOctaves scaleNoiseOctaves;
-    private final OldNoiseGeneratorOctaves depthNoiseOctaves;
-    private final OldNoiseGeneratorOctaves forestNoiseOctaves;
+    private final PerlinOctaveNoise minLimitNoiseOctaves;
+    private final PerlinOctaveNoise maxLimitNoiseOctaves;
+    private final PerlinOctaveNoise mainNoiseOctaves;
+    private final PerlinOctaveNoise beachNoiseOctaves;
+    private final PerlinOctaveNoise stoneNoiseOctaves;
+    private final PerlinOctaveNoise scaleNoiseOctaves;
+    private final PerlinOctaveNoise depthNoiseOctaves;
+    private final PerlinOctaveNoise forestNoiseOctaves;
 
     private double sandNoise[];
     private double gravelNoise[];
@@ -127,14 +127,14 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         RAND.setSeed(seed);
 
         // Noise Generators
-        minLimitNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 16, false);
-        maxLimitNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 16, false);
-        mainNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, false);
-        beachNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 4, false);
-        stoneNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 4, false);
-        scaleNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 10, false);
-        depthNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 16, false);
-        forestNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, false);
+        minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, false);
+        maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, false);
+        mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
+        beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, false);
+        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, false);
+        scaleNoiseOctaves = new PerlinOctaveNoise(RAND, 10, false);
+        depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, false);
+        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
 
         if (settings.settings.contains("generateSkyDim"))
             this.generateSkyDim = settings.settings.getBoolean("generateSkyDim");
@@ -351,19 +351,19 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         double temps[] = TEMPS;
         double humids[] = HUMIDS;
 
-        scaleNoise = scaleNoiseOctaves.func_4109_a(scaleNoise, x, z, int3_0, int3_1, 1.121D, 1.121D, 0.5D);
-        depthNoise = depthNoiseOctaves.func_4109_a(depthNoise, x, z, int3_0, int3_1, depthNoiseScaleX, depthNoiseScaleZ,
+        scaleNoise = scaleNoiseOctaves.sampleBetaOctaves(scaleNoise, x, z, int3_0, int3_1, 1.121D, 1.121D, 0.5D);
+        depthNoise = depthNoiseOctaves.sampleBetaOctaves(depthNoise, x, z, int3_0, int3_1, depthNoiseScaleX, depthNoiseScaleZ,
                 depthNoiseScaleExponent);
 
         coordinateScale *= 2D;
 
-        mainNoise = mainNoiseOctaves.generateBetaNoiseOctaves(mainNoise, x, y, z, int3_0, byte33, int3_1,
+        mainNoise = mainNoiseOctaves.sampleBetaOctaves(mainNoise, x, y, z, int3_0, byte33, int3_1,
                 coordinateScale / mainNoiseScaleX, heightScale / mainNoiseScaleY, coordinateScale / mainNoiseScaleZ);
 
-        minLimitNoise = minLimitNoiseOctaves.generateBetaNoiseOctaves(minLimitNoise, x, y, z, int3_0, byte33, int3_1,
+        minLimitNoise = minLimitNoiseOctaves.sampleBetaOctaves(minLimitNoise, x, y, z, int3_0, byte33, int3_1,
                 coordinateScale, heightScale, coordinateScale);
 
-        maxLimitNoise = maxLimitNoiseOctaves.generateBetaNoiseOctaves(maxLimitNoise, x, y, z, int3_0, byte33, int3_1,
+        maxLimitNoise = maxLimitNoiseOctaves.sampleBetaOctaves(maxLimitNoise, x, y, z, int3_0, byte33, int3_1,
                 coordinateScale, heightScale, coordinateScale);
 
         int i = 0;
@@ -469,7 +469,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
         
         Biome curBiome;
         
-        stoneNoise = stoneNoiseOctaves.generateBetaNoiseOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+        stoneNoise = stoneNoiseOctaves.sampleBetaOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
 
         for (int z = 0; z < 16; z++) {

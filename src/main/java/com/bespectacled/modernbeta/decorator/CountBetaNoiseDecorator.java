@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves;
+import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.client.render.chunk.ChunkBuilder.ChunkData;
@@ -14,20 +14,20 @@ import net.minecraft.world.chunk.ChunkProvider;
 import net.minecraft.world.gen.decorator.SimpleDecorator;
 
 public class CountBetaNoiseDecorator extends SimpleDecorator<CountNoiseDecoratorConfig> {
-    public OldNoiseGeneratorOctaves forestNoise;
+    public PerlinOctaveNoise forestNoise;
 
     public CountBetaNoiseDecorator(Codec<CountNoiseDecoratorConfig> codec) {
         super(codec);
     }
 
-    public void setOctaves(OldNoiseGeneratorOctaves octaves) {
+    public void setOctaves(PerlinOctaveNoise octaves) {
         forestNoise = octaves;
     }
 
     @Override
     protected Stream<BlockPos> getPositions(Random random, CountNoiseDecoratorConfig config, BlockPos pos) {
         if (forestNoise == null) {
-            forestNoise = new OldNoiseGeneratorOctaves(random, 8, false);
+            forestNoise = new PerlinOctaveNoise(random, 8, false);
         }
         
         int chunkX = (int) pos.getX() / 16;
@@ -39,7 +39,7 @@ public class CountBetaNoiseDecorator extends SimpleDecorator<CountNoiseDecorator
 
         double d = 0.5D;
 
-        int noiseCount = (int) ((forestNoise.func_806_a((double) noiseX * d, (double) noiseZ * d) / 8D
+        int noiseCount = (int) ((forestNoise.sampleBetaOctaves((double) noiseX * d, (double) noiseZ * d) / 8D
                 + random.nextDouble() * 4D + 4D) / 3D);
 
         int finalCount = noiseCount + config.density

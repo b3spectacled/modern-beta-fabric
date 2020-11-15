@@ -64,22 +64,22 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     private final IndevBiomeSource biomeSource;
     private final long seed;
     
-    private OldNoiseGeneratorCombined heightNoise1;
-    private OldNoiseGeneratorCombined heightNoise2;
+    private PerlinOctaveNoiseCombined heightNoise1;
+    private PerlinOctaveNoiseCombined heightNoise2;
     
-    private OldNoiseGeneratorOctaves heightNoise3;
-    private OldNoiseGeneratorOctaves islandNoise;
+    private PerlinOctaveNoise heightNoise3;
+    private PerlinOctaveNoise islandNoise;
     
-    private OldNoiseGeneratorOctaves noise5;
-    private OldNoiseGeneratorOctaves noise6;
+    private PerlinOctaveNoise noise5;
+    private PerlinOctaveNoise noise6;
     
-    private OldNoiseGeneratorCombined erodeNoise1;
-    private OldNoiseGeneratorCombined erodeNoise2;
+    private PerlinOctaveNoiseCombined erodeNoise1;
+    private PerlinOctaveNoiseCombined erodeNoise2;
     
-    private OldNoiseGeneratorOctaves sandNoiseOctaves;
-    private OldNoiseGeneratorOctaves gravelNoiseOctaves;
+    private PerlinOctaveNoise sandNoiseOctaves;
+    private PerlinOctaveNoise gravelNoiseOctaves;
     
-    private OldNoiseGeneratorOctaves forestNoiseOctaves;
+    private PerlinOctaveNoise forestNoiseOctaves;
 
     // Note:
     // I considered using 1D array for block storage,
@@ -120,7 +120,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         
         RAND.setSeed(seed);
         
-        forestNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, false);
+        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
 
         this.theme = Theme.NORMAL;
         this.type = Type.ISLAND;
@@ -273,20 +273,20 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             this.groundLevel = this.waterLevel - 2;
             
             // Noise Generators (Here instead of constructor to randomize floating layer generation)    
-            heightNoise1 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(RAND, 8, true), new OldNoiseGeneratorOctaves(RAND, 8, true));
-            heightNoise2 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(RAND, 8, true), new OldNoiseGeneratorOctaves(RAND, 8, true));
+            heightNoise1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, true), new PerlinOctaveNoise(RAND, 8, true));
+            heightNoise2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, true), new PerlinOctaveNoise(RAND, 8, true));
             
-            heightNoise3 = new OldNoiseGeneratorOctaves(RAND, 6, true);
-            islandNoise = new OldNoiseGeneratorOctaves(RAND, 2, true);
+            heightNoise3 = new PerlinOctaveNoise(RAND, 6, true);
+            islandNoise = new PerlinOctaveNoise(RAND, 2, true);
             
-            noise5 = new OldNoiseGeneratorOctaves(RAND, 8, true);
-            noise6 = new OldNoiseGeneratorOctaves(RAND, 8, true);
+            noise5 = new PerlinOctaveNoise(RAND, 8, true);
+            noise6 = new PerlinOctaveNoise(RAND, 8, true);
             
-            erodeNoise1 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(RAND, 8, true), new OldNoiseGeneratorOctaves(RAND, 8, true));
-            erodeNoise2 = new OldNoiseGeneratorCombined(new OldNoiseGeneratorOctaves(RAND, 8, true), new OldNoiseGeneratorOctaves(RAND, 8, true));
+            erodeNoise1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, true), new PerlinOctaveNoise(RAND, 8, true));
+            erodeNoise2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, true), new PerlinOctaveNoise(RAND, 8, true));
             
-            sandNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, true);
-            gravelNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, true);
+            sandNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+            gravelNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
             
             heightmap = generateHeightmap(heightmap);
             erodeTerrain(heightmap);
@@ -303,7 +303,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                      var2 = var2 * var2 * var2;
                      
                      int dirtTransition = heightmap[x + z * this.width] + this.waterLevel;
-                     int dirtThickness = (int)(noise5.generateIndevNoiseOctaves(x, z) / 24.0) - 4;
+                     int dirtThickness = (int)(noise5.sampleIndevOctaves(x, z) / 24.0) - 4;
                  
                      int stoneTransition = dirtTransition + dirtThickness;
                      heightmap[x + z * this.width] = Math.max(dirtTransition, stoneTransition);
@@ -316,7 +316,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                          heightmap[x + z * this.width] = 1;
                      }
                      
-                     double var4 = noise6.generateIndevNoiseOctaves(x * 2.3, z * 2.3) / 24.0;
+                     double var4 = noise6.sampleIndevOctaves(x * 2.3, z * 2.3) / 24.0;
                      int var5 = (int)(Math.sqrt(Math.abs(var4)) * Math.signum(var4) * 20.0) + this.waterLevel;
                      var5 = (int)(var5 * (1.0 - var2) + var2 * this.height);
                      
@@ -369,10 +369,10 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
             for (int z = 0; z < this.length; ++z) {
                 double islandVar2 = Math.abs((z / (this.length - 1.0) - 0.5) * 2.0);
                 
-                double heightLow = heightNoise1.generateCombinedIndevNoiseOctaves(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
-                double heightHigh = heightNoise2.generateCombinedIndevNoiseOctaves(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
+                double heightLow = heightNoise1.sampleIndevOctavesCombined(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
+                double heightHigh = heightNoise2.sampleIndevOctavesCombined(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
                 
-                double heightCheck = heightNoise3.generateIndevNoiseOctaves(x, z) / 8.0;
+                double heightCheck = heightNoise3.sampleIndevOctaves(x, z) / 8.0;
                 
                 if (heightCheck > 0.0) {
                     heightHigh = heightLow;
@@ -382,7 +382,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                 
                 if (this.type == Type.ISLAND) {
                     double islandVar3 = Math.sqrt(islandVar1 * islandVar1 + islandVar2 * islandVar2) * 1.2000000476837158;
-                    islandVar3 = Math.min(islandVar3, islandNoise.generateIndevNoiseOctaves(x * 0.05f, z * 0.05f) / 4.0 + 1.0);
+                    islandVar3 = Math.min(islandVar3, islandNoise.sampleIndevOctaves(x * 0.05f, z * 0.05f) / 4.0 + 1.0);
                     islandVar3 = Math.max(islandVar3, Math.max(islandVar1, islandVar2));
                     
                     if (islandVar3 > 1.0) {
@@ -417,8 +417,8 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
-                double var1 = erodeNoise1.generateCombinedIndevNoiseOctaves(x << 1, z << 1) / 8.0;
-                int var2 = erodeNoise2.generateCombinedIndevNoiseOctaves(x << 1, z << 1) > 0.0 ? 1 : 0;
+                double var1 = erodeNoise1.sampleIndevOctavesCombined(x << 1, z << 1) / 8.0;
+                int var2 = erodeNoise2.sampleIndevOctavesCombined(x << 1, z << 1) > 0.0 ? 1 : 0;
             
                 if (var1 > 2.0) {
                     int var3 = heightmap[x + z * this.width];
@@ -439,19 +439,19 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
         
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
-                boolean genSand = sandNoiseOctaves.generateIndevNoiseOctaves(x, z) > 8.0;
-                boolean genGravel = gravelNoiseOctaves.generateIndevNoiseOctaves(x, z) > 12.0;
+                boolean genSand = sandNoiseOctaves.sampleIndevOctaves(x, z) > 8.0;
+                boolean genGravel = gravelNoiseOctaves.sampleIndevOctaves(x, z) > 12.0;
                 
                 if (this.type == Type.ISLAND) {
-                    genSand = sandNoiseOctaves.generateIndevNoiseOctaves(x, z) > -8.0;
+                    genSand = sandNoiseOctaves.sampleIndevOctaves(x, z) > -8.0;
                 }
                 
                 if (this.theme == Theme.PARADISE) {
-                    genSand = sandNoiseOctaves.generateIndevNoiseOctaves(x, z) > -32.0;
+                    genSand = sandNoiseOctaves.sampleIndevOctaves(x, z) > -32.0;
                 }
                 
                 if (this.theme == Theme.HELL || this.theme == Theme.WOODS) {
-                    genSand = sandNoiseOctaves.generateIndevNoiseOctaves(x, z) > -8.0;
+                    genSand = sandNoiseOctaves.sampleIndevOctaves(x, z) > -8.0;
                 }
                 
                 int heightResult = heightmap[x + z *  this.width];

@@ -4,27 +4,27 @@ import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves;
+import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.decorator.SimpleDecorator;
 
 public class CountInfdevNoiseDecorator extends SimpleDecorator<CountNoiseDecoratorConfig> {
-    public OldNoiseGeneratorOctaves forestNoise;
+    public PerlinOctaveNoise forestNoise;
 
     public CountInfdevNoiseDecorator(Codec<CountNoiseDecoratorConfig> codec) {
         super(codec);
     }
 
-    public void setOctaves(OldNoiseGeneratorOctaves octaves) {
+    public void setOctaves(PerlinOctaveNoise octaves) {
         forestNoise = octaves;
     }
 
     @Override
     protected Stream<BlockPos> getPositions(Random random, CountNoiseDecoratorConfig config, BlockPos pos) {
         if (forestNoise == null) {
-            forestNoise = new OldNoiseGeneratorOctaves(random, 8, false);
+            forestNoise = new PerlinOctaveNoise(random, 8, false);
         }
 
         int chunkX = (int) pos.getX() / 16;
@@ -33,7 +33,7 @@ public class CountInfdevNoiseDecorator extends SimpleDecorator<CountNoiseDecorat
         chunkX <<= 4;
         chunkZ <<= 4;
 
-        int noiseCount = (int) forestNoise.generateInfdevOctaves(
+        int noiseCount = (int) forestNoise.sampleInfdevOctaves(
             (double) chunkX * 0.25D, 
             (double) chunkZ * 0.25D) << 3;
         

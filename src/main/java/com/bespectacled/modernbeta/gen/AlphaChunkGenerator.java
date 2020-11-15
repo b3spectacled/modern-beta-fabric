@@ -90,14 +90,14 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
     private final long seed;
     private boolean generateVanillaBiomes = false;
 
-    private final OldNoiseGeneratorOctaves minLimitNoiseOctaves;
-    private final OldNoiseGeneratorOctaves maxLimitNoiseOctaves;
-    private final OldNoiseGeneratorOctaves mainNoiseOctaves;
-    private final OldNoiseGeneratorOctaves beachNoiseOctaves;
-    private final OldNoiseGeneratorOctaves stoneNoiseOctaves;
-    private final OldNoiseGeneratorOctaves scaleNoiseOctaves;
-    private final OldNoiseGeneratorOctaves depthNoiseOctaves;
-    private final OldNoiseGeneratorOctaves forestNoiseOctaves;
+    private final PerlinOctaveNoise minLimitNoiseOctaves;
+    private final PerlinOctaveNoise maxLimitNoiseOctaves;
+    private final PerlinOctaveNoise mainNoiseOctaves;
+    private final PerlinOctaveNoise beachNoiseOctaves;
+    private final PerlinOctaveNoise stoneNoiseOctaves;
+    private final PerlinOctaveNoise scaleNoiseOctaves;
+    private final PerlinOctaveNoise depthNoiseOctaves;
+    private final PerlinOctaveNoise forestNoiseOctaves;
 
     private double sandNoise[];
     private double gravelNoise[];
@@ -135,14 +135,14 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
         RAND.setSeed(seed);
         
         // Noise Generators
-        minLimitNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 16, false);
-        maxLimitNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 16, false);
-        mainNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, false);
-        beachNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 4, false);
-        stoneNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 4, false);
-        scaleNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 10, false);
-        depthNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 16, false);
-        forestNoiseOctaves = new OldNoiseGeneratorOctaves(RAND, 8, false);
+        minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, false);
+        maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, false);
+        mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
+        beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, false);
+        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, false);
+        scaleNoiseOctaves = new PerlinOctaveNoise(RAND, 10, false);
+        depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, false);
+        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
 
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
@@ -444,10 +444,10 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
 
-        scaleNoise = scaleNoiseOctaves.generateAlphaNoiseOctaves(scaleNoise, x, y, z, int5_0, 1, int5_1, 1.0D, 0.0D, 1.0D);
-        depthNoise = depthNoiseOctaves.generateAlphaNoiseOctaves(depthNoise, x, y, z, int5_0, 1, int5_1, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
+        scaleNoise = scaleNoiseOctaves.sampleAlphaOctaves(scaleNoise, x, y, z, int5_0, 1, int5_1, 1.0D, 0.0D, 1.0D);
+        depthNoise = depthNoiseOctaves.sampleAlphaOctaves(depthNoise, x, y, z, int5_0, 1, int5_1, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
 
-        mainNoise = mainNoiseOctaves.generateAlphaNoiseOctaves(
+        mainNoise = mainNoiseOctaves.sampleAlphaOctaves(
             mainNoise, 
             x, y, z, 
             int5_0, byte17, int5_1,
@@ -456,7 +456,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
             coordinateScale / mainNoiseScaleZ
         );
 
-        minLimitNoise = minLimitNoiseOctaves.generateAlphaNoiseOctaves(
+        minLimitNoise = minLimitNoiseOctaves.sampleAlphaOctaves(
             minLimitNoise, 
             x, y, z, 
             int5_0, byte17, int5_1,
@@ -465,7 +465,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
             coordinateScale
         );
 
-        maxLimitNoise = maxLimitNoiseOctaves.generateAlphaNoiseOctaves(
+        maxLimitNoise = maxLimitNoiseOctaves.sampleAlphaOctaves(
             maxLimitNoise, 
             x, y, z, 
             int5_0, byte17, int5_1,
@@ -569,11 +569,11 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        sandNoise = beachNoiseOctaves.generateAlphaNoiseOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+        sandNoise = beachNoiseOctaves.sampleAlphaOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond, thirtysecond, 1.0D);
-        gravelNoise = beachNoiseOctaves.generateAlphaNoiseOctaves(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16, 1,
+        gravelNoise = beachNoiseOctaves.sampleAlphaOctaves(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16, 1,
                 16, thirtysecond, 1.0D, thirtysecond);
-        stoneNoise = stoneNoiseOctaves.generateAlphaNoiseOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+        stoneNoise = stoneNoiseOctaves.sampleAlphaOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
 
         for (int z = 0; z < 16; z++) {

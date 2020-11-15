@@ -1,24 +1,17 @@
 package com.bespectacled.modernbeta.util;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.Map.Entry;
 
-import com.bespectacled.modernbeta.noise.OldNoiseGeneratorOctaves2;
-import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.util.Identifier;
+import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
-import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 
 /*
  * From WorldEdit
@@ -29,9 +22,9 @@ public class BiomeUtil {
     public static final int HORIZONTAL_BIT_MASK = (1 << HORIZONTAL_SECTION_COUNT) - 1;
     public static final int VERTICAL_BIT_MASK = (1 << VERTICAL_SECTION_COUNT) - 1;
 
-    private static OldNoiseGeneratorOctaves2 tempNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 9871L), 4);
-    private static OldNoiseGeneratorOctaves2 humidNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 39811L), 4);
-    private static OldNoiseGeneratorOctaves2 noiseOctaves = new OldNoiseGeneratorOctaves2(new Random(0 * 543321L), 2);
+    private static SimplexOctaveNoise tempNoiseOctaves = new SimplexOctaveNoise(new Random(0 * 9871L), 4);
+    private static SimplexOctaveNoise humidNoiseOctaves = new SimplexOctaveNoise(new Random(0 * 39811L), 4);
+    private static SimplexOctaveNoise noiseOctaves = new SimplexOctaveNoise(new Random(0 * 543321L), 2);
     
     private static final double[] TEMPS = new double[16];
     private static final double[] HUMIDS = new double[16];
@@ -58,9 +51,9 @@ public class BiomeUtil {
     }
 
     private static void initOctaves(long seed) {
-        tempNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(seed * 9871L), 4);
-        humidNoiseOctaves = new OldNoiseGeneratorOctaves2(new Random(seed * 39811L), 4);
-        noiseOctaves = new OldNoiseGeneratorOctaves2(new Random(seed * 543321L), 2);
+        tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
+        humidNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
+        noiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
     }
     
     public static double fetchNoiseAtPoint(int x, int z) {
