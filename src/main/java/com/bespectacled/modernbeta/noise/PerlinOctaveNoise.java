@@ -97,4 +97,14 @@ public class PerlinOctaveNoise extends Noise {
         }
         return double8;
     }
+    
+    public final double sampleOldInfdevOctaves(double double2, double double4, double double6) {
+        double double8 = 0.0;
+        double double10 = 1.0;
+        for (int i = 0; i < this.octaves; ++i) {
+            double8 += this.generatorCollection[i].sampleInfdev(double2 / double10, 0.0 / double10, double6 / double10) * double10;
+            double10 *= 2.0;
+        }
+        return double8;
+    }
 }

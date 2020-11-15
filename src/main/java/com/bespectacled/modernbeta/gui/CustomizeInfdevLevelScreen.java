@@ -38,6 +38,8 @@ public class CustomizeInfdevLevelScreen extends Screen {
             infdevWinterMode = generatorSettings.settings.getBoolean("infdevWinterMode");
         if (generatorSettings.settings.contains("infdevPlus"))
             infdevPlus = generatorSettings.settings.getBoolean("infdevPlus");
+        if (generatorSettings.settings.contains("generateVanillaBiomesInfdev"))
+            generateVanillaBiomesInfdev = generatorSettings.settings.getBoolean("generateVanillaBiomesInfdev");
       
     }
     

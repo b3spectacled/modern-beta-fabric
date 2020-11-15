@@ -378,29 +378,12 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
                                 double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
                                 clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
                                 
-                                while (structureListIterator.hasNext()) {
-                                    StructurePiece curStructurePiece = (StructurePiece) structureListIterator.next();
-                                    BlockBox blockBox = curStructurePiece.getBoundingBox();
-
-                                    int sX = Math.max(0, Math.max(blockBox.minX - absX, absX - blockBox.maxX));
-                                    int sY = y - (blockBox.minY + ((curStructurePiece instanceof PoolStructurePiece) ? 
-                                            ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta() : 0));
-                                    int sZ = Math.max(0, Math.max(blockBox.minZ - absZ, absZ - blockBox.maxZ));
-
-                                    clampedDensity += super.getNoiseWeight(sX, sY, sZ) * 0.8;
-                                }
-                                structureListIterator.back(STRUCTURE_LIST.size());
-
-                                while (jigsawListIterator.hasNext()) {
-                                    JigsawJunction curJigsawJunction = (JigsawJunction) jigsawListIterator.next();
-
-                                    int jX = absX - curJigsawJunction.getSourceX();
-                                    int jY = y - curJigsawJunction.getSourceGroundY();
-                                    int jZ = absZ - curJigsawJunction.getSourceZ();
-
-                                    clampedDensity += super.getNoiseWeight(jX, jY, jZ) * 0.4;
-                                }
-                                jigsawListIterator.back(JIGSAW_LIST.size());
+                                clampedDensity += GenUtil.addStructDensity(
+                                    structureListIterator, 
+                                    jigsawListIterator, 
+                                    STRUCTURE_LIST.size(), 
+                                    JIGSAW_LIST.size(), 
+                                    absX, y, absZ);
 
                                 BlockState blockToSet = this.getBlockState(clampedDensity, y, temp);
 

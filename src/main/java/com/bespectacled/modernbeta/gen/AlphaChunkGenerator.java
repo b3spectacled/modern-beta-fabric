@@ -23,6 +23,7 @@ import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.PoolStructurePiece;
@@ -45,6 +46,7 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.ProtoChunk;
@@ -70,6 +72,7 @@ import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
+import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
 import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -374,29 +377,12 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
                                 double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
                                 clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
 
-                                while (structureListIterator.hasNext()) {
-                                    StructurePiece curStructurePiece = (StructurePiece) structureListIterator.next();
-                                    BlockBox blockBox = curStructurePiece.getBoundingBox();
-
-                                    int sX = Math.max(0, Math.max(blockBox.minX - absX, absX - blockBox.maxX));
-                                    int sY = y - (blockBox.minY + ((curStructurePiece instanceof PoolStructurePiece)
-                                            ? ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta() : 0));
-                                    int sZ = Math.max(0, Math.max(blockBox.minZ - absZ, absZ - blockBox.maxZ));
-
-                                    clampedDensity += super.getNoiseWeight(sX, sY, sZ) * 0.8;
-                                }
-                                structureListIterator.back(STRUCTURE_LIST.size());
-
-                                while (jigsawListIterator.hasNext()) {
-                                    JigsawJunction curJigsawJunction = (JigsawJunction) jigsawListIterator.next();
-
-                                    int jX = absX - curJigsawJunction.getSourceX();
-                                    int jY = y - curJigsawJunction.getSourceGroundY();
-                                    int jZ = absZ - curJigsawJunction.getSourceZ();
-
-                                    clampedDensity += super.getNoiseWeight(jX, jY, jZ) * 0.4;
-                                }
-                                jigsawListIterator.back(JIGSAW_LIST.size());
+                                clampedDensity += GenUtil.addStructDensity(
+                                    structureListIterator, 
+                                    jigsawListIterator, 
+                                    STRUCTURE_LIST.size(), 
+                                    JIGSAW_LIST.size(), 
+                                    absX, y, absZ);
 
                                 BlockState blockToSet = this.getBlockState(clampedDensity, y, 0);
 
@@ -771,6 +757,17 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
                 GROUND_CACHE_Y.put(structPos, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
             }
         }
+    }
+    
+    @Override
+    public List<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {
+        if (spawnGroup == SpawnGroup.MONSTER) {
+            if (structureAccessor.getStructureAt(blockPos, false, BetaStructure.OCEAN_SHRINE_STRUCTURE).hasChildren()) {
+                return BetaStructure.OCEAN_SHRINE_STRUCTURE.getMonsterSpawns();
+            }
+        }
+
+        return super.getEntitySpawnList(biome, structureAccessor, spawnGroup, blockPos);
     }
 
     @Override

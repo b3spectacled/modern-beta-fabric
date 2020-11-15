@@ -4,7 +4,8 @@
     "minecraft:pillager_outpost",
     "minecraft:mineshaft",
     "minecraft:stronghold",
-    "minecraft:ruined_portal"
+    "minecraft:ruined_portal",
+    "minecraft:igloo"
   ],
   "spawners": {
     "monster": [
@@ -89,16 +90,16 @@
         "maxCount": 4
       },
       {
-        "type": "minecraft:wolf",
-        "weight": 5,
-        "minCount": 4,
-        "maxCount": 4
-      },
-      {
         "type": "minecraft:polar_bear",
         "weight": 1,
         "minCount": 1,
         "maxCount": 2
+      },
+      {
+        "type": "minecraft:wolf",
+        "weight": 5,
+        "minCount": 4,
+        "maxCount": 4
       }
     ],
     "ambient": [
@@ -119,7 +120,7 @@
     ],
     "water_ambient": [
       {
-        "type": "minecraft:cod",
+        "type": "minecraft:salmon",
         "weight": 10,
         "minCount": 3,
         "maxCount": 6
@@ -131,14 +132,12 @@
   "surface_builder": "minecraft:grass",
   "carvers": {
     "air": [
+      "modern_beta:beta_cave"
     ]
   },
   "features": [
     [],
-    [
-      "minecraft:lake_water",
-      "minecraft:lake_lava"
-    ],
+    [],
     [],
     [
       "minecraft:monster_room"
@@ -157,10 +156,8 @@
     ],
     [],
     [
-      "modern_beta:trees_indev_patch_bees",
+      "modern_beta:trees_infdev_old_bees",
       "modern_beta:patch_grass_alpha_2",
-      "modern_beta:patch_dandelion_2",
-      "modern_beta:patch_poppy",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "modern_beta:patch_cactus_alpha",
@@ -185,13 +182,12 @@
     },
 	"grass_color": 11272039,
 	"foliage_color": 5242667,
-	"sky_color": 10079487,
-    "fog_color": 16777215,
+	"sky_color": 255,
+    "fog_color": 11908351,
     "water_color": 2835199,
     "water_fog_color": 329011
   },
-  "player_spawn_friendly": true,
   "precipitation": "snow",
   "category": "forest",
-  "depth": 0.37
+  "depth": 0.1 
 }

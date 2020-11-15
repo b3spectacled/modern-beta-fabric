@@ -5,16 +5,19 @@ import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.IndevBiomeSource;
 import com.bespectacled.modernbeta.biome.InfdevBiomeSource;
+import com.bespectacled.modernbeta.biome.InfdevOldBiomeSource;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
 import com.bespectacled.modernbeta.gen.InfdevChunkGenerator;
+import com.bespectacled.modernbeta.gen.InfdevOldChunkGenerator;
 import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
 import com.bespectacled.modernbeta.gen.settings.IndevGeneratorSettings;
 import com.bespectacled.modernbeta.gen.settings.InfdevGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.InfdevOldGeneratorSettings;
 import com.bespectacled.modernbeta.gen.type.BetaGeneratorType;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
@@ -48,7 +51,7 @@ import java.util.Properties;
 import java.util.Random;
 
 /*
- * Thanks SuperCoder7979!
+ * @author SuperCoder7979
  */
 @Mixin(GeneratorOptions.class)
 public class MixinGeneratorOptions {
@@ -68,6 +71,7 @@ public class MixinGeneratorOptions {
             levelType.equals("skylands") ||
             levelType.equals("alpha") ||
             levelType.equals("infdev") ||
+            levelType.equals("infdev_old") ||
             levelType.equals("indev")) {
             // get or generate seed
             String seedField = (String) MoreObjects.firstNonNull(properties.get("level-seed"), "");
@@ -111,11 +115,13 @@ public class MixinGeneratorOptions {
             CompoundTag alphaSettings = AlphaGeneratorSettings.createSettings();
             CompoundTag indevSettings = IndevGeneratorSettings.createSettings();
             CompoundTag infdevSettings = InfdevGeneratorSettings.createSettings();
+            CompoundTag infdevOldSettings = InfdevOldGeneratorSettings.createSettings();
 
             BetaGeneratorSettings betaGenSettings = new BetaGeneratorSettings(type, betaSettings);
             AlphaGeneratorSettings alphaGenSettings = new AlphaGeneratorSettings(type, alphaSettings);
             IndevGeneratorSettings indevGenSettings = new IndevGeneratorSettings(type, indevSettings);
             InfdevGeneratorSettings infdevGenSettings = new InfdevGeneratorSettings(type, infdevSettings);
+            InfdevOldGeneratorSettings infdevOldGenSettings = new InfdevOldGeneratorSettings(type, infdevOldSettings);
 
             switch (levelType) {
                 case "beta":
@@ -132,6 +138,9 @@ public class MixinGeneratorOptions {
                     break;
                 case "infdev":
                     generator = new InfdevChunkGenerator(new InfdevBiomeSource(seed, biomes, infdevGenSettings.settings), seed, infdevGenSettings);
+                    break;
+                case "infdev_old":
+                    generator = new InfdevOldChunkGenerator(new InfdevOldBiomeSource(seed, biomes, infdevOldGenSettings.settings), seed, infdevOldGenSettings);
                     break;
                 default:
                     generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);

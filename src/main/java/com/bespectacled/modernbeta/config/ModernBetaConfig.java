@@ -65,6 +65,23 @@ public class ModernBetaConfig implements ConfigData {
     @ConfigEntry.Gui.Excluded
     public boolean generateVanillaBiomesInfdev = false;
     
+    /* Old Infdev Generation */
+    
+    @ConfigEntry.Gui.Excluded
+    public boolean infdevOldWinterMode = false;
+    
+    @ConfigEntry.Gui.Excluded
+    public boolean infdevOldPlus = false;
+    
+    @ConfigEntry.Gui.Excluded
+    public boolean generateVanillaBiomesInfdevOld = false;
+    
+    @ConfigEntry.Gui.Excluded
+    public boolean generateInfdevPyramid = true;
+    
+    @ConfigEntry.Gui.Excluded
+    public boolean generateInfdevWall = true;
+    
     /* Indev Generation */
     
     @ConfigEntry.Gui.Excluded

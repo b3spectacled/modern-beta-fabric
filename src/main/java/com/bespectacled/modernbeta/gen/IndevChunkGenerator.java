@@ -210,38 +210,12 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
                 for (int y = 0; y < this.height; ++y) {
                     Block blockToSet = blockArr[offsetX + x][y][offsetZ + z];
                     
-                    while (structureListIterator.hasNext()) {
-                        StructurePiece curStructurePiece = (StructurePiece) structureListIterator.next();
-                        BlockBox blockBox = curStructurePiece.getBoundingBox();
-
-                        int sX = Math.max(0, Math.max(blockBox.minX - absX, absX - blockBox.maxX));
-                        int sY = y - (blockBox.minY + ((curStructurePiece instanceof PoolStructurePiece)
-                                ? ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta() : 0));
-                        int sZ = Math.max(0, Math.max(blockBox.minZ - absZ, absZ - blockBox.maxZ));
-
-                        if (sY < 0 && sX == 0 && sZ == 0) {
-                            if (sY == -1) blockToSet = Blocks.GRASS_BLOCK;
-                            else if (sY >= -2) blockToSet = Blocks.DIRT;
-                            else if (sY >= -4) blockToSet = Blocks.STONE;
-                        }
-                            
-                    }
-                    structureListIterator.back(STRUCTURE_LIST.size());
-
-                    while (jigsawListIterator.hasNext()) {
-                        JigsawJunction curJigsawJunction = (JigsawJunction) jigsawListIterator.next();
-
-                        int jX = absX - curJigsawJunction.getSourceX();
-                        int jY = y - curJigsawJunction.getSourceGroundY();
-                        int jZ = absZ - curJigsawJunction.getSourceZ();
-
-                        if (jY < 0 && jX == 0 && jZ == 0) {
-                            if (jY == -1) blockToSet = Blocks.GRASS_BLOCK;
-                            else if (jY >= -2) blockToSet = Blocks.DIRT;
-                            else if (jY >= -4) blockToSet = Blocks.STONE;
-                        }
-                    }
-                    jigsawListIterator.back(JIGSAW_LIST.size());
+                    blockToSet = GenUtil.getStructBlock(
+                        structureListIterator, 
+                        jigsawListIterator, 
+                        STRUCTURE_LIST.size(), 
+                        JIGSAW_LIST.size(), 
+                        absX, y, absZ, blockToSet);
 
                     if (blockToSet != Blocks.AIR) {
                         chunk.setBlockState(POS.set(x, y, z), BlockStates.getBlockState(blockToSet), false);

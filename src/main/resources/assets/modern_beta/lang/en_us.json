@@ -2,8 +2,9 @@
     "generator.beta": "Beta",
     "generator.skylands": "Skylands",
     "generator.alpha": "Alpha",
-    "generator.indev": "Indev",
-    "generator.infdev": "Infdev",
+    "generator.indev": "Indev 20100223",
+    "generator.infdev": "Infdev 20100415",
+    "generator.infdev_old": "Infdev 20100227",
     
     "createWorld.customize.indev.title": "Indev World Type Configuration",
     "createWorld.customize.indev.levelType": "Level Type",
@@ -32,6 +33,12 @@
     "createWorld.customize.infdev.infdevWinterMode": "Infdev Winter Mode",
     "createWorld.customize.infdev.infdevPlus": "Infdev Plus",
     "createWorld.customize.infdev.generateVanillaBiomesInfdev": "Generate Vanilla Biomes",
+    
+    "createWorld.customize.infdev.infdevOldWinterMode": "Infdev Winter Mode",
+    "createWorld.customize.infdev.infdevOldPlus": "Infdev Plus",
+    "createWorld.customize.infdev.generateVanillaBiomesInfdevOld": "Generate Vanilla Biomes",
+    "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",
+    "createWorld.customize.infdev.generateInfdevWall": "Generate Infdev Obsidian Wall",
     
     "createWorld.customize.beta.title": "Beta World Type Configuration",
     "createWorld.customize.beta.generateOceans": "Generate Oceans",

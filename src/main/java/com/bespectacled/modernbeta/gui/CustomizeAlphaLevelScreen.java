@@ -37,6 +37,8 @@ public class CustomizeAlphaLevelScreen extends Screen {
             alphaWinterMode = generatorSettings.settings.getBoolean("alphaWinterMode");
         if (generatorSettings.settings.contains("alphaPlus"))
             alphaPlus = generatorSettings.settings.getBoolean("alphaPlus");
+        if (generatorSettings.settings.contains("generateVanillaBiomesAlpha"))
+            generateVanillaBiomesAlpha = generatorSettings.settings.getBoolean("generateVanillaBiomesAlpha");
       
     }
     

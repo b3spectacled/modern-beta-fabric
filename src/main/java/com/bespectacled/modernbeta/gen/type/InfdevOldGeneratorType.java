@@ -8,11 +8,14 @@ import org.apache.logging.log4j.Level;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
+import com.bespectacled.modernbeta.biome.InfdevOldBiomeSource;
 import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
-import com.bespectacled.modernbeta.gen.OldInfdevChunkGenerator;
+import com.bespectacled.modernbeta.gen.InfdevOldChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.InfdevOldGeneratorSettings;
 import com.bespectacled.modernbeta.gui.CustomizeAlphaLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeBetaLevelScreen;
+import com.bespectacled.modernbeta.gui.CustomizeInfdevOldLevelScreen;
 import com.bespectacled.modernbeta.mixin.MixinGeneratorTypeAccessor;
 import com.google.common.collect.ImmutableMap;
 
@@ -32,8 +35,8 @@ import net.minecraft.world.gen.chunk.SlideConfig;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 
 @Environment(EnvType.CLIENT)
-public final class OldInfdevGeneratorType extends GeneratorType {
-    public static final GeneratorType INSTANCE = new OldInfdevGeneratorType();
+public final class InfdevOldGeneratorType extends GeneratorType {
+    public static final GeneratorType INSTANCE = new InfdevOldGeneratorType();
 
     public static final StructuresConfig structures = new StructuresConfig(true);
     public static final NoiseSamplingConfig noiseSampler = new NoiseSamplingConfig(1.0, 1.0, 40.0, 22.0);
@@ -44,7 +47,7 @@ public final class OldInfdevGeneratorType extends GeneratorType {
     public static final ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise,
             Blocks.STONE.getDefaultState(), Blocks.WATER.getDefaultState(), -10, 0, 64, false);
     
-    public static final AlphaGeneratorSettings alphaSettings = new AlphaGeneratorSettings(type, new CompoundTag());
+    public static final InfdevOldGeneratorSettings infdevOldSettings = new InfdevOldGeneratorSettings(type, new CompoundTag());
     
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -52,12 +55,12 @@ public final class OldInfdevGeneratorType extends GeneratorType {
             .putAll(MixinGeneratorTypeAccessor.getScreenProviders())
             .put(
                 Optional.<GeneratorType>of(INSTANCE), (createWorldScreen, generatorSettings) -> {
-                    return new CustomizeAlphaLevelScreen(createWorldScreen, alphaSettings);
+                    return new CustomizeInfdevOldLevelScreen(createWorldScreen, infdevOldSettings);
                 }
             )
             .build();
 
-    private OldInfdevGeneratorType() {
+    private InfdevOldGeneratorType() {
         super("infdev_old");
     }
 
@@ -70,8 +73,8 @@ public final class OldInfdevGeneratorType extends GeneratorType {
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        alphaSettings.settings = AlphaGeneratorSettings.createSettings();
-        return new OldInfdevChunkGenerator(new AlphaBiomeSource(seed, biomes, alphaSettings.settings), seed, alphaSettings);
+        infdevOldSettings.settings = InfdevOldGeneratorSettings.createSettings();
+        return new InfdevOldChunkGenerator(new InfdevOldBiomeSource(seed, biomes, infdevOldSettings.settings), seed, infdevOldSettings);
     }
     
     

@@ -14,7 +14,7 @@ import com.bespectacled.modernbeta.gen.type.AlphaGeneratorType;
 import com.bespectacled.modernbeta.gen.type.BetaGeneratorType;
 import com.bespectacled.modernbeta.gen.type.IndevGeneratorType;
 import com.bespectacled.modernbeta.gen.type.InfdevGeneratorType;
-import com.bespectacled.modernbeta.gen.type.OldInfdevGeneratorType;
+import com.bespectacled.modernbeta.gen.type.InfdevOldGeneratorType;
 import com.bespectacled.modernbeta.gen.type.SkylandsGeneratorType;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
@@ -30,6 +30,8 @@ import com.bespectacled.modernbeta.biome.IndevBiomeSource;
 import com.bespectacled.modernbeta.biome.IndevBiomes;
 import com.bespectacled.modernbeta.biome.InfdevBiomeSource;
 import com.bespectacled.modernbeta.biome.InfdevBiomes;
+import com.bespectacled.modernbeta.biome.InfdevOldBiomeSource;
+import com.bespectacled.modernbeta.biome.InfdevOldBiomes;
 import com.bespectacled.modernbeta.biome.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
@@ -39,7 +41,7 @@ import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
 import com.bespectacled.modernbeta.gen.InfdevChunkGenerator;
-import com.bespectacled.modernbeta.gen.OldInfdevChunkGenerator;
+import com.bespectacled.modernbeta.gen.InfdevOldChunkGenerator;
 
 public class ModernBeta implements ModInitializer {
     public static final String ID = "modern_beta";
@@ -73,6 +75,7 @@ public class ModernBeta implements ModInitializer {
         AlphaBiomes.reserveBiomeIDs();
         InfdevBiomes.reserveBiomeIDs();
         IndevBiomes.reserveBiomeIDs();
+        InfdevOldBiomes.reserveBiomeIDs();
         
         LOGGER.log(Level.INFO, "Registered Modern Beta biomes!");
 
@@ -80,6 +83,7 @@ public class ModernBeta implements ModInitializer {
         AlphaBiomeSource.register();
         InfdevBiomeSource.register();
         IndevBiomeSource.register();
+        InfdevOldBiomeSource.register();
         
         LOGGER.log(Level.INFO, "Registered Modern Beta biome providers!");
 
@@ -87,7 +91,7 @@ public class ModernBeta implements ModInitializer {
         SkylandsChunkGenerator.register();
         AlphaChunkGenerator.register();
         InfdevChunkGenerator.register();
-        OldInfdevChunkGenerator.register();
+        InfdevOldChunkGenerator.register();
         IndevChunkGenerator.register();
         
         LOGGER.log(Level.INFO, "Registered Modern Beta chunk generators!");
@@ -99,7 +103,7 @@ public class ModernBeta implements ModInitializer {
             SkylandsGeneratorType.register();
             AlphaGeneratorType.register();
             InfdevGeneratorType.register();
-            OldInfdevGeneratorType.register();
+            InfdevOldGeneratorType.register();
             IndevGeneratorType.register();
             
             LOGGER.log(Level.INFO, "Registered Modern Beta world types!");            
