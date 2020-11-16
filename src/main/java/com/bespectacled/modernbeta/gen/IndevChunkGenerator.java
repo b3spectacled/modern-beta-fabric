@@ -1,7 +1,6 @@
 package com.bespectacled.modernbeta.gen;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 import org.apache.logging.log4j.Level;
 
@@ -17,13 +16,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.JigsawJunction;
-import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.StructurePiece;
-import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.util.math.BlockBox;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.BlockPos.Mutable;
@@ -36,8 +30,6 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.chunk.StructuresConfig;
-import net.minecraft.world.gen.feature.StructureFeature;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.IndevBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;

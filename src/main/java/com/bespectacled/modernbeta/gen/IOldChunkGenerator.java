@@ -1,5 +1,5 @@
 package com.bespectacled.modernbeta.gen;
 
-public interface IOldChunkGenerator {
 
+public interface IOldChunkGenerator {
 }

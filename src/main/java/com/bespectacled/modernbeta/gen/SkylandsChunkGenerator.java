@@ -50,6 +50,7 @@ import net.minecraft.world.gen.feature.StructureFeature;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
+import com.bespectacled.modernbeta.biome.IOldBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
@@ -61,7 +62,7 @@ import com.bespectacled.modernbeta.util.GenUtil;
 
 //private final BetaGeneratorSettings settings;
 
-public class SkylandsChunkGenerator extends NoiseChunkGenerator {
+public class SkylandsChunkGenerator extends NoiseChunkGenerator implements IOldChunkGenerator {
 
     public static final Codec<SkylandsChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
@@ -167,44 +168,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
-        BiomeAccess biomeAcc = biomeAccess.withSource(this.biomeSource);
-        ChunkPos chunkPos = chunk.getPos();
-
-        int mainChunkX = chunkPos.x;
-        int mainChunkZ = chunkPos.z;
-
-        int biomeX = mainChunkX << 2;
-        int biomeZ = mainChunkZ << 2;
-
-        int absX = biomeX << 2;
-        int absZ = biomeZ << 2;
-
-        GenerationSettings generationSettings = this.biomeSource.getBiomeForNoiseGen(biomeX, 0, biomeZ)
-                .getGenerationSettings();
-        BitSet bitSet = ((ProtoChunk) chunk).getOrCreateCarvingMask(carver);
-
-        RAND.setSeed(this.seed);
-        long l = (RAND.nextLong() / 2L) * 2L + 1L;
-        long l1 = (RAND.nextLong() / 2L) * 2L + 1L;
-
-        for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
-            for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
-                List<Supplier<ConfiguredCarver<?>>> carverList = generationSettings.getCarversForStep(carver);
-                ListIterator<Supplier<ConfiguredCarver<?>>> carverIterator = carverList.listIterator();
-
-                while (carverIterator.hasNext()) {
-                    ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
-
-                    RAND.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
-
-                    if (configuredCarver.shouldCarve(RAND, chunkX, chunkZ)) {
-                        configuredCarver.carve(chunk, biomeAcc::getBiome, RAND, this.getSeaLevel(), chunkX, chunkZ,
-                                mainChunkX, mainChunkZ, bitSet);
-
-                    }
-                }
-            }
-        }
+        GenUtil.carveWithOcean(this.seed, biomeAccess, chunk, carver, this, biomeSource, FEATURE_RAND, this.getSeaLevel(), false);
     }
 
     @Override
@@ -481,7 +445,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
 
-                curBiome = this.biomeSource.usesVanillaBiomes() ? region.getBiome(POS.set(absX, 0, absZ)) : BIOMES[z + x * 16];
+                curBiome = this.biomeSource.generateVanillaBiomes() ? region.getBiome(POS.set(absX, 0, absZ)) : BIOMES[z + x * 16];
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -677,5 +641,6 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator {
     public boolean isSkyDim() {
         return this.generateSkyDim;
     }
+    
 
 }

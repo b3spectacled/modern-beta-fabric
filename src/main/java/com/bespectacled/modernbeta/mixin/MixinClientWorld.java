@@ -90,7 +90,7 @@ public abstract class MixinClientWorld extends World {
         if (gen instanceof BetaChunkGenerator || (gen instanceof SkylandsChunkGenerator &&  !((SkylandsChunkGenerator)gen).isSkyDim())) {
             this.isBetaWorld = true;
             
-            if (((IOldBiomeSource)gen.getBiomeSource()).usesVanillaBiomes()) this.isBetaWorld = false;
+            if (((IOldBiomeSource)gen.getBiomeSource()).generateVanillaBiomes()) this.isBetaWorld = false;
             
             this.worldSeed = BETA_CONFIG.fixedSeed == 0L ? worldSeed : BETA_CONFIG.fixedSeed;
             setSeed(this.worldSeed);

@@ -68,6 +68,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeType;
+import com.bespectacled.modernbeta.biome.IOldBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
@@ -172,30 +173,16 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
         BetaFeature.OLD_FANCY_OAK.chunkReset();
     }
     
-    // Modified to accommodate additional ocean biome replacements
     @Override
     public void generateFeatures(ChunkRegion chunkRegion, StructureAccessor structureAccessor) {
-        int ctrX = chunkRegion.getCenterChunkX();
-        int ctrZ = chunkRegion.getCenterChunkZ();
-        int ctrAbsX = ctrX * 16;
-        int ctrAbsZ = ctrZ * 16;
-
-        Chunk ctrChunk = chunkRegion.getChunk(ctrX, ctrZ);
-        
-        Biome biome = GenUtil.getOceanBiome(ctrChunk, this, biomeSource, this.generateVanillaBiomes);
-
-        long popSeed = FEATURE_RAND.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
-        
-        try {
-            biome.generateFeatureStep(structureAccessor, this, chunkRegion, popSeed, FEATURE_RAND, new BlockPos(ctrAbsX, 0, ctrAbsZ));
-        } catch (Exception exception) {
-            CrashReport report = CrashReport.create(exception, "Biome decoration");
-            report.addElement("Generation").add("CenterX", ctrX).add("CenterZ", ctrZ).add("Seed", popSeed).add("Biome", biome);
-            throw new CrashException(report);
-        }
+        GenUtil.generateFeaturesWithOcean(chunkRegion, structureAccessor, this, FEATURE_RAND, this.biomeSource.generateVanillaBiomes());
     }
     
-    // Modified to accommodate additional ocean biome replacements
+    @Override
+    public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
+        GenUtil.carveWithOcean(this.seed, biomeAccess, chunk, carver, this, biomeSource, FEATURE_RAND, this.getSeaLevel(), this.biomeSource.generateVanillaBiomes());
+    }
+    
     @Override
     public void setStructureStarts(
         DynamicRegistryManager dynamicRegistryManager, 
@@ -204,93 +191,9 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
         StructureManager structureManager, 
         long seed
     ) {
-        ChunkPos chunkPos = chunk.getPos();
-        
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, this.generateVanillaBiomes);
-
-        this.setStructureStart(ConfiguredStructureFeatures.STRONGHOLD, dynamicRegistryManager, structureAccessor, chunk,
-                structureManager, seed, chunkPos, biome);
-        
-        for (final Supplier<ConfiguredStructureFeature<?, ?>> supplier : biome.getGenerationSettings()
-                .getStructureFeatures()) {
-            this.setStructureStart(supplier.get(), dynamicRegistryManager, structureAccessor, chunk, structureManager,
-                    seed, chunkPos, biome);
-        }
-        
-    }
-
-    
-    // Modified to accommodate additional ocean biome replacements
-    private void setStructureStart(
-        ConfiguredStructureFeature<?, ?> configuredStructureFeature,
-        DynamicRegistryManager dynamicRegistryManager, 
-        StructureAccessor structureAccessor, 
-        Chunk chunk,
-        StructureManager structureManager, 
-        long long7, 
-        ChunkPos chunkPos, 
-        Biome biome
-    ) {
-        StructureStart<?> structureStart = structureAccessor.getStructureStart(ChunkSectionPos.from(chunk.getPos(), 0),
-                configuredStructureFeature.feature, chunk);
-        int refs = (structureStart != null) ? structureStart.getReferences() : 0;
-
-        // StructureConfig structureConfig13 =
-        // this.structuresConfig.getForType(configuredStructureFeature.feature);
-        StructureConfig structureConfig = this.settings.wrapped.getStructuresConfig()
-                .getForType(configuredStructureFeature.feature);
-
-        if (structureConfig != null) {
-            StructureStart<?> gotStart = configuredStructureFeature.tryPlaceStart(dynamicRegistryManager, this,
-                    this.biomeSource, structureManager, long7, chunkPos, biome, refs, structureConfig);
-            structureAccessor.setStructureStart(ChunkSectionPos.from(chunk.getPos(), 0),
-                    configuredStructureFeature.feature, gotStart, chunk);
-        }
+        GenUtil.setStructureStartsWithOcean(dynamicRegistryManager, structureAccessor, chunk, structureManager, seed, this, this.biomeSource, this.biomeSource.generateVanillaBiomes());
     }
     
-    @Override
-    public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
-        BiomeAccess biomeAcc = biomeAccess.withSource(this.biomeSource);
-        ChunkPos chunkPos = chunk.getPos();
-
-        int mainChunkX = chunkPos.x;
-        int mainChunkZ = chunkPos.z;
-
-        int biomeX = mainChunkX << 2;
-        int biomeZ = mainChunkZ << 2;
-
-        int absX = biomeX << 2;
-        int absZ = biomeZ << 2;
-
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, this.generateVanillaBiomes);
-        GenerationSettings genSettings = biome.getGenerationSettings();
-        
-        BitSet bitSet = ((ProtoChunk) chunk).getOrCreateCarvingMask(carver);
-
-        RAND.setSeed(this.seed);
-        long l = (RAND.nextLong() / 2L) * 2L + 1L;
-        long l1 = (RAND.nextLong() / 2L) * 2L + 1L;
-        
-        for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
-            for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
-                List<Supplier<ConfiguredCarver<?>>> carverList = genSettings.getCarversForStep(carver);
-                ListIterator<Supplier<ConfiguredCarver<?>>> carverIterator = carverList.listIterator();
-
-                while (carverIterator.hasNext()) {
-                    ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
-
-                    RAND.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
-
-                    if (configuredCarver.shouldCarve(RAND, chunkX, chunkZ)) {
-                        configuredCarver.carve(chunk, biomeAcc::getBiome, RAND, this.getSeaLevel(), chunkX, chunkZ,
-                                mainChunkX, mainChunkZ, bitSet);
-
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {
         buildAlphaSurface(chunkRegion, chunk);

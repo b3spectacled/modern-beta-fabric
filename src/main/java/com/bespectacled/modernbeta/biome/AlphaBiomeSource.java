@@ -117,7 +117,7 @@ public class AlphaBiomeSource extends BiomeSource implements IOldBiomeSource {
     }
 
     @Override
-    public boolean usesVanillaBiomes() {
+    public boolean generateVanillaBiomes() {
         // TODO Auto-generated method stub
         return this.generateVanillaBiomesAlpha;
     }

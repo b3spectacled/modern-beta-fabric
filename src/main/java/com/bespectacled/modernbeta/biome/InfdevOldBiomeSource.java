@@ -115,7 +115,7 @@ public class InfdevOldBiomeSource extends BiomeSource implements IOldBiomeSource
     }
 
     @Override
-    public boolean usesVanillaBiomes() {
+    public boolean generateVanillaBiomes() {
         return this.generateVanillaBiomesInfdevOld;
     }
 

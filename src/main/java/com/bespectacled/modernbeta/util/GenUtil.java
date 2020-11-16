@@ -1,9 +1,14 @@
 package com.bespectacled.modernbeta.util;
 
+import java.util.BitSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Random;
+import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeType;
 import com.bespectacled.modernbeta.biome.IOldBiomeSource;
+import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
@@ -12,22 +17,32 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.PoolStructurePiece;
+import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.util.Util;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.BlockPos.Mutable;
+import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ProtoChunk;
+import net.minecraft.world.gen.ChunkRandom;
+import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 public class GenUtil {
@@ -49,10 +64,12 @@ public class GenUtil {
         int x = chunk.getPos().x << 4;
         int z = chunk.getPos().z << 4;
         
-        Biome biome = biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
+        Biome biome;
 
         if (vanillaGen && gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < 60) {
             biome = ((IOldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, biomeZ);
+        } else {
+            biome = biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
         }
 
         return biome;
@@ -69,6 +86,119 @@ public class GenUtil {
         }
 
         return biome;
+    }
+    
+    public static void generateFeaturesWithOcean(
+        ChunkRegion chunkRegion, 
+        StructureAccessor structureAccessor, 
+        ChunkGenerator gen, 
+        ChunkRandom random, 
+        boolean genOceans
+    ) {
+        int ctrX = chunkRegion.getCenterChunkX();
+        int ctrZ = chunkRegion.getCenterChunkZ();
+        int ctrAbsX = ctrX * 16;
+        int ctrAbsZ = ctrZ * 16;
+
+        Chunk ctrChunk = chunkRegion.getChunk(ctrX, ctrZ);
+        
+        Biome biome = GenUtil.getOceanBiome(ctrChunk, gen, gen.getBiomeSource(), genOceans);
+
+        long popSeed = random.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
+        
+        try {
+            biome.generateFeatureStep(structureAccessor, (ChunkGenerator)gen, chunkRegion, popSeed, random, new BlockPos(ctrAbsX, 0, ctrAbsZ));
+        } catch (Exception exception) {
+            CrashReport report = CrashReport.create(exception, "Biome decoration");
+            report.addElement("Generation").add("CenterX", ctrX).add("CenterZ", ctrZ).add("Seed", popSeed).add("Biome", biome);
+            throw new CrashException(report);
+        }
+    }
+    
+    public static void carveWithOcean(
+        long seed, 
+        BiomeAccess biomeAccess, 
+        Chunk chunk, 
+        GenerationStep.Carver carver, 
+        ChunkGenerator gen, 
+        BiomeSource biomeSource,
+        Random random,
+        int seaLevel,
+        boolean genOceans
+    ) {
+        BiomeAccess biomeAcc = biomeAccess.withSource(biomeSource);
+        ChunkPos chunkPos = chunk.getPos();
+
+        int mainChunkX = chunkPos.x;
+        int mainChunkZ = chunkPos.z;
+
+        Biome biome = GenUtil.getOceanBiome(chunk, gen, biomeSource, genOceans);
+        GenerationSettings genSettings = biome.getGenerationSettings();
+        
+        BitSet bitSet = ((ProtoChunk) chunk).getOrCreateCarvingMask(carver);
+
+        random.setSeed(seed);
+        long l = (random.nextLong() / 2L) * 2L + 1L;
+        long l1 = (random.nextLong() / 2L) * 2L + 1L;
+
+        for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
+            for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
+                List<Supplier<ConfiguredCarver<?>>> carverList = genSettings.getCarversForStep(carver);
+                ListIterator<Supplier<ConfiguredCarver<?>>> carverIterator = carverList.listIterator();
+
+                while (carverIterator.hasNext()) {
+                    ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
+
+                    random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
+
+                    if (configuredCarver.shouldCarve(random, chunkX, chunkZ)) {
+                        configuredCarver.carve(chunk, biomeAcc::getBiome, random, seaLevel, chunkX, chunkZ,
+                                mainChunkX, mainChunkZ, bitSet);
+
+                    }
+                }
+            }
+        }
+    }
+    
+    public static void setStructureStartsWithOcean(
+        DynamicRegistryManager dynamicRegistryManager, 
+        StructureAccessor structureAccessor,   
+        Chunk chunk, 
+        StructureManager structureManager, 
+        long seed,
+        ChunkGenerator gen,
+        BiomeSource biomeSource,
+        boolean genOceans
+    ) {
+        ChunkPos chunkPos = chunk.getPos();
+        
+        Biome biome = GenUtil.getOceanBiome(chunk, gen, biomeSource, genOceans);
+
+        ((MixinChunkGeneratorInvoker)gen).invokeSetStructureStart(
+            ConfiguredStructureFeatures.STRONGHOLD, 
+            dynamicRegistryManager, 
+            structureAccessor, 
+            chunk,
+            structureManager, 
+            seed, 
+            chunkPos, 
+            biome
+        );
+        
+        for (final Supplier<ConfiguredStructureFeature<?, ?>> supplier : biome.getGenerationSettings()
+                .getStructureFeatures()) {
+            ((MixinChunkGeneratorInvoker)gen).invokeSetStructureStart(
+                supplier.get(),
+                dynamicRegistryManager, 
+                structureAccessor,
+                chunk, 
+                structureManager,
+                seed, 
+                chunkPos,
+                biome
+            );
+        }
     }
     
     public static void collectStructures(

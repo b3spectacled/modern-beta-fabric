@@ -3,8 +3,8 @@
     "generator.skylands": "Skylands",
     "generator.alpha": "Alpha",
     "generator.indev": "Indev 20100223",
-    "generator.infdev": "Infdev 20100415",
-    "generator.infdev_old": "Infdev 20100227",
+    "generator.infdev": "Inf 20100415",
+    "generator.infdev_old": "Inf 20100227",
     
     "createWorld.customize.indev.title": "Indev World Type Configuration",
     "createWorld.customize.indev.levelType": "Level Type",

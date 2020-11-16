@@ -266,8 +266,12 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
     }
 
     @Override
-    public boolean usesVanillaBiomes() {
+    public boolean generateVanillaBiomes() {
         return this.generateVanillaBiomesBeta;
+    }
+    
+    public boolean generateOceans() {
+        return this.generateBetaOceans || this.generateOceans;
     }
     
     @Override
