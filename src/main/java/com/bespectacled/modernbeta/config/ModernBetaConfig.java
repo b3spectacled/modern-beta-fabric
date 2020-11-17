@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.config;
 
+import com.bespectacled.modernbeta.util.WorldEnum;
+
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
@@ -38,6 +40,9 @@ public class ModernBetaConfig implements ConfigData {
     public boolean generateIceDesert = false;
     
     @ConfigEntry.Gui.Excluded
+    public int betaBiomeType = WorldEnum.PreBetaBiomeType.CLASSIC.ordinal();
+    
+    @ConfigEntry.Gui.Excluded
     public boolean generateSkyDim = false;
     
     @ConfigEntry.Gui.Excluded
@@ -46,13 +51,7 @@ public class ModernBetaConfig implements ConfigData {
     /* Alpha Generation */
 
     @ConfigEntry.Gui.Excluded
-    public boolean alphaWinterMode = false;
-
-    @ConfigEntry.Gui.Excluded
-    public boolean alphaPlus = false;
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean generateVanillaBiomesAlpha = false;
+    public int alphaBiomeType = WorldEnum.PreBetaBiomeType.CLASSIC.ordinal();
     
     /* Infdev Generation */
     
@@ -65,6 +64,9 @@ public class ModernBetaConfig implements ConfigData {
     @ConfigEntry.Gui.Excluded
     public boolean generateVanillaBiomesInfdev = false;
     
+    @ConfigEntry.Gui.Excluded
+    public int infdevBiomeType = WorldEnum.PreBetaBiomeType.CLASSIC.ordinal();
+    
     /* Old Infdev Generation */
     
     @ConfigEntry.Gui.Excluded
@@ -72,6 +74,9 @@ public class ModernBetaConfig implements ConfigData {
     
     @ConfigEntry.Gui.Excluded
     public boolean infdevOldPlus = false;
+    
+    @ConfigEntry.Gui.Excluded
+    public int infdevOldBiomeType = WorldEnum.PreBetaBiomeType.CLASSIC.ordinal();
     
     @ConfigEntry.Gui.Excluded
     public boolean generateVanillaBiomesInfdevOld = false;

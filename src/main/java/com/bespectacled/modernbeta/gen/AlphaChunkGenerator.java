@@ -41,7 +41,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
-import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
@@ -55,10 +55,10 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
     public static final Codec<AlphaChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
                     Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
-                    AlphaGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
+                    OldGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
             .apply(instance, instance.stable(AlphaChunkGenerator::new)));
 
-    private final AlphaGeneratorSettings settings;
+    private final OldGeneratorSettings settings;
     private final AlphaBiomeSource biomeSource;
     private final long seed;
     private boolean generateVanillaBiomes = false;
@@ -97,7 +97,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
     private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
     private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
 
-    public AlphaChunkGenerator(BiomeSource biomes, long seed, AlphaGeneratorSettings settings) {
+    public AlphaChunkGenerator(BiomeSource biomes, long seed, OldGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
         this.settings = settings;
         this.biomeSource = (AlphaBiomeSource) biomes;

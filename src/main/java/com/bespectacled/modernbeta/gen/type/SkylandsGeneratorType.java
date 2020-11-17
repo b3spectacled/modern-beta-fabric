@@ -3,13 +3,9 @@ package com.bespectacled.modernbeta.gen.type;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.logging.log4j.Level;
-
-import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
-import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
-import com.bespectacled.modernbeta.gui.CustomizeBetaLevelScreen;
+import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gui.CustomizeSkylandsLevelScreen;
 import com.bespectacled.modernbeta.mixin.MixinGeneratorTypeAccessor;
 import com.google.common.collect.ImmutableMap;
@@ -20,7 +16,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.world.GeneratorType;
-import net.minecraft.client.world.GeneratorType.ScreenProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
@@ -42,7 +37,7 @@ public final class SkylandsGeneratorType extends GeneratorType {
     public static final ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise,
             Blocks.STONE.getDefaultState(), Blocks.WATER.getDefaultState(), -10, 0, 64, false);
     
-    public static BetaGeneratorSettings betaSettings = new BetaGeneratorSettings(type, new CompoundTag());
+    public static OldGeneratorSettings betaSettings = new OldGeneratorSettings(type, new CompoundTag());
 
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -70,7 +65,7 @@ public final class SkylandsGeneratorType extends GeneratorType {
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        betaSettings.settings = BetaGeneratorSettings.createSettings();
+        betaSettings.settings = OldGeneratorSettings.createBetaSettings();
         return new SkylandsChunkGenerator(new BetaBiomeSource(seed, biomes, betaSettings.settings), seed, betaSettings);
     }
 }

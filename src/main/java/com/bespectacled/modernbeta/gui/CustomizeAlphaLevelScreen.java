@@ -1,7 +1,8 @@
 package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
+import com.bespectacled.modernbeta.util.WorldEnum;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -9,36 +10,33 @@ import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.options.BooleanOption;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.options.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.world.gen.GeneratorOptions;
 
 public class CustomizeAlphaLevelScreen extends Screen {
     private CreateWorldScreen parent;
-    private AlphaGeneratorSettings generatorSettings;
+    private OldGeneratorSettings generatorSettings;
     
-    private boolean alphaWinterMode = ModernBeta.BETA_CONFIG.alphaWinterMode;
-    private boolean alphaPlus = ModernBeta.BETA_CONFIG.alphaPlus;
-    private boolean generateVanillaBiomesAlpha = ModernBeta.BETA_CONFIG.generateVanillaBiomesAlpha;
+    private int biomeType = ModernBeta.BETA_CONFIG.alphaBiomeType;
     
     private ButtonListWidget buttonList;
+    
+    private final Text textBiomeType = new TranslatableText("createWorld.customize.type.biomeType");
+    private final Text textClassic = new TranslatableText("createWorld.customize.type.classic");
+    private final Text textWinter = new TranslatableText("createWorld.customize.type.winter");
+    private final Text textPlus = new TranslatableText("createWorld.customize.type.plus");
+    private final Text textVanilla = new TranslatableText("createWorld.customize.type.vanilla");
 
-    public CustomizeAlphaLevelScreen(CreateWorldScreen parent, AlphaGeneratorSettings generatorSettings) {
+    public CustomizeAlphaLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings) {
         super(new TranslatableText("createWorld.customize.alpha.title"));
         
         this.parent = parent;
         this.generatorSettings = generatorSettings;
         
-        if (generatorSettings.settings.contains("alphaWinterMode"))
-            alphaWinterMode = generatorSettings.settings.getBoolean("alphaWinterMode");
-        if (generatorSettings.settings.contains("alphaPlus"))
-            alphaPlus = generatorSettings.settings.getBoolean("alphaPlus");
-        if (generatorSettings.settings.contains("generateVanillaBiomesAlpha"))
-            generateVanillaBiomesAlpha = generatorSettings.settings.getBoolean("generateVanillaBiomesAlpha");
+        if (generatorSettings.settings.contains("alphaBiomeType"))
+            this.biomeType = generatorSettings.settings.getInt("alphaBiomeType");
       
     }
     
@@ -61,10 +59,46 @@ public class CustomizeAlphaLevelScreen extends Screen {
             }
         ));
         
-        
-        
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         
+        this.buttonList.addSingleOptionEntry(
+            new CyclingOption(
+                "createWorld.customize.alpha.typeButton",
+                (gameOptions, value) -> {
+                    this.biomeType++;
+                    if (this.biomeType > WorldEnum.PreBetaBiomeType.values().length - 1) this.biomeType = 0;
+                    generatorSettings.settings.putInt("alphaBiomeType", this.biomeType);
+                    
+                    return;
+                },
+                (gameOptions, cyclingOptions) -> {
+                    Text typeText = textClassic;
+                    
+                    switch(this.biomeType) {
+                        case 0:
+                            typeText = textClassic;
+                            break;
+                        case 1:
+                            typeText = textWinter;
+                            break;
+                        case 2:
+                            typeText = textPlus;
+                            break;
+                        case 3:
+                            typeText = textVanilla;
+                            break;
+                    }
+                    
+                    return new TranslatableText(
+                        "options.generic_value", 
+                        new Object[] { 
+                            textBiomeType, 
+                            typeText
+                    });
+                }
+        ));
+        
+        /*
         this.buttonList.addSingleOptionEntry(
             new BooleanOption(
                 "createWorld.customize.alpha.alphaWinterMode", 
@@ -94,6 +128,7 @@ public class CustomizeAlphaLevelScreen extends Screen {
                     generatorSettings.settings.putBoolean("generateVanillaBiomesAlpha", value);
                 }
         ));
+        */
         
         this.children.add(this.buttonList);
     }

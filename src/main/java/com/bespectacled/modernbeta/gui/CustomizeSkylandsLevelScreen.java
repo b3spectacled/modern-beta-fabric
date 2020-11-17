@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -15,7 +15,7 @@ import net.minecraft.text.TranslatableText;
 
 public class CustomizeSkylandsLevelScreen extends Screen {
     private CreateWorldScreen parent;
-    private BetaGeneratorSettings generatorSettings;
+    private OldGeneratorSettings generatorSettings;
     
     private boolean generateIceDesert = ModernBeta.BETA_CONFIG.generateIceDesert;
     private boolean generateSkyDim = ModernBeta.BETA_CONFIG.generateSkyDim;
@@ -23,7 +23,7 @@ public class CustomizeSkylandsLevelScreen extends Screen {
     
     private ButtonListWidget buttonList;
 
-    public CustomizeSkylandsLevelScreen(CreateWorldScreen parent, BetaGeneratorSettings generatorSettings) {
+    public CustomizeSkylandsLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings) {
         super(new TranslatableText("createWorld.customize.beta.title"));
         
         this.parent = parent;

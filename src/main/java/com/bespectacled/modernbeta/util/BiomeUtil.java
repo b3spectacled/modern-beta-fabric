@@ -26,9 +26,6 @@ public class BiomeUtil {
     private static SimplexOctaveNoise humidNoiseOctaves = new SimplexOctaveNoise(new Random(0 * 39811L), 4);
     private static SimplexOctaveNoise noiseOctaves = new SimplexOctaveNoise(new Random(0 * 543321L), 2);
     
-    private static final double[] TEMPS = new double[16];
-    private static final double[] HUMIDS = new double[16];
-    
     //public static double[] temps = null;
     //public static double[] humids = null;
     public static double[] noises = null;

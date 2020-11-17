@@ -13,11 +13,7 @@ import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
 import com.bespectacled.modernbeta.gen.InfdevChunkGenerator;
 import com.bespectacled.modernbeta.gen.InfdevOldChunkGenerator;
 import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
-import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
-import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
-import com.bespectacled.modernbeta.gen.settings.IndevGeneratorSettings;
-import com.bespectacled.modernbeta.gen.settings.InfdevGeneratorSettings;
-import com.bespectacled.modernbeta.gen.settings.InfdevOldGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gen.type.BetaGeneratorType;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
@@ -111,17 +107,17 @@ public class MixinGeneratorOptions {
             
             ChunkGenerator generator;
             
-            CompoundTag betaSettings = BetaGeneratorSettings.createSettings();
-            CompoundTag alphaSettings = AlphaGeneratorSettings.createSettings();
-            CompoundTag indevSettings = IndevGeneratorSettings.createSettings();
-            CompoundTag infdevSettings = InfdevGeneratorSettings.createSettings();
-            CompoundTag infdevOldSettings = InfdevOldGeneratorSettings.createSettings();
+            CompoundTag betaSettings = OldGeneratorSettings.createBetaSettings();
+            CompoundTag alphaSettings = OldGeneratorSettings.createAlphaSettings();
+            CompoundTag indevSettings = OldGeneratorSettings.createIndevSettings();
+            CompoundTag infdevSettings = OldGeneratorSettings.createInfdevSettings();
+            CompoundTag infdevOldSettings = OldGeneratorSettings.createInfdevOldSettings();
 
-            BetaGeneratorSettings betaGenSettings = new BetaGeneratorSettings(type, betaSettings);
-            AlphaGeneratorSettings alphaGenSettings = new AlphaGeneratorSettings(type, alphaSettings);
-            IndevGeneratorSettings indevGenSettings = new IndevGeneratorSettings(type, indevSettings);
-            InfdevGeneratorSettings infdevGenSettings = new InfdevGeneratorSettings(type, infdevSettings);
-            InfdevOldGeneratorSettings infdevOldGenSettings = new InfdevOldGeneratorSettings(type, infdevOldSettings);
+            OldGeneratorSettings betaGenSettings = new OldGeneratorSettings(type, betaSettings);
+            OldGeneratorSettings alphaGenSettings = new OldGeneratorSettings(type, alphaSettings);
+            OldGeneratorSettings indevGenSettings = new OldGeneratorSettings(type, indevSettings);
+            OldGeneratorSettings infdevGenSettings = new OldGeneratorSettings(type, infdevSettings);
+            OldGeneratorSettings infdevOldGenSettings = new OldGeneratorSettings(type, infdevOldSettings);
 
             switch (levelType) {
                 case "beta":

@@ -40,7 +40,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
-import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.BiomeUtil;
@@ -54,10 +54,10 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator implements IOldC
     public static final Codec<SkylandsChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
                     Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
-                    BetaGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
+                    OldGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
             .apply(instance, instance.stable(SkylandsChunkGenerator::new)));
 
-    private final BetaGeneratorSettings settings;
+    private final OldGeneratorSettings settings;
     private final BetaBiomeSource biomeSource;
     private final long seed;
 
@@ -99,7 +99,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator implements IOldC
     private static final double[] HUMIDS = new double[256];
     
     private static final Biome[] BIOMES = new Biome[256];
-    public SkylandsChunkGenerator(BiomeSource biomes, long seed, BetaGeneratorSettings settings) {
+    public SkylandsChunkGenerator(BiomeSource biomes, long seed, OldGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
         this.settings = settings;
         this.biomeSource = (BetaBiomeSource) biomes;

@@ -38,7 +38,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.InfdevOldBiomeSource;
-import com.bespectacled.modernbeta.gen.settings.InfdevOldGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -52,10 +52,10 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
     public static final Codec<InfdevOldChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
                     Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
-                    InfdevOldGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
+                    OldGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
             .apply(instance, instance.stable(InfdevOldChunkGenerator::new)));
 
-    private final InfdevOldGeneratorSettings settings;
+    private final OldGeneratorSettings settings;
     private final InfdevOldBiomeSource biomeSource;
     private final long seed;
     
@@ -82,9 +82,9 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
     private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
     private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
 
-    public InfdevOldChunkGenerator(BiomeSource biomes, long seed, InfdevOldGeneratorSettings alphasettings) {
-        super(biomes, seed, () -> alphasettings.wrapped);
-        this.settings = alphasettings;
+    public InfdevOldChunkGenerator(BiomeSource biomes, long seed, OldGeneratorSettings infdevOldSettings) {
+        super(biomes, seed, () -> infdevOldSettings.wrapped);
+        this.settings = infdevOldSettings;
         this.biomeSource = (InfdevOldBiomeSource) biomes;
         this.seed = seed;
         

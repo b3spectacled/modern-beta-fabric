@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -15,7 +15,7 @@ import net.minecraft.text.TranslatableText;
 
 public class CustomizeBetaLevelScreen extends Screen {
     private CreateWorldScreen parent;
-    private BetaGeneratorSettings generatorSettings;
+    private OldGeneratorSettings generatorSettings;
     
     private boolean generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
     private boolean generateBetaOceans = ModernBeta.BETA_CONFIG.generateBetaOceans;
@@ -24,7 +24,7 @@ public class CustomizeBetaLevelScreen extends Screen {
     
     private ButtonListWidget buttonList;
 
-    public CustomizeBetaLevelScreen(CreateWorldScreen parent, BetaGeneratorSettings generatorSettings) {
+    public CustomizeBetaLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings) {
         super(new TranslatableText("createWorld.customize.beta.title"));
         
         this.parent = parent;

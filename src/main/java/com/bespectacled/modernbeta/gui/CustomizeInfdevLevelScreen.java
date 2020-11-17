@@ -1,8 +1,7 @@
 package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
-import com.bespectacled.modernbeta.gen.settings.InfdevGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -11,16 +10,12 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.BooleanOption;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.world.gen.GeneratorOptions;
 
 public class CustomizeInfdevLevelScreen extends Screen {
     private CreateWorldScreen parent;
-    private InfdevGeneratorSettings generatorSettings;
+    private OldGeneratorSettings generatorSettings;
     
     private boolean infdevWinterMode = ModernBeta.BETA_CONFIG.infdevWinterMode;
     private boolean infdevPlus = ModernBeta.BETA_CONFIG.infdevPlus;
@@ -28,7 +23,7 @@ public class CustomizeInfdevLevelScreen extends Screen {
     
     private ButtonListWidget buttonList;
 
-    public CustomizeInfdevLevelScreen(CreateWorldScreen parent, InfdevGeneratorSettings generatorSettings) {
+    public CustomizeInfdevLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings) {
         super(new TranslatableText("createWorld.customize.infdev.title"));
         
         this.parent = parent;

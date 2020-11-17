@@ -33,7 +33,7 @@ import net.minecraft.world.gen.chunk.StructuresConfig;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.IndevBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
-import com.bespectacled.modernbeta.gen.settings.IndevGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
@@ -48,10 +48,10 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     public static final Codec<IndevChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
                     Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
-                    IndevGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
+                    OldGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
             .apply(instance, instance.stable(IndevChunkGenerator::new)));
 
-    private final IndevGeneratorSettings settings;
+    private final OldGeneratorSettings settings;
     private final StructuresConfig structuresConfig;
     private final IndevBiomeSource biomeSource;
     private final long seed;
@@ -103,7 +103,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
     private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
 
-    public IndevChunkGenerator(BiomeSource biomes, long seed, IndevGeneratorSettings settings) {
+    public IndevChunkGenerator(BiomeSource biomes, long seed, OldGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
         this.settings = settings;
         this.structuresConfig = settings.wrapped.getStructuresConfig();

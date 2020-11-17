@@ -41,7 +41,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
-import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
+import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.BiomeUtil;
@@ -56,10 +56,10 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
     public static final Codec<BetaChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
                     Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
-                    BetaGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
+                    OldGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
             .apply(instance, instance.stable(BetaChunkGenerator::new)));
 
-    private final BetaGeneratorSettings settings;
+    private final OldGeneratorSettings settings;
     private final BetaBiomeSource biomeSource;
     private final long seed;
 
@@ -102,7 +102,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
     
     private static final Biome[] BIOMES = new Biome[256];
 
-    public BetaChunkGenerator(BiomeSource biomes, long seed, BetaGeneratorSettings settings) {
+    public BetaChunkGenerator(BiomeSource biomes, long seed, OldGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
         this.settings = settings;
         this.seed = seed;

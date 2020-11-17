@@ -1,28 +1,22 @@
 package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.gen.settings.IndevGeneratorSettings;
-import com.bespectacled.modernbeta.util.IndevUtil.Theme;
-import com.bespectacled.modernbeta.util.IndevUtil.Type;
-
+import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.client.options.BooleanOption;
 import net.minecraft.client.options.CyclingOption;
 import net.minecraft.client.options.DoubleOption;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 public class CustomizeIndevLevelScreen extends Screen {
     private CreateWorldScreen parent;
-    private IndevGeneratorSettings generatorSettings;
+    private OldGeneratorSettings generatorSettings;
     
     private int levelType = ModernBeta.BETA_CONFIG.indevLevelType;
     private int levelTheme = ModernBeta.BETA_CONFIG.indevLevelTheme;
@@ -45,7 +39,7 @@ public class CustomizeIndevLevelScreen extends Screen {
     private final Text typeFloating = new TranslatableText("createWorld.customize.indev.type.floating");
     private final Text typeInland = new TranslatableText("createWorld.customize.indev.type.inland");
 
-    public CustomizeIndevLevelScreen(CreateWorldScreen parent, IndevGeneratorSettings generatorSettings) {
+    public CustomizeIndevLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings) {
         super(new TranslatableText("createWorld.customize.indev.title"));
         
         this.parent = parent;
