@@ -130,8 +130,6 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
         }
     }
         
-    
-    // Modified to accommodate additional ocean biome replacements
     @Override
     public void generateFeatures(ChunkRegion chunkRegion, StructureAccessor structureAccessor) {
         GenUtil.generateFeaturesWithOcean(chunkRegion, structureAccessor, this, FEATURE_RAND, this.biomeSource.generateVanillaBiomes());
@@ -176,7 +174,9 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
                 for (int y = 0; y < 128; ++y) {
                     Block blockToSet = BLOCK_ARR[x][y][z];
                     
-                    if (this.biomeSource.generateVanillaBiomes()) {
+                    // Second check is a hack to stop weird chunk borders generating from surface blocks for ocean biomes
+                    // being picked up and replacing topsoil blocks, somehow before biome reassignment.  Why?!
+                    if (this.biomeSource.generateVanillaBiomes() && GenUtil.getSolidHeight(chunk, absX, absZ) >= 60) {
                         biome = region.getBiome(POS.set(absX, 0, absZ));
                         
                         if (blockToSet == Blocks.GRASS_BLOCK) 
