@@ -100,8 +100,8 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
     private static final Mutable POS = new Mutable();
     private static final Random RAND = new Random();
     
-    private static final ObjectList<StructurePiece> STRUCTURE_LIST = (ObjectList<StructurePiece>) new ObjectArrayList(10);
-    private static final ObjectList<JigsawJunction> JIGSAW_LIST = (ObjectList<JigsawJunction>) new ObjectArrayList(32);
+    private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
+    private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
 
     public IndevChunkGenerator(BiomeSource biomes, long seed, IndevGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
@@ -550,7 +550,7 @@ public class IndevChunkGenerator extends NoiseChunkGenerator {
 
         //int lavaSourceCount = this.width * this.length * this.height / 2000;
         int lavaSourceCount = this.width * this.length * this.height / 20000;
-        int lavaHeight = this.groundLevel;
+        //int lavaHeight = this.groundLevel;
         
         for (int i = 0; i < lavaSourceCount; ++i) {
             int randX = RAND.nextInt(this.width);

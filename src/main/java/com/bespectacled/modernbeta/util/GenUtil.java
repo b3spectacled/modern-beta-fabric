@@ -88,6 +88,29 @@ public class GenUtil {
         return biome;
     }
     
+    public static void injectOceanBiomes(Chunk chunk, IOldBiomeSource biomeSource) {
+        MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
+        ChunkPos pos = chunk.getPos();
+        Biome biome;
+        
+        // Replace biomes in bodies of water at least four deep with ocean biomes
+        for (int x = 0; x < 4; x++) {
+            
+            for (int z = 0; z < 4; z++) {
+                int absX = pos.getStartX() + (x << 2);
+                int absZ = pos.getStartZ() + (z << 2);
+                
+                int y = GenUtil.getSolidHeight(chunk, absX, absZ);
+
+                if (y < 60) {
+                    biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, absZ >> 2);
+                    
+                    mutableBiomes.setBiome(absX, 0, absZ, biome);
+                }
+            }   
+        }
+    }
+    
     public static void generateFeaturesWithOcean(
         ChunkRegion chunkRegion, 
         StructureAccessor structureAccessor, 

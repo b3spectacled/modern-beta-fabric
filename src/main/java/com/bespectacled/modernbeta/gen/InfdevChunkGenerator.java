@@ -1,12 +1,9 @@
 package com.bespectacled.modernbeta.gen;
 
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
-import java.util.function.Supplier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -22,12 +19,8 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePiece;
-import net.minecraft.structure.StructureStart;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -35,23 +28,16 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
-import net.minecraft.world.gen.chunk.StructureConfig;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.IOldBiomeSource;
 import com.bespectacled.modernbeta.biome.InfdevBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
@@ -94,8 +80,8 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
     private static final Random RAND = new Random();
     private static final ChunkRandom FEATURE_RAND = new ChunkRandom();
     
-    private static final ObjectList<StructurePiece> STRUCTURE_LIST = (ObjectList<StructurePiece>) new ObjectArrayList(10);
-    private static final ObjectList<JigsawJunction> JIGSAW_LIST = (ObjectList<JigsawJunction>) new ObjectArrayList(32);
+    private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
+    private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
 
     public InfdevChunkGenerator(BiomeSource biomes, long seed, InfdevGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
@@ -168,26 +154,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
         buildInfdevSurface(chunkRegion, chunk);
 
         if (this.biomeSource.generateVanillaBiomes()) {
-            MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
-            ChunkPos pos = chunk.getPos();
-            Biome biome;
-            
-            // Replace biomes in bodies of water at least four deep with ocean biomes
-            for (int x = 0; x < 4; x++) {
-                
-                for (int z = 0; z < 4; z++) {
-                    int absX = pos.getStartX() + (x << 2);
-                    int absZ = pos.getStartZ() + (z << 2);
-                    
-                    int y = GenUtil.getSolidHeight(chunk, absX, absZ);
-
-                    if (y < 60) {
-                        biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, absZ >> 2);
-                        
-                        mutableBiomes.setBiome(absX, 0, absZ, biome);
-                    }
-                }   
-            }
+            GenUtil.injectOceanBiomes(chunk, biomeSource);
         }
     }
      

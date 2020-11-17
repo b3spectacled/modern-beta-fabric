@@ -4,7 +4,8 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeArray;
 
 /**
- * Interface over a {@link BiomeArray} as a mutable object. From WorldEdit
+ * Interface over a {@link BiomeArray} as a mutable object.
+ * @author WorldEdit
  */
 public interface MutableBiomeArray {
 

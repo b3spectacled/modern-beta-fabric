@@ -1,15 +1,8 @@
 package com.bespectacled.modernbeta.gen;
 
-import java.util.Arrays;
-import java.util.BitSet;
 import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
-import java.util.function.Supplier;
-import org.apache.logging.log4j.Level;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -25,32 +18,26 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.StructurePiece;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
-import com.bespectacled.modernbeta.biome.IOldBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.BetaGeneratorSettings;
@@ -83,8 +70,6 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator implements IOldC
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
 
-    private double sandNoise[];
-    private double gravelNoise[];
     private double stoneNoise[];
 
     private double mainNoise[]; 
@@ -93,8 +78,6 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator implements IOldC
 
     private double scaleNoise[];
     private double depthNoise[];
-    
-    private double temps[];
     
     private boolean generateSkyDim;
 
@@ -109,16 +92,13 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator implements IOldC
     private static final Random RAND = new Random();
     private static final ChunkRandom FEATURE_RAND = new ChunkRandom();
     
-    private static final ObjectList<StructurePiece> STRUCTURE_LIST = (ObjectList<StructurePiece>) new ObjectArrayList(10);
-    private static final ObjectList<JigsawJunction> JIGSAW_LIST = (ObjectList<JigsawJunction>) new ObjectArrayList(32);
+    private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
+    private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
     
     private static final double[] TEMPS = new double[256];
     private static final double[] HUMIDS = new double[256];
     
     private static final Biome[] BIOMES = new Biome[256];
-    private static final Biome[] OCEAN_BIOMES = new Biome[256];
-    private static final Biome[] BEACH_BIOMES = new Biome[256];
-
     public SkylandsChunkGenerator(BiomeSource biomes, long seed, BetaGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
         this.settings = settings;
@@ -184,7 +164,6 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator implements IOldC
         // byte seaLevel = (byte)this.getSeaLevel();
         byte byte33 = 33;
 
-        int int3_0 = byte2 + 1;
         int int3_1 = byte2 + 1;
 
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
@@ -422,7 +401,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator implements IOldC
     }
 
     private void buildBetaSurface(ChunkRegion region, Chunk chunk) {
-        byte seaLevel = (byte) this.getSeaLevel();
+        this.getSeaLevel();
         double thirtysecond = 0.03125D;
 
         int chunkX = chunk.getPos().x;
@@ -514,7 +493,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator implements IOldC
     @Override
     public int getHeight(int x, int z, Heightmap.Type type) {
         BlockPos structPos = new BlockPos(x, 0, z);
-        fillChunkY();
+        fillChunkY(16);
         
         if (GROUND_CACHE_Y.get(structPos) == null) {
             BiomeUtil.fetchTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
@@ -526,10 +505,10 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator implements IOldC
         return groundHeight;
     }
     
-    private static void fillChunkY() {
+    private static void fillChunkY(int y) {
         for (int z = 0; z < 16; ++z) {
             for (int x = 0; x < 16; ++x) {
-                CHUNK_Y[x][z] = 16;
+                CHUNK_Y[x][z] = y;
             }
         }
     }
@@ -539,7 +518,6 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator implements IOldC
         // byte seaLevel = (byte)this.getSeaLevel();
         byte byte33 = 33;
 
-        int int3_0 = byte2 + 1;
         int int3_1 = byte2 + 1;
         
         int chunkX = absX >> 4;

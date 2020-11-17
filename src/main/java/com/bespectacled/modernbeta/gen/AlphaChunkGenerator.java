@@ -1,15 +1,9 @@
 package com.bespectacled.modernbeta.gen;
 
-import java.util.BitSet;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
-import java.util.function.Supplier;
-import org.apache.logging.log4j.Level;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -18,26 +12,15 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.JigsawJunction;
-import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePiece;
-import net.minecraft.structure.StructureStart;
-import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.util.Util;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -45,37 +28,23 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
-import net.minecraft.world.gen.chunk.StructureConfig;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
-import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
-import net.minecraft.world.gen.surfacebuilder.SurfaceConfig;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
-import com.bespectacled.modernbeta.biome.BetaBiomeSource;
-import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeType;
-import com.bespectacled.modernbeta.biome.IOldBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.AlphaGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
-import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 
@@ -125,8 +94,8 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
     private static final Random RAND = new Random();
     private static final ChunkRandom FEATURE_RAND = new ChunkRandom();
     
-    private static final ObjectList<StructurePiece> STRUCTURE_LIST = (ObjectList<StructurePiece>) new ObjectArrayList<StructurePiece>(10);
-    private static final ObjectList<JigsawJunction> JIGSAW_LIST = (ObjectList<JigsawJunction>) new ObjectArrayList<JigsawJunction>(32);
+    private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
+    private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
 
     public AlphaChunkGenerator(BiomeSource biomes, long seed, AlphaGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
@@ -199,26 +168,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
         buildAlphaSurface(chunkRegion, chunk);
         
         if (this.generateVanillaBiomes) {
-            MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
-            ChunkPos pos = chunk.getPos();
-            Biome biome;
-            
-            // Replace biomes in bodies of water at least four deep with ocean biomes
-            for (int x = 0; x < 4; x++) {
-                
-                for (int z = 0; z < 4; z++) {
-                    int absX = pos.getStartX() + (x << 2);
-                    int absZ = pos.getStartZ() + (z << 2);
-                    
-                    int y = GenUtil.getSolidHeight(chunk, absX, absZ);
-
-                    if (y < 60) {
-                        biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, absZ >> 2);
-                        
-                        mutableBiomes.setBiome(absX, 0, absZ, biome);
-                    }
-                }   
-            }
+            GenUtil.injectOceanBiomes(chunk, biomeSource);
         }
     }
     
@@ -227,7 +177,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
         // byte seaLevel = (byte)this.getSeaLevel();
         byte byte17 = 17;
 
-        int int5_0 = byte4 + 1;
+        //int int5_0 = byte4 + 1;
         int int5_1 = byte4 + 1;
 
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
@@ -591,7 +541,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
         // byte seaLevel = (byte)this.getSeaLevel();
         byte byte17 = 17;
 
-        int int5_0 = byte4 + 1;
+        //int int5_0 = byte4 + 1;
         int int5_1 = byte4 + 1;
         
         int chunkX = absX >> 4;

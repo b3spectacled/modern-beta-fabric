@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.function.Supplier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -19,18 +18,15 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePiece;
-import net.minecraft.structure.StructureStart;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -40,13 +36,8 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
-import net.minecraft.world.gen.chunk.StructureConfig;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.IOldBiomeSource;
 import com.bespectacled.modernbeta.biome.InfdevOldBiomeSource;
-import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.InfdevOldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.structure.BetaStructure;
@@ -80,16 +71,16 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
 
     // Block Y-height cache, from Beta+
     private static final Map<BlockPos, Integer> GROUND_CACHE_Y = new HashMap<>();
-    private static final int[][] CHUNK_Y = new int[16][16];
-    private static final Block BLOCKS[][][] = new Block[16][128][16];
+    private static final Block BLOCK_ARR[][][] = new Block[16][128][16];
+    private static final Block STRUCT_ARR[][][] = new Block[16][128][16];
     
     private static final Mutable POS = new Mutable();
     
     private static final Random RAND = new Random();
     private static final ChunkRandom FEATURE_RAND = new ChunkRandom();
     
-    private static final ObjectList<StructurePiece> STRUCTURE_LIST = (ObjectList<StructurePiece>) new ObjectArrayList<StructurePiece>(10);
-    private static final ObjectList<JigsawJunction> JIGSAW_LIST = (ObjectList<JigsawJunction>) new ObjectArrayList<JigsawJunction>(32);
+    private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
+    private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
 
     public InfdevOldChunkGenerator(BiomeSource biomes, long seed, InfdevOldGeneratorSettings alphasettings) {
         super(biomes, seed, () -> alphasettings.wrapped);
@@ -135,28 +126,10 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
         setTerrain((ChunkRegion)worldAccess, chunk, structureAccessor);
         
         if (this.biomeSource.generateVanillaBiomes()) {
-            MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
-            ChunkPos pos = chunk.getPos();
-            Biome biome;
-            
-            // Replace biomes in bodies of water at least four deep with ocean biomes
-            for (int x = 0; x < 4; x++) {
-                
-                for (int z = 0; z < 4; z++) {
-                    int absX = pos.getStartX() + (x << 2);
-                    int absZ = pos.getStartZ() + (z << 2);
-                    
-                    int y = GenUtil.getSolidHeight(chunk, absX, absZ);
-
-                    if (y < 60) {
-                        biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, absZ >> 2);
-                        
-                        mutableBiomes.setBiome(absX, 0, absZ, biome);
-                    }
-                }   
-            }
+            GenUtil.injectOceanBiomes(chunk, this.biomeSource);
         }
     }
+        
     
     // Modified to accommodate additional ocean biome replacements
     @Override
@@ -181,8 +154,8 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
     }
     
     private void setTerrain(ChunkRegion region, Chunk chunk, StructureAccessor structureAccessor) {
-        int chunkX = chunk.getPos().x;
-        int chunkZ = chunk.getPos().z;
+        int startX = chunk.getPos().getStartX();
+        int startZ = chunk.getPos().getStartZ();
         
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
@@ -195,19 +168,21 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
         Biome biome;
         
         for (int x = 0; x < 16; ++x) {
-            int absX = x + (chunkX << 4);
+            int absX = x + startX;
             
             for (int z = 0; z < 16; ++z) {
-                int absZ = z + (chunkZ << 4);
+                int absZ = z + startZ;
                 
                 for (int y = 0; y < 128; ++y) {
-                    Block blockToSet = BLOCKS[x][y][z];
+                    Block blockToSet = BLOCK_ARR[x][y][z];
                     
                     if (this.biomeSource.generateVanillaBiomes()) {
                         biome = region.getBiome(POS.set(absX, 0, absZ));
                         
-                        if (blockToSet == Blocks.GRASS_BLOCK) blockToSet = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial().getBlock();
-                        if (blockToSet == Blocks.DIRT) blockToSet = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial().getBlock();
+                        if (blockToSet == Blocks.GRASS_BLOCK) 
+                            blockToSet = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial().getBlock();
+                        if (blockToSet == Blocks.DIRT) 
+                            blockToSet = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial().getBlock();
                     }
                     
                     blockToSet = GenUtil.getStructBlock(
@@ -227,16 +202,17 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
                 }
             }
         }
+        
     }
   
     private void generateTerrain(int startX, int startZ) {
         
-        for (int relZ = 0; relZ < 16; ++relZ) {
-            for (int relX = 0; relX < 16; ++relX) {
-                int x = startX + relX;
+        for (int relX = 0; relX < 16; ++relX) {
+            int x = startX + relX;
+            int rX = x / 1024;
+            
+            for (int relZ = 0; relZ < 16; ++relZ) {    
                 int z = startZ + relZ;
-                
-                int rX = x / 1024;
                 int rZ = z / 1024;
                 
                 float noiseA = (float)(
@@ -303,7 +279,7 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
                     }
                               
                     
-                    BLOCKS[relX][y][relZ] = blockToSet;
+                    BLOCK_ARR[relX][y][relZ] = blockToSet;
                 }
                     
             }
@@ -319,21 +295,8 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
         BlockPos structPos = new BlockPos(x, 0, z);
         int height = this.getWorldHeight() - 1;
         
-        int relX = Math.abs(x) % 16;
-        int relZ = Math.abs(z) % 16;
-        
-        if (GROUND_CACHE_Y.get(structPos) == null) {
-            this.generateTerrain((x >> 4) << 4, (z >> 4) << 4);
-        
-            for (int y = this.getWorldHeight() - 1; y >= 0; --y) {
-                Block someBlock = BLOCKS[relX][y][relZ];
-                
-                if (!(someBlock.equals(Blocks.AIR) || someBlock.equals(Blocks.WATER))) {
-                    break;
-                }
-                
-                height = y;
-            }
+        if (GROUND_CACHE_Y.get(structPos) == null) {            
+            height = this.sampleHeightMap(x, z);
             
             GROUND_CACHE_Y.put(structPos, height);
         } 
@@ -345,6 +308,35 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
             height = this.getSeaLevel() + 1;
          
         return height;
+    }
+    
+    private int sampleHeightMap(int sampleX, int sampleZ) {
+        
+        int startX = (sampleX >> 4) << 4;
+        int startZ = (sampleZ >> 4) << 4;
+        
+        int x = startX + Math.abs(sampleX) % 16;
+        int z = startZ + Math.abs(sampleZ) % 16;
+        
+        float noiseA = (float)(
+            this.noiseOctavesA.sampleOldInfdevOctaves(x / 0.03125f, 0.0, z / 0.03125f) - 
+            this.noiseOctavesB.sampleOldInfdevOctaves(x / 0.015625f, 0.0, z / 0.015625f)) / 512.0f / 4.0f;
+        float noiseB = (float)this.noiseOctavesE.sampleInfdevOctaves(x / 4.0f, z / 4.0f);
+        float noiseC = (float)this.noiseOctavesF.sampleInfdevOctaves(x / 8.0f, z / 8.0f) / 8.0f;
+        
+        noiseB = noiseB > 0.0f ? 
+            ((float)(this.noiseOctavesC.sampleInfdevOctaves(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
+            ((float)(this.noiseOctavesD.sampleInfdevOctaves(x * 0.25714284f, z * 0.25714284f) * noiseC));
+            
+        int heightVal = (int)(noiseA + 64.0f + noiseB);
+        if ((float)this.noiseOctavesE.sampleInfdevOctaves(x, z) < 0.0f) {
+            heightVal = heightVal / 2 << 1;
+            if ((float)this.noiseOctavesE.sampleInfdevOctaves(x / 5, z / 5) < 0.0f) {
+                ++heightVal;
+            }
+        }
+        
+        return heightVal;
     }
     
     @Override
