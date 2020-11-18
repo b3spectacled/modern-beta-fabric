@@ -10,7 +10,12 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.util.WorldEnum.BetaBiomeType;
+import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
+import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.google.common.collect.ImmutableList;
+
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
@@ -75,8 +80,26 @@ public class BetaBiomes {
 
         //ModernBeta.LOGGER.log(Level.INFO, "Reserved Beta biome IDs.");
     }
+    
+    public static BetaBiomeType getBiomeType(CompoundTag settings) {
+        int biomeTypeNdx = BetaBiomeType.CLASSIC.ordinal();
+        
+        if (settings.contains("betaBiomeType")) 
+            biomeTypeNdx = settings.getInt("betaBiomeType");
+        
+        return BetaBiomeType.values()[biomeTypeNdx];
+    }
+    
+    public static List<RegistryKey<Biome>> getBiomeRegistryList(CompoundTag settings) {
+        boolean useVanillaBiomes = false;
+        
+        if (settings.contains("betaBiomeType")) 
+            useVanillaBiomes = PreBetaBiomeType.values()[settings.getInt("betaBiomeType")] == PreBetaBiomeType.VANILLA;
+        
+        return getBiomeRegistryList(useVanillaBiomes);
+    }
 
-    public static List<RegistryKey<Biome>> getBiomeList(boolean useVanillaBiomes) {
+    private static List<RegistryKey<Biome>> getBiomeRegistryList(boolean useVanillaBiomes) {
         ArrayList<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
 
         for (Identifier i : BETA_MAPPINGS.values()) {

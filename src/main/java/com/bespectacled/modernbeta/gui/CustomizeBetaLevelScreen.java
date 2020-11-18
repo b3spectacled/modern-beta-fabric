@@ -2,6 +2,8 @@ package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
+import com.bespectacled.modernbeta.util.GUIUtil;
+import com.bespectacled.modernbeta.util.WorldEnum;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -10,17 +12,19 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.BooleanOption;
+import net.minecraft.client.options.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 public class CustomizeBetaLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private OldGeneratorSettings generatorSettings;
     
+
+    private int biomeType = ModernBeta.BETA_CONFIG.betaBiomeType;
     private boolean generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
     private boolean generateBetaOceans = ModernBeta.BETA_CONFIG.generateBetaOceans;
-    private boolean generateIceDesert = ModernBeta.BETA_CONFIG.generateIceDesert;
-    private boolean generateVanillaBiomesBeta = ModernBeta.BETA_CONFIG.generateVanillaBiomesBeta;
     
     private ButtonListWidget buttonList;
 
@@ -30,14 +34,12 @@ public class CustomizeBetaLevelScreen extends Screen {
         this.parent = parent;
         this.generatorSettings = generatorSettings;
         
+        if (generatorSettings.settings.contains("betaBiomeType"))
+            this.biomeType = generatorSettings.settings.getInt("betaBiomeType");
         if (generatorSettings.settings.contains("generateOceans"))
             generateOceans = generatorSettings.settings.getBoolean("generateOceans");
         if (generatorSettings.settings.contains("generateBetaOceans"))
             generateBetaOceans = generatorSettings.settings.getBoolean("generateBetaOceans");
-        if (generatorSettings.settings.contains("generateIceDesert"))
-            generateIceDesert = generatorSettings.settings.getBoolean("generateIceDesert");
-        if (generatorSettings.settings.contains("generateVanillaBiomesBeta"))
-            generateVanillaBiomesBeta = generatorSettings.settings.getBoolean("generateVanillaBiomesBeta");
     }
     
     @Override
@@ -59,7 +61,45 @@ public class CustomizeBetaLevelScreen extends Screen {
             }
         ));
         
- this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        
+        this.buttonList.addSingleOptionEntry(
+            new CyclingOption(
+                "createWorld.customize.beta.typeButton",
+                (gameOptions, value) -> {
+                    this.biomeType++;
+                    if (this.biomeType > WorldEnum.BetaBiomeType.values().length - 1) this.biomeType = 0;
+                    generatorSettings.settings.putInt("betaBiomeType", this.biomeType);
+                    
+                    return;
+                },
+                (gameOptions, cyclingOptions) -> {
+                    Text typeText = GUIUtil.TEXT_CLASSIC;
+                    
+                    switch(this.biomeType) {
+                        case 0:
+                            typeText = GUIUtil.TEXT_CLASSIC;
+                            break;
+                        case 1:
+                            typeText = GUIUtil.TEXT_ICE_DESERT;
+                            break;
+                        case 2:
+                            typeText = GUIUtil.TEXT_SKY;
+                            break;
+                        case 3:
+                            typeText = GUIUtil.TEXT_VANILLA;
+                            break;
+                    }
+                    
+                    return new TranslatableText(
+                        "options.generic_value", 
+                        new Object[] { 
+                            GUIUtil.TEXT_BIOME_TYPE, 
+                            typeText
+                    });
+                }
+        ));
+        
         this.buttonList.addSingleOptionEntry(
             new BooleanOption(
                 "createWorld.customize.beta.generateOceans", 
@@ -67,27 +107,6 @@ public class CustomizeBetaLevelScreen extends Screen {
                 (gameOptions, value) -> { // Setter
                     generateBetaOceans = value;
                     generatorSettings.settings.putBoolean("generateBetaOceans", value);
-                }
-        ));
-        
- 
-        this.buttonList.addSingleOptionEntry(
-            new BooleanOption(
-                "createWorld.customize.beta.generateIceDesert", 
-                (gameOptions) -> { return generateIceDesert; }, 
-                (gameOptions, value) -> {
-                    generateIceDesert = value;
-                    generatorSettings.settings.putBoolean("generateIceDesert", value);
-                }
-        ));
-        
-        this.buttonList.addSingleOptionEntry(
-            new BooleanOption(
-                "createWorld.customize.beta.generateVanillaBiomesBeta", 
-                (gameOptions) -> { return generateVanillaBiomesBeta; }, 
-                (gameOptions, value) -> {
-                    generateVanillaBiomesBeta = value;
-                    generatorSettings.settings.putBoolean("generateVanillaBiomesBeta", value);
                 }
         ));
             

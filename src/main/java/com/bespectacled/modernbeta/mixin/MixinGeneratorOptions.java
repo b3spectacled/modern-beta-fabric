@@ -1,12 +1,8 @@
 package com.bespectacled.modernbeta.mixin;
 
-import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.IndevBiomeSource;
-import com.bespectacled.modernbeta.biome.InfdevBiomeSource;
-import com.bespectacled.modernbeta.biome.InfdevOldBiomeSource;
-import com.bespectacled.modernbeta.config.ModernBetaConfig;
+import com.bespectacled.modernbeta.biome.PreBetaBiomeSource;
 import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
@@ -14,7 +10,6 @@ import com.bespectacled.modernbeta.gen.InfdevChunkGenerator;
 import com.bespectacled.modernbeta.gen.InfdevOldChunkGenerator;
 import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
-import com.bespectacled.modernbeta.gen.type.BetaGeneratorType;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
 
@@ -40,13 +35,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import org.apache.logging.log4j.Level;
-
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
 
-/*
+/**
  * @author SuperCoder7979
  */
 @Mixin(GeneratorOptions.class)
@@ -127,16 +120,16 @@ public class MixinGeneratorOptions {
                     generator = new SkylandsChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
                     break;
                 case "alpha":
-                    generator = new AlphaChunkGenerator(new AlphaBiomeSource(seed, biomes, alphaGenSettings.settings), seed, alphaGenSettings);
+                    generator = new AlphaChunkGenerator(new PreBetaBiomeSource(seed, biomes, alphaGenSettings.settings), seed, alphaGenSettings);
                     break;
                 case "indev":
                     generator = new IndevChunkGenerator(new IndevBiomeSource(seed, biomes, indevGenSettings.settings), seed, indevGenSettings);
                     break;
                 case "infdev":
-                    generator = new InfdevChunkGenerator(new InfdevBiomeSource(seed, biomes, infdevGenSettings.settings), seed, infdevGenSettings);
+                    generator = new InfdevChunkGenerator(new PreBetaBiomeSource(seed, biomes, infdevGenSettings.settings), seed, infdevGenSettings);
                     break;
                 case "infdev_old":
-                    generator = new InfdevOldChunkGenerator(new InfdevOldBiomeSource(seed, biomes, infdevOldGenSettings.settings), seed, infdevOldGenSettings);
+                    generator = new InfdevOldChunkGenerator(new PreBetaBiomeSource(seed, biomes, infdevOldGenSettings.settings), seed, infdevOldGenSettings);
                     break;
                 default:
                     generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);

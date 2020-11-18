@@ -22,17 +22,13 @@ import com.bespectacled.modernbeta.util.MutableBlockColors;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 
-import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
-import com.bespectacled.modernbeta.biome.AlphaBiomes;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.biome.IndevBiomeSource;
 import com.bespectacled.modernbeta.biome.IndevBiomes;
-import com.bespectacled.modernbeta.biome.InfdevBiomeSource;
-import com.bespectacled.modernbeta.biome.InfdevBiomes;
-import com.bespectacled.modernbeta.biome.InfdevOldBiomeSource;
-import com.bespectacled.modernbeta.biome.InfdevOldBiomes;
-import com.bespectacled.modernbeta.biome.VanillaBiomeModifier;
+import com.bespectacled.modernbeta.biome.PreBetaBiomeSource;
+import com.bespectacled.modernbeta.biome.PreBetaBiomes;
+import com.bespectacled.modernbeta.biome.layer.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
@@ -72,18 +68,14 @@ public class ModernBeta implements ModInitializer {
         LOGGER.log(Level.INFO, "Registered Modern Beta features!");
 
         BetaBiomes.reserveBiomeIDs();
-        AlphaBiomes.reserveBiomeIDs();
-        InfdevBiomes.reserveBiomeIDs();
+        PreBetaBiomes.reserveBiomeIDs();
         IndevBiomes.reserveBiomeIDs();
-        InfdevOldBiomes.reserveBiomeIDs();
         
         LOGGER.log(Level.INFO, "Registered Modern Beta biomes!");
 
         BetaBiomeSource.register();
-        AlphaBiomeSource.register();
-        InfdevBiomeSource.register();
+        PreBetaBiomeSource.register();
         IndevBiomeSource.register();
-        InfdevOldBiomeSource.register();
         
         LOGGER.log(Level.INFO, "Registered Modern Beta biome providers!");
 

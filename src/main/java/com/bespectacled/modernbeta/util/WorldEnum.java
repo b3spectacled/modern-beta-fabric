@@ -13,8 +13,9 @@ public class WorldEnum {
     
     public enum BetaBiomeType {
         CLASSIC,
-        VANILLA,
-        SKY
+        ICE_DESERT,
+        SKY,
+        VANILLA
     }
     
     public enum PreBetaBiomeType {

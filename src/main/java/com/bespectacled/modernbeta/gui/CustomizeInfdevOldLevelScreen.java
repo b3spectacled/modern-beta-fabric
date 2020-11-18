@@ -2,6 +2,8 @@ package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
+import com.bespectacled.modernbeta.util.GUIUtil;
+import com.bespectacled.modernbeta.util.WorldEnum;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -10,16 +12,16 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.BooleanOption;
+import net.minecraft.client.options.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 public class CustomizeInfdevOldLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private OldGeneratorSettings generatorSettings;
     
-    private boolean infdevOldWinterMode = ModernBeta.BETA_CONFIG.infdevOldWinterMode;
-    private boolean infdevOldPlus = ModernBeta.BETA_CONFIG.infdevOldPlus;
-    private boolean generateVanillaBiomesInfdevOld = ModernBeta.BETA_CONFIG.generateVanillaBiomesInfdevOld;
+    private int biomeType = ModernBeta.BETA_CONFIG.preBetaBiomeType;
     private boolean generateInfdevPyramid = ModernBeta.BETA_CONFIG.generateInfdevPyramid;
     private boolean generateInfdevWall = ModernBeta.BETA_CONFIG.generateInfdevWall;
     
@@ -31,12 +33,8 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
         this.parent = parent;
         this.generatorSettings = generatorSettings;
         
-        if (generatorSettings.settings.contains("infdevOldWinterMode"))
-            infdevOldWinterMode = generatorSettings.settings.getBoolean("infdevOldWinterMode");
-        if (generatorSettings.settings.contains("infdevOldPlus"))
-            infdevOldPlus = generatorSettings.settings.getBoolean("infdevOldPlus");
-        if (generatorSettings.settings.contains("generateVanillaBiomesInfdevOld"))
-            generateVanillaBiomesInfdevOld = generatorSettings.settings.getBoolean("generateVanillaBiomesInfdevOld");
+        if (generatorSettings.settings.contains("infdevOldBiomeType"))
+            this.biomeType = generatorSettings.settings.getInt("infdevOldBiomeType");
         if (generatorSettings.settings.contains("generateInfdevPyramid")) 
             this.generateInfdevPyramid = generatorSettings.settings.getBoolean("generateInfdevPyramid");
         if (generatorSettings.settings.contains("generateInfdevWall")) 
@@ -68,32 +66,39 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         
         this.buttonList.addSingleOptionEntry(
-            new BooleanOption(
-                "createWorld.customize.infdev.infdevOldWinterMode", 
-                (gameOptions) -> { return infdevOldWinterMode; }, // Getter
-                (gameOptions, value) -> { // Setter
-                    infdevOldWinterMode = value;
-                    generatorSettings.settings.putBoolean("infdevOldWinterMode", value);
-                }
-        ));
-        
-        this.buttonList.addSingleOptionEntry(
-            new BooleanOption(
-                "createWorld.customize.infdev.infdevOldPlus", 
-                (gameOptions) -> { return infdevOldPlus; }, 
+            new CyclingOption(
+                "createWorld.customize.preBeta.typeButton",
                 (gameOptions, value) -> {
-                    infdevOldPlus = value;
-                    generatorSettings.settings.putBoolean("infdevOldPlus", value);
-                }
-        ));
-        
-        this.buttonList.addSingleOptionEntry(
-            new BooleanOption(
-                "createWorld.customize.infdev.generateVanillaBiomesInfdevOld", 
-                (gameOptions) -> { return generateVanillaBiomesInfdevOld; }, 
-                (gameOptions, value) -> {
-                    generateVanillaBiomesInfdevOld = value;
-                    generatorSettings.settings.putBoolean("generateVanillaBiomesInfdevOld", value);
+                    this.biomeType++;
+                    if (this.biomeType > WorldEnum.PreBetaBiomeType.values().length - 1) this.biomeType = 0;
+                    generatorSettings.settings.putInt("preBetaBiomeType", this.biomeType);
+                    
+                    return;
+                },
+                (gameOptions, cyclingOptions) -> {
+                    Text typeText = GUIUtil.TEXT_CLASSIC;
+                    
+                    switch(this.biomeType) {
+                        case 0:
+                            typeText = GUIUtil.TEXT_CLASSIC;
+                            break;
+                        case 1:
+                            typeText = GUIUtil.TEXT_WINTER;
+                            break;
+                        case 2:
+                            typeText = GUIUtil.TEXT_PLUS;
+                            break;
+                        case 3:
+                            typeText = GUIUtil.TEXT_VANILLA;
+                            break;
+                    }
+                    
+                    return new TranslatableText(
+                        "options.generic_value", 
+                        new Object[] { 
+                            GUIUtil.TEXT_BIOME_TYPE, 
+                            typeText
+                    });
                 }
         ));
         

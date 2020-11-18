@@ -38,7 +38,8 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.AlphaBiomeSource;
+import com.bespectacled.modernbeta.biome.IOldBiomeSource;
+import com.bespectacled.modernbeta.biome.PreBetaBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
@@ -59,9 +60,8 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
             .apply(instance, instance.stable(AlphaChunkGenerator::new)));
 
     private final OldGeneratorSettings settings;
-    private final AlphaBiomeSource biomeSource;
+    private final PreBetaBiomeSource biomeSource;
     private final long seed;
-    private boolean generateVanillaBiomes = false;
 
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
@@ -100,10 +100,8 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
     public AlphaChunkGenerator(BiomeSource biomes, long seed, OldGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
         this.settings = settings;
-        this.biomeSource = (AlphaBiomeSource) biomes;
+        this.biomeSource = (PreBetaBiomeSource) biomes;
         this.seed = seed;
-        if (settings.settings.contains("generateVanillaBiomesAlpha")) 
-            this.generateVanillaBiomes = settings.settings.getBoolean("generateVanillaBiomesAlpha");
         
         RAND.setSeed(seed);
         
@@ -167,7 +165,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
     public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {
         buildAlphaSurface(chunkRegion, chunk);
         
-        if (this.generateVanillaBiomes) {
+        if (this.biomeSource.generateVanillaBiomes()) {
             GenUtil.injectOceanBiomes(chunk, biomeSource);
         }
     }

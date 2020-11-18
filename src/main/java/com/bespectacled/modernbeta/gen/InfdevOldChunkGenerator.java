@@ -36,8 +36,9 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
+
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.InfdevOldBiomeSource;
+import com.bespectacled.modernbeta.biome.PreBetaBiomeSource;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
 import com.bespectacled.modernbeta.structure.BetaStructure;
@@ -56,7 +57,7 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
             .apply(instance, instance.stable(InfdevOldChunkGenerator::new)));
 
     private final OldGeneratorSettings settings;
-    private final InfdevOldBiomeSource biomeSource;
+    private final PreBetaBiomeSource biomeSource;
     private final long seed;
     
     private boolean generateInfdevPyramid = true;
@@ -85,7 +86,7 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
     public InfdevOldChunkGenerator(BiomeSource biomes, long seed, OldGeneratorSettings infdevOldSettings) {
         super(biomes, seed, () -> infdevOldSettings.wrapped);
         this.settings = infdevOldSettings;
-        this.biomeSource = (InfdevOldBiomeSource) biomes;
+        this.biomeSource = (PreBetaBiomeSource) biomes;
         this.seed = seed;
         
         RAND.setSeed(seed);

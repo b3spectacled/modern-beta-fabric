@@ -35,51 +35,16 @@ public class ModernBetaConfig implements ConfigData {
     
     @ConfigEntry.Gui.Excluded
     public boolean generateBetaOceans = true;
+    
+    @ConfigEntry.Gui.Excluded
+    public int betaBiomeType = WorldEnum.BetaBiomeType.CLASSIC.ordinal();
+    
+    /* Alpha, Infdev, Old Infdev Generation */
 
     @ConfigEntry.Gui.Excluded
-    public boolean generateIceDesert = false;
-    
-    @ConfigEntry.Gui.Excluded
-    public int betaBiomeType = WorldEnum.PreBetaBiomeType.CLASSIC.ordinal();
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean generateSkyDim = false;
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean generateVanillaBiomesBeta = false;
-    
-    /* Alpha Generation */
+    public int preBetaBiomeType = WorldEnum.PreBetaBiomeType.CLASSIC.ordinal();
 
-    @ConfigEntry.Gui.Excluded
-    public int alphaBiomeType = WorldEnum.PreBetaBiomeType.CLASSIC.ordinal();
-    
-    /* Infdev Generation */
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean infdevWinterMode = false;
-
-    @ConfigEntry.Gui.Excluded
-    public boolean infdevPlus = false;
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean generateVanillaBiomesInfdev = false;
-    
-    @ConfigEntry.Gui.Excluded
-    public int infdevBiomeType = WorldEnum.PreBetaBiomeType.CLASSIC.ordinal();
-    
     /* Old Infdev Generation */
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean infdevOldWinterMode = false;
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean infdevOldPlus = false;
-    
-    @ConfigEntry.Gui.Excluded
-    public int infdevOldBiomeType = WorldEnum.PreBetaBiomeType.CLASSIC.ordinal();
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean generateVanillaBiomesInfdevOld = false;
     
     @ConfigEntry.Gui.Excluded
     public boolean generateInfdevPyramid = true;

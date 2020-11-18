@@ -37,8 +37,9 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
+
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.InfdevBiomeSource;
+import com.bespectacled.modernbeta.biome.PreBetaBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
@@ -59,7 +60,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
             .apply(instance, instance.stable(InfdevChunkGenerator::new)));
 
     private final OldGeneratorSettings settings;
-    private final InfdevBiomeSource biomeSource;
+    private final PreBetaBiomeSource biomeSource;
     private final long seed;
 
     private final PerlinOctaveNoise noiseOctavesA;
@@ -86,7 +87,7 @@ public class InfdevChunkGenerator extends NoiseChunkGenerator implements IOldChu
     public InfdevChunkGenerator(BiomeSource biomes, long seed, OldGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
         this.settings = settings;
-        this.biomeSource = (InfdevBiomeSource) biomes;
+        this.biomeSource = (PreBetaBiomeSource) biomes;
         this.seed = seed;
         
         RAND.setSeed(seed);

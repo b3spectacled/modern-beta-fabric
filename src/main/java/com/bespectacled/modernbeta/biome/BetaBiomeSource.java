@@ -4,6 +4,8 @@ import java.util.Map;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.util.BiomeUtil;
+import com.bespectacled.modernbeta.util.WorldEnum.BetaBiomeType;
+import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -42,36 +44,24 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
     
     private final Map<String, Identifier> biomeMappings;
 
-    private boolean generateOceans = false;
     private boolean generateBetaOceans = true;
-    private boolean generateIceDesert = false;
-    private boolean generateSkyDim = false;
-    private boolean generateVanillaBiomesBeta = false;
+    private final BetaBiomeType biomeType;
     
     private static final double[] TEMP_HUMID_POINT = new double[2];
     
     public BetaBiomeSource(long seed, Registry<Biome> registry, CompoundTag settings) {
-        
-        super(
-            BetaBiomes.getBiomeList(
-                settings.contains("generateVanillaBiomesBeta") ? 
-                    settings.getBoolean("generateVanillaBiomesBeta") : 
-                    false
-            ).stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
+        super(BetaBiomes.getBiomeRegistryList(settings).stream().map((registryKey) -> () -> (Biome) registry.get(registryKey)));
             
         this.seed = seed;
         this.biomeRegistry = registry;
         this.settings = settings;
         
-        if (settings.contains("generateOceans")) this.generateOceans = settings.getBoolean("generateOceans");
         if (settings.contains("generateBetaOceans")) this.generateBetaOceans = settings.getBoolean("generateBetaOceans");
-        if (settings.contains("generateIceDesert")) this.generateIceDesert = settings.getBoolean("generateIceDesert");
-        if (settings.contains("generateSkyDim")) this.generateSkyDim = settings.getBoolean("generateSkyDim");
-        if (settings.contains("generateVanillaBiomesBeta")) this.generateVanillaBiomesBeta = settings.getBoolean("generateVanillaBiomesBeta");
+        this.biomeType = BetaBiomes.getBiomeType(settings);
         
         this.biomeMappings = BetaBiomes.BETA_MAPPINGS;
-        this.biomeSampler = this.generateVanillaBiomesBeta ? BetaBiomeLayer.build(seed, false, 4, -1) : null;
-        this.oceanSampler = this.generateVanillaBiomesBeta ? BetaOceanLayer.build(seed, false, 6, -1) : null;
+        this.biomeSampler = this.biomeType == BetaBiomeType.VANILLA ? BetaBiomeLayer.build(seed, false, 4, -1) : null;
+        this.oceanSampler = this.biomeType == BetaBiomeType.VANILLA ? BetaOceanLayer.build(seed, false, 6, -1) : null;
         
         BiomeUtil.setSeed(this.seed);
         generateBiomeLookup(registry);
@@ -82,13 +72,15 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        if (this.generateSkyDim) return biomeRegistry.get(BetaBiomes.SKY_ID);
-        
-        if (this.generateVanillaBiomesBeta) return this.biomeSampler.sample(this.biomeRegistry, biomeX, biomeZ);
-
-        // Sample biome at this one absolute coordinate.
-        BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
-        return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeType.LAND);
+        switch(this.biomeType) {
+            case SKY:
+                return biomeRegistry.get(BetaBiomes.SKY_ID);
+            case VANILLA:
+                return this.biomeSampler.sample(this.biomeRegistry, biomeX, biomeZ);
+            default: 
+                BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
+                return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeType.LAND);
+        }
     }
     
     @Override
@@ -96,7 +88,7 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        if (this.generateVanillaBiomesBeta) {
+        if ( this.biomeType == BetaBiomeType.VANILLA) {
             return this.oceanSampler.sample(this.biomeRegistry, biomeX, biomeZ);
         }
         
@@ -107,7 +99,7 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
         // Sample biome at this one absolute coordinate.
         BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, x, z);
 
-        if (this.generateBetaOceans || this.generateOceans) // To maintain compat with old option
+        if (this.generateBetaOceans)
             return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], type);
         else
             return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeType.LAND);
@@ -155,10 +147,10 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
         Map<String, Identifier> mappings = this.biomeMappings;
         humid *= temp;
         
-        if (this.generateSkyDim) return registry.get(BetaBiomes.SKY_ID);
+        if ( this.biomeType == BetaBiomeType.SKY) return registry.get(BetaBiomes.SKY_ID);
 
         if (temp < 0.1F) {
-            if (this.generateIceDesert)
+            if (this.biomeType == BetaBiomeType.ICE_DESERT)
                 return registry.get(mappings.get("ice_desert"));
             else
                 return registry.get(mappings.get("tundra"));
@@ -257,21 +249,16 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
     }
     
     public boolean isSkyDim() {
-        return this.generateSkyDim;
+        return this.biomeType == BetaBiomeType.SKY;
     }
-
-    public boolean hasStructureFeature(StructureFeature<?> structureFeature) {
-        return this.structureFeatures.computeIfAbsent(structureFeature,
-                s -> this.biomes.stream().anyMatch(biome -> biome.getGenerationSettings().hasStructureFeature(s)));
-    }
-
+    
     @Override
     public boolean generateVanillaBiomes() {
-        return this.generateVanillaBiomesBeta;
+        return this.biomeType == BetaBiomeType.VANILLA;
     }
     
     public boolean generateOceans() {
-        return this.generateBetaOceans || this.generateOceans;
+        return this.generateBetaOceans;
     }
     
     @Override
@@ -284,8 +271,6 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
     public BiomeSource withSeed(long seed) {
         return new BetaBiomeSource(seed, this.biomeRegistry, this.settings);
     }
-    
-    
 
     public static void register() {
         Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "beta_biome_source"), CODEC);

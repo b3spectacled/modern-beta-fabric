@@ -2,6 +2,8 @@ package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
+import com.bespectacled.modernbeta.util.GUIUtil;
+import com.bespectacled.modernbeta.util.WorldEnum;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -10,16 +12,16 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.BooleanOption;
+import net.minecraft.client.options.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 public class CustomizeInfdevLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private OldGeneratorSettings generatorSettings;
     
-    private boolean infdevWinterMode = ModernBeta.BETA_CONFIG.infdevWinterMode;
-    private boolean infdevPlus = ModernBeta.BETA_CONFIG.infdevPlus;
-    private boolean generateVanillaBiomesInfdev = ModernBeta.BETA_CONFIG.generateVanillaBiomesInfdev;
+    private int biomeType = ModernBeta.BETA_CONFIG.preBetaBiomeType;
     
     private ButtonListWidget buttonList;
 
@@ -29,13 +31,8 @@ public class CustomizeInfdevLevelScreen extends Screen {
         this.parent = parent;
         this.generatorSettings = generatorSettings;
         
-        if (generatorSettings.settings.contains("infdevWinterMode"))
-            infdevWinterMode = generatorSettings.settings.getBoolean("infdevWinterMode");
-        if (generatorSettings.settings.contains("infdevPlus"))
-            infdevPlus = generatorSettings.settings.getBoolean("infdevPlus");
-        if (generatorSettings.settings.contains("generateVanillaBiomesInfdev"))
-            generateVanillaBiomesInfdev = generatorSettings.settings.getBoolean("generateVanillaBiomesInfdev");
-      
+        if (generatorSettings.settings.contains("infdevBiomeType"))
+            this.biomeType = generatorSettings.settings.getInt("infdevBiomeType");
     }
     
     @Override
@@ -57,39 +54,44 @@ public class CustomizeInfdevLevelScreen extends Screen {
             }
         ));
         
-        
-        
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         
         this.buttonList.addSingleOptionEntry(
-            new BooleanOption(
-                "createWorld.customize.infdev.infdevWinterMode", 
-                (gameOptions) -> { return infdevWinterMode; }, // Getter
-                (gameOptions, value) -> { // Setter
-                    infdevWinterMode = value;
-                    generatorSettings.settings.putBoolean("infdevWinterMode", value);
-                }
-        ));
-        
-        this.buttonList.addSingleOptionEntry(
-            new BooleanOption(
-                "createWorld.customize.infdev.infdevPlus", 
-                (gameOptions) -> { return infdevPlus; }, 
-                (gameOptions, value) -> {
-                    infdevPlus = value;
-                    generatorSettings.settings.putBoolean("infdevPlus", value);
-                }
-        ));
-        
-        this.buttonList.addSingleOptionEntry(
-            new BooleanOption(
-                "createWorld.customize.infdev.generateVanillaBiomesInfdev", 
-                (gameOptions) -> { return generateVanillaBiomesInfdev; }, 
-                (gameOptions, value) -> {
-                    generateVanillaBiomesInfdev = value;
-                    generatorSettings.settings.putBoolean("generateVanillaBiomesInfdev", value);
-                }
-        ));
+                new CyclingOption(
+                    "createWorld.customize.preBeta.typeButton",
+                    (gameOptions, value) -> {
+                        this.biomeType++;
+                        if (this.biomeType > WorldEnum.PreBetaBiomeType.values().length - 1) this.biomeType = 0;
+                        generatorSettings.settings.putInt("preBetaBiomeType", this.biomeType);
+                        
+                        return;
+                    },
+                    (gameOptions, cyclingOptions) -> {
+                        Text typeText = GUIUtil.TEXT_CLASSIC;
+                        
+                        switch(this.biomeType) {
+                            case 0:
+                                typeText = GUIUtil.TEXT_CLASSIC;
+                                break;
+                            case 1:
+                                typeText = GUIUtil.TEXT_WINTER;
+                                break;
+                            case 2:
+                                typeText = GUIUtil.TEXT_PLUS;
+                                break;
+                            case 3:
+                                typeText = GUIUtil.TEXT_VANILLA;
+                                break;
+                        }
+                        
+                        return new TranslatableText(
+                            "options.generic_value", 
+                            new Object[] { 
+                                GUIUtil.TEXT_BIOME_TYPE, 
+                                typeText
+                        });
+                    }
+            ));
         
         this.children.add(this.buttonList);
     }

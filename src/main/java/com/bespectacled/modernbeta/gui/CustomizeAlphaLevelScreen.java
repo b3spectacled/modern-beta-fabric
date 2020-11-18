@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
+import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.WorldEnum;
 
 import net.minecraft.client.gui.DrawableHelper;
@@ -19,15 +20,9 @@ public class CustomizeAlphaLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private OldGeneratorSettings generatorSettings;
     
-    private int biomeType = ModernBeta.BETA_CONFIG.alphaBiomeType;
+    private int biomeType = ModernBeta.BETA_CONFIG.preBetaBiomeType;
     
     private ButtonListWidget buttonList;
-    
-    private final Text textBiomeType = new TranslatableText("createWorld.customize.type.biomeType");
-    private final Text textClassic = new TranslatableText("createWorld.customize.type.classic");
-    private final Text textWinter = new TranslatableText("createWorld.customize.type.winter");
-    private final Text textPlus = new TranslatableText("createWorld.customize.type.plus");
-    private final Text textVanilla = new TranslatableText("createWorld.customize.type.vanilla");
 
     public CustomizeAlphaLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings) {
         super(new TranslatableText("createWorld.customize.alpha.title"));
@@ -35,9 +30,8 @@ public class CustomizeAlphaLevelScreen extends Screen {
         this.parent = parent;
         this.generatorSettings = generatorSettings;
         
-        if (generatorSettings.settings.contains("alphaBiomeType"))
-            this.biomeType = generatorSettings.settings.getInt("alphaBiomeType");
-      
+        if (generatorSettings.settings.contains("preBetaBiomeType"))
+            this.biomeType = generatorSettings.settings.getInt("preBetaBiomeType");
     }
     
     @Override
@@ -63,36 +57,36 @@ public class CustomizeAlphaLevelScreen extends Screen {
         
         this.buttonList.addSingleOptionEntry(
             new CyclingOption(
-                "createWorld.customize.alpha.typeButton",
+                "createWorld.customize.preBeta.typeButton",
                 (gameOptions, value) -> {
                     this.biomeType++;
                     if (this.biomeType > WorldEnum.PreBetaBiomeType.values().length - 1) this.biomeType = 0;
-                    generatorSettings.settings.putInt("alphaBiomeType", this.biomeType);
+                    generatorSettings.settings.putInt("preBetaBiomeType", this.biomeType);
                     
                     return;
                 },
                 (gameOptions, cyclingOptions) -> {
-                    Text typeText = textClassic;
+                    Text typeText = GUIUtil.TEXT_CLASSIC;
                     
                     switch(this.biomeType) {
                         case 0:
-                            typeText = textClassic;
+                            typeText = GUIUtil.TEXT_CLASSIC;
                             break;
                         case 1:
-                            typeText = textWinter;
+                            typeText = GUIUtil.TEXT_WINTER;
                             break;
                         case 2:
-                            typeText = textPlus;
+                            typeText = GUIUtil.TEXT_PLUS;
                             break;
                         case 3:
-                            typeText = textVanilla;
+                            typeText = GUIUtil.TEXT_VANILLA;
                             break;
                     }
                     
                     return new TranslatableText(
                         "options.generic_value", 
                         new Object[] { 
-                            textBiomeType, 
+                            GUIUtil.TEXT_BIOME_TYPE, 
                             typeText
                     });
                 }
