@@ -84,6 +84,8 @@ public class CustomizeInfdevLevelScreen extends Screen {
                             case VANILLA:
                                 typeText = GUIUtil.TEXT_VANILLA;
                                 break;
+                            default:
+                                typeText = GUIUtil.TEXT_UNKNOWN;
                         }
                         
                         return new TranslatableText(

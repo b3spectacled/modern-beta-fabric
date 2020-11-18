@@ -41,8 +41,8 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
     @Override
     public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos,
             DefaultFeatureConfig defaultFeatureConfig) {
-        // Shouldn't be used if this isn't an instance of BetaBiomeSource
-        if (!(chunkGenerator.getBiomeSource() instanceof BetaBiomeSource)) return false;
+        // Shouldn't be used if this isn't an instance of IOldBiomeSource (Beta/PrebetaBiomeSource)
+        if (!(chunkGenerator.getBiomeSource() instanceof IOldBiomeSource)) return false;
         
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutableDown = new BlockPos.Mutable();
@@ -50,11 +50,11 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
         int chunkX = blockPos.getX() >> 4; // Divide first to truncate to closest chunk coordinate
         int chunkZ = blockPos.getZ() >> 4;
         
-        BetaBiomeSource betaSource = (BetaBiomeSource)chunkGenerator.getBiomeSource();
+        IOldBiomeSource betaSource = (IOldBiomeSource)chunkGenerator.getBiomeSource();
 
         if (betaSource.isSkyDim()) {
-            Arrays.fill(TEMPS, 0, TEMPS.length, betaSource.biomeRegistry.get(BetaBiomes.SKY_ID).getTemperature());
-            Arrays.fill(HUMIDS, 0, HUMIDS.length, betaSource.biomeRegistry.get(BetaBiomes.SKY_ID).getDownfall());
+            Arrays.fill(TEMPS, 0, TEMPS.length, betaSource.getBiomeRegistry().get(BetaBiomes.SKY_ID).getTemperature());
+            Arrays.fill(HUMIDS, 0, HUMIDS.length, betaSource.getBiomeRegistry().get(BetaBiomes.SKY_ID).getDownfall());
         } else {
             BiomeUtil.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
         }

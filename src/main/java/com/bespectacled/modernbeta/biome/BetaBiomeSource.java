@@ -34,7 +34,7 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
             ).apply(instance, (instance).stable(BetaBiomeSource::new)));
 
     private final long seed;
-    public final Registry<Biome> biomeRegistry;
+    private final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
     private final BiomeLayerSampler biomeSampler;
     private final BiomeLayerSampler oceanSampler;
@@ -248,6 +248,12 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
 
     }
     
+    @Override
+    public Registry<Biome> getBiomeRegistry() {
+        return this.biomeRegistry;
+    }
+    
+    @Override
     public boolean isSkyDim() {
         return this.biomeType == BetaBiomeType.SKY;
     }

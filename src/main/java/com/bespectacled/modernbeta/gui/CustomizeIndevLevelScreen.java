@@ -97,6 +97,8 @@ public class CustomizeIndevLevelScreen extends Screen {
                         case INLAND:
                             typeText = GUIUtil.TEXT_INLAND;
                             break;
+                        default:
+                            typeText = GUIUtil.TEXT_UNKNOWN;
                     }
                     
                     return new TranslatableText(
@@ -138,6 +140,8 @@ public class CustomizeIndevLevelScreen extends Screen {
                             case SNOWY:
                                 themeText = GUIUtil.TEXT_SNOWY;
                                 break;
+                            default:
+                                themeText = GUIUtil.TEXT_UNKNOWN;
                         }
                         
                         return new TranslatableText(

@@ -6,6 +6,8 @@
     "generator.infdev": "Inf 20100415",
     "generator.infdev_old": "Inf 20100227",
     
+    "createWorld.customize.unknown": "Unknown option!",
+    
     "createWorld.customize.type.biomeType": "Biome Type",
     "createWorld.customize.type.classic": "Classic",
     "createWorld.customize.type.ice_desert": "Classic + Ice Desert",

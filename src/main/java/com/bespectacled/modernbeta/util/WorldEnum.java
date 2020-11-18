@@ -95,6 +95,7 @@ public class WorldEnum {
         WINTER(1, "winter"),
         PLUS(2, "plus"),
         VANILLA(3, "vanilla");
+        //BETA(4, "beta");
         
         private final int id;
         private final String name;

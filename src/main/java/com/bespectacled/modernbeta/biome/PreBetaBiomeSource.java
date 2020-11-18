@@ -32,10 +32,11 @@ public class PreBetaBiomeSource extends BiomeSource implements IOldBiomeSource {
             ).apply(instance, (instance).stable(PreBetaBiomeSource::new)));
 
     private final long seed;
-    public final Registry<Biome> biomeRegistry;
+    private final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
     private final BiomeLayerSampler biomeSampler;
     private final BiomeLayerSampler oceanSampler;
+    //private final BetaBiomeSource betaBiomeSampler;
     
     private final WorldType worldType;
     private final PreBetaBiomeType biomeType;
@@ -56,6 +57,7 @@ public class PreBetaBiomeSource extends BiomeSource implements IOldBiomeSource {
         
         this.biomeSampler = this.biomeType == PreBetaBiomeType.VANILLA ? VanillaBiomeLayer.build(seed, false, 4, -1) : null;
         this.oceanSampler = this.biomeType == PreBetaBiomeType.VANILLA ? VanillaOceanLayer.build(seed, false, 6, -1) : null;
+        //this.betaBiomeSampler = this.biomeType == PreBetaBiomeType.BETA ? new BetaBiomeSource(seed, registry, settings) : null;
         
         BiomeUtil.setSeed(this.seed);
 
@@ -124,8 +126,18 @@ public class PreBetaBiomeSource extends BiomeSource implements IOldBiomeSource {
     }
 
     @Override
+    public Registry<Biome> getBiomeRegistry() {
+        return this.biomeRegistry;
+    }
+    
+    @Override
     public boolean generateVanillaBiomes() {
         return this.biomeType == PreBetaBiomeType.VANILLA;
+    }
+
+    @Override
+    public boolean isSkyDim() {
+        return false;
     }
 
 }
