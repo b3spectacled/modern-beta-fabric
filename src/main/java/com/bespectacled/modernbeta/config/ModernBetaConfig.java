@@ -1,6 +1,8 @@
 package com.bespectacled.modernbeta.config;
 
-import com.bespectacled.modernbeta.util.WorldEnum;
+import com.bespectacled.modernbeta.util.IndevUtil;
+import com.bespectacled.modernbeta.util.WorldEnum.BetaBiomeType;
+import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
@@ -28,21 +30,17 @@ public class ModernBetaConfig implements ConfigData {
     public boolean renderAlphaSunset = false;
     
     /* Beta Generation */
-
-    // Legacy option, replaced with generateBetaOceans
-    @ConfigEntry.Gui.Excluded
-    public boolean generateOceans = false; 
     
     @ConfigEntry.Gui.Excluded
     public boolean generateBetaOceans = true;
     
     @ConfigEntry.Gui.Excluded
-    public int betaBiomeType = WorldEnum.BetaBiomeType.CLASSIC.ordinal();
+    public String betaBiomeType = BetaBiomeType.CLASSIC.getName();
     
     /* Alpha, Infdev, Old Infdev Generation */
 
     @ConfigEntry.Gui.Excluded
-    public int preBetaBiomeType = WorldEnum.PreBetaBiomeType.CLASSIC.ordinal();
+    public String preBetaBiomeType = PreBetaBiomeType.CLASSIC.getName();
 
     /* Old Infdev Generation */
     
@@ -55,10 +53,10 @@ public class ModernBetaConfig implements ConfigData {
     /* Indev Generation */
     
     @ConfigEntry.Gui.Excluded
-    public int indevLevelType = 0;
+    public String indevLevelType = IndevUtil.IndevType.ISLAND.getName();
     
     @ConfigEntry.Gui.Excluded
-    public int indevLevelTheme = 0;
+    public String indevLevelTheme = IndevUtil.IndevTheme.NORMAL.getName();
     
     @ConfigEntry.Gui.Excluded
     public int indevLevelWidth = 256;

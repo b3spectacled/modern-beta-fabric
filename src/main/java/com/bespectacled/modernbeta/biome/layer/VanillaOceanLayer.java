@@ -15,7 +15,7 @@ import net.minecraft.world.biome.source.BiomeLayerSampler;
 /*
  * @author PaulEvs
  */
-public class BetaOceanLayer {
+public class VanillaOceanLayer {
     public static BiomeLayerSampler build(long seed, boolean old, int biomeSize, int riverSize) {
         LayerFactory<CachingLayerSampler> factory = build(
             old, biomeSize, riverSize, salt -> new CachingLayerContext(25, seed, salt)

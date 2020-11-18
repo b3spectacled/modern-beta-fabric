@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.layer.BetaBiomeLayer;
-import com.bespectacled.modernbeta.biome.layer.BetaOceanLayer;
+import com.bespectacled.modernbeta.biome.layer.VanillaBiomeLayer;
+import com.bespectacled.modernbeta.biome.layer.VanillaOceanLayer;
 import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
@@ -51,11 +51,11 @@ public class PreBetaBiomeSource extends BiomeSource implements IOldBiomeSource {
         this.settings = settings;
         
         this.worldType = PreBetaBiomes.getWorldType(settings);
-        this.biomeType = PreBetaBiomes.getBiomeType(settings, this.worldType);
+        this.biomeType = PreBetaBiomes.getBiomeType(settings);
         this.biomeMapping = PreBetaBiomes.getBiomeMap(this.worldType);
         
-        this.biomeSampler = this.biomeType == PreBetaBiomeType.VANILLA ? BetaBiomeLayer.build(seed, false, 4, -1) : null;
-        this.oceanSampler = this.biomeType == PreBetaBiomeType.VANILLA ? BetaOceanLayer.build(seed, false, 6, -1) : null;
+        this.biomeSampler = this.biomeType == PreBetaBiomeType.VANILLA ? VanillaBiomeLayer.build(seed, false, 4, -1) : null;
+        this.oceanSampler = this.biomeType == PreBetaBiomeType.VANILLA ? VanillaOceanLayer.build(seed, false, 6, -1) : null;
         
         BiomeUtil.setSeed(this.seed);
 
@@ -75,7 +75,7 @@ public class PreBetaBiomeSource extends BiomeSource implements IOldBiomeSource {
                 biome = this.biomeRegistry.get(this.biomeMapping.get(PreBetaBiomeType.WINTER));
                 break;
             case PLUS:
-             // Sample biome at this one absolute coordinate.
+                // Sample biome at this one absolute coordinate.
                 BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
     
                 biome = getBiome((float)TEMP_HUMID_POINT[0], (float)TEMP_HUMID_POINT[1], this.biomeRegistry);

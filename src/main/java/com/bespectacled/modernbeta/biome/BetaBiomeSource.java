@@ -21,8 +21,8 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeType;
-import com.bespectacled.modernbeta.biome.layer.BetaBiomeLayer;
-import com.bespectacled.modernbeta.biome.layer.BetaOceanLayer; 
+import com.bespectacled.modernbeta.biome.layer.VanillaBiomeLayer;
+import com.bespectacled.modernbeta.biome.layer.VanillaOceanLayer; 
 
 public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
 
@@ -60,8 +60,8 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
         this.biomeType = BetaBiomes.getBiomeType(settings);
         
         this.biomeMappings = BetaBiomes.BETA_MAPPINGS;
-        this.biomeSampler = this.biomeType == BetaBiomeType.VANILLA ? BetaBiomeLayer.build(seed, false, 4, -1) : null;
-        this.oceanSampler = this.biomeType == BetaBiomeType.VANILLA ? BetaOceanLayer.build(seed, false, 6, -1) : null;
+        this.biomeSampler = this.biomeType == BetaBiomeType.VANILLA ? VanillaBiomeLayer.build(seed, false, 4, -1) : null;
+        this.oceanSampler = this.biomeType == BetaBiomeType.VANILLA ? VanillaOceanLayer.build(seed, false, 6, -1) : null;
         
         BiomeUtil.setSeed(this.seed);
         generateBiomeLookup(registry);
@@ -88,7 +88,7 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        if ( this.biomeType == BetaBiomeType.VANILLA) {
+        if (this.biomeType == BetaBiomeType.VANILLA) {
             return this.oceanSampler.sample(this.biomeRegistry, biomeX, biomeZ);
         }
         
@@ -273,7 +273,7 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
     }
 
     public static void register() {
-        Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "beta_biome_source"), CODEC);
+        Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "beta"), CODEC);
         //ModernBeta.LOGGER.log(Level.INFO, "Registered Beta biome source.");
     }
 

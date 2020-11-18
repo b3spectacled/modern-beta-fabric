@@ -12,7 +12,7 @@
     "createWorld.customize.type.sky": "Sky Dimension",
     "createWorld.customize.type.winter": "Winter Mode",
     "createWorld.customize.type.plus": "Classic + Winter",
-    "createWorld.customize.type.vanilla": "Vanilla",
+    "createWorld.customize.type.vanilla": "Vanilla/Modded",
     
     "createWorld.customize.indev.title": "Indev World Type Configuration",
     "createWorld.customize.indev.levelType": "Level Type",
@@ -97,6 +97,9 @@
     
     "biome.modern_beta.infdev": "Infdev",
     "biome.modern_beta.infdev_winter": "Infdev Winter",
+    
+    "biome.modern_beta.infdev_old": "Old Infdev",
+    "biome.modern_beta.infdev_old_winter": "Old Infdev Winter",
     
     "biome.modern_beta.indev_edge": "Indev Edge",
     "biome.modern_beta.indev_hell_edge": "Indev Hell Edge",

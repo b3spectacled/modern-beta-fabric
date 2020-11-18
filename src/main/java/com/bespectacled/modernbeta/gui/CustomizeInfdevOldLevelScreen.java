@@ -4,6 +4,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.WorldEnum;
+import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -21,7 +22,7 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private OldGeneratorSettings generatorSettings;
     
-    private int biomeType = ModernBeta.BETA_CONFIG.preBetaBiomeType;
+    private int biomeType = WorldEnum.PreBetaBiomeType.fromName(ModernBeta.BETA_CONFIG.preBetaBiomeType).getId();
     private boolean generateInfdevPyramid = ModernBeta.BETA_CONFIG.generateInfdevPyramid;
     private boolean generateInfdevWall = ModernBeta.BETA_CONFIG.generateInfdevWall;
     
@@ -66,41 +67,42 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         
         this.buttonList.addSingleOptionEntry(
-            new CyclingOption(
-                "createWorld.customize.preBeta.typeButton",
-                (gameOptions, value) -> {
-                    this.biomeType++;
-                    if (this.biomeType > WorldEnum.PreBetaBiomeType.values().length - 1) this.biomeType = 0;
-                    generatorSettings.settings.putInt("preBetaBiomeType", this.biomeType);
-                    
-                    return;
-                },
-                (gameOptions, cyclingOptions) -> {
-                    Text typeText = GUIUtil.TEXT_CLASSIC;
-                    
-                    switch(this.biomeType) {
-                        case 0:
-                            typeText = GUIUtil.TEXT_CLASSIC;
-                            break;
-                        case 1:
-                            typeText = GUIUtil.TEXT_WINTER;
-                            break;
-                        case 2:
-                            typeText = GUIUtil.TEXT_PLUS;
-                            break;
-                        case 3:
-                            typeText = GUIUtil.TEXT_VANILLA;
-                            break;
+                new CyclingOption(
+                    "createWorld.customize.preBeta.typeButton",
+                    (gameOptions, value) -> {
+                        this.biomeType++;
+                        if (this.biomeType > WorldEnum.PreBetaBiomeType.values().length - 1) this.biomeType = 0;
+                        generatorSettings.settings.putString("preBetaBiomeType", PreBetaBiomeType.fromId(this.biomeType).getName());
+                        
+                        return;
+                    },
+                    (gameOptions, cyclingOptions) -> {
+                        Text typeText = GUIUtil.TEXT_CLASSIC;
+                        PreBetaBiomeType type = PreBetaBiomeType.fromId(this.biomeType);
+                        
+                        switch(type) {
+                            case CLASSIC:
+                                typeText = GUIUtil.TEXT_CLASSIC;
+                                break;
+                            case WINTER:
+                                typeText = GUIUtil.TEXT_WINTER;
+                                break;
+                            case PLUS:
+                                typeText = GUIUtil.TEXT_PLUS;
+                                break;
+                            case VANILLA:
+                                typeText = GUIUtil.TEXT_VANILLA;
+                                break;
+                        }
+                        
+                        return new TranslatableText(
+                            "options.generic_value", 
+                            new Object[] { 
+                                GUIUtil.TEXT_BIOME_TYPE, 
+                                typeText
+                        });
                     }
-                    
-                    return new TranslatableText(
-                        "options.generic_value", 
-                        new Object[] { 
-                            GUIUtil.TEXT_BIOME_TYPE, 
-                            typeText
-                    });
-                }
-        ));
+            ));
         
         this.buttonList.addSingleOptionEntry(
             new BooleanOption(

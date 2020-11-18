@@ -64,21 +64,21 @@ public class PreBetaBiomes {
     }
     
     public static WorldType getWorldType(CompoundTag settings) {
-        WorldType type = WorldType.BETA;
+        WorldType type = WorldType.ALPHA;
         
         if (settings.contains("worldType"))
-            type = WorldType.values()[settings.getInt("worldType")];
+            type = WorldType.fromName(settings.getString("worldType"));
         
         return type;
     }
     
-    public static PreBetaBiomeType getBiomeType(CompoundTag settings, WorldType worldType) {
-        int biomeTypeNdx = PreBetaBiomeType.CLASSIC.ordinal();
+    public static PreBetaBiomeType getBiomeType(CompoundTag settings) {
+        PreBetaBiomeType type = PreBetaBiomeType.CLASSIC;
         
         if (settings.contains("preBetaBiomeType")) 
-            biomeTypeNdx = settings.getInt("preBetaBiomeType");
+            type = PreBetaBiomeType.fromName(settings.getString("preBetaBiomeType"));
         
-        return PreBetaBiomeType.values()[biomeTypeNdx];
+        return type;
     }
     
     public static Map<PreBetaBiomeType, Identifier> getBiomeMap(WorldType worldType) {
@@ -100,10 +100,10 @@ public class PreBetaBiomes {
         boolean useVanillaBiomes = false;
         
         if (settings.contains("worldType"))
-            type = WorldType.values()[settings.getInt("worldType")];
+            type = WorldType.fromName(settings.getString("worldType"));
         
         if (settings.contains("preBetaBiomeType")) 
-            useVanillaBiomes = PreBetaBiomeType.values()[settings.getInt("preBetaBiomeType")] == PreBetaBiomeType.VANILLA;
+            useVanillaBiomes = PreBetaBiomeType.fromName(settings.getString("preBetaBiomeType")) == PreBetaBiomeType.VANILLA;
         
         return getBiomeRegistryList(type, useVanillaBiomes);
     }

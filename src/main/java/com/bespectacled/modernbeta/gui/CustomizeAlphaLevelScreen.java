@@ -4,6 +4,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.WorldEnum;
+import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -20,7 +21,7 @@ public class CustomizeAlphaLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private OldGeneratorSettings generatorSettings;
     
-    private int biomeType = ModernBeta.BETA_CONFIG.preBetaBiomeType;
+    private int biomeType = PreBetaBiomeType.fromName(ModernBeta.BETA_CONFIG.preBetaBiomeType).getId();
     
     private ButtonListWidget buttonList;
 
@@ -31,7 +32,7 @@ public class CustomizeAlphaLevelScreen extends Screen {
         this.generatorSettings = generatorSettings;
         
         if (generatorSettings.settings.contains("preBetaBiomeType"))
-            this.biomeType = generatorSettings.settings.getInt("preBetaBiomeType");
+            this.biomeType = PreBetaBiomeType.fromName(generatorSettings.settings.getString("preBetaBiomeType")).getId();
     }
     
     @Override
@@ -61,24 +62,25 @@ public class CustomizeAlphaLevelScreen extends Screen {
                 (gameOptions, value) -> {
                     this.biomeType++;
                     if (this.biomeType > WorldEnum.PreBetaBiomeType.values().length - 1) this.biomeType = 0;
-                    generatorSettings.settings.putInt("preBetaBiomeType", this.biomeType);
+                    generatorSettings.settings.putString("preBetaBiomeType", PreBetaBiomeType.fromId(this.biomeType).getName());
                     
                     return;
                 },
                 (gameOptions, cyclingOptions) -> {
                     Text typeText = GUIUtil.TEXT_CLASSIC;
+                    PreBetaBiomeType type = PreBetaBiomeType.fromId(this.biomeType);
                     
-                    switch(this.biomeType) {
-                        case 0:
+                    switch(type) {
+                        case CLASSIC:
                             typeText = GUIUtil.TEXT_CLASSIC;
                             break;
-                        case 1:
+                        case WINTER:
                             typeText = GUIUtil.TEXT_WINTER;
                             break;
-                        case 2:
+                        case PLUS:
                             typeText = GUIUtil.TEXT_PLUS;
                             break;
-                        case 3:
+                        case VANILLA:
                             typeText = GUIUtil.TEXT_VANILLA;
                             break;
                     }

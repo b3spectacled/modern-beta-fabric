@@ -4,6 +4,8 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.WorldEnum;
+import com.bespectacled.modernbeta.util.WorldEnum.BetaBiomeType;
+import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -22,8 +24,7 @@ public class CustomizeBetaLevelScreen extends Screen {
     private OldGeneratorSettings generatorSettings;
     
 
-    private int biomeType = ModernBeta.BETA_CONFIG.betaBiomeType;
-    private boolean generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
+    private int biomeType = BetaBiomeType.fromName(ModernBeta.BETA_CONFIG.betaBiomeType).getId();
     private boolean generateBetaOceans = ModernBeta.BETA_CONFIG.generateBetaOceans;
     
     private ButtonListWidget buttonList;
@@ -35,11 +36,12 @@ public class CustomizeBetaLevelScreen extends Screen {
         this.generatorSettings = generatorSettings;
         
         if (generatorSettings.settings.contains("betaBiomeType"))
-            this.biomeType = generatorSettings.settings.getInt("betaBiomeType");
-        if (generatorSettings.settings.contains("generateOceans"))
-            generateOceans = generatorSettings.settings.getBoolean("generateOceans");
+            BetaBiomeType.fromName(generatorSettings.settings.getString("betaBiomeType")).getId();
         if (generatorSettings.settings.contains("generateBetaOceans"))
             generateBetaOceans = generatorSettings.settings.getBoolean("generateBetaOceans");
+        
+        
+        
     }
     
     @Override
@@ -69,24 +71,25 @@ public class CustomizeBetaLevelScreen extends Screen {
                 (gameOptions, value) -> {
                     this.biomeType++;
                     if (this.biomeType > WorldEnum.BetaBiomeType.values().length - 1) this.biomeType = 0;
-                    generatorSettings.settings.putInt("betaBiomeType", this.biomeType);
+                    generatorSettings.settings.putString("betaBiomeType", BetaBiomeType.fromId(this.biomeType).getName());
                     
                     return;
                 },
                 (gameOptions, cyclingOptions) -> {
                     Text typeText = GUIUtil.TEXT_CLASSIC;
+                    BetaBiomeType type = BetaBiomeType.fromId(this.biomeType);
                     
-                    switch(this.biomeType) {
-                        case 0:
+                    switch(type) {
+                        case CLASSIC:
                             typeText = GUIUtil.TEXT_CLASSIC;
                             break;
-                        case 1:
+                        case ICE_DESERT:
                             typeText = GUIUtil.TEXT_ICE_DESERT;
                             break;
-                        case 2:
+                        case SKY:
                             typeText = GUIUtil.TEXT_SKY;
                             break;
-                        case 3:
+                        case VANILLA:
                             typeText = GUIUtil.TEXT_VANILLA;
                             break;
                     }

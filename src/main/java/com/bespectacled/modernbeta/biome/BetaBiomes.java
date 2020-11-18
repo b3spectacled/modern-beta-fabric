@@ -82,19 +82,19 @@ public class BetaBiomes {
     }
     
     public static BetaBiomeType getBiomeType(CompoundTag settings) {
-        int biomeTypeNdx = BetaBiomeType.CLASSIC.ordinal();
+        BetaBiomeType type = BetaBiomeType.CLASSIC;
         
         if (settings.contains("betaBiomeType")) 
-            biomeTypeNdx = settings.getInt("betaBiomeType");
+            type = BetaBiomeType.fromName(settings.getString("betaBiomeType"));
         
-        return BetaBiomeType.values()[biomeTypeNdx];
+        return type;
     }
     
     public static List<RegistryKey<Biome>> getBiomeRegistryList(CompoundTag settings) {
         boolean useVanillaBiomes = false;
         
         if (settings.contains("betaBiomeType")) 
-            useVanillaBiomes = PreBetaBiomeType.values()[settings.getInt("betaBiomeType")] == PreBetaBiomeType.VANILLA;
+            useVanillaBiomes = BetaBiomeType.fromName(settings.getString("betaBiomeType")) == BetaBiomeType.VANILLA;
         
         return getBiomeRegistryList(useVanillaBiomes);
     }

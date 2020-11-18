@@ -2,8 +2,8 @@ package com.bespectacled.modernbeta.biome;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.util.IndevUtil;
-import com.bespectacled.modernbeta.util.IndevUtil.Theme;
-import com.bespectacled.modernbeta.util.IndevUtil.Type;
+import com.bespectacled.modernbeta.util.IndevUtil.IndevTheme;
+import com.bespectacled.modernbeta.util.IndevUtil.IndevType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -29,8 +29,8 @@ public class IndevBiomeSource extends BiomeSource {
     public final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
     
-    private Type type;
-    private Theme theme;
+    private IndevType type;
+    private IndevTheme theme;
    
     private int width;
     private int length;
@@ -43,15 +43,15 @@ public class IndevBiomeSource extends BiomeSource {
         this.biomeRegistry = registry;
         this.settings = settings;
         
-        this.theme = Theme.NORMAL;
-        this.type = Type.ISLAND;
+        this.theme = IndevTheme.NORMAL;
+        this.type = IndevType.ISLAND;
 
         this.width = 256;
         this.length = 256;
         this.height = 128;
  
-        if (this.settings.contains("levelType")) this.type = Type.values()[settings.getInt("levelType")];
-        if (this.settings.contains("levelTheme")) this.theme = Theme.values()[settings.getInt("levelTheme")];
+        if (this.settings.contains("levelType")) this.type = IndevType.fromName(settings.getString("levelType"));
+        if (this.settings.contains("levelTheme")) this.theme = IndevTheme.fromName(settings.getString("levelTheme"));
         
         if (this.settings.contains("levelWidth")) this.width = settings.getInt("levelWidth");
         if (this.settings.contains("levelLength")) this.length = settings.getInt("levelLength");
@@ -87,24 +87,24 @@ public class IndevBiomeSource extends BiomeSource {
             }
         } else {
             switch(theme) {
-            case NORMAL:
-                biome = biomeRegistry.get(IndevBiomes.INDEV_EDGE_ID);
-                break;
-            case HELL:
-                biome = biomeRegistry.get(IndevBiomes.INDEV_HELL_EDGE_ID);
-                break;
-            case PARADISE:
-                biome = biomeRegistry.get(IndevBiomes.INDEV_PARADISE_EDGE_ID);
-                break; 
-            case WOODS:
-                biome = biomeRegistry.get(IndevBiomes.INDEV_WOODS_EDGE_ID);
-                break;  
-            case SNOWY:
-                biome = biomeRegistry.get(IndevBiomes.INDEV_SNOWY_EDGE_ID);
-                break;
-            default:
-                biome = biomeRegistry.get(IndevBiomes.INDEV_EDGE_ID);
-        }
+                case NORMAL:
+                    biome = biomeRegistry.get(IndevBiomes.INDEV_EDGE_ID);
+                    break;
+                case HELL:
+                    biome = biomeRegistry.get(IndevBiomes.INDEV_HELL_EDGE_ID);
+                    break;
+                case PARADISE:
+                    biome = biomeRegistry.get(IndevBiomes.INDEV_PARADISE_EDGE_ID);
+                    break; 
+                case WOODS:
+                    biome = biomeRegistry.get(IndevBiomes.INDEV_WOODS_EDGE_ID);
+                    break;  
+                case SNOWY:
+                    biome = biomeRegistry.get(IndevBiomes.INDEV_SNOWY_EDGE_ID);
+                    break;
+                default:
+                    biome = biomeRegistry.get(IndevBiomes.INDEV_EDGE_ID);
+            }
         }
         
         return biome;
@@ -122,7 +122,7 @@ public class IndevBiomeSource extends BiomeSource {
     }
 
     public static void register() {
-        Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "indev_biome_source"), CODEC);
+        Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "indev"), CODEC);
         //ModernBeta.LOGGER.log(Level.INFO, "Registered Indev biome source.");
     }
 

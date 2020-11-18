@@ -25,7 +25,7 @@ import net.minecraft.world.biome.source.BiomeLayerSampler;
 /*
  * @author Paulevs 
  */
-public class BetaBiomeLayer {
+public class VanillaBiomeLayer {
     
     public static BiomeLayerSampler build(long seed, boolean old, int biomeSize, int riverSize) {
         LayerFactory<CachingLayerSampler> factory = build(
@@ -53,7 +53,7 @@ public class BetaBiomeLayer {
      * See BiomeLayer for reference
      */
     private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> build(boolean old, int biomeSize, int riverSize, LongFunction<C> contextProvider) {
-        LayerFactory<T> layerFactory = BetaInitLayer.INSTANCE.<T>create((LayerSampleContext<T>)contextProvider.apply(1L));
+        LayerFactory<T> layerFactory = VanillaInitLayer.INSTANCE.<T>create((LayerSampleContext<T>)contextProvider.apply(1L));
         
         layerFactory = ScaleLayer.FUZZY.<T>create(contextProvider.apply(2000L), layerFactory);
         layerFactory = IncreaseEdgeCurvatureLayer.INSTANCE.<T>create(contextProvider.apply(1L), layerFactory);

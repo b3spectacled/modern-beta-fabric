@@ -8,7 +8,7 @@ import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 /*
  * @author Paulevs 
  */
-public enum BetaInitLayer implements InitLayer {
+public enum VanillaInitLayer implements InitLayer {
     INSTANCE;
     
     @Override
