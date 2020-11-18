@@ -47,20 +47,19 @@ public class PreBetaBiomes {
         ALPHA_BIOMES.put(PreBetaBiomeType.WINTER, ALPHA_WINTER_ID);
     }
     
-    public static void reserveBiomeIDs() {
-        for (Identifier i : ALPHA_BIOMES.values()) {
-            Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createNormalOcean(false));
-        }
-        
-        for (Identifier i : INFDEV_BIOMES.values()) {
-            Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createNormalOcean(false));
-        }
-        
-        for (Identifier i : INFDEV_OLD_BIOMES.values()) {
-            Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createNormalOcean(false));
-        }
-
-        //ModernBeta.LOGGER.log(Level.INFO, "Reserved Alpha biome IDs.");
+    public static void reserveAlphaBiomeIDs() {
+        Registry.register(BuiltinRegistries.BIOME, ALPHA_ID, DefaultBiomeCreator.createNormalOcean(false));
+        Registry.register(BuiltinRegistries.BIOME, ALPHA_WINTER_ID, DefaultBiomeCreator.createNormalOcean(false));
+    }
+    
+    public static void reserveInfdevBiomeIds() {
+        Registry.register(BuiltinRegistries.BIOME, INFDEV_ID, DefaultBiomeCreator.createNormalOcean(false));
+        Registry.register(BuiltinRegistries.BIOME, INFDEV_WINTER_ID, DefaultBiomeCreator.createNormalOcean(false));
+    }
+    
+    public static void reserveInfdevOldBiomeIds() {
+        Registry.register(BuiltinRegistries.BIOME, INFDEV_OLD_ID, DefaultBiomeCreator.createNormalOcean(false));
+        Registry.register(BuiltinRegistries.BIOME, INFDEV_OLD_WINTER_ID, DefaultBiomeCreator.createNormalOcean(false));
     }
     
     public static WorldType getWorldType(CompoundTag settings) {

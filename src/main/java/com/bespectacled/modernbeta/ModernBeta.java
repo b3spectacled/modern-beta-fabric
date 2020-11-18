@@ -68,8 +68,10 @@ public class ModernBeta implements ModInitializer {
         LOGGER.log(Level.INFO, "Registered Modern Beta features!");
 
         BetaBiomes.reserveBiomeIDs();
-        PreBetaBiomes.reserveBiomeIDs();
+        PreBetaBiomes.reserveAlphaBiomeIDs();
+        PreBetaBiomes.reserveInfdevBiomeIds();
         IndevBiomes.reserveBiomeIDs();
+        PreBetaBiomes.reserveInfdevOldBiomeIds();
         
         LOGGER.log(Level.INFO, "Registered Modern Beta biomes!");
 
