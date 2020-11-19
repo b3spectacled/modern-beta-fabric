@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gui.CustomizeBetaLevelScreen;
@@ -65,6 +66,6 @@ public final class BetaGeneratorType extends GeneratorType {
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
         betaSettings.settings = OldGeneratorSettings.createBetaSettings();
-        return new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaSettings.settings), seed, betaSettings);
+        return new BetaChunkGenerator(new OldBiomeSource(seed, biomes, betaSettings.settings), seed, betaSettings);
     }
 }

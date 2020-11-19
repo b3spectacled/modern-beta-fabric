@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeProviderType;
 import com.bespectacled.modernbeta.util.WorldEnum.BetaBiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
@@ -25,7 +26,7 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class BetaBiomes {
-    public enum BiomeType {
+    public enum BiomeProviderType {
         LAND, OCEAN
     }
     
@@ -77,8 +78,6 @@ public class BetaBiomes {
         for (Identifier i : BIOMES) {
             Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createNormalOcean(false));
         }
-
-        //ModernBeta.LOGGER.log(Level.INFO, "Reserved Beta biome IDs.");
     }
     
     public static BetaBiomeType getBiomeType(CompoundTag settings) {
@@ -129,5 +128,152 @@ public class BetaBiomes {
         BETA_MAPPINGS.put("warm_ocean", WARM_OCEAN_ID);
         
         BETA_MAPPINGS.put("sky", SKY_ID);
+    }
+    
+    /*
+     * Beta Biome Cache 
+     */
+    
+    private static final Identifier LAND_BIOME_TABLE[] = new Identifier[4096];
+    private static final Identifier OCEAN_BIOME_TABLE[] = new Identifier[4096];
+    
+    static {
+        generateBiomeLookup();
+    }
+    
+    public static Identifier getBiomeFromLookup(double temp, double humid, BiomeProviderType type) {
+        int i = (int) (temp * 63D);
+        int j = (int) (humid * 63D);
+        
+        Identifier biomeId = LAND_BIOME_TABLE[i + j * 64];
+        
+        switch(type) {
+            case OCEAN:
+                biomeId = OCEAN_BIOME_TABLE[i + j * 64];
+                break;
+        }
+
+        return biomeId;
+    }
+    
+    public static void getBiomesFromLookup(double[] temps, double[] humids, Identifier[] landBiomes, Identifier[] oceanBiomes) {
+        int sizeX = 16;
+        int sizeZ = 16;
+        
+        for (int i = 0; i < sizeX * sizeZ; ++i) {
+            if (landBiomes != null) landBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeProviderType.LAND);
+            if (oceanBiomes != null) oceanBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeProviderType.OCEAN);
+        }
+    }
+    
+    private static void generateBiomeLookup() {
+        for (int i = 0; i < 64; i++) {
+            for (int j = 0; j < 64; j++) {
+                LAND_BIOME_TABLE[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F);
+                OCEAN_BIOME_TABLE[i + j * 64] = getOceanBiome((float) i / 63F, (float) j / 63F);
+            }
+        }
+    }
+    
+    private static Identifier getBiome(float temp, float humid) {
+        humid *= temp;
+
+        if (temp < 0.1F) {
+            //if (this.biomeType == BetaBiomeType.ICE_DESERT)
+            //    return registry.get(mappings.get("ice_desert"));
+            //else
+            return TUNDRA_ID;
+        }
+
+        if (humid < 0.2F) {
+            if (temp < 0.5F) {
+                return TUNDRA_ID;
+            }
+            if (temp < 0.95F) {
+                return SAVANNA_ID;
+            } else {
+                return DESERT_ID;
+            }
+        }
+
+        if (humid > 0.5F && temp < 0.7F) {
+            return SWAMPLAND_ID;
+        }
+
+        if (temp < 0.5F) {
+            return TAIGA_ID;
+        }
+
+        if (temp < 0.97F) {
+            if (humid < 0.35F) {
+                return SHRUBLAND_ID;
+            } else {
+                return FOREST_ID;
+            }
+        }
+
+        if (humid < 0.45F) {
+            return PLAINS_ID;
+        }
+
+        if (humid < 0.9F) {
+            return SEASONAL_FOREST_ID;
+        } else {
+            return RAINFOREST_ID;
+        }
+
+    }
+
+    private static Identifier getOceanBiome(float temp, float humid) {
+        humid *= temp;
+
+        // == Vanilla Biome IDs ==
+        // 0 = Ocean
+        // 44 = Warm Ocean
+        // 45 = Lukewarm Ocean
+        // 46 = Cold Ocean
+        // 10 = Frozen Ocean
+
+        if (temp < 0.1F) {
+            return FROZEN_OCEAN_ID;
+        }
+
+        if (humid < 0.2F) {
+            if (temp < 0.5F) {
+                return FROZEN_OCEAN_ID;
+            }
+            if (temp < 0.95F) {
+                return OCEAN_ID;
+            } else {
+                return OCEAN_ID;
+            }
+        }
+
+        if (humid > 0.5F && temp < 0.7F) {
+            return COLD_OCEAN_ID;
+        }
+
+        if (temp < 0.5F) {
+            return FROZEN_OCEAN_ID;
+        }
+
+        if (temp < 0.97F) {
+            if (humid < 0.35F) {
+                return OCEAN_ID;
+            } else {
+                return OCEAN_ID;
+            }
+        }
+
+        if (humid < 0.45F) {
+            return OCEAN_ID;
+        }
+
+        if (humid < 0.9F) {
+            return LUKEWARM_OCEAN_ID;
+        } else {
+            return WARM_OCEAN_ID;
+        }
+
     }
 }

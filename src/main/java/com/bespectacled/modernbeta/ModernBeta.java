@@ -26,6 +26,7 @@ import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.biome.IndevBiomeSource;
 import com.bespectacled.modernbeta.biome.IndevBiomes;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.PreBetaBiomeSource;
 import com.bespectacled.modernbeta.biome.PreBetaBiomes;
 import com.bespectacled.modernbeta.biome.layer.VanillaBiomeModifier;
@@ -75,9 +76,10 @@ public class ModernBeta implements ModInitializer {
         
         LOGGER.log(Level.INFO, "Registered Modern Beta biomes!");
 
-        BetaBiomeSource.register();
-        PreBetaBiomeSource.register();
-        IndevBiomeSource.register();
+        //BetaBiomeSource.register();
+        //PreBetaBiomeSource.register();
+        //IndevBiomeSource.register();
+        OldBiomeSource.register();
         
         LOGGER.log(Level.INFO, "Registered Modern Beta biome providers!");
 

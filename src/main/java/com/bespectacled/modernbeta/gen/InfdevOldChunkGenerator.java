@@ -38,6 +38,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.PreBetaBiomeSource;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.*;
@@ -57,7 +58,7 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
             .apply(instance, instance.stable(InfdevOldChunkGenerator::new)));
 
     private final OldGeneratorSettings settings;
-    private final PreBetaBiomeSource biomeSource;
+    private final OldBiomeSource biomeSource;
     private final long seed;
     
     private boolean generateInfdevPyramid = true;
@@ -86,7 +87,7 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
     public InfdevOldChunkGenerator(BiomeSource biomes, long seed, OldGeneratorSettings infdevOldSettings) {
         super(biomes, seed, () -> infdevOldSettings.wrapped);
         this.settings = infdevOldSettings;
-        this.biomeSource = (PreBetaBiomeSource) biomes;
+        this.biomeSource = (OldBiomeSource) biomes;
         this.seed = seed;
         
         RAND.setSeed(seed);
@@ -126,19 +127,19 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
         generateTerrain(chunk.getPos().getStartX(), chunk.getPos().getStartZ());  
         setTerrain((ChunkRegion)worldAccess, chunk, structureAccessor);
         
-        if (this.biomeSource.generateVanillaBiomes()) {
+        if (this.biomeSource.isVanilla()) {
             GenUtil.injectOceanBiomes(chunk, this.biomeSource);
         }
     }
         
     @Override
     public void generateFeatures(ChunkRegion chunkRegion, StructureAccessor structureAccessor) {
-        GenUtil.generateFeaturesWithOcean(chunkRegion, structureAccessor, this, FEATURE_RAND, this.biomeSource.generateVanillaBiomes());
+        GenUtil.generateFeaturesWithOcean(chunkRegion, structureAccessor, this, FEATURE_RAND, this.biomeSource.isVanilla());
     }
     
     @Override
     public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
-        GenUtil.carveWithOcean(this.seed, biomeAccess, chunk, carver, this, biomeSource, FEATURE_RAND, this.getSeaLevel(), this.biomeSource.generateVanillaBiomes());
+        GenUtil.carveWithOcean(this.seed, biomeAccess, chunk, carver, this, biomeSource, FEATURE_RAND, this.getSeaLevel(), this.biomeSource.isVanilla());
     }
     
     @Override
@@ -149,7 +150,7 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
         StructureManager structureManager, 
         long seed
     ) {
-        GenUtil.setStructureStartsWithOcean(dynamicRegistryManager, structureAccessor, chunk, structureManager, seed, this, this.biomeSource, this.biomeSource.generateVanillaBiomes());
+        GenUtil.setStructureStartsWithOcean(dynamicRegistryManager, structureAccessor, chunk, structureManager, seed, this, this.biomeSource, this.biomeSource.isVanilla());
     }
     
     private void setTerrain(ChunkRegion region, Chunk chunk, StructureAccessor structureAccessor) {
@@ -177,7 +178,7 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
                     
                     // Second check is a hack to stop weird chunk borders generating from surface blocks for ocean biomes
                     // being picked up and replacing topsoil blocks, somehow before biome reassignment.  Why?!
-                    if (this.biomeSource.generateVanillaBiomes() && GenUtil.getSolidHeight(chunk, absX, absZ) >= 60) {
+                    if (this.biomeSource.isVanilla() && GenUtil.getSolidHeight(chunk, absX, absZ) >= 60) {
                         biome = region.getBiome(POS.set(absX, 0, absZ));
                         
                         if (blockToSet == Blocks.GRASS_BLOCK) 
@@ -240,7 +241,7 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
                     if (this.generateInfdevWall && (x == 0 || z == 0) && y <= heightVal + 2) {
                         blockToSet = Blocks.OBSIDIAN;
                     }
-                    else if (!this.biomeSource.generateVanillaBiomes() && y == heightVal + 1 && heightVal >= 64 && Math.random() < 0.02) {
+                    else if (!this.biomeSource.isVanilla() && y == heightVal + 1 && heightVal >= 64 && Math.random() < 0.02) {
                         blockToSet = Blocks.DANDELION;
                     }
                     else if (y == heightVal && heightVal >= 64) {

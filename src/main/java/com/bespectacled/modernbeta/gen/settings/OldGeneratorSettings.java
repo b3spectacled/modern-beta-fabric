@@ -26,7 +26,8 @@ public class OldGeneratorSettings {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", WorldEnum.WorldType.BETA.getName());
-        settings.putString("betaBiomeType", ModernBeta.BETA_CONFIG.betaBiomeType);
+        settings.putString("biomeType", ModernBeta.BETA_CONFIG.biomeType);
+        settings.putBoolean("generateBetaOceans", ModernBeta.BETA_CONFIG.generateBetaOceans);
         
         return settings;
     }
@@ -35,7 +36,7 @@ public class OldGeneratorSettings {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", WorldEnum.WorldType.ALPHA.getName());
-        settings.putString("preBetaBiomeType", ModernBeta.BETA_CONFIG.preBetaBiomeType);
+        settings.putString("biomeType", ModernBeta.BETA_CONFIG.biomeType);
         
         return settings;
     }
@@ -44,7 +45,7 @@ public class OldGeneratorSettings {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", WorldEnum.WorldType.INFDEV.getName());
-        settings.putString("preBetaBiomeType", ModernBeta.BETA_CONFIG.preBetaBiomeType);
+        settings.putString("biomeType", ModernBeta.BETA_CONFIG.biomeType);
         
         return settings;
     }
@@ -53,7 +54,7 @@ public class OldGeneratorSettings {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", WorldEnum.WorldType.INFDEV_OLD.getName());
-        settings.putString("preBetaBiomeType", ModernBeta.BETA_CONFIG.preBetaBiomeType);
+        settings.putString("biomeType", ModernBeta.BETA_CONFIG.biomeType);
         settings.putBoolean("generateInfdevPyramid", ModernBeta.BETA_CONFIG.generateInfdevPyramid);
         settings.putBoolean("generateInfdevWall", ModernBeta.BETA_CONFIG.generateInfdevWall);
         

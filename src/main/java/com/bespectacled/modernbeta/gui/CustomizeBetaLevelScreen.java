@@ -1,10 +1,14 @@
 package com.bespectacled.modernbeta.gui;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.WorldEnum;
 import com.bespectacled.modernbeta.util.WorldEnum.BetaBiomeType;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 
 import net.minecraft.client.gui.DrawableHelper;
@@ -24,7 +28,9 @@ public class CustomizeBetaLevelScreen extends Screen {
     private OldGeneratorSettings generatorSettings;
     
 
-    private int biomeType = BetaBiomeType.fromName(ModernBeta.BETA_CONFIG.betaBiomeType).getId();
+    private BiomeType biomeType;
+    private Iterator<BiomeType> typeIterator;
+    
     private boolean generateBetaOceans = ModernBeta.BETA_CONFIG.generateBetaOceans;
     
     private ButtonListWidget buttonList;
@@ -35,8 +41,9 @@ public class CustomizeBetaLevelScreen extends Screen {
         this.parent = parent;
         this.generatorSettings = generatorSettings;
         
-        if (generatorSettings.settings.contains("betaBiomeType"))
-            BetaBiomeType.fromName(generatorSettings.settings.getString("betaBiomeType")).getId();
+        this.typeIterator = Arrays.asList(BiomeType.values()).iterator();
+        this.biomeType = this.typeIterator.next();
+        
         if (generatorSettings.settings.contains("generateBetaOceans"))
             generateBetaOceans = generatorSettings.settings.getBoolean("generateBetaOceans");
         
@@ -66,44 +73,54 @@ public class CustomizeBetaLevelScreen extends Screen {
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         
         this.buttonList.addSingleOptionEntry(
-            new CyclingOption(
-                "createWorld.customize.beta.typeButton",
-                (gameOptions, value) -> {
-                    this.biomeType++;
-                    if (this.biomeType > WorldEnum.BetaBiomeType.values().length - 1) this.biomeType = 0;
-                    generatorSettings.settings.putString("betaBiomeType", BetaBiomeType.fromId(this.biomeType).getName());
-                    
-                    return;
-                },
-                (gameOptions, cyclingOptions) -> {
-                    Text typeText = GUIUtil.TEXT_CLASSIC;
-                    BetaBiomeType type = BetaBiomeType.fromId(this.biomeType);
-                    
-                    switch(type) {
-                        case CLASSIC:
-                            typeText = GUIUtil.TEXT_CLASSIC;
-                            break;
-                        case ICE_DESERT:
-                            typeText = GUIUtil.TEXT_ICE_DESERT;
-                            break;
-                        case SKY:
-                            typeText = GUIUtil.TEXT_SKY;
-                            break;
-                        case VANILLA:
-                            typeText = GUIUtil.TEXT_VANILLA;
-                            break;
-                        default:
-                            typeText = GUIUtil.TEXT_UNKNOWN;
+                new CyclingOption(
+                    "createWorld.customize.preBeta.typeButton",
+                    (gameOptions, value) -> {
+                        if (this.typeIterator.hasNext())
+                            this.biomeType = typeIterator.next();
+                        else {
+                            typeIterator = Arrays.asList(BiomeType.values()).iterator();
+                            this.biomeType = typeIterator.next();
+                        }
+                        
+                        generatorSettings.settings.putString("biomeType", this.biomeType.getName());
+                        
+                        return;
+                    },
+                    (gameOptions, cyclingOptions) -> {
+                        Text typeText = GUIUtil.TEXT_CLASSIC;
+                        
+                        switch(this.biomeType) {
+                            case BETA:
+                                typeText = GUIUtil.TEXT_BETA;
+                                break;
+                            case SKY:
+                                typeText = GUIUtil.TEXT_SKY;
+                                break;
+                            case CLASSIC:
+                                typeText = GUIUtil.TEXT_CLASSIC;
+                                break;
+                            case WINTER:
+                                typeText = GUIUtil.TEXT_WINTER;
+                                break;
+                            case PLUS:
+                                typeText = GUIUtil.TEXT_PLUS;
+                                break;
+                            case VANILLA:
+                                typeText = GUIUtil.TEXT_VANILLA;
+                                break;
+                            default:
+                                typeText = GUIUtil.TEXT_UNKNOWN;
+                        }
+                        
+                        return new TranslatableText(
+                            "options.generic_value", 
+                            new Object[] { 
+                                GUIUtil.TEXT_BIOME_TYPE, 
+                                typeText
+                        });
                     }
-                    
-                    return new TranslatableText(
-                        "options.generic_value", 
-                        new Object[] { 
-                            GUIUtil.TEXT_BIOME_TYPE, 
-                            typeText
-                    });
-                }
-        ));
+            ));
         
         this.buttonList.addSingleOptionEntry(
             new BooleanOption(

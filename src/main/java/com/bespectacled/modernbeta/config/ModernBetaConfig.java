@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.config;
 
 import com.bespectacled.modernbeta.util.IndevUtil;
 import com.bespectacled.modernbeta.util.WorldEnum.BetaBiomeType;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
@@ -33,6 +34,9 @@ public class ModernBetaConfig implements ConfigData {
     
     @ConfigEntry.Gui.Excluded
     public boolean generateBetaOceans = true;
+    
+    @ConfigEntry.Gui.Excluded
+    public String biomeType = BiomeType.BETA.getName();
     
     @ConfigEntry.Gui.Excluded
     public String betaBiomeType = BetaBiomeType.CLASSIC.getName();

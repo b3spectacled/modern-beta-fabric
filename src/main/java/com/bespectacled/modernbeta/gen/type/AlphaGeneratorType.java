@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.gen.type;
 import java.util.Map;
 import java.util.Optional;
 
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.PreBetaBiomeSource;
 import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
@@ -64,7 +65,7 @@ public final class AlphaGeneratorType extends GeneratorType {
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
         alphaSettings.settings = OldGeneratorSettings.createAlphaSettings();
-        return new AlphaChunkGenerator(new PreBetaBiomeSource(seed, biomes, alphaSettings.settings), seed, alphaSettings);
+        return new AlphaChunkGenerator(new OldBiomeSource(seed, biomes, alphaSettings.settings), seed, alphaSettings);
     }
     
     

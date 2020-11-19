@@ -9,6 +9,7 @@
     "createWorld.customize.unknown": "Unknown option!",
     
     "createWorld.customize.type.biomeType": "Biome Type",
+    "createWorld.customize.type.beta": "Beta",
     "createWorld.customize.type.classic": "Classic",
     "createWorld.customize.type.ice_desert": "Classic + Ice Desert",
     "createWorld.customize.type.sky": "Sky Dimension",

@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeType;
 import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.WorldEnum;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.google.common.collect.ImmutableList;
@@ -32,19 +32,19 @@ public class PreBetaBiomes {
     public static final Identifier INFDEV_OLD_ID = new Identifier(ModernBeta.ID, "infdev_old");
     public static final Identifier INFDEV_OLD_WINTER_ID = new Identifier(ModernBeta.ID, "infdev_old_winter");
     
-    public static final Map<PreBetaBiomeType, Identifier> INFDEV_OLD_BIOMES = new HashMap<PreBetaBiomeType, Identifier>();
-    public static final Map<PreBetaBiomeType, Identifier> INFDEV_BIOMES = new HashMap<PreBetaBiomeType, Identifier>();
-    public static final Map<PreBetaBiomeType, Identifier> ALPHA_BIOMES = new HashMap<PreBetaBiomeType, Identifier>();
+    public static final Map<BiomeType, Identifier> INFDEV_OLD_BIOMES = new HashMap<BiomeType, Identifier>();
+    public static final Map<BiomeType, Identifier> INFDEV_BIOMES = new HashMap<BiomeType, Identifier>();
+    public static final Map<BiomeType, Identifier> ALPHA_BIOMES = new HashMap<BiomeType, Identifier>();
     
     static {
-        INFDEV_OLD_BIOMES.put(PreBetaBiomeType.CLASSIC, INFDEV_OLD_ID);
-        INFDEV_OLD_BIOMES.put(PreBetaBiomeType.WINTER, INFDEV_OLD_WINTER_ID);
+        INFDEV_OLD_BIOMES.put(BiomeType.CLASSIC, INFDEV_OLD_ID);
+        INFDEV_OLD_BIOMES.put(BiomeType.WINTER, INFDEV_OLD_WINTER_ID);
         
-        INFDEV_BIOMES.put(PreBetaBiomeType.CLASSIC, INFDEV_ID);
-        INFDEV_BIOMES.put(PreBetaBiomeType.WINTER, INFDEV_WINTER_ID);
+        INFDEV_BIOMES.put(BiomeType.CLASSIC, INFDEV_ID);
+        INFDEV_BIOMES.put(BiomeType.WINTER, INFDEV_WINTER_ID);
         
-        ALPHA_BIOMES.put(PreBetaBiomeType.CLASSIC, ALPHA_ID);
-        ALPHA_BIOMES.put(PreBetaBiomeType.WINTER, ALPHA_WINTER_ID);
+        ALPHA_BIOMES.put(BiomeType.CLASSIC, ALPHA_ID);
+        ALPHA_BIOMES.put(BiomeType.WINTER, ALPHA_WINTER_ID);
     }
     
     public static void reserveAlphaBiomeIDs() {
@@ -80,7 +80,7 @@ public class PreBetaBiomes {
         return type;
     }
     
-    public static Map<PreBetaBiomeType, Identifier> getBiomeMap(WorldType worldType) {
+    public static Map<BiomeType, Identifier> getBiomeMap(WorldType worldType) {
         
         switch(worldType) {
             case ALPHA:

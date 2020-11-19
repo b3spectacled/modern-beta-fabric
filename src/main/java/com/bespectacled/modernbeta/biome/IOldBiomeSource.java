@@ -5,9 +5,12 @@ import net.minecraft.world.biome.Biome;
 
 public interface IOldBiomeSource {
     public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ);
-    public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeZ);
+    public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ);
     
     public Registry<Biome> getBiomeRegistry();
-    public boolean generateVanillaBiomes();
+    
+    public boolean generateOceans();
+    public boolean isVanilla();
+    public boolean isBeta();
     public boolean isSkyDim();
 }

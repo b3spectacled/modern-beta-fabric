@@ -39,6 +39,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.IOldBiomeSource;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.PreBetaBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
@@ -60,7 +61,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
             .apply(instance, instance.stable(AlphaChunkGenerator::new)));
 
     private final OldGeneratorSettings settings;
-    private final PreBetaBiomeSource biomeSource;
+    private final OldBiomeSource biomeSource;
     private final long seed;
 
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -100,7 +101,7 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
     public AlphaChunkGenerator(BiomeSource biomes, long seed, OldGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
         this.settings = settings;
-        this.biomeSource = (PreBetaBiomeSource) biomes;
+        this.biomeSource = (OldBiomeSource) biomes;
         this.seed = seed;
         
         RAND.setSeed(seed);
@@ -142,12 +143,12 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
     
     @Override
     public void generateFeatures(ChunkRegion chunkRegion, StructureAccessor structureAccessor) {
-        GenUtil.generateFeaturesWithOcean(chunkRegion, structureAccessor, this, FEATURE_RAND, this.biomeSource.generateVanillaBiomes());
+        GenUtil.generateFeaturesWithOcean(chunkRegion, structureAccessor, this, FEATURE_RAND, this.biomeSource.isVanilla());
     }
     
     @Override
     public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
-        GenUtil.carveWithOcean(this.seed, biomeAccess, chunk, carver, this, biomeSource, FEATURE_RAND, this.getSeaLevel(), this.biomeSource.generateVanillaBiomes());
+        GenUtil.carveWithOcean(this.seed, biomeAccess, chunk, carver, this, biomeSource, FEATURE_RAND, this.getSeaLevel(), this.biomeSource.isVanilla());
     }
     
     @Override
@@ -158,14 +159,14 @@ public class AlphaChunkGenerator extends NoiseChunkGenerator implements IOldChun
         StructureManager structureManager, 
         long seed
     ) {
-        GenUtil.setStructureStartsWithOcean(dynamicRegistryManager, structureAccessor, chunk, structureManager, seed, this, this.biomeSource, this.biomeSource.generateVanillaBiomes());
+        GenUtil.setStructureStartsWithOcean(dynamicRegistryManager, structureAccessor, chunk, structureManager, seed, this, this.biomeSource, this.biomeSource.isVanilla());
     }
     
     @Override
     public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {
         buildAlphaSurface(chunkRegion, chunk);
         
-        if (this.biomeSource.generateVanillaBiomes()) {
+        if (this.biomeSource.isVanilla()) {
             GenUtil.injectOceanBiomes(chunk, biomeSource);
         }
     }

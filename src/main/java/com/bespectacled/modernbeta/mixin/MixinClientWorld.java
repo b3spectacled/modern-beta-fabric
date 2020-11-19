@@ -19,8 +19,10 @@ import com.bespectacled.modernbeta.util.IndevUtil;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.IOldBiomeSource;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
+import com.bespectacled.modernbeta.gen.IOldChunkGenerator;
 import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
 import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
 
@@ -88,11 +90,12 @@ public abstract class MixinClientWorld extends World {
         this.worldSeed = seed;
         this.isBetaWorld = false;
         
-        if (gen instanceof BetaChunkGenerator && !(((BetaBiomeSource)gen.getBiomeSource()).isSkyDim()) || 
-           (gen instanceof SkylandsChunkGenerator &&  !(((BetaBiomeSource)gen.getBiomeSource()).isSkyDim()))) {
+        //if (gen instanceof BetaChunkGenerator && !(((OldBiomeSource)gen.getBiomeSource()).isSkyDim()) || 
+        //   (gen instanceof SkylandsChunkGenerator &&  !(((OldBiomeSource)gen.getBiomeSource()).isSkyDim()))) {
+        if (gen instanceof IOldChunkGenerator && ((IOldBiomeSource)gen.getBiomeSource()).isBeta()) {
             this.isBetaWorld = true;
             
-            if (((IOldBiomeSource)gen.getBiomeSource()).generateVanillaBiomes()) this.isBetaWorld = false;
+            if (((IOldBiomeSource)gen.getBiomeSource()).isVanilla()) this.isBetaWorld = false;
             
             this.worldSeed = BETA_CONFIG.fixedSeed == 0L ? worldSeed : BETA_CONFIG.fixedSeed;
             setSeed(this.worldSeed);

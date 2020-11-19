@@ -1,9 +1,13 @@
 package com.bespectacled.modernbeta.gui;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.WorldEnum;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 
 import net.minecraft.client.gui.DrawableHelper;
@@ -22,7 +26,9 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private OldGeneratorSettings generatorSettings;
     
-    private int biomeType = WorldEnum.PreBetaBiomeType.fromName(ModernBeta.BETA_CONFIG.preBetaBiomeType).getId();
+    private BiomeType biomeType;
+    private Iterator<BiomeType> typeIterator;
+    
     private boolean generateInfdevPyramid = ModernBeta.BETA_CONFIG.generateInfdevPyramid;
     private boolean generateInfdevWall = ModernBeta.BETA_CONFIG.generateInfdevWall;
     
@@ -34,13 +40,8 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
         this.parent = parent;
         this.generatorSettings = generatorSettings;
         
-        if (generatorSettings.settings.contains("infdevOldBiomeType"))
-            this.biomeType = generatorSettings.settings.getInt("infdevOldBiomeType");
-        if (generatorSettings.settings.contains("generateInfdevPyramid")) 
-            this.generateInfdevPyramid = generatorSettings.settings.getBoolean("generateInfdevPyramid");
-        if (generatorSettings.settings.contains("generateInfdevWall")) 
-            this.generateInfdevWall = generatorSettings.settings.getBoolean("generateInfdevWall");
-      
+        this.typeIterator = Arrays.asList(BiomeType.values()).iterator();
+        this.biomeType = this.typeIterator.next();
     }
     
     @Override
@@ -70,17 +71,27 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
                 new CyclingOption(
                     "createWorld.customize.preBeta.typeButton",
                     (gameOptions, value) -> {
-                        this.biomeType++;
-                        if (this.biomeType > WorldEnum.PreBetaBiomeType.values().length - 1) this.biomeType = 0;
-                        generatorSettings.settings.putString("preBetaBiomeType", PreBetaBiomeType.fromId(this.biomeType).getName());
+                        if (this.typeIterator.hasNext())
+                            this.biomeType = typeIterator.next();
+                        else {
+                            typeIterator = Arrays.asList(BiomeType.values()).iterator();
+                            this.biomeType = typeIterator.next();
+                        }
+                        
+                        generatorSettings.settings.putString("biomeType", this.biomeType.getName());
                         
                         return;
                     },
                     (gameOptions, cyclingOptions) -> {
                         Text typeText = GUIUtil.TEXT_CLASSIC;
-                        PreBetaBiomeType type = PreBetaBiomeType.fromId(this.biomeType);
                         
-                        switch(type) {
+                        switch(this.biomeType) {
+                            case BETA:
+                                typeText = GUIUtil.TEXT_BETA;
+                                break;
+                            case SKY:
+                                typeText = GUIUtil.TEXT_SKY;
+                                break;
                             case CLASSIC:
                                 typeText = GUIUtil.TEXT_CLASSIC;
                                 break;
@@ -105,6 +116,7 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
                         });
                     }
             ));
+            
         
         this.buttonList.addSingleOptionEntry(
             new BooleanOption(

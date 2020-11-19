@@ -39,6 +39,8 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomeSource;
+import com.bespectacled.modernbeta.biome.BetaBiomes;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
@@ -60,7 +62,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
             .apply(instance, instance.stable(BetaChunkGenerator::new)));
 
     private final OldGeneratorSettings settings;
-    private final BetaBiomeSource biomeSource;
+    private final OldBiomeSource biomeSource;
     private final long seed;
 
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -100,13 +102,13 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
     private static final double[] TEMPS = new double[256];
     private static final double[] HUMIDS = new double[256];
     
-    private static final Biome[] BIOMES = new Biome[256];
+    private static final Identifier[] BIOMES = new Identifier[256];
 
     public BetaChunkGenerator(BiomeSource biomes, long seed, OldGeneratorSettings settings) {
         super(biomes, seed, () -> settings.wrapped);
         this.settings = settings;
+        this.biomeSource = (OldBiomeSource) biomes;
         this.seed = seed;
-        this.biomeSource = (BetaBiomeSource) biomes;
         
         RAND.setSeed(seed);
 
@@ -121,7 +123,6 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
         forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
 
         // Yes this is messy. What else am I supposed to do?
-        BiomeUtil.setSeed(this.seed);
         BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
         
         GROUND_CACHE_Y.clear();
@@ -149,14 +150,18 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
 
     @Override
     public void generateFeatures(ChunkRegion chunkRegion, StructureAccessor structureAccessor) {
-        boolean genOceans = this.biomeSource.generateVanillaBiomes() || this.biomeSource.generateOceans();
+        boolean genOceans = this.biomeSource.isVanilla() || this.biomeSource.generateOceans();
+        
+        genOceans = this.biomeSource.isVanilla();
         
         GenUtil.generateFeaturesWithOcean(chunkRegion, structureAccessor, this, FEATURE_RAND, genOceans);
     }
     
     @Override
     public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
-        boolean genOceans = this.biomeSource.generateVanillaBiomes() || this.biomeSource.generateOceans();
+        boolean genOceans = this.biomeSource.isVanilla() || this.biomeSource.generateOceans();
+        
+        genOceans = this.biomeSource.isVanilla();
         
         GenUtil.carveWithOcean(this.seed, biomeAccess, chunk, carver, this, this.biomeSource, FEATURE_RAND, this.getSeaLevel(), genOceans);
     }
@@ -170,7 +175,9 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
         StructureManager structureManager, 
         long seed
     ) {
-        boolean genOceans = this.biomeSource.generateVanillaBiomes() || this.biomeSource.generateOceans();
+        boolean genOceans = this.biomeSource.isVanilla() || this.biomeSource.generateOceans();
+        
+        genOceans = this.biomeSource.isVanilla();
         
         GenUtil.setStructureStartsWithOcean(dynamicRegistryManager, structureAccessor, chunk, structureManager, seed, this, this.biomeSource, genOceans);
     }
@@ -179,7 +186,11 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
     public void buildSurface(ChunkRegion region, Chunk chunk) {
         buildBetaSurface(region, chunk);
         
-        if (this.biomeSource.generateOceans() || this.biomeSource.generateVanillaBiomes()) {
+        boolean genOceans = this.biomeSource.isVanilla() || this.biomeSource.generateOceans();
+        
+        genOceans = this.biomeSource.isVanilla();
+        
+        if (genOceans) {
             GenUtil.injectOceanBiomes(chunk, biomeSource);
         }
     }
@@ -431,7 +442,7 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
         int chunkZ = chunk.getPos().z;
 
         BiomeUtil.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
-        biomeSource.fetchBiomes(TEMPS, HUMIDS, BIOMES, null);
+        BetaBiomes.getBiomesFromLookup(TEMPS, HUMIDS, BIOMES, null);
         
         Biome curBiome;
 
@@ -453,8 +464,10 @@ public class BetaChunkGenerator extends NoiseChunkGenerator implements IOldChunk
                 
                 int absX = chunk.getPos().getStartX() + x;
                 int absZ = chunk.getPos().getStartZ() + z;
-
-                curBiome = this.biomeSource.generateVanillaBiomes() ? region.getBiome(POS.set(absX, 0, absZ)) : BIOMES[z + x * 16];
+                    
+                curBiome = this.biomeSource.isBeta() ? 
+                    biomeSource.getBiomeRegistry().get(BIOMES[z + x * 16]) :
+                    region.getBiome(POS.set(absX, 0, absZ));    
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();

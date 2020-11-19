@@ -424,7 +424,7 @@ public class SkylandsChunkGenerator extends NoiseChunkGenerator implements IOldC
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
 
-                curBiome = this.biomeSource.generateVanillaBiomes() ? region.getBiome(POS.set(absX, 0, absZ)) : BIOMES[z + x * 16];
+                curBiome = this.biomeSource.isVanilla() ? region.getBiome(POS.set(absX, 0, absZ)) : BIOMES[z + x * 16];
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();

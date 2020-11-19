@@ -67,7 +67,7 @@ public class GenUtil {
         Biome biome;
 
         if (vanillaGen && gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < 60) {
-            biome = ((IOldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, biomeZ);
+            biome = ((IOldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
         } else {
             biome = biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
         }
@@ -82,7 +82,7 @@ public class GenUtil {
         Biome biome = biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
 
         if (gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < 60) {
-            biome = ((IOldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, biomeZ);
+            biome = ((IOldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
         }
 
         return biome;
@@ -103,7 +103,7 @@ public class GenUtil {
                 int y = GenUtil.getSolidHeight(chunk, absX, absZ);
 
                 if (y < 60) {
-                    biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, absZ >> 2);
+                    biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);
                     
                     mutableBiomes.setBiome(absX, 0, absZ, biome);
                 }

@@ -20,7 +20,7 @@ import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeType;
+import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeProviderType;
 import com.bespectacled.modernbeta.biome.layer.VanillaBiomeLayer;
 import com.bespectacled.modernbeta.biome.layer.VanillaOceanLayer; 
 
@@ -79,12 +79,12 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
                 return this.biomeSampler.sample(this.biomeRegistry, biomeX, biomeZ);
             default: 
                 BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
-                return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeType.LAND);
+                return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeProviderType.LAND);
         }
     }
     
     @Override
-    public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeZ) {
+    public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
@@ -92,20 +92,20 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
             return this.oceanSampler.sample(this.biomeRegistry, biomeX, biomeZ);
         }
         
-        return this.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeType.OCEAN);
+        return this.getLayeredBiomeForNoiseGen(absX, 0, absZ, BiomeProviderType.OCEAN);
     }
     
-    private Biome getLayeredBiomeForNoiseGen(int x, int y, int z, BiomeType type) {
+    private Biome getLayeredBiomeForNoiseGen(int x, int y, int z, BiomeProviderType type) {
         // Sample biome at this one absolute coordinate.
         BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, x, z);
 
         if (this.generateBetaOceans)
             return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], type);
         else
-            return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeType.LAND);
+            return fetchBiome(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeProviderType.LAND);
     }
 
-    private Biome fetchBiome(double temp, double humid, BiomeType type) {
+    private Biome fetchBiome(double temp, double humid, BiomeProviderType type) {
         return getBiomeFromLookup(temp, humid, type);
     }
     
@@ -114,21 +114,21 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
         int sizeZ = 16;
         
         for (int i = 0; i < sizeX * sizeZ; ++i) {
-            if (landBiomes != null) landBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeType.LAND);
-            if (oceanBiomes != null) oceanBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeType.OCEAN);
+            if (landBiomes != null) landBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeProviderType.LAND);
+            if (oceanBiomes != null) oceanBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeProviderType.OCEAN);
         }
     }
 
     private void generateBiomeLookup(Registry<Biome> registry) {
         for (int i = 0; i < 64; i++) {
             for (int j = 0; j < 64; j++) {
-                landBiomeLookupTable[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F, registry, BiomeType.LAND);
+                landBiomeLookupTable[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F, registry, BiomeProviderType.LAND);
                 oceanBiomeLookupTable[i + j * 64] = getOceanBiome((float) i / 63F, (float) j / 63F, registry);
             }
         }
     }
 
-    private Biome getBiomeFromLookup(double temp, double humid, BiomeType type) {
+    private Biome getBiomeFromLookup(double temp, double humid, BiomeProviderType type) {
         int i = (int) (temp * 63D);
         int j = (int) (humid * 63D);
         
@@ -143,7 +143,7 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
         return biome;
     }
 
-    private Biome getBiome(float temp, float humid, Registry<Biome> registry, BiomeType type) {
+    private Biome getBiome(float temp, float humid, Registry<Biome> registry, BiomeProviderType type) {
         Map<String, Identifier> mappings = this.biomeMappings;
         humid *= temp;
         
@@ -259,7 +259,7 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
     }
     
     @Override
-    public boolean generateVanillaBiomes() {
+    public boolean isVanilla() {
         return this.biomeType == BetaBiomeType.VANILLA;
     }
     
@@ -281,6 +281,12 @@ public class BetaBiomeSource extends BiomeSource implements IOldBiomeSource {
     public static void register() {
         Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "beta"), CODEC);
         //ModernBeta.LOGGER.log(Level.INFO, "Registered Beta biome source.");
+    }
+
+    @Override
+    public boolean isBeta() {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

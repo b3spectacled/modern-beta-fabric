@@ -7,6 +7,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.layer.VanillaBiomeLayer;
 import com.bespectacled.modernbeta.biome.layer.VanillaOceanLayer;
 import com.bespectacled.modernbeta.util.BiomeUtil;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.mojang.serialization.Codec;
@@ -40,7 +41,7 @@ public class PreBetaBiomeSource extends BiomeSource implements IOldBiomeSource {
     
     private final WorldType worldType;
     private final PreBetaBiomeType biomeType;
-    private final Map<PreBetaBiomeType, Identifier> biomeMapping;
+    private final Map<BiomeType, Identifier> biomeMapping;
     
     private static final double[] TEMP_HUMID_POINT = new double[2];
 
@@ -95,7 +96,7 @@ public class PreBetaBiomeSource extends BiomeSource implements IOldBiomeSource {
     }
     
     @Override
-    public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeZ) {
+    public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.biomeType == PreBetaBiomeType.VANILLA ? 
             this.oceanSampler.sample(this.biomeRegistry, biomeX, biomeZ) : 
             this.getBiomeForNoiseGen(biomeX, 0, biomeZ);
@@ -131,12 +132,24 @@ public class PreBetaBiomeSource extends BiomeSource implements IOldBiomeSource {
     }
     
     @Override
-    public boolean generateVanillaBiomes() {
+    public boolean isVanilla() {
         return this.biomeType == PreBetaBiomeType.VANILLA;
     }
 
     @Override
     public boolean isSkyDim() {
+        return false;
+    }
+
+    @Override
+    public boolean generateOceans() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isBeta() {
+        // TODO Auto-generated method stub
         return false;
     }
 
