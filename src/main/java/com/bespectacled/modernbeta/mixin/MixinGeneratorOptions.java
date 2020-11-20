@@ -1,14 +1,7 @@
 package com.bespectacled.modernbeta.mixin;
 
-import com.bespectacled.modernbeta.biome.BetaBiomeSource;
-import com.bespectacled.modernbeta.biome.IndevBiomeSource;
-import com.bespectacled.modernbeta.biome.PreBetaBiomeSource;
-import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
-import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
-import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
-import com.bespectacled.modernbeta.gen.InfdevChunkGenerator;
-import com.bespectacled.modernbeta.gen.InfdevOldChunkGenerator;
-import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
@@ -101,12 +94,14 @@ public class MixinGeneratorOptions {
             ChunkGenerator generator;
             
             CompoundTag betaSettings = OldGeneratorSettings.createBetaSettings();
+            CompoundTag skySettings = OldGeneratorSettings.createSkySettings();
             CompoundTag alphaSettings = OldGeneratorSettings.createAlphaSettings();
             CompoundTag indevSettings = OldGeneratorSettings.createIndevSettings();
             CompoundTag infdevSettings = OldGeneratorSettings.createInfdevSettings();
             CompoundTag infdevOldSettings = OldGeneratorSettings.createInfdevOldSettings();
 
             OldGeneratorSettings betaGenSettings = new OldGeneratorSettings(type, betaSettings);
+            OldGeneratorSettings skyGenSettings = new OldGeneratorSettings(type, skySettings);
             OldGeneratorSettings alphaGenSettings = new OldGeneratorSettings(type, alphaSettings);
             OldGeneratorSettings indevGenSettings = new OldGeneratorSettings(type, indevSettings);
             OldGeneratorSettings infdevGenSettings = new OldGeneratorSettings(type, infdevSettings);
@@ -114,25 +109,25 @@ public class MixinGeneratorOptions {
 
             switch (levelType) {
                 case "beta":
-                    generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
+                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
                     break;
                 case "skylands":
-                    generator = new SkylandsChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
+                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, betaGenSettings.settings), seed, skyGenSettings);
                     break;
                 case "alpha":
-                    generator = new AlphaChunkGenerator(new PreBetaBiomeSource(seed, biomes, alphaGenSettings.settings), seed, alphaGenSettings);
+                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, alphaGenSettings.settings), seed, alphaGenSettings);
                     break;
                 case "indev":
-                    generator = new IndevChunkGenerator(new IndevBiomeSource(seed, biomes, indevGenSettings.settings), seed, indevGenSettings);
+                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, indevGenSettings.settings), seed, indevGenSettings);
                     break;
                 case "infdev":
-                    generator = new InfdevChunkGenerator(new PreBetaBiomeSource(seed, biomes, infdevGenSettings.settings), seed, infdevGenSettings);
+                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, infdevGenSettings.settings), seed, infdevGenSettings);
                     break;
                 case "infdev_old":
-                    generator = new InfdevOldChunkGenerator(new PreBetaBiomeSource(seed, biomes, infdevOldGenSettings.settings), seed, infdevOldGenSettings);
+                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, infdevOldGenSettings.settings), seed, infdevOldGenSettings);
                     break;
                 default:
-                    generator = new BetaChunkGenerator(new BetaBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
+                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
             }
 
             // return our chunk generator

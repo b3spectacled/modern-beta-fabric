@@ -8,8 +8,6 @@ import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.WorldEnum;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
-
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
@@ -41,7 +39,9 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
         this.generatorSettings = generatorSettings;
         
         this.typeIterator = Arrays.asList(BiomeType.values()).iterator();
-        this.biomeType = this.typeIterator.next();
+        this.biomeType = GUIUtil.iterateToBiomeType(BiomeType.CLASSIC, this.typeIterator);
+        
+        generatorSettings.settings.putString("biomeType", this.biomeType.getName());
     }
     
     @Override

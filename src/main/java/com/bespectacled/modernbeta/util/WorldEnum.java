@@ -1,5 +1,16 @@
 package com.bespectacled.modernbeta.util;
 
+import java.util.List;
+
+import com.bespectacled.modernbeta.biome.BetaBiomes;
+import com.bespectacled.modernbeta.biome.InfBiomes;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
+import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+
 public class WorldEnum {
     
     public enum WorldType {
@@ -91,92 +102,37 @@ public class WorldEnum {
             
             throw new IllegalArgumentException("No biome type matching name: " + name);
         }
+        
+        public static List<RegistryKey<Biome>> getBiomeRegistryList(CompoundTag settings) {
+            WorldType worldType = getWorldType(settings);
+            BiomeType biomeType = getBiomeType(settings);
+            
+            if (biomeType == BiomeType.VANILLA)
+                return BiomeUtil.VANILLA_BIOMES;
+            
+            if (biomeType == BiomeType.BETA || biomeType == BiomeType.SKY)
+                return BetaBiomes.getBiomeRegistryList();
+            
+            return InfBiomes.getBiomeRegistryList(worldType);
+        }
+        
     }
     
-    public enum BetaBiomeType {
-        CLASSIC(0, "classic"),
-        ICE_DESERT(1, "ice_desert"),
-        SKY(2, "sky"),
-        VANILLA(3, "vanilla");
+    public static WorldType getWorldType(CompoundTag settings) {
+        WorldType type = WorldType.BETA;
         
-        private final int id;
-        private final String name;
+        if (settings.contains("worldType"))
+            type = WorldType.fromName(settings.getString("worldType"));
         
-        private BetaBiomeType(int id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-        
-        public int getId() {
-            return this.id;
-        }
-        
-        public String getName() {
-            return this.name;
-        }
-        
-        public static BetaBiomeType fromId(int id) {
-            for (BetaBiomeType t : BetaBiomeType.values()) {
-                if (t.id == id) {
-                    return t;
-                }
-            }
-            
-            throw new IllegalArgumentException("No Beta biome type matching id: " + id);
-        }
-        
-        public static BetaBiomeType fromName(String name) {
-            for (BetaBiomeType t : BetaBiomeType.values()) {
-                if (t.name.equalsIgnoreCase(name)) {
-                    return t;
-                }
-            }
-            
-            throw new IllegalArgumentException("No Beta biome type matching name: " + name);
-        }
+        return type;
     }
     
-    public enum PreBetaBiomeType {
-        CLASSIC(0, "classic"),
-        WINTER(1, "winter"),
-        PLUS(2, "plus"),
-        VANILLA(3, "vanilla");
-        //BETA(4, "beta");
+    public static BiomeType getBiomeType(CompoundTag settings) {
+        BiomeType type = BiomeType.BETA;
         
-        private final int id;
-        private final String name;
+        if (settings.contains("biomeType")) 
+            type = BiomeType.fromName(settings.getString("biomeType"));
         
-        private PreBetaBiomeType(int id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-        
-        public int getId() {
-            return this.id;
-        }
-        
-        public String getName() {
-            return this.name;
-        }
-        
-        public static PreBetaBiomeType fromId(int id) {
-            for (PreBetaBiomeType t : PreBetaBiomeType.values()) {
-                if (t.id == id) {
-                    return t;
-                }
-            }
-            
-            throw new IllegalArgumentException("No Pre-Beta biome type matching id: " + id);
-        }
-        
-        public static PreBetaBiomeType fromName(String name) {
-            for (PreBetaBiomeType t : PreBetaBiomeType.values()) {
-                if (t.name.equalsIgnoreCase(name)) {
-                    return t;
-                }
-            }
-            
-            throw new IllegalArgumentException("No Pre-Beta biome type matching name: " + name);
-        }
+        return type;
     }
 }

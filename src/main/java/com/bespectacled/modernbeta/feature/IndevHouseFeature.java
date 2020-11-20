@@ -5,7 +5,8 @@ import java.util.Random;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
+import com.bespectacled.modernbeta.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
@@ -36,9 +37,11 @@ public class IndevHouseFeature extends Feature<DefaultFeatureConfig> {
         int spawnZ = topPos.getZ();
         
         // Place only one if in indev world
-        if (generator instanceof IndevChunkGenerator) {
-            int worldSpawnX = ((IndevChunkGenerator)generator).getSpawnX();
-            int worldSpawnZ = ((IndevChunkGenerator)generator).getSpawnZ();
+        if (((OldChunkGenerator)generator).getWorldType() == WorldType.INDEV) {
+            //int worldSpawnX = ((OldChunkGenerator)generator).getSpawnX();
+            //int worldSpawnZ = ((OldChunkGenerator)generator).getSpawnZ();
+            int worldSpawnX = 0;
+            int worldSpawnZ = 0;
             
             int worldChunkX = worldSpawnX / 16;
             int worldChunkZ = worldSpawnZ / 16;

@@ -3,6 +3,8 @@ package com.bespectacled.modernbeta.util;
 import java.util.Iterator;
 import java.util.List;
 
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
+
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
@@ -28,7 +30,14 @@ public class GUIUtil {
     public static final Text TEXT_FLOATING = new TranslatableText("createWorld.customize.indev.type.floating");
     public static final Text TEXT_INLAND = new TranslatableText("createWorld.customize.indev.type.inland");
     
-    
     public static final Text TEXT_UNKNOWN = new TranslatableText("createworld.customize.unknown");
+    
+    public static BiomeType iterateToBiomeType(BiomeType typeToGet, Iterator<BiomeType> typeIterator) {
+        BiomeType type = typeToGet;
+        
+        while (typeIterator.hasNext() && (type = typeIterator.next()) != typeToGet);
+        
+        return type;
+    }
     
 }

@@ -11,8 +11,6 @@ import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeProviderType;
-import com.bespectacled.modernbeta.util.WorldEnum.BetaBiomeType;
-import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.google.common.collect.ImmutableList;
 
@@ -79,26 +77,8 @@ public class BetaBiomes {
             Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createNormalOcean(false));
         }
     }
-    
-    public static BetaBiomeType getBiomeType(CompoundTag settings) {
-        BetaBiomeType type = BetaBiomeType.CLASSIC;
-        
-        if (settings.contains("betaBiomeType")) 
-            type = BetaBiomeType.fromName(settings.getString("betaBiomeType"));
-        
-        return type;
-    }
-    
-    public static List<RegistryKey<Biome>> getBiomeRegistryList(CompoundTag settings) {
-        boolean useVanillaBiomes = false;
-        
-        if (settings.contains("betaBiomeType")) 
-            useVanillaBiomes = BetaBiomeType.fromName(settings.getString("betaBiomeType")) == BetaBiomeType.VANILLA;
-        
-        return getBiomeRegistryList(useVanillaBiomes);
-    }
 
-    private static List<RegistryKey<Biome>> getBiomeRegistryList(boolean useVanillaBiomes) {
+    public static List<RegistryKey<Biome>> getBiomeRegistryList() {
         ArrayList<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
 
         for (Identifier i : BETA_MAPPINGS.values()) {
@@ -145,12 +125,14 @@ public class BetaBiomes {
         int i = (int) (temp * 63D);
         int j = (int) (humid * 63D);
         
-        Identifier biomeId = LAND_BIOME_TABLE[i + j * 64];
+        Identifier biomeId;
         
         switch(type) {
             case OCEAN:
                 biomeId = OCEAN_BIOME_TABLE[i + j * 64];
                 break;
+            default:
+                biomeId = LAND_BIOME_TABLE[i + j * 64];
         }
 
         return biomeId;

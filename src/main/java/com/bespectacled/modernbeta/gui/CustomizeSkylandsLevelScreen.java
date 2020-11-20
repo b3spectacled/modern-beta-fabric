@@ -1,10 +1,13 @@
 package com.bespectacled.modernbeta.gui;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.WorldEnum;
-import com.bespectacled.modernbeta.util.WorldEnum.BetaBiomeType;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -22,7 +25,8 @@ public class CustomizeSkylandsLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private OldGeneratorSettings generatorSettings;
     
-    private int biomeType = BetaBiomeType.fromName(ModernBeta.BETA_CONFIG.betaBiomeType).getId();
+    private BiomeType biomeType;
+    private Iterator<BiomeType> typeIterator;
     
     private ButtonListWidget buttonList;
 
@@ -32,8 +36,10 @@ public class CustomizeSkylandsLevelScreen extends Screen {
         this.parent = parent;
         this.generatorSettings = generatorSettings;
       
-        if (generatorSettings.settings.contains("betaBiomeType"))
-            BetaBiomeType.fromName(generatorSettings.settings.getString("betaBiomeType")).getId();
+        this.typeIterator = Arrays.asList(BiomeType.values()).iterator();
+        this.biomeType = GUIUtil.iterateToBiomeType(BiomeType.BETA, this.typeIterator);
+        
+        generatorSettings.settings.putString("biomeType", this.biomeType.getName());
     }
     
     @Override
@@ -59,27 +65,37 @@ public class CustomizeSkylandsLevelScreen extends Screen {
  
         this.buttonList.addSingleOptionEntry(
             new CyclingOption(
-                "createWorld.customize.beta.typeButton",
+                "createWorld.customize.preBeta.typeButton",
                 (gameOptions, value) -> {
-                    this.biomeType++;
-                    if (this.biomeType > WorldEnum.BetaBiomeType.values().length - 1) this.biomeType = 0;
-                    generatorSettings.settings.putString("betaBiomeType", BetaBiomeType.fromId(this.biomeType).getName());
+                    if (this.typeIterator.hasNext())
+                        this.biomeType = typeIterator.next();
+                    else {
+                        typeIterator = Arrays.asList(BiomeType.values()).iterator();
+                        this.biomeType = typeIterator.next();
+                    }
+                    
+                    generatorSettings.settings.putString("biomeType", this.biomeType.getName());
                     
                     return;
                 },
                 (gameOptions, cyclingOptions) -> {
                     Text typeText = GUIUtil.TEXT_CLASSIC;
-                    BetaBiomeType type = BetaBiomeType.fromId(this.biomeType);
                     
-                    switch(type) {
-                        case CLASSIC:
-                            typeText = GUIUtil.TEXT_CLASSIC;
-                            break;
-                        case ICE_DESERT:
-                            typeText = GUIUtil.TEXT_ICE_DESERT;
+                    switch(this.biomeType) {
+                        case BETA:
+                            typeText = GUIUtil.TEXT_BETA;
                             break;
                         case SKY:
                             typeText = GUIUtil.TEXT_SKY;
+                            break;
+                        case CLASSIC:
+                            typeText = GUIUtil.TEXT_CLASSIC;
+                            break;
+                        case WINTER:
+                            typeText = GUIUtil.TEXT_WINTER;
+                            break;
+                        case PLUS:
+                            typeText = GUIUtil.TEXT_PLUS;
                             break;
                         case VANILLA:
                             typeText = GUIUtil.TEXT_VANILLA;

@@ -4,28 +4,18 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.client.world.ClientWorld.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.MutableWorldProperties;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 import com.bespectacled.modernbeta.util.BiomeUtil;
-import com.bespectacled.modernbeta.util.IndevUtil;
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.IOldBiomeSource;
-import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
 import com.bespectacled.modernbeta.gen.IOldChunkGenerator;
-import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
-import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
-
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;

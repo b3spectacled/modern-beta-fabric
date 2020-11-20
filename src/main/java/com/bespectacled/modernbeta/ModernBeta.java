@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.bespectacled.modernbeta.gen.SkylandsChunkGenerator;
 import com.bespectacled.modernbeta.gen.type.AlphaGeneratorType;
 import com.bespectacled.modernbeta.gen.type.BetaGeneratorType;
 import com.bespectacled.modernbeta.gen.type.IndevGeneratorType;
@@ -22,23 +21,16 @@ import com.bespectacled.modernbeta.util.MutableBlockColors;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 
-import com.bespectacled.modernbeta.biome.BetaBiomeSource;
 import com.bespectacled.modernbeta.biome.BetaBiomes;
-import com.bespectacled.modernbeta.biome.IndevBiomeSource;
 import com.bespectacled.modernbeta.biome.IndevBiomes;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.biome.PreBetaBiomeSource;
-import com.bespectacled.modernbeta.biome.PreBetaBiomes;
+import com.bespectacled.modernbeta.biome.InfBiomes;
 import com.bespectacled.modernbeta.biome.layer.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
-import com.bespectacled.modernbeta.gen.AlphaChunkGenerator;
-import com.bespectacled.modernbeta.gen.BetaChunkGenerator;
-import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
-import com.bespectacled.modernbeta.gen.InfdevChunkGenerator;
-import com.bespectacled.modernbeta.gen.InfdevOldChunkGenerator;
+import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 
 public class ModernBeta implements ModInitializer {
     public static final String ID = "modern_beta";
@@ -69,28 +61,20 @@ public class ModernBeta implements ModInitializer {
         LOGGER.log(Level.INFO, "Registered Modern Beta features!");
 
         BetaBiomes.reserveBiomeIDs();
-        PreBetaBiomes.reserveAlphaBiomeIDs();
-        PreBetaBiomes.reserveInfdevBiomeIds();
+        InfBiomes.reserveAlphaBiomeIDs();
+        InfBiomes.reserveInfdevBiomeIds();
         IndevBiomes.reserveBiomeIDs();
-        PreBetaBiomes.reserveInfdevOldBiomeIds();
+        InfBiomes.reserveInfdevOldBiomeIds();
         
         LOGGER.log(Level.INFO, "Registered Modern Beta biomes!");
 
-        //BetaBiomeSource.register();
-        //PreBetaBiomeSource.register();
-        //IndevBiomeSource.register();
         OldBiomeSource.register();
         
-        LOGGER.log(Level.INFO, "Registered Modern Beta biome providers!");
-
-        BetaChunkGenerator.register();
-        SkylandsChunkGenerator.register();
-        AlphaChunkGenerator.register();
-        InfdevChunkGenerator.register();
-        InfdevOldChunkGenerator.register();
-        IndevChunkGenerator.register();
+        LOGGER.log(Level.INFO, "Registered Modern Beta biome provider!");
         
-        LOGGER.log(Level.INFO, "Registered Modern Beta chunk generators!");
+        OldChunkGenerator.register();
+        
+        LOGGER.log(Level.INFO, "Registered Modern Beta chunk generator!");
         
         VanillaBiomeModifier.addShrineToOceans();
 

@@ -32,7 +32,9 @@ public class CustomizeAlphaLevelScreen extends Screen {
         this.generatorSettings = generatorSettings;
         
         this.typeIterator = Arrays.asList(BiomeType.values()).iterator();
-        this.biomeType = this.typeIterator.next();
+        this.biomeType = GUIUtil.iterateToBiomeType(BiomeType.CLASSIC, this.typeIterator);
+        
+        generatorSettings.settings.putString("biomeType", this.biomeType.getName());
     }
     
     @Override

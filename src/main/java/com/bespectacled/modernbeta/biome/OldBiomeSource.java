@@ -4,9 +4,9 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.layer.VanillaBiomeLayer;
 import com.bespectacled.modernbeta.biome.layer.VanillaOceanLayer;
 import com.bespectacled.modernbeta.biome.provider.IOldBiomeProvider;
-import com.bespectacled.modernbeta.biome.provider.OldBiomeProviderUtil;
+import com.bespectacled.modernbeta.biome.provider.InfBiomeProvider;
+import com.bespectacled.modernbeta.util.WorldEnum;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -33,26 +33,27 @@ public class OldBiomeSource extends BiomeSource implements IOldBiomeSource {
     private final long seed;
     private final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
-    private final BiomeLayerSampler biomeSampler;
-    private final BiomeLayerSampler oceanSampler;
+    private final boolean generateOceans;
     
     private final WorldType worldType;
     private final BiomeType biomeType;
+    
     private final IOldBiomeProvider biomeProvider;
+    private final BiomeLayerSampler biomeSampler;
+    private final BiomeLayerSampler oceanSampler;
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, CompoundTag settings) {
-        super(OldBiomeProviderUtil.getBiomeRegistryList(settings).stream().map((registryKey) -> () -> (Biome) biomeRegistry.get(registryKey)));
+        super(IOldBiomeProvider.getBiomeRegistryList(settings).stream().map((registryKey) -> () -> (Biome) biomeRegistry.get(registryKey)));
         
         this.seed = seed;
         this.biomeRegistry = biomeRegistry;
         this.settings = settings;
+        this.generateOceans = settings.contains("generateOceans") ? settings.getBoolean("generateOceans") : true;
         
-        this.worldType = OldBiomeProviderUtil.getWorldType(settings);
-        this.biomeType = OldBiomeProviderUtil.getBiomeType(settings);
+        this.worldType = WorldEnum.getWorldType(settings);
+        this.biomeType = WorldEnum.getBiomeType(settings);
         
-        System.out.println("World/Biome Type: " + this.worldType.getName() + ", " + this.biomeType.getName());
-        
-        this.biomeProvider = this.biomeType != BiomeType.VANILLA ? OldBiomeProviderUtil.getBiomeProvider(seed, worldType, biomeType) : null;
+        this.biomeProvider = this.biomeType != BiomeType.VANILLA ? IOldBiomeProvider.getBiomeProvider(seed, settings) : null;
         this.biomeSampler = this.biomeType == BiomeType.VANILLA ? VanillaBiomeLayer.build(seed, false, 4, -1) : null;
         this.oceanSampler = this.biomeType == BiomeType.VANILLA ? VanillaOceanLayer.build(seed, false, 6, -1) : null;
     }
@@ -78,22 +79,23 @@ public class OldBiomeSource extends BiomeSource implements IOldBiomeSource {
     
     @Override
     public boolean generateOceans() {
-        return true;
+        return (this.isVanilla() || this.isBeta()) && this.generateOceans;
     }
 
     @Override
     public boolean isVanilla() {
-        return this.biomeType == BiomeType.VANILLA;
+        return this.worldType != WorldType.INDEV && this.biomeType == BiomeType.VANILLA;
     }
     
     @Override
     public boolean isBeta() {
-        return this.biomeType == BiomeType.BETA;
+        return this.worldType != WorldType.INDEV && this.biomeType == BiomeType.BETA;
+        // || this.biomeType == BiomeType.ICE_DESERT;
     }
     
     @Override
     public boolean isSkyDim() {
-        return this.biomeType == BiomeType.SKY;
+        return this.worldType != WorldType.INDEV && this.biomeType == BiomeType.SKY;
     }
     
     @Override

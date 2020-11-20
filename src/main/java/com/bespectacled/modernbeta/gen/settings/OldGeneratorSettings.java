@@ -27,7 +27,17 @@ public class OldGeneratorSettings {
         
         settings.putString("worldType", WorldEnum.WorldType.BETA.getName());
         settings.putString("biomeType", ModernBeta.BETA_CONFIG.biomeType);
-        settings.putBoolean("generateBetaOceans", ModernBeta.BETA_CONFIG.generateBetaOceans);
+        settings.putBoolean("generateOceans", ModernBeta.BETA_CONFIG.generateOceans);
+        
+        return settings;
+    }
+    
+    public static CompoundTag createSkySettings() {
+        CompoundTag settings = new CompoundTag();
+        
+        settings.putString("worldType", WorldEnum.WorldType.SKYLANDS.getName());
+        settings.putString("biomeType", ModernBeta.BETA_CONFIG.biomeType);
+        settings.putBoolean("generateOceans", false);
         
         return settings;
     }

@@ -1,66 +1,35 @@
-package com.bespectacled.modernbeta.gen;
+package com.bespectacled.modernbeta.gen.provider;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import com.bespectacled.modernbeta.biome.IOldBiomeSource;
+import com.bespectacled.modernbeta.decorator.BetaDecorator;
+import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.GenUtil;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.SpawnGroup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.structure.JigsawJunction;
-import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.BlockPos.Mutable;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Category;
-import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.biome.source.BiomeAccess;
-import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
-import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 
-import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.biome.PreBetaBiomeSource;
-import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
-import com.bespectacled.modernbeta.noise.*;
-import com.bespectacled.modernbeta.structure.BetaStructure;
-import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.GenUtil;
-import com.bespectacled.modernbeta.util.MutableBiomeArray;
-
-//private final BetaGeneratorSettings settings;
-
-public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOldChunkGenerator {
-
-    public static final Codec<InfdevOldChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
-            .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
-                    Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
-                    OldGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
-            .apply(instance, instance.stable(InfdevOldChunkGenerator::new)));
-
-    private final OldGeneratorSettings settings;
-    private final OldBiomeSource biomeSource;
-    private final long seed;
-    
+public class InfdevOldChunkProvider implements IOldChunkProvider {
     private boolean generateInfdevPyramid = true;
     private boolean generateInfdevWall = true;
 
@@ -70,6 +39,7 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
     private final PerlinOctaveNoise noiseOctavesD;
     private final PerlinOctaveNoise noiseOctavesE;
     private final PerlinOctaveNoise noiseOctavesF;
+    private final PerlinOctaveNoise forestNoiseOctaves;
 
     // Block Y-height cache, from Beta+
     private static final Map<BlockPos, Integer> GROUND_CACHE_Y = new HashMap<>();
@@ -83,13 +53,8 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
     
     private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
     private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
-
-    public InfdevOldChunkGenerator(BiomeSource biomes, long seed, OldGeneratorSettings infdevOldSettings) {
-        super(biomes, seed, () -> infdevOldSettings.wrapped);
-        this.settings = infdevOldSettings;
-        this.biomeSource = (OldBiomeSource) biomes;
-        this.seed = seed;
-        
+    
+    public InfdevOldChunkProvider(long seed, CompoundTag settings) {
         RAND.setSeed(seed);
         
         // Noise Generators
@@ -104,56 +69,52 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
         new PerlinOctaveNoise(RAND, 3, false);
         new PerlinOctaveNoise(RAND, 3, false);
         
-        if (settings.settings.contains("generateInfdevPyramid")) 
-            this.generateInfdevPyramid = settings.settings.getBoolean("generateInfdevPyramid");
-        if (settings.settings.contains("generateInfdevWall")) 
-            this.generateInfdevWall = settings.settings.getBoolean("generateInfdevWall");
-    }
-
-    public static void register() {
-        Registry.register(Registry.CHUNK_GENERATOR, new Identifier(ModernBeta.ID, "infdev_old"), CODEC);
-        //ModernBeta.LOGGER.log(Level.INFO, "Registered Infdev chunk generator.");
-    }
-
-    @Override
-    protected Codec<? extends ChunkGenerator> getCodec() {
-        return InfdevOldChunkGenerator.CODEC;
-    }
-
-    @Override
-    public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
-        //RAND.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
-
-        generateTerrain(chunk.getPos().getStartX(), chunk.getPos().getStartZ());  
-        setTerrain((ChunkRegion)worldAccess, chunk, structureAccessor);
+        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
         
-        if (this.biomeSource.isVanilla()) {
-            GenUtil.injectOceanBiomes(chunk, this.biomeSource);
-        }
-    }
+        if (settings.contains("generateInfdevPyramid")) 
+            this.generateInfdevPyramid = settings.getBoolean("generateInfdevPyramid");
+        if (settings.contains("generateInfdevWall")) 
+            this.generateInfdevWall = settings.getBoolean("generateInfdevWall");
         
+        // Yes this is messy. What else am I supposed to do?
+        BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
+        BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
+        
+        GROUND_CACHE_Y.clear();
+    }
+
     @Override
-    public void generateFeatures(ChunkRegion chunkRegion, StructureAccessor structureAccessor) {
-        GenUtil.generateFeaturesWithOcean(chunkRegion, structureAccessor, this, FEATURE_RAND, this.biomeSource.isVanilla());
+    public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, IOldBiomeSource biomeSource) {
+        RAND.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
+
+        generateTerrain(chunk.getPos().getStartX(), chunk.getPos().getStartZ(), biomeSource);  
+        setTerrain((ChunkRegion)worldAccess, chunk, structureAccessor, biomeSource);
+    }
+
+    @Override
+    public void makeSurface(ChunkRegion region, Chunk chunk, IOldBiomeSource biomeSource) {}
+
+    @Override
+    public int getHeight(int x, int z, Type type) {
+        BlockPos structPos = new BlockPos(x, 0, z);
+        int height = 127;
+        
+        if (GROUND_CACHE_Y.get(structPos) == null) {            
+            height = this.sampleHeightMap(x, z);
+            
+            GROUND_CACHE_Y.put(structPos, height);
+        } 
+        
+        height = GROUND_CACHE_Y.get(structPos);
+        
+        // Not ideal
+        if (type == Heightmap.Type.WORLD_SURFACE_WG && height < 64)
+            height = 64 + 1;
+         
+        return height;
     }
     
-    @Override
-    public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
-        GenUtil.carveWithOcean(this.seed, biomeAccess, chunk, carver, this, biomeSource, FEATURE_RAND, this.getSeaLevel(), this.biomeSource.isVanilla());
-    }
-    
-    @Override
-    public void setStructureStarts(
-        DynamicRegistryManager dynamicRegistryManager, 
-        StructureAccessor structureAccessor,   
-        Chunk chunk, 
-        StructureManager structureManager, 
-        long seed
-    ) {
-        GenUtil.setStructureStartsWithOcean(dynamicRegistryManager, structureAccessor, chunk, structureManager, seed, this, this.biomeSource, this.biomeSource.isVanilla());
-    }
-    
-    private void setTerrain(ChunkRegion region, Chunk chunk, StructureAccessor structureAccessor) {
+    private void setTerrain(ChunkRegion region, Chunk chunk, StructureAccessor structureAccessor, IOldBiomeSource biomeSource) {
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
         
@@ -178,7 +139,7 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
                     
                     // Second check is a hack to stop weird chunk borders generating from surface blocks for ocean biomes
                     // being picked up and replacing topsoil blocks, somehow before biome reassignment.  Why?!
-                    if (this.biomeSource.isVanilla() && GenUtil.getSolidHeight(chunk, absX, absZ) >= 60) {
+                    if ((biomeSource.isBeta() || biomeSource.isVanilla()) && GenUtil.getSolidHeight(chunk, absX, absZ) >= 60) {
                         biome = region.getBiome(POS.set(absX, 0, absZ));
                         
                         if (blockToSet == Blocks.GRASS_BLOCK) 
@@ -207,7 +168,7 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
         
     }
   
-    private void generateTerrain(int startX, int startZ) {
+    private void generateTerrain(int startX, int startZ, IOldBiomeSource biomeSource) {
         
         for (int relX = 0; relX < 16; ++relX) {
             int x = startX + relX;
@@ -241,7 +202,7 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
                     if (this.generateInfdevWall && (x == 0 || z == 0) && y <= heightVal + 2) {
                         blockToSet = Blocks.OBSIDIAN;
                     }
-                    else if (!this.biomeSource.isVanilla() && y == heightVal + 1 && heightVal >= 64 && Math.random() < 0.02) {
+                    else if (!biomeSource.isVanilla() && !biomeSource.isBeta() && y == heightVal + 1 && heightVal >= 64 && Math.random() < 0.02) {
                         blockToSet = Blocks.DANDELION;
                     }
                     else if (y == heightVal && heightVal >= 64) {
@@ -288,30 +249,6 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
         }
     }
     
-    @Override
-    public void buildSurface(ChunkRegion chunkRegion, Chunk chunk) {
-    }
-    
-    @Override
-    public int getHeight(int x, int z, Heightmap.Type type) {
-        BlockPos structPos = new BlockPos(x, 0, z);
-        int height = this.getWorldHeight() - 1;
-        
-        if (GROUND_CACHE_Y.get(structPos) == null) {            
-            height = this.sampleHeightMap(x, z);
-            
-            GROUND_CACHE_Y.put(structPos, height);
-        } 
-        
-        height = GROUND_CACHE_Y.get(structPos);
-        
-        // Not ideal
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && height < this.getSeaLevel())
-            height = this.getSeaLevel() + 1;
-         
-        return height;
-    }
-    
     private int sampleHeightMap(int sampleX, int sampleZ) {
         
         int startX = (sampleX >> 4) << 4;
@@ -340,31 +277,4 @@ public class InfdevOldChunkGenerator extends NoiseChunkGenerator implements IOld
         
         return heightVal;
     }
-    
-    @Override
-    public List<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {
-        if (spawnGroup == SpawnGroup.MONSTER) {
-            if (structureAccessor.getStructureAt(blockPos, false, BetaStructure.OCEAN_SHRINE_STRUCTURE).hasChildren()) {
-                return BetaStructure.OCEAN_SHRINE_STRUCTURE.getMonsterSpawns();
-            }
-        }
-
-        return super.getEntitySpawnList(biome, structureAccessor, spawnGroup, blockPos);
-    }
-    
-    @Override
-    public int getWorldHeight() {
-        return 128;
-    }
-
-    @Override
-    public int getSeaLevel() {
-        return this.settings.wrapped.getSeaLevel();
-    }
-
-    @Override
-    public ChunkGenerator withSeed(long seed) {
-        return new InfdevOldChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings);
-    }
-    
 }

@@ -6,8 +6,6 @@ import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.IndevUtil;
 import com.bespectacled.modernbeta.util.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.util.IndevUtil.IndevType;
-import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
-
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;

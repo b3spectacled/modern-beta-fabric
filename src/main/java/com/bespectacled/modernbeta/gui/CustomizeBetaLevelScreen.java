@@ -7,10 +7,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.WorldEnum;
-import com.bespectacled.modernbeta.util.WorldEnum.BetaBiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
-
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
@@ -26,12 +23,11 @@ import net.minecraft.text.TranslatableText;
 public class CustomizeBetaLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private OldGeneratorSettings generatorSettings;
-    
 
     private BiomeType biomeType;
     private Iterator<BiomeType> typeIterator;
     
-    private boolean generateBetaOceans = ModernBeta.BETA_CONFIG.generateBetaOceans;
+    private boolean generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
     
     private ButtonListWidget buttonList;
 
@@ -42,10 +38,12 @@ public class CustomizeBetaLevelScreen extends Screen {
         this.generatorSettings = generatorSettings;
         
         this.typeIterator = Arrays.asList(BiomeType.values()).iterator();
-        this.biomeType = this.typeIterator.next();
+        this.biomeType = GUIUtil.iterateToBiomeType(BiomeType.BETA, this.typeIterator);
         
-        if (generatorSettings.settings.contains("generateBetaOceans"))
-            generateBetaOceans = generatorSettings.settings.getBoolean("generateBetaOceans");
+        generatorSettings.settings.putString("biomeType", this.biomeType.getName());
+        
+        if (generatorSettings.settings.contains("generateOceans"))
+            generateOceans = generatorSettings.settings.getBoolean("generateOceans");
         
         
         
@@ -125,10 +123,10 @@ public class CustomizeBetaLevelScreen extends Screen {
         this.buttonList.addSingleOptionEntry(
             new BooleanOption(
                 "createWorld.customize.beta.generateOceans", 
-                (gameOptions) -> { return generateBetaOceans; }, // Getter
+                (gameOptions) -> { return generateOceans; }, // Getter
                 (gameOptions, value) -> { // Setter
-                    generateBetaOceans = value;
-                    generatorSettings.settings.putBoolean("generateBetaOceans", value);
+                    generateOceans = value;
+                    generatorSettings.settings.putBoolean("generateOceans", value);
                 }
         ));
             

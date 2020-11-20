@@ -10,7 +10,6 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.WorldEnum;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-import com.bespectacled.modernbeta.util.WorldEnum.PreBetaBiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.google.common.collect.ImmutableList;
 
@@ -22,7 +21,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.DefaultBiomeCreator;
 
-public class PreBetaBiomes {
+public class InfBiomes {
     public static final Identifier ALPHA_ID = new Identifier(ModernBeta.ID, "alpha");
     public static final Identifier ALPHA_WINTER_ID = new Identifier(ModernBeta.ID, "alpha_winter");
     
@@ -62,24 +61,6 @@ public class PreBetaBiomes {
         Registry.register(BuiltinRegistries.BIOME, INFDEV_OLD_WINTER_ID, DefaultBiomeCreator.createNormalOcean(false));
     }
     
-    public static WorldType getWorldType(CompoundTag settings) {
-        WorldType type = WorldType.ALPHA;
-        
-        if (settings.contains("worldType"))
-            type = WorldType.fromName(settings.getString("worldType"));
-        
-        return type;
-    }
-    
-    public static PreBetaBiomeType getBiomeType(CompoundTag settings) {
-        PreBetaBiomeType type = PreBetaBiomeType.CLASSIC;
-        
-        if (settings.contains("preBetaBiomeType")) 
-            type = PreBetaBiomeType.fromName(settings.getString("preBetaBiomeType"));
-        
-        return type;
-    }
-    
     public static Map<BiomeType, Identifier> getBiomeMap(WorldType worldType) {
         
         switch(worldType) {
@@ -96,24 +77,16 @@ public class PreBetaBiomes {
     
     public static List<RegistryKey<Biome>> getBiomeRegistryList(CompoundTag settings) {
         WorldType type = WorldType.ALPHA;
-        boolean useVanillaBiomes = false;
         
         if (settings.contains("worldType"))
             type = WorldType.fromName(settings.getString("worldType"));
         
-        if (settings.contains("preBetaBiomeType")) 
-            useVanillaBiomes = PreBetaBiomeType.fromName(settings.getString("preBetaBiomeType")) == PreBetaBiomeType.VANILLA;
-        
-        return getBiomeRegistryList(type, useVanillaBiomes);
+        return getBiomeRegistryList(type);
     }
     
-    private static List<RegistryKey<Biome>> getBiomeRegistryList(WorldType worldType, boolean useVanillaBiomes) {
+    public static List<RegistryKey<Biome>> getBiomeRegistryList(WorldType worldType) {
         ArrayList<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
         List<Identifier> biomeIds;
-        
-        if (useVanillaBiomes) {
-            return BiomeUtil.VANILLA_BIOMES;
-        }
         
         switch(worldType) {
             case ALPHA:
@@ -127,7 +100,6 @@ public class PreBetaBiomes {
                 break;
             default:
                 biomeIds = new ArrayList<Identifier>(ALPHA_BIOMES.values());
-                break;
         }
         
         for (Identifier i : biomeIds) {

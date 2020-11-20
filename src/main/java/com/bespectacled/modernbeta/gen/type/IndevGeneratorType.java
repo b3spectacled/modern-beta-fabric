@@ -3,8 +3,8 @@ package com.bespectacled.modernbeta.gen.type;
 import java.util.Map;
 import java.util.Optional;
 
-import com.bespectacled.modernbeta.biome.IndevBiomeSource;
-import com.bespectacled.modernbeta.gen.IndevChunkGenerator;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gui.CustomizeIndevLevelScreen;
 import com.bespectacled.modernbeta.mixin.MixinGeneratorTypeAccessor;
@@ -73,7 +73,7 @@ public final class IndevGeneratorType extends GeneratorType {
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
         indevSettings.settings = OldGeneratorSettings.createIndevSettings();
-        return new IndevChunkGenerator(new IndevBiomeSource(seed, biomes, indevSettings.settings), seed, indevSettings);
+        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, indevSettings.settings), seed, indevSettings);
     }
     
     

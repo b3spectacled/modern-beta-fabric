@@ -3,26 +3,28 @@ package com.bespectacled.modernbeta.biome.provider;
 import java.util.Map;
 
 import com.bespectacled.modernbeta.biome.BetaBiomes;
-import com.bespectacled.modernbeta.biome.PreBetaBiomes;
+import com.bespectacled.modernbeta.biome.InfBiomes;
 import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeProviderType;
 import com.bespectacled.modernbeta.util.BiomeUtil;
+import com.bespectacled.modernbeta.util.WorldEnum;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class OldBiomeProvider implements IOldBiomeProvider {
+public class InfBiomeProvider implements IOldBiomeProvider {
     
     private final WorldType worldType;
     private final BiomeType biomeType;
     
     private static final double[] TEMP_HUMID_POINT = new double[2];
     
-    public OldBiomeProvider(long seed, WorldType worldType, BiomeType biomeType) {
-        this.worldType = worldType;
-        this.biomeType = biomeType;
+    public InfBiomeProvider(long seed, CompoundTag settings) {
+        this.worldType = WorldEnum.getWorldType(settings);
+        this.biomeType = WorldEnum.getBiomeType(settings);
         
         BiomeUtil.setSeed(seed);
     }
@@ -31,7 +33,7 @@ public class OldBiomeProvider implements IOldBiomeProvider {
     public Biome getBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
         Biome biome = null;
         
-        Map<BiomeType, Identifier> biomeMapping = PreBetaBiomes.getBiomeMap(this.worldType);
+        Map<BiomeType, Identifier> biomeMapping = InfBiomes.getBiomeMap(this.worldType);
         
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
@@ -59,8 +61,6 @@ public class OldBiomeProvider implements IOldBiomeProvider {
             default:
                 biome = registry.get(biomeMapping.get(BiomeType.CLASSIC));
         }
-        
-        //System.out.println("GETTING BIOME! " + biome);
         
         return biome;
     }
