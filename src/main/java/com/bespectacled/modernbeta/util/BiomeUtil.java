@@ -31,8 +31,6 @@ public class BiomeUtil {
     public static double[] noises = null;
 
     public static double[][] temps2D = new double[16][16];
-    
-    public static final List<RegistryKey<Biome>> VANILLA_BIOMES;
 
     // Convert absolute coordinates to BiomeArray index
     public static int computeBiomeIndex(int x, int y, int z) {
@@ -148,29 +146,5 @@ public class BiomeUtil {
 
         skyTemps = tempNoiseOctaves.sample(skyTemps, x, z, 1, 1, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
         return skyTemps[0];
-    }
-    
-    private static boolean isValidCategory(Category category)
-    {
-        return  category != Category.NONE &&
-                //category != Category.BEACH &&
-                //category != Category.OCEAN &&
-                category != Category.NETHER &&
-                category != Category.THEEND;
-    }
-    
-    static {
-        List<RegistryKey<Biome>> biomes = new ArrayList<RegistryKey<Biome>>();
-        
-        Iterator biomeIter = BuiltinRegistries.BIOME.getEntries().iterator();
-        while (biomeIter.hasNext()) {
-            Entry<RegistryKey<Biome>, Biome> entry = (Entry<RegistryKey<Biome>, Biome>)biomeIter.next();
-            
-            if (isValidCategory(entry.getValue().getCategory())) {
-                biomes.add(entry.getKey());
-            }
-        }
-        
-        VANILLA_BIOMES = biomes;
     }
 }

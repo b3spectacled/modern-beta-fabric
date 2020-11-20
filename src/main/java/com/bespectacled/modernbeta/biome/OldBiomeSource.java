@@ -1,10 +1,7 @@
 package com.bespectacled.modernbeta.biome;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.layer.VanillaBiomeLayer;
-import com.bespectacled.modernbeta.biome.layer.VanillaOceanLayer;
 import com.bespectacled.modernbeta.biome.provider.IOldBiomeProvider;
-import com.bespectacled.modernbeta.biome.provider.InfBiomeProvider;
 import com.bespectacled.modernbeta.util.WorldEnum;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
@@ -18,7 +15,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 
 public class OldBiomeSource extends BiomeSource implements IOldBiomeSource {
@@ -39,8 +35,6 @@ public class OldBiomeSource extends BiomeSource implements IOldBiomeSource {
     private final BiomeType biomeType;
     
     private final IOldBiomeProvider biomeProvider;
-    private final BiomeLayerSampler biomeSampler;
-    private final BiomeLayerSampler oceanSampler;
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, CompoundTag settings) {
         super(IOldBiomeProvider.getBiomeRegistryList(settings).stream().map((registryKey) -> () -> (Biome) biomeRegistry.get(registryKey)));
@@ -53,23 +47,17 @@ public class OldBiomeSource extends BiomeSource implements IOldBiomeSource {
         this.worldType = WorldEnum.getWorldType(settings);
         this.biomeType = WorldEnum.getBiomeType(settings);
         
-        this.biomeProvider = this.biomeType != BiomeType.VANILLA ? IOldBiomeProvider.getBiomeProvider(seed, settings) : null;
-        this.biomeSampler = this.biomeType == BiomeType.VANILLA ? VanillaBiomeLayer.build(seed, false, 4, -1) : null;
-        this.oceanSampler = this.biomeType == BiomeType.VANILLA ? VanillaOceanLayer.build(seed, false, 6, -1) : null;
+        this.biomeProvider = IOldBiomeProvider.getBiomeProvider(seed, settings);
     }
 
     @Override
     public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeType == BiomeType.VANILLA ? 
-            this.biomeSampler.sample(biomeRegistry, biomeX, biomeZ) :
-            this.biomeProvider.getBiomeForNoiseGen(biomeRegistry, biomeX, biomeY, biomeZ);
+        return this.biomeProvider.getBiomeForNoiseGen(biomeRegistry, biomeX, biomeY, biomeZ);
     }
 
     @Override
     public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeType == BiomeType.VANILLA ? 
-            this.oceanSampler.sample(biomeRegistry, biomeX, biomeZ) :
-            this.biomeProvider.getOceanBiomeForNoiseGen(biomeRegistry, biomeX, biomeY, biomeZ);
+        return this.biomeProvider.getOceanBiomeForNoiseGen(biomeRegistry, biomeX, biomeY, biomeZ);
     }
 
     @Override

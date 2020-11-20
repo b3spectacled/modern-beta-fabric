@@ -50,6 +50,8 @@ public class BetaBiomes {
     
     public static final Identifier SKY_ID = new Identifier(ModernBeta.ID, "sky");
     
+    public static final List<RegistryKey<Biome>> BETA_BIOME_KEYS;
+    
     public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(
         FOREST_ID,
         SHRUBLAND_ID, 
@@ -77,16 +79,6 @@ public class BetaBiomes {
             Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createNormalOcean(false));
         }
     }
-
-    public static List<RegistryKey<Biome>> getBiomeRegistryList() {
-        ArrayList<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
-
-        for (Identifier i : BETA_MAPPINGS.values()) {
-            biomeList.add(RegistryKey.of(Registry.BIOME_KEY, i));
-        }
-        
-        return Collections.unmodifiableList(biomeList);
-    }
     
     static {
         BETA_MAPPINGS.put("ice_desert", ICE_DESERT_ID);
@@ -108,6 +100,14 @@ public class BetaBiomes {
         BETA_MAPPINGS.put("warm_ocean", WARM_OCEAN_ID);
         
         BETA_MAPPINGS.put("sky", SKY_ID);
+    }
+    
+    static {
+        BETA_BIOME_KEYS = new ArrayList<RegistryKey<Biome>>();
+
+        for (Identifier i : BETA_MAPPINGS.values()) {
+            BETA_BIOME_KEYS.add(RegistryKey.of(Registry.BIOME_KEY, i));
+        }
     }
     
     /*

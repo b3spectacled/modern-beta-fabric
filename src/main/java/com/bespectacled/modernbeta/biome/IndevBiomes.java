@@ -30,6 +30,8 @@ public class IndevBiomes {
     public static final Identifier INDEV_WOODS_ID = new Identifier(ModernBeta.ID, "indev_woods");
     public static final Identifier INDEV_SNOWY_ID = new Identifier(ModernBeta.ID, "indev_snowy");
     
+    public static final List<RegistryKey<Biome>> INDEV_BIOME_KEYS;
+    
     public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(
         INDEV_EDGE_ID,
         INDEV_HELL_EDGE_ID,
@@ -51,14 +53,12 @@ public class IndevBiomes {
 
         //ModernBeta.LOGGER.log(Level.INFO, "Reserved Indev biome IDs.");
     }
-   
-    public static List<RegistryKey<Biome>> getBiomeList() {
-        ArrayList<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
+    
+    static {
+        INDEV_BIOME_KEYS = new ArrayList<RegistryKey<Biome>>();
         
         for (Identifier i : BIOMES) {
-            biomeList.add(RegistryKey.of(Registry.BIOME_KEY, i));
+            INDEV_BIOME_KEYS.add(RegistryKey.of(Registry.BIOME_KEY, i));
         }
-        
-        return Collections.unmodifiableList(biomeList);
     }
 }

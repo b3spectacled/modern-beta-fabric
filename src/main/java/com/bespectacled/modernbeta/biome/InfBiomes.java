@@ -62,7 +62,6 @@ public class InfBiomes {
     }
     
     public static Map<BiomeType, Identifier> getBiomeMap(WorldType worldType) {
-        
         switch(worldType) {
             case ALPHA:
                 return ALPHA_BIOMES;

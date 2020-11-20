@@ -1,15 +1,6 @@
 package com.bespectacled.modernbeta.util;
 
-import java.util.List;
-
-import com.bespectacled.modernbeta.biome.BetaBiomes;
-import com.bespectacled.modernbeta.biome.InfBiomes;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
-
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
 
 public class WorldEnum {
     
@@ -102,20 +93,6 @@ public class WorldEnum {
             
             throw new IllegalArgumentException("No biome type matching name: " + name);
         }
-        
-        public static List<RegistryKey<Biome>> getBiomeRegistryList(CompoundTag settings) {
-            WorldType worldType = getWorldType(settings);
-            BiomeType biomeType = getBiomeType(settings);
-            
-            if (biomeType == BiomeType.VANILLA)
-                return BiomeUtil.VANILLA_BIOMES;
-            
-            if (biomeType == BiomeType.BETA || biomeType == BiomeType.SKY)
-                return BetaBiomes.getBiomeRegistryList();
-            
-            return InfBiomes.getBiomeRegistryList(worldType);
-        }
-        
     }
     
     public static WorldType getWorldType(CompoundTag settings) {

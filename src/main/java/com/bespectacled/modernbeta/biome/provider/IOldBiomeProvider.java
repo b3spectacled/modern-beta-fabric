@@ -5,7 +5,7 @@ import java.util.List;
 import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.biome.IndevBiomes;
 import com.bespectacled.modernbeta.biome.InfBiomes;
-import com.bespectacled.modernbeta.util.BiomeUtil;
+import com.bespectacled.modernbeta.biome.VanillaBiomes;
 import com.bespectacled.modernbeta.util.WorldEnum;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
@@ -21,11 +21,27 @@ public interface IOldBiomeProvider {
     
     public static IOldBiomeProvider getBiomeProvider(long seed, CompoundTag settings) {
         WorldType worldType = WorldEnum.getWorldType(settings);
+        BiomeType biomeType = WorldEnum.getBiomeType(settings);
         
         if (worldType == WorldType.INDEV)
             return new IndevBiomeProvider(seed, settings);
         
-        return new InfBiomeProvider(seed, settings);
+        switch(biomeType) {
+            case BETA:
+                return new BetaBiomeProvider(seed);
+            case SKY:
+                return new SingleBiomeProvider(seed, BetaBiomes.SKY_ID);
+            case PLUS:
+                return new PlusBiomeProvider(seed, InfBiomes.getBiomeMap(worldType));
+            case CLASSIC:
+                return new SingleBiomeProvider(seed, InfBiomes.getBiomeMap(worldType).get(BiomeType.CLASSIC));
+            case WINTER:
+                return new SingleBiomeProvider(seed, InfBiomes.getBiomeMap(worldType).get(BiomeType.WINTER));
+            case VANILLA:
+                return new VanillaBiomeProvider(seed);
+        }
+        
+        return new SingleBiomeProvider(seed, InfBiomes.ALPHA_ID);
     }
     
     public static List<RegistryKey<Biome>> getBiomeRegistryList(CompoundTag settings) {
@@ -33,13 +49,13 @@ public interface IOldBiomeProvider {
         BiomeType biomeType = WorldEnum.getBiomeType(settings);
         
         if (worldType == WorldType.INDEV)
-            return IndevBiomes.getBiomeList();
+            return IndevBiomes.INDEV_BIOME_KEYS;
         
         if (biomeType == BiomeType.VANILLA)
-            return BiomeUtil.VANILLA_BIOMES;
+            return VanillaBiomes.VANILLA_BIOME_KEYS;
         
         if (biomeType == BiomeType.BETA || biomeType == BiomeType.SKY)
-            return BetaBiomes.getBiomeRegistryList();
+            return BetaBiomes.BETA_BIOME_KEYS;
         
         return InfBiomes.getBiomeRegistryList(worldType);
     }
