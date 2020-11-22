@@ -43,6 +43,7 @@ public class InfdevChunkProvider implements IOldChunkProvider {
     
     private static final Mutable POS = new Mutable();
     private static final Random RAND = new Random();
+    private static final Random SANDSTONE_RAND = new Random();
     
     private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
     private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
@@ -53,6 +54,7 @@ public class InfdevChunkProvider implements IOldChunkProvider {
     
     public InfdevChunkProvider(long seed) {
         RAND.setSeed(seed);
+        SANDSTONE_RAND.setSeed(seed);
         
         // Noise Generators
         noiseOctavesA = new PerlinOctaveNoise(RAND, 16, false);
@@ -73,6 +75,7 @@ public class InfdevChunkProvider implements IOldChunkProvider {
     @Override
     public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, IOldBiomeSource biomeSource) {
         RAND.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
+        SANDSTONE_RAND.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
 
         generateTerrain(chunk, structureAccessor); 
     }
@@ -167,7 +170,7 @@ public class InfdevChunkProvider implements IOldChunkProvider {
                             // Gens layer of sandstone starting at lowest block of sand, of height 1 to 4.
                             // Beta backport.
                             if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                                flag = RAND.nextInt(4);
+                                flag = SANDSTONE_RAND.nextInt(4);
                                 fillerBlock = BlockStates.SANDSTONE;
                             }
                         }

@@ -55,6 +55,7 @@ public class AlphaChunkProvider implements IOldChunkProvider {
     
     private static final Mutable POS = new Mutable();
     private static final Random RAND = new Random();
+    private static final Random SANDSTONE_RAND = new Random();
     
     private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
     private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
@@ -65,6 +66,7 @@ public class AlphaChunkProvider implements IOldChunkProvider {
     
     public AlphaChunkProvider(long seed) {
         RAND.setSeed(seed);
+        SANDSTONE_RAND.setSeed(seed);
         
         // Noise Generators
         minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, false);
@@ -85,7 +87,8 @@ public class AlphaChunkProvider implements IOldChunkProvider {
 
     @Override
     public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, IOldBiomeSource biomeSource) {
-        RAND.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
+        RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
+        SANDSTONE_RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
 
         generateTerrain(chunk, structureAccessor);
     }
@@ -93,25 +96,22 @@ public class AlphaChunkProvider implements IOldChunkProvider {
     @Override
     public void makeSurface(ChunkRegion region, Chunk chunk, IOldBiomeSource biomeSource) {
         byte seaLevel = (byte) 64;
-        double thirtysecond = 0.03125D; // eighth
+        double eighth = 0.03125D; // eighth
 
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        sandNoise = beachNoiseOctaves.sampleAlphaOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
-                thirtysecond, thirtysecond, 1.0D);
-        gravelNoise = beachNoiseOctaves.sampleAlphaOctaves(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16, 1,
-                16, thirtysecond, 1.0D, thirtysecond);
-        stoneNoise = stoneNoiseOctaves.sampleAlphaOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
-                thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
+        sandNoise = beachNoiseOctaves.sampleAlphaOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth, eighth, 1.0D);
+        gravelNoise = beachNoiseOctaves.sampleAlphaOctaves(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
+        stoneNoise = stoneNoiseOctaves.sampleAlphaOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
 
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 16; x++) {
 
-                boolean genSandBeach = sandNoise[z + x * 16] + RAND.nextDouble() * 0.20000000000000001D > 0.0D;
-                boolean genGravelBeach = gravelNoise[z + x * 16] + RAND.nextDouble() * 0.20000000000000001D > 3D;
+                boolean genSandBeach = sandNoise[x + z * 16] + RAND.nextDouble() * 0.20000000000000001D > 0.0D;
+                boolean genGravelBeach = gravelNoise[x + z * 16] + RAND.nextDouble() * 0.20000000000000001D > 3D;
 
-                int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
+                int genStone = (int) (stoneNoise[x + z * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
                 int flag = -1;
                 
                 int absX = (chunkX << 4) + x;
@@ -178,18 +178,16 @@ public class AlphaChunkProvider implements IOldChunkProvider {
 
                         continue;
                     }
-
-                    if (flag <= 0) {
-                        continue;
+                    
+                    if (flag > 0) { 
+                        flag--;
+                        chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
                     }
-
-                    flag--;
-                    chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
 
                     // Gens layer of sandstone starting at lowest block of sand, of height 1 to 4.
                     // Beta backport.
                     if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                        flag = RAND.nextInt(4);
+                        flag = SANDSTONE_RAND.nextInt(4);
                         fillerBlock = BlockStates.SANDSTONE;
                     }
                 }
