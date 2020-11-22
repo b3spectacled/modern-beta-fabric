@@ -1,5 +1,10 @@
 {
   "starts": [
+    "minecraft:pillager_outpost",
+    "minecraft:village_plains",
+    "minecraft:mineshaft",
+    "minecraft:stronghold",
+    "minecraft:ruined_portal"
   ],
   "spawners": {
     "monster": [

@@ -2,6 +2,8 @@ package com.bespectacled.modernbeta.gui;
 
 import java.util.Arrays;
 import java.util.Iterator;
+
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
@@ -11,6 +13,7 @@ import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.options.BooleanOption;
 import net.minecraft.client.options.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -22,6 +25,8 @@ public class CustomizeAlphaLevelScreen extends Screen {
     
     private BiomeType biomeType;
     private Iterator<BiomeType> typeIterator;
+    
+    private boolean generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
     
     private ButtonListWidget buttonList;
 
@@ -35,6 +40,9 @@ public class CustomizeAlphaLevelScreen extends Screen {
         this.biomeType = GUIUtil.iterateToBiomeType(BiomeType.CLASSIC, this.typeIterator);
         
         generatorSettings.settings.putString("biomeType", this.biomeType.getName());
+        
+        if (generatorSettings.settings.contains("generateOceans"))
+            generateOceans = generatorSettings.settings.getBoolean("generateOceans");
     }
     
     @Override
@@ -108,37 +116,15 @@ public class CustomizeAlphaLevelScreen extends Screen {
                 }
         ));
         
-        /*
         this.buttonList.addSingleOptionEntry(
             new BooleanOption(
-                "createWorld.customize.alpha.alphaWinterMode", 
-                (gameOptions) -> { return alphaWinterMode; }, // Getter
+                "createWorld.customize.beta.generateOceans", 
+                (gameOptions) -> { return generateOceans; }, // Getter
                 (gameOptions, value) -> { // Setter
-                    alphaWinterMode = value;
-                    generatorSettings.settings.putBoolean("alphaWinterMode", value);
+                    generateOceans = value;
+                    generatorSettings.settings.putBoolean("generateOceans", value);
                 }
         ));
-        
-        this.buttonList.addSingleOptionEntry(
-            new BooleanOption(
-                "createWorld.customize.alpha.alphaPlus", 
-                (gameOptions) -> { return alphaPlus; }, 
-                (gameOptions, value) -> {
-                    alphaPlus = value;
-                    generatorSettings.settings.putBoolean("alphaPlus", value);
-                }
-        ));
-        
-        this.buttonList.addSingleOptionEntry(
-            new BooleanOption(
-                "createWorld.customize.alpha.generateVanillaBiomesAlpha", 
-                (gameOptions) -> { return generateVanillaBiomesAlpha; }, 
-                (gameOptions, value) -> {
-                    generateVanillaBiomesAlpha = value;
-                    generatorSettings.settings.putBoolean("generateVanillaBiomesAlpha", value);
-                }
-        ));
-        */
         
         this.children.add(this.buttonList);
     }

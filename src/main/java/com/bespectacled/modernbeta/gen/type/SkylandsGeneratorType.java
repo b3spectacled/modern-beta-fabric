@@ -3,12 +3,14 @@ package com.bespectacled.modernbeta.gen.type;
 import java.util.Map;
 import java.util.Optional;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gui.CustomizeSkylandsLevelScreen;
 import com.bespectacled.modernbeta.mixin.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
+import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.google.common.collect.ImmutableMap;
 
 import net.fabricmc.api.EnvType;
@@ -66,7 +68,7 @@ public final class SkylandsGeneratorType extends GeneratorType {
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        betaSettings.settings = OldGeneratorSettings.createSkySettings(BiomeType.BETA.getName());
+        betaSettings.settings = OldGeneratorSettings.createInfSettings(WorldType.SKYLANDS.getName(), BiomeType.BETA.getName(), false);
         return new OldChunkGenerator(new OldBiomeSource(seed, biomes, betaSettings.settings), seed, betaSettings);
     }
 }

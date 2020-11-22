@@ -4,6 +4,8 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
+import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
 
@@ -90,46 +92,19 @@ public class MixinGeneratorOptions {
 
             ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise, Blocks.STONE.getDefaultState(),
                     Blocks.WATER.getDefaultState(), -10, 0, 64, false);
-
+            
             
             ChunkGenerator generator;
+            String biomeType = ModernBeta.BETA_CONFIG.biomeType;
+            boolean genOceans = levelType.equals("skylands") ? false : ModernBeta.BETA_CONFIG.generateOceans;
             
-            CompoundTag betaSettings = OldGeneratorSettings.createBetaSettings(ModernBeta.BETA_CONFIG.biomeType);
-            CompoundTag skySettings = OldGeneratorSettings.createSkySettings(ModernBeta.BETA_CONFIG.biomeType);
-            CompoundTag alphaSettings = OldGeneratorSettings.createAlphaSettings(ModernBeta.BETA_CONFIG.biomeType);
-            CompoundTag indevSettings = OldGeneratorSettings.createIndevSettings();
-            CompoundTag infdevSettings = OldGeneratorSettings.createInfdevSettings(ModernBeta.BETA_CONFIG.biomeType);
-            CompoundTag infdevOldSettings = OldGeneratorSettings.createInfdevOldSettings(ModernBeta.BETA_CONFIG.biomeType);
-
-            OldGeneratorSettings betaGenSettings = new OldGeneratorSettings(type, betaSettings);
-            OldGeneratorSettings skyGenSettings = new OldGeneratorSettings(type, skySettings);
-            OldGeneratorSettings alphaGenSettings = new OldGeneratorSettings(type, alphaSettings);
-            OldGeneratorSettings indevGenSettings = new OldGeneratorSettings(type, indevSettings);
-            OldGeneratorSettings infdevGenSettings = new OldGeneratorSettings(type, infdevSettings);
-            OldGeneratorSettings infdevOldGenSettings = new OldGeneratorSettings(type, infdevOldSettings);
-
-            switch (levelType) {
-                case "beta":
-                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
-                    break;
-                case "skylands":
-                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, betaGenSettings.settings), seed, skyGenSettings);
-                    break;
-                case "alpha":
-                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, alphaGenSettings.settings), seed, alphaGenSettings);
-                    break;
-                case "indev":
-                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, indevGenSettings.settings), seed, indevGenSettings);
-                    break;
-                case "infdev":
-                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, infdevGenSettings.settings), seed, infdevGenSettings);
-                    break;
-                case "infdev_old":
-                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, infdevOldGenSettings.settings), seed, infdevOldGenSettings);
-                    break;
-                default:
-                    generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, betaGenSettings.settings), seed, betaGenSettings);
-            }
+            CompoundTag settings = levelType.equals("indev") ?
+                OldGeneratorSettings.createIndevSettings() :
+                OldGeneratorSettings.createInfSettings(levelType, biomeType, genOceans);
+                
+            OldGeneratorSettings genSettings = new OldGeneratorSettings(type, settings);
+            
+            generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, genSettings.settings), seed, genSettings);
 
             // return our chunk generator
             cir.setReturnValue(new GeneratorOptions(seed, generateStructures, false,

@@ -44,9 +44,6 @@ public class CustomizeBetaLevelScreen extends Screen {
         
         if (generatorSettings.settings.contains("generateOceans"))
             generateOceans = generatorSettings.settings.getBoolean("generateOceans");
-        
-        
-        
     }
     
     @Override
