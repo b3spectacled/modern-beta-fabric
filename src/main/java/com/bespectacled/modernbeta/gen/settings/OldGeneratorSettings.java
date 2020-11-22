@@ -22,49 +22,49 @@ public class OldGeneratorSettings {
         this.settings = settings;
     }
     
-    public static CompoundTag createBetaSettings() {
+    public static CompoundTag createBetaSettings(String biomeType) {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", WorldEnum.WorldType.BETA.getName());
-        settings.putString("biomeType", ModernBeta.BETA_CONFIG.biomeType);
+        settings.putString("biomeType", biomeType);
         settings.putBoolean("generateOceans", ModernBeta.BETA_CONFIG.generateOceans);
         
         return settings;
     }
     
-    public static CompoundTag createSkySettings() {
+    public static CompoundTag createSkySettings(String biomeType) {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", WorldEnum.WorldType.SKYLANDS.getName());
-        settings.putString("biomeType", ModernBeta.BETA_CONFIG.biomeType);
+        settings.putString("biomeType", biomeType);
         settings.putBoolean("generateOceans", false);
         
         return settings;
     }
     
-    public static CompoundTag createAlphaSettings() {
+    public static CompoundTag createAlphaSettings(String biomeType) {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", WorldEnum.WorldType.ALPHA.getName());
-        settings.putString("biomeType", ModernBeta.BETA_CONFIG.biomeType);
+        settings.putString("biomeType", biomeType);
         
         return settings;
     }
     
-    public static CompoundTag createInfdevSettings() {
+    public static CompoundTag createInfdevSettings(String biomeType) {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", WorldEnum.WorldType.INFDEV.getName());
-        settings.putString("biomeType", ModernBeta.BETA_CONFIG.biomeType);
+        settings.putString("biomeType", biomeType);
         
         return settings;
     }
     
-    public static CompoundTag createInfdevOldSettings() {
+    public static CompoundTag createInfdevOldSettings(String biomeType) {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", WorldEnum.WorldType.INFDEV_OLD.getName());
-        settings.putString("biomeType", ModernBeta.BETA_CONFIG.biomeType);
+        settings.putString("biomeType", biomeType);
         settings.putBoolean("generateInfdevPyramid", ModernBeta.BETA_CONFIG.generateInfdevPyramid);
         settings.putBoolean("generateInfdevWall", ModernBeta.BETA_CONFIG.generateInfdevWall);
         

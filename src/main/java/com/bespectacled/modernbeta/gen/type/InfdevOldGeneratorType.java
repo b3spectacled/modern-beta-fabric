@@ -8,6 +8,7 @@ import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gui.CustomizeInfdevOldLevelScreen;
 import com.bespectacled.modernbeta.mixin.MixinGeneratorTypeAccessor;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.google.common.collect.ImmutableMap;
 
 import net.fabricmc.api.EnvType;
@@ -63,7 +64,7 @@ public final class InfdevOldGeneratorType extends GeneratorType {
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        infdevOldSettings.settings = OldGeneratorSettings.createInfdevOldSettings();
+        infdevOldSettings.settings = OldGeneratorSettings.createInfdevOldSettings(BiomeType.CLASSIC.getName());
         return new OldChunkGenerator(new OldBiomeSource(seed, biomes, infdevOldSettings.settings), seed, infdevOldSettings);
     }
     

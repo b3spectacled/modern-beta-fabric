@@ -8,6 +8,7 @@ import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gui.CustomizeBetaLevelScreen;
 import com.bespectacled.modernbeta.mixin.MixinGeneratorTypeAccessor;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.google.common.collect.ImmutableMap;
 
 import net.fabricmc.api.EnvType;
@@ -64,7 +65,7 @@ public final class BetaGeneratorType extends GeneratorType {
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        betaSettings.settings = OldGeneratorSettings.createBetaSettings();
+        betaSettings.settings = OldGeneratorSettings.createBetaSettings(BiomeType.BETA.getName());
         return new OldChunkGenerator(new OldBiomeSource(seed, biomes, betaSettings.settings), seed, betaSettings);
     }
 }

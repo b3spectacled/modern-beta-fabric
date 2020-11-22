@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.mixin;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
@@ -93,12 +94,12 @@ public class MixinGeneratorOptions {
             
             ChunkGenerator generator;
             
-            CompoundTag betaSettings = OldGeneratorSettings.createBetaSettings();
-            CompoundTag skySettings = OldGeneratorSettings.createSkySettings();
-            CompoundTag alphaSettings = OldGeneratorSettings.createAlphaSettings();
+            CompoundTag betaSettings = OldGeneratorSettings.createBetaSettings(ModernBeta.BETA_CONFIG.biomeType);
+            CompoundTag skySettings = OldGeneratorSettings.createSkySettings(ModernBeta.BETA_CONFIG.biomeType);
+            CompoundTag alphaSettings = OldGeneratorSettings.createAlphaSettings(ModernBeta.BETA_CONFIG.biomeType);
             CompoundTag indevSettings = OldGeneratorSettings.createIndevSettings();
-            CompoundTag infdevSettings = OldGeneratorSettings.createInfdevSettings();
-            CompoundTag infdevOldSettings = OldGeneratorSettings.createInfdevOldSettings();
+            CompoundTag infdevSettings = OldGeneratorSettings.createInfdevSettings(ModernBeta.BETA_CONFIG.biomeType);
+            CompoundTag infdevOldSettings = OldGeneratorSettings.createInfdevOldSettings(ModernBeta.BETA_CONFIG.biomeType);
 
             OldGeneratorSettings betaGenSettings = new OldGeneratorSettings(type, betaSettings);
             OldGeneratorSettings skyGenSettings = new OldGeneratorSettings(type, skySettings);
