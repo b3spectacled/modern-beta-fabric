@@ -11,12 +11,12 @@ public class PerlinNoise extends Noise {
 
     private int permutations[]; 
     
-    public double xCoord;
-    public double yCoord;
-    public double zCoord;
+    public double xOffset;
+    public double yOffset;
+    public double zOffset;
 
     public PerlinNoise() {
-        this(new Random(), false);
+        this(new Random(), false); 
     }
 
     public PerlinNoise(Random random, boolean isIndev) {
@@ -25,9 +25,11 @@ public class PerlinNoise extends Noise {
         permutations = new int[512];
 
         if (!isIndev) {
-            xCoord = random.nextDouble() * 256D;
-            yCoord = random.nextDouble() * 256D;
-            zCoord = random.nextDouble() * 256D; 
+            xOffset = random.nextDouble() * 256D;
+            yOffset = random.nextDouble() * 256D;
+            zOffset = random.nextDouble() * 256D; 
+        } else {
+            xOffset = yOffset = zOffset = 0;
         }
         
         for (int i = 0; i < 256; i++) {
@@ -46,20 +48,10 @@ public class PerlinNoise extends Noise {
         }
     }
 
-    
-
     public final double lerp(double d, double d1, double d2) {
         return d1 + d * (d2 - d1);
     }
 
-    /*
-    public final double grad(int i, double d, double d1) {
-        int j = i & 0xf;
-        double d2 = (double) (1 - ((j & 8) >> 3)) * d;
-        double d3 = j >= 4 ? j != 12 && j != 14 ? d1 : d : 0.0D;
-        return ((j & 1) != 0 ? -d2 : d2) + ((j & 2) != 0 ? -d3 : d3);
-    }*/
-    
     public final double grad(int hash, double x, double y) {
         int integer7 = hash & 0xF;
         double double8 = (1 - ((integer7 & 0x8) >> 3)) * x;
@@ -107,333 +99,206 @@ public class PerlinNoise extends Noise {
                 return 0; // never happens
         }
     }
-
-    public double sampleBeta(double d, double d1) {
-        return this.sampleBetaNoise(d, d1, 0.0D);
-    }
     
-    public final double sampleInfdev(double double2, double double4) {
-        return this.sampleInfdevNoise(double2, double4, 0.0);
-    }
-    
-    public final double sampleInfdev(double double2, double double4, double double6) {
-        return this.sampleInfdevNoise(double2, double4, double6);
-    }
-
     private static double fade(double t) {
         return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
     }
     
-    public final double sampleIndevNoise(double double2, double double4) {
-        double double11 = 0.0;
-        double double9 = double4;
-        double double7 = double2;
-        int integer3 = MathHelper.floor(double7) & 0xFF;
-        int integer4 = MathHelper.floor(double9) & 0xFF;
-        int integer5 = MathHelper.floor(0.0) & 0xFF;
-        double7 -= MathHelper.floor(double7);
-        double9 -= MathHelper.floor(double9);
-        double11 = 0.0 - MathHelper.floor(0.0);
-        double double16 = fade(double7);
-        double double18 = fade(double9);
-        double double20 = fade(double11);
-        int integer6 = this.permutations[integer3] + integer4;
-        int integer13 = this.permutations[integer6] + integer5;
-        integer6 = this.permutations[integer6 + 1] + integer5;
-        integer3 = this.permutations[integer3 + 1] + integer4;
-        integer4 = this.permutations[integer3] + integer5;
-        integer3 = this.permutations[integer3 + 1] + integer5;
-        return lerp(
-            double20, 
-            lerp(
-                double18, 
-                lerp(
-                    double16, 
-                    grad(this.permutations[integer13], double7, double9, double11), 
-                    grad(this.permutations[integer4], double7 - 1.0, double9, double11)), 
-                lerp(
-                    double16, 
-                    grad(this.permutations[integer6], double7, double9 - 1.0, double11), 
-                    grad(this.permutations[integer3], double7 - 1.0, double9 - 1.0, double11))), 
-            lerp(
-                double18, 
-                lerp(
-                    double16, 
-                    grad(this.permutations[integer13 + 1], double7, double9, double11 - 1.0), 
-                    grad(this.permutations[integer4 + 1], double7 - 1.0, double9, double11 - 1.0)), 
-                lerp(
-                    double16, 
-                    grad(this.permutations[integer6 + 1], double7, double9 - 1.0, double11 - 1.0), 
-                    grad(this.permutations[integer3 + 1], double7 - 1.0, double9 - 1.0, double11 - 1.0))));
+    public double samplePerlin(double x, double y) {
+        return this.samplePerlin(x, y, 0.0);
     }
 
-    private double sampleInfdevNoise(double double2, double double4, double double6) {
-        double double8 = double2 + this.xCoord;
-        double double10 = double4 + this.yCoord;
-        double double12 = double6 + this.zCoord;
-        int integer2 = MathHelper.floor(double8) & 0xFF;
-        int integer3 = MathHelper.floor(double10) & 0xFF;
-        int integer4 = MathHelper.floor(double12) & 0xFF;
-        double8 -= MathHelper.floor(double8);
-        double10 -= MathHelper.floor(double10);
-        double12 -= MathHelper.floor(double12);
-        double double17 = fade(double8);
-        double double19 = fade(double10);
-        double double21 = fade(double12);
-        int integer5 = this.permutations[integer2] + integer3;
-        int integer6 = this.permutations[integer5] + integer4;
-        integer5 = this.permutations[integer5 + 1] + integer4;
-        integer2 = this.permutations[integer2 + 1] + integer3;
-        integer3 = this.permutations[integer2] + integer4;
-        integer2 = this.permutations[integer2 + 1] + integer4;
+    public double samplePerlin(double x, double y, double z) {
+        x += this.xOffset;
+        y += this.yOffset;
+        z += this.zOffset;
+        
+        int floorX = MathHelper.floor(x);
+        int floorY = MathHelper.floor(y);
+        int floorZ = MathHelper.floor(z);
+        
+        // Find unit cube that contains point.
+        int X = floorX & 0xFF;
+        int Y = floorY & 0xFF;
+        int Z = floorZ & 0xFF;
+        
+        // Find relative x, y, z of point in cube.
+        x -= floorX;
+        y -= floorY;
+        z -= floorZ;
+        
+        // Compute fade curves for x, y, z.
+        double u = fade(x);
+        double v = fade(y);
+        double w = fade(z);
+        
+        // Hash coordinates of the 8 cube corners.
+        int A = this.permutations[X] + Y;
+        int AA = this.permutations[A] + Z;
+        int AB = this.permutations[A + 1] + Z;
+        int B = this.permutations[X + 1] + Y;
+        int BA = this.permutations[B] + Z;
+        int BB = this.permutations[B + 1] + Z;
+        
         return lerp(
-            double21, 
+            w, 
             lerp(
-                double19, 
+                v, 
                 lerp(
-                    double17, 
-                    grad(this.permutations[integer6], double8, double10, double12), 
-                    grad(this.permutations[integer3], double8 - 1.0, double10, double12)), 
+                    u, 
+                    grad(this.permutations[AA], x, y, z), 
+                    grad(this.permutations[BA], x - 1.0, y, z)), 
                 lerp(
-                    double17, 
-                    grad(this.permutations[integer5], double8, double10 - 1.0, double12), 
-                    grad(this.permutations[integer2], double8 - 1.0, double10 - 1.0, double12))), 
+                    u, 
+                    grad(this.permutations[AB], x, y - 1.0, z), 
+                    grad(this.permutations[BB], x - 1.0, y - 1.0, z))), 
             lerp(
-                double19, 
+                v, 
                 lerp(
-                    double17, 
-                    grad(this.permutations[integer6 + 1], double8, double10, double12 - 1.0), 
-                    grad(this.permutations[integer3 + 1], double8 - 1.0, double10, double12 - 1.0)), 
+                    u, 
+                    grad(this.permutations[AA + 1], x, y, z - 1.0), 
+                    grad(this.permutations[BA + 1], x - 1.0, y, z - 1.0)), 
                 lerp(
-                    double17, 
-                    grad(this.permutations[integer5 + 1], double8, double10 - 1.0, double12 - 1.0), 
-                    grad(this.permutations[integer2 + 1], double8 - 1.0, double10 - 1.0, double12 - 1.0))));
-    }
-    
-    public void sampleAlphaNoise(double ad[], double d, double d1, double d2, int i, int j, int k, double d3, double d4,
-            double d5, double d6) {
-        int l = 0;
-        double d7 = 1.0D / d6;
-        int i1 = -1;
-        double d8 = 0.0D;
-        double d9 = 0.0D;
-        double d10 = 0.0D;
-        double d11 = 0.0D;
-        for (int l2 = 0; l2 < i; l2++) {
-            double d12 = (d + (double) l2) * d3 + xCoord;
-            int i3 = (int) d12;
-            if (d12 < (double) i3) {
-                i3--;
-            }
-            int j3 = i3 & 0xff;
-            d12 -= i3;
-            double d13 = d12 * d12 * d12 * (d12 * (d12 * 6D - 15D) + 10D);
-            for (int k3 = 0; k3 < k; k3++) {
-                double d14 = (d2 + (double) k3) * d5 + zCoord;
-                int l3 = (int) d14;
-                if (d14 < (double) l3) {
-                    l3--;
-                }
-                int i4 = l3 & 0xff;
-                d14 -= l3;
-                double d15 = d14 * d14 * d14 * (d14 * (d14 * 6D - 15D) + 10D);
-                for (int j4 = 0; j4 < j; j4++) {
-                    double d16 = (d1 + (double) j4) * d4 + yCoord;
-                    int k4 = (int) d16;
-                    if (d16 < (double) k4) {
-                        k4--;
-                    }
-                    int l4 = k4 & 0xff;
-                    d16 -= k4;
-                    double d17 = d16 * d16 * d16 * (d16 * (d16 * 6D - 15D) + 10D);
-                    if (j4 == 0 || l4 != i1) {
-                        i1 = l4;
-                        int j1 = permutations[j3] + l4;
-                        int k1 = permutations[j1] + i4;
-                        int l1 = permutations[j1 + 1] + i4;
-                        int i2 = permutations[j3 + 1] + l4;
-                        int j2 = permutations[i2] + i4;
-                        int k2 = permutations[i2 + 1] + i4;
-                        d8 = lerp(d13, grad(permutations[k1], d12, d16, d14),
-                                grad(permutations[j2], d12 - 1.0D, d16, d14));
-                        d9 = lerp(d13, grad(permutations[l1], d12, d16 - 1.0D, d14),
-                                grad(permutations[k2], d12 - 1.0D, d16 - 1.0D, d14));
-                        d10 = lerp(d13, grad(permutations[k1 + 1], d12, d16, d14 - 1.0D),
-                                grad(permutations[j2 + 1], d12 - 1.0D, d16, d14 - 1.0D));
-                        d11 = lerp(d13, grad(permutations[l1 + 1], d12, d16 - 1.0D, d14 - 1.0D),
-                                grad(permutations[k2 + 1], d12 - 1.0D, d16 - 1.0D, d14 - 1.0D));
-                    }
-                    double d18 = lerp(d17, d8, d9);
-                    double d19 = lerp(d17, d10, d11);
-                    double d20 = lerp(d15, d18, d19);
-                    ad[l++] += d20 * d7;
-                }
-
-            }
-
-        }
-
-    }
-    
-    public double sampleBetaNoise(double d, double d1, double d2) {
-        double d3 = d + xCoord;
-        double d4 = d1 + yCoord;
-        double d5 = d2 + zCoord;
-        int i = (int) d3;
-        int j = (int) d4;
-        int k = (int) d5;
-        if (d3 < (double) i) {
-            i--;
-        }
-        if (d4 < (double) j) {
-            j--;
-        }
-        if (d5 < (double) k) {
-            k--;
-        }
-        int l = i & 0xff;
-        int i1 = j & 0xff;
-        int j1 = k & 0xff;
-        d3 -= i;
-        d4 -= j;
-        d5 -= k;
-        double d6 = d3 * d3 * d3 * (d3 * (d3 * 6D - 15D) + 10D);
-        double d7 = d4 * d4 * d4 * (d4 * (d4 * 6D - 15D) + 10D);
-        double d8 = d5 * d5 * d5 * (d5 * (d5 * 6D - 15D) + 10D);
-        int k1 = permutations[l] + i1;
-        int l1 = permutations[k1] + j1;
-        int i2 = permutations[k1 + 1] + j1;
-        int j2 = permutations[l + 1] + i1;
-        int k2 = permutations[j2] + j1;
-        int l2 = permutations[j2 + 1] + j1;
-        return lerp(
-            d8, 
-            lerp(
-                d7, 
-                lerp(
-                    d6, 
-                    grad(permutations[l1], d3, d4, d5), 
-                    grad(permutations[k2], d3 - 1.0D, d4, d5)), 
-                lerp(d6, 
-                    grad(permutations[i2], d3, d4 - 1.0D, d5), 
-                    grad(permutations[l2], d3 - 1.0D, d4 - 1.0D, d5))),
-            lerp(
-                d7, 
-                lerp(
-                    d6,
-                    grad(permutations[l1 + 1], d3, d4, d5 - 1.0D), 
-                    grad(permutations[k2 + 1], d3 - 1.0D, d4, d5 - 1.0D)),
-                lerp(
-                    d6, 
-                    grad(permutations[i2 + 1], d3, d4 - 1.0D, d5 - 1.0D), 
-                    grad(permutations[l2 + 1], d3 - 1.0D, d4 - 1.0D, d5 - 1.0D)))
+                    u, 
+                    grad(this.permutations[AB + 1], x, y - 1.0, z - 1.0), 
+                    grad(this.permutations[BB + 1], x - 1.0, y - 1.0, z - 1.0)))
         );
     }
     
-    public void sampleBetaNoise(double ad[], double d, double d1, double d2, int i, int j, int k, double d3, double d4,
-            double d5, double d6) {
-        if (j == 1) {
-            int j3 = 0;
-            double d12 = 1.0D / d6;
-            for (int i4 = 0; i4 < i; i4++) {
-                double d14 = (d + (double) i4) * d3 + xCoord;
-                int j4 = (int) d14;
-                if (d14 < (double) j4) {
-                    j4--;
-                }
-                int k4 = j4 & 0xff;
-                d14 -= j4;
-                double d17 = d14 * d14 * d14 * (d14 * (d14 * 6D - 15D) + 10D);
-                for (int l4 = 0; l4 < k; l4++) {
-                    double d19 = (d2 + (double) l4) * d5 + zCoord;
-                    int j5 = (int) d19;
-                    if (d19 < (double) j5) {
-                        j5--;
-                    }
-                    int l5 = j5 & 0xff;
-                    d19 -= j5;
-                    double d21 = d19 * d19 * d19 * (d19 * (d19 * 6D - 15D) + 10D);
-                    int l = permutations[k4] + 0;
-                    int j1 = permutations[l] + l5;
-                    int k1 = permutations[k4 + 1] + 0;
-                    int l1 = permutations[k1] + l5;
+    public void samplePerlinArr(
+        double arr[], 
+        double x, double y, double z, 
+        int sizeX, int sizeY, int sizeZ, 
+        double scaleX, double scaleY, double scaleZ, 
+        double frequency
+    ) {
+        int ndx = 0;
+        frequency = 1.0D / frequency;
+        int flagY = -1;
+        
+        double lerp0 = 0.0D;
+        double lerp1 = 0.0D;
+        double lerp2 = 0.0D;
+        double lerp3 = 0.0D;
+        
+        // Iterate over a collection of noise points
+        for (int sX = 0; sX < sizeX; sX++) {
+            
+            double curX = (x + (double)sX) * scaleX + xOffset;
+            int floorX = MathHelper.floor(curX);
+            
+            int X = floorX & 0xFF;
+            curX -= floorX;
+            
+            double u = fade(curX);
+            
+            for (int sZ = 0; sZ < sizeZ; sZ++) {
+                
+                double curZ = (z + (double)sZ) * scaleZ + zOffset;
+                int floorZ = MathHelper.floor(curZ);
+                
+                int Z = floorZ & 0xFF;
+                curZ -= floorZ;
+                
+                double w = fade(curZ);
+                
+                for (int sY = 0; sY < sizeY; sY++) {
                     
-                    double d9 = lerp(
-                        d17, 
-                        grad(permutations[j1], d14, d19),
-                        grad(permutations[l1], d14 - 1.0D, 0.0D, d19));
-                    double d11 = lerp(
-                        d17, 
-                        grad(permutations[j1 + 1], d14, 0.0D, d19 - 1.0D),
-                        grad(permutations[l1 + 1], d14 - 1.0D, 0.0D, d19 - 1.0D));
-                    double d23 = lerp(d21, d9, d11);
+                    double curY = (y + (double) sY) * scaleY + yOffset;
+                    int floorY = MathHelper.floor(curY);
                     
-                    ad[j3++] += d23 * d12;
-                }
+                    int Y = floorY & 0xFF;
+                    curY -= floorY;
+                    
+                    double v = fade(curY);
+                    
+                    
+                    if (sY == 0 || Y != flagY) {
+                        flagY = Y;
+                        
+                        int A = permutations[X] + Y;
+                        int AA = permutations[A] + Z;
+                        int AB = permutations[A + 1] + Z;
+                        int B = permutations[X + 1] + Y;
+                        int BA = permutations[B] + Z;
+                        int BB = permutations[B + 1] + Z;
+                        
+                        lerp0 = lerp(u, grad(permutations[AA], curX, curY, curZ),
+                                grad(permutations[BA], curX - 1.0D, curY, curZ));
+                        
+                        lerp1 = lerp(u, grad(permutations[AB], curX, curY - 1.0D, curZ),
+                                grad(permutations[BB], curX - 1.0D, curY - 1.0D, curZ));
+                        
+                        lerp2 = lerp(u, grad(permutations[AA + 1], curX, curY, curZ - 1.0D),
+                                grad(permutations[BA + 1], curX - 1.0D, curY, curZ - 1.0D));
+                        
+                        lerp3 = lerp(u, grad(permutations[AB + 1], curX, curY - 1.0D, curZ - 1.0D),
+                                grad(permutations[BB + 1], curX - 1.0D, curY - 1.0D, curZ - 1.0D));
 
-            }
-
-            return;
-        }
-        int i1 = 0;
-        double d7 = 1.0D / d6;
-        int i2 = -1;
-
-        double d13 = 0.0D;
-        double d15 = 0.0D;
-        double d16 = 0.0D;
-        double d18 = 0.0D;
-        for (int i5 = 0; i5 < i; i5++) {
-            double d20 = (d + (double) i5) * d3 + xCoord;
-            int k5 = (int) d20;
-            if (d20 < (double) k5) {
-                k5--;
-            }
-            int i6 = k5 & 0xff;
-            d20 -= k5;
-            double d22 = d20 * d20 * d20 * (d20 * (d20 * 6D - 15D) + 10D);
-            for (int j6 = 0; j6 < k; j6++) {
-                double d24 = (d2 + (double) j6) * d5 + zCoord;
-                int k6 = (int) d24;
-                if (d24 < (double) k6) {
-                    k6--;
-                }
-                int l6 = k6 & 0xff;
-                d24 -= k6;
-                double d25 = d24 * d24 * d24 * (d24 * (d24 * 6D - 15D) + 10D);
-                for (int i7 = 0; i7 < j; i7++) {
-                    double d26 = (d1 + (double) i7) * d4 + yCoord;
-                    int j7 = (int) d26;
-                    if (d26 < (double) j7) {
-                        j7--;
                     }
-                    int k7 = j7 & 0xff;
-                    d26 -= j7;
-                    double d27 = d26 * d26 * d26 * (d26 * (d26 * 6D - 15D) + 10D);
-                    if (i7 == 0 || k7 != i2) {
-                        i2 = k7;
-                        int j2 = permutations[i6] + k7;
-                        int k2 = permutations[j2] + l6;
-                        int l2 = permutations[j2 + 1] + l6;
-                        int i3 = permutations[i6 + 1] + k7;
-                        int k3 = permutations[i3] + l6;
-                        int l3 = permutations[i3 + 1] + l6;
-                        d13 = lerp(d22, grad(permutations[k2], d20, d26, d24),
-                                grad(permutations[k3], d20 - 1.0D, d26, d24));
-                        d15 = lerp(d22, grad(permutations[l2], d20, d26 - 1.0D, d24),
-                                grad(permutations[l3], d20 - 1.0D, d26 - 1.0D, d24));
-                        d16 = lerp(d22, grad(permutations[k2 + 1], d20, d26, d24 - 1.0D),
-                                grad(permutations[k3 + 1], d20 - 1.0D, d26, d24 - 1.0D));
-                        d18 = lerp(d22, grad(permutations[l2 + 1], d20, d26 - 1.0D, d24 - 1.0D),
-                                grad(permutations[l3 + 1], d20 - 1.0D, d26 - 1.0D, d24 - 1.0D));
-                    }
-                    double d28 = lerp(d27, d13, d15);
-                    double d29 = lerp(d27, d16, d18);
-                    double d30 = lerp(d25, d28, d29);
-                    ad[i1++] += d30 * d7;
+                    
+                    double res = lerp(w, lerp(v, lerp0, lerp1), lerp(v, lerp2, lerp3));
+                    
+                    arr[ndx++] += res * frequency;
                 }
-
             }
         }
     }
+
+    public void samplePerlinArrBeta(
+        double arr[], 
+        double x, double y, double z, 
+        int sizeX, int sizeY, int sizeZ, 
+        double scaleX, double scaleY, double scaleZ, 
+        double frequency
+    ) {
+        if (sizeY != 1) {
+            this.samplePerlinArr(arr, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ, frequency);
+            
+            return;
+        }
+        
+        int ndx = 0;
+        
+        frequency = 1.0D / frequency;
+        
+        for (int sX = 0; sX < sizeX; sX++) {
+            double curX = (x + (double)sX) * scaleX + xOffset;
+            int floorX = MathHelper.floor(curX);
+            
+            int X = floorX & 0xFF;
+            curX -= floorX;
+            
+            double u = fade(curX);
+            
+            for (int sZ = 0; sZ < sizeZ; sZ++) {
+                double curZ = (z + (double) sZ) * scaleZ + zOffset;
+                int floorZ = MathHelper.floor(curZ);
+                
+                int Z = floorZ & 0xFF;
+                curZ -= floorZ;
+                
+                double w = fade(curZ);
+                
+                int A = permutations[X] + 0;
+                int AA = permutations[A] + Z;
+                int B = permutations[X + 1] + 0;
+                int BA = permutations[B] + Z;
+                
+                double lerp0 = lerp(
+                    u, 
+                    grad(permutations[AA], curX, curZ),
+                    grad(permutations[BA], curX - 1.0D, 0.0D, curZ));
+                double lerp1 = lerp(
+                    u, 
+                    grad(permutations[AA + 1], curX, 0.0D, curZ - 1.0D),
+                    grad(permutations[BA + 1], curX - 1.0D, 0.0D, curZ - 1.0D));
+                
+                double res = lerp(w, lerp0, lerp1);
+                
+                arr[ndx++] += res * frequency;
+            }
+        }
+    }
+    
 }

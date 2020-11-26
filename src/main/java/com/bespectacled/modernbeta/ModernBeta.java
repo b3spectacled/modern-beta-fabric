@@ -104,6 +104,7 @@ public class ModernBeta implements ModInitializer {
         }
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");
+        
 
         // I am not a programmer, I am an ape smashing rocks together.....
     }

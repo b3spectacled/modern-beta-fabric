@@ -101,9 +101,9 @@ public class AlphaChunkProvider implements IOldChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        sandNoise = beachNoiseOctaves.sampleAlphaOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth, eighth, 1.0D);
-        gravelNoise = beachNoiseOctaves.sampleAlphaOctaves(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
-        stoneNoise = stoneNoiseOctaves.sampleAlphaOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
+        sandNoise = beachNoiseOctaves.sampleOctavesArr(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth, eighth, 1.0D);
+        gravelNoise = beachNoiseOctaves.sampleOctavesArr(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
+        stoneNoise = stoneNoiseOctaves.sampleOctavesArr(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
 
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 16; x++) {
@@ -324,10 +324,10 @@ public class AlphaChunkProvider implements IOldChunkProvider {
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
 
-        scaleNoise = scaleNoiseOctaves.sampleAlphaOctaves(scaleNoise, x, y, z, int5_0, 1, int5_1, 1.0D, 0.0D, 1.0D);
-        depthNoise = depthNoiseOctaves.sampleAlphaOctaves(depthNoise, x, y, z, int5_0, 1, int5_1, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
+        scaleNoise = scaleNoiseOctaves.sampleOctavesArr(scaleNoise, x, y, z, int5_0, 1, int5_1, 1.0D, 0.0D, 1.0D);
+        depthNoise = depthNoiseOctaves.sampleOctavesArr(depthNoise, x, y, z, int5_0, 1, int5_1, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
 
-        mainNoise = mainNoiseOctaves.sampleAlphaOctaves(
+        mainNoise = mainNoiseOctaves.sampleOctavesArr(
             mainNoise, 
             x, y, z, 
             int5_0, byte17, int5_1,
@@ -336,7 +336,7 @@ public class AlphaChunkProvider implements IOldChunkProvider {
             coordinateScale / mainNoiseScaleZ
         );
 
-        minLimitNoise = minLimitNoiseOctaves.sampleAlphaOctaves(
+        minLimitNoise = minLimitNoiseOctaves.sampleOctavesArr(
             minLimitNoise, 
             x, y, z, 
             int5_0, byte17, int5_1,
@@ -345,7 +345,7 @@ public class AlphaChunkProvider implements IOldChunkProvider {
             coordinateScale
         );
 
-        maxLimitNoise = maxLimitNoiseOctaves.sampleAlphaOctaves(
+        maxLimitNoise = maxLimitNoiseOctaves.sampleOctavesArr(
             maxLimitNoise, 
             x, y, z, 
             int5_0, byte17, int5_1,

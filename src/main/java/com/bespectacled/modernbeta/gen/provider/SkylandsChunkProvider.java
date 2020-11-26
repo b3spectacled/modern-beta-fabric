@@ -107,7 +107,7 @@ public class SkylandsChunkProvider implements IOldChunkProvider {
         
         Biome curBiome;
         
-        stoneNoise = stoneNoiseOctaves.sampleBetaOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+        stoneNoise = stoneNoiseOctaves.sampleOctavesArrBeta(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
 
         for (int z = 0; z < 16; z++) {
@@ -316,19 +316,19 @@ public class SkylandsChunkProvider implements IOldChunkProvider {
         double temps[] = TEMPS;
         double humids[] = HUMIDS;
 
-        scaleNoise = scaleNoiseOctaves.sampleBetaOctaves(scaleNoise, x, z, int3_0, int3_1, 1.121D, 1.121D, 0.5D);
-        depthNoise = depthNoiseOctaves.sampleBetaOctaves(depthNoise, x, z, int3_0, int3_1, depthNoiseScaleX, depthNoiseScaleZ,
+        scaleNoise = scaleNoiseOctaves.sampleOctavesArrBeta(scaleNoise, x, z, int3_0, int3_1, 1.121D, 1.121D, 0.5D);
+        depthNoise = depthNoiseOctaves.sampleOctavesArrBeta(depthNoise, x, z, int3_0, int3_1, depthNoiseScaleX, depthNoiseScaleZ,
                 depthNoiseScaleExponent);
 
         coordinateScale *= 2D;
 
-        mainNoise = mainNoiseOctaves.sampleBetaOctaves(mainNoise, x, y, z, int3_0, byte33, int3_1,
+        mainNoise = mainNoiseOctaves.sampleOctavesArrBeta(mainNoise, x, y, z, int3_0, byte33, int3_1,
                 coordinateScale / mainNoiseScaleX, heightScale / mainNoiseScaleY, coordinateScale / mainNoiseScaleZ);
 
-        minLimitNoise = minLimitNoiseOctaves.sampleBetaOctaves(minLimitNoise, x, y, z, int3_0, byte33, int3_1,
+        minLimitNoise = minLimitNoiseOctaves.sampleOctavesArrBeta(minLimitNoise, x, y, z, int3_0, byte33, int3_1,
                 coordinateScale, heightScale, coordinateScale);
 
-        maxLimitNoise = maxLimitNoiseOctaves.sampleBetaOctaves(maxLimitNoise, x, y, z, int3_0, byte33, int3_1,
+        maxLimitNoise = maxLimitNoiseOctaves.sampleOctavesArrBeta(maxLimitNoise, x, y, z, int3_0, byte33, int3_1,
                 coordinateScale, heightScale, coordinateScale);
 
         int i = 0;

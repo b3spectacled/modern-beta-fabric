@@ -112,11 +112,11 @@ public class BetaChunkProvider implements IOldChunkProvider {
         
         Biome curBiome;
 
-        sandNoise = beachNoiseOctaves.sampleBetaOctaves(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+        sandNoise = beachNoiseOctaves.sampleOctavesArrBeta(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond, thirtysecond, 1.0D);
-        gravelNoise = beachNoiseOctaves.sampleBetaOctaves(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16, 1,
+        gravelNoise = beachNoiseOctaves.sampleOctavesArrBeta(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16, 1,
                 16, thirtysecond, 1.0D, thirtysecond);
-        stoneNoise = stoneNoiseOctaves.sampleBetaOctaves(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+        stoneNoise = stoneNoiseOctaves.sampleOctavesArrBeta(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
 
         for (int z = 0; z < 16; z++) {
@@ -342,10 +342,10 @@ public class BetaChunkProvider implements IOldChunkProvider {
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
 
-        scaleNoise = scaleNoiseOctaves.sampleBetaOctaves(scaleNoise, x, z, int5_0, int5_1, 1.121D, 1.121D, 0.5D);
-        depthNoise = depthNoiseOctaves.sampleBetaOctaves(depthNoise, x, z, int5_0, int5_1, depthNoiseScaleX, depthNoiseScaleZ, depthNoiseScaleExponent);
+        scaleNoise = scaleNoiseOctaves.sampleOctavesArrBeta(scaleNoise, x, z, int5_0, int5_1, 1.121D, 1.121D, 0.5D);
+        depthNoise = depthNoiseOctaves.sampleOctavesArrBeta(depthNoise, x, z, int5_0, int5_1, depthNoiseScaleX, depthNoiseScaleZ, depthNoiseScaleExponent);
 
-        mainNoise = mainNoiseOctaves.sampleBetaOctaves(
+        mainNoise = mainNoiseOctaves.sampleOctavesArrBeta(
             mainNoise, 
             x, y, z, 
             int5_0, byte17, int5_1,
@@ -354,7 +354,7 @@ public class BetaChunkProvider implements IOldChunkProvider {
             coordinateScale / mainNoiseScaleZ
         );
 
-        minLimitNoise = minLimitNoiseOctaves.sampleBetaOctaves(
+        minLimitNoise = minLimitNoiseOctaves.sampleOctavesArrBeta(
             minLimitNoise, 
             x, y, z, 
             int5_0, byte17, int5_1,
@@ -363,7 +363,7 @@ public class BetaChunkProvider implements IOldChunkProvider {
             coordinateScale
         );
 
-        maxLimitNoise = maxLimitNoiseOctaves.sampleBetaOctaves(
+        maxLimitNoise = maxLimitNoiseOctaves.sampleOctavesArrBeta(
             maxLimitNoise, 
             x, y, z, 
             int5_0, byte17, int5_1,

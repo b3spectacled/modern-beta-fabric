@@ -33,7 +33,7 @@ public class CountInfdevNoiseDecorator extends SimpleDecorator<CountNoiseDecorat
         chunkX <<= 4;
         chunkZ <<= 4;
 
-        int noiseCount = (int) forestNoise.sampleInfdevOctaves(
+        int noiseCount = (int) forestNoise.sampleOctaves(
             (double) chunkX * 0.25D, 
             (double) chunkZ * 0.25D) << 3;
         

@@ -39,7 +39,7 @@ public class CountBetaNoiseDecorator extends SimpleDecorator<CountNoiseDecorator
 
         double d = 0.5D;
 
-        int noiseCount = (int) ((forestNoise.sampleBetaOctaves((double) noiseX * d, (double) noiseZ * d) / 8D
+        int noiseCount = (int) ((forestNoise.sampleOctaves((double) noiseX * d, (double) noiseZ * d) / 8D
                 + random.nextDouble() * 4D + 4D) / 3D);
 
         int finalCount = noiseCount + config.density

@@ -93,17 +93,17 @@ public class InfdevChunkProvider implements IOldChunkProvider {
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
                 
-                boolean genSandBeach = this.beachNoiseOctaves.sampleInfdevOctaves(
+                boolean genSandBeach = this.beachNoiseOctaves.sampleOctaves(
                     absX * thirtysecond, 
                     absZ * thirtysecond, 
                     0.0) + RAND.nextDouble() * 0.2 > 0.0;
                 
-                boolean genGravelBeach = this.beachNoiseOctaves.sampleInfdevOctaves(
+                boolean genGravelBeach = this.beachNoiseOctaves.sampleOctaves(
                     absZ * thirtysecond, 
                     109.0134,
                     absX * thirtysecond) + RAND.nextDouble() * 0.2 > 3.0;
                 
-                int genStone = (int)(this.stoneNoiseOctaves.sampleInfdevOctaves(
+                int genStone = (int)(this.stoneNoiseOctaves.sampleOctaves(
                     absX * thirtysecond * 2.0, 
                     absZ * thirtysecond * 2.0) / 3.0 + 3.0 + RAND.nextDouble() * 0.25);
                 
@@ -292,29 +292,29 @@ public class InfdevChunkProvider implements IOldChunkProvider {
         double noise;
         double res;
         
-        if ((noise = this.noiseOctavesC.sampleInfdevOctaves(x * 8.55515, y * 1.71103, z * 8.55515) / 2.0) < -1) {
+        if ((noise = this.noiseOctavesC.sampleOctaves(x * 8.55515, y * 1.71103, z * 8.55515) / 2.0) < -1) {
             res = MathHelper.clamp(
-                this.noiseOctavesA.sampleInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                this.noiseOctavesA.sampleOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
                 -10.0, 
                 10.0
             );
             
         } else if (noise > 1.0) {
             res = MathHelper.clamp(
-                this.noiseOctavesB.sampleInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                this.noiseOctavesB.sampleOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
                 -10.0, 
                 10.0
             );
             
         } else {
             double noise2 = MathHelper.clamp(
-                this.noiseOctavesA.sampleInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                this.noiseOctavesA.sampleOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
                 -10.0, 
                 10.0
             );
             
             double noise3 = MathHelper.clamp(
-                this.noiseOctavesB.sampleInfdevOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                this.noiseOctavesB.sampleOctaves(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
                 -10.0, 
                 10.0
             );
