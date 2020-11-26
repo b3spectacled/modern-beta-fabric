@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.noise;
 
 import java.util.Random;
 
-import com.bespectacled.modernbeta.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 /*
  * Used for additional info: https://adrianb.io/2014/08/09/perlinnoise.html
@@ -120,24 +120,23 @@ public class PerlinNoise extends Noise {
         return this.sampleInfdevNoise(double2, double4, double6);
     }
 
-    
-    private static double generateIndevNoise(double double1) {
-        return double1 * double1 * double1 * (double1 * (double1 * 6.0 - 15.0) + 10.0);
+    private static double fade(double t) {
+        return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
     }
     
     public final double sampleIndevNoise(double double2, double double4) {
         double double11 = 0.0;
         double double9 = double4;
         double double7 = double2;
-        int integer3 = MathHelper.floor_double(double7) & 0xFF;
-        int integer4 = MathHelper.floor_double(double9) & 0xFF;
-        int integer5 = MathHelper.floor_double(0.0) & 0xFF;
-        double7 -= MathHelper.floor_double(double7);
-        double9 -= MathHelper.floor_double(double9);
-        double11 = 0.0 - MathHelper.floor_double(0.0);
-        double double16 = generateIndevNoise(double7);
-        double double18 = generateIndevNoise(double9);
-        double double20 = generateIndevNoise(double11);
+        int integer3 = MathHelper.floor(double7) & 0xFF;
+        int integer4 = MathHelper.floor(double9) & 0xFF;
+        int integer5 = MathHelper.floor(0.0) & 0xFF;
+        double7 -= MathHelper.floor(double7);
+        double9 -= MathHelper.floor(double9);
+        double11 = 0.0 - MathHelper.floor(0.0);
+        double double16 = fade(double7);
+        double double18 = fade(double9);
+        double double20 = fade(double11);
         int integer6 = this.permutations[integer3] + integer4;
         int integer13 = this.permutations[integer6] + integer5;
         integer6 = this.permutations[integer6 + 1] + integer5;
@@ -172,15 +171,15 @@ public class PerlinNoise extends Noise {
         double double8 = double2 + this.xCoord;
         double double10 = double4 + this.yCoord;
         double double12 = double6 + this.zCoord;
-        int integer2 = MathHelper.floor_double(double8) & 0xFF;
-        int integer3 = MathHelper.floor_double(double10) & 0xFF;
-        int integer4 = MathHelper.floor_double(double12) & 0xFF;
-        double8 -= MathHelper.floor_double(double8);
-        double10 -= MathHelper.floor_double(double10);
-        double12 -= MathHelper.floor_double(double12);
-        double double17 = generateIndevNoise(double8);
-        double double19 = generateIndevNoise(double10);
-        double double21 = generateIndevNoise(double12);
+        int integer2 = MathHelper.floor(double8) & 0xFF;
+        int integer3 = MathHelper.floor(double10) & 0xFF;
+        int integer4 = MathHelper.floor(double12) & 0xFF;
+        double8 -= MathHelper.floor(double8);
+        double10 -= MathHelper.floor(double10);
+        double12 -= MathHelper.floor(double12);
+        double double17 = fade(double8);
+        double double19 = fade(double10);
+        double double21 = fade(double12);
         int integer5 = this.permutations[integer2] + integer3;
         int integer6 = this.permutations[integer5] + integer4;
         integer5 = this.permutations[integer5 + 1] + integer4;

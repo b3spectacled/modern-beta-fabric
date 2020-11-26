@@ -5,7 +5,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.server.Main;
+
+import java.util.Random;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,6 +18,7 @@ import com.bespectacled.modernbeta.gen.type.IndevGeneratorType;
 import com.bespectacled.modernbeta.gen.type.InfdevGeneratorType;
 import com.bespectacled.modernbeta.gen.type.InfdevOldGeneratorType;
 import com.bespectacled.modernbeta.gen.type.SkylandsGeneratorType;
+import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
 
