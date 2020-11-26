@@ -30,17 +30,8 @@ import net.minecraft.world.gen.chunk.StructuresConfig;
 @Environment(EnvType.CLIENT)
 public final class BetaGeneratorType extends GeneratorType {
     public static final GeneratorType INSTANCE = new BetaGeneratorType();
-
-    public static final StructuresConfig structures = new StructuresConfig(true);
-    public static final NoiseSamplingConfig noiseSampler = new NoiseSamplingConfig(1.0, 1.0, 40.0, 22.0);
-    public static final GenerationShapeConfig noise = new GenerationShapeConfig(256, noiseSampler,
-            new SlideConfig(-10, 3, 0), new SlideConfig(-30, 0, 0), 1, 2, 1.0, -60.0 / (256.0 / 2.0), true, true, false,
-            false);
-
-    public static final ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise,
-            Blocks.STONE.getDefaultState(), Blocks.WATER.getDefaultState(), -10, 0, 64, false);
     
-    public static OldGeneratorSettings betaSettings = new OldGeneratorSettings(type, new CompoundTag());
+    public static OldGeneratorSettings betaSettings = new OldGeneratorSettings(new CompoundTag(), false);
     
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 

@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.structure;
 
 import java.util.List;
 
-import com.bespectacled.modernbeta.gen.IOldChunkGenerator;
+import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 
@@ -52,7 +52,7 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
             DefaultFeatureConfig defaultFeatureConfig
         ) {
             // Should only generate in Beta worlds
-            if (!(chunkGenerator instanceof IOldChunkGenerator)) return;
+            if (!(chunkGenerator instanceof OldChunkGenerator)) return;
             
             int x = chunkX * 16;
             int z = chunkZ * 16;

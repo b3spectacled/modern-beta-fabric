@@ -6,7 +6,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 
-public class VanillaBiomeProvider implements IOldBiomeProvider {
+public class VanillaBiomeProvider extends AbstractBiomeProvider {
     
     private final BiomeLayerSampler biomeSampler;
     private final BiomeLayerSampler oceanSampler;

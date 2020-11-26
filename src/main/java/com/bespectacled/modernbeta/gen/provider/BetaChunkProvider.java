@@ -277,7 +277,7 @@ public class BetaChunkProvider implements IOldChunkProvider {
 
                             double var14 = 0.25D;
                             double density = var10; // var15
-                            double var16 = (var11 - var10) * var14; // More lerp
+                            double var16 = (var11 - var10) * var14; 
 
                             int absX = (chunk.getPos().x << 4) + i * 4 + m;
 

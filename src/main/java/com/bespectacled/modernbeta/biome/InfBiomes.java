@@ -7,12 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.util.BiomeUtil;
-import com.bespectacled.modernbeta.util.WorldEnum;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -47,18 +43,18 @@ public class InfBiomes {
     }
     
     public static void reserveAlphaBiomeIDs() {
-        Registry.register(BuiltinRegistries.BIOME, ALPHA_ID, DefaultBiomeCreator.createNormalOcean(false));
-        Registry.register(BuiltinRegistries.BIOME, ALPHA_WINTER_ID, DefaultBiomeCreator.createNormalOcean(false));
+        Registry.register(BuiltinRegistries.BIOME, ALPHA_ID, DefaultBiomeCreator.createTheVoid());
+        Registry.register(BuiltinRegistries.BIOME, ALPHA_WINTER_ID, DefaultBiomeCreator.createTheVoid());
     }
     
     public static void reserveInfdevBiomeIds() {
-        Registry.register(BuiltinRegistries.BIOME, INFDEV_ID, DefaultBiomeCreator.createNormalOcean(false));
-        Registry.register(BuiltinRegistries.BIOME, INFDEV_WINTER_ID, DefaultBiomeCreator.createNormalOcean(false));
+        Registry.register(BuiltinRegistries.BIOME, INFDEV_ID, DefaultBiomeCreator.createTheVoid());
+        Registry.register(BuiltinRegistries.BIOME, INFDEV_WINTER_ID, DefaultBiomeCreator.createTheVoid());
     }
     
     public static void reserveInfdevOldBiomeIds() {
-        Registry.register(BuiltinRegistries.BIOME, INFDEV_OLD_ID, DefaultBiomeCreator.createNormalOcean(false));
-        Registry.register(BuiltinRegistries.BIOME, INFDEV_OLD_WINTER_ID, DefaultBiomeCreator.createNormalOcean(false));
+        Registry.register(BuiltinRegistries.BIOME, INFDEV_OLD_ID, DefaultBiomeCreator.createTheVoid());
+        Registry.register(BuiltinRegistries.BIOME, INFDEV_OLD_WINTER_ID, DefaultBiomeCreator.createTheVoid());
     }
     
     public static Map<BiomeType, Identifier> getBiomeMap(WorldType worldType) {

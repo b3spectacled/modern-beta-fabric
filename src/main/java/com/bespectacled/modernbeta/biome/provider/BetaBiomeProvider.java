@@ -7,7 +7,7 @@ import com.bespectacled.modernbeta.util.BiomeUtil;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class BetaBiomeProvider implements IOldBiomeProvider {
+public class BetaBiomeProvider extends AbstractBiomeProvider {
     
     private static final double[] TEMP_HUMID_POINT = new double[2];
    

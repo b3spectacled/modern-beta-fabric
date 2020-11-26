@@ -9,7 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class IndevBiomeProvider implements IOldBiomeProvider {
+public class IndevBiomeProvider extends AbstractBiomeProvider {
     
     //private final IndevType type;
     private final IndevTheme theme;
@@ -77,11 +77,6 @@ public class IndevBiomeProvider implements IOldBiomeProvider {
         }
         
         return biome;
-    }
-
-    @Override
-    public Biome getOceanBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
-        return this.getBiomeForNoiseGen(registry, biomeX, biomeY, biomeZ);
     }
 
 }

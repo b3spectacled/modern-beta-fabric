@@ -6,7 +6,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class SingleBiomeProvider implements IOldBiomeProvider {
+public class SingleBiomeProvider extends AbstractBiomeProvider {
     
     private final Identifier biomeId;
     
@@ -19,10 +19,4 @@ public class SingleBiomeProvider implements IOldBiomeProvider {
     public Biome getBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
         return registry.get(biomeId);
     }
-
-    @Override
-    public Biome getOceanBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
-        return registry.get(biomeId);
-    }
-    
 }

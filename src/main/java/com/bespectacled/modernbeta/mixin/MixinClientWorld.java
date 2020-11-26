@@ -5,6 +5,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
@@ -15,7 +16,8 @@ import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.IOldBiomeSource;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.bespectacled.modernbeta.gen.IOldChunkGenerator;
+import com.bespectacled.modernbeta.gen.OldChunkGenerator;
+
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -80,9 +82,7 @@ public abstract class MixinClientWorld extends World {
         this.worldSeed = seed;
         this.isBetaWorld = false;
         
-        //if (gen instanceof BetaChunkGenerator && !(((OldBiomeSource)gen.getBiomeSource()).isSkyDim()) || 
-        //   (gen instanceof SkylandsChunkGenerator &&  !(((OldBiomeSource)gen.getBiomeSource()).isSkyDim()))) {
-        if (gen instanceof IOldChunkGenerator && ((IOldBiomeSource)gen.getBiomeSource()).isBeta()) {
+        if (gen instanceof OldChunkGenerator && ((IOldBiomeSource)gen.getBiomeSource()).isBeta()) {
             this.isBetaWorld = true;
             
             if (((IOldBiomeSource)gen.getBiomeSource()).isVanilla()) this.isBetaWorld = false;
@@ -137,7 +137,7 @@ public abstract class MixinClientWorld extends World {
         if (temp > 1.0F) {
             temp = 1.0F;
         }
-        return java.awt.Color.getHSBColor(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F).getRGB();
+        return MathHelper.hsvToRgb(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F);
     }
 
 }

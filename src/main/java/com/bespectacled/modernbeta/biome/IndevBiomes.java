@@ -1,11 +1,7 @@
 package com.bespectacled.modernbeta.biome;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-
-import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.google.common.collect.ImmutableList;
@@ -48,7 +44,7 @@ public class IndevBiomes {
 
     public static void reserveBiomeIDs() {
         for (Identifier i : BIOMES) {
-            Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createNormalOcean(false));
+            Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createTheVoid());
         }
 
         //ModernBeta.LOGGER.log(Level.INFO, "Reserved Indev biome IDs.");

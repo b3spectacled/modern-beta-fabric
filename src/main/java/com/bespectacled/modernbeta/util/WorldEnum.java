@@ -47,6 +47,15 @@ public class WorldEnum {
             
             throw new IllegalArgumentException("No world type matching name: " + name);
         }
+        
+        public static WorldType getWorldType(CompoundTag settings) {
+            WorldType type = WorldType.BETA;
+            
+            if (settings.contains("worldType"))
+                type = WorldType.fromName(settings.getString("worldType"));
+            
+            return type;
+        }
     }
     
     public enum BiomeType {
@@ -93,23 +102,14 @@ public class WorldEnum {
             
             throw new IllegalArgumentException("No biome type matching name: " + name);
         }
-    }
-    
-    public static WorldType getWorldType(CompoundTag settings) {
-        WorldType type = WorldType.BETA;
         
-        if (settings.contains("worldType"))
-            type = WorldType.fromName(settings.getString("worldType"));
-        
-        return type;
-    }
-    
-    public static BiomeType getBiomeType(CompoundTag settings) {
-        BiomeType type = BiomeType.BETA;
-        
-        if (settings.contains("biomeType")) 
-            type = BiomeType.fromName(settings.getString("biomeType"));
-        
-        return type;
+        public static BiomeType getBiomeType(CompoundTag settings) {
+            BiomeType type = BiomeType.BETA;
+            
+            if (settings.contains("biomeType")) 
+                type = BiomeType.fromName(settings.getString("biomeType"));
+            
+            return type;
+        }
     }
 }

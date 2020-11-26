@@ -1,8 +1,7 @@
 package com.bespectacled.modernbeta.biome;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.provider.IOldBiomeProvider;
-import com.bespectacled.modernbeta.util.WorldEnum;
+import com.bespectacled.modernbeta.biome.provider.AbstractBiomeProvider;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.mojang.serialization.Codec;
@@ -34,20 +33,20 @@ public class OldBiomeSource extends BiomeSource implements IOldBiomeSource {
     private final WorldType worldType;
     private final BiomeType biomeType;
     
-    private final IOldBiomeProvider biomeProvider;
+    private final AbstractBiomeProvider biomeProvider;
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, CompoundTag settings) {
-        super(IOldBiomeProvider.getBiomeRegistryList(settings).stream().map((registryKey) -> () -> (Biome) biomeRegistry.get(registryKey)));
+        super(AbstractBiomeProvider.getBiomeRegistryList(settings).stream().map((registryKey) -> () -> (Biome) biomeRegistry.get(registryKey)));
         
         this.seed = seed;
         this.biomeRegistry = biomeRegistry;
         this.settings = settings;
         this.generateOceans = settings.contains("generateOceans") ? settings.getBoolean("generateOceans") : true;
         
-        this.worldType = WorldEnum.getWorldType(settings);
-        this.biomeType = WorldEnum.getBiomeType(settings);
+        this.worldType = WorldType.getWorldType(settings);
+        this.biomeType = BiomeType.getBiomeType(settings);
         
-        this.biomeProvider = IOldBiomeProvider.getBiomeProvider(seed, settings);
+        this.biomeProvider = AbstractBiomeProvider.getBiomeProvider(seed, settings);
     }
 
     @Override

@@ -6,7 +6,6 @@ import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.biome.IndevBiomes;
 import com.bespectacled.modernbeta.biome.InfBiomes;
 import com.bespectacled.modernbeta.biome.VanillaBiomes;
-import com.bespectacled.modernbeta.util.WorldEnum;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 
@@ -15,13 +14,16 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
-public interface IOldBiomeProvider {
-    public Biome getBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ);
-    public Biome getOceanBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ);
+public abstract class AbstractBiomeProvider {
+    public abstract Biome getBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ);
     
-    public static IOldBiomeProvider getBiomeProvider(long seed, CompoundTag settings) {
-        WorldType worldType = WorldEnum.getWorldType(settings);
-        BiomeType biomeType = WorldEnum.getBiomeType(settings);
+    public Biome getOceanBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
+        return this.getBiomeForNoiseGen(registry, biomeX, biomeY, biomeZ);
+    }
+    
+    public static AbstractBiomeProvider getBiomeProvider(long seed, CompoundTag settings) {
+        WorldType worldType = WorldType.getWorldType(settings);
+        BiomeType biomeType = BiomeType.getBiomeType(settings);
         
         if (worldType == WorldType.INDEV)
             return new IndevBiomeProvider(seed, settings);
@@ -45,8 +47,8 @@ public interface IOldBiomeProvider {
     }
     
     public static List<RegistryKey<Biome>> getBiomeRegistryList(CompoundTag settings) {
-        WorldType worldType = WorldEnum.getWorldType(settings);
-        BiomeType biomeType = WorldEnum.getBiomeType(settings);
+        WorldType worldType = WorldType.getWorldType(settings);
+        BiomeType biomeType = BiomeType.getBiomeType(settings);
         
         if (worldType == WorldType.INDEV)
             return IndevBiomes.INDEV_BIOME_KEYS;

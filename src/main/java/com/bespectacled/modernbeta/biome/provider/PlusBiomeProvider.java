@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class PlusBiomeProvider implements IOldBiomeProvider {
+public class PlusBiomeProvider extends AbstractBiomeProvider {
     
     private final Map<BiomeType, Identifier> biomeMapping;
     
@@ -29,11 +29,6 @@ public class PlusBiomeProvider implements IOldBiomeProvider {
         
         BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
         return TEMP_HUMID_POINT[0] < 0.5f ?  registry.get(biomeMapping.get(BiomeType.WINTER)) : registry.get(biomeMapping.get(BiomeType.CLASSIC));
-    }
-
-    @Override
-    public Biome getOceanBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
-        return this.getBiomeForNoiseGen(registry, biomeX, biomeY, biomeZ);
     }
 
 }

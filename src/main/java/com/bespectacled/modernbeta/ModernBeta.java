@@ -5,6 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.server.Main;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,8 +25,8 @@ import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.biome.IndevBiomes;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.biome.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.biome.InfBiomes;
-import com.bespectacled.modernbeta.biome.layer.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
@@ -46,6 +47,16 @@ public class ModernBeta implements ModInitializer {
             mutableBlockColors.setSeed(seed, defaultColors);
         }
     }
+    
+    public static void reserveBiomeIds() {
+        BetaBiomes.reserveBiomeIDs();
+        InfBiomes.reserveAlphaBiomeIDs();
+        InfBiomes.reserveInfdevBiomeIds();
+        IndevBiomes.reserveBiomeIDs();
+        InfBiomes.reserveInfdevOldBiomeIds();
+        
+        LOGGER.log(Level.INFO, "Registered Modern Beta biomes!");
+    }
 
     @Override
     public void onInitialize() {
@@ -59,7 +70,7 @@ public class ModernBeta implements ModInitializer {
         BetaStructure.register();
         
         LOGGER.log(Level.INFO, "Registered Modern Beta features!");
-
+        
         BetaBiomes.reserveBiomeIDs();
         InfBiomes.reserveAlphaBiomeIDs();
         InfBiomes.reserveInfdevBiomeIds();

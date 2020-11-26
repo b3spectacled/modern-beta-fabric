@@ -1,26 +1,18 @@
 package com.bespectacled.modernbeta.biome;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.Level;
-
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeProviderType;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class BetaBiomes {
@@ -76,7 +68,7 @@ public class BetaBiomes {
     
     public static void reserveBiomeIDs() {
         for (Identifier i : BIOMES) {
-            Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createNormalOcean(false));
+            Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createTheVoid());
         }
     }
     

@@ -1,30 +1,20 @@
 package com.bespectacled.modernbeta.gen;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.feature.BetaFeature;
-import com.bespectacled.modernbeta.gen.provider.BetaChunkProvider;
 import com.bespectacled.modernbeta.gen.provider.IOldChunkProvider;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.structure.BetaStructure;
-import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.GenUtil;
-import com.bespectacled.modernbeta.util.WorldEnum;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.StructureManager;
-import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -44,7 +34,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-public class OldChunkGenerator extends NoiseChunkGenerator implements IOldChunkGenerator {
+public class OldChunkGenerator extends NoiseChunkGenerator {
     
     public static final Codec<OldChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
@@ -54,11 +44,11 @@ public class OldChunkGenerator extends NoiseChunkGenerator implements IOldChunkG
     
     private final long seed;
     private final OldGeneratorSettings settings;
-    private final OldBiomeSource biomeSource;
-    private final IOldChunkProvider chunkProvider;
-    
     private final WorldType worldType;
     private final boolean genOceans;
+    
+    private final OldBiomeSource biomeSource;
+    private final IOldChunkProvider chunkProvider;
     
     private static final ChunkRandom FEATURE_RAND = new ChunkRandom();
 
@@ -68,9 +58,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator implements IOldChunkG
         this.seed = seed;
         this.biomeSource = (OldBiomeSource)biomeSource;
         this.settings = settings;
-        this.chunkProvider = IOldChunkProvider.getChunkProvider(seed, WorldEnum.getWorldType(settings.settings), settings.settings);
-        
-        this.worldType = WorldEnum.getWorldType(settings.settings);
+        this.worldType = WorldType.getWorldType(settings.settings);
+        this.chunkProvider = IOldChunkProvider.getChunkProvider(seed, this.worldType, settings.settings);
         this.genOceans = this.worldType != WorldType.SKYLANDS && this.biomeSource.generateOceans();
     }
 
