@@ -5,7 +5,7 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.biome.layer.type.InitLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
-/*
+/**
  * @author Paulevs 
  */
 public enum VanillaInitLayer implements InitLayer {

@@ -6,7 +6,7 @@ import java.util.Random;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.IOldBiomeSource;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -51,9 +51,7 @@ public class IndevChunkProvider implements IOldChunkProvider {
     
     private PerlinOctaveNoise sandNoiseOctaves;
     private PerlinOctaveNoise gravelNoiseOctaves;
-    
-    private PerlinOctaveNoise forestNoiseOctaves;
-
+ 
     // Note:
     // I considered using 1D array for block storage,
     // but apparently 1D array is significantly slower,
@@ -85,8 +83,6 @@ public class IndevChunkProvider implements IOldChunkProvider {
     public IndevChunkProvider(long seed, CompoundTag settings) {
         RAND.setSeed(seed);
         
-        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
-        
         this.theme = settings.contains("levelTheme") ? IndevTheme.fromName(settings.getString("levelTheme")) : IndevTheme.NORMAL;
         this.type = settings.contains("levelType") ? IndevType.fromName(settings.getString("levelType")) : IndevType.ISLAND;
         this.fluidBlock = (this.theme == IndevTheme.HELL) ? BlockStates.LAVA : BlockStates.WATER;
@@ -103,7 +99,7 @@ public class IndevChunkProvider implements IOldChunkProvider {
     }
 
     @Override
-    public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, IOldBiomeSource biomeSource) {
+    public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         ChunkPos pos = chunk.getPos();
         
         //this.spawnX = worldAccess.getLevelProperties().getSpawnX();
@@ -130,7 +126,7 @@ public class IndevChunkProvider implements IOldChunkProvider {
     }
 
     @Override
-    public void makeSurface(ChunkRegion region, Chunk chunk, IOldBiomeSource biomeSource) {}
+    public void makeSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {}
     
     @Override
     public int getHeight(int x, int z, Type type) {
@@ -222,20 +218,20 @@ public class IndevChunkProvider implements IOldChunkProvider {
             this.groundLevel = this.waterLevel - 2;
             
             // Noise Generators (Here instead of constructor to randomize floating layer generation)    
-            heightNoise1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, true), new PerlinOctaveNoise(RAND, 8, true));
-            heightNoise2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, true), new PerlinOctaveNoise(RAND, 8, true));
+            heightNoise1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
+            heightNoise2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
             
-            heightNoise3 = new PerlinOctaveNoise(RAND, 6, true);
-            islandNoise = new PerlinOctaveNoise(RAND, 2, true);
+            heightNoise3 = new PerlinOctaveNoise(RAND, 6, false);
+            islandNoise = new PerlinOctaveNoise(RAND, 2, false);
             
-            noise5 = new PerlinOctaveNoise(RAND, 8, true);
-            noise6 = new PerlinOctaveNoise(RAND, 8, true);
+            noise5 = new PerlinOctaveNoise(RAND, 8, false);
+            noise6 = new PerlinOctaveNoise(RAND, 8, false);
             
-            erodeNoise1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, true), new PerlinOctaveNoise(RAND, 8, true));
-            erodeNoise2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, true), new PerlinOctaveNoise(RAND, 8, true));
+            erodeNoise1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
+            erodeNoise2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
             
-            sandNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
-            gravelNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+            sandNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
+            gravelNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
             
             heightmap = generateHeightmap(heightmap);
             erodeTerrain(heightmap);

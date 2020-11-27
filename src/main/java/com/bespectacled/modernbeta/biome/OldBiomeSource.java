@@ -16,7 +16,7 @@ import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 
-public class OldBiomeSource extends BiomeSource implements IOldBiomeSource {
+public class OldBiomeSource extends BiomeSource {
     
     public static final Codec<OldBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance
         .group(
@@ -36,7 +36,7 @@ public class OldBiomeSource extends BiomeSource implements IOldBiomeSource {
     private final AbstractBiomeProvider biomeProvider;
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, CompoundTag settings) {
-        super(AbstractBiomeProvider.getBiomeRegistryList(settings).stream().map((registryKey) -> () -> (Biome) biomeRegistry.get(registryKey)));
+        super(AbstractBiomeProvider.getBiomeProvider(seed, settings).getBiomesForRegistry().stream().map((registryKey) -> () -> (Biome) biomeRegistry.get(registryKey)));
         
         this.seed = seed;
         this.biomeRegistry = biomeRegistry;
@@ -54,33 +54,27 @@ public class OldBiomeSource extends BiomeSource implements IOldBiomeSource {
         return this.biomeProvider.getBiomeForNoiseGen(biomeRegistry, biomeX, biomeY, biomeZ);
     }
 
-    @Override
     public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.biomeProvider.getOceanBiomeForNoiseGen(biomeRegistry, biomeX, biomeY, biomeZ);
     }
 
-    @Override
     public Registry<Biome> getBiomeRegistry() {
         return this.biomeRegistry;
     }
     
-    @Override
     public boolean generateOceans() {
         return (this.isVanilla() || this.isBeta()) && this.generateOceans;
     }
 
-    @Override
     public boolean isVanilla() {
         return this.worldType != WorldType.INDEV && this.biomeType == BiomeType.VANILLA;
     }
     
-    @Override
     public boolean isBeta() {
         return this.worldType != WorldType.INDEV && this.biomeType == BiomeType.BETA;
         // || this.biomeType == BiomeType.ICE_DESERT;
     }
     
-    @Override
     public boolean isSkyDim() {
         return this.worldType != WorldType.INDEV && this.biomeType == BiomeType.SKY;
     }

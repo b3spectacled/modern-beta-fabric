@@ -14,7 +14,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.IOldBiomeSource;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 
@@ -82,10 +82,10 @@ public abstract class MixinClientWorld extends World {
         this.worldSeed = seed;
         this.isBetaWorld = false;
         
-        if (gen instanceof OldChunkGenerator && ((IOldBiomeSource)gen.getBiomeSource()).isBeta()) {
+        if (gen instanceof OldChunkGenerator && ((OldBiomeSource)gen.getBiomeSource()).isBeta()) {
             this.isBetaWorld = true;
             
-            if (((IOldBiomeSource)gen.getBiomeSource()).isVanilla()) this.isBetaWorld = false;
+            if (((OldBiomeSource)gen.getBiomeSource()).isVanilla()) this.isBetaWorld = false;
             
             this.worldSeed = BETA_CONFIG.fixedSeed == 0L ? worldSeed : BETA_CONFIG.fixedSeed;
             setSeed(this.worldSeed);

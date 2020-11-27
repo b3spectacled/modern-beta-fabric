@@ -69,38 +69,4 @@ public class InfBiomes {
                 return ALPHA_BIOMES;
         }
     }
-    
-    public static List<RegistryKey<Biome>> getBiomeRegistryList(CompoundTag settings) {
-        WorldType type = WorldType.ALPHA;
-        
-        if (settings.contains("worldType"))
-            type = WorldType.fromName(settings.getString("worldType"));
-        
-        return getBiomeRegistryList(type);
-    }
-    
-    public static List<RegistryKey<Biome>> getBiomeRegistryList(WorldType worldType) {
-        ArrayList<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
-        List<Identifier> biomeIds;
-        
-        switch(worldType) {
-            case ALPHA:
-                biomeIds = new ArrayList<Identifier>(ALPHA_BIOMES.values());
-                break;
-            case INFDEV:
-                biomeIds = new ArrayList<Identifier>(INFDEV_BIOMES.values());
-                break;
-            case INFDEV_OLD:
-                biomeIds = new ArrayList<Identifier>(INFDEV_OLD_BIOMES.values());
-                break;
-            default:
-                biomeIds = new ArrayList<Identifier>(ALPHA_BIOMES.values());
-        }
-        
-        for (Identifier i : biomeIds) {
-            biomeList.add(RegistryKey.of(Registry.BIOME_KEY, i));
-        }
-        
-        return Collections.unmodifiableList(biomeList);
-    }
 }

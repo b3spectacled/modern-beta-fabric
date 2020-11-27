@@ -1,11 +1,11 @@
 package com.bespectacled.modernbeta.biome.provider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.biome.IndevBiomes;
 import com.bespectacled.modernbeta.biome.InfBiomes;
-import com.bespectacled.modernbeta.biome.VanillaBiomes;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 
@@ -20,6 +20,8 @@ public abstract class AbstractBiomeProvider {
     public Biome getOceanBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
         return this.getBiomeForNoiseGen(registry, biomeX, biomeY, biomeZ);
     }
+    
+    public abstract List<RegistryKey<Biome>> getBiomesForRegistry();
     
     public static AbstractBiomeProvider getBiomeProvider(long seed, CompoundTag settings) {
         WorldType worldType = WorldType.getWorldType(settings);
@@ -44,21 +46,5 @@ public abstract class AbstractBiomeProvider {
         }
         
         return new SingleBiomeProvider(seed, InfBiomes.ALPHA_ID);
-    }
-    
-    public static List<RegistryKey<Biome>> getBiomeRegistryList(CompoundTag settings) {
-        WorldType worldType = WorldType.getWorldType(settings);
-        BiomeType biomeType = BiomeType.getBiomeType(settings);
-        
-        if (worldType == WorldType.INDEV)
-            return IndevBiomes.INDEV_BIOME_KEYS;
-        
-        if (biomeType == BiomeType.VANILLA)
-            return VanillaBiomes.VANILLA_BIOME_KEYS;
-        
-        if (biomeType == BiomeType.BETA || biomeType == BiomeType.SKY)
-            return BetaBiomes.BETA_BIOME_KEYS;
-        
-        return InfBiomes.getBiomeRegistryList(worldType);
     }
 }

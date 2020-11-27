@@ -1,17 +1,8 @@
 package com.bespectacled.modernbeta.util;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
-import java.util.Map.Entry;
-
 import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Category;
 
 /*
  * From WorldEdit
@@ -49,14 +40,6 @@ public class BiomeUtil {
         tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
         humidNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
         noiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
-    }
-    
-    public static double fetchNoiseAtPoint(int x, int z) {
-        double[] noises = null;
-        
-        noises = noiseOctaves.sample(noises, x, z, 1, 1, 0.05D, 0.05D, 0.3334D);
-        
-        return noises[0];
     }
 
     public static void fetchTempHumidAtPoint(double[] arr, int x, int z) {
@@ -142,9 +125,6 @@ public class BiomeUtil {
     
 
     public static double fetchSkyTemp(int x, int z) {
-        double[] skyTemps = null;
-
-        skyTemps = tempNoiseOctaves.sample(skyTemps, x, z, 1, 1, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
-        return skyTemps[0];
+        return tempNoiseOctaves.sample(null, x, z, 1, 1, 0.02500000037252903D, 0.02500000037252903D, 0.5D)[0];
     }
 }

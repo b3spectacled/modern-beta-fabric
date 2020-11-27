@@ -24,7 +24,7 @@ public class CountInfdevNoiseDecorator extends SimpleDecorator<CountNoiseDecorat
     @Override
     protected Stream<BlockPos> getPositions(Random random, CountNoiseDecoratorConfig config, BlockPos pos) {
         if (forestNoise == null) {
-            forestNoise = new PerlinOctaveNoise(random, 8, false);
+            forestNoise = new PerlinOctaveNoise(random, 8, true);
         }
 
         int chunkX = (int) pos.getX() / 16;

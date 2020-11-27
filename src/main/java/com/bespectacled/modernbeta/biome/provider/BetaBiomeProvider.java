@@ -1,10 +1,15 @@
 package com.bespectacled.modernbeta.biome.provider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.biome.BetaBiomes.BiomeProviderType;
 import com.bespectacled.modernbeta.util.BiomeUtil;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class BetaBiomeProvider extends AbstractBiomeProvider {
@@ -31,6 +36,17 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
         
         BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
         return registry.get(BetaBiomes.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeProviderType.OCEAN));
+    }
+
+    @Override
+    public List<RegistryKey<Biome>> getBiomesForRegistry() {
+        List<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
+
+        for (Identifier i : BetaBiomes.BIOMES) {
+            biomeList.add(RegistryKey.of(Registry.BIOME_KEY, i));
+        }
+        
+        return biomeList;
     }
 
 }

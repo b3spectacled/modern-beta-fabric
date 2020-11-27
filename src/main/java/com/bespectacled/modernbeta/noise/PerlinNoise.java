@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.noise;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import net.minecraft.util.math.MathHelper;
 
@@ -19,18 +20,18 @@ public class PerlinNoise extends Noise {
         this(new Random(), false); 
     }
 
-    public PerlinNoise(Random random, boolean isIndev) {
+    public PerlinNoise(Random random, boolean useOffset) {
 
         // Generate permutation array
         permutations = new int[512];
 
-        if (!isIndev) {
+        xOffset = yOffset = zOffset = 0;
+        
+        if (useOffset) {
             xOffset = random.nextDouble() * 256D;
             yOffset = random.nextDouble() * 256D;
             zOffset = random.nextDouble() * 256D; 
-        } else {
-            xOffset = yOffset = zOffset = 0;
-        }
+        } 
         
         for (int i = 0; i < 256; i++) {
             permutations[i] = i;
@@ -52,6 +53,7 @@ public class PerlinNoise extends Noise {
         return d1 + d * (d2 - d1);
     }
 
+    
     public final double grad(int hash, double x, double y) {
         int integer7 = hash & 0xF;
         double double8 = (1 - ((integer7 & 0x8) >> 3)) * x;
@@ -133,10 +135,10 @@ public class PerlinNoise extends Noise {
         double w = fade(z);
         
         // Hash coordinates of the 8 cube corners.
-        int A = this.permutations[X] + Y;
+        int A =  this.permutations[X] + Y;
         int AA = this.permutations[A] + Z;
         int AB = this.permutations[A + 1] + Z;
-        int B = this.permutations[X + 1] + Y;
+        int B =  this.permutations[X + 1] + Y;
         int BA = this.permutations[B] + Z;
         int BB = this.permutations[B + 1] + Z;
         
@@ -212,14 +214,13 @@ public class PerlinNoise extends Noise {
                     
                     double v = fade(curY);
                     
-                    
                     if (sY == 0 || Y != flagY) {
                         flagY = Y;
                         
-                        int A = permutations[X] + Y;
+                        int A =  permutations[X] + Y;
                         int AA = permutations[A] + Z;
                         int AB = permutations[A + 1] + Z;
-                        int B = permutations[X + 1] + Y;
+                        int B =  permutations[X + 1] + Y;
                         int BA = permutations[B] + Z;
                         int BB = permutations[B + 1] + Z;
                         
@@ -287,7 +288,8 @@ public class PerlinNoise extends Noise {
                 
                 double lerp0 = lerp(
                     u, 
-                    grad(permutations[AA], curX, curZ),
+                    //grad(permutations[AA], curX, curZ), // Below should give same result but faster
+                    grad(permutations[AA], curX, 0.0D, curZ),
                     grad(permutations[BA], curX - 1.0D, 0.0D, curZ));
                 double lerp1 = lerp(
                     u, 

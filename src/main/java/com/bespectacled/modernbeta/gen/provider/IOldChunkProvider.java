@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.gen.provider;
 
-import com.bespectacled.modernbeta.biome.IOldBiomeSource;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 
@@ -13,8 +13,8 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 
 public interface IOldChunkProvider {
-    public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, IOldBiomeSource biomeSource);
-    public void makeSurface(ChunkRegion region, Chunk chunk, IOldBiomeSource biomeSource);
+    public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource);
+    public void makeSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource);
     
     public int getHeight(int x, int z, Heightmap.Type type);
     

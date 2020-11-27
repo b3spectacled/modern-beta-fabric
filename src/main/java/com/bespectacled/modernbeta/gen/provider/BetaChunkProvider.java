@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.biome.BetaBiomes;
-import com.bespectacled.modernbeta.biome.IOldBiomeSource;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -75,14 +75,14 @@ public class BetaChunkProvider implements IOldChunkProvider {
         RAND.setSeed(seed);
 
         // Noise Generators
-        minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, false);
-        maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, false);
-        mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
-        beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, false);
-        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, false);
-        scaleNoiseOctaves = new PerlinOctaveNoise(RAND, 10, false);
-        depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, false);
-        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
+        minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
+        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
+        scaleNoiseOctaves = new PerlinOctaveNoise(RAND, 10, true);
+        depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
 
         // Yes this is messy. What else am I supposed to do?
         BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
@@ -92,7 +92,7 @@ public class BetaChunkProvider implements IOldChunkProvider {
     }
 
     @Override
-    public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, IOldBiomeSource biomeSource) {
+    public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
 
         BiomeUtil.fetchTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
@@ -100,7 +100,7 @@ public class BetaChunkProvider implements IOldChunkProvider {
     }
     
     @Override
-    public void makeSurface(ChunkRegion region, Chunk chunk, IOldBiomeSource biomeSource) {
+    public void makeSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         byte seaLevel = (byte) 64;
         double thirtysecond = 0.03125D; // eighth
 

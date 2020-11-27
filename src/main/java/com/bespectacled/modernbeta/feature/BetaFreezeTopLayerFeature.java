@@ -41,8 +41,8 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
     @Override
     public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos,
             DefaultFeatureConfig defaultFeatureConfig) {
-        // Shouldn't be used if this isn't an instance of IOldBiomeSource (Beta/PrebetaBiomeSource)
-        if (!(chunkGenerator.getBiomeSource() instanceof IOldBiomeSource)) return false;
+        // Shouldn't be used if this isn't an instance of OldBiomeSource
+        if (!(chunkGenerator.getBiomeSource() instanceof OldBiomeSource)) return false;
         
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutableDown = new BlockPos.Mutable();
@@ -50,7 +50,7 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
         int chunkX = blockPos.getX() >> 4; // Divide first to truncate to closest chunk coordinate
         int chunkZ = blockPos.getZ() >> 4;
         
-        IOldBiomeSource betaSource = (IOldBiomeSource)chunkGenerator.getBiomeSource();
+        OldBiomeSource betaSource = (OldBiomeSource)chunkGenerator.getBiomeSource();
 
         if (betaSource.isSkyDim()) {
             Arrays.fill(TEMPS, 0, TEMPS.length, betaSource.getBiomeRegistry().get(BetaBiomes.SKY_ID).getTemperature());

@@ -160,9 +160,6 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
         int minZ = MathHelper.floor(z - yaw) - mainChunkZ * 16 - 1;
         int maxZ = (MathHelper.floor(z + yaw) - mainChunkZ * 16) + 1;
 
-        // System.out.println("z: " + z + ", mainChunkZ: " + mainChunkZ + ", minZ: " +
-        // minZ);
-
         if (minX < 0) {
             minX = 0;
         }
@@ -184,10 +181,8 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
             maxZ = 16;
         }
 
-        if (super.isRegionUncarvable(chunk, mainChunkX, mainChunkZ, minX, maxX, minY, maxY, minZ, maxZ)) { // Use
-                                                                                                           // vanilla
-                                                                                                           // methods,
-                                                                                                           // for now.
+        // Use vanilla methods, for now.
+        if (super.isRegionUncarvable(chunk, mainChunkX, mainChunkZ, minX, maxX, minY, maxY, minZ, maxZ)) { 
             return false;
         }
 
@@ -214,15 +209,8 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
                             isGrassBlock = true;
                         }
 
-                        if (block == Blocks.STONE || block == Blocks.DIRT || block == Blocks.GRASS_BLOCK) { // Not using
-                                                                                                            // canCarveBlock
-                                                                                                            // for
-                                                                                                            // accuracy,
-                                                                                                            // CHANGE IF
-                                                                                                            // NECESSARY,
-                                                                                                            // e.g. for
-                                                                                                            // cave
-                                                                                                            // biomes!
+                        // Don't use canCarveBlock for accuracy, for now.
+                        if (block == Blocks.STONE || block == Blocks.DIRT || block == Blocks.GRASS_BLOCK) { 
                             if (relY < 10) { // Set lava below y = 10
                                 chunk.setBlockState(blockPos.set(relX, setY, relZ), Blocks.LAVA.getDefaultState(),
                                         false);

@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.noise;
 
 import java.util.Random;
 
-public class SimplexNoise {
+public class SimplexNoise extends Noise {
     private static int[][] gradients;
     private int[] permutations;
     public double xOffset;

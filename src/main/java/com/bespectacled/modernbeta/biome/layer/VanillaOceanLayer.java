@@ -12,7 +12,7 @@ import net.minecraft.world.biome.layer.util.LayerSampleContext;
 import net.minecraft.world.biome.layer.util.LayerSampler;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 
-/*
+/**
  * @author PaulEvs
  */
 public class VanillaOceanLayer {

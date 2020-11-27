@@ -1,16 +1,18 @@
 package com.bespectacled.modernbeta.noise;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class PerlinOctaveNoise extends Noise {
     private PerlinNoise generatorCollection[];
     private int octaves;
-
-    public PerlinOctaveNoise(Random random, int i, boolean isIndev) {
+    static int count = 0;
+    
+    public PerlinOctaveNoise(Random random, int i, boolean useOffset) {
         octaves = i;
         generatorCollection = new PerlinNoise[i];
         for (int j = 0; j < i; j++) {
-            generatorCollection[j] = new PerlinNoise(random, isIndev);
+            generatorCollection[j] = new PerlinNoise(random, useOffset);
         }
 
     }
@@ -39,6 +41,9 @@ public class PerlinOctaveNoise extends Noise {
             }
 
         double frequency = 1.0;
+        
+        long then = System.nanoTime();
+        
         for (int i1 = 0; i1 < octaves; i1++) {
             generatorCollection[i1].samplePerlinArrBeta(
                 arr, 
@@ -49,6 +54,12 @@ public class PerlinOctaveNoise extends Noise {
             );
             frequency /= 2.0;
         }
+        
+        long millis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - then);
+        
+        //if (count < 10) System.out.println("Time to sample octaves with optimized: " + (System.nanoTime() - then));
+        
+        count++;
 
         return arr;
     }

@@ -7,7 +7,7 @@ import java.util.ListIterator;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.biome.IOldBiomeSource;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 
 import it.unimi.dsi.fastutil.objects.ObjectList;
@@ -67,7 +67,7 @@ public class GenUtil {
         Biome biome;
 
         if (vanillaGen && gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < 60) {
-            biome = ((IOldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
+            biome = ((OldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
         } else {
             biome = biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
         }
@@ -82,13 +82,13 @@ public class GenUtil {
         Biome biome = biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
 
         if (gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < 60) {
-            biome = ((IOldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
+            biome = ((OldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
         }
 
         return biome;
     }
     
-    public static void injectOceanBiomes(Chunk chunk, IOldBiomeSource biomeSource) {
+    public static void injectOceanBiomes(Chunk chunk, OldBiomeSource biomeSource) {
         MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
         ChunkPos pos = chunk.getPos();
         Biome biome;

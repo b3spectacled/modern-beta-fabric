@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import com.bespectacled.modernbeta.biome.IOldBiomeSource;
+import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -58,18 +58,18 @@ public class InfdevOldChunkProvider implements IOldChunkProvider {
         RAND.setSeed(seed);
         
         // Noise Generators
-        noiseOctavesA = new PerlinOctaveNoise(RAND, 16, false);
-        noiseOctavesB = new PerlinOctaveNoise(RAND, 16, false);
-        noiseOctavesC = new PerlinOctaveNoise(RAND, 8, false);
-        noiseOctavesD = new PerlinOctaveNoise(RAND, 4, false);
-        noiseOctavesE = new PerlinOctaveNoise(RAND, 4, false);
-        noiseOctavesF = new PerlinOctaveNoise(RAND, 5, false);
+        noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true);
+        noiseOctavesB = new PerlinOctaveNoise(RAND, 16, true);
+        noiseOctavesC = new PerlinOctaveNoise(RAND, 8, true);
+        noiseOctavesD = new PerlinOctaveNoise(RAND, 4, true);
+        noiseOctavesE = new PerlinOctaveNoise(RAND, 4, true);
+        noiseOctavesF = new PerlinOctaveNoise(RAND, 5, true);
         
-        new PerlinOctaveNoise(RAND, 3, false);
-        new PerlinOctaveNoise(RAND, 3, false);
-        new PerlinOctaveNoise(RAND, 3, false);
+        new PerlinOctaveNoise(RAND, 3, true);
+        new PerlinOctaveNoise(RAND, 3, true);
+        new PerlinOctaveNoise(RAND, 3, true);
         
-        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
+        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
         
         if (settings.contains("generateInfdevPyramid")) 
             this.generateInfdevPyramid = settings.getBoolean("generateInfdevPyramid");
@@ -84,7 +84,7 @@ public class InfdevOldChunkProvider implements IOldChunkProvider {
     }
 
     @Override
-    public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, IOldBiomeSource biomeSource) {
+    public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         RAND.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
 
         generateTerrain(chunk.getPos().getStartX(), chunk.getPos().getStartZ(), biomeSource);  
@@ -92,7 +92,7 @@ public class InfdevOldChunkProvider implements IOldChunkProvider {
     }
 
     @Override
-    public void makeSurface(ChunkRegion region, Chunk chunk, IOldBiomeSource biomeSource) {}
+    public void makeSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {}
 
     @Override
     public int getHeight(int x, int z, Type type) {
@@ -114,7 +114,7 @@ public class InfdevOldChunkProvider implements IOldChunkProvider {
         return height;
     }
     
-    private void setTerrain(ChunkRegion region, Chunk chunk, StructureAccessor structureAccessor, IOldBiomeSource biomeSource) {
+    private void setTerrain(ChunkRegion region, Chunk chunk, StructureAccessor structureAccessor, OldBiomeSource biomeSource) {
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
         
@@ -168,7 +168,7 @@ public class InfdevOldChunkProvider implements IOldChunkProvider {
         
     }
   
-    private void generateTerrain(int startX, int startZ, IOldBiomeSource biomeSource) {
+    private void generateTerrain(int startX, int startZ, OldBiomeSource biomeSource) {
         
         for (int relX = 0; relX < 16; ++relX) {
             int x = startX + relX;
