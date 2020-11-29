@@ -25,7 +25,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
+        BiomeUtil.sampleTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
         return registry.get(BetaBiomes.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeProviderType.LAND));
     }
 
@@ -34,7 +34,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
+        BiomeUtil.sampleTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
         return registry.get(BetaBiomes.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BiomeProviderType.OCEAN));
     }
 

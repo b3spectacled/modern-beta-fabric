@@ -4,6 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.biome.indev.IndevHell;
+import com.bespectacled.modernbeta.biome.indev.IndevHellEdge;
+import com.bespectacled.modernbeta.biome.indev.IndevNormal;
+import com.bespectacled.modernbeta.biome.indev.IndevNormalEdge;
+import com.bespectacled.modernbeta.biome.indev.IndevParadise;
+import com.bespectacled.modernbeta.biome.indev.IndevParadiseEdge;
+import com.bespectacled.modernbeta.biome.indev.IndevSnowy;
+import com.bespectacled.modernbeta.biome.indev.IndevSnowyEdge;
+import com.bespectacled.modernbeta.biome.indev.IndevWoods;
+import com.bespectacled.modernbeta.biome.indev.IndevWoodsEdge;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.util.Identifier;
@@ -14,17 +24,17 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class IndevBiomes {
-    public static final Identifier INDEV_EDGE_ID = new Identifier(ModernBeta.ID, "indev_edge");
-    public static final Identifier INDEV_HELL_EDGE_ID = new Identifier(ModernBeta.ID, "indev_hell_edge");
-    public static final Identifier INDEV_PARADISE_EDGE_ID = new Identifier(ModernBeta.ID, "indev_paradise_edge");
-    public static final Identifier INDEV_WOODS_EDGE_ID = new Identifier(ModernBeta.ID, "indev_woods_edge");
-    public static final Identifier INDEV_SNOWY_EDGE_ID = new Identifier(ModernBeta.ID, "indev_snowy_edge");
+    public static final Identifier INDEV_EDGE_ID = ModernBeta.createId("indev_edge");
+    public static final Identifier INDEV_HELL_EDGE_ID = ModernBeta.createId("indev_hell_edge");
+    public static final Identifier INDEV_PARADISE_EDGE_ID = ModernBeta.createId("indev_paradise_edge");
+    public static final Identifier INDEV_WOODS_EDGE_ID = ModernBeta.createId("indev_woods_edge");
+    public static final Identifier INDEV_SNOWY_EDGE_ID = ModernBeta.createId("indev_snowy_edge");
     
-    public static final Identifier INDEV_NORMAL_ID = new Identifier(ModernBeta.ID, "indev_normal");
-    public static final Identifier INDEV_HELL_ID = new Identifier(ModernBeta.ID, "indev_hell");
-    public static final Identifier INDEV_PARADISE_ID = new Identifier(ModernBeta.ID, "indev_paradise");
-    public static final Identifier INDEV_WOODS_ID = new Identifier(ModernBeta.ID, "indev_woods");
-    public static final Identifier INDEV_SNOWY_ID = new Identifier(ModernBeta.ID, "indev_snowy");
+    public static final Identifier INDEV_NORMAL_ID = ModernBeta.createId("indev_normal");
+    public static final Identifier INDEV_HELL_ID = ModernBeta.createId("indev_hell");
+    public static final Identifier INDEV_PARADISE_ID = ModernBeta.createId("indev_paradise");
+    public static final Identifier INDEV_WOODS_ID = ModernBeta.createId("indev_woods");
+    public static final Identifier INDEV_SNOWY_ID = ModernBeta.createId("indev_snowy");
     
     public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(
         INDEV_EDGE_ID,
@@ -40,11 +50,17 @@ public class IndevBiomes {
         INDEV_SNOWY_ID
     );
 
-    public static void reserveBiomeIDs() {
-        for (Identifier i : BIOMES) {
-            Registry.register(BuiltinRegistries.BIOME, i, DefaultBiomeCreator.createTheVoid());
-        }
-
-        //ModernBeta.LOGGER.log(Level.INFO, "Reserved Indev biome IDs.");
+    public static void registerBiomes() {
+        Registry.register(BuiltinRegistries.BIOME, INDEV_EDGE_ID, IndevNormalEdge.BIOME);
+        Registry.register(BuiltinRegistries.BIOME, INDEV_HELL_EDGE_ID, IndevHellEdge.BIOME);
+        Registry.register(BuiltinRegistries.BIOME, INDEV_PARADISE_EDGE_ID, IndevParadiseEdge.BIOME);
+        Registry.register(BuiltinRegistries.BIOME, INDEV_WOODS_EDGE_ID, IndevWoodsEdge.BIOME);
+        Registry.register(BuiltinRegistries.BIOME, INDEV_SNOWY_EDGE_ID, IndevSnowyEdge.BIOME);
+        
+        Registry.register(BuiltinRegistries.BIOME, INDEV_NORMAL_ID, IndevNormal.BIOME);
+        Registry.register(BuiltinRegistries.BIOME, INDEV_HELL_ID, IndevHell.BIOME);
+        Registry.register(BuiltinRegistries.BIOME, INDEV_PARADISE_ID, IndevParadise.BIOME);
+        Registry.register(BuiltinRegistries.BIOME, INDEV_WOODS_ID, IndevWoods.BIOME);
+        Registry.register(BuiltinRegistries.BIOME, INDEV_SNOWY_ID, IndevSnowy.BIOME);
     }
 }

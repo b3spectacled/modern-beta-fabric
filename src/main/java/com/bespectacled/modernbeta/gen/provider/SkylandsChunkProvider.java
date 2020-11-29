@@ -91,7 +91,7 @@ public class SkylandsChunkProvider implements IOldChunkProvider {
     public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
 
-        BiomeUtil.fetchTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
+        BiomeUtil.sampleTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
         generateTerrain(chunk, TEMPS, structureAccessor);
     }
 
@@ -102,12 +102,12 @@ public class SkylandsChunkProvider implements IOldChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
-        BiomeUtil.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
+        BiomeUtil.sampleTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
         BetaBiomes.getBiomesFromLookup(TEMPS, HUMIDS, BIOMES, null);
         
         Biome curBiome;
         
-        stoneNoise = stoneNoiseOctaves.sampleOctavesArrBeta(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+        stoneNoise = stoneNoiseOctaves.sampleArrBeta(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
 
         for (int z = 0; z < 16; z++) {
@@ -183,7 +183,7 @@ public class SkylandsChunkProvider implements IOldChunkProvider {
         fillChunkY(16);
         
         if (GROUND_CACHE_Y.get(structPos) == null) {
-            BiomeUtil.fetchTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
+            BiomeUtil.sampleTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
             sampleHeightmap(x, z);
         }
 
@@ -316,19 +316,19 @@ public class SkylandsChunkProvider implements IOldChunkProvider {
         double temps[] = TEMPS;
         double humids[] = HUMIDS;
 
-        scaleNoise = scaleNoiseOctaves.sampleOctavesArrBeta(scaleNoise, x, z, int3_0, int3_1, 1.121D, 1.121D, 0.5D);
-        depthNoise = depthNoiseOctaves.sampleOctavesArrBeta(depthNoise, x, z, int3_0, int3_1, depthNoiseScaleX, depthNoiseScaleZ,
+        scaleNoise = scaleNoiseOctaves.sampleArrBeta(scaleNoise, x, z, int3_0, int3_1, 1.121D, 1.121D, 0.5D);
+        depthNoise = depthNoiseOctaves.sampleArrBeta(depthNoise, x, z, int3_0, int3_1, depthNoiseScaleX, depthNoiseScaleZ,
                 depthNoiseScaleExponent);
 
         coordinateScale *= 2D;
 
-        mainNoise = mainNoiseOctaves.sampleOctavesArrBeta(mainNoise, x, y, z, int3_0, byte33, int3_1,
+        mainNoise = mainNoiseOctaves.sampleArrBeta(mainNoise, x, y, z, int3_0, byte33, int3_1,
                 coordinateScale / mainNoiseScaleX, heightScale / mainNoiseScaleY, coordinateScale / mainNoiseScaleZ);
 
-        minLimitNoise = minLimitNoiseOctaves.sampleOctavesArrBeta(minLimitNoise, x, y, z, int3_0, byte33, int3_1,
+        minLimitNoise = minLimitNoiseOctaves.sampleArrBeta(minLimitNoise, x, y, z, int3_0, byte33, int3_1,
                 coordinateScale, heightScale, coordinateScale);
 
-        maxLimitNoise = maxLimitNoiseOctaves.sampleOctavesArrBeta(maxLimitNoise, x, y, z, int3_0, byte33, int3_1,
+        maxLimitNoise = maxLimitNoiseOctaves.sampleArrBeta(maxLimitNoise, x, y, z, int3_0, byte33, int3_1,
                 coordinateScale, heightScale, coordinateScale);
 
         int i = 0;

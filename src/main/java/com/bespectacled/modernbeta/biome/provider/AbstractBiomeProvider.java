@@ -1,11 +1,9 @@
 package com.bespectacled.modernbeta.biome.provider;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.bespectacled.modernbeta.biome.BetaBiomes;
-import com.bespectacled.modernbeta.biome.IndevBiomes;
-import com.bespectacled.modernbeta.biome.InfBiomes;
+import com.bespectacled.modernbeta.biome.ClassicBiomes;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 
@@ -36,15 +34,15 @@ public abstract class AbstractBiomeProvider {
             case SKY:
                 return new SingleBiomeProvider(seed, BetaBiomes.SKY_ID);
             case PLUS:
-                return new PlusBiomeProvider(seed, InfBiomes.getBiomeMap(worldType));
+                return new PlusBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType));
             case CLASSIC:
-                return new SingleBiomeProvider(seed, InfBiomes.getBiomeMap(worldType).get(BiomeType.CLASSIC));
+                return new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.CLASSIC));
             case WINTER:
-                return new SingleBiomeProvider(seed, InfBiomes.getBiomeMap(worldType).get(BiomeType.WINTER));
+                return new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.WINTER));
             case VANILLA:
                 return new VanillaBiomeProvider(seed);
         }
         
-        return new SingleBiomeProvider(seed, InfBiomes.ALPHA_ID);
+        return new SingleBiomeProvider(seed, ClassicBiomes.ALPHA_ID);
     }
 }

@@ -5,11 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.biome.layer.VanillaBiomeLayer;
 import com.bespectacled.modernbeta.biome.layer.VanillaOceanLayer;
 
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;

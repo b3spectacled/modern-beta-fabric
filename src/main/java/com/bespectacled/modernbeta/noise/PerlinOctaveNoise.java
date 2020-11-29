@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 public class PerlinOctaveNoise extends Noise {
     private PerlinNoise generatorCollection[];
     private int octaves;
-    static int count = 0;
     
     public PerlinOctaveNoise(Random random, int i, boolean useOffset) {
         octaves = i;
@@ -17,17 +16,17 @@ public class PerlinOctaveNoise extends Noise {
 
     }
     
-    public double[] sampleOctavesArrBeta(
+    public double[] sampleArrBeta(
         double arr[], 
         int x, int z, 
         int sizeX, int sizeZ, 
         double scaleX, double scaleZ, 
         double unused
     ) {
-        return sampleOctavesArrBeta(arr, x, 10D, z, sizeX, 1, sizeZ, scaleX, 1.0D, scaleZ);
+        return sampleArrBeta(arr, x, 10D, z, sizeX, 1, sizeZ, scaleX, 1.0D, scaleZ);
     }
 
-    public double[] sampleOctavesArrBeta(
+    public double[] sampleArrBeta(
         double arr[], 
         double x, double y, double z, 
         int sizeX, int sizeY, int sizeZ, 
@@ -41,9 +40,6 @@ public class PerlinOctaveNoise extends Noise {
             }
 
         double frequency = 1.0;
-        
-        long then = System.nanoTime();
-        
         for (int i1 = 0; i1 < octaves; i1++) {
             generatorCollection[i1].samplePerlinArrBeta(
                 arr, 
@@ -55,16 +51,10 @@ public class PerlinOctaveNoise extends Noise {
             frequency /= 2.0;
         }
         
-        long millis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - then);
-        
-        //if (count < 10) System.out.println("Time to sample octaves with optimized: " + (System.nanoTime() - then));
-        
-        count++;
-
         return arr;
     }
     
-    public double[] sampleOctavesArr(
+    public double[] sampleArr(
         double arr[],
         double x, double y, double z, 
         int sizeX, int sizeY, int sizeZ, 
@@ -92,7 +82,7 @@ public class PerlinOctaveNoise extends Noise {
         return arr;
     }
     
-    public final double sampleOctaves(double x, double y, double z) {
+    public final double sample(double x, double y, double z) {
         double total = 0.0;
         double frequency = 1.0;
         
@@ -104,7 +94,7 @@ public class PerlinOctaveNoise extends Noise {
         return total;
     }
     
-    public final double sampleOctaves(double x, double y) {
+    public final double sample(double x, double y) {
         double total = 0.0;
         double frequency = 1.0;
         

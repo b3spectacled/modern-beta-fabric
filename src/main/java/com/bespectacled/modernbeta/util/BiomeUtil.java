@@ -42,7 +42,7 @@ public class BiomeUtil {
         noiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
     }
 
-    public static void fetchTempHumidAtPoint(double[] arr, int x, int z) {
+    public static void sampleTempHumidAtPoint(double[] arr, int x, int z) {
         double[] temps;
         double[] humids;
         double[] noises;
@@ -80,7 +80,7 @@ public class BiomeUtil {
         arr[1] = humid;
     }
     
-    public static void fetchTempHumid(int x, int z, double[] temps, double[] humids) {
+    public static void sampleTempHumid(int x, int z, double[] temps, double[] humids) {
         int sizeX = 16;
         int sizeZ = 16;
         

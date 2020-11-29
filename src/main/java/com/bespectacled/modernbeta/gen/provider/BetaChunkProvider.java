@@ -95,7 +95,7 @@ public class BetaChunkProvider implements IOldChunkProvider {
     public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
 
-        BiomeUtil.fetchTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
+        BiomeUtil.sampleTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
         generateTerrain(chunk, TEMPS, structureAccessor);
     }
     
@@ -107,16 +107,16 @@ public class BetaChunkProvider implements IOldChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        BiomeUtil.fetchTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
+        BiomeUtil.sampleTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
         BetaBiomes.getBiomesFromLookup(TEMPS, HUMIDS, BIOMES, null);
         
         Biome curBiome;
 
-        sandNoise = beachNoiseOctaves.sampleOctavesArrBeta(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+        sandNoise = beachNoiseOctaves.sampleArrBeta(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond, thirtysecond, 1.0D);
-        gravelNoise = beachNoiseOctaves.sampleOctavesArrBeta(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16, 1,
+        gravelNoise = beachNoiseOctaves.sampleArrBeta(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16, 1,
                 16, thirtysecond, 1.0D, thirtysecond);
-        stoneNoise = stoneNoiseOctaves.sampleOctavesArrBeta(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
+        stoneNoise = stoneNoiseOctaves.sampleArrBeta(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
 
         for (int z = 0; z < 16; z++) {
@@ -216,7 +216,7 @@ public class BetaChunkProvider implements IOldChunkProvider {
         BlockPos structPos = new BlockPos(x, 0, z);
         
         if (GROUND_CACHE_Y.get(structPos) == null) {
-            BiomeUtil.fetchTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
+            BiomeUtil.sampleTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
             
             sampleHeightmap(x, z);
         }
@@ -342,10 +342,10 @@ public class BetaChunkProvider implements IOldChunkProvider {
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
 
-        scaleNoise = scaleNoiseOctaves.sampleOctavesArrBeta(scaleNoise, x, z, int5_0, int5_1, 1.121D, 1.121D, 0.5D);
-        depthNoise = depthNoiseOctaves.sampleOctavesArrBeta(depthNoise, x, z, int5_0, int5_1, depthNoiseScaleX, depthNoiseScaleZ, depthNoiseScaleExponent);
+        scaleNoise = scaleNoiseOctaves.sampleArrBeta(scaleNoise, x, z, int5_0, int5_1, 1.121D, 1.121D, 0.5D);
+        depthNoise = depthNoiseOctaves.sampleArrBeta(depthNoise, x, z, int5_0, int5_1, depthNoiseScaleX, depthNoiseScaleZ, depthNoiseScaleExponent);
 
-        mainNoise = mainNoiseOctaves.sampleOctavesArrBeta(
+        mainNoise = mainNoiseOctaves.sampleArrBeta(
             mainNoise, 
             x, y, z, 
             int5_0, byte17, int5_1,
@@ -354,7 +354,7 @@ public class BetaChunkProvider implements IOldChunkProvider {
             coordinateScale / mainNoiseScaleZ
         );
 
-        minLimitNoise = minLimitNoiseOctaves.sampleOctavesArrBeta(
+        minLimitNoise = minLimitNoiseOctaves.sampleArrBeta(
             minLimitNoise, 
             x, y, z, 
             int5_0, byte17, int5_1,
@@ -363,7 +363,7 @@ public class BetaChunkProvider implements IOldChunkProvider {
             coordinateScale
         );
 
-        maxLimitNoise = maxLimitNoiseOctaves.sampleOctavesArrBeta(
+        maxLimitNoise = maxLimitNoiseOctaves.sampleArrBeta(
             maxLimitNoise, 
             x, y, z, 
             int5_0, byte17, int5_1,

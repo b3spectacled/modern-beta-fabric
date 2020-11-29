@@ -10,6 +10,6 @@ public final class PerlinOctaveNoiseCombined extends Noise {
     }
     
     public final double sampleIndevOctavesCombined(double x, double y) {
-        return this.noiseGenerator.sampleOctaves(x + this.noiseGenerator2.sampleOctaves(x, y), y);
+        return this.noiseGenerator.sample(x + this.noiseGenerator2.sample(x, y), y);
     }
 }

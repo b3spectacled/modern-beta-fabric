@@ -88,10 +88,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         }
     }
 
-    
     @Override
     public void generateFeatures(ChunkRegion chunkRegion, StructureAccessor structureAccessor) {
-        
         GenUtil.generateFeaturesWithOcean(chunkRegion, structureAccessor, this, FEATURE_RAND, this.genOceans);
     }
     

@@ -32,14 +32,13 @@ public class CountBetaNoiseDecorator extends SimpleDecorator<CountNoiseDecorator
         
         int chunkX = (int) pos.getX() / 16;
         int chunkZ = (int) pos.getZ() / 16;
-       
 
         int noiseX = chunkX * 16;
         int noiseZ = chunkZ * 16;
 
         double d = 0.5D;
 
-        int noiseCount = (int) ((forestNoise.sampleOctaves((double) noiseX * d, (double) noiseZ * d) / 8D
+        int noiseCount = (int) ((forestNoise.sample((double) noiseX * d, (double) noiseZ * d) / 8D
                 + random.nextDouble() * 4D + 4D) / 3D);
 
         int finalCount = noiseCount + config.density

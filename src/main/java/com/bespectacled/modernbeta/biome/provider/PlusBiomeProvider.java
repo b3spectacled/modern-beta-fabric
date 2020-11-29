@@ -4,12 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.bespectacled.modernbeta.biome.BetaBiomes;
-import com.bespectacled.modernbeta.biome.InfBiomes;
 import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
-
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -31,7 +27,7 @@ public class PlusBiomeProvider extends AbstractBiomeProvider {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
+        BiomeUtil.sampleTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
         return TEMP_HUMID_POINT[0] < 0.5f ?  registry.get(biomeMapping.get(BiomeType.WINTER)) : registry.get(biomeMapping.get(BiomeType.CLASSIC));
     }
 

@@ -7,6 +7,9 @@ import java.util.ListIterator;
 import java.util.Random;
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.Level;
+
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 
@@ -20,12 +23,14 @@ import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.structure.pool.StructurePool;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
@@ -41,12 +46,14 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 public class GenUtil {
     private static final BlockPos.Mutable POS = new BlockPos.Mutable();
+    static int count = 0;
     
     public static int getSolidHeight(Chunk chunk, int x, int z) {
         for (int y = 127; y >= 0; y--) {
@@ -128,7 +135,7 @@ public class GenUtil {
         Biome biome = GenUtil.getOceanBiome(ctrChunk, gen, gen.getBiomeSource(), genOceans);
 
         long popSeed = random.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
-        
+
         try {
             biome.generateFeatureStep(structureAccessor, (ChunkGenerator)gen, chunkRegion, popSeed, random, new BlockPos(ctrAbsX, 0, ctrAbsZ));
         } catch (Exception exception) {

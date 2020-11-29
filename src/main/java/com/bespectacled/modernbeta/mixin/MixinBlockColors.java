@@ -96,7 +96,7 @@ public class MixinBlockColors implements MutableBlockColors {
             z = (int) ((long) z + (shift >> 24 & 31L));
         }
 
-        BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID, x, z);
+        BiomeUtil.sampleTempHumidAtPoint(TEMP_HUMID, x, z);
         return GrassColors.getColor(TEMP_HUMID[0], TEMP_HUMID[1]);
     }
 
@@ -109,7 +109,7 @@ public class MixinBlockColors implements MutableBlockColors {
         int x = pos.getX();
         int z = pos.getZ();
 
-        BiomeUtil.fetchTempHumidAtPoint(TEMP_HUMID, x, z);
+        BiomeUtil.sampleTempHumidAtPoint(TEMP_HUMID, x, z);
         return FoliageColors.getColor(TEMP_HUMID[0], TEMP_HUMID[1]);
     }
 }

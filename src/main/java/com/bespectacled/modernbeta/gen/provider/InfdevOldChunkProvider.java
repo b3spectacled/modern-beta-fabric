@@ -179,19 +179,19 @@ public class InfdevOldChunkProvider implements IOldChunkProvider {
                 int rZ = z / 1024;
                 
                 float noiseA = (float)(
-                    this.noiseOctavesA.sampleOctaves(x / 0.03125f, 0.0, z / 0.03125f) - 
-                    this.noiseOctavesB.sampleOctaves(x / 0.015625f, 0.0, z / 0.015625f)) / 512.0f / 4.0f;
-                float noiseB = (float)this.noiseOctavesE.sampleOctaves(x / 4.0f, z / 4.0f);
-                float noiseC = (float)this.noiseOctavesF.sampleOctaves(x / 8.0f, z / 8.0f) / 8.0f;
+                    this.noiseOctavesA.sample(x / 0.03125f, 0.0, z / 0.03125f) - 
+                    this.noiseOctavesB.sample(x / 0.015625f, 0.0, z / 0.015625f)) / 512.0f / 4.0f;
+                float noiseB = (float)this.noiseOctavesE.sample(x / 4.0f, z / 4.0f);
+                float noiseC = (float)this.noiseOctavesF.sample(x / 8.0f, z / 8.0f) / 8.0f;
                 
                 noiseB = noiseB > 0.0f ? 
-                    ((float)(this.noiseOctavesC.sampleOctaves(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
-                    ((float)(this.noiseOctavesD.sampleOctaves(x * 0.25714284f, z * 0.25714284f) * noiseC));
+                    ((float)(this.noiseOctavesC.sample(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
+                    ((float)(this.noiseOctavesD.sample(x * 0.25714284f, z * 0.25714284f) * noiseC));
                     
                 int heightVal = (int)(noiseA + 64.0f + noiseB);
-                if ((float)this.noiseOctavesE.sampleOctaves(x, z) < 0.0f) {
+                if ((float)this.noiseOctavesE.sample(x, z) < 0.0f) {
                     heightVal = heightVal / 2 << 1;
-                    if ((float)this.noiseOctavesE.sampleOctaves(x / 5, z / 5) < 0.0f) {
+                    if ((float)this.noiseOctavesE.sample(x / 5, z / 5) < 0.0f) {
                         ++heightVal;
                     }
                 }
@@ -258,19 +258,19 @@ public class InfdevOldChunkProvider implements IOldChunkProvider {
         int z = startZ + Math.abs(sampleZ) % 16;
         
         float noiseA = (float)(
-            this.noiseOctavesA.sampleOctaves(x / 0.03125f, 0.0, z / 0.03125f) - 
-            this.noiseOctavesB.sampleOctaves(x / 0.015625f, 0.0, z / 0.015625f)) / 512.0f / 4.0f;
-        float noiseB = (float)this.noiseOctavesE.sampleOctaves(x / 4.0f, z / 4.0f);
-        float noiseC = (float)this.noiseOctavesF.sampleOctaves(x / 8.0f, z / 8.0f) / 8.0f;
+            this.noiseOctavesA.sample(x / 0.03125f, 0.0, z / 0.03125f) - 
+            this.noiseOctavesB.sample(x / 0.015625f, 0.0, z / 0.015625f)) / 512.0f / 4.0f;
+        float noiseB = (float)this.noiseOctavesE.sample(x / 4.0f, z / 4.0f);
+        float noiseC = (float)this.noiseOctavesF.sample(x / 8.0f, z / 8.0f) / 8.0f;
         
         noiseB = noiseB > 0.0f ? 
-            ((float)(this.noiseOctavesC.sampleOctaves(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
-            ((float)(this.noiseOctavesD.sampleOctaves(x * 0.25714284f, z * 0.25714284f) * noiseC));
+            ((float)(this.noiseOctavesC.sample(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
+            ((float)(this.noiseOctavesD.sample(x * 0.25714284f, z * 0.25714284f) * noiseC));
             
         int heightVal = (int)(noiseA + 64.0f + noiseB);
-        if ((float)this.noiseOctavesE.sampleOctaves(x, z) < 0.0f) {
+        if ((float)this.noiseOctavesE.sample(x, z) < 0.0f) {
             heightVal = heightVal / 2 << 1;
-            if ((float)this.noiseOctavesE.sampleOctaves(x / 5, z / 5) < 0.0f) {
+            if ((float)this.noiseOctavesE.sample(x / 5, z / 5) < 0.0f) {
                 ++heightVal;
             }
         }

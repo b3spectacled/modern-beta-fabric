@@ -3,12 +3,9 @@ package com.bespectacled.modernbeta.biome.provider;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.biome.IndevBiomes;
 import com.bespectacled.modernbeta.util.IndevUtil;
 import com.bespectacled.modernbeta.util.IndevUtil.IndevTheme;
-import com.bespectacled.modernbeta.util.IndevUtil.IndevType;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;

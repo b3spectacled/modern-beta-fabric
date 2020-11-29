@@ -248,7 +248,7 @@ public class IndevChunkProvider implements IOldChunkProvider {
                      var2 = var2 * var2 * var2;
                      
                      int dirtTransition = heightmap[x + z * this.width] + this.waterLevel;
-                     int dirtThickness = (int)(noise5.sampleOctaves(x, z) / 24.0) - 4;
+                     int dirtThickness = (int)(noise5.sample(x, z) / 24.0) - 4;
                  
                      int stoneTransition = dirtTransition + dirtThickness;
                      heightmap[x + z * this.width] = Math.max(dirtTransition, stoneTransition);
@@ -261,7 +261,7 @@ public class IndevChunkProvider implements IOldChunkProvider {
                          heightmap[x + z * this.width] = 1;
                      }
                      
-                     double var4 = noise6.sampleOctaves(x * 2.3, z * 2.3) / 24.0;
+                     double var4 = noise6.sample(x * 2.3, z * 2.3) / 24.0;
                      int var5 = (int)(Math.sqrt(Math.abs(var4)) * Math.signum(var4) * 20.0) + this.waterLevel;
                      var5 = (int)(var5 * (1.0 - var2) + var2 * this.height);
                      
@@ -317,7 +317,7 @@ public class IndevChunkProvider implements IOldChunkProvider {
                 double heightLow = heightNoise1.sampleIndevOctavesCombined(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
                 double heightHigh = heightNoise2.sampleIndevOctavesCombined(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
                 
-                double heightCheck = heightNoise3.sampleOctaves(x, z) / 8.0;
+                double heightCheck = heightNoise3.sample(x, z) / 8.0;
                 
                 if (heightCheck > 0.0) {
                     heightHigh = heightLow;
@@ -327,7 +327,7 @@ public class IndevChunkProvider implements IOldChunkProvider {
                 
                 if (this.type == IndevType.ISLAND) {
                     double islandVar3 = Math.sqrt(islandVar1 * islandVar1 + islandVar2 * islandVar2) * 1.2000000476837158;
-                    islandVar3 = Math.min(islandVar3, islandNoise.sampleOctaves(x * 0.05f, z * 0.05f) / 4.0 + 1.0);
+                    islandVar3 = Math.min(islandVar3, islandNoise.sample(x * 0.05f, z * 0.05f) / 4.0 + 1.0);
                     islandVar3 = Math.max(islandVar3, Math.max(islandVar1, islandVar2));
                     
                     if (islandVar3 > 1.0) {
@@ -384,19 +384,19 @@ public class IndevChunkProvider implements IOldChunkProvider {
         
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
-                boolean genSand = sandNoiseOctaves.sampleOctaves(x, z) > 8.0;
-                boolean genGravel = gravelNoiseOctaves.sampleOctaves(x, z) > 12.0;
+                boolean genSand = sandNoiseOctaves.sample(x, z) > 8.0;
+                boolean genGravel = gravelNoiseOctaves.sample(x, z) > 12.0;
                 
                 if (this.type == IndevType.ISLAND) {
-                    genSand = sandNoiseOctaves.sampleOctaves(x, z) > -8.0;
+                    genSand = sandNoiseOctaves.sample(x, z) > -8.0;
                 }
                 
                 if (this.theme == IndevTheme.PARADISE) {
-                    genSand = sandNoiseOctaves.sampleOctaves(x, z) > -32.0;
+                    genSand = sandNoiseOctaves.sample(x, z) > -32.0;
                 }
                 
                 if (this.theme == IndevTheme.HELL || this.theme == IndevTheme.WOODS) {
-                    genSand = sandNoiseOctaves.sampleOctaves(x, z) > -8.0;
+                    genSand = sandNoiseOctaves.sample(x, z) > -8.0;
                 }
                 
                 int heightResult = heightmap[x + z *  this.width];

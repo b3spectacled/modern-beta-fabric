@@ -5,6 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.Identifier;
 
 import java.util.Random;
 
@@ -29,7 +30,7 @@ import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.biome.IndevBiomes;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.VanillaBiomeModifier;
-import com.bespectacled.modernbeta.biome.InfBiomes;
+import com.bespectacled.modernbeta.biome.ClassicBiomes;
 import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
@@ -51,14 +52,8 @@ public class ModernBeta implements ModInitializer {
         }
     }
     
-    public static void reserveBiomeIds() {
-        BetaBiomes.reserveBiomeIDs();
-        InfBiomes.reserveAlphaBiomeIDs();
-        InfBiomes.reserveInfdevBiomeIds();
-        IndevBiomes.reserveBiomeIDs();
-        InfBiomes.reserveInfdevOldBiomeIds();
-        
-        LOGGER.log(Level.INFO, "Registered Modern Beta biomes!");
+    public static Identifier createId(String name) {
+        return new Identifier(ID, name);
     }
 
     @Override
@@ -68,17 +63,15 @@ public class ModernBeta implements ModInitializer {
         // BetaSurfaceBuilder.register(); Unused
         BetaCarver.register();
         BetaDecorator.register();
-        BetaFeature.reserveConfiguredFeatureIDs();
-        BetaFeature.register();
         BetaStructure.register();
         
         LOGGER.log(Level.INFO, "Registered Modern Beta features!");
         
-        BetaBiomes.reserveBiomeIDs();
-        InfBiomes.reserveAlphaBiomeIDs();
-        InfBiomes.reserveInfdevBiomeIds();
-        IndevBiomes.reserveBiomeIDs();
-        InfBiomes.reserveInfdevOldBiomeIds();
+        BetaBiomes.registerBiomes();
+        ClassicBiomes.registerAlphaBiomes();
+        ClassicBiomes.registerInfdevBiomes();
+        IndevBiomes.registerBiomes();
+        ClassicBiomes.registerInfdevOldBiomes();
         
         LOGGER.log(Level.INFO, "Registered Modern Beta biomes!");
 
