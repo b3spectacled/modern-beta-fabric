@@ -65,7 +65,7 @@ public class BetaStructure {
             OCEAN_SHRINE_ID, 
             OCEAN_SHRINE_STRUCTURE)
             .step(GenerationStep.Feature.SURFACE_STRUCTURES)
-            .defaultConfig(32, 8, 12345)
+            .defaultConfig(32, 8, 357)
             .adjustsSurface()
             .register();
         
