@@ -7,10 +7,7 @@ import java.util.stream.Stream;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.client.render.chunk.ChunkBuilder.ChunkData;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkProvider;
 import net.minecraft.world.gen.decorator.SimpleDecorator;
 
 public class CountBetaNoiseDecorator extends SimpleDecorator<CountNoiseDecoratorConfig> {

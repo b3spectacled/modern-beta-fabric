@@ -60,9 +60,6 @@ public class ModernBeta implements ModInitializer {
     public void onInitialize() {
         LOGGER.log(Level.INFO, "Initializing Modern Beta...");
 
-        // BetaSurfaceBuilder.register(); Unused
-        BetaCarver.register();
-        BetaDecorator.register();
         BetaStructure.register();
         
         LOGGER.log(Level.INFO, "Registered Modern Beta features!");
