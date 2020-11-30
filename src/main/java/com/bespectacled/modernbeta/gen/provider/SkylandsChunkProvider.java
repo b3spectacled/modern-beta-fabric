@@ -50,7 +50,7 @@ public class SkylandsChunkProvider implements IOldChunkProvider {
     private double scaleNoise[];
     private double depthNoise[];
     
-    private static final double HEIGHTMAP[] = new double[425];
+    private static final double HEIGHT_NOISE[] = new double[425];
     
     private static final Mutable POS = new Mutable();
     private static final Random RAND = new Random();
@@ -224,15 +224,15 @@ public class SkylandsChunkProvider implements IOldChunkProvider {
 
                     double quarter = 0.25D;
 
-                    double var1 = HEIGHTMAP[((i + 0) * int3_1 + (j + 0)) * byte33 + (k + 0)];
-                    double var2 = HEIGHTMAP[((i + 0) * int3_1 + (j + 1)) * byte33 + (k + 0)];
-                    double var3 = HEIGHTMAP[((i + 1) * int3_1 + (j + 0)) * byte33 + (k + 0)];
-                    double var4 = HEIGHTMAP[((i + 1) * int3_1 + (j + 1)) * byte33 + (k + 0)];
+                    double var1 = HEIGHT_NOISE[((i + 0) * int3_1 + (j + 0)) * byte33 + (k + 0)];
+                    double var2 = HEIGHT_NOISE[((i + 0) * int3_1 + (j + 1)) * byte33 + (k + 0)];
+                    double var3 = HEIGHT_NOISE[((i + 1) * int3_1 + (j + 0)) * byte33 + (k + 0)];
+                    double var4 = HEIGHT_NOISE[((i + 1) * int3_1 + (j + 1)) * byte33 + (k + 0)];
 
-                    double var5 = (HEIGHTMAP[((i + 0) * int3_1 + (j + 0)) * byte33 + (k + 1)] - var1) * quarter;
-                    double var6 = (HEIGHTMAP[((i + 0) * int3_1 + (j + 1)) * byte33 + (k + 1)] - var2) * quarter;
-                    double var7 = (HEIGHTMAP[((i + 1) * int3_1 + (j + 0)) * byte33 + (k + 1)] - var3) * quarter;
-                    double var8 = (HEIGHTMAP[((i + 1) * int3_1 + (j + 1)) * byte33 + (k + 1)] - var4) * quarter;
+                    double var5 = (HEIGHT_NOISE[((i + 0) * int3_1 + (j + 0)) * byte33 + (k + 1)] - var1) * quarter;
+                    double var6 = (HEIGHT_NOISE[((i + 0) * int3_1 + (j + 1)) * byte33 + (k + 1)] - var2) * quarter;
+                    double var7 = (HEIGHT_NOISE[((i + 1) * int3_1 + (j + 0)) * byte33 + (k + 1)] - var3) * quarter;
+                    double var8 = (HEIGHT_NOISE[((i + 1) * int3_1 + (j + 1)) * byte33 + (k + 1)] - var4) * quarter;
 
                     for (int l = 0; l < 4; l++) {
                         double eighth = 0.125D;
@@ -415,7 +415,7 @@ public class SkylandsChunkProvider implements IOldChunkProvider {
                         heightVal = heightVal * (1.0D - d14) + -30D * d14;
                     }
 
-                    HEIGHTMAP[i] = heightVal;
+                    HEIGHT_NOISE[i] = heightVal;
                     i++;
                 }
             }
@@ -439,15 +439,15 @@ public class SkylandsChunkProvider implements IOldChunkProvider {
                 for (int k = 0; k < 16; k++) {
                     double quarter = 0.25D;
 
-                    double var1 = HEIGHTMAP[((i + 0) * int3_1 + (j + 0)) * byte33 + (k + 0)];
-                    double var2 = HEIGHTMAP[((i + 0) * int3_1 + (j + 1)) * byte33 + (k + 0)];
-                    double var3 = HEIGHTMAP[((i + 1) * int3_1 + (j + 0)) * byte33 + (k + 0)];
-                    double var4 = HEIGHTMAP[((i + 1) * int3_1 + (j + 1)) * byte33 + (k + 0)];
+                    double var1 = HEIGHT_NOISE[((i + 0) * int3_1 + (j + 0)) * byte33 + (k + 0)];
+                    double var2 = HEIGHT_NOISE[((i + 0) * int3_1 + (j + 1)) * byte33 + (k + 0)];
+                    double var3 = HEIGHT_NOISE[((i + 1) * int3_1 + (j + 0)) * byte33 + (k + 0)];
+                    double var4 = HEIGHT_NOISE[((i + 1) * int3_1 + (j + 1)) * byte33 + (k + 0)];
 
-                    double var5 = (HEIGHTMAP[((i + 0) * int3_1 + (j + 0)) * byte33 + (k + 1)] - var1) * quarter;
-                    double var6 = (HEIGHTMAP[((i + 0) * int3_1 + (j + 1)) * byte33 + (k + 1)] - var2) * quarter;
-                    double var7 = (HEIGHTMAP[((i + 1) * int3_1 + (j + 0)) * byte33 + (k + 1)] - var3) * quarter;
-                    double var8 = (HEIGHTMAP[((i + 1) * int3_1 + (j + 1)) * byte33 + (k + 1)] - var4) * quarter;
+                    double var5 = (HEIGHT_NOISE[((i + 0) * int3_1 + (j + 0)) * byte33 + (k + 1)] - var1) * quarter;
+                    double var6 = (HEIGHT_NOISE[((i + 0) * int3_1 + (j + 1)) * byte33 + (k + 1)] - var2) * quarter;
+                    double var7 = (HEIGHT_NOISE[((i + 1) * int3_1 + (j + 0)) * byte33 + (k + 1)] - var3) * quarter;
+                    double var8 = (HEIGHT_NOISE[((i + 1) * int3_1 + (j + 1)) * byte33 + (k + 1)] - var4) * quarter;
 
                     for (int l = 0; l < 4; l++) {
                         double eighth = 0.125D;

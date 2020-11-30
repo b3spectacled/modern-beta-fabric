@@ -25,8 +25,5 @@ public class VanillaBiomeModifier {
     public static void addShrineToOceans() {
         Predicate<BiomeSelectionContext> biomeSelector = BiomeSelectors.includeByKey(VANILLA_OCEANS);
         BiomeModifications.addStructure(biomeSelector, BetaStructure.OCEAN_SHRINE_KEY);
-        
-        Predicate<BiomeSelectionContext> allSelector = BiomeSelectors.foundInOverworld();
-        
     }
 }

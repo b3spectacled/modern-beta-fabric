@@ -44,12 +44,10 @@ public class InfdevOldChunkProvider implements IOldChunkProvider {
     // Block Y-height cache, from Beta+
     private static final Map<BlockPos, Integer> GROUND_CACHE_Y = new HashMap<>();
     private static final Block BLOCK_ARR[][][] = new Block[16][128][16];
-    private static final Block STRUCT_ARR[][][] = new Block[16][128][16];
     
     private static final Mutable POS = new Mutable();
     
     private static final Random RAND = new Random();
-    private static final ChunkRandom FEATURE_RAND = new ChunkRandom();
     
     private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
     private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);

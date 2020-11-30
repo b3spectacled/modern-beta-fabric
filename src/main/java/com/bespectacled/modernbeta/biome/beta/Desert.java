@@ -45,7 +45,7 @@ public class Desert {
         genSettings.structureFeature(ConfiguredStructureFeatures.DESERT_PYRAMID);
         genSettings.structureFeature(ConfiguredStructureFeatures.PILLAGER_OUTPOST);
         
-        genSettings.feature(Feature.UNDERGROUND_ORES, BetaConfiguredFeature.ORE_CLAY);
+        //genSettings.feature(Feature.UNDERGROUND_ORES, BetaConfiguredFeature.ORE_CLAY);
         genSettings.feature(Feature.UNDERGROUND_ORES, BetaConfiguredFeature.ORE_EMERALD_Y95);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, BetaConfiguredFeature.PATCH_POPPY);

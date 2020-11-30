@@ -1,8 +1,5 @@
 package com.bespectacled.modernbeta.biome;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.indev.IndevHell;
 import com.bespectacled.modernbeta.biome.indev.IndevHellEdge;
@@ -19,9 +16,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class IndevBiomes {
     public static final Identifier INDEV_EDGE_ID = ModernBeta.createId("indev_edge");

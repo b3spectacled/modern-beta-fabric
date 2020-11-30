@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.gen;
 import java.util.List;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.biome.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.provider.IOldChunkProvider;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
@@ -58,6 +59,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.seed = seed;
         this.biomeSource = (OldBiomeSource)biomeSource;
         this.settings = settings;
+        
         this.worldType = WorldType.getWorldType(settings.settings);
         this.chunkProvider = IOldChunkProvider.getChunkProvider(seed, this.worldType, settings.settings);
         this.genOceans = this.worldType != WorldType.SKYLANDS && this.biomeSource.generateOceans();

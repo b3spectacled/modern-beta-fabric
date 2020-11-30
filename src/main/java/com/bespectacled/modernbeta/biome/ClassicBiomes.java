@@ -1,9 +1,6 @@
 package com.bespectacled.modernbeta.biome;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.bespectacled.modernbeta.ModernBeta;
@@ -15,13 +12,9 @@ import com.bespectacled.modernbeta.biome.classic.InfdevOldWinter;
 import com.bespectacled.modernbeta.biome.classic.InfdevWinter;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.DefaultBiomeCreator;
 
 public class ClassicBiomes {
     public static final Identifier ALPHA_ID = ModernBeta.createId("alpha");

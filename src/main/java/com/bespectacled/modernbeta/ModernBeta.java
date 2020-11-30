@@ -7,8 +7,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
-import java.util.Random;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +17,6 @@ import com.bespectacled.modernbeta.gen.type.IndevGeneratorType;
 import com.bespectacled.modernbeta.gen.type.InfdevGeneratorType;
 import com.bespectacled.modernbeta.gen.type.InfdevOldGeneratorType;
 import com.bespectacled.modernbeta.gen.type.SkylandsGeneratorType;
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
 
@@ -31,10 +28,7 @@ import com.bespectacled.modernbeta.biome.IndevBiomes;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.biome.ClassicBiomes;
-import com.bespectacled.modernbeta.carver.BetaCarver;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.bespectacled.modernbeta.decorator.BetaDecorator;
-import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 
 public class ModernBeta implements ModInitializer {
@@ -62,7 +56,7 @@ public class ModernBeta implements ModInitializer {
 
         BetaStructure.register();
         
-        LOGGER.log(Level.INFO, "Registered Modern Beta features!");
+        //LOGGER.log(Level.INFO, "Registered Modern Beta features!");
         
         BetaBiomes.registerBiomes();
         ClassicBiomes.registerAlphaBiomes();
@@ -70,15 +64,15 @@ public class ModernBeta implements ModInitializer {
         IndevBiomes.registerBiomes();
         ClassicBiomes.registerInfdevOldBiomes();
         
-        LOGGER.log(Level.INFO, "Registered Modern Beta biomes!");
+        //LOGGER.log(Level.INFO, "Registered Modern Beta biomes!");
 
         OldBiomeSource.register();
         
-        LOGGER.log(Level.INFO, "Registered Modern Beta biome provider!");
+        //LOGGER.log(Level.INFO, "Registered Modern Beta biome provider!");
         
         OldChunkGenerator.register();
         
-        LOGGER.log(Level.INFO, "Registered Modern Beta chunk generator!");
+        //LOGGER.log(Level.INFO, "Registered Modern Beta chunk generator!");
         
         VanillaBiomeModifier.addShrineToOceans();
 
@@ -90,7 +84,7 @@ public class ModernBeta implements ModInitializer {
             InfdevOldGeneratorType.register();
             IndevGeneratorType.register();
             
-            LOGGER.log(Level.INFO, "Registered Modern Beta world types!");            
+            //LOGGER.log(Level.INFO, "Registered Modern Beta world types!");            
         }
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");

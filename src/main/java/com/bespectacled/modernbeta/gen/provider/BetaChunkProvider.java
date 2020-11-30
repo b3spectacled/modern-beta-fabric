@@ -54,7 +54,7 @@ public class BetaChunkProvider implements IOldChunkProvider {
     private double scaleNoise[];
     private double depthNoise[];
     
-    private static final double HEIGHTMAP[] = new double[425];
+    private static final double HEIGHT_NOISE[] = new double[425];
     
     private static final Mutable POS = new Mutable();
     private static final Random RAND = new Random();
@@ -112,12 +112,24 @@ public class BetaChunkProvider implements IOldChunkProvider {
         
         Biome curBiome;
 
-        sandNoise = beachNoiseOctaves.sampleArrBeta(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
-                thirtysecond, thirtysecond, 1.0D);
-        gravelNoise = beachNoiseOctaves.sampleArrBeta(gravelNoise, chunkX * 16, 109.0134D, chunkZ * 16, 16, 1,
-                16, thirtysecond, 1.0D, thirtysecond);
-        stoneNoise = stoneNoiseOctaves.sampleArrBeta(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
-                thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
+        sandNoise = beachNoiseOctaves.sampleArrBeta(
+            sandNoise, 
+            chunkX * 16, chunkZ * 16, 0.0D, 
+            16, 16, 1,
+            thirtysecond, thirtysecond, 1.0D);
+        
+        gravelNoise = beachNoiseOctaves.sampleArrBeta(
+            gravelNoise, 
+            chunkX * 16, 109.0134D, chunkZ * 16, 
+            16, 1, 16, 
+            thirtysecond, 1.0D, thirtysecond);
+        
+        stoneNoise = stoneNoiseOctaves.sampleArrBeta(
+            stoneNoise, 
+            chunkX * 16, chunkZ * 16, 0.0D, 
+            16, 16, 1,
+            thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D
+        );
 
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 16; x++) {
@@ -253,15 +265,15 @@ public class BetaChunkProvider implements IOldChunkProvider {
                 for (int k = 0; k < 16; k++) {
                     double eighth = 0.125D;
 
-                    double var1 = HEIGHTMAP[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 0)];
-                    double var2 = HEIGHTMAP[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 0)];
-                    double var3 = HEIGHTMAP[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 0)];
-                    double var4 = HEIGHTMAP[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 0)];
+                    double var1 = HEIGHT_NOISE[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 0)];
+                    double var2 = HEIGHT_NOISE[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 0)];
+                    double var3 = HEIGHT_NOISE[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 0)];
+                    double var4 = HEIGHT_NOISE[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 0)];
 
-                    double var5 = (HEIGHTMAP[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var1) * eighth; 
-                    double var6 = (HEIGHTMAP[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var2) * eighth;
-                    double var7 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var3) * eighth;
-                    double var8 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var4) * eighth;
+                    double var5 = (HEIGHT_NOISE[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var1) * eighth; 
+                    double var6 = (HEIGHT_NOISE[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var2) * eighth;
+                    double var7 = (HEIGHT_NOISE[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var3) * eighth;
+                    double var8 = (HEIGHT_NOISE[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var4) * eighth;
 
                     for (int l = 0; l < 8; l++) {
                         double quarter = 0.25D;
@@ -461,7 +473,7 @@ public class BetaChunkProvider implements IOldChunkProvider {
                         heightVal = heightVal * (1.0D - d13) + -10D * d13;
                     }
                     
-                    HEIGHTMAP[i] = heightVal;
+                    HEIGHT_NOISE[i] = heightVal;
                     i++;
                 }
             }
@@ -486,15 +498,15 @@ public class BetaChunkProvider implements IOldChunkProvider {
                 for (int k = 0; k < 16; k++) {
                     double eighth = 0.125D;
 
-                    double var1 = HEIGHTMAP[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 0)];
-                    double var2 = HEIGHTMAP[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 0)];
-                    double var3 = HEIGHTMAP[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 0)];
-                    double var4 = HEIGHTMAP[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 0)];
+                    double var1 = HEIGHT_NOISE[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 0)];
+                    double var2 = HEIGHT_NOISE[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 0)];
+                    double var3 = HEIGHT_NOISE[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 0)];
+                    double var4 = HEIGHT_NOISE[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 0)];
 
-                    double var5 = (HEIGHTMAP[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var1) * eighth;
-                    double var6 = (HEIGHTMAP[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var2) * eighth;
-                    double var7 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var3) * eighth;
-                    double var8 = (HEIGHTMAP[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var4) * eighth;
+                    double var5 = (HEIGHT_NOISE[((i + 0) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var1) * eighth;
+                    double var6 = (HEIGHT_NOISE[((i + 0) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var2) * eighth;
+                    double var7 = (HEIGHT_NOISE[((i + 1) * int5_1 + (j + 0)) * byte17 + (k + 1)] - var3) * eighth;
+                    double var8 = (HEIGHT_NOISE[((i + 1) * int5_1 + (j + 1)) * byte17 + (k + 1)] - var4) * eighth;
 
                     for (int l = 0; l < 8; l++) {
                         double var9 = 0.25D;

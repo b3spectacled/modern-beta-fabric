@@ -39,7 +39,7 @@ public class InfdevChunkProvider implements IOldChunkProvider {
     private final PerlinOctaveNoise stoneNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    private static final double HEIGHTMAP[][] = new double[33][4];
+    private static final double HEIGHT_NOISE[][] = new double[33][4];
     
     private static final Mutable POS = new Mutable();
     private static final Random RAND = new Random();
@@ -215,22 +215,22 @@ public class InfdevChunkProvider implements IOldChunkProvider {
                 int bX = (chunkX << 2) + i;
                 int bZ = (chunkZ << 2) + j;
                 
-                for (int bY = 0; bY < HEIGHTMAP.length; ++bY) {
-                    HEIGHTMAP[bY][0] = this.generateHeightmap(bX, bY, bZ);
-                    HEIGHTMAP[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
-                    HEIGHTMAP[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
-                    HEIGHTMAP[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
+                for (int bY = 0; bY < HEIGHT_NOISE.length; ++bY) {
+                    HEIGHT_NOISE[bY][0] = this.generateHeightmap(bX, bY, bZ);
+                    HEIGHT_NOISE[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
+                    HEIGHT_NOISE[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
+                    HEIGHT_NOISE[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
                 }
                 
                 for (int bY = 0; bY < 32; ++bY) {
-                    double n1 = HEIGHTMAP[bY][0];
-                    double n2 = HEIGHTMAP[bY][1];
-                    double n3 = HEIGHTMAP[bY][2];
-                    double n4 = HEIGHTMAP[bY][3];
-                    double n5 = HEIGHTMAP[bY + 1][0];
-                    double n7 = HEIGHTMAP[bY + 1][1];
-                    double n8 = HEIGHTMAP[bY + 1][2];
-                    double n9 = HEIGHTMAP[bY + 1][3];
+                    double n1 = HEIGHT_NOISE[bY][0];
+                    double n2 = HEIGHT_NOISE[bY][1];
+                    double n3 = HEIGHT_NOISE[bY][2];
+                    double n4 = HEIGHT_NOISE[bY][3];
+                    double n5 = HEIGHT_NOISE[bY + 1][0];
+                    double n7 = HEIGHT_NOISE[bY + 1][1];
+                    double n8 = HEIGHT_NOISE[bY + 1][2];
+                    double n9 = HEIGHT_NOISE[bY + 1][3];
                     
                     for (int pY = 0; pY < 4; ++pY) {
                         double mixY = pY / 4.0;
@@ -337,22 +337,22 @@ public class InfdevChunkProvider implements IOldChunkProvider {
                 int bX = (chunkX << 2) + i;
                 int bZ = (chunkZ << 2) + j;
                 
-                for (int bY = 0; bY < HEIGHTMAP.length; ++bY) {
-                    HEIGHTMAP[bY][0] = this.generateHeightmap(bX, bY, bZ);
-                    HEIGHTMAP[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
-                    HEIGHTMAP[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
-                    HEIGHTMAP[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
+                for (int bY = 0; bY < HEIGHT_NOISE.length; ++bY) {
+                    HEIGHT_NOISE[bY][0] = this.generateHeightmap(bX, bY, bZ);
+                    HEIGHT_NOISE[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
+                    HEIGHT_NOISE[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
+                    HEIGHT_NOISE[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
                 }
                 
                 for (int bY = 0; bY < 32; ++bY) {
-                    double n1 = HEIGHTMAP[bY][0];
-                    double n2 = HEIGHTMAP[bY][1];
-                    double n3 = HEIGHTMAP[bY][2];
-                    double n4 = HEIGHTMAP[bY][3];
-                    double n5 = HEIGHTMAP[bY + 1][0];
-                    double n7 = HEIGHTMAP[bY + 1][1];
-                    double n8 = HEIGHTMAP[bY + 1][2];
-                    double n9 = HEIGHTMAP[bY + 1][3];
+                    double n1 = HEIGHT_NOISE[bY][0];
+                    double n2 = HEIGHT_NOISE[bY][1];
+                    double n3 = HEIGHT_NOISE[bY][2];
+                    double n4 = HEIGHT_NOISE[bY][3];
+                    double n5 = HEIGHT_NOISE[bY + 1][0];
+                    double n7 = HEIGHT_NOISE[bY + 1][1];
+                    double n8 = HEIGHT_NOISE[bY + 1][2];
+                    double n9 = HEIGHT_NOISE[bY + 1][3];
                     
                     for (int pY = 0; pY < 4; ++pY) {
                         double mixY = pY / 4.0;
