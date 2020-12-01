@@ -44,6 +44,7 @@ public class IndevHell {
         genSettings.feature(Feature.VEGETAL_DECORATION, BetaConfiguredFeature.PATCH_CACTUS_ALPHA);
         genSettings.feature(Feature.VEGETAL_DECORATION, BetaConfiguredFeature.TREES_INDEV_BEES);
         genSettings.feature(Feature.VEGETAL_DECORATION, BetaConfiguredFeature.PATCH_GRASS_ALPHA_2);
+        genSettings.feature(Feature.VEGETAL_DECORATION, BetaConfiguredFeature.MUSHROOM_HELL);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_SUGAR_CANE);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);

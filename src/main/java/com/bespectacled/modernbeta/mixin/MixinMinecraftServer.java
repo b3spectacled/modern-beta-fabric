@@ -56,11 +56,12 @@ public class MixinMinecraftServer {
             PerlinOctaveNoise beachNoiseOctaves = oldGen.getChunkProvider().getBeachNoiseOctaves();
             
             if (beachNoiseOctaves != null) { // Attempt to place a beach spawn if provider generates classic beaches.
-                ModernBeta.LOGGER.log(Level.INFO, "Setting a beach spawn...");
+                ModernBeta.LOGGER.log(Level.INFO, "Setting a beach spawn..");
                 spawnPos = getInitialOldSpawn(oldGen, beachNoiseOctaves);
             }
             
             if (spawnPos != null && oldGen.getWorldType() == WorldType.INDEV) {
+                ModernBeta.LOGGER.log(Level.INFO, "[Indev] Spawning..");
                 IndevChunkProvider indevChunkProvider = (IndevChunkProvider)oldGen.getChunkProvider();
                 indevChunkProvider.setSpawnPos(spawnPos);
                 

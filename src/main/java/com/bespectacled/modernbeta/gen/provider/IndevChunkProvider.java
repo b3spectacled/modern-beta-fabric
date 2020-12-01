@@ -585,7 +585,7 @@ public class IndevChunkProvider implements IOldChunkProvider {
     private void plantIndevSurface(Block[][][] blockArr) {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Planting..");
         
-        if (this.theme == IndevTheme.HELL) return;
+        Block blockToPlant = this.theme == IndevTheme.HELL ? Blocks.PODZOL : Blocks.GRASS_BLOCK;
         
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
@@ -594,7 +594,7 @@ public class IndevChunkProvider implements IOldChunkProvider {
                     Block blockAbove = blockArr[x][y + 1][z];
                     
                     if (block.equals(Blocks.DIRT) && blockAbove.equals(Blocks.AIR)) {
-                        blockArr[x][y][z] = Blocks.GRASS_BLOCK;
+                        blockArr[x][y][z] = blockToPlant;
                     }
                 }
             }
