@@ -198,6 +198,11 @@ public class InfdevChunkProvider implements IOldChunkProvider {
         return groundHeight;
     }
     
+    @Override
+    public PerlinOctaveNoise getBeachNoiseOctaves() {
+        return this.beachNoiseOctaves;
+    }
+    
     private void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;

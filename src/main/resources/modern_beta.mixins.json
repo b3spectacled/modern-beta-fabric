@@ -4,6 +4,7 @@
   "package": "com.bespectacled.modernbeta.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinMinecraftServer",
     "MixinBiomeArray",
     "MixinGeneratorOptions",
     "MixinChunkGeneratorInvoker"

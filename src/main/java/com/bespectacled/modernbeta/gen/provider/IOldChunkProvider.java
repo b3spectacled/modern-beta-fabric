@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.gen.provider;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 
@@ -17,6 +18,8 @@ public interface IOldChunkProvider {
     public void makeSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource);
     
     public int getHeight(int x, int z, Heightmap.Type type);
+    
+    public PerlinOctaveNoise getBeachNoiseOctaves();
     
     public static IOldChunkProvider getChunkProvider(long seed, WorldType worldType, CompoundTag settings) {
         IOldChunkProvider provider;

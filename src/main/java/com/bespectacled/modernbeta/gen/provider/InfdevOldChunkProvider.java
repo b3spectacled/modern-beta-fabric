@@ -112,6 +112,11 @@ public class InfdevOldChunkProvider implements IOldChunkProvider {
         return height;
     }
     
+    @Override
+    public PerlinOctaveNoise getBeachNoiseOctaves() {
+        return null;
+    }
+    
     private void setTerrain(ChunkRegion region, Chunk chunk, StructureAccessor structureAccessor, OldBiomeSource biomeSource) {
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();

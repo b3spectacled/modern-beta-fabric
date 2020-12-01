@@ -519,4 +519,9 @@ public class AlphaChunkProvider implements IOldChunkProvider {
         
     }
 
+    @Override
+    public PerlinOctaveNoise getBeachNoiseOctaves() {
+        return this.beachNoiseOctaves;
+    }
+
 }

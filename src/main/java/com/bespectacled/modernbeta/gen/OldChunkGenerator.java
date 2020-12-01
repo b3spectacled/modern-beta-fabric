@@ -162,4 +162,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.worldType;
     }
     
+    public IOldChunkProvider getChunkProvider() {
+        return this.chunkProvider;
+    }
+    
 }

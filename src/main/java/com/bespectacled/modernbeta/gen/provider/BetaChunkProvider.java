@@ -242,6 +242,11 @@ public class BetaChunkProvider implements IOldChunkProvider {
         return groundHeight;
     }
     
+    @Override
+    public PerlinOctaveNoise getBeachNoiseOctaves() {
+        return this.beachNoiseOctaves;
+    }
+    
     private void generateTerrain(Chunk chunk, double[] temps, StructureAccessor structureAccessor) {
         byte byte4 = 4;
         // byte seaLevel = (byte)this.getSeaLevel();

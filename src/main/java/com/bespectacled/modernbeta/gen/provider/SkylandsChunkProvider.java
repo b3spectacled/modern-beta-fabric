@@ -192,6 +192,11 @@ public class SkylandsChunkProvider implements IOldChunkProvider {
         return groundHeight;
     }
     
+    @Override
+    public PerlinOctaveNoise getBeachNoiseOctaves() {
+        return null;
+    }
+    
     private static void fillChunkY(int y) {
         for (int z = 0; z < 16; ++z) {
             for (int x = 0; x < 16; ++x) {

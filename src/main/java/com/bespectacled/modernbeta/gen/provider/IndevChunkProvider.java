@@ -22,11 +22,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
@@ -73,6 +76,7 @@ public class IndevChunkProvider implements IOldChunkProvider {
     private int groundLevel;
     
     private boolean pregenerated;
+    private BlockPos spawnPos;
 
     private static final Mutable POS = new Mutable();
     private static final Random RAND = new Random();
@@ -96,6 +100,7 @@ public class IndevChunkProvider implements IOldChunkProvider {
         this.layers = (this.type == IndevType.FLOATING) ? (this.height - 64) / 48 + 1 : 1;
         
         this.pregenerated = false;  
+        this.spawnPos = null;
     }
 
     @Override
@@ -107,10 +112,8 @@ public class IndevChunkProvider implements IOldChunkProvider {
 
         if (IndevUtil.inIndevRegion(pos.getStartX(), pos.getStartZ(), this.width, this.length)) {
 
-            if (!pregenerated) {
+            if (!this.pregenerated) {
                 blockArr = pregenerateTerrain(blockArr);
-               
-                pregenerated = true;   
             }
             
             setTerrain(structureAccessor, chunk, blockArr);
@@ -137,9 +140,8 @@ public class IndevChunkProvider implements IOldChunkProvider {
         
         if (x < 0 || x >= this.width || z < 0 || z >= this.length) return waterLevel;
         
-        if (!pregenerated) {
+        if (!this.pregenerated) {
             this.blockArr = pregenerateTerrain(this.blockArr);
-            pregenerated = true;
         }
         
         for (int y = this.height - 1; y >= 0; --y) {
@@ -155,6 +157,11 @@ public class IndevChunkProvider implements IOldChunkProvider {
         if (height <= this.waterLevel) height = this.waterLevel;
          
         return height;
+    }
+    
+    @Override
+    public PerlinOctaveNoise getBeachNoiseOctaves() {
+        return null;
     }
     
     private void setTerrain(StructureAccessor structureAccessor, Chunk chunk, Block[][][] blockArr) {
@@ -296,6 +303,8 @@ public class IndevChunkProvider implements IOldChunkProvider {
             floodLava(blockArr);
             plantIndevSurface(blockArr);
         }
+        
+        this.pregenerated = true;
         
         return blockArr;
     }
@@ -664,5 +673,50 @@ public class IndevChunkProvider implements IOldChunkProvider {
         return true;
     }
     
-
+    public void generateIndevHouse(ServerWorld world, BlockPos spawnPos) {
+        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Building..");
+        
+        int spawnX = spawnPos.getX();
+        int spawnY = spawnPos.getY() + 1;
+        int spawnZ = spawnPos.getZ();
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        
+        Block floorBlock = this.theme == IndevTheme.HELL ? Blocks.MOSSY_COBBLESTONE : Blocks.STONE;
+        Block wallBlock = this.theme == IndevTheme.HELL ? Blocks.MOSSY_COBBLESTONE : Blocks.OAK_PLANKS;
+        
+        for (int x = spawnX - 3; x <= spawnX + 3; ++x) {
+            for (int y = spawnY - 2; y <= spawnY + 2; ++y) {
+                for (int z = spawnZ - 3; z <= spawnZ + 3; ++z) {
+                    Block blockToSet = (y < spawnY - 1) ? Blocks.OBSIDIAN : Blocks.AIR;
+                    
+                    if (x == spawnX - 3 || z == spawnZ - 3 || x == spawnX + 3 || z == spawnZ + 3 || y == spawnY - 2 || y == spawnY + 2) {
+                        blockToSet = floorBlock;
+                        if (y >= spawnY - 1) {
+                            blockToSet = wallBlock;
+                        }
+                    }
+                    if (z == spawnZ - 3 && x == spawnX && y >= spawnY - 1 && y <= spawnY) {
+                        blockToSet = Blocks.AIR;
+                    }
+                    
+                    world.setBlockState(mutable.set(x, y, z), BlockStates.getBlockState(blockToSet));
+                }
+            }
+        }
+        
+        world.setBlockState(mutable.set(spawnX - 3 + 1, spawnY, spawnZ), Blocks.WALL_TORCH.getDefaultState().rotate(BlockRotation.CLOCKWISE_90));
+        world.setBlockState(mutable.set(spawnX + 3 - 1, spawnY, spawnZ), Blocks.WALL_TORCH.getDefaultState().rotate(BlockRotation.COUNTERCLOCKWISE_90));
+    }
+    
+    public void setSpawnPos(BlockPos spawnPos) {
+        this.spawnPos = spawnPos;
+    }
+    
+    public IndevType getType() {
+        return this.type;
+    }
+    
+    public IndevTheme getTheme() {
+        return this.theme;
+    }
 }
