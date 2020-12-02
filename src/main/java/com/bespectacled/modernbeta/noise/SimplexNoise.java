@@ -40,20 +40,23 @@ public class SimplexNoise extends Noise {
         return arr[0] * double2 + arr[1] * double4;
     }
     
-    public void sample(double[] arr, double double3, double double5, int integer7, int integer8, double double9, double double11, double double13) {
-        int integer15 = 0;
-        for (int i = 0; i < integer7; ++i) {
-            double double17 = (double3 + i) * double9 + this.xOffset;
-            for (int j = 0; j < integer8; ++j) {
-                double double20 = (double5 + j) * double11 + this.yOffset;
-                double double28 = (double17 + double20) * SimplexNoise.UNSKEW_FACTOR_2D;
-                int integer30 = fastFloor(double17 + double28);
-                int integer31 = fastFloor(double20 + double28);
+    public void sample(double[] arr, double x, double z, int sizeX, int sizeZ, double scaleX, double scaleZ, double amplitude) {
+        int ndx = 0;
+        
+        for (int sX = 0; sX < sizeX; ++sX) {
+            double curX = (x + sX) * scaleX + this.xOffset;
+            
+            for (int sZ = 0; sZ < sizeZ; ++sZ) {
+                double curZ = (z + sZ) * scaleZ + this.yOffset;
+                
+                double double28 = (curX + curZ) * SimplexNoise.UNSKEW_FACTOR_2D;
+                int integer30 = fastFloor(curX + double28);
+                int integer31 = fastFloor(curZ + double28);
                 double double32 = (integer30 + integer31) * SimplexNoise.SKEW_FACTOR_2D;
                 double double34 = integer30 - double32;
                 double double36 = integer31 - double32;
-                double double38 = double17 - double34;
-                double double40 = double20 - double36;
+                double double38 = curX - double34;
+                double double40 = curZ - double36;
                 int integer42;
                 int integer43;
                 if (double38 > double40) {
@@ -100,11 +103,75 @@ public class SimplexNoise extends Noise {
                     double61 *= double61;
                     double26 = double61 * double61 * dot(SimplexNoise.gradients[integer56], double48, double50);
                 }
-                int n21 = integer15++;
-                arr[n21] += 70.0 * (double22 + double24 + double26) * double13;
+                
+                int curNdx = ndx++;
+                arr[curNdx] += 70.0 * (double22 + double24 + double26) * amplitude;
             }
         }
     }
+    
+    public double sample(double x, double z, double scaleX, double scaleZ) {
+        double curX = x * scaleX + this.xOffset;
+        double curZ = z * scaleZ + this.yOffset;
+        
+        double double28 = (curX + curZ) * SimplexNoise.UNSKEW_FACTOR_2D;
+        int integer30 = fastFloor(curX + double28);
+        int integer31 = fastFloor(curZ + double28);
+        double double32 = (integer30 + integer31) * SimplexNoise.SKEW_FACTOR_2D;
+        double double34 = integer30 - double32;
+        double double36 = integer31 - double32;
+        double double38 = curX - double34;
+        double double40 = curZ - double36;
+        int integer42;
+        int integer43;
+        if (double38 > double40) {
+            integer42 = 1;
+            integer43 = 0;
+        }
+        else {
+            integer42 = 0;
+            integer43 = 1;
+        }
+        double double44 = double38 - integer42 + SimplexNoise.SKEW_FACTOR_2D;
+        double double46 = double40 - integer43 + SimplexNoise.SKEW_FACTOR_2D;
+        double double48 = double38 - 1.0 + 2.0 * SimplexNoise.SKEW_FACTOR_2D;
+        double double50 = double40 - 1.0 + 2.0 * SimplexNoise.SKEW_FACTOR_2D;
+        int integer52 = integer30 & 0xFF;
+        int integer53 = integer31 & 0xFF;
+        int integer54 = this.permutations[integer52 + this.permutations[integer53]] % 12;
+        int integer55 = this.permutations[integer52 + integer42 + this.permutations[integer53 + integer43]] % 12;
+        int integer56 = this.permutations[integer52 + 1 + this.permutations[integer53 + 1]] % 12;
+        double double57 = 0.5 - double38 * double38 - double40 * double40;
+        double double22;
+        if (double57 < 0.0) {
+            double22 = 0.0;
+        }
+        else {
+            double57 *= double57;
+            double22 = double57 * double57 * dot(SimplexNoise.gradients[integer54], double38, double40);
+        }
+        double double59 = 0.5 - double44 * double44 - double46 * double46;
+        double double24;
+        if (double59 < 0.0) {
+            double24 = 0.0;
+        }
+        else {
+            double59 *= double59;
+            double24 = double59 * double59 * dot(SimplexNoise.gradients[integer55], double44, double46);
+        }
+        double double61 = 0.5 - double48 * double48 - double50 * double50;
+        double double26;
+        if (double61 < 0.0) {
+            double26 = 0.0;
+        }
+        else {
+            double61 *= double61;
+            double26 = double61 * double61 * dot(SimplexNoise.gradients[integer56], double48, double50);
+        }
+        
+        return 70.0 * (double22 + double24 + double26);
+    }
+    
     
     static {
         SimplexNoise.gradients = new int[][] { { 1, 1, 0 }, { -1, 1, 0 }, { 1, -1, 0 }, { -1, -1, 0 }, { 1, 0, 1 }, { -1, 0, 1 }, { 1, 0, -1 }, { -1, 0, -1 }, { 0, 1, 1 }, { 0, -1, 1 }, { 0, 1, -1 }, { 0, -1, -1 } };

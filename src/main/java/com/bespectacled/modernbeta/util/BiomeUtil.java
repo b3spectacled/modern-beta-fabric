@@ -41,28 +41,26 @@ public class BiomeUtil {
         humidNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
         noiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
     }
-
+    
     public static void sampleTempHumidAtPoint(double[] arr, int x, int z) {
-        double[] temps;
-        double[] humids;
-        double[] noises;
+        
+        double temp = tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.25D);
+        double humid = humidNoiseOctaves.sample(x, z, 0.05000000074505806D, 0.05000000074505806D, 0.33333333333333331D);
+        double noise = noiseOctaves.sample(x, z, 0.25D, 0.25D, 0.58823529411764708D);
 
-        temps = tempNoiseOctaves.sample(null, x, z, 1, 1, 0.02500000037252903D, 0.02500000037252903D, 0.25D);
-        humids = humidNoiseOctaves.sample(null, x, z, 1, 1, 0.05000000074505806D, 0.05000000074505806D, 0.33333333333333331D);
-        noises = noiseOctaves.sample(null, x, z, 1, 1, 0.25D, 0.25D, 0.58823529411764708D);
-
-        double d = noises[0] * 1.1000000000000001D + 0.5D;
+        double d = noise * 1.1000000000000001D + 0.5D;
         double d1 = 0.01D;
         double d2 = 1.0D - d1;
 
-        double temp = (temps[0] * 0.14999999999999999D + 0.69999999999999996D) * d2 + d * d1;
+        temp = (temp * 0.14999999999999999D + 0.69999999999999996D) * d2 + d * d1;
 
         d1 = 0.002D;
         d2 = 1.0D - d1;
 
-        double humid = (humids[0] * 0.14999999999999999D + 0.5D) * d2 + d * d1;
+        humid = (humid * 0.14999999999999999D + 0.5D) * d2 + d * d1;
 
         temp = 1.0D - (1.0D - temp) * (1.0D - temp);
+        
         if (temp < 0.0D) {
             temp = 0.0D;
         }
@@ -125,6 +123,6 @@ public class BiomeUtil {
     
 
     public static double fetchSkyTemp(int x, int z) {
-        return tempNoiseOctaves.sample(null, x, z, 1, 1, 0.02500000037252903D, 0.02500000037252903D, 0.5D)[0];
+        return tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
     }
 }
