@@ -1,15 +1,9 @@
-package com.bespectacled.modernbeta.biome;
+package com.bespectacled.modernbeta.biome.classic;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.classic.Alpha;
-import com.bespectacled.modernbeta.biome.classic.AlphaWinter;
-import com.bespectacled.modernbeta.biome.classic.Infdev;
-import com.bespectacled.modernbeta.biome.classic.InfdevOld;
-import com.bespectacled.modernbeta.biome.classic.InfdevOldWinter;
-import com.bespectacled.modernbeta.biome.classic.InfdevWinter;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import net.minecraft.util.Identifier;

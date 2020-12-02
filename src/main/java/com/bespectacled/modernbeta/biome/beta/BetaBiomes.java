@@ -1,26 +1,9 @@
-package com.bespectacled.modernbeta.biome;
+package com.bespectacled.modernbeta.biome.beta;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.beta.ColdOcean;
-import com.bespectacled.modernbeta.biome.beta.Desert;
-import com.bespectacled.modernbeta.biome.beta.Forest;
-import com.bespectacled.modernbeta.biome.beta.FrozenOcean;
-import com.bespectacled.modernbeta.biome.beta.IceDesert;
-import com.bespectacled.modernbeta.biome.beta.LukewarmOcean;
-import com.bespectacled.modernbeta.biome.beta.Ocean;
-import com.bespectacled.modernbeta.biome.beta.Plains;
-import com.bespectacled.modernbeta.biome.beta.Rainforest;
-import com.bespectacled.modernbeta.biome.beta.Savanna;
-import com.bespectacled.modernbeta.biome.beta.SeasonalForest;
-import com.bespectacled.modernbeta.biome.beta.Shrubland;
-import com.bespectacled.modernbeta.biome.beta.Sky;
-import com.bespectacled.modernbeta.biome.beta.Swampland;
-import com.bespectacled.modernbeta.biome.beta.Taiga;
-import com.bespectacled.modernbeta.biome.beta.Tundra;
-import com.bespectacled.modernbeta.biome.beta.WarmOcean;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.util.Identifier;

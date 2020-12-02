@@ -1,16 +1,6 @@
-package com.bespectacled.modernbeta.biome;
+package com.bespectacled.modernbeta.biome.indev;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.indev.IndevHell;
-import com.bespectacled.modernbeta.biome.indev.IndevHellEdge;
-import com.bespectacled.modernbeta.biome.indev.IndevNormal;
-import com.bespectacled.modernbeta.biome.indev.IndevNormalEdge;
-import com.bespectacled.modernbeta.biome.indev.IndevParadise;
-import com.bespectacled.modernbeta.biome.indev.IndevParadiseEdge;
-import com.bespectacled.modernbeta.biome.indev.IndevSnowy;
-import com.bespectacled.modernbeta.biome.indev.IndevSnowyEdge;
-import com.bespectacled.modernbeta.biome.indev.IndevWoods;
-import com.bespectacled.modernbeta.biome.indev.IndevWoodsEdge;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.util.Identifier;

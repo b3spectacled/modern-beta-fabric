@@ -2,8 +2,8 @@ package com.bespectacled.modernbeta.biome.provider;
 
 import java.util.List;
 
-import com.bespectacled.modernbeta.biome.BetaBiomes;
-import com.bespectacled.modernbeta.biome.ClassicBiomes;
+import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
+import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 

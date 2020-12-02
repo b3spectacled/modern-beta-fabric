@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.biome.*;
+import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.mojang.serialization.Codec;
 

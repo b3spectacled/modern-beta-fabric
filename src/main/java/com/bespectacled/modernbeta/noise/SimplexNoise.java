@@ -32,7 +32,7 @@ public class SimplexNoise extends Noise {
         }
     }
     
-    private static int floor(double double1) {
+    private static int fastFloor(double double1) {
         return (double1 > 0.0) ? ((int)double1) : ((int)double1 - 1);
     }
     
@@ -47,8 +47,8 @@ public class SimplexNoise extends Noise {
             for (int j = 0; j < integer8; ++j) {
                 double double20 = (double5 + j) * double11 + this.yOffset;
                 double double28 = (double17 + double20) * SimplexNoise.UNSKEW_FACTOR_2D;
-                int integer30 = floor(double17 + double28);
-                int integer31 = floor(double20 + double28);
+                int integer30 = fastFloor(double17 + double28);
+                int integer31 = fastFloor(double20 + double28);
                 double double32 = (integer30 + integer31) * SimplexNoise.SKEW_FACTOR_2D;
                 double double34 = integer30 - double32;
                 double double36 = integer31 - double32;

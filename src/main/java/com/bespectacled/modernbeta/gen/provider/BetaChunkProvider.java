@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import com.bespectacled.modernbeta.biome.BetaBiomes;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -402,76 +402,76 @@ public class BetaChunkProvider implements IOldChunkProvider {
                 double curTemp = TEMPS[idx0 * 16 + idx1];
                 double curHumid = HUMIDS[idx0 * 16 + idx1] * curTemp;
 
-                double humidMod = 1.0D - curHumid;
-                humidMod *= humidMod;
-                humidMod *= humidMod;
-                humidMod = 1.0D - humidMod;
+                double humidVal = 1.0D - curHumid;
+                humidVal *= humidVal;
+                humidVal *= humidVal;
+                humidVal = 1.0D - humidVal;
 
-                double scaleMod = (scaleNoise[j] + 256D) / 512D;
-                scaleMod *= humidMod;
+                double scaleVal = (scaleNoise[j] + 256D) / 512D;
+                scaleVal *= humidVal;
 
-                if (scaleMod > 1.0D) {
-                    scaleMod = 1.0D;
+                if (scaleVal > 1.0D) {
+                    scaleVal = 1.0D;
                 }
 
-                double depthMod = depthNoise[j] / 8000D;
+                double depthVal = depthNoise[j] / 8000D;
 
-                if (depthMod < 0.0D) {
-                    depthMod = -depthMod * 0.29999999999999999D;
+                if (depthVal < 0.0D) {
+                    depthVal = -depthVal * 0.29999999999999999D;
                 }
 
-                depthMod = depthMod * 3D - 2D;
+                depthVal = depthVal * 3D - 2D;
 
-                if (depthMod < 0.0D) {
-                    depthMod /= 2D;
+                if (depthVal < 0.0D) {
+                    depthVal /= 2D;
 
-                    if (depthMod < -1D) {
-                        depthMod = -1D;
+                    if (depthVal < -1D) {
+                        depthVal = -1D;
                     }
 
-                    depthMod /= 1.3999999999999999D;
-                    depthMod /= 2D;
+                    depthVal /= 1.3999999999999999D;
+                    depthVal /= 2D;
 
-                    scaleMod = 0.0D;
+                    scaleVal = 0.0D;
 
                 } else {
-                    if (depthMod > 1.0D) {
-                        depthMod = 1.0D;
+                    if (depthVal > 1.0D) {
+                        depthVal = 1.0D;
                     }
-                    depthMod /= 8D;
+                    depthVal /= 8D;
                 }
 
-                if (scaleMod < 0.0D) {
-                    scaleMod = 0.0D;
+                if (scaleVal < 0.0D) {
+                    scaleVal = 0.0D;
                 }
 
-                scaleMod += 0.5D;
-                depthMod = (depthMod * (double) byte17) / 16D;
+                scaleVal += 0.5D;
+                depthVal = (depthVal * (double) byte17) / 16D;
 
-                double depthMod2 = (double) byte17 / 2D + depthMod * 4D;
+                double depthVal2 = (double) byte17 / 2D + depthVal * 4D;
 
                 j++;
 
                 for (int n = 0; n < byte17; n++) {
                     double heightVal = 0.0D;
-                    double scaleMod2 = (((double) n - depthMod2) * 12D) / scaleMod;
+                    double scaleVal2 = (((double) n - depthVal2) * 12D) / scaleVal;
 
-                    if (scaleMod2 < 0.0D) {
-                        scaleMod2 *= 4D;
+                    if (scaleVal2 < 0.0D) {
+                        scaleVal2 *= 4D;
                     }
 
-                    double minLimitMod = minLimitNoise[i] / lowerLimitScale;
-                    double maxLimitMod = maxLimitNoise[i] / upperLimitScale;
-                    double mainNoiseMod = (mainNoise[i] / 10D + 1.0D) / 2D;
+                    double minLimitVal = minLimitNoise[i] / lowerLimitScale;
+                    double maxLimitVal = maxLimitNoise[i] / upperLimitScale;
+                    double mainNoiseVal = (mainNoise[i] / 10D + 1.0D) / 2D;
 
-                    if (mainNoiseMod < 0.0D) {
-                        heightVal = minLimitMod;
-                    } else if (mainNoiseMod > 1.0D) {
-                        heightVal = maxLimitMod;
+                    if (mainNoiseVal < 0.0D) {
+                        heightVal = minLimitVal;
+                    } else if (mainNoiseVal > 1.0D) {
+                        heightVal = maxLimitVal;
                     } else {
-                        heightVal = minLimitMod + (maxLimitMod - minLimitMod) * mainNoiseMod;
+                        heightVal = minLimitVal + (maxLimitVal - minLimitVal) * mainNoiseVal;
                     }
-                    heightVal -= scaleMod2;
+                    heightVal -= scaleVal2;
 
                     if (n > byte17 - 4) {
                         double d13 = (float) (n - (byte17 - 4)) / 3F;

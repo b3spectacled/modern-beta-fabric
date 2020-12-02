@@ -11,26 +11,18 @@ import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.IndevUtil.IndevTheme;
-import com.bespectacled.modernbeta.util.IndevUtil.IndevType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-
-import net.fabricmc.fabric.mixin.gamerule.BooleanRuleAccessor;
 import net.fabricmc.fabric.mixin.gamerule.IntRuleAccessor;
-import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.SpawnLocating;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome.Category;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Mixin(MinecraftServer.class)
@@ -70,7 +62,6 @@ public class MixinMinecraftServer {
                 
                 // Set Indev world properties
                 IndevTheme theme = indevChunkProvider.getTheme();
-                
                 setIndevProperties(world, theme);
             }
         } 

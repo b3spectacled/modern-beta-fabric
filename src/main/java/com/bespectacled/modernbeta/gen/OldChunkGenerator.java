@@ -77,8 +77,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
         this.chunkProvider.makeChunk(worldAccess, structureAccessor, chunk, this.biomeSource);
-        
-        BetaFeature.OLD_FANCY_OAK.chunkReset();
     }
     
     @Override
@@ -92,12 +90,13 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public void generateFeatures(ChunkRegion chunkRegion, StructureAccessor structureAccessor) {
+        BetaFeature.OLD_FANCY_OAK.chunkReset();
+        
         GenUtil.generateFeaturesWithOcean(chunkRegion, structureAccessor, this, FEATURE_RAND, this.genOceans);
     }
     
     @Override
     public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
-        
         GenUtil.carveWithOcean(this.seed, biomeAccess, chunk, carver, this, this.biomeSource, FEATURE_RAND, this.getSeaLevel(), this.genOceans);
     }
     
