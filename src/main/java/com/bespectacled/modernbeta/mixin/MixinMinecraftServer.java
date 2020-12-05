@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.gen.provider.BetaChunkProvider;
 import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.IndevUtil.IndevTheme;
@@ -79,7 +80,9 @@ public class MixinMinecraftServer {
             x += spawnRand.nextInt(64) - spawnRand.nextInt(64);
         }
         
-        return new BlockPos(x, gen.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG), z);
+        int y = gen.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
+        
+        return new BlockPos(x, y - 1, z);
     }
     
     @Unique

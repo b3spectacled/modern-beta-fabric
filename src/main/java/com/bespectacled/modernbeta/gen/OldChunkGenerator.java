@@ -5,7 +5,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.feature.BetaFeature;
-import com.bespectacled.modernbeta.gen.provider.IOldChunkProvider;
+import com.bespectacled.modernbeta.gen.provider.AbstractChunkProvider;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.GenUtil;
@@ -49,7 +49,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private final boolean genOceans;
     
     private final OldBiomeSource biomeSource;
-    private final IOldChunkProvider chunkProvider;
+    private final AbstractChunkProvider chunkProvider;
     
     private static final ChunkRandom FEATURE_RAND = new ChunkRandom();
 
@@ -61,7 +61,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.settings = settings;
         
         this.worldType = WorldType.getWorldType(settings.settings);
-        this.chunkProvider = IOldChunkProvider.getChunkProvider(seed, this.worldType, settings.settings);
+        this.chunkProvider = AbstractChunkProvider.getChunkProvider(seed, this.worldType, settings.settings);
         this.genOceans = this.worldType != WorldType.SKYLANDS && this.biomeSource.generateOceans();
     }
 
@@ -161,7 +161,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.worldType;
     }
     
-    public IOldChunkProvider getChunkProvider() {
+    public AbstractChunkProvider getChunkProvider() {
         return this.chunkProvider;
     }
     

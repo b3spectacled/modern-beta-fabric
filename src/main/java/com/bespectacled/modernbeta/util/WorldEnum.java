@@ -35,7 +35,7 @@ public class WorldEnum {
                 }
             }
             
-            throw new IllegalArgumentException("No world type matching id: " + id);
+            throw new IllegalArgumentException("[Modern Beta] No world type matching id: " + id);
         }
         
         public static WorldType fromName(String name) {
@@ -45,7 +45,7 @@ public class WorldEnum {
                 }
             }
             
-            throw new IllegalArgumentException("No world type matching name: " + name);
+            throw new IllegalArgumentException("[Modern Beta] No world type matching name: " + name);
         }
         
         public static WorldType getWorldType(CompoundTag settings) {
@@ -90,7 +90,7 @@ public class WorldEnum {
                 }
             }
             
-            throw new IllegalArgumentException("No biome type matching id: " + id);
+            throw new IllegalArgumentException("[Modern Beta] No biome type matching id: " + id);
         }
         
         public static BiomeType fromName(String name) {
@@ -100,7 +100,7 @@ public class WorldEnum {
                 }
             }
             
-            throw new IllegalArgumentException("No biome type matching name: " + name);
+            throw new IllegalArgumentException("[Modern Beta] No biome type matching name: " + name);
         }
         
         public static BiomeType getBiomeType(CompoundTag settings) {

@@ -8,6 +8,7 @@ import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.BoundedHashMap;
 import com.bespectacled.modernbeta.util.GenUtil;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -29,7 +30,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 
-public class InfdevOldChunkProvider implements IOldChunkProvider {
+public class InfdevOldChunkProvider extends AbstractChunkProvider {
     private boolean generateInfdevPyramid = true;
     private boolean generateInfdevWall = true;
 
@@ -41,19 +42,10 @@ public class InfdevOldChunkProvider implements IOldChunkProvider {
     private final PerlinOctaveNoise noiseOctavesF;
     private final PerlinOctaveNoise forestNoiseOctaves;
 
-    // Block Y-height cache, from Beta+
-    private static final Map<BlockPos, Integer> GROUND_CACHE_Y = new HashMap<>();
     private static final Block BLOCK_ARR[][][] = new Block[16][128][16];
     
-    private static final Mutable POS = new Mutable();
-    
-    private static final Random RAND = new Random();
-    
-    private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
-    private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
-    
     public InfdevOldChunkProvider(long seed, CompoundTag settings) {
-        RAND.setSeed(seed);
+        super(seed);
         
         // Noise Generators
         noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true);
@@ -74,11 +66,7 @@ public class InfdevOldChunkProvider implements IOldChunkProvider {
         if (settings.contains("generateInfdevWall")) 
             this.generateInfdevWall = settings.getBoolean("generateInfdevWall");
         
-        // Yes this is messy. What else am I supposed to do?
-        BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
-        BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
-        
-        GROUND_CACHE_Y.clear();
+        setForestOctaves(forestNoiseOctaves);
     }
 
     @Override

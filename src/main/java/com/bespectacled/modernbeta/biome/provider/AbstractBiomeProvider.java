@@ -24,25 +24,34 @@ public abstract class AbstractBiomeProvider {
     public static AbstractBiomeProvider getBiomeProvider(long seed, CompoundTag settings) {
         WorldType worldType = WorldType.getWorldType(settings);
         BiomeType biomeType = BiomeType.getBiomeType(settings);
+        AbstractBiomeProvider biomeProvider;
         
         if (worldType == WorldType.INDEV)
             return new IndevBiomeProvider(seed, settings);
         
         switch(biomeType) {
             case BETA:
-                return new BetaBiomeProvider(seed);
+                biomeProvider = new BetaBiomeProvider(seed);
+                break;
             case SKY:
-                return new SingleBiomeProvider(seed, BetaBiomes.SKY_ID);
+                biomeProvider = new SingleBiomeProvider(seed, BetaBiomes.SKY_ID);
+                break;
             case PLUS:
-                return new PlusBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType));
+                biomeProvider = new PlusBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType));
+                break;
             case CLASSIC:
-                return new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.CLASSIC));
+                biomeProvider = new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.CLASSIC));
+                break;
             case WINTER:
-                return new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.WINTER));
+                biomeProvider = new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.WINTER));
+                break;
             case VANILLA:
-                return new VanillaBiomeProvider(seed);
+                biomeProvider = new VanillaBiomeProvider(seed);
+                break;
+            default:
+                biomeProvider = new SingleBiomeProvider(seed, ClassicBiomes.ALPHA_ID);
         }
         
-        return new SingleBiomeProvider(seed, ClassicBiomes.ALPHA_ID);
+        return biomeProvider;
     }
 }

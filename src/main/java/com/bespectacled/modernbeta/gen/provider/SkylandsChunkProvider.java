@@ -31,7 +31,7 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 
-public class SkylandsChunkProvider implements IOldChunkProvider {
+public class SkylandsChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
@@ -52,23 +52,13 @@ public class SkylandsChunkProvider implements IOldChunkProvider {
     
     private static final double HEIGHT_NOISE[] = new double[425];
     
-    private static final Mutable POS = new Mutable();
-    private static final Random RAND = new Random();
-    
     private static final double[] TEMPS = new double[256];
     private static final double[] HUMIDS = new double[256];
-    
-    private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
-    private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
-    
-    // Block Y-height cache, from Beta+
-    private static final Map<BlockPos, Integer> GROUND_CACHE_Y = new HashMap<>();
-    private static final int[][] CHUNK_Y = new int[16][16];
     
     private static final Identifier[] BIOMES = new Identifier[256];
     
     public SkylandsChunkProvider(long seed) {
-        RAND.setSeed(seed);
+        super(seed);
 
         // Noise Generators
         minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -80,11 +70,7 @@ public class SkylandsChunkProvider implements IOldChunkProvider {
         depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
         forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
 
-        // Yes this is messy. What else am I supposed to do?
-        BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
-        BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
-        
-        GROUND_CACHE_Y.clear();
+        setForestOctaves(forestNoiseOctaves);
     }
 
     @Override

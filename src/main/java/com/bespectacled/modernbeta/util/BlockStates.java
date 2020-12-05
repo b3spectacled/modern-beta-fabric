@@ -6,6 +6,7 @@ import net.minecraft.block.Blocks;
 
 public class BlockStates {
     public static BlockState GRASS_BLOCK = Blocks.GRASS_BLOCK.getDefaultState();
+    public static BlockState PODZOL = Blocks.PODZOL.getDefaultState();
     public static BlockState DIRT = Blocks.DIRT.getDefaultState();
     
     public static BlockState GRAVEL = Blocks.GRAVEL.getDefaultState();
@@ -23,6 +24,7 @@ public class BlockStates {
         BlockState state;
         
         if (b == Blocks.GRASS_BLOCK) state = GRASS_BLOCK;
+        else if (b == Blocks.PODZOL) state = PODZOL;
         else if (b == Blocks.DIRT) state = DIRT;
         else if (b == Blocks.GRAVEL) state = GRAVEL;
         else if (b == Blocks.SAND) state = SAND;

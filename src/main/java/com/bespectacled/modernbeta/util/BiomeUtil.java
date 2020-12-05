@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.util;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
 import net.minecraft.util.math.MathHelper;
@@ -22,6 +24,8 @@ public class BiomeUtil {
     public static double[] noises = null;
 
     public static double[][] temps2D = new double[16][16];
+    
+    private static final Map<Integer, Double> SKY_COLOR_CACHE = new HashMap<Integer, Double>();
 
     // Convert absolute coordinates to BiomeArray index
     public static int computeBiomeIndex(int x, int y, int z) {
@@ -123,6 +127,8 @@ public class BiomeUtil {
     
 
     public static double fetchSkyTemp(int x, int z) {
-        return tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
+        double color = tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
+        
+        return color;
     }
 }

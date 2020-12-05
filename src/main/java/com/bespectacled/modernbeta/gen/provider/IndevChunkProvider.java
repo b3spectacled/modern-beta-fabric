@@ -38,7 +38,7 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 
-public class IndevChunkProvider implements IOldChunkProvider {
+public class IndevChunkProvider extends AbstractChunkProvider {
     
     private PerlinOctaveNoiseCombined heightNoise1;
     private PerlinOctaveNoiseCombined heightNoise2;
@@ -77,15 +77,9 @@ public class IndevChunkProvider implements IOldChunkProvider {
     
     private boolean pregenerated;
     private BlockPos spawnPos;
-
-    private static final Mutable POS = new Mutable();
-    private static final Random RAND = new Random();
-    
-    private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
-    private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
     
     public IndevChunkProvider(long seed, CompoundTag settings) {
-        RAND.setSeed(seed);
+        super(seed);
         
         this.theme = settings.contains("levelTheme") ? IndevTheme.fromName(settings.getString("levelTheme")) : IndevTheme.NORMAL;
         this.type = settings.contains("levelType") ? IndevType.fromName(settings.getString("levelType")) : IndevType.ISLAND;
@@ -604,7 +598,7 @@ public class IndevChunkProvider implements IOldChunkProvider {
     private void generateWorldBorder(Chunk chunk) {
         BlockState topBlock = BlockStates.GRASS_BLOCK;
         
-        if (this.theme == IndevTheme.HELL) topBlock = BlockStates.DIRT;
+        if (this.theme == IndevTheme.HELL) topBlock = BlockStates.PODZOL;
          
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {

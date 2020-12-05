@@ -1,18 +1,13 @@
 package com.bespectacled.modernbeta.gen.provider;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
-import com.bespectacled.modernbeta.feature.BetaFeature;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -21,7 +16,6 @@ import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
@@ -30,7 +24,7 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 
-public class InfdevChunkProvider implements IOldChunkProvider {
+public class InfdevChunkProvider extends AbstractChunkProvider {
     
     private final PerlinOctaveNoise noiseOctavesA;
     private final PerlinOctaveNoise noiseOctavesB;
@@ -41,19 +35,10 @@ public class InfdevChunkProvider implements IOldChunkProvider {
     
     private static final double HEIGHT_NOISE[][] = new double[33][4];
     
-    private static final Mutable POS = new Mutable();
-    private static final Random RAND = new Random();
     private static final Random SANDSTONE_RAND = new Random();
     
-    private static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
-    private static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
-    
-    // Block Y-height cache, from Beta+
-    private static final Map<BlockPos, Integer> GROUND_CACHE_Y = new HashMap<>();
-    private static final int[][] CHUNK_Y = new int[16][16];
-    
     public InfdevChunkProvider(long seed) {
-        RAND.setSeed(seed);
+        super(seed);
         SANDSTONE_RAND.setSeed(seed);
         
         // Noise Generators
@@ -67,9 +52,7 @@ public class InfdevChunkProvider implements IOldChunkProvider {
         
         forestNoiseOctaves = new PerlinOctaveNoise(RAND, 5, true);
 
-        // Yes this is messy. What else am I supposed to do?
-        BetaDecorator.COUNT_INFDEV_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
-        BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestNoiseOctaves);
+        setForestOctaves(forestNoiseOctaves);
     }
 
     @Override
@@ -273,7 +256,7 @@ public class InfdevChunkProvider implements IOldChunkProvider {
                                     JIGSAW_LIST.size(), 
                                     absX, y, absZ);
                                 
-                                BlockState blockToSet = IOldChunkProvider.getBlockState(clampedDensity, y, 0);
+                                BlockState blockToSet = getBlockState(clampedDensity, y, 0);
                                 chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
                                 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
