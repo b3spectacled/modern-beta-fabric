@@ -1,19 +1,12 @@
 package com.bespectacled.modernbeta.gen.provider;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
-import com.bespectacled.modernbeta.decorator.BetaDecorator;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -23,7 +16,6 @@ import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
@@ -192,11 +184,8 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     }
     
     public void generateTerrain(Chunk chunk, double[] temps, StructureAccessor structureAccessor) {
-        byte byte2 = 2;
-        // byte seaLevel = (byte)this.getSeaLevel();
-        byte byte33 = 33;
-
-        int int3_1 = byte2 + 1;
+        byte noiseResolutionY = 33;
+        int noiseResolutionXZ = 3;
 
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
@@ -206,24 +195,23 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         ObjectListIterator<StructurePiece> structureListIterator = (ObjectListIterator<StructurePiece>) STRUCTURE_LIST.iterator();
         ObjectListIterator<JigsawJunction> jigsawListIterator = (ObjectListIterator<JigsawJunction>) JIGSAW_LIST.iterator();
 
-        generateHeightmap(chunk.getPos().x * byte2, 0, chunk.getPos().z * byte2);
+        generateHeightmap(chunk.getPos().x * 2, 0, chunk.getPos().z * 2);
 
-        // Noise is sampled in 4x16x4 sections?
-        for (int i = 0; i < byte2; i++) {
-            for (int j = 0; j < byte2; j++) {
-                for (int k = 0; k < 32; k++) {
+        for (int subChunkX = 0; subChunkX < 2; subChunkX++) {
+            for (int subChunkZ = 0; subChunkZ < 2; subChunkZ++) {
+                for (int subChunkY = 0; subChunkY < 32; subChunkY++) {
 
                     double quarter = 0.25D;
 
-                    double var1 = HEIGHT_NOISE[((i + 0) * int3_1 + (j + 0)) * byte33 + (k + 0)];
-                    double var2 = HEIGHT_NOISE[((i + 0) * int3_1 + (j + 1)) * byte33 + (k + 0)];
-                    double var3 = HEIGHT_NOISE[((i + 1) * int3_1 + (j + 0)) * byte33 + (k + 0)];
-                    double var4 = HEIGHT_NOISE[((i + 1) * int3_1 + (j + 1)) * byte33 + (k + 0)];
+                    double var1 = HEIGHT_NOISE[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
+                    double var2 = HEIGHT_NOISE[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
+                    double var3 = HEIGHT_NOISE[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
+                    double var4 = HEIGHT_NOISE[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
 
-                    double var5 = (HEIGHT_NOISE[((i + 0) * int3_1 + (j + 0)) * byte33 + (k + 1)] - var1) * quarter;
-                    double var6 = (HEIGHT_NOISE[((i + 0) * int3_1 + (j + 1)) * byte33 + (k + 1)] - var2) * quarter;
-                    double var7 = (HEIGHT_NOISE[((i + 1) * int3_1 + (j + 0)) * byte33 + (k + 1)] - var3) * quarter;
-                    double var8 = (HEIGHT_NOISE[((i + 1) * int3_1 + (j + 1)) * byte33 + (k + 1)] - var4) * quarter;
+                    double var5 = (HEIGHT_NOISE[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - var1) * quarter;
+                    double var6 = (HEIGHT_NOISE[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - var2) * quarter;
+                    double var7 = (HEIGHT_NOISE[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - var3) * quarter;
+                    double var8 = (HEIGHT_NOISE[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - var4) * quarter;
 
                     for (int l = 0; l < 4; l++) {
                         double eighth = 0.125D;
@@ -233,9 +221,9 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                         double var13 = (var4 - var2) * eighth;
 
                         for (int m = 0; m < 8; m++) {
-                            int x = (m + i * 8);
-                            int y = k * 4 + l;
-                            int z = (j * 8);
+                            int x = (m + subChunkX * 8);
+                            int y = subChunkY * 4 + l;
+                            int z = (subChunkZ * 8);
 
                             double var14 = 0.125D;
                             double density = var10; // var15
@@ -282,12 +270,9 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     }
     
     private void generateHeightmap(int x, int y, int z) {
-        byte byte2 = 2;
-        // byte seaLevel = (byte)this.getSeaLevel();
-        byte byte33 = 33;
-
-        int int3_0 = byte2 + 1;
-        int int3_1 = byte2 + 1;
+        byte noiseResolutionY = 33;
+        int noiseResolutionX = 3;
+        int noiseResolutionZ = 3;
 
         // Var names taken from old customized preset names
         double coordinateScale = 684.41200000000003D; // d
@@ -307,47 +292,47 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         double temps[] = TEMPS;
         double humids[] = HUMIDS;
 
-        scaleNoise = scaleNoiseOctaves.sampleArrBeta(scaleNoise, x, z, int3_0, int3_1, 1.121D, 1.121D, 0.5D);
-        depthNoise = depthNoiseOctaves.sampleArrBeta(depthNoise, x, z, int3_0, int3_1, depthNoiseScaleX, depthNoiseScaleZ,
+        scaleNoise = scaleNoiseOctaves.sampleArrBeta(scaleNoise, x, z, noiseResolutionX, noiseResolutionZ, 1.121D, 1.121D, 0.5D);
+        depthNoise = depthNoiseOctaves.sampleArrBeta(depthNoise, x, z, noiseResolutionX, noiseResolutionZ, depthNoiseScaleX, depthNoiseScaleZ,
                 depthNoiseScaleExponent);
 
         coordinateScale *= 2D;
 
-        mainNoise = mainNoiseOctaves.sampleArrBeta(mainNoise, x, y, z, int3_0, byte33, int3_1,
+        mainNoise = mainNoiseOctaves.sampleArrBeta(mainNoise, x, y, z, noiseResolutionX, noiseResolutionY, noiseResolutionZ,
                 coordinateScale / mainNoiseScaleX, heightScale / mainNoiseScaleY, coordinateScale / mainNoiseScaleZ);
 
-        minLimitNoise = minLimitNoiseOctaves.sampleArrBeta(minLimitNoise, x, y, z, int3_0, byte33, int3_1,
+        minLimitNoise = minLimitNoiseOctaves.sampleArrBeta(minLimitNoise, x, y, z, noiseResolutionX, noiseResolutionY, noiseResolutionZ,
                 coordinateScale, heightScale, coordinateScale);
 
-        maxLimitNoise = maxLimitNoiseOctaves.sampleArrBeta(maxLimitNoise, x, y, z, int3_0, byte33, int3_1,
+        maxLimitNoise = maxLimitNoiseOctaves.sampleArrBeta(maxLimitNoise, x, y, z, noiseResolutionX, noiseResolutionY, noiseResolutionZ,
                 coordinateScale, heightScale, coordinateScale);
 
-        int i = 0;
-        int j = 0;
-        int k = 16 / int3_0;
+        int heightNoiseNdx = 0;
+        int flatNoiseNdx = 0;
+        int k = 16 / noiseResolutionX;
 
-        for (int l = 0; l < int3_0; l++) {
-            int idx0 = l * k + k / 2;
+        for (int noiseX = 0; noiseX < noiseResolutionX; noiseX++) {
+            int relX = noiseX * k + k / 2;
 
-            for (int m = 0; m < int3_1; m++) {
-                int idx1 = m * k + k / 2;
+            for (int noiseZ = 0; noiseZ < noiseResolutionZ; noiseZ++) {
+                int relZ = noiseZ * k + k / 2;
 
-                double curTemp = temps[idx0 * 16 + idx1];
-                double curHumid = humids[idx0 * 16 + idx1] * curTemp;
+                double curTemp = temps[relX * 16 + relZ];
+                double curHumid = humids[relX * 16 + relZ] * curTemp;
 
                 double humidVal = 1.0D - curHumid;
                 humidVal *= humidVal;
                 humidVal *= humidVal;
                 humidVal = 1.0D - humidVal;
 
-                double scaleVal = (scaleNoise[j] + 256D) / 512D;
+                double scaleVal = (scaleNoise[flatNoiseNdx] + 256D) / 512D;
                 scaleVal *= humidVal;
 
                 if (scaleVal > 1.0D) {
                     scaleVal = 1.0D;
                 }
 
-                double depthVal = depthNoise[j] / 8000D;
+                double depthVal = depthNoise[flatNoiseNdx] / 8000D;
 
                 if (depthVal < 0.0D) {
                     depthVal = -depthVal * 0.29999999999999999D;
@@ -367,23 +352,23 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 }
 
                 scaleVal += 0.5D;
-                depthVal = (depthVal * (double) byte33) / 16D;
+                depthVal = (depthVal * (double) noiseResolutionY) / 16D;
 
-                double depthVal2 = (double) byte33 / 16D;
+                double depthVal2 = (double) noiseResolutionY / 16D;
 
-                j++;
+                flatNoiseNdx++;
 
-                for (int n = 0; n < byte33; n++) {
+                for (int noiseY = 0; noiseY < noiseResolutionY; noiseY++) {
                     double heightVal = 0.0D;
-                    double scaleVal2 = (((double) n - depthVal2) * 8D) / scaleVal;
+                    double scaleVal2 = (((double) noiseY - depthVal2) * 8D) / scaleVal;
 
                     if (scaleVal2 < 0.0D) {
                         scaleVal2 *= -1D;
                     }
 
-                    double minLimitVal = minLimitNoise[i] / lowerLimitScale;
-                    double maxLimitVal = maxLimitNoise[i] / upperLimitScale;
-                    double mainNoiseVal = (mainNoise[i] / 10D + 1.0D) / 2D;
+                    double minLimitVal = minLimitNoise[heightNoiseNdx] / lowerLimitScale;
+                    double maxLimitVal = maxLimitNoise[heightNoiseNdx] / upperLimitScale;
+                    double mainNoiseVal = (mainNoise[heightNoiseNdx] / 10D + 1.0D) / 2D;
 
                     if (mainNoiseVal < 0.0D) {
                         heightVal = minLimitVal;
@@ -395,50 +380,47 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                     heightVal -= 8D;
                     int int_32 = 32;
 
-                    if (n > byte33 - int_32) {
-                        double d13 = (float) (n - (byte33 - int_32)) / ((float) int_32 - 1.0F);
+                    if (noiseY > noiseResolutionY - int_32) {
+                        double d13 = (float) (noiseY - (noiseResolutionY - int_32)) / ((float) int_32 - 1.0F);
                         heightVal = heightVal * (1.0D - d13) + -30D * d13;
                     }
 
                     int_32 = 8;
-                    if (n < int_32) {
-                        double d14 = (float) (int_32 - n) / ((float) int_32 - 1.0F);
+                    if (noiseY < int_32) {
+                        double d14 = (float) (int_32 - noiseY) / ((float) int_32 - 1.0F);
                         heightVal = heightVal * (1.0D - d14) + -30D * d14;
                     }
 
-                    HEIGHT_NOISE[i] = heightVal;
-                    i++;
+                    HEIGHT_NOISE[heightNoiseNdx] = heightVal;
+                    heightNoiseNdx++;
                 }
             }
         }
     }
     
     private void sampleHeightmap(int absX, int absZ) {
-        byte byte2 = 2;
-        // byte seaLevel = (byte)this.getSeaLevel();
-        byte byte33 = 33;
-
-        int int3_1 = byte2 + 1;
+        byte noiseResolutionY = 33;
+        int noiseResolutionXZ = 3;
         
         int chunkX = absX >> 4;
         int chunkZ = absZ >> 4;
 
-        generateHeightmap(chunkX * byte2, 0, chunkZ * byte2);
+        generateHeightmap(chunkX * 2, 0, chunkZ * 2);
 
-        for (int i = 0; i < byte2; i++) {
-            for (int j = 0; j < byte2; j++) {
-                for (int k = 0; k < 16; k++) {
+        for (int subChunkX = 0; subChunkX < 2; subChunkX++) {
+            for (int subChunkZ = 0; subChunkZ < 2; subChunkZ++) {
+                for (int subChunkY = 0; subChunkY < 16; subChunkY++) {
                     double quarter = 0.25D;
 
-                    double var1 = HEIGHT_NOISE[((i + 0) * int3_1 + (j + 0)) * byte33 + (k + 0)];
-                    double var2 = HEIGHT_NOISE[((i + 0) * int3_1 + (j + 1)) * byte33 + (k + 0)];
-                    double var3 = HEIGHT_NOISE[((i + 1) * int3_1 + (j + 0)) * byte33 + (k + 0)];
-                    double var4 = HEIGHT_NOISE[((i + 1) * int3_1 + (j + 1)) * byte33 + (k + 0)];
+                    double var1 = HEIGHT_NOISE[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
+                    double var2 = HEIGHT_NOISE[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
+                    double var3 = HEIGHT_NOISE[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
+                    double var4 = HEIGHT_NOISE[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
 
-                    double var5 = (HEIGHT_NOISE[((i + 0) * int3_1 + (j + 0)) * byte33 + (k + 1)] - var1) * quarter;
-                    double var6 = (HEIGHT_NOISE[((i + 0) * int3_1 + (j + 1)) * byte33 + (k + 1)] - var2) * quarter;
-                    double var7 = (HEIGHT_NOISE[((i + 1) * int3_1 + (j + 0)) * byte33 + (k + 1)] - var3) * quarter;
-                    double var8 = (HEIGHT_NOISE[((i + 1) * int3_1 + (j + 1)) * byte33 + (k + 1)] - var4) * quarter;
+                    double var5 = (HEIGHT_NOISE[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - var1) * quarter;
+                    double var6 = (HEIGHT_NOISE[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - var2) * quarter;
+                    double var7 = (HEIGHT_NOISE[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - var3) * quarter;
+                    double var8 = (HEIGHT_NOISE[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - var4) * quarter;
 
                     for (int l = 0; l < 4; l++) {
                         double eighth = 0.125D;
@@ -448,9 +430,9 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                         double var13 = (var4 - var2) * eighth;
 
                         for (int m = 0; m < 8; m++) {
-                            int x = (m + i * 8);
-                            int y = k * 4 + l;
-                            int z = (j * 8);
+                            int x = (m + subChunkX * 8);
+                            int y = subChunkY * 4 + l;
+                            int z = (subChunkZ * 8);
 
                             double var14 = 0.125D;
                             double density = var10; // var15

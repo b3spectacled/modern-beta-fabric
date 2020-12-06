@@ -76,7 +76,6 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     private int groundLevel;
     
     private boolean pregenerated;
-    private BlockPos spawnPos;
     
     public IndevChunkProvider(long seed, CompoundTag settings) {
         super(seed);
@@ -94,7 +93,6 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         this.layers = (this.type == IndevType.FLOATING) ? (this.height - 64) / 48 + 1 : 1;
         
         this.pregenerated = false;  
-        this.spawnPos = null;
     }
 
     @Override
@@ -700,10 +698,6 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         
         world.setBlockState(mutable.set(spawnX - 3 + 1, spawnY, spawnZ), Blocks.WALL_TORCH.getDefaultState().rotate(BlockRotation.CLOCKWISE_90));
         world.setBlockState(mutable.set(spawnX + 3 - 1, spawnY, spawnZ), Blocks.WALL_TORCH.getDefaultState().rotate(BlockRotation.COUNTERCLOCKWISE_90));
-    }
-    
-    public void setSpawnPos(BlockPos spawnPos) {
-        this.spawnPos = spawnPos;
     }
     
     public IndevType getType() {

@@ -56,7 +56,6 @@ public class MixinMinecraftServer {
             if (spawnPos != null && oldGen.getWorldType() == WorldType.INDEV) {
                 ModernBeta.LOGGER.log(Level.INFO, "[Indev] Spawning..");
                 IndevChunkProvider indevChunkProvider = (IndevChunkProvider)oldGen.getChunkProvider();
-                indevChunkProvider.setSpawnPos(spawnPos);
                 
                 // Generate Indev house
                 indevChunkProvider.generateIndevHouse(world, spawnPos);

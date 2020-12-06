@@ -1,7 +1,6 @@
 package com.bespectacled.modernbeta.util;
 
 import java.util.Iterator;
-import java.util.List;
 
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 
