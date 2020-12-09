@@ -66,7 +66,7 @@ public class Shrubland {
             .temperature(0.7F)
             .downfall(0.4F)
             .effects((new BiomeEffects.Builder())
-                .skyColor(9158143)
+                .skyColor(7777023)
                 .fogColor(12638463)
                 .waterColor(4159204)
                 .waterFogColor(329011)

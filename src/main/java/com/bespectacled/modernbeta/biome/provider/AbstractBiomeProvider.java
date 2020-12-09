@@ -48,9 +48,6 @@ public abstract class AbstractBiomeProvider {
             case VANILLA:
                 biomeProvider = new VanillaBiomeProvider(seed);
                 break;
-            case BETA_VORONOI:
-                biomeProvider = new BetaVoronoiBiomeProvider(seed);
-                break;
             default:
                 biomeProvider = new SingleBiomeProvider(seed, ClassicBiomes.ALPHA_ID);
         }

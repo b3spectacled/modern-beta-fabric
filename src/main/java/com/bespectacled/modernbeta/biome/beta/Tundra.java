@@ -65,7 +65,7 @@ public class Tundra {
             .temperature(0.0F)
             .downfall(0.5F)
             .effects((new BiomeEffects.Builder())
-                .skyColor(8625919)
+                .skyColor(10263039)
                 .fogColor(12638463)
                 .waterColor(3750089)
                 .waterFogColor(329011)

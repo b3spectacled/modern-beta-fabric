@@ -65,8 +65,7 @@ public class WorldEnum {
         CLASSIC(3, "classic"),
         WINTER(4, "winter"),
         PLUS(5, "plus"),
-        VANILLA(6, "vanilla"),
-        BETA_VORONOI(7, "beta_voronoi");
+        VANILLA(6, "vanilla");
         
         private final int id;
         private final String name;

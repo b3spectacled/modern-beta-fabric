@@ -1,8 +1,5 @@
 package com.bespectacled.modernbeta.biome.beta;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.google.common.collect.ImmutableList;
 
@@ -11,11 +8,9 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 
 public class BetaBiomes {
-    public enum BiomeProviderType {
+    public enum BetaBiomeType {
         LAND, OCEAN
     }
-    
-    public static final Map<String, Identifier> BETA_MAPPINGS = new HashMap<String, Identifier>();
     
     public static final Identifier FOREST_ID = ModernBeta.createId("forest");
     public static final Identifier SHRUBLAND_ID = ModernBeta.createId("shrubland");
@@ -81,28 +76,6 @@ public class BetaBiomes {
         Registry.register(BuiltinRegistries.BIOME, SKY_ID, Sky.BIOME);
     }
     
-    static {
-        BETA_MAPPINGS.put("ice_desert", ICE_DESERT_ID);
-        BETA_MAPPINGS.put("tundra", TUNDRA_ID);
-        BETA_MAPPINGS.put("savanna", SAVANNA_ID);
-        BETA_MAPPINGS.put("desert", DESERT_ID);
-        BETA_MAPPINGS.put("swampland", SWAMPLAND_ID);
-        BETA_MAPPINGS.put("taiga", TAIGA_ID);
-        BETA_MAPPINGS.put("shrubland", SHRUBLAND_ID);
-        BETA_MAPPINGS.put("forest", FOREST_ID);
-        BETA_MAPPINGS.put("plains", PLAINS_ID);
-        BETA_MAPPINGS.put("seasonal_forest", SEASONAL_FOREST_ID);
-        BETA_MAPPINGS.put("rainforest", RAINFOREST_ID);
-        
-        BETA_MAPPINGS.put("ocean", OCEAN_ID);
-        BETA_MAPPINGS.put("cold_ocean", COLD_OCEAN_ID);
-        BETA_MAPPINGS.put("frozen_ocean", FROZEN_OCEAN_ID);
-        BETA_MAPPINGS.put("lukewarm_ocean", LUKEWARM_OCEAN_ID);
-        BETA_MAPPINGS.put("warm_ocean", WARM_OCEAN_ID);
-        
-        BETA_MAPPINGS.put("sky", SKY_ID);
-    }
-    
     /*
      * Beta Biome Cache 
      */
@@ -114,7 +87,7 @@ public class BetaBiomes {
         generateBiomeLookup();
     }
     
-    public static Identifier getBiomeFromLookup(double temp, double humid, BiomeProviderType type) {
+    public static Identifier getBiomeFromLookup(double temp, double humid, BetaBiomeType type) {
         int i = (int) (temp * 63D);
         int j = (int) (humid * 63D);
         
@@ -136,8 +109,8 @@ public class BetaBiomes {
         int sizeZ = 16;
         
         for (int i = 0; i < sizeX * sizeZ; ++i) {
-            if (landBiomes != null) landBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeProviderType.LAND);
-            if (oceanBiomes != null) oceanBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BiomeProviderType.OCEAN);
+            if (landBiomes != null) landBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BetaBiomeType.LAND);
+            if (oceanBiomes != null) oceanBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BetaBiomeType.OCEAN);
         }
     }
     

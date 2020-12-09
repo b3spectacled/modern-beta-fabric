@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.bespectacled.modernbeta.gen.type.AlphaGeneratorType;
 import com.bespectacled.modernbeta.gen.type.BetaGeneratorType;
-import com.bespectacled.modernbeta.gen.type.BetaVoronoiGeneratorType;
 import com.bespectacled.modernbeta.gen.type.IndevGeneratorType;
 import com.bespectacled.modernbeta.gen.type.InfdevGeneratorType;
 import com.bespectacled.modernbeta.gen.type.InfdevOldGeneratorType;
@@ -84,7 +83,6 @@ public class ModernBeta implements ModInitializer {
             InfdevGeneratorType.register();
             InfdevOldGeneratorType.register();
             IndevGeneratorType.register();
-            BetaVoronoiGeneratorType.register();
             //LOGGER.log(Level.INFO, "Registered Modern Beta world types!");            
         }
 

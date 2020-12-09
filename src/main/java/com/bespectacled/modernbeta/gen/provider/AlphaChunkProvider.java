@@ -332,65 +332,65 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         for (int noiseX = 0; noiseX < noiseResolutionX; noiseX++) {
             for (int noiseZ = 0; noiseZ < noiseResolutionZ; noiseZ++) {
 
-                double scaleMod = (scaleNoise[flatNoiseNdx] + 256D) / 512D;
-                if (scaleMod > 1.0D) {
-                    scaleMod = 1.0D;
+                double scaleVal = (scaleNoise[flatNoiseNdx] + 256D) / 512D;
+                if (scaleVal > 1.0D) {
+                    scaleVal = 1.0D;
                 }
 
                 double d3 = 0.0D;
 
-                double depthMod = depthNoise[flatNoiseNdx] / 8000D;
-                if (depthMod < 0.0D) {
-                    depthMod = -depthMod;
+                double depthVal = depthNoise[flatNoiseNdx] / 8000D;
+                if (depthVal < 0.0D) {
+                    depthVal = -depthVal;
                 }
 
-                depthMod = depthMod * 3D - 3D;
+                depthVal = depthVal * 3D - 3D;
 
-                if (depthMod < 0.0D) {
-                    depthMod /= 2D;
-                    if (depthMod < -1D) {
-                        depthMod = -1D;
+                if (depthVal < 0.0D) {
+                    depthVal /= 2D;
+                    if (depthVal < -1D) {
+                        depthVal = -1D;
                     }
 
-                    depthMod /= 1.3999999999999999D;
-                    depthMod /= 2D;
+                    depthVal /= 1.3999999999999999D;
+                    depthVal /= 2D;
 
-                    scaleMod = 0.0D;
+                    scaleVal = 0.0D;
 
                 } else {
-                    if (depthMod > 1.0D) {
-                        depthMod = 1.0D;
+                    if (depthVal > 1.0D) {
+                        depthVal = 1.0D;
                     }
-                    depthMod /= 6D;
+                    depthVal /= 6D;
                 }
 
-                scaleMod += 0.5D;
-                depthMod = (depthMod * (double) noiseResolutionY) / 16D;
+                scaleVal += 0.5D;
+                depthVal = (depthVal * (double) noiseResolutionY) / 16D;
 
-                double depthMod2 = (double) noiseResolutionY / 2D + depthMod * 4D;
+                double depthVal2 = (double) noiseResolutionY / 2D + depthVal * 4D;
 
                 flatNoiseNdx++;
 
                 for (int noiseY = 0; noiseY < noiseResolutionY; noiseY++) {
                     double heightVal = 0.0D;
-                    double scaleMod2 = (((double) noiseY - depthMod2) * 12D) / scaleMod;
+                    double scaleVal2 = (((double) noiseY - depthVal2) * 12D) / scaleVal;
 
-                    if (scaleMod2 < 0.0D) {
-                        scaleMod2 *= 4D;
+                    if (scaleVal2 < 0.0D) {
+                        scaleVal2 *= 4D;
                     }
 
-                    double minLimitMod = minLimitNoise[heightNoiseNdx] / lowerLimitScale;
-                    double maxLimitMod = maxLimitNoise[heightNoiseNdx] / upperLimitScale;
-                    double mainLimitMod = (mainNoise[heightNoiseNdx] / 10D + 1.0D) / 2D;
+                    double minLimitVal = minLimitNoise[heightNoiseNdx] / lowerLimitScale;
+                    double maxLimitVal = maxLimitNoise[heightNoiseNdx] / upperLimitScale;
+                    double mainLimitVal = (mainNoise[heightNoiseNdx] / 10D + 1.0D) / 2D;
 
-                    if (mainLimitMod < 0.0D) {
-                        heightVal = minLimitMod;
-                    } else if (mainLimitMod > 1.0D) {
-                        heightVal = maxLimitMod;
+                    if (mainLimitVal < 0.0D) {
+                        heightVal = minLimitVal;
+                    } else if (mainLimitVal > 1.0D) {
+                        heightVal = maxLimitVal;
                     } else {
-                        heightVal = minLimitMod + (maxLimitMod - minLimitMod) * mainLimitMod;
+                        heightVal = minLimitVal + (maxLimitVal - minLimitVal) * mainLimitVal;
                     }
-                    heightVal -= scaleMod2;
+                    heightVal -= scaleVal2;
 
                     if (noiseY > noiseResolutionY - 4) {
                         double d11 = (float) (noiseY - (noiseResolutionY - 4)) / 3F;
