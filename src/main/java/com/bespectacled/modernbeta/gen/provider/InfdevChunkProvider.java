@@ -23,6 +23,11 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 
+/**
+ * 
+ * @author Paulevs
+ *
+ */
 public class InfdevChunkProvider extends AbstractChunkProvider {
     
     private final PerlinOctaveNoise noiseOctavesA;
