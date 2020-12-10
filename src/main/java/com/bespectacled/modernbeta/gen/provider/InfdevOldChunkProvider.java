@@ -32,10 +32,12 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise noiseOctavesF;
     private final PerlinOctaveNoise forestNoiseOctaves;
 
-    private static final Block BLOCK_ARR[][][] = new Block[16][128][16];
+    private final Block blockArr[][][];
     
     public InfdevOldChunkProvider(long seed, CompoundTag settings) {
         super(seed);
+        
+        this.blockArr = new Block[16][this.worldHeight][16];
         
         // Noise Generators
         noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true);
@@ -73,7 +75,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
     @Override
     public int getHeight(int x, int z, Type type) {
         BlockPos structPos = new BlockPos(x, 0, z);
-        int height = 127;
+        int height = this.worldHeight - 1;
         
         if (GROUND_CACHE_Y.get(structPos) == null) {            
             height = this.sampleHeightMap(x, z);
@@ -84,8 +86,8 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
         height = GROUND_CACHE_Y.get(structPos);
         
         // Not ideal
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && height < 64)
-            height = 64 + 1;
+        if (type == Heightmap.Type.WORLD_SURFACE_WG && height < this.seaLevel)
+            height = this.seaLevel + 1;
          
         return height;
     }
@@ -115,12 +117,12 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
             for (int z = 0; z < 16; ++z) {
                 int absZ = z + startZ;
                 
-                for (int y = 0; y < 128; ++y) {
-                    Block blockToSet = BLOCK_ARR[x][y][z];
+                for (int y = 0; y < this.worldHeight; ++y) {
+                    Block blockToSet = blockArr[x][y][z];
                     
                     // Second check is a hack to stop weird chunk borders generating from surface blocks for ocean biomes
                     // being picked up and replacing topsoil blocks, somehow before biome reassignment.  Why?!
-                    if ((biomeSource.isBeta() || biomeSource.isVanilla()) && GenUtil.getSolidHeight(chunk, absX, absZ) >= 60) {
+                    if ((biomeSource.isBeta() || biomeSource.isVanilla()) && GenUtil.getSolidHeight(chunk, absX, absZ) >= this.seaLevel - 4) {
                         biome = region.getBiome(POS.set(absX, 0, absZ));
                         
                         if (blockToSet == Blocks.GRASS_BLOCK) 
@@ -169,7 +171,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                     ((float)(this.noiseOctavesC.sample(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
                     ((float)(this.noiseOctavesD.sample(x * 0.25714284f, z * 0.25714284f) * noiseC));
                     
-                int heightVal = (int)(noiseA + 64.0f + noiseB);
+                int heightVal = (int)(noiseA + this.seaLevel + noiseB);
                 if ((float)this.noiseOctavesE.sample(x, z) < 0.0f) {
                     heightVal = heightVal / 2 << 1;
                     if ((float)this.noiseOctavesE.sample(x / 5, z / 5) < 0.0f) {
@@ -177,16 +179,16 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                     }
                 }
                 
-                for (int y = 0; y < 128; ++y) {
+                for (int y = 0; y < this.worldHeight; ++y) {
                     Block blockToSet = Blocks.AIR;
                     
                     if (this.generateInfdevWall && (x == 0 || z == 0) && y <= heightVal + 2) {
                         blockToSet = Blocks.OBSIDIAN;
                     }
-                    else if (!biomeSource.isVanilla() && !biomeSource.isBeta() && y == heightVal + 1 && heightVal >= 64 && Math.random() < 0.02) {
+                    else if (!biomeSource.isVanilla() && !biomeSource.isBeta() && y == heightVal + 1 && heightVal >= this.seaLevel && Math.random() < 0.02) {
                         blockToSet = Blocks.DANDELION;
                     }
-                    else if (y == heightVal && heightVal >= 64) {
+                    else if (y == heightVal && heightVal >= this.seaLevel) {
                         blockToSet = Blocks.GRASS_BLOCK;
                     }
                     else if (y <= heightVal - 2) {
@@ -195,7 +197,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                     else if (y <= heightVal) {
                         blockToSet = Blocks.DIRT;
                     }
-                    else if (y <= 64) {
+                    else if (y <= this.seaLevel) {
                         blockToSet = Blocks.WATER;
                     }
                     
@@ -223,7 +225,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                     }
                               
                     
-                    BLOCK_ARR[relX][y][relZ] = blockToSet;
+                    blockArr[relX][y][relZ] = blockToSet;
                 }
                     
             }
@@ -248,7 +250,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
             ((float)(this.noiseOctavesC.sample(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
             ((float)(this.noiseOctavesD.sample(x * 0.25714284f, z * 0.25714284f) * noiseC));
             
-        int heightVal = (int)(noiseA + 64.0f + noiseB);
+        int heightVal = (int)(noiseA + this.seaLevel + noiseB);
         if ((float)this.noiseOctavesE.sample(x, z) < 0.0f) {
             heightVal = heightVal / 2 << 1;
             if ((float)this.noiseOctavesE.sample(x / 5, z / 5) < 0.0f) {

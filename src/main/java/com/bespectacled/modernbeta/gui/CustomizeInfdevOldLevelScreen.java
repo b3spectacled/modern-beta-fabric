@@ -43,16 +43,16 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
         this.typeIterator = Arrays.asList(BiomeType.values()).iterator();
         this.biomeType = GUIUtil.iterateToBiomeType(BiomeType.CLASSIC, this.typeIterator);
         
-        generatorSettings.settings.putString("biomeType", this.biomeType.getName());
+        generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
         
-        if (generatorSettings.settings.contains("generateOceans"))
-            generateOceans = generatorSettings.settings.getBoolean("generateOceans");
+        if (generatorSettings.providerSettings.contains("generateOceans"))
+            generateOceans = generatorSettings.providerSettings.getBoolean("generateOceans");
         
-        if (generatorSettings.settings.contains("generateInfdevPyramid"))
-            generateInfdevPyramid = generatorSettings.settings.getBoolean("generateInfdevPyramid");
+        if (generatorSettings.providerSettings.contains("generateInfdevPyramid"))
+            generateInfdevPyramid = generatorSettings.providerSettings.getBoolean("generateInfdevPyramid");
         
-        if (generatorSettings.settings.contains("generateInfdevWall"))
-            generateInfdevWall = generatorSettings.settings.getBoolean("generateInfdevWall");
+        if (generatorSettings.providerSettings.contains("generateInfdevWall"))
+            generateInfdevWall = generatorSettings.providerSettings.getBoolean("generateInfdevWall");
     }
     
     @Override
@@ -89,7 +89,7 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
                         this.biomeType = typeIterator.next();
                     }
                     
-                    generatorSettings.settings.putString("biomeType", this.biomeType.getName());
+                    generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
                     
                     return;
                 },
@@ -134,7 +134,7 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
                 (gameOptions) -> { return generateOceans; }, // Getter
                 (gameOptions, value) -> { // Setter
                     generateOceans = value;
-                    generatorSettings.settings.putBoolean("generateOceans", value);
+                    generatorSettings.providerSettings.putBoolean("generateOceans", value);
                 }
         ));
             
@@ -145,7 +145,7 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
                 (gameOptions) -> { return generateInfdevPyramid; }, 
                 (gameOptions, value) -> {
                     generateInfdevPyramid = value;
-                    generatorSettings.settings.putBoolean("generateInfdevPyramid", value);
+                    generatorSettings.providerSettings.putBoolean("generateInfdevPyramid", value);
                 }
         ));
         
@@ -155,7 +155,7 @@ public class CustomizeInfdevOldLevelScreen extends Screen {
                 (gameOptions) -> { return generateInfdevWall; }, 
                 (gameOptions, value) -> {
                     generateInfdevWall = value;
-                    generatorSettings.settings.putBoolean("generateInfdevWall", value);
+                    generatorSettings.providerSettings.putBoolean("generateInfdevWall", value);
                 }
         ));
         

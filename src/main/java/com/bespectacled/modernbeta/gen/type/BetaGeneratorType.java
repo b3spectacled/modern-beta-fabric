@@ -58,7 +58,7 @@ public final class BetaGeneratorType extends GeneratorType {
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        betaSettings.settings = OldGeneratorSettings.createInfSettings(WorldType.BETA.getName(), BiomeType.BETA.getName(), ModernBeta.BETA_CONFIG.generateOceans);
-        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, betaSettings.settings), seed, betaSettings);
+        betaSettings.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.BETA.getName(), BiomeType.BETA.getName(), ModernBeta.BETA_CONFIG.generateOceans);
+        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, betaSettings.providerSettings), seed, betaSettings);
     }
 }

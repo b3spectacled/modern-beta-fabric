@@ -27,7 +27,7 @@ public class OldGeneratorSettings {
     
     public static final NoiseSamplingConfig noiseSampler = new NoiseSamplingConfig(1.0, 1.0, 40.0, 22.0);
     public static final GenerationShapeConfig noise = new GenerationShapeConfig(
-        256, 
+        128, 
         noiseSampler,
         new SlideConfig(-10, 3, 0), 
         new SlideConfig(-30, 0, 0), 
@@ -35,20 +35,20 @@ public class OldGeneratorSettings {
     );
     
     public static final Codec<OldGeneratorSettings> CODEC = RecordCodecBuilder.create(instance -> instance
-            .group(ChunkGeneratorSettings.CODEC.fieldOf("type").forGetter(settings -> settings.wrapped),
-                    CompoundTag.CODEC.fieldOf("settings").forGetter(settings -> settings.settings))
+            .group(ChunkGeneratorSettings.CODEC.fieldOf("type").forGetter(settings -> settings.chunkGenSettings),
+                    CompoundTag.CODEC.fieldOf("settings").forGetter(settings -> settings.providerSettings))
             .apply(instance, OldGeneratorSettings::new));
 
-    public final ChunkGeneratorSettings wrapped;
-    public CompoundTag settings;
+    public final ChunkGeneratorSettings chunkGenSettings;
+    public CompoundTag providerSettings;
 
-    public OldGeneratorSettings(ChunkGeneratorSettings wrapped, CompoundTag settings) {
-        this.wrapped = wrapped;
-        this.settings = settings;
+    public OldGeneratorSettings(ChunkGeneratorSettings chunkGenSettings, CompoundTag providerSettings) {
+        this.chunkGenSettings = chunkGenSettings;
+        this.providerSettings = providerSettings;
     }
     
     public OldGeneratorSettings(CompoundTag settings, boolean isIndev) {
-        this.wrapped = new ChunkGeneratorSettings(
+        this.chunkGenSettings = new ChunkGeneratorSettings(
             isIndev ? structuresWithStronghold : structures, 
             noise, 
             Blocks.STONE.getDefaultState(), 
@@ -56,7 +56,7 @@ public class OldGeneratorSettings {
             -10, 0, 64, false
         );
         
-        this.settings = settings;
+        this.providerSettings = settings;
     }
     
     public static CompoundTag createInfSettings(String worldType, String biomeType, boolean genOceans) {

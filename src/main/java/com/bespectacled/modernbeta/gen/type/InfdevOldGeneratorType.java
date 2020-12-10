@@ -57,8 +57,8 @@ public final class InfdevOldGeneratorType extends GeneratorType {
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        infdevOldSettings.settings = OldGeneratorSettings.createInfSettings(WorldType.INFDEV_OLD.getName(), BiomeType.CLASSIC.getName(), ModernBeta.BETA_CONFIG.generateOceans);
-        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, infdevOldSettings.settings), seed, infdevOldSettings);
+        infdevOldSettings.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.INFDEV_OLD.getName(), BiomeType.CLASSIC.getName(), ModernBeta.BETA_CONFIG.generateOceans);
+        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, infdevOldSettings.providerSettings), seed, infdevOldSettings);
     }
     
     

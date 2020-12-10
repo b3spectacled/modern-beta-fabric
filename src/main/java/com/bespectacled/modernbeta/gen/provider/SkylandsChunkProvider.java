@@ -64,7 +64,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         
         this.noiseSizeX = 16 / this.horizontalNoiseResolution;
         this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
-        this.noiseSizeY = 128 / this.verticalNoiseResolution;
+        this.noiseSizeY = this.worldHeight / this.verticalNoiseResolution;
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
 
@@ -124,7 +124,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 BlockState fillerBlock = biomeFillerBlock;
 
                 // Generate from top to bottom of world
-                for (int y = 127; y >= 0; y--) {
+                for (int y = this.worldHeight - 1; y >= 0; y--) {
 
                     Block someBlock = chunk.getBlockState(POS.set(x, y, z)).getBlock();
 

@@ -57,8 +57,8 @@ public final class AlphaGeneratorType extends GeneratorType {
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        alphaSettings.settings = OldGeneratorSettings.createInfSettings(WorldType.ALPHA.getName(), BiomeType.CLASSIC.getName(), ModernBeta.BETA_CONFIG.generateOceans);
-        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, alphaSettings.settings), seed, alphaSettings);
+        alphaSettings.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.ALPHA.getName(), BiomeType.CLASSIC.getName(), ModernBeta.BETA_CONFIG.generateOceans);
+        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, alphaSettings.providerSettings), seed, alphaSettings);
     }
     
     

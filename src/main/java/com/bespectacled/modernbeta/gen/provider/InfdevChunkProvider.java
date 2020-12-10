@@ -69,7 +69,6 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
 
     @Override
     public void makeSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        int seaLevel = 64;
         double thirtysecond = 0.03125D; // eighth
         
         int chunkX = chunk.getPos().x;
@@ -104,7 +103,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
                 
-                for (int y = 127; y >= 0; --y) {
+                for (int y = this.worldHeight - 1; y >= 0; --y) {
                     
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= 0 + RAND.nextInt(5)) {
@@ -138,13 +137,13 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                                 }
                             }
                             
-                            if (y < seaLevel && topBlock.equals(BlockStates.AIR)) {
+                            if (y < this.seaLevel && topBlock.equals(BlockStates.AIR)) {
                                 topBlock = BlockStates.WATER;
                             }
                             
                             flag = genStone;
                             
-                            if (y >= seaLevel - 1) {
+                            if (y >= this.seaLevel - 1) {
                                 chunk.setBlockState(POS, topBlock, false);
                             } else {
                                 chunk.setBlockState(POS, fillerBlock, false);
@@ -179,8 +178,8 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         int groundHeight = GROUND_CACHE_Y.get(structPos);
 
         // Not ideal
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < 64)
-            groundHeight = 64;
+        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
+            groundHeight = this.seaLevel;
 
         return groundHeight;
     }
@@ -276,8 +275,11 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     }
     
     private double generateHeightmap(double x, double y, double z) {
-        double elevGrad;
-        if ((elevGrad = y * 4.0 - 64.0) < 0.0) {
+        // Check if y (in scaled space) is below sealevel
+        // and increase density accordingly.
+        //double elevGrad = y * 4.0 - 64.0;
+        double elevGrad = y * 4.0 - this.seaLevel;
+        if (elevGrad < 0.0) {
             elevGrad *= 3.0;
         }
         

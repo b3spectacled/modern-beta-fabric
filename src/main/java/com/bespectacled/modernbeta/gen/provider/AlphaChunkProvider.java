@@ -64,7 +64,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         
         this.noiseSizeX = 16 / this.horizontalNoiseResolution;
         this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
-        this.noiseSizeY = 128 / this.verticalNoiseResolution;
+        this.noiseSizeY = this.worldHeight / this.verticalNoiseResolution;
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         
@@ -91,7 +91,6 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
 
     @Override
     public void makeSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        byte seaLevel = (byte) 64;
         double eighth = 0.03125D; // eighth
 
         int chunkX = chunk.getPos().x;
@@ -122,7 +121,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                 BlockState fillerBlock = biomeFillerBlock;
 
                 // Generate from top to bottom of world
-                for (int y = 127; y >= 0; y--) {
+                for (int y = this.worldHeight - 1; y >= 0; y--) {
 
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= (0 + RAND.nextInt(6)) - 1) {
@@ -145,7 +144,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                         if (genStone <= 0) { // Generate stone basin if noise permits
                             topBlock = BlockStates.AIR;
                             fillerBlock = BlockStates.STONE;
-                        } else if (y >= seaLevel - 4 && y <= seaLevel + 1) { // Generate beaches at this y range
+                        } else if (y >= this.seaLevel - 4 && y <= this.seaLevel + 1) { // Generate beaches at this y range
                             topBlock = biomeTopBlock;
                             fillerBlock = biomeFillerBlock;
 
@@ -160,13 +159,13 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                             }
                         }
 
-                        if (y < seaLevel && topBlock.equals(BlockStates.AIR)) { // Generate water bodies
+                        if (y < this.seaLevel && topBlock.equals(BlockStates.AIR)) { // Generate water bodies
                             topBlock = BlockStates.WATER;
                         }
 
                         // Main surface builder section
                         flag = genStone;
-                        if (y >= seaLevel - 1) {
+                        if (y >= this.seaLevel - 1) {
                             chunk.setBlockState(POS.set(x, y, z), topBlock, false);
                         } else {
                             chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
@@ -203,8 +202,8 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         int groundHeight = GROUND_CACHE_Y.get(structPos);
 
         // Not ideal
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < 64)
-            groundHeight = 64;
+        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
+            groundHeight = this.seaLevel;
 
         return groundHeight;
     }

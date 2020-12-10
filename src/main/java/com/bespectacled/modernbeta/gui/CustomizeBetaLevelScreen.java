@@ -40,10 +40,10 @@ public class CustomizeBetaLevelScreen extends Screen {
         this.typeIterator = Arrays.asList(BiomeType.values()).iterator();
         this.biomeType = GUIUtil.iterateToBiomeType(BiomeType.BETA, this.typeIterator);
         
-        generatorSettings.settings.putString("biomeType", this.biomeType.getName());
+        generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
         
-        if (generatorSettings.settings.contains("generateOceans"))
-            generateOceans = generatorSettings.settings.getBoolean("generateOceans");
+        if (generatorSettings.providerSettings.contains("generateOceans"))
+            generateOceans = generatorSettings.providerSettings.getBoolean("generateOceans");
     }
     
     @Override
@@ -78,7 +78,7 @@ public class CustomizeBetaLevelScreen extends Screen {
                             this.biomeType = typeIterator.next();
                         }
                         
-                        generatorSettings.settings.putString("biomeType", this.biomeType.getName());
+                        generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
                         
                         return;
                     },
@@ -123,7 +123,7 @@ public class CustomizeBetaLevelScreen extends Screen {
                 (gameOptions) -> { return generateOceans; }, // Getter
                 (gameOptions, value) -> { // Setter
                     generateOceans = value;
-                    generatorSettings.settings.putBoolean("generateOceans", value);
+                    generatorSettings.providerSettings.putBoolean("generateOceans", value);
                 }
         ));
             

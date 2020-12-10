@@ -53,14 +53,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private static final ChunkRandom FEATURE_RAND = new ChunkRandom();
 
     public OldChunkGenerator(BiomeSource biomeSource, long seed, OldGeneratorSettings settings) {
-        super(biomeSource, seed, () -> settings.wrapped);
+        super(biomeSource, seed, () -> settings.chunkGenSettings);
         
         this.seed = seed;
         this.biomeSource = (OldBiomeSource)biomeSource;
         this.settings = settings;
         
-        this.worldType = WorldType.getWorldType(settings.settings);
-        this.chunkProvider = AbstractChunkProvider.getChunkProvider(seed, this.worldType, settings.settings);
+        this.worldType = WorldType.getWorldType(settings.providerSettings);
+        this.chunkProvider = AbstractChunkProvider.getChunkProvider(seed, this.worldType, settings);
         this.genOceans = this.worldType != WorldType.SKYLANDS && this.biomeSource.generateOceans();
     }
 

@@ -104,7 +104,7 @@ public class MixinGeneratorOptions {
                 
             OldGeneratorSettings genSettings = new OldGeneratorSettings(type, settings);
             
-            generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, genSettings.settings), seed, genSettings);
+            generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, genSettings.providerSettings), seed, genSettings);
 
             // return our chunk generator
             cir.setReturnValue(new GeneratorOptions(seed, generateStructures, false,

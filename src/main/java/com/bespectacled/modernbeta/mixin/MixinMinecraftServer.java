@@ -50,7 +50,7 @@ public class MixinMinecraftServer {
             
             if (beachNoiseOctaves != null) { // Attempt to place a beach spawn if provider generates classic beaches.
                 ModernBeta.LOGGER.log(Level.INFO, "Setting a beach spawn..");
-                spawnPos = getInitialOldSpawn(oldGen, beachNoiseOctaves);
+                spawnPos = getInitialOldSpawn(oldGen, beachNoiseOctaves, 64);
             }
             
             if (spawnPos != null && oldGen.getWorldType() == WorldType.INDEV) {
@@ -71,11 +71,11 @@ public class MixinMinecraftServer {
     }
     
     @Unique
-    private static BlockPos getInitialOldSpawn(OldChunkGenerator gen, PerlinOctaveNoise beachNoiseOctaves) {
+    private static BlockPos getInitialOldSpawn(OldChunkGenerator gen, PerlinOctaveNoise beachNoiseOctaves, int seaLevel) {
         int x = 0;
         int z;
         
-        for (z = 0; !isBlockSand(x, z, gen, beachNoiseOctaves); z += spawnRand.nextInt(64) - spawnRand.nextInt(64)) {
+        for (z = 0; !isBlockSand(x, z, gen, beachNoiseOctaves, seaLevel); z += spawnRand.nextInt(64) - spawnRand.nextInt(64)) {
             x += spawnRand.nextInt(64) - spawnRand.nextInt(64);
         }
         
@@ -85,13 +85,13 @@ public class MixinMinecraftServer {
     }
     
     @Unique
-    private static boolean isBlockSand(int x, int z, OldChunkGenerator gen, PerlinOctaveNoise beachNoiseOctaves) {
+    private static boolean isBlockSand(int x, int z, OldChunkGenerator gen, PerlinOctaveNoise beachNoiseOctaves, int seaLevel) {
         double thirtysecond = 0.03125D;
         int y = gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
         
         return 
-            (gen.getBiomeSource().getBiomeForNoiseGen(x >> 2, 0, z >> 2).getCategory() == Category.DESERT && y > 63) || 
-            (beachNoiseOctaves.sample(x * thirtysecond, z * thirtysecond, 0.0) + spawnRand.nextDouble() * 0.2 > 0.0 && y > 63 && y <= 65);
+            (gen.getBiomeSource().getBiomeForNoiseGen(x >> 2, 0, z >> 2).getCategory() == Category.DESERT && y > seaLevel - 1) || 
+            (beachNoiseOctaves.sample(x * thirtysecond, z * thirtysecond, 0.0) + spawnRand.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
     
     @Unique

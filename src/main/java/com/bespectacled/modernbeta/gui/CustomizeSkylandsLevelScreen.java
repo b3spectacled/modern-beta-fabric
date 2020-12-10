@@ -39,7 +39,7 @@ public class CustomizeSkylandsLevelScreen extends Screen {
         this.typeIterator = Arrays.asList(BiomeType.values()).iterator();
         this.biomeType = GUIUtil.iterateToBiomeType(BiomeType.BETA, this.typeIterator);
         
-        generatorSettings.settings.putString("biomeType", this.biomeType.getName());
+        generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
     }
     
     @Override
@@ -74,7 +74,7 @@ public class CustomizeSkylandsLevelScreen extends Screen {
                         this.biomeType = typeIterator.next();
                     }
                     
-                    generatorSettings.settings.putString("biomeType", this.biomeType.getName());
+                    generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
                     
                     return;
                 },

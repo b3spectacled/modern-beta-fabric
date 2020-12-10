@@ -39,15 +39,15 @@ public class CustomizeIndevLevelScreen extends Screen {
         this.parent = parent;
         this.generatorSettings = generatorSettings;
         
-        if (generatorSettings.settings.contains("levelType")) 
-            this.levelType = IndevUtil.IndevType.fromName(generatorSettings.settings.getString("levelType")).getId();
-        if (generatorSettings.settings.contains("levelTheme")) 
-            this.levelTheme = IndevUtil.IndevTheme.fromName(generatorSettings.settings.getString("levelTheme")).getId();
+        if (generatorSettings.providerSettings.contains("levelType")) 
+            this.levelType = IndevUtil.IndevType.fromName(generatorSettings.providerSettings.getString("levelType")).getId();
+        if (generatorSettings.providerSettings.contains("levelTheme")) 
+            this.levelTheme = IndevUtil.IndevTheme.fromName(generatorSettings.providerSettings.getString("levelTheme")).getId();
         
-        if (generatorSettings.settings.contains("levelWidth")) this.levelWidth = generatorSettings.settings.getInt("levelWidth");
-        if (generatorSettings.settings.contains("levelLength")) this.levelLength = generatorSettings.settings.getInt("levelLength");
-        if (generatorSettings.settings.contains("levelHeight")) this.levelHeight = generatorSettings.settings.getInt("levelHeight");
-        if (generatorSettings.settings.contains("caveRadius")) this.caveRadius = generatorSettings.settings.getFloat("caveRadius");
+        if (generatorSettings.providerSettings.contains("levelWidth")) this.levelWidth = generatorSettings.providerSettings.getInt("levelWidth");
+        if (generatorSettings.providerSettings.contains("levelLength")) this.levelLength = generatorSettings.providerSettings.getInt("levelLength");
+        if (generatorSettings.providerSettings.contains("levelHeight")) this.levelHeight = generatorSettings.providerSettings.getInt("levelHeight");
+        if (generatorSettings.providerSettings.contains("caveRadius")) this.caveRadius = generatorSettings.providerSettings.getFloat("caveRadius");
     }
     
     @Override
@@ -77,7 +77,7 @@ public class CustomizeIndevLevelScreen extends Screen {
                 (gameOptions, value) -> {
                     this.levelType++;
                     if (this.levelType > IndevType.values().length - 1) this.levelType = 0;
-                    generatorSettings.settings.putString("levelType", IndevType.fromId(this.levelType).getName());
+                    generatorSettings.providerSettings.putString("levelType", IndevType.fromId(this.levelType).getName());
                     
                     return;
                 },
@@ -114,7 +114,7 @@ public class CustomizeIndevLevelScreen extends Screen {
                     (gameOptions, value) -> {
                         this.levelTheme++;
                         if (this.levelTheme > IndevTheme.values().length - 1) this.levelTheme = 0;
-                        generatorSettings.settings.putString("levelTheme", IndevTheme.fromId(this.levelTheme).getName());
+                        generatorSettings.providerSettings.putString("levelTheme", IndevTheme.fromId(this.levelTheme).getName());
                         
                         return;
                     },
@@ -159,7 +159,7 @@ public class CustomizeIndevLevelScreen extends Screen {
                 (gameOptions) -> { return (double) this.levelWidth; }, // Getter
                 (gameOptions, value) -> { // Setter
                     this.levelWidth = value.intValue();
-                    generatorSettings.settings.putInt("levelWidth", value.intValue());
+                    generatorSettings.providerSettings.putInt("levelWidth", value.intValue());
                     return;
                 },
                 (gameOptions, doubleOptions) -> {
@@ -179,7 +179,7 @@ public class CustomizeIndevLevelScreen extends Screen {
                 (gameOptions) -> { return (double) this.levelLength; }, // Getter
                 (gameOptions, value) -> { // Setter
                     this.levelLength = value.intValue();
-                    generatorSettings.settings.putInt("levelLength", value.intValue());
+                    generatorSettings.providerSettings.putInt("levelLength", value.intValue());
                     return;
                 },
                 (gameOptions, doubleOptions) -> {
@@ -199,7 +199,7 @@ public class CustomizeIndevLevelScreen extends Screen {
                 (gameOptions) -> { return (double) this.levelHeight; }, // Getter
                 (gameOptions, value) -> { // Setter
                     this.levelHeight = value.intValue();
-                    generatorSettings.settings.putInt("levelHeight", value.intValue());
+                    generatorSettings.providerSettings.putInt("levelHeight", value.intValue());
                     return;
                 },
                 (gameOptions, doubleOptions) -> {
@@ -222,7 +222,7 @@ public class CustomizeIndevLevelScreen extends Screen {
                     (gameOptions) -> { return (double) this.caveRadius; }, // Getter
                     (gameOptions, value) -> { // Setter
                         this.caveRadius = value.floatValue();
-                        generatorSettings.settings.putFloat("caveRadius", value.floatValue());
+                        generatorSettings.providerSettings.putFloat("caveRadius", value.floatValue());
                         return;
                     },
                     (gameOptions, doubleOptions) -> {
