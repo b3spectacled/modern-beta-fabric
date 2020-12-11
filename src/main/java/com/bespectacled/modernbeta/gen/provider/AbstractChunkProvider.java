@@ -39,8 +39,8 @@ public abstract class AbstractChunkProvider {
     protected final int seaLevel;
     
     public AbstractChunkProvider(long seed) {
-        this.worldHeight = 256;
-        this.seaLevel = 128;
+        this.worldHeight = 128;
+        this.seaLevel = 64;
         
         RAND.setSeed(seed);
         GROUND_CACHE_Y.clear();
@@ -67,6 +67,15 @@ public abstract class AbstractChunkProvider {
         }
         return blockStateToSet;
     }
+    
+    public int getWorldHeight() {
+        return this.worldHeight;
+    }
+    
+    public int getSeaLevel() {
+        return this.seaLevel;
+    }
+    
     
     public static void setForestOctaves(PerlinOctaveNoise forestOctaves) {
         BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestOctaves);

@@ -338,7 +338,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
             }
         }
     }
-    
+
     private void generateHeightmap(int x, int y, int z) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionX = this.noiseSizeX + 1;
@@ -474,7 +474,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                     if (scaleVal2 < 0.0D) {
                         scaleVal2 *= 4D;
                     }
-
+                    
                     double minLimitVal = minLimitNoise[heightNoiseNdx] / lowerLimitScale;
                     double maxLimitVal = maxLimitNoise[heightNoiseNdx] / upperLimitScale;
                     double mainNoiseVal = (mainNoise[heightNoiseNdx] / 10D + 1.0D) / 2D;
@@ -491,6 +491,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                     heightVal -= scaleVal2;
 
                     // Ensures density below certain height??
+                    // Or it rounds out top of terrain...
                     if (noiseY > noiseResolutionY - 4) {
                         double d13 = (float) (noiseY - (noiseResolutionY - 4)) / 3F;
                         heightVal = heightVal * (1.0D - d13) + -10D * d13;

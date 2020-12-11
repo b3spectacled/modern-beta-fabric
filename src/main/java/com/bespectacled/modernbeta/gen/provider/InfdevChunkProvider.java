@@ -122,7 +122,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                             if (genStone <= 0) {
                                 topBlock = BlockStates.AIR;
                                 fillerBlock = BlockStates.STONE;
-                            } else if (y >= 60 && y <= 65) {
+                            } else if (y >= this.seaLevel - 4 && y <= this.seaLevel + 1) {
                                 topBlock = biomeTopBlock;
                                 fillerBlock = biomeFillerBlock;
                                 
