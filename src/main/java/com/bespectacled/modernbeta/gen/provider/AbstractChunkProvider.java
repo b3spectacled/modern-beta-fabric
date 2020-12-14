@@ -46,6 +46,14 @@ public abstract class AbstractChunkProvider {
         GROUND_CACHE_Y.clear();
     }
     
+    public AbstractChunkProvider(long seed, int worldHeight, int seaLevel) {
+        this.worldHeight = worldHeight;
+        this.seaLevel = seaLevel;
+        
+        RAND.setSeed(seed);
+        GROUND_CACHE_Y.clear();
+    }
+    
     public abstract void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource);
     public abstract void makeSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource);
     public abstract int getHeight(int x, int z, Heightmap.Type type);
@@ -104,6 +112,9 @@ public abstract class AbstractChunkProvider {
                 break;
             case INDEV:
                 provider = new IndevChunkProvider(seed, settings.providerSettings);
+                break;
+            case RELEASE:
+                provider = new ReleaseChunkProvider(seed, settings.providerSettings);
                 break;
             default:
                 throw new IllegalArgumentException("[Modern Beta] No chunk provider matching world type.  This shouldn't happen!");

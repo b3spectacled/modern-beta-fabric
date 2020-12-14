@@ -3,12 +3,16 @@ package com.bespectacled.modernbeta.gen.type;
 import java.util.Map;
 import java.util.Optional;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
-import com.bespectacled.modernbeta.gui.CustomizeIndevLevelScreen;
+import com.bespectacled.modernbeta.gui.CustomizeReleaseLevelScreen;
 import com.bespectacled.modernbeta.mixin.MixinGeneratorTypeAccessor;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
+import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.google.common.collect.ImmutableMap;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.registry.Registry;
@@ -19,10 +23,10 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 @Environment(EnvType.CLIENT)
-public final class IndevGeneratorType extends GeneratorType {
-    public static final GeneratorType INSTANCE = new IndevGeneratorType();
+public final class ReleaseGeneratorType extends GeneratorType {
+    public static final GeneratorType INSTANCE = new ReleaseGeneratorType();
     
-    public static final OldGeneratorSettings indevSettings = new OldGeneratorSettings(new CompoundTag(), true);
+    public static OldGeneratorSettings releaseSettings = new OldGeneratorSettings(new CompoundTag(), false);
     
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -30,27 +34,26 @@ public final class IndevGeneratorType extends GeneratorType {
             .putAll(MixinGeneratorTypeAccessor.getScreenProviders())
             .put(
                 Optional.<GeneratorType>of(INSTANCE), (createWorldScreen, generatorSettings) -> {
-                    return new CustomizeIndevLevelScreen(createWorldScreen, indevSettings);
+                    return new CustomizeReleaseLevelScreen(createWorldScreen, releaseSettings);
                 }
+                
             )
             .build();
-
-    private IndevGeneratorType() {
-        super("indev");
+    
+    private ReleaseGeneratorType() {
+        super("release");
     }
 
     public static void register() {
         GeneratorType.VALUES.add(INSTANCE);
         MixinGeneratorTypeAccessor.setScreenProviders(NEW_SCREEN_PROVIDERS);
         
-        //ModernBeta.LOGGER.log(Level.INFO, "Registered Indev world type.");
+        //ModernBeta.LOGGER.log(Level.INFO, "Registered Beta world type.");
     }
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        indevSettings.providerSettings = OldGeneratorSettings.createIndevSettings();
-        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, indevSettings.providerSettings), seed, indevSettings);
+        releaseSettings.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.RELEASE.getName(), BiomeType.RELEASE.getName(), ModernBeta.BETA_CONFIG.generateOceans);
+        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, releaseSettings.providerSettings), seed, releaseSettings);
     }
-    
-    
 }

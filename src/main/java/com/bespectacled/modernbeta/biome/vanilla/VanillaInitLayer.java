@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.biome.layer;
+package com.bespectacled.modernbeta.biome.vanilla;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;

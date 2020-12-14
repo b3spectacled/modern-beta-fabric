@@ -153,9 +153,19 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(carver);
 
+       
         random.setSeed(seed);
-        long l = (random.nextLong() / 2L) * 2L + 1L;
-        long l1 = (random.nextLong() / 2L) * 2L + 1L;
+        long l;
+        long l1;
+        
+        if (this.worldType == WorldType.RELEASE) {
+            l = random.nextLong();
+            l1 = random.nextLong();
+        } else {
+            l = (random.nextLong() / 2L) * 2L + 1L;
+            l1 = (random.nextLong() / 2L) * 2L + 1L;
+        }
+        
 
         for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
             for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
@@ -165,7 +175,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 while (carverIterator.hasNext()) {
                     ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
 
-                    random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
+                    if (this.worldType == WorldType.RELEASE) {
+                        random.setSeed((long) (chunkX * l) ^ (long) (chunkZ * l1) ^ seed);
+                    } else {
+                        random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
+                    }
+                    
 
                     if (configuredCarver.shouldCarve(random, chunkX, chunkZ)) {
                         configuredCarver.carve(chunk, biomeAcc::getBiome, random, this.getSeaLevel(), chunkX, chunkZ,

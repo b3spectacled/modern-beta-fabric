@@ -309,6 +309,8 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
 
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
+        
+        double heightStretch = 12D;
 
         scaleNoise = scaleNoiseOctaves.sampleArr(scaleNoise, x, y, z, noiseResolutionX, 1, noiseResolutionZ, 1.0D, 0.0D, 1.0D);
         depthNoise = depthNoiseOctaves.sampleArr(depthNoise, x, y, z, noiseResolutionX, 1, noiseResolutionZ, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
@@ -386,7 +388,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
 
                 for (int noiseY = 0; noiseY < noiseResolutionY; noiseY++) {
                     double heightVal = 0.0D;
-                    double scaleVal2 = (((double) noiseY - depthVal2) * 12D) / scaleVal;
+                    double scaleVal2 = (((double) noiseY - depthVal2) * heightStretch) / scaleVal;
 
                     if (scaleVal2 < 0.0D) {
                         scaleVal2 *= 4D;

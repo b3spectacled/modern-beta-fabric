@@ -18,6 +18,7 @@ public class GUIUtil {
     public static final Text TEXT_PLUS = new TranslatableText("createWorld.customize.type.plus");
     public static final Text TEXT_VANILLA = new TranslatableText("createWorld.customize.type.vanilla");
     public static final Text TEXT_BETA = new TranslatableText("createWorld.customize.type.beta");
+    public static final Text TEXT_RELEASE = new TranslatableText("createWorld.customize.type.release");
     
     public static final Text TEXT_NORMAL = new TranslatableText("createWorld.customize.indev.theme.normal");
     public static final Text TEXT_HELL = new TranslatableText("createWorld.customize.indev.theme.hell");
@@ -37,6 +38,38 @@ public class GUIUtil {
         while (typeIterator.hasNext() && (type = typeIterator.next()) != typeToGet);
         
         return type;
+    }
+    
+    public static Text getBiomeTypeText(BiomeType type) {
+        Text typeText;
+        
+        switch(type) {
+            case BETA:
+                typeText = GUIUtil.TEXT_BETA;
+                break;
+            case SKY:
+                typeText = GUIUtil.TEXT_SKY;
+                break;
+            case CLASSIC:
+                typeText = GUIUtil.TEXT_CLASSIC;
+                break;
+            case WINTER:
+                typeText = GUIUtil.TEXT_WINTER;
+                break;
+            case PLUS:
+                typeText = GUIUtil.TEXT_PLUS;
+                break;
+            case VANILLA:
+                typeText = GUIUtil.TEXT_VANILLA;
+                break;
+            case RELEASE:
+                typeText = GUIUtil.TEXT_RELEASE;
+                break;
+            default:
+                typeText = GUIUtil.TEXT_UNKNOWN;
+        }   
+        
+        return typeText;
     }
     
 }

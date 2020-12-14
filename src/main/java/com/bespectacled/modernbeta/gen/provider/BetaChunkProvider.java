@@ -358,6 +358,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
+        
+        double heightStretch = 12D;
 
         // Scale and Depth noise sample in 2D, noiseResolutionX * noiseResolutionZ
         
@@ -462,14 +464,13 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
                 scaleVal += 0.5D;
                 depthVal = (depthVal * (double) noiseResolutionY) / 16D;
-
                 double depthVal2 = (double) noiseResolutionY / 2D + depthVal * 4D;
                 
                 flatNoiseNdx++;
 
                 for (int noiseY = 0; noiseY < noiseResolutionY; noiseY++) {
                     double heightVal = 0.0D;
-                    double scaleVal2 = (((double) noiseY - depthVal2) * 12D) / scaleVal;
+                    double scaleVal2 = (((double) noiseY - depthVal2) * heightStretch) / scaleVal;
 
                     if (scaleVal2 < 0.0D) {
                         scaleVal2 *= 4D;

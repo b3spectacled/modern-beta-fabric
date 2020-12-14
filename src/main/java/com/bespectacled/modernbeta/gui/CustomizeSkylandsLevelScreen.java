@@ -79,30 +79,7 @@ public class CustomizeSkylandsLevelScreen extends Screen {
                     return;
                 },
                 (gameOptions, cyclingOptions) -> {
-                    Text typeText = GUIUtil.TEXT_CLASSIC;
-                    
-                    switch(this.biomeType) {
-                        case BETA:
-                            typeText = GUIUtil.TEXT_BETA;
-                            break;
-                        case SKY:
-                            typeText = GUIUtil.TEXT_SKY;
-                            break;
-                        case CLASSIC:
-                            typeText = GUIUtil.TEXT_CLASSIC;
-                            break;
-                        case WINTER:
-                            typeText = GUIUtil.TEXT_WINTER;
-                            break;
-                        case PLUS:
-                            typeText = GUIUtil.TEXT_PLUS;
-                            break;
-                        case VANILLA:
-                            typeText = GUIUtil.TEXT_VANILLA;
-                            break;
-                        default:
-                            typeText = GUIUtil.TEXT_UNKNOWN;
-                    }
+                    Text typeText = GUIUtil.getBiomeTypeText(this.biomeType);
                     
                     return new TranslatableText(
                         "options.generic_value", 

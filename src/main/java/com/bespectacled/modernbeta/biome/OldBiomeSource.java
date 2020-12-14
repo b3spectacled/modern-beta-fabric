@@ -75,6 +75,10 @@ public class OldBiomeSource extends BiomeSource {
         // || this.biomeType == BiomeType.ICE_DESERT;
     }
     
+    public boolean isRelease() {
+        return this.worldType != WorldType.INDEV && this.biomeType == BiomeType.RELEASE;
+    }
+    
     public boolean isSkyDim() {
         return this.worldType != WorldType.INDEV && this.biomeType == BiomeType.SKY;
     }

@@ -20,10 +20,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-public class CustomizeInfdevLevelScreen extends Screen {
+public class CustomizeReleaseLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private OldGeneratorSettings generatorSettings;
-    
+
     private BiomeType biomeType;
     private Iterator<BiomeType> typeIterator;
     
@@ -31,14 +31,14 @@ public class CustomizeInfdevLevelScreen extends Screen {
     
     private ButtonListWidget buttonList;
 
-    public CustomizeInfdevLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings) {
-        super(new TranslatableText("createWorld.customize.infdev.title"));
+    public CustomizeReleaseLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings) {
+        super(new TranslatableText("createWorld.customize.release.title"));
         
         this.parent = parent;
         this.generatorSettings = generatorSettings;
         
         this.typeIterator = Arrays.asList(BiomeType.values()).iterator();
-        this.biomeType = GUIUtil.iterateToBiomeType(BiomeType.CLASSIC, this.typeIterator);
+        this.biomeType = GUIUtil.iterateToBiomeType(BiomeType.RELEASE, this.typeIterator);
         
         generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
         
@@ -52,7 +52,7 @@ public class CustomizeInfdevLevelScreen extends Screen {
             this.width / 2 - 155, this.height - 28, 150, 20, 
             ScreenTexts.DONE, 
             (buttonWidget) -> {
-                this.client.openScreen(this.parent);
+                this.client.openScreen(parent);
                 return;
             }
         ));
@@ -61,38 +61,38 @@ public class CustomizeInfdevLevelScreen extends Screen {
             this.width / 2 + 5, this.height - 28, 150, 20, 
             ScreenTexts.CANCEL,
             (buttonWidget) -> {
-                this.client.openScreen(this.parent);
+                this.client.openScreen(parent);
             }
         ));
         
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         
         this.buttonList.addSingleOptionEntry(
-            new CyclingOption(
-                "createWorld.customize.preBeta.typeButton",
-                (gameOptions, value) -> {
-                    if (this.typeIterator.hasNext())
-                        this.biomeType = typeIterator.next();
-                    else {
-                        typeIterator = Arrays.asList(BiomeType.values()).iterator();
-                        this.biomeType = typeIterator.next();
+                new CyclingOption(
+                    "createWorld.customize.preBeta.typeButton",
+                    (gameOptions, value) -> {
+                        if (this.typeIterator.hasNext())
+                            this.biomeType = typeIterator.next();
+                        else {
+                            typeIterator = Arrays.asList(BiomeType.values()).iterator();
+                            this.biomeType = typeIterator.next();
+                        }
+                        
+                        generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
+                        
+                        return;
+                    },
+                    (gameOptions, cyclingOptions) -> {
+                        Text typeText = GUIUtil.getBiomeTypeText(this.biomeType);
+                        
+                        return new TranslatableText(
+                            "options.generic_value", 
+                            new Object[] { 
+                                GUIUtil.TEXT_BIOME_TYPE, 
+                                typeText
+                        });
                     }
-                    
-                    generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
-                    
-                    return;
-                },
-                (gameOptions, cyclingOptions) -> {
-                    Text typeText = GUIUtil.getBiomeTypeText(this.biomeType);
-                    
-                    return new TranslatableText(
-                        "options.generic_value", 
-                        new Object[] { 
-                            GUIUtil.TEXT_BIOME_TYPE, 
-                            typeText
-                    });
-                }
-        ));
+            ));
         
         this.buttonList.addSingleOptionEntry(
             new BooleanOption(
@@ -106,6 +106,7 @@ public class CustomizeInfdevLevelScreen extends Screen {
             
         
         this.children.add(this.buttonList);
+
     }
     
     @Override
