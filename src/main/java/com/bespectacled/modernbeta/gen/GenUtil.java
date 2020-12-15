@@ -1,7 +1,9 @@
-package com.bespectacled.modernbeta.util;
+package com.bespectacled.modernbeta.gen;
 
 import java.util.Iterator;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.util.BlockStates;
+
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.block.Block;
@@ -26,7 +28,6 @@ import net.minecraft.world.gen.feature.StructureFeature;
 
 public class GenUtil {
     private static final BlockPos.Mutable POS = new BlockPos.Mutable();
-    static int count = 0;
     
     public static int getSolidHeight(Chunk chunk, int x, int z) {
         for (int y = 127; y >= 0; y--) {

@@ -12,7 +12,6 @@ import com.bespectacled.modernbeta.gen.provider.AbstractChunkProvider;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.structure.BetaStructure;
-import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.mojang.serialization.Codec;
@@ -91,7 +90,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public void buildSurface(ChunkRegion region, Chunk chunk) {
         this.chunkProvider.makeSurface(region, chunk, this.biomeSource);
-
+        
         if (this.genOceans) {
             MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
             ChunkPos pos = chunk.getPos();
@@ -155,16 +154,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
        
         random.setSeed(seed);
-        long l;
-        long l1;
-        
-        if (this.worldType == WorldType.RELEASE) {
-            l = random.nextLong();
-            l1 = random.nextLong();
-        } else {
-            l = (random.nextLong() / 2L) * 2L + 1L;
-            l1 = (random.nextLong() / 2L) * 2L + 1L;
-        }
+        long l = (random.nextLong() / 2L) * 2L + 1L;
+        long l1 = (random.nextLong() / 2L) * 2L + 1L;
         
 
         for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
@@ -174,14 +165,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
                 while (carverIterator.hasNext()) {
                     ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
-
-                    if (this.worldType == WorldType.RELEASE) {
-                        random.setSeed((long) (chunkX * l) ^ (long) (chunkZ * l1) ^ seed);
-                    } else {
-                        random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
-                    }
                     
-
+                    random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
+                    
                     if (configuredCarver.shouldCarve(random, chunkX, chunkZ)) {
                         configuredCarver.carve(chunk, biomeAcc::getBiome, random, this.getSeaLevel(), chunkX, chunkZ,
                                 mainChunkX, mainChunkZ, bitSet);

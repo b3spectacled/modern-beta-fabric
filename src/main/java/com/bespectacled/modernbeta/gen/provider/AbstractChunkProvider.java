@@ -14,7 +14,6 @@ import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.BlockPos;
@@ -112,9 +111,6 @@ public abstract class AbstractChunkProvider {
                 break;
             case INDEV:
                 provider = new IndevChunkProvider(seed, settings.providerSettings);
-                break;
-            case RELEASE:
-                provider = new ReleaseChunkProvider(seed, settings.providerSettings);
                 break;
             default:
                 throw new IllegalArgumentException("[Modern Beta] No chunk provider matching world type.  This shouldn't happen!");

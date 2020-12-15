@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bespectacled.modernbeta.biome.indev.IndevBiomes;
-import com.bespectacled.modernbeta.util.IndevUtil;
-import com.bespectacled.modernbeta.util.IndevUtil.IndevTheme;
+import com.bespectacled.modernbeta.biome.indev.IndevUtil;
+import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;

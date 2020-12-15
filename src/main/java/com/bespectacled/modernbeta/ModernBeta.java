@@ -16,7 +16,6 @@ import com.bespectacled.modernbeta.gen.type.BetaGeneratorType;
 import com.bespectacled.modernbeta.gen.type.IndevGeneratorType;
 import com.bespectacled.modernbeta.gen.type.InfdevGeneratorType;
 import com.bespectacled.modernbeta.gen.type.InfdevOldGeneratorType;
-import com.bespectacled.modernbeta.gen.type.ReleaseGeneratorType;
 import com.bespectacled.modernbeta.gen.type.SkylandsGeneratorType;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
@@ -85,7 +84,6 @@ public class ModernBeta implements ModInitializer {
             InfdevGeneratorType.register();
             InfdevOldGeneratorType.register();
             IndevGeneratorType.register();
-            ReleaseGeneratorType.register();
             //LOGGER.log(Level.INFO, "Registered Modern Beta world types!");            
         }
 

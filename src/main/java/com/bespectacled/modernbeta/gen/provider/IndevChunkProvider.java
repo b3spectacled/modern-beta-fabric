@@ -7,13 +7,13 @@ import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.biome.indev.IndevUtil;
+import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
+import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
+import com.bespectacled.modernbeta.gen.GenUtil;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.GenUtil;
-import com.bespectacled.modernbeta.util.IndevUtil;
-import com.bespectacled.modernbeta.util.IndevUtil.IndevTheme;
-import com.bespectacled.modernbeta.util.IndevUtil.IndevType;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;

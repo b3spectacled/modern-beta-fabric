@@ -1,7 +1,8 @@
-package com.bespectacled.modernbeta.util;
+package com.bespectacled.modernbeta.gui;
 
 import java.util.Iterator;
 
+import com.bespectacled.modernbeta.util.WorldEnum;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 
 import net.minecraft.text.Text;
@@ -61,9 +62,6 @@ public class GUIUtil {
                 break;
             case VANILLA:
                 typeText = GUIUtil.TEXT_VANILLA;
-                break;
-            case RELEASE:
-                typeText = GUIUtil.TEXT_RELEASE;
                 break;
             default:
                 typeText = GUIUtil.TEXT_UNKNOWN;

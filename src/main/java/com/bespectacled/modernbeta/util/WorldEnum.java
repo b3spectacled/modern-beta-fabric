@@ -10,8 +10,7 @@ public class WorldEnum {
         ALPHA(2, "alpha"),
         INFDEV(3, "infdev"),
         INFDEV_OLD(4, "infdev_old"),
-        INDEV(5, "indev"),
-        RELEASE(6, "release");
+        INDEV(5, "indev");
         
         private final int id;
         private final String name;
@@ -66,8 +65,7 @@ public class WorldEnum {
         CLASSIC(3, "classic"),
         WINTER(4, "winter"),
         PLUS(5, "plus"),
-        VANILLA(6, "vanilla"),
-        RELEASE(7, "release");
+        VANILLA(6, "vanilla");
         
         private final int id;
         private final String name;

@@ -55,10 +55,6 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
             // Should only generate in Beta worlds
             if (!(chunkGenerator instanceof OldChunkGenerator)) return;
             
-            OldChunkGenerator gen = (OldChunkGenerator)chunkGenerator;
-            OldBiomeSource source = (OldBiomeSource)gen.getBiomeSource();
-            if (source.isRelease()) return;
-            
             int x = chunkX * 16;
             int z = chunkZ * 16;
             int y = chunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);

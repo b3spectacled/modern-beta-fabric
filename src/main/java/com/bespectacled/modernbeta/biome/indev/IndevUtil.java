@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.util;
+package com.bespectacled.modernbeta.biome.indev;
 
 public class IndevUtil {
     public enum IndevTheme {

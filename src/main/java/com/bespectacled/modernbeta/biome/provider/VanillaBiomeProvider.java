@@ -53,12 +53,15 @@ public class VanillaBiomeProvider extends AbstractBiomeProvider {
         return biomeList;
     }
     
-    private static boolean isValidCategory(Category category) {
-        return  category != Category.NONE &&
-                category != Category.BEACH &&
-                //category != Category.OCEAN &&
-                category != Category.NETHER &&
-                category != Category.THEEND;
+    private boolean isValidCategory(Category category) {
+        boolean isValid = 
+            category != Category.NONE &&
+            //category != Category.BEACH &&
+            category != Category.OCEAN &&
+            category != Category.NETHER &&
+            category != Category.THEEND;
+        
+        return  isValid;
     }
 
 }
