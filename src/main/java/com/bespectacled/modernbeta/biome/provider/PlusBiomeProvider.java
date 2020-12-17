@@ -27,7 +27,7 @@ public class PlusBiomeProvider extends AbstractBiomeProvider {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        BiomeUtil.sampleTempHumidAtPoint(TEMP_HUMID_POINT, absX, absZ);
+        BiomeUtil.sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
         return TEMP_HUMID_POINT[0] < 0.5f ?  registry.get(biomeMapping.get(BiomeType.WINTER)) : registry.get(biomeMapping.get(BiomeType.CLASSIC));
     }
 

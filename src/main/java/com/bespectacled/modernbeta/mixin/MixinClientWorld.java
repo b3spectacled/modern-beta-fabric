@@ -120,7 +120,7 @@ public abstract class MixinClientWorld extends World {
         int x = pos.getX();
         int z = pos.getZ();
 
-        float temp = (float) BiomeUtil.fetchSkyTemp(x, z);
+        float temp = (float) BiomeUtil.sampleSkyTemp(x, z);
         int skyColor = getSkyColorByTemp(temp);
 
         return skyColor;

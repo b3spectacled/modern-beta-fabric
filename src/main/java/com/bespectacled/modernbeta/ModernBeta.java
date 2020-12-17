@@ -56,39 +56,27 @@ public class ModernBeta implements ModInitializer {
 
         BetaStructure.register();
         
-        //LOGGER.log(Level.INFO, "Registered Modern Beta features!");
-        
         BetaBiomes.registerBiomes();
         ClassicBiomes.registerAlphaBiomes();
         ClassicBiomes.registerInfdevBiomes();
         IndevBiomes.registerBiomes();
         ClassicBiomes.registerInfdevOldBiomes();
-        
-        //LOGGER.log(Level.INFO, "Registered Modern Beta biomes!");
 
         OldBiomeSource.register();
-        
-        //LOGGER.log(Level.INFO, "Registered Modern Beta biome provider!");
-        
         OldChunkGenerator.register();
         
-        //LOGGER.log(Level.INFO, "Registered Modern Beta chunk generator!");
-        
         VanillaBiomeModifier.addShrineToOceans();
-        VanillaBiomeModifier.addMonumentToOceans();
-
+        
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             BetaGeneratorType.register();
             SkylandsGeneratorType.register();
             AlphaGeneratorType.register();
             InfdevGeneratorType.register();
             InfdevOldGeneratorType.register();
-            IndevGeneratorType.register();
-            //LOGGER.log(Level.INFO, "Registered Modern Beta world types!");            
+            IndevGeneratorType.register();      
         }
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");
-        
 
         // I am not a programmer, I am an ape smashing rocks together.....
     }
