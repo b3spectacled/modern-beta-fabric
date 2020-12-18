@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.gen.provider;
 
+import com.bespectacled.modernbeta.biome.BetaClimateSampler;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.gen.GenUtil;
@@ -85,7 +86,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
 
-        BiomeUtil.sampleTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
+        BetaClimateSampler.getInstance().sampleTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
         generateTerrain(chunk, TEMPS, structureAccessor);
     }
 
@@ -96,7 +97,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
-        BiomeUtil.sampleTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
+        BetaClimateSampler.getInstance().sampleTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
         BetaBiomes.getBiomesFromLookup(TEMPS, HUMIDS, BIOMES, null);
         
         Biome curBiome;
@@ -177,7 +178,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         fillChunkY(16);
         
         if (GROUND_CACHE_Y.get(structPos) == null) {
-            BiomeUtil.sampleTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
+            BetaClimateSampler.getInstance().sampleTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
             sampleHeightmap(x, z);
         }
 

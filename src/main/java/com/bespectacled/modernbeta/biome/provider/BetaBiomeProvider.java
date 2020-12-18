@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.biome.provider;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bespectacled.modernbeta.biome.BetaClimateSampler;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes.BetaBiomeType;
 import com.bespectacled.modernbeta.util.BiomeUtil;
@@ -17,7 +18,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
     private static final double[] TEMP_HUMID_POINT = new double[2];
    
     public BetaBiomeProvider(long seed) {
-        BiomeUtil.setSeed(seed);
+        BetaClimateSampler.getInstance().setSeed(seed);
     }
 
     @Override
@@ -25,7 +26,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        BiomeUtil.sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
+        BetaClimateSampler.getInstance().sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
         return registry.get(BetaBiomes.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.LAND));
     }
 
@@ -34,7 +35,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        BiomeUtil.sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
+        BetaClimateSampler.getInstance().sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
         return registry.get(BetaBiomes.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.OCEAN));
     }
 

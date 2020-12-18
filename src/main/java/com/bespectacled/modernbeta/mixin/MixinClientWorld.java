@@ -13,6 +13,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.biome.BetaClimateSampler;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
@@ -59,7 +60,7 @@ public abstract class MixinClientWorld extends World {
     
     @Unique
     private static void setSeed(long seed) {
-        BiomeUtil.setSeed(seed);
+        BetaClimateSampler.getInstance().setSeed(seed);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
@@ -120,7 +121,7 @@ public abstract class MixinClientWorld extends World {
         int x = pos.getX();
         int z = pos.getZ();
 
-        float temp = (float) BiomeUtil.sampleSkyTemp(x, z);
+        float temp = (float) BetaClimateSampler.getInstance().sampleSkyTemp(x, z);
         int skyColor = getSkyColorByTemp(temp);
 
         return skyColor;

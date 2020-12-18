@@ -57,7 +57,7 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
             Arrays.fill(TEMPS, 0, TEMPS.length, betaSource.getBiomeRegistry().get(BetaBiomes.SKY_ID).getTemperature());
             Arrays.fill(HUMIDS, 0, HUMIDS.length, betaSource.getBiomeRegistry().get(BetaBiomes.SKY_ID).getDownfall());
         } else {
-            BiomeUtil.sampleTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
+            BetaClimateSampler.getInstance().sampleTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
         }
         
         

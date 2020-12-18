@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.biome.provider;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bespectacled.modernbeta.biome.BetaClimateSampler;
 import com.bespectacled.modernbeta.util.BiomeUtil;
 
 import net.minecraft.util.Identifier;
@@ -16,7 +17,7 @@ public class SingleBiomeProvider extends AbstractBiomeProvider {
     
     public SingleBiomeProvider(long seed, Identifier biomeId) {
         this.biomeId = biomeId;
-        BiomeUtil.setSeed(seed);
+        BetaClimateSampler.getInstance().setSeed(seed);
     }
 
     @Override

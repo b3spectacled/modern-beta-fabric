@@ -1,11 +1,11 @@
-package com.bespectacled.modernbeta.util;
+package com.bespectacled.modernbeta.biome;
 
 public class BiomeCacheChunk {
     private final double temps[];
     private final double humids[];
     private final double skyTemps[];
     
-    public BiomeCacheChunk(int chunkX, int chunkZ) {
+    public BiomeCacheChunk(int chunkX, int chunkZ, BetaClimateSampler climateSampler) {
         this.temps = new double[256];
         this.humids = new double[256];
         this.skyTemps = new double[256];
@@ -17,11 +17,11 @@ public class BiomeCacheChunk {
         int ndx = 0;
         for (int i = startZ; i < startZ + 16; ++i) {
             for (int j = startX; j < startX + 16; ++j) {
-                BiomeUtil.sampleTempHumidAtPoint(tempHumid, j, i);
+                climateSampler.sampleTempHumidAtPoint(tempHumid, j, i);
                 
                 temps[ndx] = tempHumid[0];
                 humids[ndx] = tempHumid[1];
-                skyTemps[ndx] = BiomeUtil.sampleSkyTempAtPoint(j, i);
+                skyTemps[ndx] = climateSampler.sampleSkyTempAtPoint(j, i);
 
                 ndx++;
             }
@@ -36,4 +36,5 @@ public class BiomeCacheChunk {
     public double sampleSkyTempAtPoint(int x, int z) {
         return skyTemps[x & 0xF | (z & 0xF) << 4];
     }
+    
 }

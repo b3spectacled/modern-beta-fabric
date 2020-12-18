@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.biome.BetaClimateSampler;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
@@ -35,13 +36,13 @@ public class MixinBlockColors implements MutableBlockColors {
 
     @Unique
     public void setSeed(long seed) {
-        BiomeUtil.setSeed(BETA_CONFIG.fixedSeed != 0L ? BETA_CONFIG.fixedSeed : seed);
+        BetaClimateSampler.getInstance().setSeed(BETA_CONFIG.fixedSeed != 0L ? BETA_CONFIG.fixedSeed : seed);
     }
 
     @Unique
     public void setSeed(long seed, boolean isBetaWorld) {
         if (isBetaWorld)
-            BiomeUtil.setSeed(BETA_CONFIG.fixedSeed != 0L ? BETA_CONFIG.fixedSeed : seed);
+            BetaClimateSampler.getInstance().setSeed(BETA_CONFIG.fixedSeed != 0L ? BETA_CONFIG.fixedSeed : seed);
         
         useBetaColors = isBetaWorld;
     }
@@ -96,7 +97,7 @@ public class MixinBlockColors implements MutableBlockColors {
             z = (int) ((long) z + (shift >> 24 & 31L));
         }
 
-        BiomeUtil.sampleTempHumid(TEMP_HUMID, x, z);
+        BetaClimateSampler.getInstance().sampleTempHumid(TEMP_HUMID, x, z);
         return GrassColors.getColor(TEMP_HUMID[0], TEMP_HUMID[1]);
     }
 
@@ -109,7 +110,7 @@ public class MixinBlockColors implements MutableBlockColors {
         int x = pos.getX();
         int z = pos.getZ();
 
-        BiomeUtil.sampleTempHumid(TEMP_HUMID, x, z);
+        BetaClimateSampler.getInstance().sampleTempHumid(TEMP_HUMID, x, z);
         return FoliageColors.getColor(TEMP_HUMID[0], TEMP_HUMID[1]);
     }
 }
