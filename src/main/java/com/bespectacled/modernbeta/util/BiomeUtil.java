@@ -6,8 +6,8 @@ import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
 
 import net.minecraft.util.math.MathHelper;
 
-/*
- * From WorldEdit
+/**
+ * Author: WorldEdit
  */
 public class BiomeUtil {
     private static final int HORIZONTAL_SECTION_COUNT = (int) Math.round(Math.log(16.0D) / Math.log(2.0D)) - 2;
@@ -113,14 +113,15 @@ public class BiomeUtil {
         return tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
     }
     
-    private static BiomeCacheChunk getCachedChunk(int x, int z) {
+    // Synchronized needed to prevent crash when more than one thread attempts to modify map, I think
+    private static synchronized BiomeCacheChunk getCachedChunk(int x, int z) {
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         
         long hashedCoord = (long)chunkX & 0xffffffffL | ((long)chunkZ & 0xffffffffL) << 32;
         BiomeCacheChunk cachedChunk = BIOME_CACHE.get(hashedCoord);
         
-        if (cachedChunk == null) {
+        if (cachedChunk == null) { 
             cachedChunk = new BiomeCacheChunk(chunkX, chunkZ);
             BIOME_CACHE.put(hashedCoord, cachedChunk);
         }

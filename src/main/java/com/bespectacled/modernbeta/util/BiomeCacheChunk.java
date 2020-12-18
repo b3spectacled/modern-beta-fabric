@@ -18,9 +18,9 @@ public class BiomeCacheChunk {
         for (int i = startZ; i < startZ + 16; ++i) {
             for (int j = startX; j < startX + 16; ++j) {
                 BiomeUtil.sampleTempHumidAtPoint(tempHumid, j, i);
+                
                 temps[ndx] = tempHumid[0];
                 humids[ndx] = tempHumid[1];
-                
                 skyTemps[ndx] = BiomeUtil.sampleSkyTempAtPoint(j, i);
 
                 ndx++;
