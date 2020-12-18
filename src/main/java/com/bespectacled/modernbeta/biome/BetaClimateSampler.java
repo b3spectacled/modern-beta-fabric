@@ -28,7 +28,7 @@ public class BetaClimateSampler {
         if (this.seed == seed) return;
         
         this.seed = seed;
-        initOctaves(seed);
+        this.initOctaves(seed);
         this.biomeCache.clear();
     }
     
@@ -39,9 +39,7 @@ public class BetaClimateSampler {
     }
     
     public void sampleTempHumid(double[] arr, int x, int z) {
-        BiomeCacheChunk cachedChunk = this.biomeCache.getCachedChunk(x, z);
-        
-        cachedChunk.sampleTempHumidAtPoint(arr, x, z);
+        this.biomeCache.getCachedChunk(x, z).sampleTempHumidAtPoint(arr, x, z);
     }
     
     public void sampleTempHumid(int x, int z, double[] temps, double[] humids) {
@@ -66,9 +64,7 @@ public class BetaClimateSampler {
     }
     
     public double sampleSkyTemp(int x, int z) {
-        BiomeCacheChunk cachedChunk = this.biomeCache.getCachedChunk(x, z);
-        
-        return cachedChunk.sampleSkyTempAtPoint(x, z);
+        return this.biomeCache.getCachedChunk(x, z).sampleSkyTempAtPoint(x, z);
     }
     
     protected void sampleTempHumidAtPoint(double arr[], int x, int z) {
