@@ -1,12 +1,14 @@
 package com.bespectacled.modernbeta.biome;
 
+import java.util.Map;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
+import com.bespectacled.modernbeta.util.BoundedHashMap;
 
 public class BetaClimateSampler {
     private static final BetaClimateSampler INSTANCE = new BetaClimateSampler();
-    private static final BiomeCache BIOME_CACHE = new BiomeCache(INSTANCE);
+    private final BiomeCache biomeCache;
     
     private SimplexOctaveNoise tempNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 9871L), 4);
     private SimplexOctaveNoise humidNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 39811L), 4);
@@ -14,7 +16,9 @@ public class BetaClimateSampler {
     
     private long seed;
     
-    private BetaClimateSampler() {}
+    private BetaClimateSampler() {
+        this.biomeCache = new BiomeCache(this);
+    }
     
     public static BetaClimateSampler getInstance() {
         return INSTANCE;
@@ -25,7 +29,7 @@ public class BetaClimateSampler {
         
         this.seed = seed;
         initOctaves(seed);
-        BIOME_CACHE.clear();
+        this.biomeCache.clear();
     }
     
     private void initOctaves(long seed) {
@@ -35,7 +39,7 @@ public class BetaClimateSampler {
     }
     
     public void sampleTempHumid(double[] arr, int x, int z) {
-        BiomeCacheChunk cachedChunk = BIOME_CACHE.getCachedChunk(x, z);
+        BiomeCacheChunk cachedChunk = this.biomeCache.getCachedChunk(x, z);
         
         cachedChunk.sampleTempHumidAtPoint(arr, x, z);
     }
@@ -46,7 +50,7 @@ public class BetaClimateSampler {
         
         double tempHumid[] = new double[2];
         
-        BiomeCacheChunk cachedChunk = BIOME_CACHE.getCachedChunk(x, z);
+        BiomeCacheChunk cachedChunk = this.biomeCache.getCachedChunk(x, z);
         
         int ndx = 0;
         for (int relX = 0; relX < 16; relX++) {
@@ -62,12 +66,12 @@ public class BetaClimateSampler {
     }
     
     public double sampleSkyTemp(int x, int z) {
-        BiomeCacheChunk cachedChunk = BIOME_CACHE.getCachedChunk(x, z);
+        BiomeCacheChunk cachedChunk = this.biomeCache.getCachedChunk(x, z);
         
         return cachedChunk.sampleSkyTempAtPoint(x, z);
     }
     
-    public void sampleTempHumidAtPoint(double arr[], int x, int z) {
+    protected void sampleTempHumidAtPoint(double arr[], int x, int z) {
         double temp  = this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.25D);
         double humid = this.humidNoiseOctaves.sample(x, z, 0.05000000074505806D, 0.05000000074505806D, 0.33333333333333331D);
         double noise = this.noiseOctaves.sample(x, z, 0.25D, 0.25D, 0.58823529411764708D);
@@ -102,8 +106,77 @@ public class BetaClimateSampler {
         arr[1] = humid;
     }
     
-    public double sampleSkyTempAtPoint(int x, int z) {
+    protected double sampleSkyTempAtPoint(int x, int z) {
         return this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
+    }
+    
+    private class BiomeCache {
+        private final Map<Long, BiomeCacheChunk> biomeCache;
+        private final BetaClimateSampler climateSampler;
+        
+        public BiomeCache(BetaClimateSampler climateSampler) {
+            this.climateSampler = climateSampler;
+            this.biomeCache = new BoundedHashMap<Long, BiomeCacheChunk>(1024); // 32 x 32 chunks
+        }
+        
+        public synchronized void clear() {
+            this.biomeCache.clear();
+        }
+        
+        // Synchronized needed to prevent crash when more than one thread attempts to modify map, I think
+        public synchronized BiomeCacheChunk getCachedChunk(int x, int z) {
+            int chunkX = x >> 4;
+            int chunkZ = z >> 4;
+            
+            long hashedCoord = (long)chunkX & 0xffffffffL | ((long)chunkZ & 0xffffffffL) << 32;
+            BiomeCacheChunk cachedChunk = this.biomeCache.get(hashedCoord);
+            
+            if (cachedChunk == null) { 
+                cachedChunk = new BiomeCacheChunk(chunkX, chunkZ, this.climateSampler);
+                this.biomeCache.put(hashedCoord, cachedChunk);
+            }
+            
+            return cachedChunk;
+        }
+    }
+    
+    private class BiomeCacheChunk {
+        private final double temps[];
+        private final double humids[];
+        private final double skyTemps[];
+        
+        public BiomeCacheChunk(int chunkX, int chunkZ, BetaClimateSampler climateSampler) {
+            this.temps = new double[256];
+            this.humids = new double[256];
+            this.skyTemps = new double[256];
+            
+            int startX = chunkX << 4;
+            int startZ = chunkZ << 4;
+            double[] tempHumid = new double[2];
+            
+            int ndx = 0;
+            for (int i = startZ; i < startZ + 16; ++i) {
+                for (int j = startX; j < startX + 16; ++j) {
+                    climateSampler.sampleTempHumidAtPoint(tempHumid, j, i);
+                    
+                    temps[ndx] = tempHumid[0];
+                    humids[ndx] = tempHumid[1];
+                    skyTemps[ndx] = climateSampler.sampleSkyTempAtPoint(j, i);
+
+                    ndx++;
+                }
+            }
+        }
+        
+        public void sampleTempHumidAtPoint(double[] tempHumid, int x, int z) {
+            tempHumid[0] = temps[x & 0xF | (z & 0xF) << 4];
+            tempHumid[1] = humids[x & 0xF | (z & 0xF) << 4];
+        }
+        
+        public double sampleSkyTempAtPoint(int x, int z) {
+            return skyTemps[x & 0xF | (z & 0xF) << 4];
+        }
+        
     }
     
 }
