@@ -15,6 +15,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 public class OldBiomeSource extends BiomeSource {
     
@@ -52,6 +53,11 @@ public class OldBiomeSource extends BiomeSource {
     @Override
     public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.biomeProvider.getBiomeForNoiseGen(biomeRegistry, biomeX, biomeY, biomeZ);
+    }
+    
+    @Override
+    public boolean hasStructureFeature(StructureFeature<?> feature) {
+        return super.hasStructureFeature(feature);
     }
 
     public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {

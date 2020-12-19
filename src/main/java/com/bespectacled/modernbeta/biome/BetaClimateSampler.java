@@ -67,7 +67,7 @@ public class BetaClimateSampler {
         return this.biomeCache.getCachedChunk(x, z).sampleSkyTempAtPoint(x, z);
     }
     
-    protected void sampleTempHumidAtPoint(double arr[], int x, int z) {
+    private void sampleTempHumidAtPoint(double arr[], int x, int z) {
         double temp  = this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.25D);
         double humid = this.humidNoiseOctaves.sample(x, z, 0.05000000074505806D, 0.05000000074505806D, 0.33333333333333331D);
         double noise = this.noiseOctaves.sample(x, z, 0.25D, 0.25D, 0.58823529411764708D);
@@ -102,7 +102,7 @@ public class BetaClimateSampler {
         arr[1] = humid;
     }
     
-    protected double sampleSkyTempAtPoint(int x, int z) {
+    private double sampleSkyTempAtPoint(int x, int z) {
         return this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
     }
     

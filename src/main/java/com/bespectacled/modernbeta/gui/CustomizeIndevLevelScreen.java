@@ -5,6 +5,7 @@ import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -22,8 +23,8 @@ public class CustomizeIndevLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private OldGeneratorSettings generatorSettings;
     
-    private int levelType = IndevUtil.IndevType.fromName(ModernBeta.BETA_CONFIG.indevLevelType).getId();
-    private int levelTheme = IndevUtil.IndevTheme.fromName(ModernBeta.BETA_CONFIG.indevLevelTheme).getId();
+    private IndevType levelType = IndevType.ISLAND;
+    private IndevTheme levelTheme = IndevTheme.NORMAL;
    
     private int levelWidth = ModernBeta.BETA_CONFIG.indevLevelWidth;
     private int levelLength = ModernBeta.BETA_CONFIG.indevLevelLength;
@@ -40,9 +41,9 @@ public class CustomizeIndevLevelScreen extends Screen {
         this.generatorSettings = generatorSettings;
         
         if (generatorSettings.providerSettings.contains("levelType")) 
-            this.levelType = IndevUtil.IndevType.fromName(generatorSettings.providerSettings.getString("levelType")).getId();
+            this.levelType = IndevType.fromName(generatorSettings.providerSettings.getString("levelType"));
         if (generatorSettings.providerSettings.contains("levelTheme")) 
-            this.levelTheme = IndevUtil.IndevTheme.fromName(generatorSettings.providerSettings.getString("levelTheme")).getId();
+            this.levelTheme = IndevTheme.fromName(generatorSettings.providerSettings.getString("levelTheme"));
         
         if (generatorSettings.providerSettings.contains("levelWidth")) this.levelWidth = generatorSettings.providerSettings.getInt("levelWidth");
         if (generatorSettings.providerSettings.contains("levelLength")) this.levelLength = generatorSettings.providerSettings.getInt("levelLength");
@@ -72,85 +73,32 @@ public class CustomizeIndevLevelScreen extends Screen {
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         
         this.buttonList.addSingleOptionEntry(
-            new CyclingOption(
-                "createWorld.customize.indev.typeButton",
-                (gameOptions, value) -> {
-                    this.levelType++;
-                    if (this.levelType > IndevType.values().length - 1) this.levelType = 0;
-                    generatorSettings.providerSettings.putString("levelType", IndevType.fromId(this.levelType).getName());
+            CyclingOption.create(
+                "createWorld.customize.indev.levelType", 
+                IndevType.values(), 
+                (value) -> new TranslatableText("createWorld.customize.indev.type." + value.getName()), 
+                (gameOptions) -> { return this.levelType; }, 
+                (gameOptions, option, value) -> {
+                    this.levelType = value;
+                    generatorSettings.providerSettings.putString("levelType", this.levelType.getName());
                     
                     return;
-                },
-                (gameOptions, cyclingOptions) -> {
-                    Text typeText = GUIUtil.TEXT_ISLAND;
-                    IndevType type = IndevType.fromId(this.levelType);
-                    
-                    switch(type) {
-                        case ISLAND:
-                            typeText = GUIUtil.TEXT_ISLAND;
-                            break;
-                        case FLOATING:
-                            typeText = GUIUtil.TEXT_FLOATING;
-                            break;
-                        case INLAND:
-                            typeText = GUIUtil.TEXT_INLAND;
-                            break;
-                        default:
-                            typeText = GUIUtil.TEXT_UNKNOWN;
-                    }
-                    
-                    return new TranslatableText(
-                            "options.generic_value", 
-                            new Object[] { 
-                                new TranslatableText("createWorld.customize.indev.levelType"), 
-                                typeText
-                        });
-                }
-        ));
+                })
+        );
         
         this.buttonList.addSingleOptionEntry(
-                new CyclingOption(
-                    "createWorld.customize.indev.themeButton",
-                    (gameOptions, value) -> {
-                        this.levelTheme++;
-                        if (this.levelTheme > IndevTheme.values().length - 1) this.levelTheme = 0;
-                        generatorSettings.providerSettings.putString("levelTheme", IndevTheme.fromId(this.levelTheme).getName());
-                        
-                        return;
-                    },
-                    (gameOptions, cyclingOptions) -> {
-                        Text themeText = GUIUtil.TEXT_NORMAL;
-                        IndevTheme theme = IndevTheme.fromId(this.levelTheme);
-                        
-                        switch(theme) {
-                            case NORMAL:
-                                themeText = GUIUtil.TEXT_NORMAL;
-                                break;
-                            case HELL:
-                                themeText = GUIUtil.TEXT_HELL;
-                                break;
-                            case PARADISE:
-                                themeText = GUIUtil.TEXT_PARADISE;
-                                break;
-                            case WOODS:
-                                themeText = GUIUtil.TEXT_WOODS;
-                                break;
-                            case SNOWY:
-                                themeText = GUIUtil.TEXT_SNOWY;
-                                break;
-                            default:
-                                themeText = GUIUtil.TEXT_UNKNOWN;
-                        }
-                        
-                        return new TranslatableText(
-                            "options.generic_value", 
-                            new Object[] { 
-                                new TranslatableText("createWorld.customize.indev.levelTheme"), 
-                                themeText 
-                        });
-                    }
-            ));
-        
+            CyclingOption.create(
+                "createWorld.customize.indev.levelTheme", 
+                IndevTheme.values(), 
+                (value) -> new TranslatableText("createWorld.customize.indev.theme." + value.getName()), 
+                (gameOptions) -> { return this.levelTheme; }, 
+                (gameOptions, option, value) -> {
+                    this.levelTheme = value;
+                    generatorSettings.providerSettings.putString("levelTheme", this.levelTheme.getName());
+                    
+                    return;
+                })
+        );
         
         this.buttonList.addSingleOptionEntry(
             new DoubleOption(

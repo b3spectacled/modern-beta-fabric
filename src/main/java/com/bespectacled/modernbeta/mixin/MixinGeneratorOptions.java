@@ -87,7 +87,7 @@ public class MixinGeneratorOptions {
                 new StructuresConfig(guaranteedStronghold, Maps.newHashMap(StructuresConfig.DEFAULT_STRUCTURES)) : new StructuresConfig(true);
             
             NoiseSamplingConfig noiseSampler = new NoiseSamplingConfig(1.0, 1.0, 40.0, 22.0);
-            GenerationShapeConfig noise = new GenerationShapeConfig(256, noiseSampler, new SlideConfig(-10, 3, 0),
+            GenerationShapeConfig noise = GenerationShapeConfig.method_32994(0, 256, noiseSampler, new SlideConfig(-10, 3, 0),
                     new SlideConfig(-30, 0, 0), 1, 2, 1.0, -60.0 / (256.0 / 2.0), true, true, false, false);
 
             ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise, Blocks.STONE.getDefaultState(),

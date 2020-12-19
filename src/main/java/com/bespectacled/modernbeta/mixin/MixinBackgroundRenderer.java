@@ -4,15 +4,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.render.BackgroundRenderer;
-import net.minecraft.client.util.math.Vector3f;
 
 @Mixin(BackgroundRenderer.class)
 public class MixinBackgroundRenderer {

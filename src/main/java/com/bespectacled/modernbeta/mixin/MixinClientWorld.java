@@ -6,6 +6,7 @@ import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
@@ -36,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class MixinClientWorld extends World {
     
     @Unique
-    private BlockPos curBlockPos = new BlockPos(0, 0, 0);
+    private Vec3d curPos = new Vec3d(0, 0, 0);
     
     @Unique
     private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
@@ -98,28 +99,30 @@ public abstract class MixinClientWorld extends World {
         at = @At("HEAD"),
         index = 1
     )
-    private BlockPos captureBlockPos(BlockPos pos) {
-        curBlockPos = pos;
+    private Vec3d captureBlockPos(Vec3d pos) {
+        curPos = pos;
         
         return pos;
     }
     
     @ModifyVariable(
         method = "method_23777",
-        at = @At(value = "INVOKE_ASSIGN",  target = "Lnet/minecraft/world/biome/Biome;getSkyColor()I"),
+        at = @At(value = "INVOKE_ASSIGN",  target = "Lnet/minecraft/util/CubicSampler;sampleColor(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/CubicSampler$RgbFetcher;)Lnet/minecraft/util/math/Vec3d;"),
         index = 6  
     )
-    private int injectBetaSkyColor(int skyColor) {
+    private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
         if (isBetaWorld && BETA_CONFIG.renderBetaSkyColor && this.isOverworld) {
-            skyColor = getBetaSkyColor(curBlockPos);
+            int skyColor = getBetaSkyColor(curPos);
+            
+            skyColorVec = Vec3d.unpackRgb(skyColor);
         }
         
-        return skyColor;
+        return skyColorVec;
     }
 
-    private int getBetaSkyColor(BlockPos pos) {
-        int x = pos.getX();
-        int z = pos.getZ();
+    private int getBetaSkyColor(Vec3d pos) {
+        int x = (int)pos.x;
+        int z = (int)pos.z;
 
         float temp = (float) BetaClimateSampler.getInstance().sampleSkyTemp(x, z);
         int skyColor = getSkyColorByTemp(temp);

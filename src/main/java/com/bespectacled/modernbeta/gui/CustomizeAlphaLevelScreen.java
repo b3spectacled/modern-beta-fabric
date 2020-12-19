@@ -12,7 +12,6 @@ import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.options.BooleanOption;
 import net.minecraft.client.options.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -66,41 +65,26 @@ public class CustomizeAlphaLevelScreen extends Screen {
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         
         this.buttonList.addSingleOptionEntry(
-            new CyclingOption(
-                "createWorld.customize.preBeta.typeButton",
-                (gameOptions, value) -> {
-                    if (this.typeIterator.hasNext())
-                        this.biomeType = typeIterator.next();
-                    else {
-                        typeIterator = Arrays.asList(BiomeType.values()).iterator();
-                        this.biomeType = typeIterator.next();
-                    }
-                    
+            CyclingOption.create(
+                "createWorld.customize.type.biomeType", 
+                BiomeType.values(), 
+                (value) -> new TranslatableText("createWorld.customize.type." + value.getName()), 
+                (gameOptions) -> { return this.biomeType; }, 
+                (gameOptions, option, value) -> {
+                    this.biomeType = value;
                     generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
                     
                     return;
-                },
-                (gameOptions, cyclingOptions) -> {
-                    Text typeText = GUIUtil.getBiomeTypeText(this.biomeType);
-                    
-                    return new TranslatableText(
-                        "options.generic_value", 
-                        new Object[] { 
-                            GUIUtil.TEXT_BIOME_TYPE, 
-                            typeText
-                    });
-                }
-        ));
+                })
+        );
         
         this.buttonList.addSingleOptionEntry(
-            new BooleanOption(
-                "createWorld.customize.beta.generateOceans", 
-                (gameOptions) -> { return generateOceans; }, // Getter
-                (gameOptions, value) -> { // Setter
-                    generateOceans = value;
-                    generatorSettings.providerSettings.putBoolean("generateOceans", value);
-                }
-        ));
+            CyclingOption.create("createWorld.customize.beta.generateOceans", 
+            (gameOptions) -> { return generateOceans; }, 
+            (gameOptions, option, value) -> { // Setter
+                generateOceans = value;
+                generatorSettings.providerSettings.putBoolean("generateOceans", value);
+        }));
         
         this.children.add(this.buttonList);
     }
