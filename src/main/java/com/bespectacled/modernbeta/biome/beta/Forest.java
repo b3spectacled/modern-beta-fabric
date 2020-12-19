@@ -39,6 +39,7 @@ public class Forest {
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
+        DefaultBiomeFeatures.method_32236(genSettings); // Geodes
         
         genSettings.structureFeature(ConfiguredStructureFeatures.MANSION);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);

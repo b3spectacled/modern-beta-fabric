@@ -39,6 +39,7 @@ public class Ocean {
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
+        DefaultBiomeFeatures.method_32236(genSettings); // Geodes
         
         genSettings.structureFeature(ConfiguredStructureFeatures.BURIED_TREASURE);
         genSettings.structureFeature(ConfiguredStructureFeatures.OCEAN_RUIN_COLD);

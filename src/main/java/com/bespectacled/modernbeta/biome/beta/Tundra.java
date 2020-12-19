@@ -38,6 +38,7 @@ public class Tundra {
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
+        DefaultBiomeFeatures.method_32236(genSettings); // Geodes
         
         genSettings.structureFeature(ConfiguredStructureFeatures.VILLAGE_SNOWY);
         genSettings.structureFeature(ConfiguredStructureFeatures.IGLOO);

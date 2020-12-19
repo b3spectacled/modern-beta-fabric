@@ -40,6 +40,7 @@ public class IceDesert {
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
+        DefaultBiomeFeatures.method_32236(genSettings); // Geodes
         
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_DESERT);
         genSettings.structureFeature(ConfiguredStructureFeatures.DESERT_PYRAMID);

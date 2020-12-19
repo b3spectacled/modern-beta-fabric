@@ -40,6 +40,7 @@ public class Swampland {
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
+        DefaultBiomeFeatures.method_32236(genSettings); // Geodes
         
         genSettings.structureFeature(ConfiguredStructureFeatures.SWAMP_HUT);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_SWAMP);
