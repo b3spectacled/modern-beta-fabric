@@ -13,8 +13,8 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.BetaClimateSampler;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.util.BiomeUtil;
@@ -111,34 +111,9 @@ public abstract class MixinClientWorld extends World {
     )
     private int injectBetaSkyColor(int skyColor) {
         if (isBetaWorld && BETA_CONFIG.renderBetaSkyColor && this.isOverworld) {
-            skyColor = getBetaSkyColor(curBlockPos);
+            skyColor = BetaClimateSampler.getInstance().getSkyColor(curBlockPos.getX(), curBlockPos.getZ());
         }
         
         return skyColor;
     }
-
-    private int getBetaSkyColor(BlockPos pos) {
-        int x = pos.getX();
-        int z = pos.getZ();
-
-        float temp = (float) BetaClimateSampler.getInstance().sampleSkyTemp(x, z);
-        int skyColor = getSkyColorByTemp(temp);
-
-        return skyColor;
-    }
-
-    @Unique
-    private static int getSkyColorByTemp(float temp) {
-        temp /= 3F;
-
-        if (temp < -1F) {
-            temp = -1F;
-        }
-
-        if (temp > 1.0F) {
-            temp = 1.0F;
-        }
-        return MathHelper.hsvToRgb(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F);
-    }
-
 }
