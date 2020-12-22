@@ -16,7 +16,11 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 
-/* From PaulEvs' InfGen */
+/**
+ * 
+ * @author Paulevs
+ *
+ */
 public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
     protected static final Mutable B_POS = new Mutable();
     protected static final BlockState LOG = Blocks.OAK_LOG.getDefaultState();

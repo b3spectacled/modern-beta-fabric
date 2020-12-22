@@ -13,6 +13,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3d;
 
 @Mixin(BackgroundRenderer.class)
 public class MixinBackgroundRenderer {
@@ -27,5 +28,15 @@ public class MixinBackgroundRenderer {
     private static float[] modifyFogSunsetCols(float[] skyCols) {
         return BETA_CONFIG.renderAlphaSunset ? null : skyCols;
     }
+    
+    @ModifyVariable(
+        method = "render",
+        at = @At(value = "INVOKE_ASSIGN", target = "Ljava/lang/Math;pow(DD)D"),
+        index = 6
+    )
+    private static float modifyFogModifier(float fogModifier) {
+        return fogModifier;
+    }
+        
     
 }

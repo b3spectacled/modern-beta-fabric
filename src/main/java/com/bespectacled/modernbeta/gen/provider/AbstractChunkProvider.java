@@ -34,10 +34,12 @@ public abstract class AbstractChunkProvider {
     protected static final Map<BlockPos, Integer> GROUND_CACHE_Y = new BoundedHashMap<>(512);
     protected static final int[][] CHUNK_Y = new int[16][16];
     
+    protected final int minY;
     protected final int worldHeight;
     protected final int seaLevel;
     
     public AbstractChunkProvider(long seed) {
+        this.minY = 0;
         this.worldHeight = 128;
         this.seaLevel = 64;
         
@@ -45,7 +47,8 @@ public abstract class AbstractChunkProvider {
         GROUND_CACHE_Y.clear();
     }
     
-    public AbstractChunkProvider(long seed, int worldHeight, int seaLevel) {
+    public AbstractChunkProvider(long seed, int minY, int worldHeight, int seaLevel) {
+        this.minY = minY;
         this.worldHeight = worldHeight;
         this.seaLevel = seaLevel;
         

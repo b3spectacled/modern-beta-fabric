@@ -73,6 +73,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
     private final int noiseSizeX;
     private final int noiseSizeZ;
     private final int noiseSizeY;
+    private final int noiseMinY;
     
     public BetaChunkProvider(long seed) {
         super(seed);
@@ -83,6 +84,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         this.noiseSizeX = 16 / this.horizontalNoiseResolution;
         this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
         this.noiseSizeY = this.worldHeight / this.verticalNoiseResolution;
+        this.noiseMinY = this.minY / this.verticalNoiseResolution;
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         
@@ -270,18 +272,27 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
-                for (int subChunkY = 0; subChunkY < this.noiseSizeY; subChunkY++) {
+                for (int subChunkY = this.noiseMinY; subChunkY < this.noiseSizeY; subChunkY++) {
                     double eighth = 0.125D;
 
-                    double lowerNW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
-                    double lowerSW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
-                    double lowerNE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
-                    double lowerSE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
+                    double lowerNW, lowerSW, lowerNE, lowerSE;
+                    double upperNW, upperSW, upperNE, upperSE;
 
-                    double upperNW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNW) * eighth; 
-                    double upperSW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSW) * eighth;
-                    double upperNE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNE) * eighth;
-                    double upperSE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSE) * eighth;
+                    lowerNW = lowerSW = lowerNE = lowerSE = 1.0;
+                    upperNW = upperSW = upperNE = upperSE = 1.0;
+
+                    // TODO: Move this into 1.17.x branch to generate below y0
+                    if (subChunkY >= 0) {
+                        lowerNW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
+                        lowerSW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
+                        lowerNE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
+                        lowerSE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
+
+                        upperNW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNW) * eighth; 
+                        upperSW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSW) * eighth;
+                        upperNE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNE) * eighth;
+                        upperSE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSE) * eighth;
+                    }
 
                     for (int subY = 0; subY < this.verticalNoiseResolution; subY++) {
                         int y = subChunkY * this.verticalNoiseResolution + subY;
