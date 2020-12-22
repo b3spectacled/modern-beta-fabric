@@ -22,4 +22,15 @@ public class MixinBackgroundRenderer {
         return BETA_CONFIG.renderAlphaSunset ? null : skyCols;
     }
     
+    /*
+    @ModifyVariable(
+        method = "render",
+        at = @At(value = "INVOKE_ASSIGN", target = "Ljava/lang/Math;pow(DD)D"),
+        index = 6
+    )
+    private static float modifyFogModifier(float fogModifier) {
+        return fogModifier;
+    }
+    */
+    
 }

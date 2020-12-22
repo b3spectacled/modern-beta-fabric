@@ -3,10 +3,9 @@ package com.bespectacled.modernbeta.biome.provider;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bespectacled.modernbeta.biome.BetaClimateSampler;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
+import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes.BetaBiomeType;
-import com.bespectacled.modernbeta.util.BiomeUtil;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;

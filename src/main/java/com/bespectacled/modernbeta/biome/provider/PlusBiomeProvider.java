@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.bespectacled.modernbeta.biome.BetaClimateSampler;
+import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import net.minecraft.util.Identifier;

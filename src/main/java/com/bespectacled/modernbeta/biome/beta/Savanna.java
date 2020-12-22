@@ -63,7 +63,7 @@ public class Savanna {
         genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.NONE)
+            .precipitation(Biome.Precipitation.RAIN)
             .category(Biome.Category.SAVANNA)
             .depth(0.3F)
             .scale(0.2F)

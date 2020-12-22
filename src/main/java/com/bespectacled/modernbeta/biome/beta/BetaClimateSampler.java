@@ -1,10 +1,12 @@
-package com.bespectacled.modernbeta.biome;
+package com.bespectacled.modernbeta.biome.beta;
 
 import java.util.Map;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
 import com.bespectacled.modernbeta.util.BoundedHashMap;
+
+import net.minecraft.util.math.MathHelper;
 
 public class BetaClimateSampler {
     private static final BetaClimateSampler INSTANCE = new BetaClimateSampler();
@@ -32,12 +34,6 @@ public class BetaClimateSampler {
         this.biomeCache.clear();
     }
     
-    private void initOctaves(long seed) {
-        this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
-        this.humidNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
-        this.noiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
-    }
-    
     public void sampleTempHumid(double[] arr, int x, int z) {
         this.biomeCache.getCachedChunk(x, z).sampleTempHumidAtPoint(arr, x, z);
     }
@@ -63,7 +59,23 @@ public class BetaClimateSampler {
         }
     }
     
-    public double sampleSkyTemp(int x, int z) {
+    public int getSkyColor(int x, int z) {
+        float temp = (float)sampleSkyTemp(x, z);
+        
+        temp /= 3F;
+
+        if (temp < -1F) {
+            temp = -1F;
+        }
+
+        if (temp > 1.0F) {
+            temp = 1.0F;
+        }
+        
+        return MathHelper.hsvToRgb(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F);
+    }
+    
+    private double sampleSkyTemp(int x, int z) {
         return this.biomeCache.getCachedChunk(x, z).sampleSkyTempAtPoint(x, z);
     }
     
@@ -104,6 +116,12 @@ public class BetaClimateSampler {
     
     private double sampleSkyTempAtPoint(int x, int z) {
         return this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
+    }
+    
+    private void initOctaves(long seed) {
+        this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
+        this.humidNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
+        this.noiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
     }
     
     private class BiomeCache {
@@ -151,13 +169,13 @@ public class BetaClimateSampler {
             double[] tempHumid = new double[2];
             
             int ndx = 0;
-            for (int i = startZ; i < startZ + 16; ++i) {
-                for (int j = startX; j < startX + 16; ++j) {
-                    climateSampler.sampleTempHumidAtPoint(tempHumid, j, i);
+            for (int z = startZ; z < startZ + 16; ++z) {
+                for (int x = startX; x < startX + 16; ++x) {
+                    climateSampler.sampleTempHumidAtPoint(tempHumid, x, z);
                     
                     temps[ndx] = tempHumid[0];
                     humids[ndx] = tempHumid[1];
-                    skyTemps[ndx] = climateSampler.sampleSkyTempAtPoint(j, i);
+                    skyTemps[ndx] = climateSampler.sampleSkyTempAtPoint(x, z);
 
                     ndx++;
                 }
