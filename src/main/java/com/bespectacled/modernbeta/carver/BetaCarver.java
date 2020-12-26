@@ -12,7 +12,7 @@ public class BetaCarver {
     
     public static final BetaCaveCarver BETA_CAVE_CARVER = (BetaCaveCarver) register("beta_cave", new BetaCaveCarver(ProbabilityConfig.CODEC, 128));
     public static final ConfiguredCarver<?> CONF_BETA_CAVE_CARVER = register("beta_cave", new ConfiguredCarver<ProbabilityConfig>(BETA_CAVE_CARVER, new ProbabilityConfig(1f)));
-    
+   
     public static Carver<ProbabilityConfig> register(String id, Carver<ProbabilityConfig> carver) {
         return Registry.register(Registry.CARVER, id, carver);
     }
