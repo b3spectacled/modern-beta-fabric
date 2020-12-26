@@ -24,7 +24,7 @@ public class BiomeUtil {
         int biomeMaxY = (256 >> 2) - 1;
         
         int l = (x >> 2) & HORIZONTAL_BIT_MASK;
-        int m = MathHelper.clamp((y << 2) - biomeMinY, 0, biomeMaxY);
+        int m = MathHelper.clamp((y >> 2) - biomeMinY, 0, biomeMaxY);
         int n = (z >> 2) & HORIZONTAL_BIT_MASK;
 
         return m << HORIZONTAL_SECTION_COUNT + HORIZONTAL_SECTION_COUNT | n << HORIZONTAL_SECTION_COUNT | l;
