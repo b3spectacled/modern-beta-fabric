@@ -37,7 +37,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise stoneNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    private static final double HEIGHT_NOISE[][] = new double[33][4];
+    private final double heightNoise[][];
     
     private static final Random SANDSTONE_RAND = new Random();
     
@@ -52,12 +52,14 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         super(seed);
         SANDSTONE_RAND.setSeed(seed);
         
-        this.verticalNoiseResolution = 1 * 4;
+        this.verticalNoiseResolution = 2 * 4;
         this.horizontalNoiseResolution = 1 * 4;
         
         this.noiseSizeX = 16 / this.horizontalNoiseResolution;
         this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
         this.noiseSizeY = this.worldHeight / this.verticalNoiseResolution;
+        
+        this.heightNoise = new double[this.noiseSizeY + 1][this.noiseSizeX];
         
         // Noise Generators
         noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true);
@@ -220,28 +222,28 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 int bX = chunkX * this.noiseSizeX + subChunkX;
                 int bZ = chunkZ * this.noiseSizeZ + subChunkZ;
                 
-                for (int bY = 0; bY < HEIGHT_NOISE.length; ++bY) {
-                    HEIGHT_NOISE[bY][0] = this.generateHeightmap(bX, bY, bZ);
-                    HEIGHT_NOISE[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
-                    HEIGHT_NOISE[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
-                    HEIGHT_NOISE[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
+                for (int bY = 0; bY < this.noiseSizeY + 1; ++bY) {
+                    heightNoise[bY][0] = this.generateHeightmap(bX, bY, bZ);
+                    heightNoise[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
+                    heightNoise[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
+                    heightNoise[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
                 }
                 
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
-                    double lower0 = HEIGHT_NOISE[subChunkY][0];
-                    double lower1 = HEIGHT_NOISE[subChunkY][1];
-                    double lower2 = HEIGHT_NOISE[subChunkY][2];
-                    double lower3 = HEIGHT_NOISE[subChunkY][3];
+                    double lower0 = heightNoise[subChunkY][0];
+                    double lower1 = heightNoise[subChunkY][1];
+                    double lower2 = heightNoise[subChunkY][2];
+                    double lower3 = heightNoise[subChunkY][3];
                     
-                    double upper0 = HEIGHT_NOISE[subChunkY + 1][0];
-                    double upper1 = HEIGHT_NOISE[subChunkY + 1][1];
-                    double upper2 = HEIGHT_NOISE[subChunkY + 1][2];
-                    double upper3 = HEIGHT_NOISE[subChunkY + 1][3];
+                    double upper0 = heightNoise[subChunkY + 1][0];
+                    double upper1 = heightNoise[subChunkY + 1][1];
+                    double upper2 = heightNoise[subChunkY + 1][2];
+                    double upper3 = heightNoise[subChunkY + 1][3];
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
                         int y = subY + subChunkY * this.verticalNoiseResolution;
                         
-                        double mixY = subY / 4.0;
+                        double mixY = subY / (double)this.verticalNoiseResolution;
                         
                         double nx1 = lower0 + (upper0 - lower0) * mixY;
                         double nx2 = lower1 + (upper1 - lower1) * mixY;
@@ -252,7 +254,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                             int x = subX + subChunkX * this.horizontalNoiseResolution;
                             int absX = (chunk.getPos().x << 4) + x;
                             
-                            double mixX = subX / 4.0;
+                            double mixX = subX / (double)this.horizontalNoiseResolution;
                             
                             double nz1 = nx1 + (nx3 - nx1) * mixX;
                             double nz2 = nx2 + (nx4 - nx2) * mixX;
@@ -261,7 +263,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                                 int z = subZ + subChunkZ * this.horizontalNoiseResolution;
                                 int absZ = (chunk.getPos().z << 4) + z;
                                 
-                                double mixZ = subZ / 4.0;
+                                double mixZ = subZ / (double)this.horizontalNoiseResolution;
                                 
                                 double density = nz1 + (nz2 - nz1) * mixZ;
                                 
@@ -292,7 +294,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         // Check if y (in scaled space) is below sealevel
         // and increase density accordingly.
         //double elevGrad = y * 4.0 - 64.0;
-        double elevGrad = y * 4.0 - this.seaLevel;
+        double elevGrad = y * this.verticalNoiseResolution - (double)this.seaLevel;
         if (elevGrad < 0.0) {
             elevGrad *= 3.0;
         }
@@ -342,34 +344,31 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++ subChunkZ) {
-                //int bX = (chunkX << 2) + subChunkX;
-               // int bZ = (chunkZ << 2) + subChunkZ;
-                
                 int bX = chunkX * this.noiseSizeX + subChunkX;
                 int bZ = chunkZ * this.noiseSizeZ + subChunkZ;
                 
-                for (int bY = 0; bY < HEIGHT_NOISE.length; ++bY) {
-                    HEIGHT_NOISE[bY][0] = this.generateHeightmap(bX, bY, bZ);
-                    HEIGHT_NOISE[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
-                    HEIGHT_NOISE[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
-                    HEIGHT_NOISE[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
+                for (int bY = 0; bY < heightNoise.length; ++bY) {
+                    heightNoise[bY][0] = this.generateHeightmap(bX, bY, bZ);
+                    heightNoise[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
+                    heightNoise[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
+                    heightNoise[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
                 }
                 
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
-                    double lower0 = HEIGHT_NOISE[subChunkY][0];
-                    double lower1 = HEIGHT_NOISE[subChunkY][1];
-                    double lower2 = HEIGHT_NOISE[subChunkY][2];
-                    double lower3 = HEIGHT_NOISE[subChunkY][3];
+                    double lower0 = heightNoise[subChunkY][0];
+                    double lower1 = heightNoise[subChunkY][1];
+                    double lower2 = heightNoise[subChunkY][2];
+                    double lower3 = heightNoise[subChunkY][3];
                     
-                    double upper0 = HEIGHT_NOISE[subChunkY + 1][0];
-                    double upper1 = HEIGHT_NOISE[subChunkY + 1][1];
-                    double upper2 = HEIGHT_NOISE[subChunkY + 1][2];
-                    double upper3 = HEIGHT_NOISE[subChunkY + 1][3];
+                    double upper0 = heightNoise[subChunkY + 1][0];
+                    double upper1 = heightNoise[subChunkY + 1][1];
+                    double upper2 = heightNoise[subChunkY + 1][2];
+                    double upper3 = heightNoise[subChunkY + 1][3];
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
                         int y = subY + subChunkY * this.verticalNoiseResolution;
                         
-                        double mixY = subY / 4.0;
+                        double mixY = subY / (double)this.verticalNoiseResolution;
                         
                         double nx1 = lower0 + (upper0 - lower0) * mixY;
                         double nx2 = lower1 + (upper1 - lower1) * mixY;
@@ -379,7 +378,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                         for (int subX = 0; subX < this.horizontalNoiseResolution; ++subX) {
                             int x = subX + subChunkX * this.horizontalNoiseResolution;
                             
-                            double mixX = subX / 4.0;
+                            double mixX = subX / (double)this.horizontalNoiseResolution;
                             
                             double nz1 = nx1 + (nx3 - nx1) * mixX;
                             double nz2 = nx2 + (nx4 - nx2) * mixX;
@@ -387,7 +386,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; ++subZ) {
                                 int z = subZ + subChunkZ * this.horizontalNoiseResolution;
                                 
-                                double mixZ = subZ / 4.0;
+                                double mixZ = subZ / (double)this.horizontalNoiseResolution;
                                 
                                 double density = nz1 + (nz2 - nz1) * mixZ;
                                 
