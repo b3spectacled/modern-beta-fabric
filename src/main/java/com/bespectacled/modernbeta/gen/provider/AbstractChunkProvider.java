@@ -47,37 +47,11 @@ public abstract class AbstractChunkProvider {
     protected final int noiseMinY;
     
     public AbstractChunkProvider(long seed) {
-        this.minY = 0;
-        this.worldHeight = 128;
-        this.seaLevel = 64;
-        
-        this.verticalNoiseResolution = 2 * 4;
-        this.horizontalNoiseResolution = 1 * 4;
-        
-        this.noiseSizeX = 16 / this.horizontalNoiseResolution;
-        this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
-        this.noiseSizeY = this.worldHeight / this.verticalNoiseResolution;
-        this.noiseMinY = this.minY / this.verticalNoiseResolution;
-        
-        RAND.setSeed(seed);
-        GROUND_CACHE_Y.clear();
+        this(seed, 0, 128, 64, 2, 1);
     }
     
     public AbstractChunkProvider(long seed, int minY, int worldHeight, int seaLevel) {
-        this.minY = minY;
-        this.worldHeight = worldHeight;
-        this.seaLevel = seaLevel;
-        
-        this.verticalNoiseResolution = 2 * 4;
-        this.horizontalNoiseResolution = 1 * 4;
-        
-        this.noiseSizeX = 16 / this.horizontalNoiseResolution;
-        this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
-        this.noiseSizeY = this.worldHeight / this.verticalNoiseResolution;
-        this.noiseMinY = this.minY / this.verticalNoiseResolution;
-        
-        RAND.setSeed(seed);
-        GROUND_CACHE_Y.clear();
+        this(seed, minY, worldHeight, seaLevel, 2, 1);
     }
     
     public AbstractChunkProvider(long seed, int minY, int worldHeight, int seaLevel, int sizeVertical, int sizeHorizontal) {

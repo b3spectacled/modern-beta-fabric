@@ -37,7 +37,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise stoneNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    private final double heightNoise[][];
+    private final double heightNoise[];
     
     private static final Random SANDSTONE_RAND = new Random();
     
@@ -45,7 +45,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         super(seed, 0, 128, 64, 1, 1);
         SANDSTONE_RAND.setSeed(seed);
         
-        this.heightNoise = new double[this.noiseSizeY + 1][this.noiseSizeX];
+        this.heightNoise = new double[(this.noiseSizeY + 1) * this.noiseSizeX];
         
         // Noise Generators
         noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true);
@@ -208,23 +208,23 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 int bX = chunkX * this.noiseSizeX + subChunkX;
                 int bZ = chunkZ * this.noiseSizeZ + subChunkZ;
                 
-                for (int bY = 0; bY < this.noiseSizeY + 1; ++bY) {
-                    heightNoise[bY][0] = this.generateHeightmap(bX, bY, bZ);
-                    heightNoise[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
-                    heightNoise[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
-                    heightNoise[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
+                for (int bY = 0; bY < this.noiseSizeY + 1; ++bY) { 
+                    this.heightNoise[bY * this.noiseSizeX + 0] = this.generateHeightmap(bX, bY, bZ);
+                    this.heightNoise[bY * this.noiseSizeX + 1] = this.generateHeightmap(bX, bY, bZ + 1);
+                    this.heightNoise[bY * this.noiseSizeX + 2] = this.generateHeightmap(bX + 1, bY, bZ);
+                    this.heightNoise[bY * this.noiseSizeX + 3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
                 }
                 
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
-                    double lower0 = heightNoise[subChunkY][0];
-                    double lower1 = heightNoise[subChunkY][1];
-                    double lower2 = heightNoise[subChunkY][2];
-                    double lower3 = heightNoise[subChunkY][3];
+                    double lower0 = this.heightNoise[(subChunkY) * this.noiseSizeX + 0];
+                    double lower1 = this.heightNoise[(subChunkY) * this.noiseSizeX + 1];
+                    double lower2 = this.heightNoise[(subChunkY) * this.noiseSizeX + 2];
+                    double lower3 = this.heightNoise[(subChunkY) * this.noiseSizeX + 3];
                     
-                    double upper0 = heightNoise[subChunkY + 1][0];
-                    double upper1 = heightNoise[subChunkY + 1][1];
-                    double upper2 = heightNoise[subChunkY + 1][2];
-                    double upper3 = heightNoise[subChunkY + 1][3];
+                    double upper0 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 0];
+                    double upper1 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 1];
+                    double upper2 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 2];
+                    double upper3 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 3];
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
                         int y = subY + subChunkY * this.verticalNoiseResolution;
@@ -333,23 +333,23 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 int bX = chunkX * this.noiseSizeX + subChunkX;
                 int bZ = chunkZ * this.noiseSizeZ + subChunkZ;
                 
-                for (int bY = 0; bY < heightNoise.length; ++bY) {
-                    heightNoise[bY][0] = this.generateHeightmap(bX, bY, bZ);
-                    heightNoise[bY][1] = this.generateHeightmap(bX, bY, bZ + 1);
-                    heightNoise[bY][2] = this.generateHeightmap(bX + 1, bY, bZ);
-                    heightNoise[bY][3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
+                for (int bY = 0; bY < this.noiseSizeY + 1; ++bY) {
+                    this.heightNoise[bY * this.noiseSizeX + 0] = this.generateHeightmap(bX, bY, bZ);
+                    this.heightNoise[bY * this.noiseSizeX + 1] = this.generateHeightmap(bX, bY, bZ + 1);
+                    this.heightNoise[bY * this.noiseSizeX + 2] = this.generateHeightmap(bX + 1, bY, bZ);
+                    this.heightNoise[bY * this.noiseSizeX + 3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
                 }
                 
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
-                    double lower0 = heightNoise[subChunkY][0];
-                    double lower1 = heightNoise[subChunkY][1];
-                    double lower2 = heightNoise[subChunkY][2];
-                    double lower3 = heightNoise[subChunkY][3];
+                    double lower0 = this.heightNoise[(subChunkY) * this.noiseSizeX + 0];
+                    double lower1 = this.heightNoise[(subChunkY) * this.noiseSizeX + 1];
+                    double lower2 = this.heightNoise[(subChunkY) * this.noiseSizeX + 2];
+                    double lower3 = this.heightNoise[(subChunkY) * this.noiseSizeX + 3];
                     
-                    double upper0 = heightNoise[subChunkY + 1][0];
-                    double upper1 = heightNoise[subChunkY + 1][1];
-                    double upper2 = heightNoise[subChunkY + 1][2];
-                    double upper3 = heightNoise[subChunkY + 1][3];
+                    double upper0 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 0];
+                    double upper1 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 1];
+                    double upper2 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 2];
+                    double upper3 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 3];
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
                         int y = subY + subChunkY * this.verticalNoiseResolution;

@@ -509,7 +509,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         generateHeightmap(chunkX * this.noiseSizeX, 0, chunkZ * this.noiseSizeZ);
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
-            for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
+            for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) { 
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; subChunkY++) {
                     double eighth = 0.125D;
 

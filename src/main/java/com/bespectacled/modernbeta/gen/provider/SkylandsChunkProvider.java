@@ -217,7 +217,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                     double upperSE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSE) * quarter;
 
                     for (int subY = 0; subY < this.verticalNoiseResolution; subY++) {
-                        int y = subChunkY * 4 + subY;
+                        int y = subChunkY * this.verticalNoiseResolution + subY;
                         
                         double sixteenth = 0.125D;
                         double curNW = lowerNW;
@@ -226,14 +226,14 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                         double avgS = (lowerSE - lowerSW) * sixteenth;
 
                         for (int subX = 0; subX < this.horizontalNoiseResolution; subX++) {
-                            int x = subX + subChunkX * 8;
+                            int x = subX + subChunkX * this.horizontalNoiseResolution;
                             int absX = (chunk.getPos().x << 4) + x;
                             
                             double density = curNW; // var15
                             double progress = (curSW - curNW) * sixteenth; 
                             
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; subZ++) {
-                                int z = subZ + subChunkZ * 8;
+                                int z = subZ + subChunkZ * this.horizontalNoiseResolution;
                                 int absZ = (chunk.getPos().z << 4) + z;
                                 
                                 double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
@@ -427,7 +427,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                     double upperSE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSE) * quarter;
 
                     for (int subY = 0; subY < this.verticalNoiseResolution; subY++) {
-                        int y = subChunkY * 4 + subY;
+                        int y = subChunkY * this.verticalNoiseResolution + subY;
                         
                         double sixteenth = 0.125D;
                         double curNW = lowerNW;
@@ -436,13 +436,13 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                         double avgS = (lowerSE - lowerSW) * sixteenth;
 
                         for (int subX = 0; subX < this.horizontalNoiseResolution; subX++) {
-                            int x = subX + subChunkX * 8;
+                            int x = subX + subChunkX * this.horizontalNoiseResolution;
                             
                             double density = curNW; // var15
                             double progress = (curSW - curNW) * sixteenth; 
                             
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; subZ++) {
-                                int z = subZ + subChunkZ * 8;
+                                int z = subZ + subChunkZ * this.horizontalNoiseResolution;
                                 
                                 if (density > 0.0) {
                                     CHUNK_Y[x][z] = y;
