@@ -229,21 +229,21 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
                         int y = subY + subChunkY * this.verticalNoiseResolution;
                         
-                        double mixY = subY / (double)this.verticalNoiseResolution;
+                        double lerpY = subY / (double)this.verticalNoiseResolution;
                         
-                        double nx1 = lower0 + (upper0 - lower0) * mixY;
-                        double nx2 = lower1 + (upper1 - lower1) * mixY;
-                        double nx3 = lower2 + (upper2 - lower2) * mixY;
-                        double nx4 = lower3 + (upper3 - lower3) * mixY;
+                        double nx1 = lower0 + (upper0 - lower0) * lerpY;
+                        double nx2 = lower1 + (upper1 - lower1) * lerpY;
+                        double nx3 = lower2 + (upper2 - lower2) * lerpY;
+                        double nx4 = lower3 + (upper3 - lower3) * lerpY;
                         
                         for (int subX = 0; subX < this.horizontalNoiseResolution; ++subX) {
                             int x = subX + subChunkX * this.horizontalNoiseResolution;
                             int absX = (chunk.getPos().x << 4) + x;
                             
-                            double mixX = subX / (double)this.horizontalNoiseResolution;
+                            double lerpXZ = subX / (double)this.horizontalNoiseResolution;
                             
-                            double nz1 = nx1 + (nx3 - nx1) * mixX;
-                            double nz2 = nx2 + (nx4 - nx2) * mixX;
+                            double nz1 = nx1 + (nx3 - nx1) * lerpXZ;
+                            double nz2 = nx2 + (nx4 - nx2) * lerpXZ;
                             
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; ++subZ) {
                                 int z = subZ + subChunkZ * this.horizontalNoiseResolution;

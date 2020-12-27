@@ -189,6 +189,9 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     public void generateTerrain(Chunk chunk, double[] temps, StructureAccessor structureAccessor) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
+        
+        double lerpY = 1.0D / this.verticalNoiseResolution;
+        double lerpXZ = 1.0D / this.horizontalNoiseResolution;
 
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
@@ -204,33 +207,30 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; subChunkY++) {
 
-                    double quarter = 0.25D;
-
                     double lowerNW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerSW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerNE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerSE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
 
-                    double upperNW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNW) * quarter;
-                    double upperSW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSW) * quarter;
-                    double upperNE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNE) * quarter;
-                    double upperSE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSE) * quarter;
+                    double upperNW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNW) * lerpY;
+                    double upperSW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSW) * lerpY;
+                    double upperNE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNE) * lerpY;
+                    double upperSE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSE) * lerpY;
 
                     for (int subY = 0; subY < this.verticalNoiseResolution; subY++) {
                         int y = subChunkY * this.verticalNoiseResolution + subY;
                         
-                        double sixteenth = 0.125D;
                         double curNW = lowerNW;
                         double curSW = lowerSW;
-                        double avgN = (lowerNE - lowerNW) * sixteenth; 
-                        double avgS = (lowerSE - lowerSW) * sixteenth;
+                        double avgN = (lowerNE - lowerNW) * lerpXZ; 
+                        double avgS = (lowerSE - lowerSW) * lerpXZ;
 
                         for (int subX = 0; subX < this.horizontalNoiseResolution; subX++) {
                             int x = subX + subChunkX * this.horizontalNoiseResolution;
                             int absX = (chunk.getPos().x << 4) + x;
                             
                             double density = curNW; // var15
-                            double progress = (curSW - curNW) * sixteenth; 
+                            double progress = (curSW - curNW) * lerpXZ; 
                             
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; subZ++) {
                                 int z = subZ + subChunkZ * this.horizontalNoiseResolution;
@@ -405,6 +405,9 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
         
+        double lerpY = 1.0D / this.verticalNoiseResolution;
+        double lerpXZ = 1.0D / this.horizontalNoiseResolution;
+        
         int chunkX = absX >> 4;
         int chunkZ = absZ >> 4;
 
@@ -414,32 +417,29 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; subChunkY++) {
 
-                    double quarter = 0.25D;
-
                     double lowerNW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerSW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerNE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerSE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
 
-                    double upperNW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNW) * quarter;
-                    double upperSW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSW) * quarter;
-                    double upperNE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNE) * quarter;
-                    double upperSE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSE) * quarter;
+                    double upperNW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNW) * lerpY;
+                    double upperSW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSW) * lerpY;
+                    double upperNE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNE) * lerpY;
+                    double upperSE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSE) * lerpY;
 
                     for (int subY = 0; subY < this.verticalNoiseResolution; subY++) {
                         int y = subChunkY * this.verticalNoiseResolution + subY;
                         
-                        double sixteenth = 0.125D;
                         double curNW = lowerNW;
                         double curSW = lowerSW;
-                        double avgN = (lowerNE - lowerNW) * sixteenth; 
-                        double avgS = (lowerSE - lowerSW) * sixteenth;
+                        double avgN = (lowerNE - lowerNW) * lerpXZ; 
+                        double avgS = (lowerSE - lowerSW) * lerpXZ;
 
                         for (int subX = 0; subX < this.horizontalNoiseResolution; subX++) {
                             int x = subX + subChunkX * this.horizontalNoiseResolution;
                             
                             double density = curNW; // var15
-                            double progress = (curSW - curNW) * sixteenth; 
+                            double progress = (curSW - curNW) * lerpXZ; 
                             
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; subZ++) {
                                 int z = subZ + subChunkZ * this.horizontalNoiseResolution;

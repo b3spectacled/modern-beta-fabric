@@ -47,7 +47,7 @@ public class OldGeneratorSettings {
         this.providerSettings = providerSettings;
     }
     
-    public OldGeneratorSettings(CompoundTag settings, boolean isIndev) {
+    public OldGeneratorSettings(CompoundTag settings, boolean isIndev) { 
         this.chunkGenSettings = new ChunkGeneratorSettings(
             isIndev ? structuresWithStronghold : structures, 
             noise, 

@@ -45,7 +45,7 @@ public final class AlphaGeneratorType extends GeneratorType {
 
     public static void register() {
         GeneratorType.VALUES.add(INSTANCE);
-        MixinGeneratorTypeAccessor.setScreenProviders(NEW_SCREEN_PROVIDERS);
+        MixinGeneratorTypeAccessor.setScreenProviders(NEW_SCREEN_PROVIDERS); 
         
         //ModernBeta.LOGGER.log(Level.INFO, "Registered Infdev world type.");
     }
