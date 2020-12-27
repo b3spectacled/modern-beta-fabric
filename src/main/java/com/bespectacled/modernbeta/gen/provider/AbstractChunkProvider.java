@@ -39,7 +39,7 @@ public abstract class AbstractChunkProvider {
     protected final int seaLevel;
     
     public AbstractChunkProvider(long seed) {
-        this.minY = -128;
+        this.minY = 0;
         this.worldHeight = 128;
         this.seaLevel = 64;
         

@@ -549,13 +549,13 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                         double avgS = (lowerSE - lowerSW) * quarter;
                         
                         for (int subX = 0; subX < this.horizontalNoiseResolution; subX++) {
-                            int x = (subX + subChunkX * this.horizontalNoiseResolution);
+                            int x = subX + subChunkX * this.horizontalNoiseResolution;
                             
                             double density = curNW; // var15
                             double progress = (curSW - curNW) * quarter; 
 
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; subZ++) {
-                                int z = (subChunkZ * this.horizontalNoiseResolution + subZ);
+                                int z = subChunkZ * this.horizontalNoiseResolution + subZ;
                                 
                                 if (density > 0.0) {
                                     CHUNK_Y[x][z] = y;
