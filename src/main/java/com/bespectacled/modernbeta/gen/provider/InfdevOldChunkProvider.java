@@ -35,7 +35,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
     private final Block blockArr[][][];
     
     public InfdevOldChunkProvider(long seed, CompoundTag settings) {
-        super(seed);
+        super(seed, 0, 128, 64);
         
         this.blockArr = new Block[16][this.worldHeight][16];
         

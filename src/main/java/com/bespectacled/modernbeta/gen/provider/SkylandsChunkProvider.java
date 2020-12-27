@@ -50,22 +50,8 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     
     private static final Identifier[] BIOMES = new Identifier[256];
     
-    private final int verticalNoiseResolution;
-    private final int horizontalNoiseResolution;
-    
-    private final int noiseSizeX;
-    private final int noiseSizeZ;
-    private final int noiseSizeY;
-    
     public SkylandsChunkProvider(long seed) {
-        super(seed);
-        
-        this.verticalNoiseResolution = 1 * 4;
-        this.horizontalNoiseResolution = 2 * 4;
-        
-        this.noiseSizeX = 16 / this.horizontalNoiseResolution;
-        this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
-        this.noiseSizeY = this.worldHeight / this.verticalNoiseResolution;
+        super(seed, 0, 128, 64, 1, 2);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
 

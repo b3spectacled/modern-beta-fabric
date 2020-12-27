@@ -86,8 +86,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
 
         this.width = settings.contains("levelWidth") ? settings.getInt("levelWidth") : 256;
         this.length = settings.contains("levelLength") ? settings.getInt("levelLength") : 256;
-        //this.height = settings.contains("levelHeight") ? settings.getInt("levelHeight") : 128;
-        this.height = 512;
+        this.height = settings.contains("levelHeight") ? settings.getInt("levelHeight") : 128;
         this.caveRadius = settings.contains("caveRadius") ? settings.getFloat("caveRadius") : 1.0f;
         
         this.waterLevel = this.height / 2;

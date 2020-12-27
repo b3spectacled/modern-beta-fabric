@@ -38,10 +38,26 @@ public abstract class AbstractChunkProvider {
     protected final int worldHeight;
     protected final int seaLevel;
     
+    protected final int verticalNoiseResolution;
+    protected final int horizontalNoiseResolution;
+    
+    protected final int noiseSizeX;
+    protected final int noiseSizeZ;
+    protected final int noiseSizeY;
+    protected final int noiseMinY;
+    
     public AbstractChunkProvider(long seed) {
         this.minY = 0;
         this.worldHeight = 128;
         this.seaLevel = 64;
+        
+        this.verticalNoiseResolution = 2 * 4;
+        this.horizontalNoiseResolution = 1 * 4;
+        
+        this.noiseSizeX = 16 / this.horizontalNoiseResolution;
+        this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
+        this.noiseSizeY = this.worldHeight / this.verticalNoiseResolution;
+        this.noiseMinY = this.minY / this.verticalNoiseResolution;
         
         RAND.setSeed(seed);
         GROUND_CACHE_Y.clear();
@@ -51,6 +67,31 @@ public abstract class AbstractChunkProvider {
         this.minY = minY;
         this.worldHeight = worldHeight;
         this.seaLevel = seaLevel;
+        
+        this.verticalNoiseResolution = 2 * 4;
+        this.horizontalNoiseResolution = 1 * 4;
+        
+        this.noiseSizeX = 16 / this.horizontalNoiseResolution;
+        this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
+        this.noiseSizeY = this.worldHeight / this.verticalNoiseResolution;
+        this.noiseMinY = this.minY / this.verticalNoiseResolution;
+        
+        RAND.setSeed(seed);
+        GROUND_CACHE_Y.clear();
+    }
+    
+    public AbstractChunkProvider(long seed, int minY, int worldHeight, int seaLevel, int sizeVertical, int sizeHorizontal) {
+        this.minY = minY;
+        this.worldHeight = worldHeight;
+        this.seaLevel = seaLevel;
+        
+        this.verticalNoiseResolution = sizeVertical * 4;
+        this.horizontalNoiseResolution = sizeHorizontal * 4;
+        
+        this.noiseSizeX = 16 / this.horizontalNoiseResolution;
+        this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
+        this.noiseSizeY = this.worldHeight / this.verticalNoiseResolution;
+        this.noiseMinY = this.minY / this.verticalNoiseResolution;
         
         RAND.setSeed(seed);
         GROUND_CACHE_Y.clear();

@@ -48,23 +48,9 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     
     private static final Random SANDSTONE_RAND = new Random();
     
-    private final int verticalNoiseResolution;
-    private final int horizontalNoiseResolution;
-    
-    private final int noiseSizeX;
-    private final int noiseSizeZ;
-    private final int noiseSizeY;
-    
     public AlphaChunkProvider(long seed) {
-        super(seed);
+        super(seed, 0, 128, 64, 2, 1);
         SANDSTONE_RAND.setSeed(seed);
-        
-        this.verticalNoiseResolution = 2 * 4;
-        this.horizontalNoiseResolution = 1 * 4;
-        
-        this.noiseSizeX = 16 / this.horizontalNoiseResolution;
-        this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
-        this.noiseSizeY = this.worldHeight / this.verticalNoiseResolution;
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         
