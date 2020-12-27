@@ -393,11 +393,14 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                     }
                     heightVal -= scaleVal2;
 
-                    if (noiseY > noiseResolutionY - 4) {
-                        double d11 = (float) (noiseY - (noiseResolutionY - 4)) / 3F;
+                    int slideOffset = 4;
+                    
+                    if (noiseY > noiseResolutionY - slideOffset) {
+                        double d11 = (float) (noiseY - (noiseResolutionY - slideOffset)) / 3F;
                         heightVal = heightVal * (1.0D - d11) + -10D * d11;
                     }
 
+                    // Does not appear to enter here
                     if ((double) noiseY < d3) {
                         double d12 = (d3 - (double) noiseY) / 4D;
                         if (d12 < 0.0D) {

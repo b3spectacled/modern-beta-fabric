@@ -381,16 +381,20 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                         heightVal = minLimitVal + (maxLimitVal - minLimitVal) * mainNoiseVal;
                     }
                     heightVal -= 8D;
-                    int int_32 = 32;
+                    
+                    //int slideOffset = 32;
+                    int slideOffset = this.noiseSizeY;
 
-                    if (noiseY > noiseResolutionY - int_32) {
-                        double d13 = (float) (noiseY - (noiseResolutionY - int_32)) / ((float) int_32 - 1.0F);
+                    if (noiseY > noiseResolutionY - slideOffset) {
+                        double d13 = (float) (noiseY - (noiseResolutionY - slideOffset)) / ((float) slideOffset - 1.0F);
                         heightVal = heightVal * (1.0D - d13) + -30D * d13;
                     }
 
-                    int_32 = 8;
-                    if (noiseY < int_32) {
-                        double d14 = (float) (int_32 - noiseY) / ((float) int_32 - 1.0F);
+                    //slideOffset = 8;
+                    slideOffset = this.noiseSizeY / 4;
+                    
+                    if (noiseY < slideOffset) {
+                        double d14 = (float) (slideOffset - noiseY) / ((float) slideOffset - 1.0F);
                         heightVal = heightVal * (1.0D - d14) + -30D * d14;
                     }
 

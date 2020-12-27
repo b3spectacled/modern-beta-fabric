@@ -488,8 +488,12 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
                     // Ensures density below certain height??
                     // Or it rounds out top of terrain...
-                    if (noiseY > noiseResolutionY - 4) {
-                        double d13 = (float) (noiseY - (noiseResolutionY - 4)) / 3F;
+                    
+                    int slideOffset = 4;
+                    //int slideOffset = this.noiseSizeY / 2;
+                    
+                    if (noiseY > noiseResolutionY - slideOffset) {
+                        double d13 = (float) (noiseY - (noiseResolutionY - slideOffset)) / 3F;
                         heightVal = heightVal * (1.0D - d13) + -10D * d13;
                     }
                     
