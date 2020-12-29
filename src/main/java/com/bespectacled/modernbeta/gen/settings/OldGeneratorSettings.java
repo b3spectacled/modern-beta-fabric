@@ -25,13 +25,13 @@ public class OldGeneratorSettings {
         Maps.newHashMap(StructuresConfig.DEFAULT_STRUCTURES)
     );
     
-    public static final NoiseSamplingConfig noiseSampler = new NoiseSamplingConfig(1.0, 1.0, 40.0, 22.0);
+    public static final NoiseSamplingConfig noiseSampler = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
     public static final GenerationShapeConfig noise = GenerationShapeConfig.method_32994(
         0, 128, 
         noiseSampler,
         new SlideConfig(-10, 3, 0), 
         new SlideConfig(-30, 0, 0), 
-        1, 2, 1.0, -60.0 / (256.0 / 2.0), true, true, false, false
+        1, 2, 1.0, -0.46875, true, true, false, false
     );
     
     public static final Codec<OldGeneratorSettings> CODEC = RecordCodecBuilder.create(instance -> instance

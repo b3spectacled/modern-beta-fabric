@@ -68,7 +68,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
     private static final Identifier[] BIOMES = new Identifier[256];
     
     public BetaChunkProvider(long seed) {
-        super(seed, 0, 128, 64, 2, 1);
+        super(seed, 0, 128, 64, 1, 1);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         
@@ -490,7 +490,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                     // Or it rounds out top of terrain...
                     
                     int slideOffset = 4;
-                    //int slideOffset = this.noiseSizeY / 2;
+                    //int slideOffset = this.noiseSizeY / 4;
                     
                     if (noiseY > noiseResolutionY - slideOffset) {
                         double d13 = (float) (noiseY - (noiseResolutionY - slideOffset)) / 3F;
