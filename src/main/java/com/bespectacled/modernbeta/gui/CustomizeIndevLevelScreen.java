@@ -22,8 +22,8 @@ public class CustomizeIndevLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private OldGeneratorSettings generatorSettings;
     
-    private int levelType = IndevUtil.IndevType.fromName(ModernBeta.BETA_CONFIG.indevLevelType).getId();
-    private int levelTheme = IndevUtil.IndevTheme.fromName(ModernBeta.BETA_CONFIG.indevLevelTheme).getId();
+    private int levelType = IndevUtil.IndevType.fromString(ModernBeta.BETA_CONFIG.indevLevelType).getId();
+    private int levelTheme = IndevUtil.IndevTheme.fromString(ModernBeta.BETA_CONFIG.indevLevelTheme).getId();
    
     private int levelWidth = ModernBeta.BETA_CONFIG.indevLevelWidth;
     private int levelLength = ModernBeta.BETA_CONFIG.indevLevelLength;
@@ -40,9 +40,9 @@ public class CustomizeIndevLevelScreen extends Screen {
         this.generatorSettings = generatorSettings;
         
         if (generatorSettings.providerSettings.contains("levelType")) 
-            this.levelType = IndevUtil.IndevType.fromName(generatorSettings.providerSettings.getString("levelType")).getId();
+            this.levelType = IndevUtil.IndevType.fromString(generatorSettings.providerSettings.getString("levelType")).getId();
         if (generatorSettings.providerSettings.contains("levelTheme")) 
-            this.levelTheme = IndevUtil.IndevTheme.fromName(generatorSettings.providerSettings.getString("levelTheme")).getId();
+            this.levelTheme = IndevUtil.IndevTheme.fromString(generatorSettings.providerSettings.getString("levelTheme")).getId();
         
         if (generatorSettings.providerSettings.contains("levelWidth")) this.levelWidth = generatorSettings.providerSettings.getInt("levelWidth");
         if (generatorSettings.providerSettings.contains("levelLength")) this.levelLength = generatorSettings.providerSettings.getInt("levelLength");

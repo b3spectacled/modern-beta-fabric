@@ -44,7 +44,6 @@ public class VanillaOceanLayer {
      */
     private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> build(boolean old, int biomeSize, int riverSize, LongFunction<C> contextProvider) {
         LayerFactory<T> oceanFactory = OceanTemperatureLayer.INSTANCE.create((LayerSampleContext) contextProvider.apply(2L));
-        oceanFactory = AddDeepOceanLayer.INSTANCE.<T>create(contextProvider.apply(4L), oceanFactory);
         
         oceanFactory = stack(2001L, ScaleLayer.NORMAL, oceanFactory, biomeSize, contextProvider);
     
