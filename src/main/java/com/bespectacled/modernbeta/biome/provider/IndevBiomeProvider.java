@@ -23,7 +23,7 @@ public class IndevBiomeProvider extends AbstractBiomeProvider {
     //private final int height;
     
     public IndevBiomeProvider(long seed, CompoundTag settings) {
-        this.theme = IndevTheme.readTheme(settings);
+        this.theme = settings.contains("levelTheme") ? IndevTheme.fromName(settings.getString("levelTheme")) : IndevTheme.NORMAL;
         //this.type = settings.contains("levelType") ? IndevType.fromName(settings.getString("levelType")) : IndevType.ISLAND;
 
         this.width = settings.contains("levelWidth") ? settings.getInt("levelWidth") : 256;

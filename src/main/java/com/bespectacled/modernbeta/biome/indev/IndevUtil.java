@@ -59,18 +59,6 @@ public class IndevUtil {
             
             return theme;
         }
-        
-        public static IndevTheme readTheme(CompoundTag settings) {
-            IndevTheme theme = IndevTheme.NORMAL;
-            
-            if (settings.contains("levelTheme")) {
-                String str = settings.getString("levelTheme");
-                
-                theme = fromString(str);
-            }
-            
-            return theme;
-        }
     }
     
     public enum IndevType {
@@ -121,18 +109,6 @@ public class IndevUtil {
                 type = fromId(Integer.parseInt(str));
             } else {
                 type = fromName(str);
-            }
-            
-            return type;
-        }
-        
-        public static IndevType readType(CompoundTag settings) {
-            IndevType type = IndevType.ISLAND;
-            
-            if (settings.contains("levelType")) {
-                String str = settings.getString("levelType");
-                
-                type = fromString(str);
             }
             
             return type;

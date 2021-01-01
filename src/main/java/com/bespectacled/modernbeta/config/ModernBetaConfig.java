@@ -14,6 +14,9 @@ public class ModernBetaConfig implements ConfigData {
     //@ConfigEntry.Category(value = "betaRender")
     @ConfigEntry.Gui.Tooltip(count = 4)
     public long fixedSeed = 0L;
+    
+    @ConfigEntry.Gui.Tooltip(count = 3)
+    public boolean useFixedSeed = false;
 
     //@ConfigEntry.Category(value = "betaRender")
     @ConfigEntry.Gui.Tooltip(count = 2)
