@@ -687,7 +687,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                             blockToSet = wallBlock;
                         }
                     }
-                    if (z == spawnZ - 3 && x == spawnX && y >= spawnY - 1 && y <= spawnY) {
+                    if (z == spawnZ + 3 && x == spawnX && y >= spawnY - 1 && y <= spawnY) {
                         blockToSet = Blocks.AIR;
                     }
                     

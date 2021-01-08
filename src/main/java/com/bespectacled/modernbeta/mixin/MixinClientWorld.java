@@ -43,55 +43,39 @@ public abstract class MixinClientWorld extends World {
     private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
     
     @Unique
-    private boolean isBetaWorld = true;
+    private boolean useBetaColors = false;
     
     @Unique
     private boolean isOverworld = false;
     
     @Shadow
     private MinecraftClient client;
-    
-    @Unique
-    private long worldSeed = 0L;
 
     private MixinClientWorld() {
         super(null, null, null, null, false, false, 0L);
-        
-    }
-    
-    @Unique
-    private static void setSeed(long seed) {
-        BetaClimateSampler.getInstance().setSeed(seed);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(ClientPlayNetworkHandler netHandler, ClientWorld.Properties properties,
             RegistryKey<World> worldKey, DimensionType dimensionType, int loadDistance, Supplier<Profiler> profiler,
             WorldRenderer renderer, boolean debugWorld, long seed, CallbackInfo ci) {
-
+        
+        boolean useBetaColors = BETA_CONFIG.useFixedSeed;
+        long worldSeed = BETA_CONFIG.fixedSeed;
+        
         if (client.getServer() != null) { // Server check
-           ChunkGenerator generator = client.getServer().getOverworld().getChunkManager().getChunkGenerator();
-           this.setWorldProperties(generator, generator.worldSeed);
+           ChunkGenerator gen = client.getServer().getOverworld().getChunkManager().getChunkGenerator();
+           
+           if (!BETA_CONFIG.useFixedSeed && gen instanceof OldChunkGenerator && ((OldBiomeSource)gen.getBiomeSource()).isBeta()) {
+               useBetaColors = true;
+               worldSeed = gen.worldSeed;
+           }
         }
-
+        
         this.isOverworld = worldKey.getValue().equals(DimensionType.OVERWORLD_REGISTRY_KEY.getValue());
+        this.useBetaColors = useBetaColors;
         
-        ModernBeta.setBlockColorsSeed(worldSeed, isBetaWorld);
-    }
-    
-    @Unique
-    private void setWorldProperties(ChunkGenerator gen, long seed) {
-        this.worldSeed = seed;
-        this.isBetaWorld = false;
-        
-        if (gen instanceof OldChunkGenerator && ((OldBiomeSource)gen.getBiomeSource()).isBeta()) {
-            this.isBetaWorld = true;
-            
-            if (((OldBiomeSource)gen.getBiomeSource()).isVanilla()) this.isBetaWorld = false;
-            
-            this.worldSeed = BETA_CONFIG.fixedSeed == 0L ? worldSeed : BETA_CONFIG.fixedSeed;
-            setSeed(this.worldSeed);
-        }
+        ModernBeta.setBlockColorsSeed(worldSeed, useBetaColors);
     }
     
     @ModifyVariable(
@@ -110,8 +94,9 @@ public abstract class MixinClientWorld extends World {
         at = @At(value = "INVOKE_ASSIGN",  target = "Lnet/minecraft/util/CubicSampler;sampleColor(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/CubicSampler$RgbFetcher;)Lnet/minecraft/util/math/Vec3d;"),
         index = 6  
     )
+    
     private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
-        if (isBetaWorld && BETA_CONFIG.renderBetaSkyColor && this.isOverworld) {
+        if (useBetaColors && BETA_CONFIG.renderBetaSkyColor && this.isOverworld) {
             skyColorVec = Vec3d.unpackRgb(BetaClimateSampler.getInstance().getSkyColor((int)curPos.getX(), (int)curPos.getZ()));
 
         }

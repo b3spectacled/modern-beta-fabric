@@ -38,11 +38,11 @@ public class ModernBeta implements ModInitializer {
             .register(ModernBetaConfig.class, GsonConfigSerializer::new).getConfig();
 
     // Ehh...
-    public static void setBlockColorsSeed(long seed, boolean isBetaWorld) {
+    public static void setBlockColorsSeed(long seed, boolean useBetaColors) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             MutableBlockColors mutableBlockColors = MutableBlockColors
                     .inject(MinecraftClient.getInstance().getBlockColors());
-            mutableBlockColors.setSeed(seed, isBetaWorld);
+            mutableBlockColors.setSeed(seed, useBetaColors);
         }
     }
     

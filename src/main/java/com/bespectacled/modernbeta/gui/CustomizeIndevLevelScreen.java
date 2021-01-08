@@ -23,9 +23,9 @@ public class CustomizeIndevLevelScreen extends Screen {
     private CreateWorldScreen parent;
     private OldGeneratorSettings generatorSettings;
     
-    private IndevType levelType = IndevType.ISLAND;
-    private IndevTheme levelTheme = IndevTheme.NORMAL;
-   
+    private IndevType levelType = IndevType.fromName(ModernBeta.BETA_CONFIG.indevLevelType);
+    private IndevTheme levelTheme = IndevTheme.fromName(ModernBeta.BETA_CONFIG.indevLevelTheme);
+
     private int levelWidth = ModernBeta.BETA_CONFIG.indevLevelWidth;
     private int levelLength = ModernBeta.BETA_CONFIG.indevLevelLength;
     private int levelHeight = ModernBeta.BETA_CONFIG.indevLevelHeight;
@@ -44,6 +44,7 @@ public class CustomizeIndevLevelScreen extends Screen {
             this.levelType = IndevType.fromName(generatorSettings.providerSettings.getString("levelType"));
         if (generatorSettings.providerSettings.contains("levelTheme")) 
             this.levelTheme = IndevTheme.fromName(generatorSettings.providerSettings.getString("levelTheme"));
+
         
         if (generatorSettings.providerSettings.contains("levelWidth")) this.levelWidth = generatorSettings.providerSettings.getInt("levelWidth");
         if (generatorSettings.providerSettings.contains("levelLength")) this.levelLength = generatorSettings.providerSettings.getInt("levelLength");

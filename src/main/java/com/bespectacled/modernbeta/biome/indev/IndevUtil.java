@@ -1,5 +1,9 @@
 package com.bespectacled.modernbeta.biome.indev;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.StringTag;
+
 public class IndevUtil {
     public enum IndevTheme {
         NORMAL(0, "normal"),
@@ -43,6 +47,18 @@ public class IndevUtil {
             
             throw new IllegalArgumentException("No Indev Theme matching name: " + name);
         }
+        
+        public static IndevTheme fromString(String str) {
+            IndevTheme theme;
+            
+            if (str.matches("-?\\d+")) {
+                theme = fromId(Integer.parseInt(str));
+            } else {
+                theme = fromName(str);
+            }
+            
+            return theme;
+        }
     }
     
     public enum IndevType {
@@ -84,6 +100,18 @@ public class IndevUtil {
             }
             
             throw new IllegalArgumentException("No Indev Type matching name: " + name);
+        }
+        
+        public static IndevType fromString(String str) {
+            IndevType type;
+            
+            if (str.matches("-?\\d+")) {
+                type = fromId(Integer.parseInt(str));
+            } else {
+                type = fromName(str);
+            }
+            
+            return type;
         }
     }
     

@@ -28,11 +28,4 @@ public class VanillaBiomeModifier {
         Predicate<BiomeSelectionContext> biomeSelector = BiomeSelectors.includeByKey(VANILLA_OCEANS);
         BiomeModifications.addStructure(biomeSelector, BetaStructure.OCEAN_SHRINE_KEY);
     }
-    
-   
-    public static void addMonumentToOceans() {
-        Predicate<BiomeSelectionContext> biomeSelector = BiomeSelectors.includeByKey(VANILLA_OCEANS);
-        BiomeModifications.addStructure(biomeSelector, RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN, new Identifier("monument")));
-    }
-    
 }

@@ -57,7 +57,7 @@ public class VanillaBiomeProvider extends AbstractBiomeProvider {
         boolean isValid = 
             category != Category.NONE &&
             //category != Category.BEACH &&
-            category != Category.OCEAN &&
+            //category != Category.OCEAN &&
             category != Category.NETHER &&
             category != Category.THEEND;
         

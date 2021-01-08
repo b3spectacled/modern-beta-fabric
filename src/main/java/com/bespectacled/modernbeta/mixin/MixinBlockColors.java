@@ -36,13 +36,13 @@ public class MixinBlockColors implements MutableBlockColors {
 
     @Unique
     public void setSeed(long seed) {
-        BetaClimateSampler.getInstance().setSeed(BETA_CONFIG.fixedSeed != 0L ? BETA_CONFIG.fixedSeed : seed);
+        BetaClimateSampler.getInstance().setSeed(seed);
     }
 
     @Unique
     public void setSeed(long seed, boolean isBetaWorld) {
         if (isBetaWorld)
-            BetaClimateSampler.getInstance().setSeed(BETA_CONFIG.fixedSeed != 0L ? BETA_CONFIG.fixedSeed : seed);
+            BetaClimateSampler.getInstance().setSeed(seed);
         
         useBetaColors = isBetaWorld;
     }

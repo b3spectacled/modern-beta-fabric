@@ -5,7 +5,6 @@
     "generator.indev": "Indev 20100223",
     "generator.infdev": "Inf 20100415",
     "generator.infdev_old": "Inf 20100227",
-    "generator.release": "Release 1.1",
     
     "createWorld.customize.unknown": "Unknown option!",
     
@@ -60,8 +59,6 @@
     "createWorld.customize.beta.generateSkyDim": "Generate Old Sky Dimension",
     "createWorld.customize.beta.generateVanillaBiomesBeta": "Generate Vanilla Biomes",
     
-    "createWorld.customize.release.title": "Release World Type Configuration",
-    
     "text.autoconfig.modernbeta.title": "Modern Beta Configuration",
     "text.autoconfig.modernbeta.category.betaRender": "Render Options",
     "text.autoconfig.modernbeta.category.betaGen": "Generation Options",
@@ -70,6 +67,10 @@
     "text.autoconfig.modernbeta.option.fixedSeed.@Tooltip[1]": "Change to server seed to render",
     "text.autoconfig.modernbeta.option.fixedSeed.@Tooltip[2]": "correct biome colors.",
     "text.autoconfig.modernbeta.option.fixedSeed.@Tooltip[3]": "(Requires world reload)",
+    "text.autoconfig.modernbeta.option.useFixedSeed": "Use Fixed Seed",
+    "text.autoconfig.modernbeta.option.useFixedSeed.@Tooltip[0]": "For use on servers with Modern Beta.",
+    "text.autoconfig.modernbeta.option.useFixedSeed.@Tooltip[1]": "Enable to use fixed seed.",
+    "text.autoconfig.modernbeta.option.useFixedSeed.@Tooltip[2]": "(Requires world reload)",
     "text.autoconfig.modernbeta.option.renderBetaSkyColor": "Beta Sky Colors",
     "text.autoconfig.modernbeta.option.renderBetaSkyColor.@Tooltip[0]": "Render client-side temperature",
     "text.autoconfig.modernbeta.option.renderBetaSkyColor.@Tooltip[1]": "noise-based Beta sky colors.",

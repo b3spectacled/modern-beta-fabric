@@ -39,8 +39,8 @@ public class GenUtil {
     }
     
     public static Biome getOceanBiome(Chunk chunk, ChunkGenerator gen, BiomeSource biomeSource, boolean vanillaGen, int seaLevel) {
-        int biomeX = (chunk.getPos().x << 2) + 2;
-        int biomeZ = (chunk.getPos().z << 2) + 2;
+        int biomeX = chunk.getPos().x << 2;
+        int biomeZ = chunk.getPos().z << 2;
         
         int x = chunk.getPos().x << 4;
         int z = chunk.getPos().z << 4;
