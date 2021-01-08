@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.gen.provider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
+import com.bespectacled.modernbeta.biome.beta.BetaBiomes.BetaBiomeType;
 import com.bespectacled.modernbeta.gen.GenUtil;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -62,13 +63,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
     
     private final double heightNoise[];
     
-    private static final double[] TEMPS = new double[256];
-    private static final double[] HUMIDS = new double[256];
-    
-    private static final Identifier[] BIOMES = new Identifier[256];
-    
     public BetaChunkProvider(long seed) {
-        super(seed, 0, 128, 64, 1, 1);
+        super(seed, 0, 128, 64, 2, 1);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         
@@ -89,8 +85,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
     public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
 
-        BetaClimateSampler.getInstance().sampleTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
-        generateTerrain(chunk, TEMPS, structureAccessor);
+        generateTerrain(chunk, structureAccessor);
     }
     
     @Override
@@ -99,11 +94,9 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
-
-        BetaClimateSampler.getInstance().sampleTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
-        BetaBiomes.getBiomesFromLookup(TEMPS, HUMIDS, BIOMES, null);
         
         Biome curBiome;
+        BetaClimateSampler climateSampler = BetaClimateSampler.getInstance();
 
         sandNoise = beachNoiseOctaves.sampleArrBeta(
             sandNoise, 
@@ -136,9 +129,14 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                 int absX = chunk.getPos().getStartX() + x;
                 int absZ = chunk.getPos().getStartZ() + z;
                     
-                curBiome = biomeSource.isBeta() ? 
-                    biomeSource.getBiomeRegistry().get(BIOMES[z + x * 16]) :
-                    region.getBiome(POS.set(absX, 0, absZ));    
+                if (biomeSource.isBeta()) {
+                    double temp = climateSampler.sampleTemp(absX, absZ);
+                    double humid = climateSampler.sampleHumid(absX, absZ);
+                    
+                    curBiome = biomeSource.getBiomeRegistry().get(BetaBiomes.getBiomeFromLookup(temp, humid, BetaBiomeType.LAND));
+                } else {
+                    curBiome = region.getBiome(POS.set(absX, 0, absZ));  
+                }
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -221,8 +219,6 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         BlockPos structPos = new BlockPos(x, 0, z);
         
         if (GROUND_CACHE_Y.get(structPos) == null) {
-            BetaClimateSampler.getInstance().sampleTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
-            
             sampleHeightmap(x, z);
         }
 
@@ -240,7 +236,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         return this.beachNoiseOctaves;
     }
     
-    private void generateTerrain(Chunk chunk, double[] temps, StructureAccessor structureAccessor) {
+    private void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
         
@@ -339,6 +335,11 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         int noiseResolutionX = this.noiseSizeX + 1;
         int noiseResolutionZ = this.noiseSizeZ + 1;
 
+        int startX = x / this.noiseSizeX * 16;
+        int startZ = z / this.noiseSizeZ * 16;
+        
+        BetaClimateSampler climateSampler = BetaClimateSampler.getInstance();
+        
         // Var names taken from old customized preset names
         double coordinateScale = 684.41200000000003D; 
         double heightScale = 684.41200000000003D;
@@ -410,9 +411,9 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
             for (int noiseZ = 0; noiseZ < noiseResolutionZ; noiseZ++) {
                 int relZ = noiseZ * k + k / 2;
-
-                double curTemp = TEMPS[relX * 16 + relZ];
-                double curHumid = HUMIDS[relX * 16 + relZ] * curTemp;
+                
+                double curTemp = climateSampler.sampleTemp(startX + relX, startZ + relZ);
+                double curHumid = climateSampler.sampleHumid(startX + relX, startZ + relZ) * curTemp;
 
                 double humidVal = 1.0D - curHumid;
                 humidVal *= humidVal;

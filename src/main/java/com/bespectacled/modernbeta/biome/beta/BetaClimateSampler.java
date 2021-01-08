@@ -34,6 +34,14 @@ public class BetaClimateSampler {
         this.biomeCache.clear();
     }
     
+    public double sampleTemp(int x, int z) {
+        return this.biomeCache.getCachedChunk(x, z).sampleTempAtPoint(x, z);
+    }
+    
+    public double sampleHumid(int x, int z) {
+        return this.biomeCache.getCachedChunk(x, z).sampleHumidAtPoint(x, z);
+    }
+    
     public void sampleTempHumid(double[] arr, int x, int z) {
         this.biomeCache.getCachedChunk(x, z).sampleTempHumidAtPoint(arr, x, z);
     }
@@ -180,6 +188,14 @@ public class BetaClimateSampler {
                     ndx++;
                 }
             }
+        }
+        
+        public double sampleTempAtPoint(int x, int z) {
+            return temps[x & 0xF | (z & 0xF) << 4];
+        }
+        
+        public double sampleHumidAtPoint(int x, int z) {
+            return humids[x & 0xF | (z & 0xF) << 4];
         }
         
         public void sampleTempHumidAtPoint(double[] tempHumid, int x, int z) {
