@@ -11,26 +11,22 @@ public class ModernBetaConfig implements ConfigData {
     
     /* Render */
     
-    //@ConfigEntry.Category(value = "betaRender")
     @ConfigEntry.Gui.Tooltip(count = 4)
     public long fixedSeed = 0L;
     
     @ConfigEntry.Gui.Tooltip(count = 3)
     public boolean useFixedSeed = false;
 
-    //@ConfigEntry.Category(value = "betaRender")
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean renderBetaSkyColor = true;
 
-    //@ConfigEntry.Category(value = "betaRender")
     @ConfigEntry.Gui.Tooltip(count = 3)
     public boolean renderBetaBiomeColor = true;
 
-    //@ConfigEntry.Category(value = "betaRender")
     @ConfigEntry.Gui.Tooltip(count = 1)
     public boolean renderAlphaSunset = false;
     
-    /* Beta Generation */
+    /* Inf Generation */
     
     @ConfigEntry.Gui.Excluded
     public boolean generateOceans = true;
@@ -38,8 +34,6 @@ public class ModernBetaConfig implements ConfigData {
     @ConfigEntry.Gui.Excluded
     public String biomeType = BiomeType.BETA.getName();
     
-
-
     /* Old Infdev Generation */
     
     @ConfigEntry.Gui.Excluded

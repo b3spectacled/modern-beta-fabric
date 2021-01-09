@@ -1,12 +1,10 @@
 package com.bespectacled.modernbeta.feature;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.biome.*;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
-import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
@@ -15,13 +13,10 @@ import net.minecraft.block.FluidBlock;
 import net.minecraft.block.SnowyBlock;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.state.State;
-import net.minecraft.state.property.Property;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.WorldView;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
@@ -29,15 +24,8 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.LightType;
 
 public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
-    private Long seed;
-    
-    private static final double[] TEMPS = new double[256];
-    private static final double[] HUMIDS = new double[256];
-
     public BetaFreezeTopLayerFeature(Codec<DefaultFeatureConfig> codec) {
         super(codec);
-
-        seed = 0L;
     }
 
     @Override
@@ -49,36 +37,26 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutableDown = new BlockPos.Mutable();
 
-        int chunkX = blockPos.getX() >> 4; // Divide first to truncate to closest chunk coordinate
-        int chunkZ = blockPos.getZ() >> 4;
-        
         OldBiomeSource betaSource = (OldBiomeSource)chunkGenerator.getBiomeSource();
-
-        if (betaSource.isSkyDim()) {
-            Arrays.fill(TEMPS, 0, TEMPS.length, betaSource.getBiomeRegistry().get(BetaBiomes.SKY_ID).getTemperature());
-            Arrays.fill(HUMIDS, 0, HUMIDS.length, betaSource.getBiomeRegistry().get(BetaBiomes.SKY_ID).getDownfall());
-        } else {
-            BetaClimateSampler.getInstance().sampleTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
-        }
         
-        
-        int i = 0;
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
-                int curX = blockPos.getX() + x;
-                int curZ = blockPos.getZ() + z;
-                int curY = world.getTopY(Heightmap.Type.MOTION_BLOCKING, curX, curZ);
+                int absX = blockPos.getX() + x;
+                int absZ = blockPos.getZ() + z;
+                int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING, absX, absZ);
+                
+                double temp = (betaSource.isSkyDim()) ? 
+                    betaSource.getBiomeRegistry().get(BetaBiomes.SKY_ID).getTemperature() :
+                    BetaClimateSampler.getInstance().sampleTemp(absX, absZ);
 
-                mutable.set(curX, curY, curZ);
+                mutable.set(absX, y, absZ);
                 mutableDown.set(mutable).move(Direction.DOWN, 1);
-
-                //if (canSetIce(world, mutableDown, false, biomeSource.temps[i])) {
-                if (canSetIce(world, mutableDown, false, TEMPS[i])) {
+                
+                if (canSetIce(world, mutableDown, false, temp)) {
                     world.setBlockState(mutableDown, Blocks.ICE.getDefaultState(), 2);
                 }
 
-                //if (canSetSnow(world, mutable, biomeSource.temps[i])) {
-                if (canSetSnow(world, mutable, TEMPS[i])) {
+                if (canSetSnow(world, mutable, temp)) {
                     world.setBlockState(mutable, Blocks.SNOW.getDefaultState(), 2);
 
                     BlockState blockState = world.getBlockState(mutableDown);
@@ -86,8 +64,6 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                         world.setBlockState(mutableDown, blockState.with(SnowyBlock.SNOWY, true), 2);
                     }
                 }
-
-                ++i;
             }
         }
         return true;

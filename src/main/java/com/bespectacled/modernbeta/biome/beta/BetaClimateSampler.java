@@ -46,27 +46,6 @@ public class BetaClimateSampler {
         this.biomeCache.getCachedChunk(x, z).sampleTempHumidAtPoint(arr, x, z);
     }
     
-    public void sampleTempHumid(int x, int z, double[] temps, double[] humids) {
-        int startX = (x >> 4) << 4;
-        int startZ = (z >> 4) << 4;
-        
-        double tempHumid[] = new double[2];
-        
-        BiomeCacheChunk cachedChunk = this.biomeCache.getCachedChunk(x, z);
-        
-        int ndx = 0;
-        for (int relX = 0; relX < 16; relX++) {
-            for (int relZ = 0; relZ < 16; relZ++) {
-                cachedChunk.sampleTempHumidAtPoint(tempHumid, startX + relX, startZ + relZ);
-                
-                temps[ndx] = tempHumid[0];
-                humids[ndx] = tempHumid[1];
-                
-                ndx++;
-            }
-        }
-    }
-    
     public int getSkyColor(int x, int z) {
         float temp = (float)sampleSkyTemp(x, z);
         

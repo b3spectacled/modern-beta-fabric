@@ -294,7 +294,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                                 int z = (subChunkZ * this.horizontalNoiseResolution + subZ);
                                 int absZ = (chunk.getPos().z << 4) + z;
                                 
-                                //double temp = temps[(subChunkX * 4 + m) * 16 + (subChunkZ * 4 + n)];
+                                //double temp = BetaClimateSampler.getInstance().sampleTemp(absX, absZ);
+                                double temp = 0;
                                
                                 double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
                                 clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
@@ -306,7 +307,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                                     JIGSAW_LIST.size(), 
                                     absX, y, absZ);
 
-                                BlockState blockToSet = getBlockState(clampedDensity, y, 0);
+                                BlockState blockToSet = getBlockState(clampedDensity, y, temp);
 
                                 chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
 

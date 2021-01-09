@@ -83,7 +83,7 @@ public abstract class AbstractChunkProvider {
         } else if (y < this.seaLevel) {
             if (temp < 0.5D && y >= this.seaLevel - 1) {
                 // Get chunk errors so disabled for now.
-                //blockStateToSet = Blocks.ICE.getDefaultState(); 
+                //blockStateToSet = BlockStates.ICE;
                 blockStateToSet = BlockStates.WATER;
             } else {
                 blockStateToSet = BlockStates.WATER;
