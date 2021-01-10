@@ -2,6 +2,8 @@ package com.bespectacled.modernbeta.biome.beta;
 
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
 import com.bespectacled.modernbeta.util.BoundedHashMap;
@@ -114,27 +116,46 @@ public class BetaClimateSampler {
     private class BiomeCache {
         private final Map<Long, BiomeCacheChunk> biomeCache;
         private final BetaClimateSampler climateSampler;
+        private final ReentrantReadWriteLock lock;
         
         public BiomeCache(BetaClimateSampler climateSampler) {
             this.climateSampler = climateSampler;
             this.biomeCache = new BoundedHashMap<Long, BiomeCacheChunk>(1024); // 32 x 32 chunks
+            this.lock = new ReentrantReadWriteLock();
         }
         
-        public synchronized void clear() {
-            this.biomeCache.clear();
+        public void clear() {
+            this.lock.writeLock().lock();
+            try {
+                this.biomeCache.clear();
+            } finally {
+                this.lock.writeLock().unlock();
+            }
         }
         
-        // Synchronized needed to prevent crash when more than one thread attempts to modify map, I think
-        public synchronized BiomeCacheChunk getCachedChunk(int x, int z) {
+        public BiomeCacheChunk getCachedChunk(int x, int z) {
             int chunkX = x >> 4;
             int chunkZ = z >> 4;
             
             long hashedCoord = (long)chunkX & 0xffffffffL | ((long)chunkZ & 0xffffffffL) << 32;
-            BiomeCacheChunk cachedChunk = this.biomeCache.get(hashedCoord);
+            BiomeCacheChunk cachedChunk;
+            
+            this.lock.readLock().lock();
+            try {
+                cachedChunk = this.biomeCache.get(hashedCoord);
+            } finally {
+                this.lock.readLock().unlock();
+            }
             
             if (cachedChunk == null) { 
-                cachedChunk = new BiomeCacheChunk(chunkX, chunkZ, this.climateSampler);
-                this.biomeCache.put(hashedCoord, cachedChunk);
+                this.lock.writeLock().lock();
+                try {
+                    cachedChunk = new BiomeCacheChunk(chunkX, chunkZ, this.climateSampler);
+                    this.biomeCache.put(hashedCoord, cachedChunk);
+                } finally {
+                    this.lock.writeLock().unlock();
+                }
+                
             }
             
             return cachedChunk;
