@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.mixin;
+package com.bespectacled.modernbeta.mixin.client;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;

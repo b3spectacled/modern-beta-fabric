@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.mixin;
+package com.bespectacled.modernbeta.mixin.client;
 
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;

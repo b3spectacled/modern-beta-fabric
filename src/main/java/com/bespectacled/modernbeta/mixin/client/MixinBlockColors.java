@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.mixin;
+package com.bespectacled.modernbeta.mixin.client;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

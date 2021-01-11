@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.mixin;
+package com.bespectacled.modernbeta.mixin.client;
 
 import java.util.List;
 import java.util.Map;

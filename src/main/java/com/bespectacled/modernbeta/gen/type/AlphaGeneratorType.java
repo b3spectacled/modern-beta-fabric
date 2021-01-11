@@ -8,7 +8,7 @@ import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gui.CustomizeAlphaLevelScreen;
-import com.bespectacled.modernbeta.mixin.MixinGeneratorTypeAccessor;
+import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.google.common.collect.ImmutableMap;
