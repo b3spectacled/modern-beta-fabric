@@ -80,6 +80,8 @@
     "text.autoconfig.modernbeta.option.renderBetaBiomeColor.@Tooltip[2]": "(Requires texture reload, F3 + T)",
     "text.autoconfig.modernbeta.option.renderAlphaSunset": "Alpha Sunset",
     "text.autoconfig.modernbeta.option.renderAlphaSunset.@Tooltip": "Render client-side Alpha uncolored sunset.",
+    "text.autoconfig.modernbeta.option.renderGameVersion": "Render Game Version",
+    "text.autoconfig.modernbeta.option.renderGameVersion.@Tooltip": "Render game version in hud.",
     
     "biome.modern_beta.forest": "Beta Forest",
     "biome.modern_beta.shrubland": "Beta Shrubland",

@@ -14,7 +14,8 @@
     "MixinClientWorld",
     "MixinWorldRenderer",
     "MixinBackgroundRenderer",
-    "MixinGeneratorTypeAccessor"
+    "MixinGeneratorTypeAccessor",
+    "MixinInGameHud"
   ],
   "injectors": {
     "defaultRequire": 1

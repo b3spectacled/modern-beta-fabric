@@ -78,11 +78,12 @@ public abstract class AbstractChunkProvider {
     
     public BlockState getBlockState(double density, int y, double temp) {
         BlockState blockStateToSet = BlockStates.AIR;
+        
         if (density > 0.0) {
             blockStateToSet = BlockStates.STONE;
         } else if (y < this.seaLevel) {
             if (temp < 0.5D && y >= this.seaLevel - 1) {
-                // Get chunk errors so disabled for now.
+                // Does not work well with underwater structures
                 //blockStateToSet = BlockStates.ICE;
                 blockStateToSet = BlockStates.WATER;
             } else {

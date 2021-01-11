@@ -74,8 +74,8 @@ public class VanillaBiomeLayer {
         layerFactory = ScaleLayer.NORMAL.<T>create(contextProvider.apply(2003L), layerFactory);
         
         layerFactory = IncreaseEdgeCurvatureLayer.INSTANCE.<T>create(contextProvider.apply(4L), layerFactory);
-        layerFactory = AddMushroomIslandLayer.INSTANCE.<T>create(contextProvider.apply(5L), layerFactory);
-
+        //layerFactory = AddMushroomIslandLayer.INSTANCE.<T>create(contextProvider.apply(5L), layerFactory);
+        
         layerFactory = stack(1000L, ScaleLayer.NORMAL, layerFactory, 0, contextProvider);
         
         LayerFactory<T> layerFactory2 = stack(1000L, ScaleLayer.NORMAL, layerFactory, 0, contextProvider);
@@ -83,6 +83,7 @@ public class VanillaBiomeLayer {
         
         LayerFactory<T> layerFactory3 = layerFactory;
         layerFactory3 = new SetBaseBiomesLayer(old).<T>create(contextProvider.apply(200L), layerFactory3);
+        layerFactory3 = VanillaAddOceanlessMushroomLayer.INSTANCE.<T>create(contextProvider.apply(5L), layerFactory3);
         layerFactory3 = AddBambooJungleLayer.INSTANCE.<T>create(contextProvider.apply(1001L), layerFactory3);
         layerFactory3 = stack(1000L, ScaleLayer.NORMAL, layerFactory3, 2, contextProvider);
         layerFactory3 = EaseBiomeEdgeLayer.INSTANCE.<T>create(contextProvider.apply(1000L), layerFactory3);
