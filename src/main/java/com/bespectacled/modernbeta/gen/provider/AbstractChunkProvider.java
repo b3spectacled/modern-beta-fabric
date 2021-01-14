@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.decorator.BetaDecorator;
+import com.bespectacled.modernbeta.decorator.OldDecorators;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -104,9 +104,9 @@ public abstract class AbstractChunkProvider {
     
     
     public static void setForestOctaves(PerlinOctaveNoise forestOctaves) {
-        BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestOctaves);
-        BetaDecorator.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestOctaves);
-        BetaDecorator.COUNT_INFDEV_NOISE_DECORATOR.setOctaves(forestOctaves);
+        OldDecorators.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestOctaves);
+        OldDecorators.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestOctaves);
+        OldDecorators.COUNT_INFDEV_NOISE_DECORATOR.setOctaves(forestOctaves);
     }
     
     public static AbstractChunkProvider getChunkProvider(long seed, WorldType worldType, OldGeneratorSettings settings) {

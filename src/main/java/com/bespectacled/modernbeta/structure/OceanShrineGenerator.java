@@ -50,7 +50,7 @@ public class OceanShrineGenerator {
         private final Identifier template;
         
         public Piece(StructureManager manager, BlockPos pos, Identifier template, BlockRotation rot) {
-            super(BetaStructure.OCEAN_SHRINE_PIECE, 0);
+            super(OldStructures.OCEAN_SHRINE_PIECE, 0);
             this.pos = pos;
             this.rot = rot;
             this.template = template;
@@ -59,7 +59,7 @@ public class OceanShrineGenerator {
         }
         
         public Piece(StructureManager manager, CompoundTag tag) {
-            super(BetaStructure.OCEAN_SHRINE_PIECE, tag);
+            super(OldStructures.OCEAN_SHRINE_PIECE, tag);
             this.template = new Identifier(tag.getString("Template"));
             this.rot = BlockRotation.valueOf(tag.getString("Rot"));
             

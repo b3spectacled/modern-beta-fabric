@@ -31,7 +31,7 @@ public class IndevHouseGenerator {
         private final Identifier template;
         
         public HousePiece(StructureManager manager, BlockPos pos, Identifier template, BlockRotation rot) {
-            super(BetaStructure.HOUSE_PIECE, 0);
+            super(OldStructures.HOUSE_PIECE, 0);
             this.pos = pos;
             this.rot = rot;
             this.template = template;
@@ -40,7 +40,7 @@ public class IndevHouseGenerator {
         }
         
         public HousePiece(StructureManager manager, CompoundTag tag) {
-            super(BetaStructure.HOUSE_PIECE, tag);
+            super(OldStructures.HOUSE_PIECE, tag);
             this.template = new Identifier(tag.getString("Template"));
             this.rot = BlockRotation.valueOf(tag.getString("Rot"));
             

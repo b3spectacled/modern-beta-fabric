@@ -1,8 +1,8 @@
 package com.bespectacled.modernbeta.biome.beta;
 
-import com.bespectacled.modernbeta.carver.BetaCarver;
-import com.bespectacled.modernbeta.feature.BetaConfiguredFeature;
-import com.bespectacled.modernbeta.structure.BetaStructure;
+import com.bespectacled.modernbeta.carver.OldCarvers;
+import com.bespectacled.modernbeta.feature.OldConfiguredFeatures;
+import com.bespectacled.modernbeta.structure.OldStructures;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -47,16 +47,16 @@ public class FrozenOcean {
         genSettings.structureFeature(ConfiguredStructureFeatures.BURIED_TREASURE);
         genSettings.structureFeature(ConfiguredStructureFeatures.OCEAN_RUIN_COLD);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_OCEAN);
-        genSettings.structureFeature(BetaStructure.CONF_OCEAN_SHRINE_STRUCTURE);
+        genSettings.structureFeature(OldStructures.CONF_OCEAN_SHRINE_STRUCTURE);
         
-        genSettings.feature(Feature.UNDERGROUND_ORES, BetaConfiguredFeature.ORE_CLAY);
+        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_SUGAR_CANE);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);
         
-        genSettings.feature(Feature.TOP_LAYER_MODIFICATION, BetaConfiguredFeature.BETA_FREEZE_TOP_LAYER);
+        genSettings.feature(Feature.TOP_LAYER_MODIFICATION, OldConfiguredFeatures.BETA_FREEZE_TOP_LAYER);
         
-        genSettings.carver(GenerationStep.Carver.AIR, BetaCarver.CONF_BETA_CAVE_CARVER);
+        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_BETA_CAVE_CARVER);
         genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
         genSettings.carver(GenerationStep.Carver.LIQUID, ConfiguredCarvers.UNDERWATER_CAVE);
         genSettings.carver(GenerationStep.Carver.LIQUID, ConfiguredCarvers.UNDERWATER_CANYON);

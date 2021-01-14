@@ -12,7 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.bespectacled.modernbeta.gen.type.OldGeneratorType;
-import com.bespectacled.modernbeta.structure.BetaStructure;
+import com.bespectacled.modernbeta.structure.OldStructures;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
@@ -49,7 +49,7 @@ public class ModernBeta implements ModInitializer {
     public void onInitialize() {
         LOGGER.log(Level.INFO, "Initializing Modern Beta...");
 
-        BetaStructure.register();
+        OldStructures.register();
         
         BetaBiomes.registerBiomes();
         ClassicBiomes.registerAlphaBiomes();

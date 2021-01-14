@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.biome;
 
 import java.util.function.Predicate;
 
-import com.bespectacled.modernbeta.structure.BetaStructure;
+import com.bespectacled.modernbeta.structure.OldStructures;
 import com.google.common.collect.ImmutableList;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -26,6 +26,6 @@ public class VanillaBiomeModifier {
     
     public static void addShrineToOceans() {
         Predicate<BiomeSelectionContext> biomeSelector = BiomeSelectors.includeByKey(VANILLA_OCEANS);
-        BiomeModifications.addStructure(biomeSelector, BetaStructure.OCEAN_SHRINE_KEY);
+        BiomeModifications.addStructure(biomeSelector, OldStructures.OCEAN_SHRINE_KEY);
     }
 }

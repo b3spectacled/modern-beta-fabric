@@ -7,11 +7,11 @@ import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.feature.BetaFeature;
+import com.bespectacled.modernbeta.feature.OldFeatures;
 import com.bespectacled.modernbeta.gen.provider.AbstractChunkProvider;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
-import com.bespectacled.modernbeta.structure.BetaStructure;
+import com.bespectacled.modernbeta.structure.OldStructures;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.mojang.serialization.Codec;
@@ -117,7 +117,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public void generateFeatures(ChunkRegion chunkRegion, StructureAccessor structureAccessor) {
-        BetaFeature.OLD_FANCY_OAK.chunkReset();
+        OldFeatures.OLD_FANCY_OAK.chunkReset();
         
         int ctrX = chunkRegion.getCenterChunkX();
         int ctrZ = chunkRegion.getCenterChunkZ();
@@ -228,7 +228,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             if (feature.equals(StructureFeature.OCEAN_RUIN) || 
                 feature.equals(StructureFeature.SHIPWRECK) || 
                 feature.equals(StructureFeature.BURIED_TREASURE) ||
-                feature.equals(BetaStructure.OCEAN_SHRINE_STRUCTURE)) {
+                feature.equals(OldStructures.OCEAN_SHRINE_STRUCTURE)) {
                 return null;
             }
 
@@ -238,8 +238,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public List<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {
         if (spawnGroup == SpawnGroup.MONSTER) {
-            if (structureAccessor.getStructureAt(blockPos, false, BetaStructure.OCEAN_SHRINE_STRUCTURE).hasChildren()) {
-                return BetaStructure.OCEAN_SHRINE_STRUCTURE.getMonsterSpawns();
+            if (structureAccessor.getStructureAt(blockPos, false, OldStructures.OCEAN_SHRINE_STRUCTURE).hasChildren()) {
+                return OldStructures.OCEAN_SHRINE_STRUCTURE.getMonsterSpawns();
             }
         }
 

@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.biome.indev;
 
-import com.bespectacled.modernbeta.feature.BetaConfiguredFeature;
+import com.bespectacled.modernbeta.feature.OldConfiguredFeatures;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -41,14 +41,14 @@ public class IndevNormal {
         genSettings.structureFeature(ConfiguredStructureFeatures.PILLAGER_OUTPOST);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
         
-        genSettings.feature(Feature.UNDERGROUND_ORES, BetaConfiguredFeature.ORE_CLAY);
-        genSettings.feature(Feature.UNDERGROUND_ORES, BetaConfiguredFeature.ORE_EMERALD_Y95);
+        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
+        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_EMERALD_Y95);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, BetaConfiguredFeature.PATCH_DANDELION_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, BetaConfiguredFeature.PATCH_POPPY);
-        genSettings.feature(Feature.VEGETAL_DECORATION, BetaConfiguredFeature.PATCH_CACTUS_ALPHA);
-        genSettings.feature(Feature.VEGETAL_DECORATION, BetaConfiguredFeature.TREES_INDEV_BEES);
-        genSettings.feature(Feature.VEGETAL_DECORATION, BetaConfiguredFeature.PATCH_GRASS_ALPHA_2);
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_CACTUS_ALPHA);
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INDEV_BEES);
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_SUGAR_CANE);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);

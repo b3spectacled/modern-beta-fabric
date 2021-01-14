@@ -15,7 +15,7 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-public class BetaStructure {
+public class OldStructures {
     
     public static final StructurePieceType HOUSE_PIECE = IndevHouseGenerator.HousePiece::new;
     public static final StructureFeature<DefaultFeatureConfig> HOUSE_STRUCTURE = new IndevHouseStructure(DefaultFeatureConfig.CODEC);

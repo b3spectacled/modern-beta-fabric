@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.biome.beta;
 
-import com.bespectacled.modernbeta.carver.BetaCarver;
-import com.bespectacled.modernbeta.feature.BetaConfiguredFeature;
+import com.bespectacled.modernbeta.carver.OldCarvers;
+import com.bespectacled.modernbeta.feature.OldConfiguredFeatures;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -43,20 +43,20 @@ public class SeasonalForest {
         
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
         
-        genSettings.feature(Feature.UNDERGROUND_ORES, BetaConfiguredFeature.ORE_CLAY);
-        genSettings.feature(Feature.UNDERGROUND_ORES, BetaConfiguredFeature.ORE_EMERALD_Y95);
+        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
+        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_EMERALD_Y95);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, BetaConfiguredFeature.PATCH_DANDELION_4);
-        genSettings.feature(Feature.VEGETAL_DECORATION, BetaConfiguredFeature.PATCH_POPPY);
-        genSettings.feature(Feature.VEGETAL_DECORATION, BetaConfiguredFeature.TREES_BETA_SEASONAL_FOREST_BEES);
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_4);
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_SEASONAL_FOREST_BEES);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_GRASS_FOREST);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_SUGAR_CANE);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);
         
-        genSettings.feature(Feature.TOP_LAYER_MODIFICATION, BetaConfiguredFeature.BETA_FREEZE_TOP_LAYER);
+        genSettings.feature(Feature.TOP_LAYER_MODIFICATION, OldConfiguredFeatures.BETA_FREEZE_TOP_LAYER);
         
-        genSettings.carver(GenerationStep.Carver.AIR, BetaCarver.CONF_BETA_CAVE_CARVER);
+        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_BETA_CAVE_CARVER);
         genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
         
         return (new Biome.Builder())
