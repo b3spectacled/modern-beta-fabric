@@ -41,7 +41,7 @@ import java.util.Random;
 @Mixin(GeneratorOptions.class)
 public class MixinGeneratorOptions {
     @Inject(method = "fromProperties", at = @At("HEAD"), cancellable = true)
-    private static void injectOverworldTwo(DynamicRegistryManager dynamicRegistryManager, Properties properties,
+    private static void injectServerGeneratorType(DynamicRegistryManager dynamicRegistryManager, Properties properties,
             CallbackInfoReturnable<GeneratorOptions> cir) {
 
         // no server.properties file generated
