@@ -24,8 +24,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 @Environment(EnvType.CLIENT)
 public final class SkylandsGeneratorType extends GeneratorType {
     public static final GeneratorType INSTANCE = new SkylandsGeneratorType();
-    
-    public static OldGeneratorSettings betaSettings = new OldGeneratorSettings(new CompoundTag(), false);
+    public static final OldGeneratorSettings SETTINGS = new OldGeneratorSettings(new CompoundTag(), false);
 
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -33,9 +32,8 @@ public final class SkylandsGeneratorType extends GeneratorType {
             .putAll(MixinGeneratorTypeAccessor.getScreenProviders())
             .put(
                 Optional.<GeneratorType>of(INSTANCE), (createWorldScreen, generatorSettings) -> {
-                    return new CustomizeSkylandsLevelScreen(createWorldScreen, betaSettings);
+                    return new CustomizeSkylandsLevelScreen(createWorldScreen, SETTINGS);
                 }
-                
             )
             .build();
     
@@ -53,7 +51,7 @@ public final class SkylandsGeneratorType extends GeneratorType {
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        betaSettings.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.SKYLANDS.getName(), BiomeType.SKY.getName(), false);
-        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, betaSettings.providerSettings), seed, betaSettings);
+        SETTINGS.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.SKYLANDS.getName(), BiomeType.SKY.getName(), false);
+        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, SETTINGS.providerSettings), seed, SETTINGS);
     }
 }

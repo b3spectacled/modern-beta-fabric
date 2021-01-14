@@ -1,14 +1,10 @@
 package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
@@ -19,10 +15,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-public class CustomizeIndevLevelScreen extends Screen {
-    private CreateWorldScreen parent;
-    private OldGeneratorSettings generatorSettings;
-    
+public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
+   
     private IndevType levelType = IndevType.fromName(ModernBeta.BETA_CONFIG.indevLevelType);
     private IndevTheme levelTheme = IndevTheme.fromName(ModernBeta.BETA_CONFIG.indevLevelTheme);
 
@@ -31,21 +25,15 @@ public class CustomizeIndevLevelScreen extends Screen {
     private int levelHeight = ModernBeta.BETA_CONFIG.indevLevelHeight;
     
     private float caveRadius = ModernBeta.BETA_CONFIG.indevCaveRadius;
-    
-    private ButtonListWidget buttonList;
 
     public CustomizeIndevLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings) {
-        super(new TranslatableText("createWorld.customize.indev.title"));
-        
-        this.parent = parent;
-        this.generatorSettings = generatorSettings;
+        super(parent, generatorSettings, "createWorld.customize.indev.title");
         
         if (generatorSettings.providerSettings.contains("levelType")) 
             this.levelType = IndevType.fromName(generatorSettings.providerSettings.getString("levelType"));
         if (generatorSettings.providerSettings.contains("levelTheme")) 
             this.levelTheme = IndevTheme.fromName(generatorSettings.providerSettings.getString("levelTheme"));
 
-        
         if (generatorSettings.providerSettings.contains("levelWidth")) this.levelWidth = generatorSettings.providerSettings.getInt("levelWidth");
         if (generatorSettings.providerSettings.contains("levelLength")) this.levelLength = generatorSettings.providerSettings.getInt("levelLength");
         if (generatorSettings.providerSettings.contains("levelHeight")) this.levelHeight = generatorSettings.providerSettings.getInt("levelHeight");
@@ -54,24 +42,7 @@ public class CustomizeIndevLevelScreen extends Screen {
     
     @Override
     protected void init() {
-        this.addButton(new ButtonWidget(
-            this.width / 2 - 155, this.height - 28, 150, 20, 
-            ScreenTexts.DONE, 
-            (buttonWidget) -> {
-                this.client.openScreen(this.parent);
-                return;
-            }
-        ));
-
-        this.addButton(new ButtonWidget(
-            this.width / 2 + 5, this.height - 28, 150, 20, 
-            ScreenTexts.CANCEL,
-            (buttonWidget) -> {
-                this.client.openScreen(this.parent);
-            }
-        ));
-        
-        this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        super.init();
         
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(

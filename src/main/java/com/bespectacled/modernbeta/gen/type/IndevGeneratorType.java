@@ -21,8 +21,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 @Environment(EnvType.CLIENT)
 public final class IndevGeneratorType extends GeneratorType {
     public static final GeneratorType INSTANCE = new IndevGeneratorType();
-    
-    public static final OldGeneratorSettings indevSettings = new OldGeneratorSettings(new CompoundTag(), true);
+    public static final OldGeneratorSettings SETTINGS = new OldGeneratorSettings(new CompoundTag(), true);
     
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -30,7 +29,7 @@ public final class IndevGeneratorType extends GeneratorType {
             .putAll(MixinGeneratorTypeAccessor.getScreenProviders())
             .put(
                 Optional.<GeneratorType>of(INSTANCE), (createWorldScreen, generatorSettings) -> {
-                    return new CustomizeIndevLevelScreen(createWorldScreen, indevSettings);
+                    return new CustomizeIndevLevelScreen(createWorldScreen, SETTINGS);
                 }
             )
             .build();
@@ -48,8 +47,8 @@ public final class IndevGeneratorType extends GeneratorType {
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        indevSettings.providerSettings = OldGeneratorSettings.createIndevSettings();
-        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, indevSettings.providerSettings), seed, indevSettings);
+        SETTINGS.providerSettings = OldGeneratorSettings.createIndevSettings();
+        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, SETTINGS.providerSettings), seed, SETTINGS);
     }
     
     

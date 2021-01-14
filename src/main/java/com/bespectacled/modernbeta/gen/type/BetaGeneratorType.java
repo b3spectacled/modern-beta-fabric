@@ -25,8 +25,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 @Environment(EnvType.CLIENT)
 public final class BetaGeneratorType extends GeneratorType {
     public static final GeneratorType INSTANCE = new BetaGeneratorType();
-    
-    public static OldGeneratorSettings betaSettings = new OldGeneratorSettings(new CompoundTag(), false);
+    public static final OldGeneratorSettings SETTINGS = new OldGeneratorSettings(new CompoundTag(), false);
     
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -34,7 +33,7 @@ public final class BetaGeneratorType extends GeneratorType {
             .putAll(MixinGeneratorTypeAccessor.getScreenProviders())
             .put(
                 Optional.<GeneratorType>of(INSTANCE), (createWorldScreen, generatorSettings) -> {
-                    return new CustomizeBetaLevelScreen(createWorldScreen, betaSettings);
+                    return new CustomizeBetaLevelScreen(createWorldScreen, SETTINGS);
                 }
                 
             )
@@ -53,7 +52,7 @@ public final class BetaGeneratorType extends GeneratorType {
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        betaSettings.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.BETA.getName(), BiomeType.BETA.getName(), ModernBeta.BETA_CONFIG.generateOceans);
-        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, betaSettings.providerSettings), seed, betaSettings);
+        SETTINGS.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.BETA.getName(), BiomeType.BETA.getName(), ModernBeta.BETA_CONFIG.generateOceans);
+        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, SETTINGS.providerSettings), seed, SETTINGS);
     }
 }

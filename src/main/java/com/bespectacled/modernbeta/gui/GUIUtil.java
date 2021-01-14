@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.gui;
 
 import java.util.Iterator;
 
-import com.bespectacled.modernbeta.util.WorldEnum;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 
 import net.minecraft.text.Text;
