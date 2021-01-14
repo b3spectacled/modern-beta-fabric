@@ -19,6 +19,11 @@ import net.minecraft.world.gen.GeneratorOptions;
 @Environment(EnvType.CLIENT)
 @Mixin(GeneratorType.class)
 public interface MixinGeneratorTypeAccessor {
+    @Accessor("VALUES")
+    public static List<GeneratorType> getValues() {
+      throw new AssertionError();
+    }
+    
     @Accessor("SCREEN_PROVIDERS")
     public static Map<Optional<GeneratorType>, ScreenProvider> getScreenProviders() {
         throw new AssertionError();

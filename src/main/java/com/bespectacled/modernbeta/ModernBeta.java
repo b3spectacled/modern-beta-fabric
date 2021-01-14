@@ -11,12 +11,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.bespectacled.modernbeta.gen.type.AlphaGeneratorType;
-import com.bespectacled.modernbeta.gen.type.BetaGeneratorType;
-import com.bespectacled.modernbeta.gen.type.IndevGeneratorType;
-import com.bespectacled.modernbeta.gen.type.InfdevGeneratorType;
-import com.bespectacled.modernbeta.gen.type.InfdevOldGeneratorType;
-import com.bespectacled.modernbeta.gen.type.SkylandsGeneratorType;
+import com.bespectacled.modernbeta.gen.type.OldGeneratorType;
 import com.bespectacled.modernbeta.structure.BetaStructure;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
 
@@ -68,12 +63,7 @@ public class ModernBeta implements ModInitializer {
         VanillaBiomeModifier.addShrineToOceans();
         
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            BetaGeneratorType.register();
-            SkylandsGeneratorType.register();
-            AlphaGeneratorType.register();
-            InfdevGeneratorType.register();
-            InfdevOldGeneratorType.register();
-            IndevGeneratorType.register();      
+            OldGeneratorType.register();
         }
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");

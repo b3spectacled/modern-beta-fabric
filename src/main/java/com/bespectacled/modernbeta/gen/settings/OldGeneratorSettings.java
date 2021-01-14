@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.util.WorldEnum;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
+import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -59,11 +61,11 @@ public class OldGeneratorSettings {
         this.providerSettings = settings;
     }
     
-    public static CompoundTag createInfSettings(String worldType, String biomeType, boolean genOceans) {
+    public static CompoundTag createInfSettings(WorldType worldType, BiomeType biomeType, boolean genOceans) {
         CompoundTag settings = new CompoundTag();
         
-        settings.putString("worldType", worldType);
-        settings.putString("biomeType", biomeType);
+        settings.putString("worldType", worldType.getName());
+        settings.putString("biomeType", biomeType.getName());
         settings.putBoolean("generateOceans", genOceans);
         
         return settings;

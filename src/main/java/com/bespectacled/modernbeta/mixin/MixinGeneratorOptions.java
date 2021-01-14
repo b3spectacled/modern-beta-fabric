@@ -41,7 +41,7 @@ import java.util.Random;
 @Mixin(GeneratorOptions.class)
 public class MixinGeneratorOptions {
     @Inject(method = "fromProperties", at = @At("HEAD"), cancellable = true)
-    private static void injectOverworldTwo(DynamicRegistryManager dynamicRegistryManager, Properties properties,
+    private static void injectServerGeneratorType(DynamicRegistryManager dynamicRegistryManager, Properties properties,
             CallbackInfoReturnable<GeneratorOptions> cir) {
 
         // no server.properties file generated
@@ -81,30 +81,18 @@ public class MixinGeneratorOptions {
 
             String generate_structures = (String) properties.get("generate-structures");
             boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
-
-            Optional<StrongholdConfig> guaranteedStronghold = Optional.of(new StrongholdConfig(0, 0, 1));            
-            StructuresConfig structures = (levelType.equals("indev")) ?
-                new StructuresConfig(guaranteedStronghold, Maps.newHashMap(StructuresConfig.DEFAULT_STRUCTURES)) : new StructuresConfig(true);
             
-            NoiseSamplingConfig noiseSampler = new NoiseSamplingConfig(1.0, 1.0, 40.0, 22.0);
-            GenerationShapeConfig noise = GenerationShapeConfig.method_32994(0, 256, noiseSampler, new SlideConfig(-10, 3, 0),
-                    new SlideConfig(-30, 0, 0), 1, 2, 1.0, -60.0 / (256.0 / 2.0), true, true, false, false);
-
-            ChunkGeneratorSettings type = new ChunkGeneratorSettings(structures, noise, Blocks.STONE.getDefaultState(),
-                    Blocks.WATER.getDefaultState(), -10, 0, 64, false);
-            
-            
-            ChunkGenerator generator;
-            String biomeType = ModernBeta.BETA_CONFIG.biomeType;
+            WorldType worldType = WorldType.fromName(levelType);
+            BiomeType biomeType = BiomeType.fromName(ModernBeta.BETA_CONFIG.biomeType);
             boolean genOceans = levelType.equals("skylands") ? false : ModernBeta.BETA_CONFIG.generateOceans;
+            boolean isIndev = levelType.equals("indev");
             
-            CompoundTag settings = levelType.equals("indev") ?
+            CompoundTag settings = isIndev ?
                 OldGeneratorSettings.createIndevSettings() :
-                OldGeneratorSettings.createInfSettings(levelType, biomeType, genOceans);
+                OldGeneratorSettings.createInfSettings(worldType, biomeType, genOceans);
                 
-            OldGeneratorSettings genSettings = new OldGeneratorSettings(type, settings);
-            
-            generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, genSettings.providerSettings), seed, genSettings);
+            OldGeneratorSettings genSettings = new OldGeneratorSettings(settings, isIndev);
+            ChunkGenerator generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, genSettings.providerSettings), seed, genSettings);
 
             // return our chunk generator
             cir.setReturnValue(new GeneratorOptions(seed, generateStructures, false,
