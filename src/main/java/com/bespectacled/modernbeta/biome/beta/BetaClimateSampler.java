@@ -1,13 +1,10 @@
 package com.bespectacled.modernbeta.biome.beta;
 
-import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
-import com.bespectacled.modernbeta.util.BoundedHashMap;
-
+import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.util.math.MathHelper;
 
 public class BetaClimateSampler {
@@ -114,13 +111,13 @@ public class BetaClimateSampler {
     }
     
     private class BiomeCache {
-        private final Map<Long, BiomeCacheChunk> biomeCache;
+        private final Long2ObjectLinkedOpenHashMap<BiomeCacheChunk> biomeCache;
         private final BetaClimateSampler climateSampler;
         private final ReentrantReadWriteLock lock;
         
         public BiomeCache(BetaClimateSampler climateSampler) {
             this.climateSampler = climateSampler;
-            this.biomeCache = new BoundedHashMap<Long, BiomeCacheChunk>(1024); // 32 x 32 chunks
+            this.biomeCache = new Long2ObjectLinkedOpenHashMap<BiomeCacheChunk>(256, 0.75f);
             this.lock = new ReentrantReadWriteLock();
         }
         

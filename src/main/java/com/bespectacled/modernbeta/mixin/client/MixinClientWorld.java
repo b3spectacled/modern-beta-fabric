@@ -65,9 +65,8 @@ public abstract class MixinClientWorld extends World {
         
         if (client.getServer() != null) { // Server check
            ChunkGenerator gen = client.getServer().getOverworld().getChunkManager().getChunkGenerator();
-           OldBiomeSource biomeSource = (OldBiomeSource)gen.getBiomeSource();
            
-           if (!BETA_CONFIG.useFixedSeed && gen instanceof OldChunkGenerator && biomeSource.isBeta()) {
+           if (!BETA_CONFIG.useFixedSeed && gen instanceof OldChunkGenerator && ((OldBiomeSource)gen.getBiomeSource()).isBeta()) {
                useBetaColors = true;
                worldSeed = gen.worldSeed;
            }

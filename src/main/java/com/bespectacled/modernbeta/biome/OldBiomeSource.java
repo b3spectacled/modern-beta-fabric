@@ -100,7 +100,7 @@ public class OldBiomeSource extends BiomeSource {
     }
 
     public static void register() {
-        Registry.register(Registry.BIOME_SOURCE, new Identifier(ModernBeta.ID, "old"), CODEC);
+        Registry.register(Registry.BIOME_SOURCE, ModernBeta.createId("old"), CODEC);
     }
 
     

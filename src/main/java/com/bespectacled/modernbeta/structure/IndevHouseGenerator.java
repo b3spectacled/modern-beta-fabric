@@ -20,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ServerWorldAccess;
 
 public class IndevHouseGenerator {
-    private static final Identifier HOUSE = new Identifier(ModernBeta.ID, "indev_house");
+    private static final Identifier HOUSE = ModernBeta.createId("indev_house");
     
     public static void addPieces(StructureManager manager, BlockPos pos, BlockRotation rot, List<StructurePiece> pieces) {
         pieces.add(new HousePiece(manager, pos, HOUSE, rot));

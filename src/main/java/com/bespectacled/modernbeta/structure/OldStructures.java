@@ -21,11 +21,8 @@ public class OldStructures {
     public static final StructureFeature<DefaultFeatureConfig> HOUSE_STRUCTURE = new IndevHouseStructure(DefaultFeatureConfig.CODEC);
     public static final ConfiguredStructureFeature<?, ?> CONF_HOUSE_STRUCTURE = HOUSE_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT);
     
-    //private static final String OCEAN_SHRINE_ID = "ocean_shrine";
-    //private static final String OCEAN_SHRINE_BASE_ID = "ocean_shrine/base";
-    
-    private static final Identifier OCEAN_SHRINE_ID = new Identifier(ModernBeta.ID, "ocean_shrine");
-    private static final Identifier OCEAN_SHRINE_BASE_ID = new Identifier(ModernBeta.ID, "ocean_shrine/base");
+    private static final Identifier OCEAN_SHRINE_ID = ModernBeta.createId("ocean_shrine");
+    private static final Identifier OCEAN_SHRINE_BASE_ID = ModernBeta.createId("ocean_shrine/base");
     
     public static final StructurePieceType OCEAN_SHRINE_PIECE = OceanShrineGenerator.Piece::new;
     public static final StructureFeature<DefaultFeatureConfig> OCEAN_SHRINE_STRUCTURE = new OceanShrineStructure(DefaultFeatureConfig.CODEC);

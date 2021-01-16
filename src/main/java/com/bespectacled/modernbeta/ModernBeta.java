@@ -28,22 +28,20 @@ import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 
 public class ModernBeta implements ModInitializer {
-    public static final String ID = "modern_beta";
+    public static final String MOD_ID = "modern_beta";
     public static final Logger LOGGER = LogManager.getLogger("ModernBeta");
-    public static final ModernBetaConfig BETA_CONFIG = AutoConfig
-            .register(ModernBetaConfig.class, GsonConfigSerializer::new).getConfig();
+    public static final ModernBetaConfig BETA_CONFIG = AutoConfig.register(ModernBetaConfig.class, GsonConfigSerializer::new).getConfig();
 
     // Ehh...
     public static void setBlockColorsSeed(long seed, boolean useBetaColors) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            MutableBlockColors mutableBlockColors = MutableBlockColors
-                    .inject(MinecraftClient.getInstance().getBlockColors());
+            MutableBlockColors mutableBlockColors = MutableBlockColors.inject(MinecraftClient.getInstance().getBlockColors());
             mutableBlockColors.setSeed(seed, useBetaColors);
         }
     }
     
     public static Identifier createId(String name) {
-        return new Identifier(ID, name);
+        return new Identifier(MOD_ID, name);
     }
 
     @Override

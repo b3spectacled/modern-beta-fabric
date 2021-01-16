@@ -74,7 +74,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
 
     public static void register() {
-        Registry.register(Registry.CHUNK_GENERATOR, new Identifier(ModernBeta.ID, "old"), CODEC);
+        Registry.register(Registry.CHUNK_GENERATOR, ModernBeta.createId("old"), CODEC);
     }
     
     @Override
@@ -98,9 +98,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             
             // Replace biomes in bodies of water at least four deep with ocean biomes
             for (int x = 0; x < 4; x++) {
+                int absX = pos.getStartX() + (x << 2);
                 
-                for (int z = 0; z < 4; z++) {
-                    int absX = pos.getStartX() + (x << 2);
+                for (int z = 0; z < 4; z++) {    
                     int absZ = pos.getStartZ() + (z << 2);
                     
                     int y = GenUtil.getSolidHeight(chunk, absX, absZ);

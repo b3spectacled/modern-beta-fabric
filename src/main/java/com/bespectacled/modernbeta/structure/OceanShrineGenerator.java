@@ -39,7 +39,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.Heightmap;
 
 public class OceanShrineGenerator {
-    private static final Identifier SHRINE_BASE = new Identifier(ModernBeta.ID, "ocean_shrine/base");
+    private static final Identifier SHRINE_BASE = ModernBeta.createId("ocean_shrine/base");
     
     public static void addPieces(StructureManager manager, BlockPos pos, BlockRotation rot, List<StructurePiece> pieces) {
         pieces.add(new Piece(manager, pos, SHRINE_BASE, rot));
