@@ -73,16 +73,19 @@ public class OldBiomeSource extends BiomeSource {
     }
 
     public boolean isVanilla() {
-        return this.worldType != WorldType.INDEV && this.biomeType == BiomeType.VANILLA;
+        return this.biomeType == BiomeType.VANILLA;
     }
     
     public boolean isBeta() {
-        return this.worldType != WorldType.INDEV && this.biomeType == BiomeType.BETA;
-        // || this.biomeType == BiomeType.ICE_DESERT;
+        return this.biomeType == BiomeType.BETA;
     }
     
     public boolean isSkyDim() {
-        return this.worldType != WorldType.INDEV && this.biomeType == BiomeType.SKY;
+        return this.biomeType == BiomeType.SKY;
+    }
+    
+    public boolean isIndev() {
+        return this.worldType == WorldType.INDEV;
     }
     
     @Override

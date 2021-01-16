@@ -159,14 +159,4 @@ public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
         this.children.add(this.buttonList);
     }
     
-    @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float tickDelta) {
-        this.renderBackground(matrixStack);
-        
-        this.buttonList.render(matrixStack, mouseX, mouseY, tickDelta);
-        DrawableHelper.drawCenteredText(matrixStack, this.textRenderer, this.title, this.width / 2, 16, 16777215);
-        
-        super.render(matrixStack, mouseX, mouseY, tickDelta);
-    }
-    
 }

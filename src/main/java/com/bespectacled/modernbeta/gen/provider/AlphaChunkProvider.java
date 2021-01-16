@@ -68,7 +68,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     }
 
     @Override
-    public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+    public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
         SANDSTONE_RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
 
@@ -76,7 +76,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     }
 
     @Override
-    public void makeSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
+    public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         double eighth = 0.03125D; // eighth
 
         int chunkX = chunk.getPos().x;

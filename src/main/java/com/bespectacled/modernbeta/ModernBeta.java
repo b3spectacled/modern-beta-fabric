@@ -19,6 +19,7 @@ import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.biome.OldBiomes;
 import com.bespectacled.modernbeta.biome.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
@@ -50,13 +51,7 @@ public class ModernBeta implements ModInitializer {
         LOGGER.log(Level.INFO, "Initializing Modern Beta...");
 
         OldStructures.register();
-        
-        BetaBiomes.registerBiomes();
-        ClassicBiomes.registerAlphaBiomes();
-        ClassicBiomes.registerInfdevBiomes();
-        IndevBiomes.registerBiomes();
-        ClassicBiomes.registerInfdevOldBiomes();
-
+        OldBiomes.register();
         OldBiomeSource.register();
         OldChunkGenerator.register();
         

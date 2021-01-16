@@ -71,8 +71,8 @@ public abstract class AbstractChunkProvider {
         GROUND_CACHE_Y.clear();
     }
     
-    public abstract void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource);
-    public abstract void makeSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource);
+    public abstract void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource);
+    public abstract void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource);
     public abstract int getHeight(int x, int z, Heightmap.Type type);
     public abstract PerlinOctaveNoise getBeachNoiseOctaves();
     

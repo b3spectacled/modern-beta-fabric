@@ -84,12 +84,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
-        this.chunkProvider.makeChunk(worldAccess, structureAccessor, chunk, this.biomeSource);
+        this.chunkProvider.provideChunk(worldAccess, structureAccessor, chunk, this.biomeSource);
     }
     
     @Override
     public void buildSurface(ChunkRegion region, Chunk chunk) {
-        this.chunkProvider.makeSurface(region, chunk, this.biomeSource);
+        this.chunkProvider.provideSurface(region, chunk, this.biomeSource);
         
         if (this.genOceans) {
             MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
