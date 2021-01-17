@@ -152,11 +152,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(carver);
 
-       
         random.setSeed(seed);
         long l = (random.nextLong() / 2L) * 2L + 1L;
         long l1 = (random.nextLong() / 2L) * 2L + 1L;
-        
 
         for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
             for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {

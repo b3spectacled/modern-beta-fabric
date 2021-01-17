@@ -47,11 +47,11 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
             }
 
             for (int j = 0; j < tunnelCount; ++j) {
-                float f = random.nextFloat() * 3.141593F * 2.0F;
+                float f0 = random.nextFloat() * 3.141593F * 2.0F;
                 float f1 = ((random.nextFloat() - 0.5F) * 2.0F) / 8F;
                 float tunnelSysWidth = getTunnelSystemWidth(random);
 
-                carveTunnels(chunk, random, mainChunkX, mainChunkZ, x, y, z, tunnelSysWidth, f, f1, 0, 0, 1.0D);
+                carveTunnels(chunk, random, mainChunkX, mainChunkZ, x, y, z, tunnelSysWidth, f0, f1, 0, 0, 1.0D);
             }
         }
 
@@ -64,10 +64,10 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
     }
 
     protected void carveTunnels(Chunk chunk, Random rand, int mainChunkX, int mainChunkZ, double x, double y, double z,
-            float tunnelSysWidth, float f1, float f2, int branch, int branchCount, double tunnelWHRatio) {
+            float tunnelSysWidth, float f0, float f1, int branch, int branchCount, double tunnelWHRatio) {
 
+        float f2 = 0.0F;
         float f3 = 0.0F;
-        float f4 = 0.0F;
 
         Random random = new Random(rand.nextLong());
 
@@ -90,29 +90,29 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
                     * tunnelSysWidth * 1.0F);
             double pitch = yaw * tunnelWHRatio;
 
-            float f5 = MathHelper.cos(f2);
-            float f6 = MathHelper.sin(f2);
+            float f4 = MathHelper.cos(f1);
+            float f5 = MathHelper.sin(f1);
 
-            x += MathHelper.cos(f1) * f5;
-            y += f6;
-            z += MathHelper.sin(f1) * f5;
+            x += MathHelper.cos(f0) * f4;
+            y += f5;
+            z += MathHelper.sin(f0) * f4;
 
-            f2 *= vary ? 0.92F : 0.7F;
+            f1 *= vary ? 0.92F : 0.7F;
 
-            f2 += f4 * 0.1F;
             f1 += f3 * 0.1F;
+            f0 += f2 * 0.1F;
 
-            f4 *= 0.9F;
-            f3 *= 0.75F;
+            f3 *= 0.9F;
+            f2 *= 0.75F;
 
-            f4 += (random.nextFloat() - random.nextFloat()) * random.nextFloat() * 2.0F;
-            f3 += (random.nextFloat() - random.nextFloat()) * random.nextFloat() * 4F;
+            f3 += (random.nextFloat() - random.nextFloat()) * random.nextFloat() * 2.0F;
+            f2 += (random.nextFloat() - random.nextFloat()) * random.nextFloat() * 4F;
 
             if (!noStarts && branch == randBranch && tunnelSysWidth > 1.0F) {
                 carveTunnels(chunk, rand, mainChunkX, mainChunkZ, x, y, z, random.nextFloat() * 0.5F + 0.5F,
-                        f1 - 1.570796F, f2 / 3F, branch, branchCount, 1.0D);
+                        f0 - 1.570796F, f1 / 3F, branch, branchCount, 1.0D);
                 carveTunnels(chunk, rand, mainChunkX, mainChunkZ, x, y, z, random.nextFloat() * 0.5F + 0.5F,
-                        f1 + 1.570796F, f2 / 3F, branch, branchCount, 1.0D);
+                        f0 + 1.570796F, f1 / 3F, branch, branchCount, 1.0D);
                 return;
             }
 
@@ -201,7 +201,7 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
                     double scaledRelY = (((double) relY + 0.5D) - y) / pitch;
 
                     if (isPositionExcluded(scaledRelX, scaledRelY, scaledRelZ, -1)) {
-                        Block block = chunk.getBlockState(new BlockPos(relX, setY, relZ)).getBlock();
+                        Block block = chunk.getBlockState(blockPos.set(relX, setY, relZ)).getBlock();
                         // Block blockAbove = chunk.getBlockState(new BlockPos(relX, setY + 1,
                         // relZ)).getBlock();
 
@@ -218,10 +218,8 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
                                 chunk.setBlockState(blockPos.set(relX, setY, relZ), Blocks.CAVE_AIR.getDefaultState(),
                                         false);
 
-                                // I believe this replaces carved-out dirt with grass, if block that was removed
-                                // was grass.
-                                if (isGrassBlock && chunk.getBlockState(new BlockPos(relX, setY - 1, relZ))
-                                        .getBlock() == Blocks.DIRT) {
+                                // Replaces carved-out dirt with grass, if block that was removed was grass.
+                                if (isGrassBlock && chunk.getBlockState(blockPos.set(relX, setY - 1, relZ)).getBlock() == Blocks.DIRT) {
                                     chunk.setBlockState(blockPos.set(relX, setY - 1, relZ),
                                             Blocks.GRASS_BLOCK.getDefaultState(), false);
                                 }
