@@ -14,28 +14,7 @@ public class CustomizeBetaLevelScreen extends AbstractCustomizeLevelScreen {
     @Override
     protected void init() {
         super.init();
-        
-        this.buttonList.addSingleOptionEntry(
-            CyclingOption.create(
-                "createWorld.customize.type.biomeType", 
-                BiomeType.values(), 
-                (value) -> new TranslatableText("createWorld.customize.type." + value.getName()), 
-                (gameOptions) -> { return this.biomeType; }, 
-                (gameOptions, option, value) -> {
-                    this.biomeType = value;
-                    generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
-                    
-                    return;
-                })
-        );
-        
-        this.buttonList.addSingleOptionEntry(
-            CyclingOption.create("createWorld.customize.inf.generateOceans", 
-            (gameOptions) -> { return generateOceans; }, 
-            (gameOptions, option, value) -> { // Setter
-                generateOceans = value;
-                generatorSettings.providerSettings.putBoolean("generateOceans", value);
-        }));
+        super.initInf();
         
         this.children.add(this.buttonList);
     }

@@ -147,7 +147,7 @@ public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
                     },
                     (gameOptions, doubleOptions) -> {
                         return new TranslatableText(
-                            "options.generic_value", 
+                            "options.generic_value",  
                             new Object[] { 
                                 new TranslatableText("createWorld.customize.indev.caveRadius"), 
                                 Text.of(String.format("%.01f", this.caveRadius)) 
