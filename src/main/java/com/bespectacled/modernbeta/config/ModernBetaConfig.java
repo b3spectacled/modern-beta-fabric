@@ -27,7 +27,7 @@ public class ModernBetaConfig implements ConfigData {
     public boolean renderAlphaSunset = false;
     
     @ConfigEntry.Gui.Tooltip(count = 1)
-    public boolean renderGameVersion = false;
+    public boolean renderGameVersion = true;
     
     /* Inf Generation */
     
