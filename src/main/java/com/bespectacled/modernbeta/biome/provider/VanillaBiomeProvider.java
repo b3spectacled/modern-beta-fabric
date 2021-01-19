@@ -33,7 +33,7 @@ public class VanillaBiomeProvider extends AbstractBiomeProvider {
 
     @Override
     public Biome getOceanBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
-        return this.oceanSampler.sample(registry, biomeX, biomeZ);
+        return this.oceanSampler.sample(registry, biomeX, biomeZ); 
     }
 
     @Override

@@ -173,11 +173,11 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     public int getHeight(int x, int z, Type type) {
         BlockPos structPos = new BlockPos(x, 0, z);
         
-        if (GROUND_CACHE_Y.get(structPos) == null) {
+        if (HEIGHTMAP_CACHE.get(structPos) == null) {
             sampleHeightmap(x, z);
         }
 
-        int groundHeight = GROUND_CACHE_Y.get(structPos);
+        int groundHeight = HEIGHTMAP_CACHE.get(structPos);
 
         // Not ideal
         if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
@@ -377,7 +377,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                                 double density = nz1 + (nz2 - nz1) * mixZ;
                                 
                                 if (density > 0.0) {
-                                    CHUNK_Y[x][z] = y;
+                                    HEIGHTMAP_CHUNK[x][z] = y;
                                 }
                             }
                         }
@@ -386,12 +386,12 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
             }
         }
 
-        for (int pX = 0; pX < CHUNK_Y.length; pX++) {
-            for (int pZ = 0; pZ < CHUNK_Y[pX].length; pZ++) {
+        for (int pX = 0; pX < HEIGHTMAP_CHUNK.length; pX++) {
+            for (int pZ = 0; pZ < HEIGHTMAP_CHUNK[pX].length; pZ++) {
                 BlockPos structPos = new BlockPos((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
                 //POS.set((chunkX << 4) + pX, 0, (chunkZ << 4) + pZ);
                 
-                GROUND_CACHE_Y.put(structPos, CHUNK_Y[pX][pZ] + 1); // +1 because it is one above the ground
+                HEIGHTMAP_CACHE.put(structPos, HEIGHTMAP_CHUNK[pX][pZ] + 1); // +1 because it is one above the ground
             }
         }
     }

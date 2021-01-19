@@ -31,8 +31,8 @@ public abstract class AbstractChunkProvider {
     protected static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
     protected static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
     
-    protected static final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> GROUND_CACHE_Y = new Object2ObjectLinkedOpenHashMap<>(512);
-    protected static final int[][] CHUNK_Y = new int[16][16];
+    protected static final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> HEIGHTMAP_CACHE = new Object2ObjectLinkedOpenHashMap<>(512);
+    protected static final int[][] HEIGHTMAP_CHUNK = new int[16][16];
     
     protected final int minY;
     protected final int worldHeight;
@@ -68,7 +68,7 @@ public abstract class AbstractChunkProvider {
         this.noiseMinY = this.minY / this.verticalNoiseResolution;
         
         RAND.setSeed(seed);
-        GROUND_CACHE_Y.clear();
+        HEIGHTMAP_CACHE.clear();
     }
     
     public abstract void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource);

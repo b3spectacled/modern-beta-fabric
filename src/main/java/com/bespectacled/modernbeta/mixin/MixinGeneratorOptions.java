@@ -69,7 +69,7 @@ public class MixinGeneratorOptions {
                     }
                 } catch (NumberFormatException var14) {
                     seed = seedField.hashCode();
-                }
+                } 
             }
 
             // get other misc data
@@ -90,7 +90,7 @@ public class MixinGeneratorOptions {
             CompoundTag settings = isIndev ?
                 OldGeneratorSettings.createIndevSettings() :
                 OldGeneratorSettings.createInfSettings(worldType, biomeType, genOceans);
-                
+            
             OldGeneratorSettings genSettings = new OldGeneratorSettings(settings, isIndev);
             ChunkGenerator generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, genSettings.providerSettings), seed, genSettings);
 

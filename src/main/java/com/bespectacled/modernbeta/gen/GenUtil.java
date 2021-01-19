@@ -29,8 +29,8 @@ import net.minecraft.world.gen.feature.StructureFeature;
 public class GenUtil {
     private static final BlockPos.Mutable POS = new BlockPos.Mutable();
     
-    public static int getSolidHeight(Chunk chunk, int x, int z) {
-        for (int y = 127; y >= 0; y--) {
+    public static int getSolidHeight(Chunk chunk, int worldHeight, int x, int z) {
+        for (int y = worldHeight - 1; y >= 0; y--) {
             BlockState someBlock = chunk.getBlockState(POS.set(x, y, z));
             if (!(someBlock.equals(BlockStates.AIR) || someBlock.equals(BlockStates.WATER)))
                 return y;

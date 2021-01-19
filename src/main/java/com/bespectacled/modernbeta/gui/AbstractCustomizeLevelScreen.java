@@ -14,7 +14,7 @@ import net.minecraft.client.options.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 
-public class AbstractCustomizeLevelScreen extends Screen {
+public abstract class AbstractCustomizeLevelScreen extends Screen {
     protected final CreateWorldScreen parent;
     protected final OldGeneratorSettings generatorSettings;
     

@@ -4,14 +4,9 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
 import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.gui.widget.ButtonListWidget;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.CyclingOption;
 import net.minecraft.client.options.DoubleOption;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 

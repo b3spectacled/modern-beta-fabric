@@ -22,7 +22,7 @@ public class SingleBiomeProvider extends AbstractBiomeProvider {
 
     @Override
     public Biome getBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
-        return registry.get(biomeId);
+        return registry.get(biomeId); 
     }
 
     @Override

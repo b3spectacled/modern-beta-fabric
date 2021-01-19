@@ -16,8 +16,6 @@ public class PlusBiomeProvider extends AbstractBiomeProvider {
     
     private final Map<BiomeType, Identifier> biomeMapping;
     
-    private static final double[] TEMP_HUMID_POINT = new double[2];
-    
     public PlusBiomeProvider(long seed, Map<BiomeType, Identifier> biomeMapping) {
         this.biomeMapping = biomeMapping;
         BetaClimateSampler.getInstance().setSeed(seed);
@@ -28,9 +26,10 @@ public class PlusBiomeProvider extends AbstractBiomeProvider {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        BetaClimateSampler.getInstance().sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
-        return TEMP_HUMID_POINT[0] < 0.5f ?  registry.get(biomeMapping.get(BiomeType.WINTER)) : registry.get(biomeMapping.get(BiomeType.CLASSIC));
-    }
+        return BetaClimateSampler.getInstance().sampleTemp(absX, absZ) < 0.5f ? 
+            registry.get(biomeMapping.get(BiomeType.WINTER)) : 
+            registry.get(biomeMapping.get(BiomeType.CLASSIC));
+    } 
 
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {

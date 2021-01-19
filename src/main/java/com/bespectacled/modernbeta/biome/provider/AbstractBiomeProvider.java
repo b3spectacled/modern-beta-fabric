@@ -27,7 +27,7 @@ public abstract class AbstractBiomeProvider {
         AbstractBiomeProvider biomeProvider;
         
         if (worldType == WorldType.INDEV)
-            return new IndevBiomeProvider(seed, settings);
+            return new IndevBiomeProvider(seed, settings); 
         
         switch(biomeType) {
             case BETA:

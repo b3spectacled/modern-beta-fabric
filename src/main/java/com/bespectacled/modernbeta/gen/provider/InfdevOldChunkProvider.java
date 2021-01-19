@@ -77,13 +77,13 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
         BlockPos structPos = new BlockPos(x, 0, z);
         int height = this.worldHeight - 1;
         
-        if (GROUND_CACHE_Y.get(structPos) == null) {            
+        if (HEIGHTMAP_CACHE.get(structPos) == null) {            
             height = this.sampleHeightMap(x, z);
             
-            GROUND_CACHE_Y.put(structPos, height);
+            HEIGHTMAP_CACHE.put(structPos, height);
         } 
         
-        height = GROUND_CACHE_Y.get(structPos);
+        height = HEIGHTMAP_CACHE.get(structPos);
         
         // Not ideal
         if (type == Heightmap.Type.WORLD_SURFACE_WG && height < this.seaLevel)
@@ -122,7 +122,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                     
                     // Second check is a hack to stop weird chunk borders generating from surface blocks for ocean biomes
                     // being picked up and replacing topsoil blocks, somehow before biome reassignment.  Why?!
-                    if ((biomeSource.isBeta() || biomeSource.isVanilla()) && GenUtil.getSolidHeight(chunk, absX, absZ) >= this.seaLevel - 4) {
+                    if ((biomeSource.isBeta() || biomeSource.isVanilla()) && GenUtil.getSolidHeight(chunk, this.worldHeight, absX, absZ) >= this.seaLevel - 4) {
                         biome = region.getBiome(POS.set(absX, 0, absZ));
                         
                         if (blockToSet == Blocks.GRASS_BLOCK) 

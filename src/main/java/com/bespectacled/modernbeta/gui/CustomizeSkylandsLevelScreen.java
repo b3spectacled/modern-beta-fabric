@@ -10,7 +10,7 @@ import net.minecraft.text.TranslatableText;
 public class CustomizeSkylandsLevelScreen extends AbstractCustomizeLevelScreen {
 
     public CustomizeSkylandsLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings) {
-        super(parent, generatorSettings, "createWorld.customize.beta.title", BiomeType.SKY);
+        super(parent, generatorSettings, "createWorld.customize.skylands.title", BiomeType.SKY);
     }
     
     @Override

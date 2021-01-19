@@ -97,18 +97,15 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             Biome biome;
             
             // Replace biomes in bodies of water at least four deep with ocean biomes
-            for (int x = 0; x < 4; x++) {
-                int absX = pos.getStartX() + (x << 2);
-                
-                for (int z = 0; z < 4; z++) {    
-                    int absZ = pos.getStartZ() + (z << 2);
+            for (int x = pos.getStartX(); x < pos.getEndX(); x += 4) {
+                for (int z = pos.getStartZ(); z < pos.getEndZ(); z += 4) {    
                     
-                    int y = GenUtil.getSolidHeight(chunk, absX, absZ);
+                    int y = GenUtil.getSolidHeight(chunk, this.getWorldHeight(), x, z);
 
                     if (y < this.getSeaLevel() - 4) {
-                        biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);
+                        biome = biomeSource.getOceanBiomeForNoiseGen(x >> 2, 0, z >> 2);
                         
-                        mutableBiomes.setBiome(absX, 0, absZ, biome);
+                        mutableBiomes.setBiome(x, 0, z, biome);
                     }
                 }   
             }

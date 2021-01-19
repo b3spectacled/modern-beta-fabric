@@ -50,7 +50,7 @@ public class BetaClimateSampler {
         
         temp /= 3F;
 
-        if (temp < -1F) {
+        if (temp < -1F) { 
             temp = -1F;
         }
 

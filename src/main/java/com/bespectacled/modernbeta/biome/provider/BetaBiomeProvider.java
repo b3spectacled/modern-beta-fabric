@@ -28,7 +28,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
         BetaClimateSampler.getInstance().sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
         return registry.get(BetaBiomes.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.LAND));
     }
-
+ 
     @Override
     public Biome getOceanBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
         int absX = biomeX << 2;

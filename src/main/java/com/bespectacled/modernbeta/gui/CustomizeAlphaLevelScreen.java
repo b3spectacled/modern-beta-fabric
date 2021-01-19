@@ -4,8 +4,6 @@ import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.options.CyclingOption;
-import net.minecraft.text.TranslatableText;
 
 public class CustomizeAlphaLevelScreen extends AbstractCustomizeLevelScreen {
     public CustomizeAlphaLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings) {
