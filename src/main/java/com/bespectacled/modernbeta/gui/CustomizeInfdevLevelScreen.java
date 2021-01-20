@@ -8,12 +8,4 @@ public class CustomizeInfdevLevelScreen extends AbstractCustomizeLevelScreen {
     public CustomizeInfdevLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings) {
         super(parent, generatorSettings, "createWorld.customize.infdev.title", BiomeType.CLASSIC);
     }
-    
-    @Override
-    protected void init() {
-        super.init();
-        super.initInf();
-        
-        this.children.add(this.buttonList);
-    }
 }

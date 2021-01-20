@@ -60,6 +60,10 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         ));
         
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        
+        this.initButtonList();
+        
+        this.children.add(this.buttonList);
     }
     
     @Override
@@ -72,10 +76,7 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         super.render(matrixStack, mouseX, mouseY, tickDelta);
     }
     
-    protected void initInf() {
-        if (this.buttonList == null) 
-            this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
-        
+    protected void initButtonList() {
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.type.biomeType", 

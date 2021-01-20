@@ -36,9 +36,7 @@ public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
     }
     
     @Override
-    protected void init() {
-        super.init();
-        
+    protected void initButtonList() {
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.indev.levelType", 
@@ -131,27 +129,24 @@ public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
         ));
         
         this.buttonList.addSingleOptionEntry(
-                new DoubleOption(
-                    "createWorld.customize.indev.caveRadiusSlider", 
-                    1D, 3D, 0.1f,
-                    (gameOptions) -> { return (double) this.caveRadius; }, // Getter
-                    (gameOptions, value) -> { // Setter
-                        this.caveRadius = value.floatValue();
-                        generatorSettings.providerSettings.putFloat("caveRadius", value.floatValue());
-                        return;
-                    },
-                    (gameOptions, doubleOptions) -> {
-                        return new TranslatableText(
-                            "options.generic_value",  
-                            new Object[] { 
-                                new TranslatableText("createWorld.customize.indev.caveRadius"), 
-                                Text.of(String.format("%.01f", this.caveRadius)) 
-                        });
-                    }
-            ));
-
- 
-        this.children.add(this.buttonList);
+            new DoubleOption(
+                "createWorld.customize.indev.caveRadiusSlider", 
+                1D, 3D, 0.1f,
+                (gameOptions) -> { return (double) this.caveRadius; }, // Getter
+                (gameOptions, value) -> { // Setter
+                    this.caveRadius = value.floatValue();
+                    generatorSettings.providerSettings.putFloat("caveRadius", value.floatValue());
+                    return;
+                },
+                (gameOptions, doubleOptions) -> {
+                    return new TranslatableText(
+                        "options.generic_value",  
+                        new Object[] { 
+                            new TranslatableText("createWorld.customize.indev.caveRadius"), 
+                            Text.of(String.format("%.01f", this.caveRadius)) 
+                    });
+                }
+        ));
     }
     
 }

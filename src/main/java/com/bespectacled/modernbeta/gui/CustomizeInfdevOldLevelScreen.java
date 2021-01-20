@@ -22,9 +22,8 @@ public class CustomizeInfdevOldLevelScreen extends AbstractCustomizeLevelScreen 
     }
     
     @Override
-    protected void init() {
-        super.init();
-        super.initInf();
+    protected void initButtonList() {
+        super.initButtonList();
         
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create("createWorld.customize.infdev.generateInfdevPyramid", 
@@ -41,8 +40,5 @@ public class CustomizeInfdevOldLevelScreen extends AbstractCustomizeLevelScreen 
                     generateInfdevWall = value;
                     generatorSettings.providerSettings.putBoolean("generateInfdevWall", value);
         }));
-        
-        
-        this.children.add(this.buttonList);
     }
 }

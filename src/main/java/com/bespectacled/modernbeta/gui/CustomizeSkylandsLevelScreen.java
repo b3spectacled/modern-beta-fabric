@@ -14,9 +14,7 @@ public class CustomizeSkylandsLevelScreen extends AbstractCustomizeLevelScreen {
     }
     
     @Override
-    protected void init() {
-        super.init();
- 
+    protected void initButtonList() {
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.type.biomeType", 
@@ -30,8 +28,5 @@ public class CustomizeSkylandsLevelScreen extends AbstractCustomizeLevelScreen {
                     return;
                 })
         );
-         
-        this.children.add(this.buttonList);
-
     }    
 }
