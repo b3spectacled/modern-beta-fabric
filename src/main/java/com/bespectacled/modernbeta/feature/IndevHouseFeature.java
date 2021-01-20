@@ -13,8 +13,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -33,7 +31,7 @@ public class IndevHouseFeature extends Feature<DefaultFeatureConfig> {
         
         
         int spawnX = topPos.getX();
-        int spawnY = topPos.getY() + 1;
+        //int spawnY = topPos.getY() + 1;
         int spawnZ = topPos.getZ();
         
         // Place only one if in indev world

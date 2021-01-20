@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.gen.settings;
+package com.bespectacled.modernbeta.gen;
 
 import java.util.Optional;
 

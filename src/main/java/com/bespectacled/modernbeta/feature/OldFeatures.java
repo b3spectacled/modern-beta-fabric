@@ -1,16 +1,9 @@
 package com.bespectacled.modernbeta.feature;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.ConfiguredFeatures.Configs;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.FeatureConfig;
 
 public class OldFeatures {
     

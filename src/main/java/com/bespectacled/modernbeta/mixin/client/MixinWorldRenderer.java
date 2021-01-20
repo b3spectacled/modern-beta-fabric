@@ -6,10 +6,8 @@ import org.spongepowered.asm.mixin.Unique;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.world.chunk.light.LightingProvider;
 
 @Mixin(value = WorldRenderer.class, priority = 1)
 public class MixinWorldRenderer {

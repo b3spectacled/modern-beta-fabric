@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.options.CyclingOption;
@@ -22,8 +22,8 @@ public class CustomizeInfdevOldLevelScreen extends AbstractCustomizeLevelScreen 
     }
     
     @Override
-    protected void initButtonList() {
-        super.initButtonList();
+    protected void addButtons() {
+        super.addButtons();
         
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create("createWorld.customize.infdev.generateInfdevPyramid", 

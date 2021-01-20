@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.gen.provider.BetaChunkProvider;
 import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
@@ -110,6 +109,8 @@ public class MixinMinecraftServer {
                 world.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(false, null); 
                 world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null); 
                 world.setTimeOfDay(6000);
+                break;
+            default:
                 break;
         }
     }

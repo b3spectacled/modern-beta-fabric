@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 
 import net.minecraft.client.gui.DrawableHelper;
@@ -61,7 +61,7 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         
-        this.initButtonList();
+        this.addButtons();
         
         this.children.add(this.buttonList);
     }
@@ -76,7 +76,7 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         super.render(matrixStack, mouseX, mouseY, tickDelta);
     }
     
-    protected void initButtonList() {
+    protected void addButtons() {
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.type.biomeType", 

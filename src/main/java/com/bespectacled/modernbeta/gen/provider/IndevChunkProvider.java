@@ -1,8 +1,6 @@
 package com.bespectacled.modernbeta.gen.provider;
 
 import java.util.ArrayList;
-import java.util.Random;
-
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
@@ -15,8 +13,6 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -30,7 +26,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
@@ -73,7 +68,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     
     private int layers;
     private int waterLevel;
-    private int groundLevel;
+    //private int groundLevel;
     
     private boolean pregenerated;
     
@@ -214,7 +209,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         for (int l = 0; l < this.layers; ++l) { 
             // Floating island layer generation depends on water level being lowered on each iteration
             this.waterLevel = (this.type == IndevType.FLOATING) ? this.height - 32 - l * 48 : this.waterLevel; 
-            this.groundLevel = this.waterLevel - 2;
+            //this.groundLevel = this.waterLevel - 2;
             
             // Noise Generators (Here instead of constructor to randomize floating layer generation)    
             heightNoise1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
@@ -625,26 +620,6 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                 }
             }
         }
-    }
-    
-    private void countBlocks(Block[][][] blockArr) {
-        int countStone = 0;
-        int countDirt = 0;
-        int countAir = 0;
-        
-        for (int x = 0; x < this.width; ++x) {
-            for (int z = 0; z < this.length; ++z) {
-                for(int y = 0; y < this.height; ++y) {
-                    Block someBlock = blockArr[x][y][z];
-                    
-                    if (someBlock.equals(Blocks.STONE)) countStone++;
-                    if (someBlock.equals(Blocks.DIRT)) countDirt++;
-                    if (someBlock.equals(Blocks.AIR)) countAir++;
-                }
-            }
-        }
-        
-        ModernBeta.LOGGER.log(Level.DEBUG, "Block count, stone/dirt/air: " + countStone + ", " + countDirt + ", " + countAir);
     }
     
     private void fillBlockArr(Block[][][] blockArr) {

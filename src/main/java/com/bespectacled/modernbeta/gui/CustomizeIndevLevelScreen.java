@@ -3,7 +3,8 @@ package com.bespectacled.modernbeta.gui;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
-import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
+
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.options.CyclingOption;
 import net.minecraft.client.options.DoubleOption;
@@ -36,7 +37,7 @@ public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
     }
     
     @Override
-    protected void initButtonList() {
+    protected void addButtons() {
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.indev.levelType", 
@@ -104,7 +105,7 @@ public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
                     });
                 }
         ));
-        
+      
         this.buttonList.addSingleOptionEntry(
             new DoubleOption(
                 "createWorld.customize.indev.heightSlider", 

@@ -1,13 +1,9 @@
-package com.bespectacled.modernbeta.gen.type;
+package com.bespectacled.modernbeta.gen;
 
-import java.util.Map;
 import java.util.Optional;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
-import com.bespectacled.modernbeta.gui.AbstractCustomizeLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeAlphaLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeBetaLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeIndevLevelScreen;
