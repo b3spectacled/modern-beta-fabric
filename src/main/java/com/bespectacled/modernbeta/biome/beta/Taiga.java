@@ -44,7 +44,7 @@ public class Taiga {
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
         DefaultBiomeFeatures.addSweetBerryBushes(genSettings);
-        DefaultBiomeFeatures.method_32236(genSettings); // Geodes
+        DefaultBiomeFeatures.addAmethystGeodes(genSettings);
         
         genSettings.structureFeature(ConfiguredStructureFeatures.VILLAGE_TAIGA);
         genSettings.structureFeature(ConfiguredStructureFeatures.IGLOO);

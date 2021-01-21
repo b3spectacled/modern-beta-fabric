@@ -4,7 +4,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.options.CyclingOption;
+import net.minecraft.client.option.CyclingOption;
 
 public class CustomizeInfdevOldLevelScreen extends AbstractCustomizeLevelScreen {
     

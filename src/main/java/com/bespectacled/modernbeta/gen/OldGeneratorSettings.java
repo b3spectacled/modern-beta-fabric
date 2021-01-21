@@ -28,7 +28,7 @@ public class OldGeneratorSettings {
     );
     
     public static final NoiseSamplingConfig noiseSampler = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
-    public static final GenerationShapeConfig noise = GenerationShapeConfig.method_32994(
+    public static final GenerationShapeConfig noise = GenerationShapeConfig.create(
         0, 128, 
         noiseSampler,
         new SlideConfig(-10, 3, 0), 

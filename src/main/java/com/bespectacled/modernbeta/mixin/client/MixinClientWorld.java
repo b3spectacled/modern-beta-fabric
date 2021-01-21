@@ -32,20 +32,14 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(value = ClientWorld.class, priority = 1)
 public abstract class MixinClientWorld extends World {
     
-    @Unique
-    private Vec3d curPos = new Vec3d(0, 0, 0);
+    @Unique private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
     
-    @Unique
-    private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
+    @Unique private Vec3d curPos = new Vec3d(0, 0, 0);
     
-    @Unique
-    private boolean useBetaColors = false;
+    @Unique private boolean useBetaColors = false;
+    @Unique private boolean isOverworld = false;
     
-    @Unique
-    private boolean isOverworld = false;
-    
-    @Shadow
-    private MinecraftClient client;
+    @Shadow private MinecraftClient client;
 
     private MixinClientWorld() {
         super(null, null, null, null, false, false, 0L);

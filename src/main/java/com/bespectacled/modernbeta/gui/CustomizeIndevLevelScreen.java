@@ -6,8 +6,8 @@ import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.options.CyclingOption;
-import net.minecraft.client.options.DoubleOption;
+import net.minecraft.client.option.CyclingOption;
+import net.minecraft.client.option.DoubleOption;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 

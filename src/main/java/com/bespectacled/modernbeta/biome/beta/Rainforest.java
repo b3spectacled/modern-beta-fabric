@@ -41,7 +41,7 @@ public class Rainforest {
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
-        DefaultBiomeFeatures.method_32236(genSettings); // Geodes
+        DefaultBiomeFeatures.addAmethystGeodes(genSettings);
         
         genSettings.structureFeature(ConfiguredStructureFeatures.JUNGLE_PYRAMID);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_JUNGLE);
