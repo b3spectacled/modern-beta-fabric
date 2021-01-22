@@ -11,9 +11,7 @@ import net.minecraft.client.render.WorldRenderer;
 
 @Mixin(value = WorldRenderer.class, priority = 1)
 public class MixinWorldRenderer {
-    
-    @Unique
-    private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
+    @Unique private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
 	
 	@ModifyVariable(
         method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;F)V",

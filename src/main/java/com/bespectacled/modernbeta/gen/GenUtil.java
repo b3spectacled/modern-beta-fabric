@@ -38,32 +38,19 @@ public class GenUtil {
         return 0;
     }
     
-    public static Biome getOceanBiome(Chunk chunk, ChunkGenerator gen, BiomeSource biomeSource, boolean vanillaGen, int seaLevel) {
-        int biomeX = chunk.getPos().x << 2;
-        int biomeZ = chunk.getPos().z << 2;
+    public static Biome getOceanBiome(Chunk chunk, ChunkGenerator gen, BiomeSource biomeSource, boolean generateOceans, int seaLevel) {
+        int x = chunk.getPos().getStartX();
+        int z = chunk.getPos().getStartZ();
         
-        int x = chunk.getPos().x << 4;
-        int z = chunk.getPos().z << 4;
+        int biomeX = x >> 2;
+        int biomeZ = z >> 2;
         
         Biome biome;
 
-        if (vanillaGen && gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < seaLevel - 4) {
+        if (generateOceans && gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < seaLevel - 4) {
             biome = ((OldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
         } else {
             biome = biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
-        }
-
-        return biome;
-    }
-    
-    public static Biome getOceanBiomeAt(int biomeX, int biomeZ, ChunkGenerator gen, BiomeSource biomeSource, int seaLevel) {
-        int x = biomeX << 2;
-        int z = biomeZ << 2;
-        
-        Biome biome = biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
-
-        if (gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < seaLevel - 4) {
-            biome = ((OldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
         }
 
         return biome;

@@ -5,19 +5,21 @@ import net.minecraft.nbt.CompoundTag;
 public class WorldEnum {
     
     public enum WorldType {
-        BETA(0, "beta"),
-        SKYLANDS(1, "skylands"),
-        ALPHA(2, "alpha"),
-        INFDEV(3, "infdev"),
-        INFDEV_OLD(4, "infdev_old"),
-        INDEV(5, "indev");
+        BETA(0, "beta", true),
+        SKYLANDS(1, "skylands", false),
+        ALPHA(2, "alpha", true),
+        INFDEV(3, "infdev", true),
+        INFDEV_OLD(4, "infdev_old", true),
+        INDEV(5, "indev", false);
         
         private final int id;
         private final String name;
+        private final boolean hasOceans;
         
-        private WorldType(int id, String name) {
+        private WorldType(int id, String name, boolean hasOceans) {
             this.id = id;
             this.name = name;
+            this.hasOceans = hasOceans;
         }
         
         public int getId() {
@@ -26,6 +28,10 @@ public class WorldEnum {
         
         public String getName() {
             return this.name;
+        }
+        
+        public boolean hasOceans() {
+            return this.hasOceans;
         }
         
         public static WorldType fromId(int id) {

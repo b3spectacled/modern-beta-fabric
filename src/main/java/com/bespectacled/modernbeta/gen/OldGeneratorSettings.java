@@ -61,12 +61,12 @@ public class OldGeneratorSettings {
         this.providerSettings = settings;
     }
     
-    public static CompoundTag createInfSettings(WorldType worldType, BiomeType biomeType, boolean genOceans) {
+    public static CompoundTag createInfSettings(WorldType worldType, BiomeType biomeType, boolean generateOceans) {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", worldType.getName());
         settings.putString("biomeType", biomeType.getName());
-        settings.putBoolean("generateOceans", genOceans);
+        settings.putBoolean("generateOceans", generateOceans);
         
         return settings;
     }

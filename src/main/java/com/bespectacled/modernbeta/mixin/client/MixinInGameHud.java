@@ -17,11 +17,9 @@ import net.minecraft.client.util.math.MatrixStack;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
-    @Shadow
-    private MinecraftClient client;
+    @Shadow private MinecraftClient client;
     
-    @Unique
-    private static final String VERSION;
+    @Unique private static final String VERSION;
     
     @Inject(method = "render", at = @At("TAIL"))
     private void injectDebugVersion(MatrixStack matrices, float tickDelta, CallbackInfo info) {

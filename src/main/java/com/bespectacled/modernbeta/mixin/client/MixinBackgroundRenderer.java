@@ -11,8 +11,7 @@ import net.minecraft.client.render.BackgroundRenderer;
 @Mixin(BackgroundRenderer.class)
 public class MixinBackgroundRenderer {
     
-    @Unique
-    private static ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
+    @Unique private static ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
     
     @ModifyVariable(
         method = "render",

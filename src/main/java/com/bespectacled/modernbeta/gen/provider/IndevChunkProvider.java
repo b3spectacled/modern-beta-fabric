@@ -93,14 +93,11 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     @Override
     public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         ChunkPos pos = chunk.getPos();
-        
-        //this.spawnX = worldAccess.getLevelProperties().getSpawnX();
-        //this.spawnZ = worldAccess.getLevelProperties().getSpawnZ();
 
         if (IndevUtil.inIndevRegion(pos.getStartX(), pos.getStartZ(), this.width, this.length)) {
 
             if (!this.pregenerated) {
-                blockArr = pregenerateTerrain(blockArr);
+                blockArr = pregenerateTerrain();
             }
             
             setTerrain(structureAccessor, chunk, blockArr);
@@ -128,7 +125,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         if (x < 0 || x >= this.width || z < 0 || z >= this.length) return waterLevel;
         
         if (!this.pregenerated) {
-            this.blockArr = pregenerateTerrain(this.blockArr);
+            this.blockArr = pregenerateTerrain();
         }
         
         for (int y = this.height - 1; y >= 0; --y) {
@@ -202,8 +199,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         }
     }
     
-    private Block[][][] pregenerateTerrain(Block[][][] blockArr) {
-        blockArr = new Block[this.width][this.height][this.length];
+    private Block[][][] pregenerateTerrain() {
+        Block[][][] blockArr = new Block[this.width][this.height][this.length];
         fillBlockArr(blockArr);
         
         for (int l = 0; l < this.layers; ++l) { 
@@ -284,11 +281,11 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                  }
             }
             
-            buildIndevSurface(blockArr, heightmap);
+            buildSurface(blockArr, heightmap);
             carveTerrain(blockArr);
             floodFluid(blockArr);   
             floodLava(blockArr);
-            plantIndevSurface(blockArr);
+            plantSurface(blockArr);
         }
         
         this.pregenerated = true;
@@ -371,7 +368,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         }
     }
     
-    private void buildIndevSurface(Block[][][] blockArr, int[] heightmap) {
+    private void buildSurface(Block[][][] blockArr, int[] heightmap) {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Growing..");
         
         int seaLevel = this.waterLevel - 1;
@@ -569,7 +566,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         
     }
     
-    private void plantIndevSurface(Block[][][] blockArr) {
+    private void plantSurface(Block[][][] blockArr) {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Planting..");
         
         Block blockToPlant = this.theme == IndevTheme.HELL ? Blocks.PODZOL : Blocks.GRASS_BLOCK;

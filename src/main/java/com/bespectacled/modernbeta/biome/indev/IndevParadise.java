@@ -31,7 +31,6 @@ public class IndevParadise {
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
-        DefaultBiomeFeatures.addFrozenTopLayer(genSettings);
         
         genSettings.structureFeature(ConfiguredStructureFeatures.VILLAGE_PLAINS);
         genSettings.structureFeature(ConfiguredStructureFeatures.PILLAGER_OUTPOST);

@@ -28,7 +28,6 @@ public class OldBiomeSource extends BiomeSource {
     private final long seed;
     private final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
-    private final boolean generateOceans;
     
     private final WorldType worldType;
     private final BiomeType biomeType;
@@ -41,7 +40,6 @@ public class OldBiomeSource extends BiomeSource {
         this.seed = seed;
         this.biomeRegistry = biomeRegistry;
         this.settings = settings;
-        this.generateOceans = settings.contains("generateOceans") ? settings.getBoolean("generateOceans") : true;
         
         this.worldType = WorldType.getWorldType(settings);
         this.biomeType = BiomeType.getBiomeType(settings);
@@ -65,10 +63,6 @@ public class OldBiomeSource extends BiomeSource {
 
     public Registry<Biome> getBiomeRegistry() {
         return this.biomeRegistry;
-    }
-    
-    public boolean generateOceans() {
-        return (this.isVanilla() || this.isBeta()) && this.generateOceans;
     }
 
     public boolean isVanilla() {

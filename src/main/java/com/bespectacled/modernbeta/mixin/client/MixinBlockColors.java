@@ -21,17 +21,15 @@ import com.bespectacled.modernbeta.util.MutableBlockColors;
 @Mixin(value = BlockColors.class, priority = 1)
 public class MixinBlockColors implements MutableBlockColors {
 
-    @Unique
-    private static ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
-
-    private static boolean useBetaColors = false;
+    @Unique private static ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
+    @Unique private static boolean useBetaColors = false;
     
-    private static final BlockState GRASS = Blocks.GRASS.getDefaultState();
-    private static final BlockState FERN = Blocks.FERN.getDefaultState();
-    private static final BlockState TALL_GRASS = Blocks.TALL_GRASS.getDefaultState();
-    private static final BlockState TALL_FERN = Blocks.LARGE_FERN.getDefaultState();
+    @Unique private static final BlockState GRASS = Blocks.GRASS.getDefaultState();
+    @Unique private static final BlockState FERN = Blocks.FERN.getDefaultState();
+    @Unique private static final BlockState TALL_GRASS = Blocks.TALL_GRASS.getDefaultState();
+    @Unique private static final BlockState TALL_FERN = Blocks.LARGE_FERN.getDefaultState();
     
-    private static final double[] TEMP_HUMID = new double[2];
+    @Unique private static final double[] TEMP_HUMID = new double[2];
 
     @Unique
     public void setSeed(long seed) {

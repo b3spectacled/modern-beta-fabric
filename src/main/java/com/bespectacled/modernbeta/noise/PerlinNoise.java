@@ -1,8 +1,6 @@
 package com.bespectacled.modernbeta.noise;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
-
 import net.minecraft.util.math.MathHelper;
 
 /*

@@ -54,7 +54,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     private final OldGeneratorSettings settings;
     private final WorldType worldType;
-    private final boolean genOceans;
+    private final boolean generateOceans;
     
     private final OldBiomeSource biomeSource;
     private final AbstractChunkProvider chunkProvider;
@@ -67,7 +67,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         this.worldType = WorldType.getWorldType(settings.providerSettings);
         this.chunkProvider = AbstractChunkProvider.getChunkProvider(seed, this.worldType, settings);
-        this.genOceans = this.worldType != WorldType.SKYLANDS && this.biomeSource.generateOceans();
+        
+        this.generateOceans = settings.providerSettings.contains("generateOceans") ?
+            settings.providerSettings.getBoolean("generateOceans") && this.worldType.hasOceans() : 
+            false;
     }
 
     public static void register() {
@@ -88,7 +91,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     public void buildSurface(ChunkRegion region, Chunk chunk) {
         this.chunkProvider.provideSurface(region, chunk, this.biomeSource);
         
-        if (this.genOceans) {
+        if (this.generateOceans) {
             MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
             ChunkPos pos = chunk.getPos();
             Biome biome;
@@ -120,7 +123,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
         Chunk ctrChunk = chunkRegion.getChunk(ctrX, ctrZ);
         
-        Biome biome = GenUtil.getOceanBiome(ctrChunk, this, this.getBiomeSource(), genOceans, this.getSeaLevel());
+        Biome biome = GenUtil.getOceanBiome(ctrChunk, this, this.getBiomeSource(), generateOceans, this.getSeaLevel());
 
         long popSeed = random.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
 
@@ -141,7 +144,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int mainChunkX = chunkPos.x;
         int mainChunkZ = chunkPos.z;
 
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, genOceans, this.getSeaLevel());
+        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, generateOceans, this.getSeaLevel());
         GenerationSettings genSettings = biome.getGenerationSettings();
         
         BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(carver);
@@ -180,7 +183,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     ) {
         ChunkPos chunkPos = chunk.getPos();
         
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, genOceans, this.getSeaLevel());
+        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, generateOceans, this.getSeaLevel());
 
         ((MixinChunkGeneratorInvoker)this).invokeSetStructureStart(
             ConfiguredStructureFeatures.STRONGHOLD, 
@@ -216,7 +219,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public BlockPos locateStructure(ServerWorld world, StructureFeature<?> feature, BlockPos center, int radius,
             boolean skipExistingChunks) {
-        if (!this.genOceans)
+        if (!this.generateOceans)
             if (feature.equals(StructureFeature.OCEAN_RUIN) || 
                 feature.equals(StructureFeature.SHIPWRECK) || 
                 feature.equals(StructureFeature.BURIED_TREASURE) ||

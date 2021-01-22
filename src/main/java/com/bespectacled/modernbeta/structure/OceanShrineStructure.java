@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.structure;
 
 import java.util.List;
 
-import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
