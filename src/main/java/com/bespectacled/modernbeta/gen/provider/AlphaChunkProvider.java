@@ -8,9 +8,7 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.BlockPos;
@@ -49,7 +47,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     private static final Random SANDSTONE_RAND = new Random();
     
     public AlphaChunkProvider(long seed) {
-        super(seed, 0, 128, 64, 2, 1);
+        super(seed, 0, 128, 64, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER);
         SANDSTONE_RAND.setSeed(seed);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
@@ -77,7 +75,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
 
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        double eighth = 0.03125D; // eighth
+        double eighth = 0.03125D; // eighth 
 
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
@@ -115,21 +113,22 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                         continue;
                     }
 
-                    Block someBlock = chunk.getBlockState(POS.set(x, y, z)).getBlock();
+                    BlockState someBlock = chunk.getBlockState(POS.set(x, y, z));
 
-                    if (someBlock.equals(Blocks.AIR)) { // Skip if air block
+                    if (someBlock.equals(BlockStates.AIR)) { // Skip if air block
                         flag = -1;
                         continue;
                     }
 
-                    if (!someBlock.equals(Blocks.STONE)) { // Skip if not stone
+                    if (!someBlock.equals(this.defaultBlock)) { // Skip if not stone
                         continue;
                     }
 
                     if (flag == -1) {
                         if (genStone <= 0) { // Generate stone basin if noise permits
                             topBlock = BlockStates.AIR;
-                            fillerBlock = BlockStates.STONE;
+                            fillerBlock = this.defaultBlock;
+                            
                         } else if (y >= this.seaLevel - 4 && y <= this.seaLevel + 1) { // Generate beaches at this y range
                             topBlock = biomeTopBlock;
                             fillerBlock = biomeFillerBlock;
@@ -145,8 +144,8 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                             }
                         }
 
-                        if (y < this.seaLevel && topBlock.equals(BlockStates.AIR)) { // Generate water bodies
-                            topBlock = BlockStates.WATER;
+                        if (y < this.seaLevel && topBlock.equals(BlockStates.AIR)) {
+                            topBlock = this.defaultFluid;
                         }
 
                         // Main surface builder section
@@ -291,15 +290,15 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         int noiseResolutionX = this.noiseSizeX + 1;
         int noiseResolutionZ = this.noiseSizeZ + 1;
 
-        double coordinateScale = 684.41200000000003D;
-        double heightScale = 684.41200000000003D;
-
+        double coordinateScale = 684.41200000000003D * this.xzScale; 
+        double heightScale = 684.41200000000003D * this.yScale;
+ 
         double depthNoiseScaleX = 100D;
         double depthNoiseScaleZ = 100D;
 
-        double mainNoiseScaleX = 80D;
-        double mainNoiseScaleY = 160D;
-        double mainNoiseScaleZ = 80D;
+        double mainNoiseScaleX = this.xzFactor; // Default: 80
+        double mainNoiseScaleY = this.yFactor;  // Default: 160
+        double mainNoiseScaleZ = this.xzFactor;
 
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
@@ -345,8 +344,6 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                 if (scaleVal > 1.0D) {
                     scaleVal = 1.0D;
                 }
-
-                double d3 = 0.0D;
 
                 double depthVal = depthNoise[flatNoiseNdx] / 8000D;
                 if (depthVal < 0.0D) {
@@ -404,20 +401,20 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                     int slideOffset = 4;
                     
                     if (noiseY > noiseResolutionY - slideOffset) {
-                        double d11 = (float) (noiseY - (noiseResolutionY - slideOffset)) / 3F;
-                        heightVal = heightVal * (1.0D - d11) + -10D * d11;
+                        double topSlide = (float) (noiseY - (noiseResolutionY - slideOffset)) / 3F;
+                        heightVal = heightVal * (1.0D - topSlide) + -10D * topSlide;
                     }
 
                     // Does not appear to enter here
-                    if ((double) noiseY < d3) {
-                        double d12 = (d3 - (double) noiseY) / 4D;
-                        if (d12 < 0.0D) {
-                            d12 = 0.0D;
+                    if ((double) noiseY < 0.0D) {
+                        double bottomSlide = (0.0D - (double) noiseY) / 4D;
+                        if (bottomSlide < 0.0D) {
+                            bottomSlide = 0.0D;
                         }
-                        if (d12 > 1.0D) {
-                            d12 = 1.0D;
+                        if (bottomSlide > 1.0D) {
+                            bottomSlide = 1.0D;
                         }
-                        heightVal = heightVal * (1.0D - d12) + -10D * d12;
+                        heightVal = heightVal * (1.0D - bottomSlide) + -10D * bottomSlide;
                     }
 
                     heightNoise[heightNoiseNdx] = heightVal;

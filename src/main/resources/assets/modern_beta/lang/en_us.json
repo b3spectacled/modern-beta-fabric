@@ -5,6 +5,7 @@
     "generator.indev": "Indev 20100223",
     "generator.infdev": "Inf 20100415",
     "generator.infdev_old": "Inf 20100227",
+    "generator.nether": "Nether",
     
     "createWorld.customize.unknown": "Unknown option!",
     
@@ -21,6 +22,7 @@
     "createWorld.customize.alpha.title": "Alpha World Type Configuration",
     "createWorld.customize.infdev.title": "Infdev World Type Configuration",
     "createWorld.customize.indev.title": "Indev World Type Configuration",
+    "createWorld.customize.nether.title": "Nether World Type Configuration",
     
     "createWorld.customize.inf.generateOceans": "Generate Oceans",
     "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",

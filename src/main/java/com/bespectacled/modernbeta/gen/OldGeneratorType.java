@@ -9,6 +9,7 @@ import com.bespectacled.modernbeta.gui.CustomizeBetaLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeIndevLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeInfdevLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeInfdevOldLevelScreen;
+import com.bespectacled.modernbeta.gui.CustomizeNetherLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeSkylandsLevelScreen;
 import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
@@ -31,6 +32,7 @@ public class OldGeneratorType {
     private static final GeneratorType INFDEV;
     private static final GeneratorType INFDEV_OLD;
     private static final GeneratorType INDEV;
+    private static final GeneratorType NETHER;
     
     private static OldGeneratorSettings INF_SETTINGS = new OldGeneratorSettings(new CompoundTag(), false);
     private static OldGeneratorSettings INDEV_SETTINGS = new OldGeneratorSettings(new CompoundTag(), true);
@@ -42,6 +44,7 @@ public class OldGeneratorType {
         register(INFDEV);
         register(INFDEV_OLD);
         register(INDEV);
+        register(NETHER);
     }
     
     private static void register(GeneratorType type) {
@@ -97,6 +100,14 @@ public class OldGeneratorType {
             }
         };
         
+        NETHER = new GeneratorType("nether") {
+            @Override
+            protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
+                INF_SETTINGS.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.NETHER, BiomeType.BETA, false);
+                return new OldChunkGenerator(new OldBiomeSource(seed, biomes, INF_SETTINGS.providerSettings), seed, INF_SETTINGS);
+            }
+        };
+        
         MixinGeneratorTypeAccessor.setScreenProviders(
             new ImmutableMap.Builder<Optional<GeneratorType>, ScreenProvider>()
                 .putAll(MixinGeneratorTypeAccessor.getScreenProviders())
@@ -128,6 +139,11 @@ public class OldGeneratorType {
                 .put(
                     Optional.<GeneratorType>of(INDEV), (createWorldScreen, generatorSettings) -> {
                         return new CustomizeIndevLevelScreen(createWorldScreen, INDEV_SETTINGS);
+                    }
+                )
+                .put(
+                    Optional.<GeneratorType>of(NETHER), (createWorldScreen, generatorSettings) -> {
+                        return new CustomizeNetherLevelScreen(createWorldScreen, INF_SETTINGS);
                     }
                 )
                 .build()

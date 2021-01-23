@@ -8,7 +8,6 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.JigsawJunction;
@@ -42,7 +41,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     private static final Random SANDSTONE_RAND = new Random();
     
     public InfdevChunkProvider(long seed) {
-        super(seed, 0, 128, 64, 1, 1);
+        super(seed, 0, 128, 64, 1, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER);
         SANDSTONE_RAND.setSeed(seed);
         
         this.heightNoise = new double[(this.noiseSizeY + 1) * this.noiseSizeX];
@@ -114,16 +113,17 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                     }
                     
                     POS.set(x, y, z);
-                    Block someBlock = chunk.getBlockState(POS).getBlock();
+                    BlockState someBlock = chunk.getBlockState(POS);
                     
-                    if (someBlock.equals(Blocks.AIR)) {
+                    if (someBlock.equals(BlockStates.AIR)) {
                         flag = -1;
                         
-                    } else if (someBlock.equals(Blocks.STONE)) {
+                    } else if (someBlock.equals(this.defaultBlock)) {
                         if (flag == -1) {
                             if (genStone <= 0) {
                                 topBlock = BlockStates.AIR;
-                                fillerBlock = BlockStates.STONE;
+                                fillerBlock = this.defaultBlock;
+                                
                             } else if (y >= this.seaLevel - 4 && y <= this.seaLevel + 1) {
                                 topBlock = biomeTopBlock;
                                 fillerBlock = biomeFillerBlock;
@@ -140,7 +140,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                             }
                             
                             if (y < this.seaLevel && topBlock.equals(BlockStates.AIR)) {
-                                topBlock = BlockStates.WATER;
+                                topBlock = this.defaultFluid;
                             }
                             
                             flag = genStone;
@@ -294,32 +294,37 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
             elevGrad *= 3.0;
         }
         
-        double noise;
-        double res;
+        double coordinateScale = 684.412D * this.xzScale; 
+        double heightScale = 984.412D * this.yScale;
         
-        if ((noise = this.noiseOctavesC.sample(x * 8.55515, y * 1.71103, z * 8.55515) / 2.0) < -1) {
+        double limitScale = 512.0D;
+        
+        double res;
+        double noise = this.noiseOctavesC.sample(x * 8.55515, y * 1.71103, z * 8.55515) / 2.0;
+        
+        if (noise < -1) {
             res = MathHelper.clamp(
-                this.noiseOctavesA.sample(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                this.noiseOctavesA.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
                 -10.0, 
                 10.0
             );
             
         } else if (noise > 1.0) {
             res = MathHelper.clamp(
-                this.noiseOctavesB.sample(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                this.noiseOctavesB.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
                 -10.0, 
                 10.0
             );
             
         } else {
             double noise2 = MathHelper.clamp(
-                this.noiseOctavesA.sample(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                this.noiseOctavesA.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
                 -10.0, 
                 10.0
             );
             
             double noise3 = MathHelper.clamp(
-                this.noiseOctavesB.sample(x * 684.412, y * 984.412, z * 684.412) / 512.0 - elevGrad, 
+                this.noiseOctavesB.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
                 -10.0, 
                 10.0
             );

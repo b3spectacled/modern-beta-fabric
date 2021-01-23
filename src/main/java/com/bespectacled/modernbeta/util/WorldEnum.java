@@ -10,7 +10,8 @@ public class WorldEnum {
         ALPHA(2, "alpha", true),
         INFDEV(3, "infdev", true),
         INFDEV_OLD(4, "infdev_old", true),
-        INDEV(5, "indev", false);
+        INDEV(5, "indev", false),
+        NETHER(6, "nether", false);
         
         private final int id;
         private final String name;

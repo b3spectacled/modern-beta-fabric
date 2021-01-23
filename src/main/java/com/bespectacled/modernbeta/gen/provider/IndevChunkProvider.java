@@ -74,11 +74,11 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     
     public IndevChunkProvider(long seed, CompoundTag settings) {
         super(seed);
-        
+
         this.theme = settings.contains("levelTheme") ? IndevTheme.fromName(settings.getString("levelTheme")) : IndevTheme.NORMAL;
         this.type = settings.contains("levelType") ? IndevType.fromName(settings.getString("levelType")) : IndevType.ISLAND;
         this.fluidBlock = (this.theme == IndevTheme.HELL) ? BlockStates.LAVA : BlockStates.WATER;
-
+        
         this.width = settings.contains("levelWidth") ? settings.getInt("levelWidth") : 256;
         this.length = settings.contains("levelLength") ? settings.getInt("levelLength") : 256;
         this.height = settings.contains("levelHeight") ? settings.getInt("levelHeight") : 128;

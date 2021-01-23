@@ -9,9 +9,7 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.BlockPos;
@@ -45,7 +43,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     private final double heightNoise[];
     
     public SkylandsChunkProvider(long seed) {
-        super(seed, 0, 128, 64, 1, 2);
+        super(seed, 0, 128, 64, 1, 2, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
 
@@ -88,7 +86,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
                 int flag = -1;
                 
-                int absX = (chunkX << 4) + x;
+                int absX = (chunkX << 4) + x; 
                 int absZ = (chunkZ << 4) + z;
 
                 if (biomeSource.isBeta()) {
@@ -108,21 +106,21 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 // Generate from top to bottom of world
                 for (int y = this.worldHeight - 1; y >= 0; y--) {
 
-                    Block someBlock = chunk.getBlockState(POS.set(x, y, z)).getBlock();
-
-                    if (someBlock.equals(Blocks.AIR)) { // Skip if air block
+                    BlockState someBlock = chunk.getBlockState(POS.set(x, y, z));
+                    
+                    if (someBlock.equals(BlockStates.AIR)) { // Skip if air block
                         flag = -1;
                         continue;
                     }
 
-                    if (!someBlock.equals(Blocks.STONE)) { // Skip if not stone
+                    if (!someBlock.equals(this.defaultBlock)) { // Skip if not stone
                         continue;
                     }
 
                     if (flag == -1) {
                         if (genStone <= 0) { // Generate stone basin if noise permits
                             topBlock = BlockStates.AIR;
-                            fillerBlock = BlockStates.STONE;
+                            fillerBlock = this.defaultBlock;
                         }
 
                         flag = genStone;
@@ -240,7 +238,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                                     JIGSAW_LIST.size(), 
                                     absX, y, absZ);
 
-                                BlockState blockToSet = clampedDensity > 0.0 ? BlockStates.STONE : BlockStates.AIR;
+                                BlockState blockToSet = clampedDensity > 0.0 ? this.defaultBlock : BlockStates.AIR;
 
                                 chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
 
@@ -274,17 +272,17 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         
         BetaClimateSampler climateSampler = BetaClimateSampler.getInstance();
 
-        // Var names taken from old customized preset names
-        double coordinateScale = 684.41200000000003D; // d
-        double heightScale = 684.41200000000003D; // d1
+     // Var names taken from old customized preset names
+        double coordinateScale = 684.41200000000003D * this.xzScale; 
+        double heightScale = 684.41200000000003D * this.yScale;
 
         double depthNoiseScaleX = 200D;
         double depthNoiseScaleZ = 200D;
         double depthNoiseScaleExponent = 0.5D;
 
-        double mainNoiseScaleX = 80D;
-        double mainNoiseScaleY = 160D;
-        double mainNoiseScaleZ = 80D;
+        double mainNoiseScaleX = this.xzFactor; // Default: 80
+        double mainNoiseScaleY = this.yFactor;  // Default: 160
+        double mainNoiseScaleZ = this.xzFactor;
 
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
@@ -382,16 +380,16 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                     int slideOffset = this.noiseSizeY;
 
                     if (noiseY > noiseResolutionY - slideOffset) {
-                        double d13 = (float) (noiseY - (noiseResolutionY - slideOffset)) / ((float) slideOffset - 1.0F);
-                        heightVal = heightVal * (1.0D - d13) + -30D * d13;
+                        double topSlide = (float) (noiseY - (noiseResolutionY - slideOffset)) / ((float) slideOffset - 1.0F);
+                        heightVal = heightVal * (1.0D - topSlide) + -30D * topSlide;
                     }
 
                     //slideOffset = 8;
                     slideOffset = this.noiseSizeY / 4;
                     
                     if (noiseY < slideOffset) {
-                        double d14 = (float) (slideOffset - noiseY) / ((float) slideOffset - 1.0F);
-                        heightVal = heightVal * (1.0D - d14) + -30D * d14;
+                        double bottomSlide = (float) (slideOffset - noiseY) / ((float) slideOffset - 1.0F);
+                        heightVal = heightVal * (1.0D - bottomSlide) + -30D * bottomSlide;
                     }
 
                     heightNoise[heightNoiseNdx] = heightVal;

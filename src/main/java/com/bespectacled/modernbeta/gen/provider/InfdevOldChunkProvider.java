@@ -40,7 +40,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
         this.blockArr = new Block[16][this.worldHeight][16];
         
         // Noise Generators
-        noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true);
+        noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true); 
         noiseOctavesB = new PerlinOctaveNoise(RAND, 16, true);
         noiseOctavesC = new PerlinOctaveNoise(RAND, 8, true);
         noiseOctavesD = new PerlinOctaveNoise(RAND, 4, true);
