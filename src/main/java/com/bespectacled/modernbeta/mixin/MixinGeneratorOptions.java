@@ -75,15 +75,14 @@ public class MixinGeneratorOptions {
             
             WorldType worldType = WorldType.fromName(levelType);
             BiomeType biomeType = BiomeType.fromName(ModernBeta.BETA_CONFIG.biomeType);
+            
             boolean genOceans = levelType.equals("skylands") ? false : ModernBeta.BETA_CONFIG.generateOceans;
             boolean isIndev = levelType.equals("indev");
             
-            CompoundTag settings = isIndev ?
-                OldGeneratorSettings.createIndevSettings() :
-                OldGeneratorSettings.createInfSettings(worldType, biomeType, genOceans);
+            CompoundTag providerSettings = isIndev ? OldGeneratorSettings.createIndevSettings() : OldGeneratorSettings.createInfSettings(worldType, biomeType, genOceans);
             
-            OldGeneratorSettings genSettings = new OldGeneratorSettings(settings, isIndev);
-            ChunkGenerator generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, genSettings.providerSettings), seed, genSettings);
+            OldGeneratorSettings settings = new OldGeneratorSettings(OldGeneratorSettings.getChunkGeneratorSettings(worldType), providerSettings);
+            ChunkGenerator generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, settings.providerSettings), seed, settings);
 
             // return our chunk generator
             cir.setReturnValue(new GeneratorOptions(seed, generateStructures, false,

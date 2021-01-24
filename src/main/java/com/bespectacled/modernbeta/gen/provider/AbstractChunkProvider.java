@@ -13,7 +13,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.BlockPos;
@@ -54,6 +53,9 @@ public abstract class AbstractChunkProvider {
     protected final int worldHeight;
     protected final int seaLevel;
     
+    protected final int bedrockFloor;
+    protected final int bedrockCeiling;
+    
     protected final int verticalNoiseResolution;
     protected final int horizontalNoiseResolution;
     
@@ -72,18 +74,20 @@ public abstract class AbstractChunkProvider {
     protected final BlockState defaultFluid;
     
     public AbstractChunkProvider(long seed) {
-        this(seed, 0, 128, 64, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER);
+        this(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER);
     }
     
     public AbstractChunkProvider(long seed, int minY, int worldHeight, int seaLevel) {
-        this(seed, minY, worldHeight, seaLevel, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER);
+        this(seed, minY, worldHeight, seaLevel, 0, -10, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER);
     }
     
     public AbstractChunkProvider(
         long seed, 
         int minY, 
         int worldHeight, 
-        int seaLevel, 
+        int seaLevel,
+        int bedrockFloor,
+        int bedrockCeiling,
         int sizeVertical, 
         int sizeHorizontal, 
         double xzScale, 
@@ -96,6 +100,9 @@ public abstract class AbstractChunkProvider {
         this.minY = minY;
         this.worldHeight = worldHeight;
         this.seaLevel = seaLevel;
+        
+        this.bedrockFloor = bedrockFloor;
+        this.bedrockCeiling = bedrockCeiling;
         
         this.verticalNoiseResolution = sizeVertical * 4;
         this.horizontalNoiseResolution = sizeHorizontal * 4;
@@ -124,6 +131,8 @@ public abstract class AbstractChunkProvider {
             generatorSettings.getGenerationShapeConfig().getMinimumY(),
             generatorSettings.getGenerationShapeConfig().getHeight(),
             generatorSettings.getSeaLevel(),
+            generatorSettings.getBedrockFloorY(),
+            generatorSettings.getBedrockCeilingY(),
             generatorSettings.getGenerationShapeConfig().getSizeVertical(),
             generatorSettings.getGenerationShapeConfig().getSizeHorizontal(),
             generatorSettings.getGenerationShapeConfig().getSampling().getXZScale(),

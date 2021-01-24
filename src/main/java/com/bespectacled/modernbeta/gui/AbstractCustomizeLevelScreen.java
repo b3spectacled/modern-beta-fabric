@@ -79,9 +79,9 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
     protected void addButtons() {
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
-                "createWorld.customize.type.biomeType", 
+                "createWorld.customize.biomeType", 
                 BiomeType.values(), 
-                (value) -> new TranslatableText("createWorld.customize.type." + value.getName()), 
+                (value) -> new TranslatableText("createWorld.customize.biomeType." + value.getName()), 
                 (gameOptions) -> { return this.biomeType; }, 
                 (gameOptions, option, value) -> {
                     this.biomeType = value;

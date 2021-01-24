@@ -43,7 +43,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     private final double heightNoise[];
     
     public SkylandsChunkProvider(long seed) {
-        super(seed, 0, 128, 64, 1, 2, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER);
+        super(seed, 0, 128, 64, -10, -10, 1, 2, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
 

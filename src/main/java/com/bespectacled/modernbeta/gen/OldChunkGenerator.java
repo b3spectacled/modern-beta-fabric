@@ -60,7 +60,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private final AbstractChunkProvider chunkProvider;
     
     public OldChunkGenerator(BiomeSource biomeSource, long seed, OldGeneratorSettings settings) {
-        super(biomeSource, seed, () -> settings.chunkGenSettings);
+        super(biomeSource, seed, () -> settings.generatorSettings);
         
         this.biomeSource = (OldBiomeSource)biomeSource;
         this.settings = settings;

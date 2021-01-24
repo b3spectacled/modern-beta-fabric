@@ -9,13 +9,13 @@
     
     "createWorld.customize.unknown": "Unknown option!",
     
-    "createWorld.customize.type.biomeType": "Biome Type",
-    "createWorld.customize.type.beta": "Beta",
-    "createWorld.customize.type.classic": "Classic",
-    "createWorld.customize.type.sky": "Sky Dimension",
-    "createWorld.customize.type.winter": "Winter Mode",
-    "createWorld.customize.type.plus": "Classic + Winter",
-    "createWorld.customize.type.vanilla": "Vanilla/Modded",
+    "createWorld.customize.biomeType": "Biome Type",
+    "createWorld.customize.biomeType.beta": "Beta",
+    "createWorld.customize.biomeType.classic": "Classic",
+    "createWorld.customize.biomeType.sky": "Sky Dimension",
+    "createWorld.customize.biomeType.winter": "Winter Mode",
+    "createWorld.customize.biomeType.plus": "Classic + Winter",
+    "createWorld.customize.biomeType.vanilla": "Vanilla/Modded",
     
     "createWorld.customize.beta.title": "Beta World Type Configuration",
     "createWorld.customize.skylands.title": "Skylands World Type Configuration",

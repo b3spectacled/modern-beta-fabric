@@ -38,7 +38,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
     private final double heightNoise[];
     
     public NetherChunkProvider(long seed) {
-        super(seed, 0, 128, 64, 2, 1, 1.0, 3.0, 80, 60, BlockStates.STONE, BlockStates.WATER);
+        super(seed, 0, 128, 32, 0, 128, 2, 1, 1.0, 3.0, 80, 60, BlockStates.STONE, BlockStates.WATER);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         
@@ -162,7 +162,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
 
                         flag = genStone;
                         
-                        if (y >= this.seaLevel / 2) { // Actual sea level
+                        if (y >= this.seaLevel) {
                             chunk.setBlockState(POS.set(x, y, z), topBlock, false);
                         } else {
                             chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
@@ -251,7 +251,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
                                 
                                 BlockState blockToSet = BlockStates.AIR;
                                 
-                                if (subChunkY * this.verticalNoiseResolution + subY < this.seaLevel / 2 + 1) {
+                                if (subChunkY * this.verticalNoiseResolution + subY < this.seaLevel + 1) {
                                     blockToSet = this.defaultFluid;
                                 }
                                 
