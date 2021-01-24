@@ -11,6 +11,7 @@ import com.bespectacled.modernbeta.feature.OldFeatures;
 import com.bespectacled.modernbeta.gen.provider.AbstractChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.structure.OldStructures;
+import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
 import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.mojang.serialization.Codec;

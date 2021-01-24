@@ -10,8 +10,8 @@ public class WorldEnum {
         ALPHA(2, "alpha", true),
         INFDEV(3, "infdev", true),
         INFDEV_OLD(4, "infdev_old", true),
-        INDEV(5, "indev", false),
-        NETHER(6, "nether", false);
+        INDEV(5, "indev", false);
+        //NETHER(6, "nether", false);
         
         private final int id;
         private final String name;
@@ -67,12 +67,12 @@ public class WorldEnum {
     
     public enum BiomeType {
         BETA(0, "beta"),
-        //ICE_DESERT(1, "ice_desert"),
-        SKY(2, "sky"),
-        CLASSIC(3, "classic"),
-        WINTER(4, "winter"),
-        PLUS(5, "plus"),
-        VANILLA(6, "vanilla");
+        SKY(1, "sky"),
+        CLASSIC(2, "classic"),
+        WINTER(3, "winter"),
+        PLUS(4, "plus"),
+        VANILLA(5, "vanilla");
+        //NETHER(7, "nether");
         
         private final int id;
         private final String name;

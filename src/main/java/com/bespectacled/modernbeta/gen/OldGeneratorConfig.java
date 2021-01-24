@@ -27,7 +27,6 @@ public class OldGeneratorConfig {
     public static final GenerationShapeConfig INFDEV_SHAPE_CONFIG;
     public static final GenerationShapeConfig NETHER_SHAPE_CONFIG;
     
-    
     static {
         STRUCTURES = new StructuresConfig(true);
         INDEV_STRONGHOLD = Optional.of(new StrongholdConfig(0, 0, 1));

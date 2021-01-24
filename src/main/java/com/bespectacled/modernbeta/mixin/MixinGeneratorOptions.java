@@ -35,14 +35,14 @@ public class MixinGeneratorOptions {
     private static void injectServerGeneratorType(DynamicRegistryManager dynamicRegistryManager, Properties properties,
             CallbackInfoReturnable<GeneratorOptions> cir) {
 
-        // no server.properties file generated
+        // Exit if server.properties file not yet created
         if (properties.get("level-type") == null) {
             return;
         }
 
         String levelType = properties.get("level-type").toString().trim().toLowerCase();
         
-        // check for our world type and return if so
+        // Check for Modern Beta world type
         if (levelType.equals("beta") ||
             levelType.equals("skylands") ||
             levelType.equals("alpha") ||

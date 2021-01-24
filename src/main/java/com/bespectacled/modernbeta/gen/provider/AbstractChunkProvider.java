@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.gen.provider;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
@@ -183,35 +185,26 @@ public abstract class AbstractChunkProvider {
     }
     
     public static AbstractChunkProvider getChunkProvider(long seed, WorldType worldType, OldGeneratorSettings settings) {
-        AbstractChunkProvider provider;
-        
         switch(worldType) {
             case BETA:
-                provider = new BetaChunkProvider(seed);
-                break;
+                return new BetaChunkProvider(seed);
             case SKYLANDS:
-                provider = new SkylandsChunkProvider(seed);
-                break;
+                return new SkylandsChunkProvider(seed);
             case ALPHA:
-                provider = new AlphaChunkProvider(seed);
-                break;
+                return new AlphaChunkProvider(seed);
             case INFDEV:
-                provider = new InfdevChunkProvider(seed);
-                break;
+                return new InfdevChunkProvider(seed);
             case INFDEV_OLD:
-                provider = new InfdevOldChunkProvider(seed, settings.providerSettings);
-                break;
+                return new InfdevOldChunkProvider(seed, settings.providerSettings);
             case INDEV:
-                provider = new IndevChunkProvider(seed, settings.providerSettings);
-                break;
-            case NETHER:
-                provider = new NetherChunkProvider(seed);
-                break;
+                return new IndevChunkProvider(seed, settings.providerSettings);
+            //case NETHER:
+            //    return new NetherChunkProvider(seed);
             default:
                 throw new IllegalArgumentException("[Modern Beta] No chunk provider matching world type.  This shouldn't happen!");
         }
-        
-        return provider;
     }
     
+    
+    private static final Map<WorldType, AbstractChunkProvider> PROVIDER_REGISTRY = new HashMap<WorldType, AbstractChunkProvider>();
 }

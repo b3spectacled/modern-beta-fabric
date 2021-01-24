@@ -28,7 +28,7 @@ public class OldGeneratorType {
     private static final GeneratorType INFDEV;
     private static final GeneratorType INFDEV_OLD;
     private static final GeneratorType INDEV;
-    private static final GeneratorType NETHER;
+    //private static final GeneratorType NETHER;
     
     public static void register() {
         register(BETA);
@@ -37,7 +37,7 @@ public class OldGeneratorType {
         register(INFDEV);
         register(INFDEV_OLD);
         register(INDEV);
-        register(NETHER);
+        //register(NETHER);
     }
     
     private static void register(GeneratorType type) {
@@ -87,12 +87,12 @@ public class OldGeneratorType {
             }
         };
         
-        NETHER = new GeneratorType("nether") {
-            @Override
-            protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-                return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.NETHER_SETTINGS.providerSettings), seed, OldGeneratorSettings.NETHER_SETTINGS);
-            }
-        };
+        //NETHER = new GeneratorType("nether") {
+        //    @Override
+        //    protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
+        //        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.NETHER_SETTINGS.providerSettings), seed, OldGeneratorSettings.NETHER_SETTINGS);
+        //    }
+        //};
         
         MixinGeneratorTypeAccessor.setScreenProviders(
             new ImmutableMap.Builder<Optional<GeneratorType>, ScreenProvider>()
@@ -127,11 +127,11 @@ public class OldGeneratorType {
                         return new CustomizeIndevLevelScreen(createWorldScreen, OldGeneratorSettings.INDEV_SETTINGS);
                     }
                 )
-                .put(
-                    Optional.<GeneratorType>of(NETHER), (createWorldScreen, generatorSettings) -> {
-                        return new CustomizeNetherLevelScreen(createWorldScreen, OldGeneratorSettings.NETHER_SETTINGS);
-                    }
-                )
+                //.put(
+                //    Optional.<GeneratorType>of(NETHER), (createWorldScreen, generatorSettings) -> {
+                //        return new CustomizeNetherLevelScreen(createWorldScreen, OldGeneratorSettings.NETHER_SETTINGS);
+                //    }
+                //)
                 .build()
         );
     }

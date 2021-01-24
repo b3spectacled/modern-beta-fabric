@@ -24,34 +24,27 @@ public abstract class AbstractBiomeProvider {
     public static AbstractBiomeProvider getBiomeProvider(long seed, CompoundTag settings) {
         WorldType worldType = WorldType.getWorldType(settings);
         BiomeType biomeType = BiomeType.getBiomeType(settings);
-        AbstractBiomeProvider biomeProvider;
-        
+         
         if (worldType == WorldType.INDEV)
             return new IndevBiomeProvider(seed, settings); 
         
         switch(biomeType) {
-            case BETA:
-                biomeProvider = new BetaBiomeProvider(seed);
-                break;
-            case SKY:
-                biomeProvider = new SingleBiomeProvider(seed, BetaBiomes.SKY_ID);
-                break;
+            case BETA: 
+                return new BetaBiomeProvider(seed);
+            case SKY: 
+                return new SingleBiomeProvider(seed, BetaBiomes.SKY_ID);
             case PLUS:
-                biomeProvider = new PlusBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType));
-                break;
+                return new PlusBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType));
             case CLASSIC:
-                biomeProvider = new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.CLASSIC));
-                break;
+                return new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.CLASSIC));
             case WINTER:
-                biomeProvider = new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.WINTER));
-                break;
+                return new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.WINTER));
             case VANILLA:
-                biomeProvider = new VanillaBiomeProvider(seed);
-                break;
+                return new VanillaBiomeProvider(seed);
+            //case NETHER:
+            //    return new NetherBiomeProvider(seed);
             default:
-                biomeProvider = new SingleBiomeProvider(seed, ClassicBiomes.ALPHA_ID);
+                throw new IllegalArgumentException("[Modern Beta] No biome provider matching biome type.  This shouldn't happen!");
         }
-        
-        return biomeProvider;
     }
 }
