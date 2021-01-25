@@ -25,7 +25,9 @@ public class OldGeneratorConfig {
     public static final GenerationShapeConfig ALPHA_SHAPE_CONFIG;
     public static final GenerationShapeConfig SKYLANDS_SHAPE_CONFIG;
     public static final GenerationShapeConfig INFDEV_SHAPE_CONFIG;
+    public static final GenerationShapeConfig INDEV_SHAPE_CONFIG;
     public static final GenerationShapeConfig NETHER_SHAPE_CONFIG;
+    
     
     static {
         STRUCTURES = new StructuresConfig(true);
@@ -89,6 +91,22 @@ public class OldGeneratorConfig {
         INFDEV_SHAPE_CONFIG = GenerationShapeConfig.create(
             0, 
             128, 
+            INFDEV_SAMPLING_CONFIG, 
+            new SlideConfig(-10, 3, 0), 
+            new SlideConfig(-30, 0, 0),
+            1, 
+            1, 
+            1, 
+            -0.46875, 
+            true, 
+            true, 
+            false, 
+            false
+        );
+        
+        INDEV_SHAPE_CONFIG = GenerationShapeConfig.create(
+            0, 
+            256, 
             INFDEV_SAMPLING_CONFIG, 
             new SlideConfig(-10, 3, 0), 
             new SlideConfig(-30, 0, 0),

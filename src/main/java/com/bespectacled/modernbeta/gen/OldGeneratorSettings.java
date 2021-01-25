@@ -66,35 +66,24 @@ public class OldGeneratorSettings {
     }
     
     public static ChunkGeneratorSettings getChunkGeneratorSettings(WorldType worldType) {
-        ChunkGeneratorSettings settings;
-        
         switch(worldType) {
             case BETA:
-                settings = BETA_GENERATOR_SETTINGS;
-                break;
+                return BETA_GENERATOR_SETTINGS;
             case ALPHA:
-                settings = ALPHA_GENERATOR_SETTINGS;
-                break;
+                return ALPHA_GENERATOR_SETTINGS;
             case SKYLANDS:
-                settings = SKYLANDS_GENERATOR_SETTINGS;
-                break;
+                return SKYLANDS_GENERATOR_SETTINGS;
             case INFDEV:
-                settings = INFDEV_GENERATOR_SETTINGS;
-                break;
+                return INFDEV_GENERATOR_SETTINGS;
             case INFDEV_OLD:
-                settings = INFDEV_GENERATOR_SETTINGS;
-                break;
+                return INFDEV_GENERATOR_SETTINGS;
             case INDEV:
-                settings = INDEV_GENERATOR_SETTINGS;
-                break;
+                return INDEV_GENERATOR_SETTINGS;
             //case NETHER:
-            //    settings = NETHER_GENERATOR_SETTINGS;
-            //    break;
+            //    return NETHER_GENERATOR_SETTINGS;
             default:
-                settings = BETA_GENERATOR_SETTINGS;
+                return BETA_GENERATOR_SETTINGS;
         }
-        
-        return settings;
     }
     
     static {
@@ -105,7 +94,7 @@ public class OldGeneratorSettings {
         SKYLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.SKYLANDS_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, -10, 0, false);
         INFDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false);
         //NETHER_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.NETHER_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, 128, 0, 32, false);
-        INDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false); 
+        INDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.INDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false); 
 
         BETA_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.BETA_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.BETA, BiomeType.BETA, generateOceans));
         SKYLANDS_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.SKYLANDS_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.SKYLANDS, BiomeType.SKY, false));
