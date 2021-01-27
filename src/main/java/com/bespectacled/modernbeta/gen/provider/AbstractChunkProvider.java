@@ -1,7 +1,5 @@
 package com.bespectacled.modernbeta.gen.provider;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
@@ -22,6 +20,7 @@ import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
@@ -177,6 +176,13 @@ public abstract class AbstractChunkProvider {
         return this.seaLevel;
     }
     
+    public static Biome getBiomeForSurfaceGen(BlockPos pos, ChunkRegion region, OldBiomeSource biomeSource) {
+        if (biomeSource.isBeta()) {
+            return biomeSource.getBiomeForSurfaceGen(pos.getX(), 0, pos.getZ());
+        }
+        
+        return region.getBiome(pos);
+    }
     
     public static void setForestOctaves(PerlinOctaveNoise forestOctaves) {
         OldDecorators.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestOctaves);
@@ -198,13 +204,12 @@ public abstract class AbstractChunkProvider {
                 return new InfdevOldChunkProvider(seed, settings.providerSettings);
             case INDEV:
                 return new IndevChunkProvider(seed, settings.providerSettings);
-            //case NETHER:
-            //    return new NetherChunkProvider(seed);
+            case NETHER:
+                return new NetherChunkProvider(seed);
+            case FLAT:
+                return new FlatChunkProvider(seed);
             default:
                 throw new IllegalArgumentException("[Modern Beta] No chunk provider matching world type.  This shouldn't happen!");
         }
     }
-    
-    
-    private static final Map<WorldType, AbstractChunkProvider> PROVIDER_REGISTRY = new HashMap<WorldType, AbstractChunkProvider>();
 }

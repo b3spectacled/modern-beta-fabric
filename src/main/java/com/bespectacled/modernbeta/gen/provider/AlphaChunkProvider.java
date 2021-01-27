@@ -96,7 +96,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
                 
-                Biome curBiome = region.getBiome(POS.set(absX, 0, absZ));
+                Biome curBiome = getBiomeForSurfaceGen(POS.set(absX, 0, absZ), region, biomeSource);
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();

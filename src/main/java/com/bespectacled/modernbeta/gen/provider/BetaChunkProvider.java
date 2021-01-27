@@ -1,9 +1,7 @@
 package com.bespectacled.modernbeta.gen.provider;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
-import com.bespectacled.modernbeta.biome.beta.BetaBiomes.BetaBiomeType;
 import com.bespectacled.modernbeta.gen.GenUtil;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -79,7 +77,6 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         int chunkZ = chunk.getPos().z;
         
         Biome curBiome;
-        BetaClimateSampler climateSampler = BetaClimateSampler.getInstance();
 
         sandNoise = beachNoiseOctaves.sampleArrBeta(
             sandNoise, 
@@ -112,14 +109,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                 int absX = chunk.getPos().getStartX() + x;
                 int absZ = chunk.getPos().getStartZ() + z;
                     
-                if (biomeSource.isBeta()) {
-                    double temp = climateSampler.sampleTemp(absX, absZ);
-                    double humid = climateSampler.sampleHumid(absX, absZ);
-                    
-                    curBiome = biomeSource.getBiomeRegistry().get(BetaBiomes.getBiomeFromLookup(temp, humid, BetaBiomeType.LAND));
-                } else {
-                    curBiome = region.getBiome(POS.set(absX, 0, absZ));  
-                }
+                curBiome = getBiomeForSurfaceGen(POS.set(absX, 0, absZ), region, biomeSource);
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();

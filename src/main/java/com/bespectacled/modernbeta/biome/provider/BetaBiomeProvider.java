@@ -37,6 +37,12 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
         BetaClimateSampler.getInstance().sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
         return registry.get(BetaBiomes.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.OCEAN));
     }
+    
+    @Override
+    public Biome getBiomeForSurfaceGen(Registry<Biome> registry, int x, int y, int z) {
+        BetaClimateSampler.getInstance().sampleTempHumid(TEMP_HUMID_POINT, x, z);
+        return registry.get(BetaBiomes.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.LAND));
+    }
 
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {

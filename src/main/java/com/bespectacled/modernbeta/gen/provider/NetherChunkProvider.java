@@ -102,7 +102,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
                 int absX = chunk.getPos().getStartX() + x;
                 int absZ = chunk.getPos().getStartZ() + z;
                     
-                curBiome = region.getBiome(POS.set(absX, 0, absZ));
+                curBiome = getBiomeForSurfaceGen(POS.set(absX, 0, absZ), region, biomeSource);
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();

@@ -123,7 +123,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                     // Second check is a hack to stop weird chunk borders generating from surface blocks for ocean biomes
                     // being picked up and replacing topsoil blocks, somehow before biome reassignment.  Why?!
                     if ((biomeSource.isBeta() || biomeSource.isVanilla()) && GenUtil.getSolidHeight(chunk, this.worldHeight, absX, absZ) >= this.seaLevel - 4) {
-                        biome = region.getBiome(POS.set(absX, 0, absZ));
+                        biome = getBiomeForSurfaceGen(POS.set(absX, 0, absZ), region, biomeSource);
                         
                         if (blockToSet == Blocks.GRASS_BLOCK) 
                             blockToSet = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial().getBlock();

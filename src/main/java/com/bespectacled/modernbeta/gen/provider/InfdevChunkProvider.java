@@ -96,7 +96,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 
                 int flag = -1;
                 
-                Biome curBiome = region.getBiome(POS.set(absX, 0, absZ));
+                Biome curBiome = getBiomeForSurfaceGen(POS.set(absX, 0, absZ), region, biomeSource);
                 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -249,18 +249,18 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                             int x = subX + subChunkX * this.horizontalNoiseResolution;
                             int absX = (chunk.getPos().x << 4) + x;
                             
-                            double lerpXZ = subX / (double)this.horizontalNoiseResolution;
+                            double lerpX = subX / (double)this.horizontalNoiseResolution;
                             
-                            double nz1 = nx1 + (nx3 - nx1) * lerpXZ;
-                            double nz2 = nx2 + (nx4 - nx2) * lerpXZ;
+                            double nz1 = nx1 + (nx3 - nx1) * lerpX;
+                            double nz2 = nx2 + (nx4 - nx2) * lerpX;
                             
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; ++subZ) {
                                 int z = subZ + subChunkZ * this.horizontalNoiseResolution;
                                 int absZ = (chunk.getPos().z << 4) + z;
                                 
-                                double mixZ = subZ / (double)this.horizontalNoiseResolution;
+                                double lerpZ = subZ / (double)this.horizontalNoiseResolution;
                                 
-                                double density = nz1 + (nz2 - nz1) * mixZ;
+                                double density = nz1 + (nz2 - nz1) * lerpZ;
                                 
                                 double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
                                 clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;

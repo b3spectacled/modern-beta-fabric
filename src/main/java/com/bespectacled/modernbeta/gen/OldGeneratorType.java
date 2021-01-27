@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gui.CustomizeAlphaLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeBetaLevelScreen;
+import com.bespectacled.modernbeta.gui.CustomizeFlatLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeIndevLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeInfdevLevelScreen;
 import com.bespectacled.modernbeta.gui.CustomizeInfdevOldLevelScreen;
@@ -29,6 +30,7 @@ public class OldGeneratorType {
     private static final GeneratorType INFDEV_OLD;
     private static final GeneratorType INDEV;
     //private static final GeneratorType NETHER;
+    //private static final GeneratorType FLAT;
     
     public static void register() {
         register(BETA);
@@ -38,6 +40,7 @@ public class OldGeneratorType {
         register(INFDEV_OLD);
         register(INDEV);
         //register(NETHER);
+        //register(FLAT);
     }
     
     private static void register(GeneratorType type) {
@@ -87,12 +90,23 @@ public class OldGeneratorType {
             }
         };
         
-        //NETHER = new GeneratorType("nether") {
-        //    @Override
-        //    protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        //        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.NETHER_SETTINGS.providerSettings), seed, OldGeneratorSettings.NETHER_SETTINGS);
-        //    }
-        //};
+        /*
+        NETHER = new GeneratorType("nether") {
+            @Override
+            protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
+                return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.NETHER_SETTINGS.providerSettings), seed, OldGeneratorSettings.NETHER_SETTINGS);
+            }
+        };
+        */
+        
+        /*
+        FLAT = new GeneratorType("flat") {
+            @Override
+            protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
+                return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.FLAT_SETTINGS.providerSettings), seed, OldGeneratorSettings.FLAT_SETTINGS);
+            }
+        };
+        */
         
         MixinGeneratorTypeAccessor.setScreenProviders(
             new ImmutableMap.Builder<Optional<GeneratorType>, ScreenProvider>()
@@ -127,11 +141,20 @@ public class OldGeneratorType {
                         return new CustomizeIndevLevelScreen(createWorldScreen, OldGeneratorSettings.INDEV_SETTINGS);
                     }
                 )
-                //.put(
-                //    Optional.<GeneratorType>of(NETHER), (createWorldScreen, generatorSettings) -> {
-                //        return new CustomizeNetherLevelScreen(createWorldScreen, OldGeneratorSettings.NETHER_SETTINGS);
-                //    }
-                //)
+                /*
+                .put(
+                    Optional.<GeneratorType>of(FLAT), (createWorldScreen, generatorSettings) -> {
+                        return new CustomizeFlatLevelScreen(createWorldScreen, OldGeneratorSettings.FLAT_SETTINGS);
+                    }
+                )
+                */
+                /*
+                .put(
+                    Optional.<GeneratorType>of(NETHER), (createWorldScreen, generatorSettings) -> {
+                        return new CustomizeNetherLevelScreen(createWorldScreen, OldGeneratorSettings.NETHER_SETTINGS);
+                    }
+                )
+                */
                 .build()
         );
     }

@@ -19,6 +19,10 @@ public abstract class AbstractBiomeProvider {
         return this.getBiomeForNoiseGen(registry, biomeX, biomeY, biomeZ);
     }
     
+    public Biome getBiomeForSurfaceGen(Registry<Biome> registry, int x, int y, int z) {
+        return this.getBiomeForNoiseGen(registry, x >> 2, y >> 2, z >> 2);
+    }
+    
     public abstract List<RegistryKey<Biome>> getBiomesForRegistry();
     
     public static AbstractBiomeProvider getBiomeProvider(long seed, CompoundTag settings) {
