@@ -11,33 +11,33 @@ import net.minecraft.client.option.DoubleOption;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
-   
-    private IndevType levelType = IndevType.fromName(ModernBeta.BETA_CONFIG.indevLevelType);
-    private IndevTheme levelTheme = IndevTheme.fromName(ModernBeta.BETA_CONFIG.indevLevelTheme);
+public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
+    private IndevType levelType;
+    private IndevTheme levelTheme;
 
-    private int levelWidth = ModernBeta.BETA_CONFIG.indevLevelWidth;
-    private int levelLength = ModernBeta.BETA_CONFIG.indevLevelLength;
-    private int levelHeight = ModernBeta.BETA_CONFIG.indevLevelHeight;
+    private int levelWidth;
+    private int levelLength;
+    private int levelHeight;
     
-    private float caveRadius = ModernBeta.BETA_CONFIG.indevCaveRadius;
-
-    public CustomizeIndevLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings) {
-        super(parent, generatorSettings, "createWorld.customize.indev.title");
+    private float caveRadius;
+    
+    public IndevCustomizeLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings, String title) {
+        super(parent, generatorSettings, title);
         
-        if (generatorSettings.providerSettings.contains("levelType")) 
-            this.levelType = IndevType.fromName(generatorSettings.providerSettings.getString("levelType"));
-        if (generatorSettings.providerSettings.contains("levelTheme")) 
-            this.levelTheme = IndevTheme.fromName(generatorSettings.providerSettings.getString("levelTheme"));
+        this.levelType = IndevType.fromName(ModernBeta.BETA_CONFIG.indevLevelType);
+        this.levelTheme = IndevTheme.fromName(ModernBeta.BETA_CONFIG.indevLevelTheme);
 
-        if (generatorSettings.providerSettings.contains("levelWidth")) this.levelWidth = generatorSettings.providerSettings.getInt("levelWidth");
-        if (generatorSettings.providerSettings.contains("levelLength")) this.levelLength = generatorSettings.providerSettings.getInt("levelLength");
-        if (generatorSettings.providerSettings.contains("levelHeight")) this.levelHeight = generatorSettings.providerSettings.getInt("levelHeight");
-        if (generatorSettings.providerSettings.contains("caveRadius")) this.caveRadius = generatorSettings.providerSettings.getFloat("caveRadius");
+        this.levelWidth = ModernBeta.BETA_CONFIG.indevLevelWidth;
+        this.levelLength = ModernBeta.BETA_CONFIG.indevLevelLength;
+        this.levelHeight = ModernBeta.BETA_CONFIG.indevLevelHeight;
+        
+        this.caveRadius = ModernBeta.BETA_CONFIG.indevCaveRadius;
     }
     
     @Override
-    protected void addButtons() {
+    protected void init() {
+        super.init();
+        
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.indev.levelType", 
@@ -46,7 +46,7 @@ public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return this.levelType; }, 
                 (gameOptions, option, value) -> {
                     this.levelType = value;
-                    generatorSettings.providerSettings.putString("levelType", this.levelType.getName());
+                    this.generatorSettings.providerSettings.putString("levelType", this.levelType.getName());
                     
                     return;
                 })
@@ -60,7 +60,7 @@ public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return this.levelTheme; }, 
                 (gameOptions, option, value) -> {
                     this.levelTheme = value;
-                    generatorSettings.providerSettings.putString("levelTheme", this.levelTheme.getName());
+                    this.generatorSettings.providerSettings.putString("levelTheme", this.levelTheme.getName());
                     
                     return;
                 })
@@ -73,7 +73,7 @@ public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return (double) this.levelWidth; }, // Getter
                 (gameOptions, value) -> { // Setter
                     this.levelWidth = value.intValue();
-                    generatorSettings.providerSettings.putInt("levelWidth", value.intValue());
+                    this.generatorSettings.providerSettings.putInt("levelWidth", this.levelWidth);
                     return;
                 },
                 (gameOptions, doubleOptions) -> {
@@ -93,7 +93,7 @@ public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return (double) this.levelLength; }, // Getter
                 (gameOptions, value) -> { // Setter
                     this.levelLength = value.intValue();
-                    generatorSettings.providerSettings.putInt("levelLength", value.intValue());
+                    this.generatorSettings.providerSettings.putInt("levelLength", this.levelLength);
                     return;
                 },
                 (gameOptions, doubleOptions) -> {
@@ -113,7 +113,7 @@ public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return (double) this.levelHeight; }, // Getter
                 (gameOptions, value) -> { // Setter
                     this.levelHeight = value.intValue();
-                    generatorSettings.providerSettings.putInt("levelHeight", value.intValue());
+                    this.generatorSettings.providerSettings.putInt("levelHeight", this.levelHeight);
                     return;
                 },
                 (gameOptions, doubleOptions) -> {
@@ -136,7 +136,7 @@ public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return (double) this.caveRadius; }, // Getter
                 (gameOptions, value) -> { // Setter
                     this.caveRadius = value.floatValue();
-                    generatorSettings.providerSettings.putFloat("caveRadius", value.floatValue());
+                    this.generatorSettings.providerSettings.putFloat("caveRadius", this.caveRadius);
                     return;
                 },
                 (gameOptions, doubleOptions) -> {
@@ -149,5 +149,4 @@ public class CustomizeIndevLevelScreen extends AbstractCustomizeLevelScreen {
                 }
         ));
     }
-    
 }

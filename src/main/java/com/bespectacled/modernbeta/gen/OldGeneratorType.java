@@ -3,15 +3,11 @@ package com.bespectacled.modernbeta.gen;
 import java.util.Optional;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.gui.CustomizeAlphaLevelScreen;
-import com.bespectacled.modernbeta.gui.CustomizeBetaLevelScreen;
-import com.bespectacled.modernbeta.gui.CustomizeFlatLevelScreen;
-import com.bespectacled.modernbeta.gui.CustomizeIndevLevelScreen;
-import com.bespectacled.modernbeta.gui.CustomizeInfdevLevelScreen;
-import com.bespectacled.modernbeta.gui.CustomizeInfdevOldLevelScreen;
-import com.bespectacled.modernbeta.gui.CustomizeNetherLevelScreen;
-import com.bespectacled.modernbeta.gui.CustomizeSkylandsLevelScreen;
+import com.bespectacled.modernbeta.gui.IndevCustomizeLevelScreen;
+import com.bespectacled.modernbeta.gui.InfCustomizeLevelScreen;
+import com.bespectacled.modernbeta.gui.InfdevOldCustomizeLevelScreen;
 import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
+import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.client.world.GeneratorType;
@@ -113,32 +109,32 @@ public class OldGeneratorType {
                 .putAll(MixinGeneratorTypeAccessor.getScreenProviders())
                 .put(
                     Optional.<GeneratorType>of(BETA), (createWorldScreen, generatorSettings) -> {
-                        return new CustomizeBetaLevelScreen(createWorldScreen, OldGeneratorSettings.BETA_SETTINGS);
+                        return new InfCustomizeLevelScreen(createWorldScreen, OldGeneratorSettings.BETA_SETTINGS, "createWorld.customize.beta.title", BiomeType.BETA, true);
                     }
                 )
                 .put(
                     Optional.<GeneratorType>of(SKYLANDS), (createWorldScreen, generatorSettings) -> {
-                        return new CustomizeSkylandsLevelScreen(createWorldScreen, OldGeneratorSettings.SKYLANDS_SETTINGS);
+                        return new InfCustomizeLevelScreen(createWorldScreen, OldGeneratorSettings.SKYLANDS_SETTINGS, "createWorld.customize.skylands.title", BiomeType.SKY, false);
                     }
                 )
                 .put(
                     Optional.<GeneratorType>of(ALPHA), (createWorldScreen, generatorSettings) -> {
-                        return new CustomizeAlphaLevelScreen(createWorldScreen, OldGeneratorSettings.ALPHA_SETTINGS);
+                        return new InfCustomizeLevelScreen(createWorldScreen, OldGeneratorSettings.ALPHA_SETTINGS, "createWorld.customize.alpha.title", BiomeType.CLASSIC, true);
                     }
                 )
                 .put(
                     Optional.<GeneratorType>of(INFDEV), (createWorldScreen, generatorSettings) -> {
-                        return new CustomizeInfdevLevelScreen(createWorldScreen, OldGeneratorSettings.INFDEV_SETTINGS);
+                        return new InfCustomizeLevelScreen(createWorldScreen, OldGeneratorSettings.INFDEV_SETTINGS, "createWorld.customize.infdev.title", BiomeType.CLASSIC, true);
                     }
                 )
                 .put(
                     Optional.<GeneratorType>of(INFDEV_OLD), (createWorldScreen, generatorSettings) -> {
-                        return new CustomizeInfdevOldLevelScreen(createWorldScreen, OldGeneratorSettings.INFDEV_SETTINGS);
+                        return new InfdevOldCustomizeLevelScreen(createWorldScreen, OldGeneratorSettings.INFDEV_SETTINGS, "createWorld.customize.infdev.title", BiomeType.CLASSIC, true);
                     }
                 )
                 .put(
                     Optional.<GeneratorType>of(INDEV), (createWorldScreen, generatorSettings) -> {
-                        return new CustomizeIndevLevelScreen(createWorldScreen, OldGeneratorSettings.INDEV_SETTINGS);
+                        return new IndevCustomizeLevelScreen(createWorldScreen, OldGeneratorSettings.INDEV_SETTINGS, "createWorld.customize.indev.title");
                     }
                 )
                 /*

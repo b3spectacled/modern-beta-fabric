@@ -1,25 +1,18 @@
 package com.bespectacled.modernbeta.gui;
 
-import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.option.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 
 public abstract class AbstractCustomizeLevelScreen extends Screen {
-    protected final CreateWorldScreen parent;
+    private final CreateWorldScreen parent;
     protected final OldGeneratorSettings generatorSettings;
-    
-    protected BiomeType biomeType;
-    protected boolean generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
     
     protected ButtonListWidget buttonList;
     
@@ -28,16 +21,6 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         
         this.parent = parent;
         this.generatorSettings = generatorSettings;
-    }
-    
-    public AbstractCustomizeLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings, String title, BiomeType biomeType) {
-        this(parent, generatorSettings, title);
-        
-        this.biomeType = biomeType;
-        
-        this.generateOceans = generatorSettings.providerSettings.contains("generateOceans") ? 
-            generatorSettings.providerSettings.getBoolean("generateOceans") :
-            ModernBeta.BETA_CONFIG.generateOceans;
     }
     
     @Override
@@ -60,9 +43,6 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         ));
         
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
-        
-        this.addButtons();
-        
         this.children.add(this.buttonList);
     }
     
@@ -74,29 +54,5 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         DrawableHelper.drawCenteredText(matrixStack, this.textRenderer, this.title, this.width / 2, 16, 16777215);
         
         super.render(matrixStack, mouseX, mouseY, tickDelta);
-    }
-    
-    protected void addButtons() {
-        this.buttonList.addSingleOptionEntry(
-            CyclingOption.create(
-                "createWorld.customize.biomeType", 
-                BiomeType.values(), 
-                (value) -> new TranslatableText("createWorld.customize.biomeType." + value.getName()), 
-                (gameOptions) -> { return this.biomeType; }, 
-                (gameOptions, option, value) -> {
-                    this.biomeType = value;
-                    generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
-                    
-                    return;
-                })
-        );
-        
-        this.buttonList.addSingleOptionEntry(
-            CyclingOption.create("createWorld.customize.inf.generateOceans", 
-            (gameOptions) -> { return generateOceans; }, 
-            (gameOptions, option, value) -> { // Setter
-                generateOceans = value;
-                generatorSettings.providerSettings.putBoolean("generateOceans", value);
-        }));
     }
 }
