@@ -66,7 +66,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.settings = settings;
         
         this.worldType = WorldType.getWorldType(settings.providerSettings);
-        this.chunkProvider = AbstractChunkProvider.getChunkProvider(seed, this.worldType, settings);
+        this.chunkProvider = this.worldType.getChunkProvider().apply(seed, settings);
         
         this.generateOceans = settings.providerSettings.contains("generateOceans") ?
             settings.providerSettings.getBoolean("generateOceans") && this.worldType.hasOceans() : 

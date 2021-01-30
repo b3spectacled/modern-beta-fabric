@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.GenUtil;
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
@@ -46,8 +47,8 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     
     private static final Random SANDSTONE_RAND = new Random();
     
-    public AlphaChunkProvider(long seed) {
-        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER);
+    public AlphaChunkProvider(long seed, OldGeneratorSettings settings) {
+        super(seed, settings);
         SANDSTONE_RAND.setSeed(seed);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];

@@ -2,13 +2,13 @@ package com.bespectacled.modernbeta.gen.provider;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.GenUtil;
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.BlockPos;
@@ -34,8 +34,8 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
 
     private final Block blockArr[][][];
     
-    public InfdevOldChunkProvider(long seed, CompoundTag settings) {
-        super(seed, 0, 128, 64);
+    public InfdevOldChunkProvider(long seed, OldGeneratorSettings settings) {
+        super(seed, settings);
         
         this.blockArr = new Block[16][this.worldHeight][16];
         
@@ -53,10 +53,10 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
         
         forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
         
-        if (settings.contains("generateInfdevPyramid")) 
-            this.generateInfdevPyramid = settings.getBoolean("generateInfdevPyramid");
-        if (settings.contains("generateInfdevWall")) 
-            this.generateInfdevWall = settings.getBoolean("generateInfdevWall");
+        if (this.providerSettings.contains("generateInfdevPyramid")) 
+            this.generateInfdevPyramid = this.providerSettings.getBoolean("generateInfdevPyramid");
+        if (this.providerSettings.contains("generateInfdevWall")) 
+            this.generateInfdevWall = this.providerSettings.getBoolean("generateInfdevWall");
         
         setForestOctaves(forestNoiseOctaves);
     }

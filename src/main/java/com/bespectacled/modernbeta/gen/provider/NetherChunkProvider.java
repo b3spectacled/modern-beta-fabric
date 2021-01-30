@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.gen.provider;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.GenUtil;
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
@@ -37,8 +38,8 @@ public class NetherChunkProvider extends AbstractChunkProvider {
     
     private final double heightNoise[];
     
-    public NetherChunkProvider(long seed) {
-        super(seed, 0, 128, 32, 0, 128, 2, 1, 1.0, 3.0, 80, 60, BlockStates.STONE, BlockStates.WATER);
+    public NetherChunkProvider(long seed, OldGeneratorSettings settings) {
+        super(seed, settings);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         

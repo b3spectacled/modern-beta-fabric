@@ -7,12 +7,12 @@ import com.bespectacled.modernbeta.decorator.OldDecorators;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.BlockPos;
@@ -23,7 +23,6 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 /*
  * Some vanilla settings, for reference:
@@ -50,6 +49,8 @@ public abstract class AbstractChunkProvider {
     protected static final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> HEIGHTMAP_CACHE = new Object2ObjectLinkedOpenHashMap<>(512);
     protected static final int[][] HEIGHTMAP_CHUNK = new int[16][16];
     
+    protected final CompoundTag providerSettings;
+    
     protected final int minY;
     protected final int worldHeight;
     protected final int seaLevel;
@@ -74,16 +75,29 @@ public abstract class AbstractChunkProvider {
     protected final BlockState defaultBlock;
     protected final BlockState defaultFluid;
     
-    public AbstractChunkProvider(long seed) {
-        this(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER);
+    public AbstractChunkProvider(long seed, OldGeneratorSettings settings) {
+        this(
+            seed,
+            settings.providerSettings,
+            settings.generatorSettings.getGenerationShapeConfig().getMinimumY(),
+            settings.generatorSettings.getGenerationShapeConfig().getHeight(),
+            settings.generatorSettings.getSeaLevel(),
+            settings.generatorSettings.getBedrockFloorY(),
+            settings.generatorSettings.getBedrockCeilingY(),
+            settings.generatorSettings.getGenerationShapeConfig().getSizeVertical(),
+            settings.generatorSettings.getGenerationShapeConfig().getSizeHorizontal(),
+            settings.generatorSettings.getGenerationShapeConfig().getSampling().getXZScale(),
+            settings.generatorSettings.getGenerationShapeConfig().getSampling().getYScale(),
+            settings.generatorSettings.getGenerationShapeConfig().getSampling().getXZFactor(),
+            settings.generatorSettings.getGenerationShapeConfig().getSampling().getYFactor(),
+            settings.generatorSettings.getDefaultBlock(),
+            settings.generatorSettings.getDefaultFluid()
+        );
     }
     
-    public AbstractChunkProvider(long seed, int minY, int worldHeight, int seaLevel) {
-        this(seed, minY, worldHeight, seaLevel, 0, -10, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER);
-    }
-    
-    public AbstractChunkProvider(
-        long seed, 
+    private AbstractChunkProvider(
+        long seed,
+        CompoundTag providerSettings,
         int minY, 
         int worldHeight, 
         int seaLevel,
@@ -98,6 +112,8 @@ public abstract class AbstractChunkProvider {
         BlockState defaultBlock,
         BlockState defaultFluid
     ) {
+        this.providerSettings = providerSettings;
+        
         this.minY = minY;
         this.worldHeight = worldHeight;
         this.seaLevel = seaLevel;
@@ -124,25 +140,6 @@ public abstract class AbstractChunkProvider {
         
         RAND.setSeed(seed);
         HEIGHTMAP_CACHE.clear();
-    }
-    
-    public AbstractChunkProvider(long seed, ChunkGeneratorSettings generatorSettings) {
-        this(
-            seed,
-            generatorSettings.getGenerationShapeConfig().getMinimumY(),
-            generatorSettings.getGenerationShapeConfig().getHeight(),
-            generatorSettings.getSeaLevel(),
-            generatorSettings.getBedrockFloorY(),
-            generatorSettings.getBedrockCeilingY(),
-            generatorSettings.getGenerationShapeConfig().getSizeVertical(),
-            generatorSettings.getGenerationShapeConfig().getSizeHorizontal(),
-            generatorSettings.getGenerationShapeConfig().getSampling().getXZScale(),
-            generatorSettings.getGenerationShapeConfig().getSampling().getYScale(),
-            generatorSettings.getGenerationShapeConfig().getSampling().getXZFactor(),
-            generatorSettings.getGenerationShapeConfig().getSampling().getYFactor(),
-            generatorSettings.getDefaultBlock(),
-            generatorSettings.getDefaultFluid()
-        );
     }
     
     public abstract void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource);
@@ -188,28 +185,5 @@ public abstract class AbstractChunkProvider {
         OldDecorators.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestOctaves);
         OldDecorators.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestOctaves);
         OldDecorators.COUNT_INFDEV_NOISE_DECORATOR.setOctaves(forestOctaves);
-    }
-    
-    public static AbstractChunkProvider getChunkProvider(long seed, WorldType worldType, OldGeneratorSettings settings) {
-        switch(worldType) {
-            case BETA:
-                return new BetaChunkProvider(seed);
-            case SKYLANDS:
-                return new SkylandsChunkProvider(seed);
-            case ALPHA:
-                return new AlphaChunkProvider(seed);
-            case INFDEV:
-                return new InfdevChunkProvider(seed);
-            case INFDEV_OLD:
-                return new InfdevOldChunkProvider(seed, settings.providerSettings);
-            case INDEV:
-                return new IndevChunkProvider(seed, settings.providerSettings);
-            case NETHER:
-                return new NetherChunkProvider(seed);
-            case FLAT:
-                return new FlatChunkProvider(seed);
-            default:
-                throw new IllegalArgumentException("[Modern Beta] No chunk provider matching world type.  This shouldn't happen!");
-        }
     }
 }

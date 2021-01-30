@@ -1,27 +1,34 @@
 package com.bespectacled.modernbeta.util;
 
+import java.util.function.BiFunction;
+
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
+import com.bespectacled.modernbeta.gen.provider.*;
+
 import net.minecraft.nbt.CompoundTag;
 
 public class WorldEnum {
     
     public enum WorldType {
-        FLAT(-1, "flat", false),
-        BETA(0, "beta", true),
-        SKYLANDS(1, "skylands", false),
-        ALPHA(2, "alpha", true),
-        INFDEV(3, "infdev", true),
-        INFDEV_OLD(4, "infdev_old", true),
-        INDEV(5, "indev", false),
-        NETHER(99, "nether", false);
+        FLAT(-1, "flat", false, FlatChunkProvider::new),
+        BETA(0, "beta", true, BetaChunkProvider::new),
+        SKYLANDS(1, "skylands", false, SkylandsChunkProvider::new),
+        ALPHA(2, "alpha", true, AlphaChunkProvider::new),
+        INFDEV(3, "infdev", true, InfdevChunkProvider::new),
+        INFDEV_OLD(4, "infdev_old", true, InfdevOldChunkProvider::new),
+        INDEV(5, "indev", false, IndevChunkProvider::new),
+        NETHER(99, "nether", false, NetherChunkProvider::new);
         
         private final int id;
         private final String name;
         private final boolean hasOceans;
+        private final BiFunction<Long, OldGeneratorSettings, AbstractChunkProvider> chunkProvider;
         
-        private WorldType(int id, String name, boolean hasOceans) {
+        private WorldType(int id, String name, boolean hasOceans, BiFunction<Long, OldGeneratorSettings, AbstractChunkProvider> chunkProvider) {
             this.id = id;
             this.name = name;
             this.hasOceans = hasOceans;
+            this.chunkProvider = chunkProvider;
         }
         
         public int getId() {
@@ -34,6 +41,10 @@ public class WorldEnum {
         
         public boolean hasOceans() {
             return this.hasOceans;
+        }
+        
+        public BiFunction<Long, OldGeneratorSettings, AbstractChunkProvider> getChunkProvider() {
+            return this.chunkProvider;
         }
         
         public static WorldType fromId(int id) {
