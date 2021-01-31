@@ -59,7 +59,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
         forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
 
-        BetaClimateSampler.getInstance().setSeed(seed);
+        BetaClimateSampler.INSTANCE.setSeed(seed);
         setForestOctaves(forestNoiseOctaves);
     }
 
@@ -314,7 +314,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         int startX = x / this.noiseSizeX * 16;
         int startZ = z / this.noiseSizeZ * 16;
         
-        BetaClimateSampler climateSampler = BetaClimateSampler.getInstance();
+        BetaClimateSampler climateSampler = BetaClimateSampler.INSTANCE;
         
         // Var names taken from old customized preset names
         double coordinateScale = 684.41200000000003D * this.xzScale; 

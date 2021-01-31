@@ -16,7 +16,7 @@ public class SingleBiomeProvider extends AbstractBiomeProvider {
     
     public SingleBiomeProvider(long seed, Identifier biomeId) {
         this.biomeId = biomeId;
-        BetaClimateSampler.getInstance().setSeed(seed);
+        BetaClimateSampler.INSTANCE.setSeed(seed);
     }
 
     @Override

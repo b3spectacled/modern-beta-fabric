@@ -7,8 +7,9 @@ import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.util.math.MathHelper;
 
-public class BetaClimateSampler {
-    private static final BetaClimateSampler INSTANCE = new BetaClimateSampler();
+public enum BetaClimateSampler {
+    INSTANCE;
+    
     private final BiomeCache biomeCache;
     
     private SimplexOctaveNoise tempNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 9871L), 4);
@@ -19,10 +20,6 @@ public class BetaClimateSampler {
     
     private BetaClimateSampler() {
         this.biomeCache = new BiomeCache(this);
-    }
-    
-    public static BetaClimateSampler getInstance() {
-        return INSTANCE;
     }
     
     public void setSeed(long seed) {

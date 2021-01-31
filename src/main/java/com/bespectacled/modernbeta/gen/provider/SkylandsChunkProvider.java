@@ -74,7 +74,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         int chunkZ = chunk.getPos().z;
         
         Biome curBiome;
-        BetaClimateSampler climateSampler = BetaClimateSampler.getInstance();
+        BetaClimateSampler climateSampler = BetaClimateSampler.INSTANCE;
         
         stoneNoise = stoneNoiseOctaves.sampleArrBeta(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
@@ -263,7 +263,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         int startX = x / this.noiseSizeX * 16;
         int startZ = z / this.noiseSizeZ * 16;
         
-        BetaClimateSampler climateSampler = BetaClimateSampler.getInstance();
+        BetaClimateSampler climateSampler = BetaClimateSampler.INSTANCE;
 
      // Var names taken from old customized preset names
         double coordinateScale = 684.41200000000003D * this.xzScale; 

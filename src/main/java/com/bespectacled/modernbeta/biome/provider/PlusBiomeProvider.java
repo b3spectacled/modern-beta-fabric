@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -17,7 +18,7 @@ public class PlusBiomeProvider extends AbstractBiomeProvider {
     
     public PlusBiomeProvider(long seed, Map<BiomeType, Identifier> biomeMapping) {
         this.biomeMapping = biomeMapping;
-        BetaClimateSampler.getInstance().setSeed(seed);
+        BetaClimateSampler.INSTANCE.setSeed(seed);
     }
 
     @Override
@@ -25,7 +26,7 @@ public class PlusBiomeProvider extends AbstractBiomeProvider {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        return BetaClimateSampler.getInstance().sampleTemp(absX, absZ) < 0.5f ? 
+        return BetaClimateSampler.INSTANCE.sampleTemp(absX, absZ) < 0.5f ? 
             registry.get(biomeMapping.get(BiomeType.WINTER)) : 
             registry.get(biomeMapping.get(BiomeType.CLASSIC));
     } 

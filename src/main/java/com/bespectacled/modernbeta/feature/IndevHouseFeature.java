@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
+import com.bespectacled.modernbeta.gen.WorldType;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;

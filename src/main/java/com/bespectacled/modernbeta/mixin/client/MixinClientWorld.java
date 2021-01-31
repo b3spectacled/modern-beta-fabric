@@ -90,7 +90,7 @@ public abstract class MixinClientWorld extends World {
     )
     private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
         if (useBetaColors && BETA_CONFIG.renderBetaSkyColor && this.isOverworld) {
-            skyColorVec = Vec3d.unpackRgb(BetaClimateSampler.getInstance().getSkyColor((int)curPos.getX(), (int)curPos.getZ()));
+            skyColorVec = Vec3d.unpackRgb(BetaClimateSampler.INSTANCE.getSkyColor((int)curPos.getX(), (int)curPos.getZ()));
 
         }
         

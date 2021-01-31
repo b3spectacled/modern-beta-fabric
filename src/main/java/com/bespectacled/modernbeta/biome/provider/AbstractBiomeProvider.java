@@ -2,10 +2,10 @@ package com.bespectacled.modernbeta.biome.provider;
 
 import java.util.List;
 
+import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
+import com.bespectacled.modernbeta.gen.WorldType;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.registry.Registry;
@@ -28,7 +28,7 @@ public abstract class AbstractBiomeProvider {
     public static AbstractBiomeProvider getBiomeProvider(long seed, CompoundTag settings) {
         WorldType worldType = WorldType.getWorldType(settings);
         BiomeType biomeType = BiomeType.getBiomeType(settings);
-         
+        
         if (worldType == WorldType.INDEV)
             return new IndevBiomeProvider(seed, settings); 
         

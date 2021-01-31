@@ -1,11 +1,8 @@
 package com.bespectacled.modernbeta.gen;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.WorldEnum;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -19,14 +16,14 @@ public class OldGeneratorSettings {
     public static final ChunkGeneratorSettings SKYLANDS_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings INFDEV_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings INDEV_GENERATOR_SETTINGS;
-    //public static final ChunkGeneratorSettings NETHER_GENERATOR_SETTINGS;
+    public static final ChunkGeneratorSettings NETHER_GENERATOR_SETTINGS;
     
     public static final OldGeneratorSettings BETA_SETTINGS;
     public static final OldGeneratorSettings SKYLANDS_SETTINGS;
     public static final OldGeneratorSettings ALPHA_SETTINGS;
     public static final OldGeneratorSettings INFDEV_SETTINGS;
     public static final OldGeneratorSettings INDEV_SETTINGS;
-    //public static final OldGeneratorSettings NETHER_SETTINGS;
+    public static final OldGeneratorSettings NETHER_SETTINGS;
     public static final OldGeneratorSettings FLAT_SETTINGS;
     
     public static final Codec<OldGeneratorSettings> CODEC = RecordCodecBuilder.create(instance -> instance
@@ -55,7 +52,7 @@ public class OldGeneratorSettings {
     public static CompoundTag createIndevSettings() {
         CompoundTag settings = new CompoundTag();
         
-        settings.putString("worldType", WorldEnum.WorldType.INDEV.getName());
+        settings.putString("worldType", WorldType.INDEV.getName());
         settings.putString("levelType", ModernBeta.BETA_CONFIG.indevLevelType);
         settings.putString("levelTheme", ModernBeta.BETA_CONFIG.indevLevelTheme);
         settings.putInt("levelWidth", ModernBeta.BETA_CONFIG.indevLevelWidth);
@@ -95,7 +92,7 @@ public class OldGeneratorSettings {
         SKYLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.SKYLANDS_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, -10, 0, false);
         INFDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false);
         INDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.INDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false); 
-        //NETHER_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.NETHER_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, 128, 0, 32, false);
+        NETHER_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.NETHER_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, 128, 0, 32, false);
         
 
         BETA_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.BETA_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.BETA, BiomeType.BETA, generateOceans));
@@ -103,7 +100,7 @@ public class OldGeneratorSettings {
         ALPHA_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.ALPHA_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.ALPHA, BiomeType.CLASSIC, generateOceans));
         INFDEV_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.INFDEV_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.INFDEV, BiomeType.CLASSIC, generateOceans));
         INDEV_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.INDEV_GENERATOR_SETTINGS, OldGeneratorSettings.createIndevSettings());
-        //NETHER_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.NETHER_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.NETHER, BiomeType.BETA, false));
+        NETHER_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.NETHER_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.NETHER, BiomeType.BETA, false));
         FLAT_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.BETA_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.FLAT, BiomeType.BETA, false));
     }
 }

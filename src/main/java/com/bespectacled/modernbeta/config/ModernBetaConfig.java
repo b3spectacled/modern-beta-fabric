@@ -1,7 +1,8 @@
 package com.bespectacled.modernbeta.config;
 
+import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
+
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;

@@ -2,12 +2,12 @@ package com.bespectacled.modernbeta.gen;
 
 import java.util.Optional;
 
+import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gui.IndevCustomizeLevelScreen;
 import com.bespectacled.modernbeta.gui.InfCustomizeLevelScreen;
 import com.bespectacled.modernbeta.gui.InfdevOldCustomizeLevelScreen;
 import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.client.world.GeneratorType;
@@ -25,8 +25,8 @@ public class OldGeneratorType {
     private static final GeneratorType INFDEV;
     private static final GeneratorType INFDEV_OLD;
     private static final GeneratorType INDEV;
-    //private static final GeneratorType NETHER;
-    //private static final GeneratorType FLAT;
+    private static final GeneratorType NETHER;
+    private static final GeneratorType FLAT;
     
     public static void register() {
         register(BETA);
@@ -86,23 +86,21 @@ public class OldGeneratorType {
             }
         };
         
-        /*
         NETHER = new GeneratorType("nether") {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
                 return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.NETHER_SETTINGS.providerSettings), seed, OldGeneratorSettings.NETHER_SETTINGS);
             }
         };
-        */
         
-        /*
+        
         FLAT = new GeneratorType("flat") {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
                 return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.FLAT_SETTINGS.providerSettings), seed, OldGeneratorSettings.FLAT_SETTINGS);
             }
         };
-        */
+        
         
         MixinGeneratorTypeAccessor.setScreenProviders(
             new ImmutableMap.Builder<Optional<GeneratorType>, ScreenProvider>()
@@ -137,20 +135,16 @@ public class OldGeneratorType {
                         return new IndevCustomizeLevelScreen(createWorldScreen, OldGeneratorSettings.INDEV_SETTINGS, "createWorld.customize.indev.title");
                     }
                 )
-                /*
                 .put(
                     Optional.<GeneratorType>of(FLAT), (createWorldScreen, generatorSettings) -> {
-                        return new CustomizeFlatLevelScreen(createWorldScreen, OldGeneratorSettings.FLAT_SETTINGS);
+                        return new InfCustomizeLevelScreen(createWorldScreen, OldGeneratorSettings.BETA_SETTINGS, "createWorld.customize.beta.title", BiomeType.BETA, false);
                     }
                 )
-                */
-                /*
                 .put(
                     Optional.<GeneratorType>of(NETHER), (createWorldScreen, generatorSettings) -> {
-                        return new CustomizeNetherLevelScreen(createWorldScreen, OldGeneratorSettings.NETHER_SETTINGS);
+                        return new InfCustomizeLevelScreen(createWorldScreen, OldGeneratorSettings.BETA_SETTINGS, "createWorld.customize.beta.title", BiomeType.BETA, false);
                     }
                 )
-                */
                 .build()
         );
     }

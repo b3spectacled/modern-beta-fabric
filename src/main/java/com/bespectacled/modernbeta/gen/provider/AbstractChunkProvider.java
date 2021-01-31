@@ -78,7 +78,6 @@ public abstract class AbstractChunkProvider {
     public AbstractChunkProvider(long seed, OldGeneratorSettings settings) {
         this(
             seed,
-            settings.providerSettings,
             settings.generatorSettings.getGenerationShapeConfig().getMinimumY(),
             settings.generatorSettings.getGenerationShapeConfig().getHeight(),
             settings.generatorSettings.getSeaLevel(),
@@ -91,13 +90,13 @@ public abstract class AbstractChunkProvider {
             settings.generatorSettings.getGenerationShapeConfig().getSampling().getXZFactor(),
             settings.generatorSettings.getGenerationShapeConfig().getSampling().getYFactor(),
             settings.generatorSettings.getDefaultBlock(),
-            settings.generatorSettings.getDefaultFluid()
+            settings.generatorSettings.getDefaultFluid(),
+            settings.providerSettings
         );
     }
     
     private AbstractChunkProvider(
         long seed,
-        CompoundTag providerSettings,
         int minY, 
         int worldHeight, 
         int seaLevel,
@@ -110,10 +109,9 @@ public abstract class AbstractChunkProvider {
         double xzFactor, 
         double yFactor,
         BlockState defaultBlock,
-        BlockState defaultFluid
+        BlockState defaultFluid,
+        CompoundTag providerSettings
     ) {
-        this.providerSettings = providerSettings;
-        
         this.minY = minY;
         this.worldHeight = worldHeight;
         this.seaLevel = seaLevel;
@@ -137,6 +135,8 @@ public abstract class AbstractChunkProvider {
         
         this.defaultBlock = defaultBlock;
         this.defaultFluid = defaultFluid;
+        
+        this.providerSettings = providerSettings;
         
         RAND.setSeed(seed);
         HEIGHTMAP_CACHE.clear();

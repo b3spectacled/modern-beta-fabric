@@ -12,7 +12,6 @@ import com.bespectacled.modernbeta.gen.provider.AbstractChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.structure.OldStructures;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -68,9 +67,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.worldType = WorldType.getWorldType(settings.providerSettings);
         this.chunkProvider = this.worldType.getChunkProvider().apply(seed, settings);
         
-        this.generateOceans = settings.providerSettings.contains("generateOceans") ?
-            settings.providerSettings.getBoolean("generateOceans") && this.worldType.hasOceans() : 
-            false;
+        this.generateOceans = settings.providerSettings.contains("generateOceans") ? settings.providerSettings.getBoolean("generateOceans") : false;
     }
 
     public static void register() {

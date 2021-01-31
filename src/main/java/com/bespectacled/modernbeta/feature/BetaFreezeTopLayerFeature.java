@@ -47,7 +47,7 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 
                 double temp = (betaSource.isSkyDim()) ? 
                     betaSource.getBiomeRegistry().get(BetaBiomes.SKY_ID).getTemperature() :
-                    BetaClimateSampler.getInstance().sampleTemp(absX, absZ);
+                    BetaClimateSampler.INSTANCE.sampleTemp(absX, absZ);
 
                 mutable.set(absX, y, absZ);
                 mutableDown.set(mutable).move(Direction.DOWN, 1);
