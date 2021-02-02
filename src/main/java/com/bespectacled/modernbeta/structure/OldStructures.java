@@ -14,11 +14,6 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 public class OldStructures {
-    
-    public static final StructurePieceType HOUSE_PIECE = IndevHouseGenerator.HousePiece::new;
-    public static final StructureFeature<DefaultFeatureConfig> HOUSE_STRUCTURE = new IndevHouseStructure(DefaultFeatureConfig.CODEC);
-    public static final ConfiguredStructureFeature<?, ?> CONF_HOUSE_STRUCTURE = HOUSE_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT);
-    
     private static final Identifier OCEAN_SHRINE_ID = ModernBeta.createId("ocean_shrine");
     private static final Identifier OCEAN_SHRINE_BASE_ID = ModernBeta.createId("ocean_shrine/base");
     
@@ -28,27 +23,6 @@ public class OldStructures {
     public static final RegistryKey<ConfiguredStructureFeature<?, ?>> OCEAN_SHRINE_KEY = RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN, OCEAN_SHRINE_ID);
     
     public static void register() {
-        /*
-        Registry.register(
-            Registry.STRUCTURE_PIECE, 
-            new Identifier(ModernBeta.ID, INDEV_HOUSE_ID),
-            HOUSE_PIECE
-        );
-        
-        FabricStructureBuilder.create(
-            new Identifier(ModernBeta.ID, INDEV_HOUSE_ID), 
-            HOUSE_STRUCTURE)
-            .step(GenerationStep.Feature.SURFACE_STRUCTURES)
-            .defaultConfig(32, 8, 12345)
-            .adjustsSurface()
-            .register();
-        
-        BuiltinRegistries.add(
-            BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE, 
-            new Identifier(ModernBeta.ID, INDEV_HOUSE_ID), 
-            CONF_HOUSE_STRUCTURE
-        );
-        */
         
         Registry.register(
                 Registry.STRUCTURE_PIECE, 

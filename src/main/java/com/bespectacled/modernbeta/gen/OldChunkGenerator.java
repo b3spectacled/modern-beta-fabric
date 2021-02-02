@@ -214,8 +214,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
-    public BlockPos locateStructure(ServerWorld world, StructureFeature<?> feature, BlockPos center, int radius,
-            boolean skipExistingChunks) {
+    public BlockPos locateStructure(ServerWorld world, StructureFeature<?> feature, BlockPos center, int radius, boolean skipExistingChunks) {
         if (!this.generateOceans)
             if (feature.equals(StructureFeature.OCEAN_RUIN) || 
                 feature.equals(StructureFeature.SHIPWRECK) || 
@@ -224,6 +223,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 return null;
             }
 
+        System.out.println("Attempting to locate structures... " + this.getStructuresConfig().getForType(feature));
         return super.locateStructure(world, feature, center, radius, skipExistingChunks);
     }
     
