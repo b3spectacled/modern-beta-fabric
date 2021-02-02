@@ -35,11 +35,6 @@ public class MixinBlockColors implements MutableBlockColors {
     private static final double[] TEMP_HUMID = new double[2];
 
     @Unique
-    public void setSeed(long seed) {
-        BetaClimateSampler.getInstance().setSeed(seed);
-    }
-
-    @Unique
     public void setSeed(long seed, boolean isBetaWorld) {
         if (isBetaWorld)
             BetaClimateSampler.getInstance().setSeed(seed);

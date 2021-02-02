@@ -98,6 +98,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
         forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
 
+        BetaClimateSampler.getInstance().setSeed(seed);
         setForestOctaves(forestNoiseOctaves);
     }
 

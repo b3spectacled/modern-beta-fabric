@@ -53,7 +53,7 @@ public class VanillaBiomeLayer {
      * See BiomeLayer for reference
      */
     private static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> build(boolean old, int biomeSize, int riverSize, LongFunction<C> contextProvider) {
-        LayerFactory<T> layerFactory = VanillaInitLayer.INSTANCE.<T>create((LayerSampleContext<T>)contextProvider.apply(1L));
+LayerFactory<T> layerFactory = VanillaInitLayer.INSTANCE.<T>create((LayerSampleContext<T>)contextProvider.apply(1L));
         
         layerFactory = ScaleLayer.FUZZY.<T>create(contextProvider.apply(2000L), layerFactory);
         layerFactory = IncreaseEdgeCurvatureLayer.INSTANCE.<T>create(contextProvider.apply(1L), layerFactory);
@@ -74,8 +74,8 @@ public class VanillaBiomeLayer {
         layerFactory = ScaleLayer.NORMAL.<T>create(contextProvider.apply(2003L), layerFactory);
         
         layerFactory = IncreaseEdgeCurvatureLayer.INSTANCE.<T>create(contextProvider.apply(4L), layerFactory);
-        layerFactory = AddMushroomIslandLayer.INSTANCE.<T>create(contextProvider.apply(5L), layerFactory);
-
+        //layerFactory = AddMushroomIslandLayer.INSTANCE.<T>create(contextProvider.apply(5L), layerFactory);
+        
         layerFactory = stack(1000L, ScaleLayer.NORMAL, layerFactory, 0, contextProvider);
         
         LayerFactory<T> layerFactory2 = stack(1000L, ScaleLayer.NORMAL, layerFactory, 0, contextProvider);
@@ -83,6 +83,10 @@ public class VanillaBiomeLayer {
         
         LayerFactory<T> layerFactory3 = layerFactory;
         layerFactory3 = new SetBaseBiomesLayer(old).<T>create(contextProvider.apply(200L), layerFactory3);
+        
+        // Custom biome layer to re-add mushroom fields biome.
+        layerFactory3 = VanillaAddOceanlessMushroomLayer.INSTANCE.<T>create(contextProvider.apply(5L), layerFactory3);
+        
         layerFactory3 = AddBambooJungleLayer.INSTANCE.<T>create(contextProvider.apply(1001L), layerFactory3);
         layerFactory3 = stack(1000L, ScaleLayer.NORMAL, layerFactory3, 2, contextProvider);
         layerFactory3 = EaseBiomeEdgeLayer.INSTANCE.<T>create(contextProvider.apply(1000L), layerFactory3);

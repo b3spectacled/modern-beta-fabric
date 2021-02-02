@@ -24,10 +24,10 @@ import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.biome.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
 import com.bespectacled.modernbeta.biome.indev.IndevBiomes;
+import com.bespectacled.modernbeta.biome.vanilla.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 
