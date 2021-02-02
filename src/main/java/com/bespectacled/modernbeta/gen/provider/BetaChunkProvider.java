@@ -45,7 +45,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
     private final double heightNoise[];
     
     public BetaChunkProvider(long seed, OldGeneratorSettings settings) {
-        super(seed, settings);
+        //super(seed, settings);
+        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER, settings.providerSettings);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         

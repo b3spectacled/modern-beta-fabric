@@ -9,7 +9,7 @@ import net.minecraft.util.registry.Registry;
 
 public class BetaBiomes {
     public enum BetaBiomeType {
-        LAND, OCEAN
+        LAND, OCEAN, ICE_DESERT
     }
     
     public static final Identifier FOREST_ID = ModernBeta.createId("forest");
@@ -81,6 +81,7 @@ public class BetaBiomes {
      */
     
     private static final Identifier LAND_BIOME_TABLE[] = new Identifier[4096];
+    private static final Identifier ICE_DESERT_BIOME_TABLE[] = new Identifier[4096];
     private static final Identifier OCEAN_BIOME_TABLE[] = new Identifier[4096];
     
     static {
@@ -97,6 +98,9 @@ public class BetaBiomes {
             case OCEAN:
                 biomeId = OCEAN_BIOME_TABLE[i + j * 64];
                 break;
+            case ICE_DESERT:
+                biomeId= ICE_DESERT_BIOME_TABLE[i + j * 64];
+                break;
             default:
                 biomeId = LAND_BIOME_TABLE[i + j * 64];
         }
@@ -104,33 +108,24 @@ public class BetaBiomes {
         return biomeId;
     }
     
-    public static void getBiomesFromLookup(double[] temps, double[] humids, Identifier[] landBiomes, Identifier[] oceanBiomes) {
-        int sizeX = 16;
-        int sizeZ = 16;
-        
-        for (int i = 0; i < sizeX * sizeZ; ++i) {
-            if (landBiomes != null) landBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BetaBiomeType.LAND);
-            if (oceanBiomes != null) oceanBiomes[i] = getBiomeFromLookup(temps[i], humids[i], BetaBiomeType.OCEAN);
-        }
-    }
-    
     private static void generateBiomeLookup() {
         for (int i = 0; i < 64; i++) {
             for (int j = 0; j < 64; j++) {
-                LAND_BIOME_TABLE[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F);
+                LAND_BIOME_TABLE[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F, false);
+                ICE_DESERT_BIOME_TABLE[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F, true);
                 OCEAN_BIOME_TABLE[i + j * 64] = getOceanBiome((float) i / 63F, (float) j / 63F);
             }
         }
     }
     
-    private static Identifier getBiome(float temp, float humid) {
+    private static Identifier getBiome(float temp, float humid, boolean genIceDesert) {
         humid *= temp;
 
         if (temp < 0.1F) {
-            //if (this.biomeType == BetaBiomeType.ICE_DESERT)
-            //    return registry.get(mappings.get("ice_desert"));
-            //else
-            return TUNDRA_ID;
+            if (genIceDesert)
+                return ICE_DESERT_ID;
+            else
+                return TUNDRA_ID;
         }
 
         if (humid < 0.2F) {

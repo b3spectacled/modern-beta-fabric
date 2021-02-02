@@ -82,7 +82,10 @@ public class VanillaBiomeLayer {
         
         LayerFactory<T> layerFactory3 = layerFactory;
         layerFactory3 = new SetBaseBiomesLayer(old).<T>create(contextProvider.apply(200L), layerFactory3);
+        
+        // Custom biome layer to re-add mushroom fields biome.
         layerFactory3 = VanillaAddOceanlessMushroomLayer.INSTANCE.<T>create(contextProvider.apply(5L), layerFactory3);
+        
         layerFactory3 = AddBambooJungleLayer.INSTANCE.<T>create(contextProvider.apply(1001L), layerFactory3);
         layerFactory3 = stack(1000L, ScaleLayer.NORMAL, layerFactory3, 2, contextProvider);
         layerFactory3 = EaseBiomeEdgeLayer.INSTANCE.<T>create(contextProvider.apply(1000L), layerFactory3);

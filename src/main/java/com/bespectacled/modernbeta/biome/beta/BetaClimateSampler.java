@@ -46,14 +46,7 @@ public enum BetaClimateSampler {
         float temp = (float)sampleSkyTemp(x, z);
         
         temp /= 3F;
-
-        if (temp < -1F) { 
-            temp = -1F;
-        }
-
-        if (temp > 1.0F) {
-            temp = 1.0F;
-        }
+        temp = MathHelper.clamp(temp, -1F, 1F);
         
         return MathHelper.hsvToRgb(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F);
     }
@@ -79,22 +72,9 @@ public enum BetaClimateSampler {
         humid = (humid * 0.14999999999999999D + 0.5D) * d2 + d * d1;
 
         temp = 1.0D - (1.0D - temp) * (1.0D - temp);
-        
-        if (temp < 0.0D) {
-            temp = 0.0D;
-        }
-        if (humid < 0.0D) {
-            humid = 0.0D;
-        }
-        if (temp > 1.0D) {
-            temp = 1.0D;
-        }
-        if (humid > 1.0D) {
-            humid = 1.0D;
-        }
 
-        arr[0] = temp;
-        arr[1] = humid;
+        arr[0] = MathHelper.clamp(temp, 0.0, 1.0);
+        arr[1] = MathHelper.clamp(humid, 0.0, 1.0);
     }
     
     private double sampleSkyTempAtPoint(int x, int z) {

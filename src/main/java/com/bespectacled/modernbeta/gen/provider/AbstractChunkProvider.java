@@ -95,7 +95,7 @@ public abstract class AbstractChunkProvider {
         );
     }
     
-    private AbstractChunkProvider(
+    public AbstractChunkProvider(
         long seed,
         int minY, 
         int worldHeight, 
@@ -146,6 +146,10 @@ public abstract class AbstractChunkProvider {
     public abstract void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource);
     public abstract int getHeight(int x, int z, Heightmap.Type type);
     public abstract PerlinOctaveNoise getBeachNoiseOctaves();
+    
+    public BlockState getBlockState(double density, int y) {
+        return this.getBlockState(density, y, 1.0);
+    }
     
     public BlockState getBlockState(double density, int y, double temp) {
         BlockState blockStateToSet = BlockStates.AIR;

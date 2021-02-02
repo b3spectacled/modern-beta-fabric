@@ -48,7 +48,8 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     private static final Random SANDSTONE_RAND = new Random();
     
     public AlphaChunkProvider(long seed, OldGeneratorSettings settings) {
-        super(seed, settings);
+        //super(seed, settings);
+        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER, settings.providerSettings);
         SANDSTONE_RAND.setSeed(seed);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
@@ -262,7 +263,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                                     JIGSAW_LIST.size(), 
                                     absX, y, absZ);
 
-                                BlockState blockToSet = getBlockState(clampedDensity, y, 0);
+                                BlockState blockToSet = getBlockState(clampedDensity, y);
 
                                 chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
 

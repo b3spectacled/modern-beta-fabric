@@ -42,7 +42,8 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     private static final Random SANDSTONE_RAND = new Random();
     
     public InfdevChunkProvider(long seed, OldGeneratorSettings settings) {
-        super(seed, settings);
+        //super(seed, settings);
+        super(seed, 0, 128, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER, settings.providerSettings);
         SANDSTONE_RAND.setSeed(seed);
         
         this.heightNoise = new double[(this.noiseSizeY + 1) * this.noiseSizeX];
@@ -273,7 +274,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                                     JIGSAW_LIST.size(), 
                                     absX, y, absZ);
                                 
-                                BlockState blockToSet = getBlockState(clampedDensity, y, 0);
+                                BlockState blockToSet = getBlockState(clampedDensity, y);
                                 chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
                                 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);

@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.biome;
+package com.bespectacled.modernbeta.biome.vanilla;
 
 import java.util.function.Predicate;
 

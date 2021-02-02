@@ -16,6 +16,8 @@ import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.util.MutableClientWorld;
+
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.At;
  * Based on Colormatic ClientWorldMixin
  */
 @Mixin(value = ClientWorld.class, priority = 1)
-public abstract class MixinClientWorld extends World {
+public abstract class MixinClientWorld extends World implements MutableClientWorld {
     
     @Unique private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
     
@@ -95,6 +97,11 @@ public abstract class MixinClientWorld extends World {
         }
         
         return skyColorVec;
+    }
+    
+    @Override
+    public boolean usesBetaColors() {
+        return this.useBetaColors;
     }
 }
 

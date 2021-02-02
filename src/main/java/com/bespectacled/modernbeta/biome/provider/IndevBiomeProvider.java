@@ -14,21 +14,16 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class IndevBiomeProvider extends AbstractBiomeProvider {
-    
-    //private final IndevType type;
     private final IndevTheme theme;
    
     private final int width;
     private final int length;
-    //private final int height;
     
     public IndevBiomeProvider(long seed, CompoundTag settings) {
         this.theme = settings.contains("levelTheme") ? IndevTheme.fromName(settings.getString("levelTheme")) : IndevTheme.NORMAL;
-        //this.type = settings.contains("levelType") ? IndevType.fromName(settings.getString("levelType")) : IndevType.ISLAND;
 
         this.width = settings.contains("levelWidth") ? settings.getInt("levelWidth") : 256;
         this.length = settings.contains("levelLength") ? settings.getInt("levelLength") : 256;
-        //this.height = settings.contains("levelHeight") ? settings.getInt("levelHeight") : 128;
     }
 
     @Override

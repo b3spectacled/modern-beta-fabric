@@ -10,6 +10,7 @@
     
     "createWorld.customize.biomeType": "Biome Type",
     "createWorld.customize.biomeType.beta": "Beta",
+    "createWorld.customize.biomeType.beta_ice_desert": "Beta + Ice Desert",
     "createWorld.customize.biomeType.classic": "Classic",
     "createWorld.customize.biomeType.sky": "Sky Dimension",
     "createWorld.customize.biomeType.winter": "Winter Mode",

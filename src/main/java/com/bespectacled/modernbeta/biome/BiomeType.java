@@ -3,38 +3,23 @@ package com.bespectacled.modernbeta.biome;
 import net.minecraft.nbt.CompoundTag;
 
 public enum BiomeType {
-    BETA(0, "beta"),
-    SKY(1, "sky"),
-    CLASSIC(2, "classic"),
-    WINTER(3, "winter"),
-    PLUS(4, "plus"),
-    VANILLA(5, "vanilla");
-    //NETHER(7, "nether");
+    BETA("beta"),
+    BETA_ICE_DESERT("beta_ice_desert"),
+    SKY("sky"),
+    CLASSIC("classic"),
+    WINTER("winter"),
+    PLUS("plus"),
+    VANILLA("vanilla");
+    //NETHER("nether");
     
-    private final int id;
     private final String name;
     
-    private BiomeType(int id, String name) {
-        this.id = id;
+    private BiomeType(String name) {
         this.name = name;
-    }
-    
-    public int getId() {
-        return this.id;
     }
     
     public String getName() {
         return this.name;
-    }
-    
-    public static BiomeType fromId(int id) {
-        for (BiomeType t : BiomeType.values()) {
-            if (t.id == id) {
-                return t;
-            }
-        }
-        
-        throw new IllegalArgumentException("[Modern Beta] No biome type matching id: " + id);
     }
     
     public static BiomeType fromName(String name) {

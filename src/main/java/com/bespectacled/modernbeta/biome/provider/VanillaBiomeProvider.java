@@ -60,7 +60,7 @@ public class VanillaBiomeProvider extends AbstractBiomeProvider {
             category != Category.NETHER &&
             category != Category.THEEND;
         
-        return  isValid;
+        return isValid;
     }
 
 }

@@ -39,7 +39,8 @@ public class NetherChunkProvider extends AbstractChunkProvider {
     private final double heightNoise[];
     
     public NetherChunkProvider(long seed, OldGeneratorSettings settings) {
-        super(seed, settings);
+        //super(seed, settings);
+        super(seed, 0, 128, 32, 0, 128, 2, 1, 1.0, 1.0, 80, 60, BlockStates.STONE, BlockStates.WATER, settings.providerSettings);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         

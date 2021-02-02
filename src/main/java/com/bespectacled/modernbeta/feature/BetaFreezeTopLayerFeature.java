@@ -45,7 +45,7 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 int absZ = blockPos.getZ() + z;
                 int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING, absX, absZ);
                 
-                double temp = (betaSource.isSkyDim()) ? 
+                double temp = (betaSource.isSky()) ? 
                     betaSource.getBiomeRegistry().get(BetaBiomes.SKY_ID).getTemperature() :
                     BetaClimateSampler.INSTANCE.sampleTemp(absX, absZ);
 
