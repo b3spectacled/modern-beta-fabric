@@ -51,10 +51,10 @@ public class MixinBackgroundRenderer {
         // where renderDistance is 0-3, 0 being 'Far' and 3 being 'Short'
         if (BETA_CONFIG.renderBetaSkyColor && MutableClientWorld.inject(clientWorld).usesBetaColors()) {
             int clampedDistance = MathHelper.clamp(capturedRenderDistance, 0, 16);
-            clampedDistance = (int)(Math.abs(clampedDistance - 16) / (float)16 * 3); 
+            clampedDistance = (int)((16 - clampedDistance) / (float)16 * 3); 
             
             weighting = 1.0F / (float)(4 - clampedDistance);
-            weighting = 1.0F - (float)Math.pow(weighting, 0.25); 
+            weighting = 1.0F - (float)Math.pow(weighting, 0.25);
         }
         
         return weighting;
