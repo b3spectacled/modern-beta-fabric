@@ -22,6 +22,7 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 
 /*
@@ -175,6 +176,13 @@ public abstract class AbstractChunkProvider {
     
     public int getSeaLevel() {
         return this.seaLevel;
+    }
+    
+    protected ChunkRandom createChunkRand(int chunkX, int chunkZ) {
+        ChunkRandom chunkRand = new ChunkRandom();
+        chunkRand.setTerrainSeed(chunkX, chunkZ);
+        
+        return chunkRand;
     }
     
     public static Biome getBiomeForSurfaceGen(BlockPos pos, ChunkRegion region, OldBiomeSource biomeSource) {

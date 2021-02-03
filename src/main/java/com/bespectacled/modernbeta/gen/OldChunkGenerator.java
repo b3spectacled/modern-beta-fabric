@@ -65,7 +65,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.settings = settings;
         
         this.worldType = WorldType.getWorldType(settings.providerSettings);
-        this.chunkProvider = this.worldType.getChunkProvider().apply(seed, settings);
+        this.chunkProvider = this.worldType.createChunkProvider(seed, settings);
         
         this.generateOceans = settings.providerSettings.contains("generateOceans") ? settings.providerSettings.getBoolean("generateOceans") : false;
     }
@@ -122,10 +122,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         Biome biome = GenUtil.getOceanBiome(ctrChunk, this, this.getBiomeSource(), generateOceans, this.getSeaLevel());
 
-        long popSeed = random.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
+        long popSeed = this.random.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
 
         try {
-            biome.generateFeatureStep(structureAccessor, this, chunkRegion, popSeed, random, new BlockPos(ctrAbsX, 0, ctrAbsZ));
+            biome.generateFeatureStep(structureAccessor, this, chunkRegion, popSeed, this.random, new BlockPos(ctrAbsX, 0, ctrAbsZ));
         } catch (Exception exception) {
             CrashReport report = CrashReport.create(exception, "Biome decoration");
             report.addElement("Generation").add("CenterX", ctrX).add("CenterZ", ctrZ).add("Seed", popSeed).add("Biome", biome);
@@ -146,9 +146,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(carver);
 
-        random.setSeed(seed);
-        long l = (random.nextLong() / 2L) * 2L + 1L;
-        long l1 = (random.nextLong() / 2L) * 2L + 1L;
+        this.random.setSeed(seed);
+        long l = (this.random.nextLong() / 2L) * 2L + 1L;
+        long l1 = (this.random.nextLong() / 2L) * 2L + 1L;
 
         for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
             for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
@@ -158,10 +158,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 while (carverIterator.hasNext()) {
                     ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
                     
-                    random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
+                    this.random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
                     
                     if (configuredCarver.shouldCarve(random, chunkX, chunkZ)) {
-                        configuredCarver.carve(chunk, biomeAcc::getBiome, random, this.getSeaLevel(), chunkX, chunkZ,
+                        configuredCarver.carve(chunk, biomeAcc::getBiome, this.random, this.getSeaLevel(), chunkX, chunkZ,
                                 mainChunkX, mainChunkZ, bitSet);
 
                     }

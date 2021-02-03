@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.gen.provider;
 
+import java.util.Random;
+
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.GenUtil;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
@@ -64,8 +66,6 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
 
     @Override
     public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
-        RAND.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
-
         generateTerrain(chunk.getPos().getStartX(), chunk.getPos().getStartZ(), biomeSource);  
         setTerrain((ChunkRegion)worldAccess, chunk, structureAccessor, biomeSource);
     }
@@ -153,7 +153,8 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
     }
   
     private void generateTerrain(int startX, int startZ, OldBiomeSource biomeSource) {
-        
+        Random rand = new Random();
+      
         for (int relX = 0; relX < 16; ++relX) {
             int x = startX + relX;
             int rX = x / 1024;
@@ -203,9 +204,9 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                     }
                     
                     if (this.generateInfdevPyramid) {
-                        RAND.setSeed(rX + rZ * 13871);
-                        int bX = (rX << 10) + 128 + RAND.nextInt(512);
-                        int bZ = (rZ << 10) + 128 + RAND.nextInt(512);
+                        rand.setSeed(rX + rZ * 13871);
+                        int bX = (rX << 10) + 128 + rand.nextInt(512);
+                        int bZ = (rZ << 10) + 128 + rand.nextInt(512);
                         
                         bX = x - bX;
                         bZ = z - bZ;
@@ -221,7 +222,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                             blockToSet = Blocks.BRICKS;     
                     }
                     
-                    if (y <= 0 + RAND.nextInt(5)) {
+                    if (y <= 0 + rand.nextInt(5)) {
                         blockToSet = Blocks.BEDROCK;
                     }
                               

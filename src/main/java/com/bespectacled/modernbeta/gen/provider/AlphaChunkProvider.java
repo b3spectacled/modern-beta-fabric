@@ -1,7 +1,5 @@
 package com.bespectacled.modernbeta.gen.provider;
 
-import java.util.Random;
-
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.GenUtil;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
@@ -20,6 +18,7 @@ import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 
 public class AlphaChunkProvider extends AbstractChunkProvider {
@@ -45,12 +44,9 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     
     private final double heightNoise[];
     
-    private static final Random SANDSTONE_RAND = new Random();
-    
     public AlphaChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
         super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER, settings.providerSettings);
-        SANDSTONE_RAND.setSeed(seed);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         
@@ -69,9 +65,6 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
 
     @Override
     public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
-        RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
-        SANDSTONE_RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
-
         generateTerrain(chunk, structureAccessor);
     }
 
@@ -81,18 +74,24 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
 
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
+        
+        // TODO: Really should be pooled or something
+        ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
+        ChunkRandom sandstoneRand = this.createChunkRand(chunkX, chunkZ);
 
         sandNoise = beachNoiseOctaves.sampleArr(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth, eighth, 1.0D);
         gravelNoise = beachNoiseOctaves.sampleArr(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
         stoneNoise = stoneNoiseOctaves.sampleArr(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
 
-        for (int z = 0; z < 16; z++) {
-            for (int x = 0; x < 16; x++) {
+        // Accurate beach/terrain patterns depend on z iterating before x,
+        // and array accesses changing accordingly.
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
 
-                boolean genSandBeach = sandNoise[x + z * 16] + RAND.nextDouble() * 0.20000000000000001D > 0.0D;
-                boolean genGravelBeach = gravelNoise[x + z * 16] + RAND.nextDouble() * 0.20000000000000001D > 3D;
+                boolean genSandBeach = sandNoise[x + z * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
+                boolean genGravelBeach = gravelNoise[x + z * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
 
-                int genStone = (int) (stoneNoise[x + z * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
+                int genStone = (int) (stoneNoise[x + z * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
                 
                 int absX = (chunkX << 4) + x;
@@ -110,7 +109,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                 for (int y = this.worldHeight - 1; y >= 0; y--) {
 
                     // Randomly place bedrock from y=0 to y=5
-                    if (y <= (0 + RAND.nextInt(6)) - 1) {
+                    if (y <= (0 + rand.nextInt(6)) - 1) {
                         chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
                         continue;
                     }
@@ -169,7 +168,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                     // Gens layer of sandstone starting at lowest block of sand, of height 1 to 4.
                     // Beta backport.
                     if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                        flag = SANDSTONE_RAND.nextInt(4);
+                        flag = sandstoneRand.nextInt(4);
                         fillerBlock = BlockStates.SANDSTONE;
                     }
                 }

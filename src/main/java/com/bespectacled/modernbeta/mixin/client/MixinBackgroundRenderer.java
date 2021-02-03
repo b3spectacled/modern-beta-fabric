@@ -48,10 +48,10 @@ public class MixinBackgroundRenderer {
     )
     private static float modifyFogWeighting(float weighting) {
         // Old fog formula with old render distance: weighting = 1.0F / (float)(4 - renderDistance) 
-        // where renderDistance is 0-3, 0 being 'Far' and 3 being 'Short'
+        // where renderDistance is 0-3, 0 being 'Far' and 3 being 'Very Short'
         if (BETA_CONFIG.renderBetaSkyColor && MutableClientWorld.inject(clientWorld).usesBetaColors()) {
             int clampedDistance = MathHelper.clamp(capturedRenderDistance, 0, 16);
-            clampedDistance = (int)((16 - clampedDistance) / (float)16 * 3); 
+            clampedDistance = (int)((16 - clampedDistance) / (float)16 * 3);
             
             weighting = 1.0F / (float)(4 - clampedDistance);
             weighting = 1.0F - (float)Math.pow(weighting, 0.25);

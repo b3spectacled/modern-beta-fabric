@@ -36,8 +36,8 @@ public enum WorldType {
         return this.name;
     }
     
-    public BiFunction<Long, OldGeneratorSettings, AbstractChunkProvider> getChunkProvider() {
-        return this.chunkProvider;
+    public AbstractChunkProvider createChunkProvider(long seed, OldGeneratorSettings settings) {
+        return this.chunkProvider.apply(seed, settings);
     }
     
     public static WorldType fromName(String name) {

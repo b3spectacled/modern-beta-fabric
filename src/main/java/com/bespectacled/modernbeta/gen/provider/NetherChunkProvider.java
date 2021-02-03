@@ -13,6 +13,7 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 
 public class NetherChunkProvider extends AbstractChunkProvider {
@@ -59,8 +60,6 @@ public class NetherChunkProvider extends AbstractChunkProvider {
 
     @Override
     public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
-        RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
-
         generateTerrain(chunk, structureAccessor);
     }
     
@@ -71,7 +70,8 @@ public class NetherChunkProvider extends AbstractChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
-        Biome curBiome;
+        // TODO: Really should be pooled or something
+        ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
 
         sandNoise = beachNoiseOctaves.sampleArrBeta(
             sandNoise, 
@@ -95,16 +95,16 @@ public class NetherChunkProvider extends AbstractChunkProvider {
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 16; x++) {
 
-                boolean genSandBeach = sandNoise[z + x * 16] + RAND.nextDouble() * 0.20000000000000001D > 0.0D;
-                boolean genGravelBeach = gravelNoise[z + x * 16] + RAND.nextDouble() * 0.20000000000000001D > 0.0D;
+                boolean genSandBeach = sandNoise[z + x * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
+                boolean genGravelBeach = gravelNoise[z + x * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
 
-                int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
+                int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
                 
                 int absX = chunk.getPos().getStartX() + x;
                 int absZ = chunk.getPos().getStartZ() + z;
                     
-                curBiome = getBiomeForSurfaceGen(POS.set(absX, 0, absZ), region, biomeSource);
+                Biome curBiome = getBiomeForSurfaceGen(POS.set(absX, 0, absZ), region, biomeSource);
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -116,13 +116,13 @@ public class NetherChunkProvider extends AbstractChunkProvider {
                 for (int y = this.worldHeight - 1; y >= this.minY; y--) {
                     
                     // Randomly place bedrock from top of world to height - 4
-                    if (y >= this.worldHeight - 1 - RAND.nextInt(5)) {
+                    if (y >= this.worldHeight - 1 - rand.nextInt(5)) {
                         chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
                         continue;
                     }
                     
                     // Randomly place bedrock from y=0 (or minHeight) to y=4
-                    if (y <= this.minY + RAND.nextInt(5)) {
+                    if (y <= this.minY + rand.nextInt(5)) {
                         chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
                         continue;
                     }
@@ -180,7 +180,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
                     if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                        flag = RAND.nextInt(4);
+                        flag = rand.nextInt(4);
                         fillerBlock = BlockStates.SANDSTONE;
                     }
                 }

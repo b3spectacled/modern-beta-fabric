@@ -1,7 +1,5 @@
 package com.bespectacled.modernbeta.gen.provider;
 
-import java.util.Random;
-
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.GenUtil;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
@@ -21,6 +19,7 @@ import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 
 /**
@@ -39,12 +38,9 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     
     private final double heightNoise[];
     
-    private static final Random SANDSTONE_RAND = new Random();
-    
     public InfdevChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
         super(seed, 0, 128, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER, settings.providerSettings);
-        SANDSTONE_RAND.setSeed(seed);
         
         this.heightNoise = new double[(this.noiseSizeY + 1) * this.noiseSizeX];
         
@@ -64,9 +60,6 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
 
     @Override
     public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
-        RAND.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
-        SANDSTONE_RAND.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
-
         generateTerrain(chunk, structureAccessor); 
     }
 
@@ -77,6 +70,10 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
+        // TODO: Really should be pooled or something
+        ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
+        ChunkRandom sandstoneRand = this.createChunkRand(chunkX, chunkZ);
+        
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
                 int absX = (chunkX << 4) + x;
@@ -85,16 +82,16 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 boolean genSandBeach = this.beachNoiseOctaves.sample(
                     absX * thirtysecond, 
                     absZ * thirtysecond, 
-                    0.0) + RAND.nextDouble() * 0.2 > 0.0;
+                    0.0) + rand.nextDouble() * 0.2 > 0.0;
                 
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(
                     absZ * thirtysecond, 
                     109.0134,
-                    absX * thirtysecond) + RAND.nextDouble() * 0.2 > 3.0;
+                    absX * thirtysecond) + rand.nextDouble() * 0.2 > 3.0;
                 
                 int genStone = (int)(this.stoneNoiseOctaves.sample(
                     absX * thirtysecond * 2.0, 
-                    absZ * thirtysecond * 2.0) / 3.0 + 3.0 + RAND.nextDouble() * 0.25);
+                    absZ * thirtysecond * 2.0) / 3.0 + 3.0 + rand.nextDouble() * 0.25);
                 
                 int flag = -1;
                 
@@ -109,7 +106,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 for (int y = this.worldHeight - 1; y >= 0; --y) {
                     
                     // Randomly place bedrock from y=0 to y=5
-                    if (y <= 0 + RAND.nextInt(5)) {
+                    if (y <= 0 + rand.nextInt(5)) {
                         chunk.setBlockState(POS.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
                         continue;
                     }
@@ -160,7 +157,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                             // Gens layer of sandstone starting at lowest block of sand, of height 1 to 4.
                             // Beta backport.
                             if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                                flag = SANDSTONE_RAND.nextInt(4);
+                                flag = sandstoneRand.nextInt(4);
                                 fillerBlock = BlockStates.SANDSTONE;
                             }
                         }
