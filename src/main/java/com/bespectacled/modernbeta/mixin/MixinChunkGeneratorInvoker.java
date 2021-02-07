@@ -4,7 +4,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.structure.StructureManager;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -21,8 +20,7 @@ public interface MixinChunkGeneratorInvoker {
         StructureAccessor structureAccessor, 
         Chunk chunk, 
         StructureManager structureManager, 
-        long seed, 
-        ChunkPos chunkPos, 
+        long seed,
         Biome biome
     );
 }

@@ -17,6 +17,7 @@ import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
@@ -24,6 +25,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.StructureWeightSampler;
 
 /*
  * Some vanilla settings, for reference:
@@ -167,6 +169,38 @@ public abstract class AbstractChunkProvider {
             }
 
         }
+        return blockStateToSet;
+    }
+    
+    protected BlockState getBlockState(StructureWeightSampler weightSampler, int x, int y, int z, double density) {
+        double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
+        clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
+        
+        clampedDensity += weightSampler.getWeight(x, y, z);
+        
+        BlockState blockStateToSet = BlockStates.AIR;
+        
+        if (clampedDensity > 0.0) {
+            blockStateToSet = this.defaultBlock;
+        } else if (y < this.getSeaLevel()) {
+            blockStateToSet = this.defaultFluid;
+        }
+        
+        return blockStateToSet;
+    }
+    
+    protected BlockState getBlockStateSky(StructureWeightSampler weightSampler, int x, int y, int z, double density) {
+        double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
+        clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
+        
+        clampedDensity += weightSampler.getWeight(x, y, z);
+        
+        BlockState blockStateToSet = BlockStates.AIR;
+        
+        if (clampedDensity > 0.0) {
+            blockStateToSet = this.defaultBlock;
+        }
+        
         return blockStateToSet;
     }
     

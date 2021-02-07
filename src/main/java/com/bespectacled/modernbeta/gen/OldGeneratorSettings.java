@@ -22,6 +22,7 @@ public class OldGeneratorSettings {
     public static final OldGeneratorSettings SKYLANDS_SETTINGS;
     public static final OldGeneratorSettings ALPHA_SETTINGS;
     public static final OldGeneratorSettings INFDEV_SETTINGS;
+    public static final OldGeneratorSettings INFDEV_OLD_SETTINGS;
     public static final OldGeneratorSettings INDEV_SETTINGS;
     public static final OldGeneratorSettings NETHER_SETTINGS;
     public static final OldGeneratorSettings FLAT_SETTINGS;
@@ -93,12 +94,12 @@ public class OldGeneratorSettings {
         INFDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false);
         INDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.INDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false); 
         NETHER_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.NETHER_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, 128, 0, 32, false);
-        
 
         BETA_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.BETA_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.BETA, BiomeType.BETA, generateOceans));
         SKYLANDS_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.SKYLANDS_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.SKYLANDS, BiomeType.SKY, false));
         ALPHA_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.ALPHA_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.ALPHA, BiomeType.CLASSIC, generateOceans));
         INFDEV_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.INFDEV_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.INFDEV, BiomeType.CLASSIC, generateOceans));
+        INFDEV_OLD_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.INFDEV_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.INFDEV_OLD, BiomeType.CLASSIC, generateOceans));
         INDEV_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.INDEV_GENERATOR_SETTINGS, OldGeneratorSettings.createIndevSettings());
         NETHER_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.NETHER_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.NETHER, BiomeType.BETA, false));
         FLAT_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.BETA_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.FLAT, BiomeType.BETA, false));

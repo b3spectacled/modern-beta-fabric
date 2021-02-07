@@ -1,7 +1,5 @@
 package com.bespectacled.modernbeta.feature;
 
-import java.util.Random;
-
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
@@ -18,6 +16,7 @@ import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.util.FeatureContext;
 
 public class IndevHouseFeature extends Feature<DefaultFeatureConfig> {
     public IndevHouseFeature(Codec<DefaultFeatureConfig> config) {
@@ -25,10 +24,13 @@ public class IndevHouseFeature extends Feature<DefaultFeatureConfig> {
     }
     
     @Override
-    public boolean generate(StructureWorldAccess world, ChunkGenerator generator, Random random, BlockPos pos, DefaultFeatureConfig config) {
+    public boolean generate(FeatureContext<DefaultFeatureConfig> featureContext) {
+        StructureWorldAccess world = featureContext.getWorld();
+        BlockPos pos = featureContext.getPos();
+        ChunkGenerator generator = featureContext.getGenerator();
+        
         BlockPos topPos = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, pos);
         BlockPos.Mutable housePos = new BlockPos.Mutable();
-        
         
         int spawnX = topPos.getX();
         //int spawnY = topPos.getY() + 1;

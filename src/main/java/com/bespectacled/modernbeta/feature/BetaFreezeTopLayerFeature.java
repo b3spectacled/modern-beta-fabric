@@ -1,7 +1,5 @@
 package com.bespectacled.modernbeta.feature;
 
-import java.util.Random;
-
 import com.bespectacled.modernbeta.biome.*;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
@@ -20,6 +18,7 @@ import net.minecraft.world.WorldView;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.util.FeatureContext;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.LightType;
 
@@ -29,20 +28,23 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
     }
 
     @Override
-    public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos,
-            DefaultFeatureConfig defaultFeatureConfig) {
+    public boolean generate(FeatureContext<DefaultFeatureConfig> featureContext) {
+        StructureWorldAccess world = featureContext.getWorld();
+        BlockPos pos = featureContext.getPos();
+        ChunkGenerator generator = featureContext.getGenerator();
+        
         // Shouldn't be used if this isn't an instance of OldBiomeSource
-        if (!(chunkGenerator.getBiomeSource() instanceof OldBiomeSource)) return false;
+        if (!(generator.getBiomeSource() instanceof OldBiomeSource)) return false;
         
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutableDown = new BlockPos.Mutable();
 
-        OldBiomeSource betaSource = (OldBiomeSource)chunkGenerator.getBiomeSource();
+        OldBiomeSource betaSource = (OldBiomeSource)generator.getBiomeSource();
         
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
-                int absX = blockPos.getX() + x;
-                int absZ = blockPos.getZ() + z;
+                int absX = pos.getX() + x;
+                int absZ = pos.getZ() + z;
                 int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING, absX, absZ);
                 
                 double temp = (betaSource.isSky()) ? 

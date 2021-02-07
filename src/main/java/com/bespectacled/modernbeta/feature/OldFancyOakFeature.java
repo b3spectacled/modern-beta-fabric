@@ -12,9 +12,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.util.FeatureContext;
 
 /**
  * 
@@ -135,8 +135,11 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
     }
 
     @Override
-    public final boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos pos, DefaultFeatureConfig config)
-    {
+    public final boolean generate(FeatureContext<DefaultFeatureConfig> featureContext) {
+        StructureWorldAccess world = featureContext.getWorld();
+        BlockPos pos = featureContext.getPos();
+        Random random = featureContext.getRandom();
+        
         maxHeight = 12;
         
         RANDOM.setSeed(random.nextLong());

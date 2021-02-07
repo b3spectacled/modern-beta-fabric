@@ -77,7 +77,7 @@ public class MixinMinecraftServer {
             x += spawnRand.nextInt(64) - spawnRand.nextInt(64);
         }
         
-        int y = gen.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
+        int y = gen.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG, null);
         
         return new BlockPos(x, y - 1, z);
     }
@@ -85,7 +85,7 @@ public class MixinMinecraftServer {
     @Unique
     private static boolean isBlockSand(int x, int z, OldChunkGenerator gen, PerlinOctaveNoise beachNoiseOctaves, int seaLevel) {
         double thirtysecond = 0.03125D;
-        int y = gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        int y = gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
         
         return 
             (gen.getBiomeSource().getBiomeForNoiseGen(x >> 2, 0, z >> 2).getCategory() == Category.DESERT && y > seaLevel - 1) || 

@@ -10,6 +10,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.StructurePiece;
@@ -21,6 +22,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.StructureWeightSampler;
 
 public class InfdevOldChunkProvider extends AbstractChunkProvider {
     private boolean generateInfdevPyramid = true;
@@ -109,6 +111,8 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
         
         ObjectListIterator<StructurePiece> structureListIterator = (ObjectListIterator<StructurePiece>) STRUCTURE_LIST.iterator();
         ObjectListIterator<JigsawJunction> jigsawListIterator = (ObjectListIterator<JigsawJunction>) JIGSAW_LIST.iterator();
+        
+        StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
         
         Biome biome;
         

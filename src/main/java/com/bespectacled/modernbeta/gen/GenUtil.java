@@ -23,7 +23,6 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 public class GenUtil {
@@ -47,7 +46,7 @@ public class GenUtil {
         
         Biome biome;
 
-        if (generateOceans && gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG) < seaLevel - 4) {
+        if (generateOceans && gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null) < seaLevel - 4) {
             biome = ((OldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
         } else {
             biome = biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
@@ -117,41 +116,6 @@ public class GenUtil {
                     return;
             });
         }
-    }
-    
-    public static double addStructDensity(
-        ObjectListIterator<StructurePiece> structureListIterator, 
-        ObjectListIterator<JigsawJunction> jigsawListIterator,
-        int structureListSize, int jigsawListSize,
-        int x, int y, int z) {
-        double density = 0;
-        
-        while (structureListIterator.hasNext()) {
-            StructurePiece curStructurePiece = (StructurePiece) structureListIterator.next();
-            BlockBox blockBox = curStructurePiece.getBoundingBox();
-            
-            
-            int sX = Math.max(0, Math.max(blockBox.minX - x, x - blockBox.maxX));
-            int sY = y - (blockBox.minY + ((curStructurePiece instanceof PoolStructurePiece) ? 
-                    ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta() : 0));
-            int sZ = Math.max(0, Math.max(blockBox.minZ - z, z - blockBox.maxZ));
-
-            density += NoiseChunkGenerator.getNoiseWeight(sX, sY, sZ) * 0.8;
-        }
-        structureListIterator.back(structureListSize);
-
-        while (jigsawListIterator.hasNext()) {
-            JigsawJunction curJigsawJunction = (JigsawJunction) jigsawListIterator.next();
-
-            int jX = x - curJigsawJunction.getSourceX();
-            int jY = y - curJigsawJunction.getSourceGroundY();
-            int jZ = z - curJigsawJunction.getSourceZ();
-
-            density += NoiseChunkGenerator.getNoiseWeight(jX, jY, jZ) * 0.4;
-        }
-        jigsawListIterator.back(jigsawListSize);
-        
-        return density;
     }
     
     public static Block getStructBlock(

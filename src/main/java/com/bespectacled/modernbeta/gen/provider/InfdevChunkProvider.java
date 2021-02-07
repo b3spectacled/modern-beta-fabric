@@ -1,16 +1,12 @@
 package com.bespectacled.modernbeta.gen.provider;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.gen.GenUtil;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
-import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.structure.JigsawJunction;
-import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
@@ -21,6 +17,7 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.StructureWeightSampler;
 
 /**
  * 
@@ -197,10 +194,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
-        GenUtil.collectStructures(chunk, structureAccessor, STRUCTURE_LIST, JIGSAW_LIST);
-        
-        ObjectListIterator<StructurePiece> structureListIterator = (ObjectListIterator<StructurePiece>) STRUCTURE_LIST.iterator();
-        ObjectListIterator<JigsawJunction> jigsawListIterator = (ObjectListIterator<JigsawJunction>) JIGSAW_LIST.iterator();
+        StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
         
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++ subChunkZ) {
@@ -261,17 +255,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                                 
                                 double density = nz1 + (nz2 - nz1) * lerpZ;
                                 
-                                double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
-                                clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
-                                
-                                clampedDensity += GenUtil.addStructDensity(
-                                    structureListIterator, 
-                                    jigsawListIterator, 
-                                    STRUCTURE_LIST.size(), 
-                                    JIGSAW_LIST.size(), 
-                                    absX, y, absZ);
-                                
-                                BlockState blockToSet = getBlockState(clampedDensity, y);
+                                BlockState blockToSet = getBlockState(structureWeightSampler, absX, y, absZ, density);
                                 chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
                                 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);

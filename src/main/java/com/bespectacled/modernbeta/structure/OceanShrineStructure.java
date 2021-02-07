@@ -12,7 +12,9 @@ import net.minecraft.structure.StructureStart;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.SpawnSettings;
@@ -44,24 +46,22 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
         
         @Override
         public void init(
-            DynamicRegistryManager dynamicRegistryManager, 
+            DynamicRegistryManager registryManager, 
             ChunkGenerator chunkGenerator, 
-            StructureManager structureManager, 
+            StructureManager manager, 
             int chunkX, int chunkZ, 
             Biome biome, 
-            DefaultFeatureConfig defaultFeatureConfig
+            DefaultFeatureConfig config, 
+            HeightLimitView heightLimitView
         ) {
-            // Should only generate in Beta worlds
-            if (!(chunkGenerator instanceof OldChunkGenerator)) return;
+            int x = ChunkSectionPos.getBlockCoord(chunkX);
+            int z = ChunkSectionPos.getBlockCoord(chunkZ);
+            int y = chunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, heightLimitView);
             
-            int x = chunkX * 16;
-            int z = chunkZ * 16;
-            int y = chunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-            
-            BlockPos pos = new BlockPos(x, y, z);
+            BlockPos pos = new BlockPos(x, 90, z);
             BlockRotation rot = BlockRotation.random(this.random);
             
-            OceanShrineGenerator.addPieces(structureManager, pos, rot, this.children);
+            OceanShrineGenerator.addPieces(manager, pos, rot, this.children);
             this.setBoundingBoxFromChildren();
         }
     }

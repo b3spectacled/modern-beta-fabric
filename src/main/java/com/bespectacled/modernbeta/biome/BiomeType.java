@@ -4,7 +4,6 @@ import net.minecraft.nbt.CompoundTag;
 
 public enum BiomeType {
     BETA("beta"),
-    BETA_ICE_DESERT("beta_ice_desert"),
     SKY("sky"),
     CLASSIC("classic"),
     WINTER("winter"),

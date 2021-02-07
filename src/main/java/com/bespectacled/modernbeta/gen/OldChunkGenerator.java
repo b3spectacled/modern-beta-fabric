@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.gen;
 import java.util.BitSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Random;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
@@ -25,6 +26,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
@@ -34,6 +36,7 @@ import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
+import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
@@ -51,15 +54,20 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     OldGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
             .apply(instance, instance.stable(OldChunkGenerator::new)));
     
+    private final Random random;
+    
     private final OldGeneratorSettings settings;
     private final WorldType worldType;
     private final boolean generateOceans;
     
     private final OldBiomeSource biomeSource;
     private final AbstractChunkProvider chunkProvider;
+   
     
     public OldChunkGenerator(BiomeSource biomeSource, long seed, OldGeneratorSettings settings) {
         super(biomeSource, seed, () -> settings.generatorSettings);
+        
+        this.random = new Random(seed);
         
         this.biomeSource = (OldBiomeSource)biomeSource;
         this.settings = settings;
@@ -110,32 +118,31 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
 
     @Override
-    public void generateFeatures(ChunkRegion chunkRegion, StructureAccessor structureAccessor) {
+    public void generateFeatures(ChunkRegion region, StructureAccessor accessor) {
         OldFeatures.OLD_FANCY_OAK.chunkReset();
         
-        int ctrX = chunkRegion.getCenterChunkX();
-        int ctrZ = chunkRegion.getCenterChunkZ();
-        int ctrAbsX = ctrX * 16;
-        int ctrAbsZ = ctrZ * 16;
-
-        Chunk ctrChunk = chunkRegion.getChunk(ctrX, ctrZ);
+        ChunkPos chunkPos = region.getCenterPos();
+        int startX = chunkPos.getStartX();
+        int startZ = chunkPos.getStartZ();
         
-        Biome biome = GenUtil.getOceanBiome(ctrChunk, this, this.getBiomeSource(), generateOceans, this.getSeaLevel());
+        Biome biome = GenUtil.getOceanBiome(region.getChunk(chunkPos.x, chunkPos.z), this, this.getBiomeSource(), generateOceans, this.getSeaLevel());
 
-        long popSeed = this.random.setPopulationSeed(chunkRegion.getSeed(), ctrAbsX, ctrAbsZ);
+        // TODO: Remove chunkRandom at some point
+        ChunkRandom chunkRandom = new ChunkRandom();
+        long popSeed = chunkRandom.setPopulationSeed(region.getSeed(), startX, startZ);
 
         try {
-            biome.generateFeatureStep(structureAccessor, this, chunkRegion, popSeed, this.random, new BlockPos(ctrAbsX, 0, ctrAbsZ));
+            biome.generateFeatureStep(accessor, this, region, popSeed, chunkRandom, new BlockPos(startX, region.getBottomSectionLimit(), startZ));
         } catch (Exception exception) {
             CrashReport report = CrashReport.create(exception, "Biome decoration");
-            report.addElement("Generation").add("CenterX", ctrX).add("CenterZ", ctrZ).add("Seed", popSeed).add("Biome", biome);
+            report.addElement("Generation").add("CenterX", chunkPos.x).add("CenterZ", chunkPos.z).add("Seed", popSeed).add("Biome", biome);
             throw new CrashException(report);
         }
     }
     
     @Override
-    public void carve(long seed, BiomeAccess biomeAccess, Chunk chunk, GenerationStep.Carver carver) {
-        BiomeAccess biomeAcc = biomeAccess.withSource(biomeSource);
+    public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver carver) {
+        BiomeAccess biomeAcc = access.withSource(biomeSource);
         ChunkPos chunkPos = chunk.getPos();
 
         int mainChunkX = chunkPos.x;
@@ -178,8 +185,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         StructureManager structureManager, 
         long seed
     ) {
-        ChunkPos chunkPos = chunk.getPos();
-        
         Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, generateOceans, this.getSeaLevel());
 
         ((MixinChunkGeneratorInvoker)this).invokeSetStructureStart(
@@ -189,7 +194,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             chunk,
             structureManager, 
             seed, 
-            chunkPos, 
             biome
         );
         
@@ -201,15 +205,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 structureAccessor,
                 chunk, 
                 structureManager,
-                seed, 
-                chunkPos,
+                seed,
                 biome
             );
         }
     }
     
     @Override
-    public int getHeight(int x, int z, Heightmap.Type type) {
+    public int getHeight(int x, int z, Heightmap.Type type, HeightLimitView heightLimitView) {
         return this.chunkProvider.getHeight(x, z, type);
     }
     

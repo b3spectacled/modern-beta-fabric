@@ -8,9 +8,9 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.feature.util.FeatureContext;
 
 public class OreClayFeature extends Feature<OreFeatureConfig> {
     public OreClayFeature(Codec<OreFeatureConfig> configCodec) {
@@ -18,7 +18,12 @@ public class OreClayFeature extends Feature<OreFeatureConfig> {
     }
 
     @Override
-    public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos pos, OreFeatureConfig config) {
+    public boolean generate(FeatureContext<OreFeatureConfig> featureContext) {
+        StructureWorldAccess world = featureContext.getWorld();
+        BlockPos pos = featureContext.getPos();
+        OreFeatureConfig config = featureContext.getConfig();
+        Random random = featureContext.getRandom();
+        
         int startX = pos.getX();
         int startY = pos.getY();
         int startZ = pos.getZ();

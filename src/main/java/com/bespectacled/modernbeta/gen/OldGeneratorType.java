@@ -75,7 +75,7 @@ public class OldGeneratorType {
         INFDEV_OLD = new GeneratorType("infdev_old") {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-                return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.INFDEV_SETTINGS.providerSettings), seed, OldGeneratorSettings.INFDEV_SETTINGS);
+                return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.INFDEV_OLD_SETTINGS.providerSettings), seed, OldGeneratorSettings.INFDEV_OLD_SETTINGS);
             }
         };
           

@@ -1,26 +1,14 @@
 accessWidener v1 named
 
 extendable class net/minecraft/world/gen/chunk/NoiseChunkGenerator
-extendable method net/minecraft/world/gen/chunk/NoiseChunkGenerator sampleNoiseColumn ([DII)V
-extendable method net/minecraft/world/gen/chunk/NoiseChunkGenerator sampleNoiseColumn (II)[D
-extendable method net/minecraft/world/gen/chunk/NoiseChunkGenerator method_28553 (II)D
-accessible method net/minecraft/world/gen/chunk/NoiseChunkGenerator getNoiseWeight (III)D
-
 accessible field net/minecraft/world/gen/chunk/NoiseChunkGenerator worldSeed J
-accessible field net/minecraft/world/gen/chunk/NoiseChunkGenerator settings Ljava/util/function/Supplier;
-accessible field net/minecraft/world/gen/chunk/NoiseChunkGenerator BIOME_WEIGHT_TABLE [F
-accessible field net/minecraft/world/gen/chunk/NoiseChunkGenerator noiseSizeY I
 
 extendable class net/minecraft/world/gen/chunk/ChunkGenerator
-extendable method net/minecraft/world/gen/chunk/ChunkGenerator sampleNoiseColumn ([DII)V
-extendable method net/minecraft/world/gen/chunk/ChunkGenerator sampleNoiseColumn (II)[D
-extendable method net/minecraft/world/gen/chunk/ChunkGenerator method_28553 (II)D
-
 accessible field net/minecraft/world/gen/chunk/ChunkGenerator worldSeed J
-accessible field net/minecraft/world/gen/chunk/ChunkGenerator settings Ljava/util/function/Supplier;
-accessible field net/minecraft/world/gen/chunk/ChunkGenerator BIOME_WEIGHT_TABLE [F
-accessible field net/minecraft/world/gen/chunk/ChunkGenerator noiseSizeY I
 
 accessible method net/minecraft/world/gen/chunk/ChunkGeneratorSettings <init> (Lnet/minecraft/world/gen/chunk/StructuresConfig;Lnet/minecraft/world/gen/chunk/GenerationShapeConfig;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/BlockState;IIIZ)V
+
+accessible method net/minecraft/world/gen/StructureWeightSampler <init> (Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/world/chunk/Chunk;)V
+accessible method net/minecraft/world/gen/StructureWeightSampler getWeight (III)D
 
 extendable method net/minecraft/client/world/GeneratorType <init> (Ljava/lang/String;)V

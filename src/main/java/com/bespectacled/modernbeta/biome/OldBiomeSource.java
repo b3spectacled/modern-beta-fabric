@@ -75,7 +75,7 @@ public class OldBiomeSource extends BiomeSource {
     }
     
     public boolean isBeta() {
-        return this.biomeType == BiomeType.BETA || this.biomeType == BiomeType.BETA_ICE_DESERT;
+        return this.biomeType == BiomeType.BETA;
     }
     
     public boolean isSky() {
@@ -110,7 +110,6 @@ public class OldBiomeSource extends BiomeSource {
         
         switch(biomeType) {
             case BETA: return new BetaBiomeProvider(seed, BetaBiomeType.LAND);
-            case BETA_ICE_DESERT: return new BetaBiomeProvider(seed, BetaBiomeType.ICE_DESERT);
             case SKY: return new SingleBiomeProvider(seed, BetaBiomes.SKY_ID);
             case PLUS: return new PlusBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType));
             case CLASSIC: return new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.CLASSIC));
