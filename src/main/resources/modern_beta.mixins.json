@@ -7,7 +7,8 @@
     "MixinMinecraftServer",
     "MixinBiomeArray",
     "MixinGeneratorOptions",
-    "MixinChunkGeneratorInvoker"
+    "MixinChunkGeneratorInvoker",
+    "MixinStructureWeightSampler"
   ],
   "client": [
     "client.MixinBlockColors",

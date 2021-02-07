@@ -27,10 +27,10 @@ public class OldGeneratorSettings {
     public static final OldGeneratorSettings NETHER_SETTINGS;
     public static final OldGeneratorSettings FLAT_SETTINGS;
     
-    public static final Codec<OldGeneratorSettings> CODEC = RecordCodecBuilder.create(instance -> instance
-            .group(ChunkGeneratorSettings.CODEC.fieldOf("type").forGetter(settings -> settings.generatorSettings),
-                    CompoundTag.CODEC.fieldOf("settings").forGetter(settings -> settings.providerSettings))
-            .apply(instance, OldGeneratorSettings::new));
+    public static final Codec<OldGeneratorSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ChunkGeneratorSettings.CODEC.fieldOf("type").forGetter(settings -> settings.generatorSettings),
+            CompoundTag.CODEC.fieldOf("settings").forGetter(settings -> settings.providerSettings)
+        ).apply(instance, OldGeneratorSettings::new));
 
     public final ChunkGeneratorSettings generatorSettings;
     public CompoundTag providerSettings;

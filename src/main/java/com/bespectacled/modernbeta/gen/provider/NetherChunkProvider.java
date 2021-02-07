@@ -1,7 +1,6 @@
 package com.bespectacled.modernbeta.gen.provider;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.gen.GenUtil;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -207,8 +206,6 @@ public class NetherChunkProvider extends AbstractChunkProvider {
 
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
-
-        GenUtil.collectStructures(chunk, structureAccessor, STRUCTURE_LIST, JIGSAW_LIST);
 
         generateHeightmap(chunk.getPos().x * this.noiseSizeX, 0, chunk.getPos().z * this.noiseSizeZ);
 

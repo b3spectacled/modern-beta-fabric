@@ -11,4 +11,5 @@ accessible method net/minecraft/world/gen/chunk/ChunkGeneratorSettings <init> (L
 accessible method net/minecraft/world/gen/StructureWeightSampler <init> (Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/world/chunk/Chunk;)V
 accessible method net/minecraft/world/gen/StructureWeightSampler getWeight (III)D
 
+
 extendable method net/minecraft/client/world/GeneratorType <init> (Ljava/lang/String;)V

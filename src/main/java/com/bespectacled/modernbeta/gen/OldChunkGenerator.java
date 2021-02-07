@@ -49,10 +49,10 @@ import net.minecraft.world.gen.feature.StructureFeature;
 public class OldChunkGenerator extends NoiseChunkGenerator {
     
     public static final Codec<OldChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
-            .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
-                    Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
-                    OldGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
-            .apply(instance, instance.stable(OldChunkGenerator::new)));
+        .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
+                Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
+                OldGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
+        .apply(instance, instance.stable(OldChunkGenerator::new)));
     
     private final Random random;
     
@@ -105,7 +105,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             for (int x = pos.getStartX(); x < pos.getEndX(); x += 4) {
                 for (int z = pos.getStartZ(); z < pos.getEndZ(); z += 4) {    
                     
-                    int y = GenUtil.getSolidHeight(chunk, this.getWorldHeight(), x, z);
+                    int y = OldGenUtil.getSolidHeight(chunk, this.getWorldHeight(), x, z);
 
                     if (y < this.getSeaLevel() - 4) {
                         biome = biomeSource.getOceanBiomeForNoiseGen(x >> 2, 0, z >> 2);
@@ -125,7 +125,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int startX = chunkPos.getStartX();
         int startZ = chunkPos.getStartZ();
         
-        Biome biome = GenUtil.getOceanBiome(region.getChunk(chunkPos.x, chunkPos.z), this, this.getBiomeSource(), generateOceans, this.getSeaLevel());
+        Biome biome = OldGenUtil.getOceanBiome(region.getChunk(chunkPos.x, chunkPos.z), this, this.getBiomeSource(), generateOceans, this.getSeaLevel());
 
         // TODO: Remove chunkRandom at some point
         ChunkRandom chunkRandom = new ChunkRandom();
@@ -148,7 +148,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int mainChunkX = chunkPos.x;
         int mainChunkZ = chunkPos.z;
 
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, generateOceans, this.getSeaLevel());
+        Biome biome = OldGenUtil.getOceanBiome(chunk, this, biomeSource, generateOceans, this.getSeaLevel());
         GenerationSettings genSettings = biome.getGenerationSettings();
         
         BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(carver);
@@ -185,7 +185,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         StructureManager structureManager, 
         long seed
     ) {
-        Biome biome = GenUtil.getOceanBiome(chunk, this, biomeSource, generateOceans, this.getSeaLevel());
+        Biome biome = OldGenUtil.getOceanBiome(chunk, this, biomeSource, generateOceans, this.getSeaLevel());
 
         ((MixinChunkGeneratorInvoker)this).invokeSetStructureStart(
             ConfiguredStructureFeatures.STRONGHOLD, 

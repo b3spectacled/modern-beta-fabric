@@ -9,12 +9,8 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.structure.JigsawJunction;
-import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.math.MathHelper;
@@ -45,9 +41,6 @@ import net.minecraft.world.gen.StructureWeightSampler;
 public abstract class AbstractChunkProvider {
     protected static final Mutable POS = new Mutable();
     protected static final Random RAND = new Random();
-    
-    protected static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
-    protected static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
     
     protected static final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> HEIGHTMAP_CACHE = new Object2ObjectLinkedOpenHashMap<>(512);
     protected static final int[][] HEIGHTMAP_CHUNK = new int[16][16];

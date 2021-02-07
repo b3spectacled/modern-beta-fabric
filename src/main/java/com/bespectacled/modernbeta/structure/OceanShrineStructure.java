@@ -58,7 +58,7 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
             int z = ChunkSectionPos.getBlockCoord(chunkZ);
             int y = chunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, heightLimitView);
             
-            BlockPos pos = new BlockPos(x, 90, z);
+            BlockPos pos = new BlockPos(x, y, z);
             BlockRotation rot = BlockRotation.random(this.random);
             
             OceanShrineGenerator.addPieces(manager, pos, rot, this.children);

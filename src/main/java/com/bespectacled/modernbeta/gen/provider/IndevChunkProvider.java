@@ -8,19 +8,16 @@ import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
-import com.bespectacled.modernbeta.gen.GenUtil;
+import com.bespectacled.modernbeta.gen.BlockStructureWeightSampler;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
 
-import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.structure.JigsawJunction;
-import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -159,10 +156,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
-        GenUtil.collectStructures(chunk, structureAccessor, STRUCTURE_LIST, JIGSAW_LIST);
-        
-        ObjectListIterator<StructurePiece> structureListIterator = (ObjectListIterator<StructurePiece>) STRUCTURE_LIST.iterator();
-        ObjectListIterator<JigsawJunction> jigsawListIterator = (ObjectListIterator<JigsawJunction>) JIGSAW_LIST.iterator();
+        BlockStructureWeightSampler structureWeightSampler = new BlockStructureWeightSampler(structureAccessor, chunk);
         
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
@@ -173,12 +167,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                 for (int y = 0; y < this.height; ++y) {
                     Block blockToSet = blockArr[offsetX + x][y][offsetZ + z];
                     
-                    blockToSet = GenUtil.getStructBlock(
-                        structureListIterator, 
-                        jigsawListIterator, 
-                        STRUCTURE_LIST.size(), 
-                        JIGSAW_LIST.size(), 
-                        absX, y, absZ, blockToSet);
+                    blockToSet = structureWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
 
                     if (blockToSet != Blocks.AIR) {
                         chunk.setBlockState(POS.set(x, y, z), BlockStates.getBlockState(blockToSet), false);

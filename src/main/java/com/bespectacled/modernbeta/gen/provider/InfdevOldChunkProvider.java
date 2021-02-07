@@ -3,17 +3,14 @@ package com.bespectacled.modernbeta.gen.provider;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.gen.GenUtil;
+import com.bespectacled.modernbeta.gen.BlockStructureWeightSampler;
+import com.bespectacled.modernbeta.gen.OldGenUtil;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
-import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.structure.JigsawJunction;
-import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
@@ -22,7 +19,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.StructureWeightSampler;
 
 public class InfdevOldChunkProvider extends AbstractChunkProvider {
     private boolean generateInfdevPyramid = true;
@@ -107,12 +103,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
-        GenUtil.collectStructures(chunk, structureAccessor, STRUCTURE_LIST, JIGSAW_LIST);
-        
-        ObjectListIterator<StructurePiece> structureListIterator = (ObjectListIterator<StructurePiece>) STRUCTURE_LIST.iterator();
-        ObjectListIterator<JigsawJunction> jigsawListIterator = (ObjectListIterator<JigsawJunction>) JIGSAW_LIST.iterator();
-        
-        StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
+        BlockStructureWeightSampler structureWeightSampler = new BlockStructureWeightSampler(structureAccessor, chunk);
         
         Biome biome;
         
@@ -127,7 +118,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                     
                     // Second check is a hack to stop weird chunk borders generating from surface blocks for ocean biomes
                     // being picked up and replacing topsoil blocks, somehow before biome reassignment.  Why?!
-                    if ((biomeSource.isBeta() || biomeSource.isVanilla()) && GenUtil.getSolidHeight(chunk, this.worldHeight, absX, absZ) >= this.seaLevel - 4) {
+                    if ((biomeSource.isBeta() || biomeSource.isVanilla()) && OldGenUtil.getSolidHeight(chunk, this.worldHeight, absX, absZ) >= this.seaLevel - 4) {
                         biome = getBiomeForSurfaceGen(POS.set(absX, 0, absZ), region, biomeSource);
                         
                         if (blockToSet == Blocks.GRASS_BLOCK) 
@@ -136,12 +127,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                             blockToSet = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial().getBlock();
                     }
                     
-                    blockToSet = GenUtil.getStructBlock(
-                            structureListIterator, 
-                            jigsawListIterator, 
-                            STRUCTURE_LIST.size(), 
-                            JIGSAW_LIST.size(), 
-                            absX, y, absZ, blockToSet);
+                    blockToSet = structureWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
 
                     if (blockToSet != Blocks.AIR) {
                         chunk.setBlockState(POS.set(x, y, z), BlockStates.getBlockState(blockToSet), false);
