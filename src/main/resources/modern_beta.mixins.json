@@ -8,7 +8,8 @@
     "MixinBiomeArray",
     "MixinGeneratorOptions",
     "MixinChunkGeneratorInvoker",
-    "MixinStructureWeightSampler"
+    "MixinStructureWeightSampler",
+    "MixinAquiferSamplerInvoker"
   ],
   "client": [
     "client.MixinBlockColors",

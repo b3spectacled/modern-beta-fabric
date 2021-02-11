@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.gen.provider;
 
+import java.util.Random;
+
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -33,31 +35,29 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise stoneNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    private final double heightNoise[];
-    
     public InfdevChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER, settings.providerSettings);
-        
-        this.heightNoise = new double[(this.noiseSizeY + 1) * this.noiseSizeX];
+        super(seed, -64, 128, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
+        Random rand = new Random(seed); 
         
         // Noise Generators
-        noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true);
-        noiseOctavesB = new PerlinOctaveNoise(RAND, 16, true);
-        noiseOctavesC = new PerlinOctaveNoise(RAND, 8, true);
-        beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
-        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
+        noiseOctavesA = new PerlinOctaveNoise(rand, 16, true);
+        noiseOctavesB = new PerlinOctaveNoise(rand, 16, true);
+        noiseOctavesC = new PerlinOctaveNoise(rand, 8, true);
+        beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
 
-        new PerlinOctaveNoise(RAND, 5, true); // Unused in original source
+        new PerlinOctaveNoise(rand, 5, true); // Unused in original source
         
-        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 5, true);
+        forestNoiseOctaves = new PerlinOctaveNoise(rand, 5, true);
 
         setForestOctaves(forestNoiseOctaves);
     }
 
     @Override
-    public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
-        generateTerrain(chunk, structureAccessor); 
+    public Chunk provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+        generateTerrain(chunk, structureAccessor);
+        return chunk;
     }
 
     @Override
@@ -70,6 +70,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         ChunkRandom sandstoneRand = this.createChunkRand(chunkX, chunkZ);
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
@@ -92,7 +93,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 
                 int flag = -1;
                 
-                Biome curBiome = getBiomeForSurfaceGen(POS.set(absX, 0, absZ), region, biomeSource);
+                Biome curBiome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
                 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -104,12 +105,12 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                     
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= 0 + rand.nextInt(5)) {
-                        chunk.setBlockState(POS.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
+                        chunk.setBlockState(mutable.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
                         continue;
                     }
                     
-                    POS.set(x, y, z);
-                    BlockState someBlock = chunk.getBlockState(POS);
+                    mutable.set(x, y, z);
+                    BlockState someBlock = chunk.getBlockState(mutable);
                     
                     if (someBlock.equals(BlockStates.AIR)) {
                         flag = -1;
@@ -142,14 +143,14 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                             flag = genStone;
                             
                             if (y >= this.seaLevel - 1) {
-                                chunk.setBlockState(POS, topBlock, false);
+                                chunk.setBlockState(mutable, topBlock, false);
                             } else {
-                                chunk.setBlockState(POS, fillerBlock, false);
+                                chunk.setBlockState(mutable, fillerBlock, false);
                             }
                             
                         } else if (flag > 0) {
                             --flag;
-                            chunk.setBlockState(POS, fillerBlock, false);
+                            chunk.setBlockState(mutable, fillerBlock, false);
                             
                             // Gens layer of sandstone starting at lowest block of sand, of height 1 to 4.
                             // Beta backport.
@@ -188,6 +189,8 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     }
     
     private void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
+        double[] heightNoise = new double[(this.noiseSizeY + 1) * this.noiseSizeX];
+        
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
@@ -195,6 +198,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++ subChunkZ) {
@@ -202,10 +206,10 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 int bZ = chunkZ * this.noiseSizeZ + subChunkZ;
                 
                 for (int bY = 0; bY < this.noiseSizeY + 1; ++bY) {
-                    this.heightNoise[bY * this.noiseSizeX + 0] = this.generateHeightmap(bX, bY, bZ);
-                    this.heightNoise[bY * this.noiseSizeX + 1] = this.generateHeightmap(bX, bY, bZ + 1);
-                    this.heightNoise[bY * this.noiseSizeX + 2] = this.generateHeightmap(bX + 1, bY, bZ);
-                    this.heightNoise[bY * this.noiseSizeX + 3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
+                    heightNoise[bY * this.noiseSizeX + 0] = this.generateHeightmap(bX, bY, bZ);
+                    heightNoise[bY * this.noiseSizeX + 1] = this.generateHeightmap(bX, bY, bZ + 1);
+                    heightNoise[bY * this.noiseSizeX + 2] = this.generateHeightmap(bX + 1, bY, bZ);
+                    heightNoise[bY * this.noiseSizeX + 3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
                 }
                 
                 for (int subChunkY = this.noiseMinY; subChunkY < this.noiseSizeY; ++subChunkY) {
@@ -217,15 +221,15 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                     upper0 = upper1 = upper2 = upper3 = 1.0;
                     
                     if (subChunkY >= 0) {
-                        lower0 = this.heightNoise[(subChunkY) * this.noiseSizeX + 0];
-                        lower1 = this.heightNoise[(subChunkY) * this.noiseSizeX + 1];
-                        lower2 = this.heightNoise[(subChunkY) * this.noiseSizeX + 2];
-                        lower3 = this.heightNoise[(subChunkY) * this.noiseSizeX + 3];
+                        lower0 = heightNoise[(subChunkY) * this.noiseSizeX + 0];
+                        lower1 = heightNoise[(subChunkY) * this.noiseSizeX + 1];
+                        lower2 = heightNoise[(subChunkY) * this.noiseSizeX + 2];
+                        lower3 = heightNoise[(subChunkY) * this.noiseSizeX + 3];
                         
-                        upper0 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 0];
-                        upper1 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 1];
-                        upper2 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 2];
-                        upper3 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 3];
+                        upper0 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 0];
+                        upper1 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 1];
+                        upper2 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 2];
+                        upper3 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 3];
                     }
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
@@ -256,7 +260,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                                 double density = nz1 + (nz2 - nz1) * lerpZ;
                                 
                                 BlockState blockToSet = getBlockState(structureWeightSampler, absX, y, absZ, density);
-                                chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
+                                chunk.setBlockState(mutable.set(x, y, z), blockToSet, false);
                                 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
                                 heightmapSURFACE.trackUpdate(x, y, z, blockToSet);
@@ -321,6 +325,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     }
     
     private void sampleHeightmap(int absX, int absZ) {
+        double[] heightNoise = new double[(this.noiseSizeY + 1) * this.noiseSizeX];
         
         int chunkX = absX >> 4;
         int chunkZ = absZ >> 4;
@@ -331,22 +336,22 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 int bZ = chunkZ * this.noiseSizeZ + subChunkZ;
                 
                 for (int bY = 0; bY < this.noiseSizeY + 1; ++bY) {
-                    this.heightNoise[bY * this.noiseSizeX + 0] = this.generateHeightmap(bX, bY, bZ);
-                    this.heightNoise[bY * this.noiseSizeX + 1] = this.generateHeightmap(bX, bY, bZ + 1);
-                    this.heightNoise[bY * this.noiseSizeX + 2] = this.generateHeightmap(bX + 1, bY, bZ);
-                    this.heightNoise[bY * this.noiseSizeX + 3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
+                    heightNoise[bY * this.noiseSizeX + 0] = this.generateHeightmap(bX, bY, bZ);
+                    heightNoise[bY * this.noiseSizeX + 1] = this.generateHeightmap(bX, bY, bZ + 1);
+                    heightNoise[bY * this.noiseSizeX + 2] = this.generateHeightmap(bX + 1, bY, bZ);
+                    heightNoise[bY * this.noiseSizeX + 3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
                 }
                 
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
-                    double lower0 = this.heightNoise[(subChunkY) * this.noiseSizeX + 0];
-                    double lower1 = this.heightNoise[(subChunkY) * this.noiseSizeX + 1];
-                    double lower2 = this.heightNoise[(subChunkY) * this.noiseSizeX + 2];
-                    double lower3 = this.heightNoise[(subChunkY) * this.noiseSizeX + 3];
+                    double lower0 = heightNoise[(subChunkY) * this.noiseSizeX + 0];
+                    double lower1 = heightNoise[(subChunkY) * this.noiseSizeX + 1];
+                    double lower2 = heightNoise[(subChunkY) * this.noiseSizeX + 2];
+                    double lower3 = heightNoise[(subChunkY) * this.noiseSizeX + 3];
                     
-                    double upper0 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 0];
-                    double upper1 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 1];
-                    double upper2 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 2];
-                    double upper3 = this.heightNoise[(subChunkY + 1) * this.noiseSizeX + 3];
+                    double upper0 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 0];
+                    double upper1 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 1];
+                    double upper2 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 2];
+                    double upper3 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 3];
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
                         int y = subY + subChunkY * this.verticalNoiseResolution;

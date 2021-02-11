@@ -1,9 +1,13 @@
 package com.bespectacled.modernbeta.gen;
 
 import java.util.BitSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
@@ -13,16 +17,19 @@ import com.bespectacled.modernbeta.gen.provider.AbstractChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.structure.OldStructures;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
+import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureManager;
+import net.minecraft.util.Util;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
@@ -35,12 +42,14 @@ import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
@@ -62,7 +71,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     private final OldBiomeSource biomeSource;
     private final AbstractChunkProvider chunkProvider;
-   
     
     public OldChunkGenerator(BiomeSource biomeSource, long seed, OldGeneratorSettings settings) {
         super(biomeSource, seed, () -> settings.generatorSettings);
@@ -75,7 +83,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.worldType = WorldType.getWorldType(settings.providerSettings);
         this.chunkProvider = this.worldType.createChunkProvider(seed, settings);
         
-        this.generateOceans = settings.providerSettings.contains("generateOceans") ? settings.providerSettings.getBoolean("generateOceans") : false;
+        //this.generateOceans = settings.providerSettings.contains("generateOceans") ? settings.providerSettings.getBoolean("generateOceans") : false;
+        this.generateOceans = false;
     }
 
     public static void register() {
@@ -88,10 +97,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
-    public void populateNoise(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
-        this.chunkProvider.provideChunk(worldAccess, structureAccessor, chunk, this.biomeSource);
+    public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {   
+        return CompletableFuture.<Chunk>supplyAsync(
+            () -> this.chunkProvider.provideChunk(null, accessor, chunk, biomeSource), Util.getMainWorkerExecutor()
+        );
     }
-    
+        
     @Override
     public void buildSurface(ChunkRegion region, Chunk chunk) {
         this.chunkProvider.provideSurface(region, chunk, this.biomeSource);
@@ -101,18 +112,18 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             ChunkPos pos = chunk.getPos();
             Biome biome;
             
-            // Replace biomes in bodies of water at least four deep with ocean biomes
-            for (int x = pos.getStartX(); x < pos.getEndX(); x += 4) {
-                for (int z = pos.getStartZ(); z < pos.getEndZ(); z += 4) {    
+            for (int x = 0; x < 4; ++x) {
+                for (int z = 0; z < 4; ++z) {
+                    int absX = pos.getStartX() + x << 2;
+                    int absZ = pos.getStartZ() + z << 2;
                     
-                    int y = OldGenUtil.getSolidHeight(chunk, this.getWorldHeight(), x, z);
-
+                    int y = OldGenUtil.getSolidHeight(chunk, this.getWorldHeight(), absX, absZ);
+                    
                     if (y < this.getSeaLevel() - 4) {
-                        biome = biomeSource.getOceanBiomeForNoiseGen(x >> 2, 0, z >> 2);
-                        
-                        mutableBiomes.setBiome(x, 0, z, biome);
+                        biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);
+                        mutableBiomes.setBiome(absX, 0, absZ, biome);
                     }
-                }   
+                }
             }
         }
     }
@@ -132,7 +143,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         long popSeed = chunkRandom.setPopulationSeed(region.getSeed(), startX, startZ);
 
         try {
-            biome.generateFeatureStep(accessor, this, region, popSeed, chunkRandom, new BlockPos(startX, region.getBottomSectionLimit(), startZ));
+            biome.generateFeatureStep(accessor, this, region, popSeed, chunkRandom, new BlockPos(startX, region.getBottomY(), startZ));
         } catch (Exception exception) {
             CrashReport report = CrashReport.create(exception, "Biome decoration");
             report.addElement("Generation").add("CenterX", chunkPos.x).add("CenterZ", chunkPos.z).add("Seed", popSeed).add("Biome", biome);
@@ -226,7 +237,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 return null;
             }
 
-        System.out.println("Attempting to locate structures... " + this.getStructuresConfig().getForType(feature));
         return super.locateStructure(world, feature, center, radius, skipExistingChunks);
     }
     

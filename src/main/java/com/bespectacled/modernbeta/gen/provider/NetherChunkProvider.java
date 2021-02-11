@@ -6,6 +6,7 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.ChunkRegion;
@@ -40,7 +41,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
     
     public NetherChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 32, 0, 128, 2, 1, 1.0, 1.0, 80, 60, BlockStates.STONE, BlockStates.WATER, settings.providerSettings);
+        super(seed, 0, 128, 32, 0, 128, 2, 1, 1.0, 1.0, 80, 60, false, false, BlockStates.STONE, BlockStates.WATER, settings);
         
         this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         
@@ -58,8 +59,9 @@ public class NetherChunkProvider extends AbstractChunkProvider {
     }
 
     @Override
-    public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+    public Chunk provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         generateTerrain(chunk, structureAccessor);
+        return chunk;
     }
     
     @Override
@@ -71,6 +73,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
         
         // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
 
         sandNoise = beachNoiseOctaves.sampleArrBeta(
             sandNoise, 
@@ -103,7 +106,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
                 int absX = chunk.getPos().getStartX() + x;
                 int absZ = chunk.getPos().getStartZ() + z;
                     
-                Biome curBiome = getBiomeForSurfaceGen(POS.set(absX, 0, absZ), region, biomeSource);
+                Biome curBiome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -116,17 +119,17 @@ public class NetherChunkProvider extends AbstractChunkProvider {
                     
                     // Randomly place bedrock from top of world to height - 4
                     if (y >= this.worldHeight - 1 - rand.nextInt(5)) {
-                        chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                         continue;
                     }
                     
                     // Randomly place bedrock from y=0 (or minHeight) to y=4
                     if (y <= this.minY + rand.nextInt(5)) {
-                        chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                         continue;
                     }
 
-                    BlockState someBlock = chunk.getBlockState(POS.set(x, y, z));
+                    BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
 
                     if (someBlock.equals(BlockStates.AIR)) { // Skip if air block
                         flag = -1;
@@ -164,9 +167,9 @@ public class NetherChunkProvider extends AbstractChunkProvider {
                         flag = genStone;
                         
                         if (y >= this.seaLevel) {
-                            chunk.setBlockState(POS.set(x, y, z), topBlock, false);
+                            chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
                         } else {
-                            chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
+                            chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
                         }
                         
                         continue;
@@ -174,7 +177,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
 
                     if (flag > 0) {
                         flag--;
-                        chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
+                        chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
                     }
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
@@ -206,6 +209,8 @@ public class NetherChunkProvider extends AbstractChunkProvider {
 
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
+        
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
 
         generateHeightmap(chunk.getPos().x * this.noiseSizeX, 0, chunk.getPos().z * this.noiseSizeZ);
 
@@ -258,7 +263,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
                                     blockToSet = this.defaultBlock;
                                 }
                                 
-                                chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
+                                chunk.setBlockState(mutable.set(x, y, z), blockToSet, false);
 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
                                 heightmapSURFACE.trackUpdate(x, y, z, blockToSet);

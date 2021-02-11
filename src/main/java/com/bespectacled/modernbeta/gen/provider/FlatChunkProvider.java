@@ -6,6 +6,7 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.WorldAccess;
@@ -17,7 +18,7 @@ public class FlatChunkProvider extends AbstractChunkProvider {
     
     public FlatChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER, settings.providerSettings);
+        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
         new PerlinOctaveNoise(RAND, 16, true);
@@ -31,20 +32,22 @@ public class FlatChunkProvider extends AbstractChunkProvider {
     }
 
     @Override
-    public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+    public Chunk provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
+        return chunk;
     }
     
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         BlockState blockToSet;
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         for (int z = 0; z < 16; ++z) {
             for (int x = 0; x < 16; ++x) {
                 int absX = chunk.getPos().getStartX() + x;
                 int absZ = chunk.getPos().getStartZ() + z;
                 
-                Biome curBiome = getBiomeForSurfaceGen(POS.set(absX, 0, absZ), region, biomeSource);
+                Biome curBiome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
                 
                 BlockState topBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState fillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -59,7 +62,7 @@ public class FlatChunkProvider extends AbstractChunkProvider {
                     else 
                         blockToSet = BlockStates.BEDROCK;
                     
-                    chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
+                    chunk.setBlockState(mutable.set(x, y, z), blockToSet, false);
                 }
             }
         }

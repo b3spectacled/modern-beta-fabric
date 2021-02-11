@@ -127,7 +127,7 @@ public class OceanShrineGenerator {
                 int integer13 = blockPos2.getY() - 1;
                 BlockPos.Mutable mutable14 = new BlockPos.Mutable(integer11, integer13, integer12);
                 BlockState blockState15 = blockView.getBlockState(mutable14);
-                for (FluidState lv4 = blockView.getFluidState(mutable14); (blockState15.isAir() || lv4.isIn(FluidTags.WATER) || blockState15.isIn(BlockTags.ICE)) && integer13 > blockView.getSectionCount() + 1; blockState15 = blockView.getBlockState(mutable14), lv4 = blockView.getFluidState(mutable14)) {
+                for (FluidState lv4 = blockView.getFluidState(mutable14); (blockState15.isAir() || lv4.isIn(FluidTags.WATER) || blockState15.isIn(BlockTags.ICE)) && integer13 > blockView.getBottomY() + 1; blockState15 = blockView.getBlockState(mutable14), lv4 = blockView.getFluidState(mutable14)) {
                     --integer13;
                     mutable14.set(integer11, integer13, integer12);
                 }

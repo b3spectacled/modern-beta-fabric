@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.gen.provider;
 
+import java.util.Random;
+
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -26,42 +28,29 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise scaleNoiseOctaves;
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
-
-    private double sandNoise[];
-    private double gravelNoise[];
-    private double stoneNoise[];
-
-    private double mainNoise[]; 
-    private double minLimitNoise[];
-    private double maxLimitNoise[];
-
-    private double scaleNoise[];
-    private double depthNoise[];
-    
-    private final double heightNoise[];
     
     public AlphaChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER, settings.providerSettings);
-        
-        this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
+        super(seed, -64, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
+        Random rand = new Random(seed);
         
         // Noise Generators
-        minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
-        beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
-        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
-        scaleNoiseOctaves = new PerlinOctaveNoise(RAND, 10, true);
-        depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
+        beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        scaleNoiseOctaves = new PerlinOctaveNoise(rand, 10, true);
+        depthNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
 
         setForestOctaves(forestNoiseOctaves);
     }
 
     @Override
-    public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+    public Chunk provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         generateTerrain(chunk, structureAccessor);
+        return chunk;
     }
 
     @Override
@@ -74,10 +63,11 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         ChunkRandom sandstoneRand = this.createChunkRand(chunkX, chunkZ);
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
 
-        sandNoise = beachNoiseOctaves.sampleArr(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth, eighth, 1.0D);
-        gravelNoise = beachNoiseOctaves.sampleArr(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
-        stoneNoise = stoneNoiseOctaves.sampleArr(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
+        double[] sandNoise = beachNoiseOctaves.sampleArr(null, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth, eighth, 1.0D);
+        double[] gravelNoise = beachNoiseOctaves.sampleArr(null, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
+        double[] stoneNoise = stoneNoiseOctaves.sampleArr(null, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
 
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.
@@ -93,7 +83,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
                 
-                Biome curBiome = getBiomeForSurfaceGen(POS.set(absX, 0, absZ), region, biomeSource);
+                Biome curBiome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -106,11 +96,11 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
 
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= (0 + rand.nextInt(6)) - 1) {
-                        chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                         continue;
                     }
 
-                    BlockState someBlock = chunk.getBlockState(POS.set(x, y, z));
+                    BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
 
                     if (someBlock.equals(BlockStates.AIR)) { // Skip if air block
                         flag = -1;
@@ -148,9 +138,9 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                         // Main surface builder section
                         flag = genStone;
                         if (y >= this.seaLevel - 1) {
-                            chunk.setBlockState(POS.set(x, y, z), topBlock, false);
+                            chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
                         } else {
-                            chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
+                            chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
                         }
 
                         continue;
@@ -158,7 +148,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                     
                     if (flag > 0) { 
                         flag--;
-                        chunk.setBlockState(POS.set(x, y, z), fillerBlock, false);
+                        chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
                     }
 
                     // Gens layer of sandstone starting at lowest block of sand, of height 1 to 4.
@@ -201,8 +191,9 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
 
-        generateHeightmap(chunk.getPos().x * this.noiseSizeX, 0, chunk.getPos().z * this.noiseSizeZ);
+        double[] heightNoise = generateHeightmap(chunk.getPos().x * this.noiseSizeX, 0, chunk.getPos().z * this.noiseSizeZ);
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
@@ -246,7 +237,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                                 int absZ = (chunk.getPos().z << 4) + z;
 
                                 BlockState blockToSet = getBlockState(structureWeightSampler, absX, y, absZ, density);
-                                chunk.setBlockState(POS.set(x, y, z), blockToSet, false);
+                                chunk.setBlockState(mutable.set(x, y, z), blockToSet, false);
 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
                                 heightmapSURFACE.trackUpdate(x, y, z, blockToSet);
@@ -268,7 +259,9 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         }
     }
 
-    private void generateHeightmap(int x, int y, int z) {
+    private double[] generateHeightmap(int x, int y, int z) {
+        double[] heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
+        
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionX = this.noiseSizeX + 1;
         int noiseResolutionZ = this.noiseSizeZ + 1;
@@ -288,11 +281,11 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         
         double heightStretch = 12D;
 
-        scaleNoise = scaleNoiseOctaves.sampleArr(scaleNoise, x, y, z, noiseResolutionX, 1, noiseResolutionZ, 1.0D, 0.0D, 1.0D);
-        depthNoise = depthNoiseOctaves.sampleArr(depthNoise, x, y, z, noiseResolutionX, 1, noiseResolutionZ, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
+        double[] scaleNoise = scaleNoiseOctaves.sampleArr(null, x, y, z, noiseResolutionX, 1, noiseResolutionZ, 1.0D, 0.0D, 1.0D);
+        double[] depthNoise = depthNoiseOctaves.sampleArr(null, x, y, z, noiseResolutionX, 1, noiseResolutionZ, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
 
-        mainNoise = mainNoiseOctaves.sampleArr(
-            mainNoise, 
+        double[] mainNoise = mainNoiseOctaves.sampleArr(
+            null, 
             x, y, z, 
             noiseResolutionX, noiseResolutionY, noiseResolutionZ,
             coordinateScale / mainNoiseScaleX, 
@@ -300,8 +293,8 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
             coordinateScale / mainNoiseScaleZ
         );
 
-        minLimitNoise = minLimitNoiseOctaves.sampleArr(
-            minLimitNoise, 
+        double[] minLimitNoise = minLimitNoiseOctaves.sampleArr(
+            null, 
             x, y, z, 
             noiseResolutionX, noiseResolutionY, noiseResolutionZ,
             coordinateScale, 
@@ -309,8 +302,8 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
             coordinateScale
         );
 
-        maxLimitNoise = maxLimitNoiseOctaves.sampleArr(
-            maxLimitNoise, 
+        double[] maxLimitNoise = maxLimitNoiseOctaves.sampleArr(
+            null, 
             x, y, z, 
             noiseResolutionX, noiseResolutionY, noiseResolutionZ,
             coordinateScale,
@@ -405,6 +398,8 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                 }
             }
         }
+        
+        return heightNoise;
     }
     
     private void sampleHeightmap(int sampleX, int sampleZ) {
@@ -417,7 +412,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         int chunkX = sampleX >> 4;
         int chunkZ = sampleZ >> 4;
 
-        generateHeightmap(chunkX * this.noiseSizeX, 0, chunkZ * this.noiseSizeZ);
+        double[] heightNoise = generateHeightmap(chunkX * this.noiseSizeX, 0, chunkZ * this.noiseSizeZ);
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {

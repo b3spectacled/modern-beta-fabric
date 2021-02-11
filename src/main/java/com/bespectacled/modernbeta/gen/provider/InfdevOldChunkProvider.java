@@ -36,7 +36,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
     
     public InfdevOldChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER, settings.providerSettings);
+        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         
         this.blockArr = new Block[16][this.worldHeight][16];
         
@@ -63,9 +63,10 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
     }
 
     @Override
-    public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+    public Chunk provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         generateTerrain(chunk.getPos().getStartX(), chunk.getPos().getStartZ(), biomeSource);  
         setTerrain((ChunkRegion)worldAccess, chunk, structureAccessor, biomeSource);
+        return chunk;
     }
 
     @Override
@@ -104,6 +105,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
         BlockStructureWeightSampler structureWeightSampler = new BlockStructureWeightSampler(structureAccessor, chunk);
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         Biome biome;
         
@@ -119,7 +121,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                     // Second check is a hack to stop weird chunk borders generating from surface blocks for ocean biomes
                     // being picked up and replacing topsoil blocks, somehow before biome reassignment.  Why?!
                     if ((biomeSource.isBeta() || biomeSource.isVanilla()) && OldGenUtil.getSolidHeight(chunk, this.worldHeight, absX, absZ) >= this.seaLevel - 4) {
-                        biome = getBiomeForSurfaceGen(POS.set(absX, 0, absZ), region, biomeSource);
+                        biome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
                         
                         if (blockToSet == Blocks.GRASS_BLOCK) 
                             blockToSet = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial().getBlock();
@@ -130,7 +132,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                     blockToSet = structureWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
 
                     if (blockToSet != Blocks.AIR) {
-                        chunk.setBlockState(POS.set(x, y, z), BlockStates.getBlockState(blockToSet), false);
+                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.getBlockState(blockToSet), false);
                     }
                     
                     heightmapOCEAN.trackUpdate(x, y, z, BlockStates.getBlockState(blockToSet));

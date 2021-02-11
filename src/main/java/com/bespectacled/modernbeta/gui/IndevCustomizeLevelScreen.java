@@ -109,7 +109,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         this.buttonList.addSingleOptionEntry(
             new DoubleOption(
                 "createWorld.customize.indev.heightSlider", 
-                64D, 256D, 64F,
+                64D, 320D, 64F,
                 (gameOptions) -> { return (double) this.levelHeight; }, // Getter
                 (gameOptions, value) -> { // Setter
                     this.levelHeight = value.intValue();

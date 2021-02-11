@@ -71,7 +71,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     
     public IndevChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, BlockStates.STONE, BlockStates.WATER, settings.providerSettings);
+        super(seed, 0, 320, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, false, false, BlockStates.STONE, BlockStates.WATER, settings);
         
         this.theme = this.providerSettings.contains("levelTheme") ? IndevTheme.fromName(this.providerSettings.getString("levelTheme")) : IndevTheme.NORMAL;
         this.type = this.providerSettings.contains("levelType") ? IndevType.fromName(this.providerSettings.getString("levelType")) : IndevType.ISLAND;
@@ -88,8 +88,11 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         this.pregenerated = false;  
     }
 
+    /**
+     * 1.17: Added synchronized to ensure that only one thread runs chunk generation
+     */
     @Override
-    public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+    public synchronized Chunk provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         ChunkPos pos = chunk.getPos();
 
         if (IndevUtil.inIndevRegion(pos.getStartX(), pos.getStartZ(), this.width, this.length)) {
@@ -107,14 +110,15 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                 generateWorldBorder(chunk);
             }
         }
-        
+
+        return chunk;
     }
 
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {}
     
     @Override
-    public int getHeight(int x, int z, Type type) {
+    public synchronized int getHeight(int x, int z, Type type) {
         int height = this.height - 1;
         
         x = x + this.width / 2;
@@ -157,6 +161,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
         BlockStructureWeightSampler structureWeightSampler = new BlockStructureWeightSampler(structureAccessor, chunk);
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
@@ -170,15 +175,15 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                     blockToSet = structureWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
 
                     if (blockToSet != Blocks.AIR) {
-                        chunk.setBlockState(POS.set(x, y, z), BlockStates.getBlockState(blockToSet), false);
+                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.getBlockState(blockToSet), false);
                     }
                     
                     if (this.type == IndevType.FLOATING) continue;
                      
                     if (y <= 1 && blockToSet == Blocks.AIR) {
-                        chunk.setBlockState(POS.set(x, y, z), BlockStates.LAVA, false);
+                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.LAVA, false);
                     } else if (y <= 1) {
-                        chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                     }
                     
                     heightmapOCEAN.trackUpdate(x, y, z, BlockStates.getBlockState(blockToSet));
@@ -577,6 +582,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     
     private void generateWorldBorder(Chunk chunk) {
         BlockState topBlock = BlockStates.GRASS_BLOCK;
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         if (this.theme == IndevTheme.HELL) topBlock = BlockStates.PODZOL;
          
@@ -584,9 +590,9 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             for (int z = 0; z < 16; ++z) {
                 for (int y = 0; y < this.height; ++y) {
                     if (y < this.waterLevel) {
-                        chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                     } else if (y == this.waterLevel) {
-                        chunk.setBlockState(POS.set(x, y, z), topBlock, false);
+                        chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
                     }
                 }
             }
@@ -594,15 +600,17 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     private void generateWaterBorder(Chunk chunk) {
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
                 for (int y = 0; y < this.height; ++y) {
                     if (y < this.waterLevel - 10) {
-                        chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                     } else if (y == this.waterLevel - 10) {
-                        chunk.setBlockState(POS.set(x, y, z), BlockStates.DIRT, false);
+                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.DIRT, false);
                     } else if (y < this.waterLevel) {
-                        chunk.setBlockState(POS.set(x, y, z), this.fluidBlock, false);
+                        chunk.setBlockState(mutable.set(x, y, z), this.fluidBlock, false);
                     }
                 }
             }
