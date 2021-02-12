@@ -5,6 +5,7 @@ import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.DoubleArrPool;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -29,6 +30,12 @@ public class BetaChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
+    private final DoubleArrPool twoDNoisePool;
+    private final DoubleArrPool threeDNoisePool;
+    private final DoubleArrPool heightNoisePool;
+    private final DoubleArrPool beachNoisePool;
+    //private final DoubleArrPool threeDPool;
+    
     public BetaChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
         super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
@@ -42,6 +49,12 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         scaleNoiseOctaves = new PerlinOctaveNoise(RAND, 10, true);
         depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
         forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        
+        // Noise array pools
+        this.twoDNoisePool = new DoubleArrPool(64, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1));
+        this.threeDNoisePool = new DoubleArrPool(64, ((this.worldHeight + this.minY) / this.verticalNoiseResolution + 1) * (this.noiseSizeX + 1) * (this.noiseSizeZ + 1));
+        this.heightNoisePool = new DoubleArrPool(64, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1));
+        this.beachNoisePool = new DoubleArrPool(64, 16 * 16);
         
         BetaClimateSampler.INSTANCE.setSeed(seed);
         setForestOctaves(forestNoiseOctaves);
@@ -64,21 +77,25 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
+        
+        double[] sandNoise = this.beachNoisePool.borrowArr();
+        double[] gravelNoise = this.beachNoisePool.borrowArr();
+        double[] stoneNoise = this.beachNoisePool.borrowArr();
 
-        double[] sandNoise = beachNoiseOctaves.sampleArrBeta(
-            null, 
+        sandNoise = beachNoiseOctaves.sampleArrBeta(
+            sandNoise, 
             chunkX * 16, chunkZ * 16, 0.0D, 
             16, 16, 1,
             thirtysecond, thirtysecond, 1.0D);
         
-        double[] gravelNoise = beachNoiseOctaves.sampleArrBeta(
-            null, 
+        gravelNoise = beachNoiseOctaves.sampleArrBeta(
+            gravelNoise, 
             chunkX * 16, 109.0134D, chunkZ * 16, 
             16, 1, 16, 
             thirtysecond, 1.0D, thirtysecond);
         
-        double[] stoneNoise = stoneNoiseOctaves.sampleArrBeta(
-            null, 
+        stoneNoise = stoneNoiseOctaves.sampleArrBeta(
+            stoneNoise, 
             chunkX * 16, chunkZ * 16, 0.0D, 
             16, 16, 1,
             thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D
@@ -178,6 +195,10 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                 }
             }
         }
+        
+        this.beachNoisePool.returnArr(sandNoise);
+        this.beachNoisePool.returnArr(gravelNoise);
+        this.beachNoisePool.returnArr(stoneNoise);
     }
 
     @Override
@@ -215,8 +236,9 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
         AquiferSampler aquiferSampler = this.createAquiferSampler(chunk.getPos().x, chunk.getPos().z);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-
-        double[] heightNoise = generateHeightmap(chunk.getPos().x * this.noiseSizeX, 0, chunk.getPos().z * this.noiseSizeZ);
+        
+        double[] heightNoise = this.heightNoisePool.borrowArr();
+        generateHeightmap(heightNoise, chunk.getPos().x * this.noiseSizeX, 0, chunk.getPos().z * this.noiseSizeZ);
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
@@ -279,11 +301,11 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                 }
             }
         }
+        
+        this.heightNoisePool.returnArr(heightNoise);
     }
 
-    private double[] generateHeightmap(int x, int y, int z) {
-        double[] heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
-        
+    private void generateHeightmap(double[] heightNoise, int x, int y, int z) {
         // For accurate terrain shape, worldHeight + minY should equal 128.
         int noiseResolutionY = (this.worldHeight + this.minY) / this.verticalNoiseResolution + 1;
         int noiseResolutionX = this.noiseSizeX + 1;
@@ -310,18 +332,25 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         double upperLimitScale = 512D;
         
         double heightStretch = 12D;
+        
+        double[] scaleNoise = this.twoDNoisePool.borrowArr();
+        double[] depthNoise = this.twoDNoisePool.borrowArr();
+        
+        double[] mainNoise = this.threeDNoisePool.borrowArr();
+        double[] minLimitNoise = this.threeDNoisePool.borrowArr();
+        double[] maxLimitNoise = this.threeDNoisePool.borrowArr();
 
         // Scale and Depth noise sample in 2D, noiseResolutionX * noiseResolutionZ
         
-        double[] scaleNoise = scaleNoiseOctaves.sampleArrBeta(
-            null, 
+        scaleNoise = scaleNoiseOctaves.sampleArrBeta(
+            scaleNoise, 
             x, z, 
             noiseResolutionX, noiseResolutionZ, 
             1.121D, 1.121D, 0.5D
         );
         
-        double[] depthNoise = depthNoiseOctaves.sampleArrBeta(
-            null, 
+        depthNoise = depthNoiseOctaves.sampleArrBeta(
+            depthNoise, 
             x, z, 
             noiseResolutionX, noiseResolutionZ, 
             depthNoiseScaleX, depthNoiseScaleZ, depthNoiseScaleExponent
@@ -329,8 +358,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
         // Main, Min Limit, and Max Limit noise sample in 3D, noiseResolutionX * noiseResolutionY * noiseResolutionZ
         
-        double[] mainNoise = mainNoiseOctaves.sampleArrBeta(
-            null, 
+        mainNoise = mainNoiseOctaves.sampleArrBeta(
+            mainNoise, 
             x, y, z, 
             noiseResolutionX, noiseResolutionY, noiseResolutionZ,
             coordinateScale / mainNoiseScaleX, 
@@ -338,8 +367,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
             coordinateScale / mainNoiseScaleZ
         );
 
-        double[] minLimitNoise = minLimitNoiseOctaves.sampleArrBeta(
-            null, 
+        minLimitNoise = minLimitNoiseOctaves.sampleArrBeta(
+            minLimitNoise, 
             x, y, z, 
             noiseResolutionX, noiseResolutionY, noiseResolutionZ,
             coordinateScale, 
@@ -347,8 +376,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
             coordinateScale
         );
 
-        double[] maxLimitNoise = maxLimitNoiseOctaves.sampleArrBeta(
-            null, 
+        maxLimitNoise = maxLimitNoiseOctaves.sampleArrBeta(
+            maxLimitNoise, 
             x, y, z, 
             noiseResolutionX, noiseResolutionY, noiseResolutionZ,
             coordinateScale, 
@@ -474,7 +503,12 @@ public class BetaChunkProvider extends AbstractChunkProvider {
             }
         }
         
-        return heightNoise;
+        this.twoDNoisePool.returnArr(scaleNoise);
+        this.twoDNoisePool.returnArr(depthNoise);
+        
+        this.threeDNoisePool.returnArr(maxLimitNoise);
+        this.threeDNoisePool.returnArr(minLimitNoise);
+        this.threeDNoisePool.returnArr(mainNoise);
     }
 
     private void sampleHeightmap(int sampleX, int sampleZ) {
@@ -487,7 +521,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         int chunkX = sampleX >> 4;
         int chunkZ = sampleZ >> 4;
 
-        double[] heightNoise = generateHeightmap(chunkX * this.noiseSizeX, 0, chunkZ * this.noiseSizeZ);
+        double[] heightNoise = this.heightNoisePool.borrowArr();
+        generateHeightmap(heightNoise, chunkX * this.noiseSizeX, 0, chunkZ * this.noiseSizeZ);
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) { 
@@ -550,6 +585,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                 HEIGHTMAP_CACHE.put(structPos, HEIGHTMAP_CHUNK[pX][pZ] + 1); // +1 because it is one above the ground
             }
         }
+        
+        this.heightNoisePool.returnArr(heightNoise);
     }
     
 }
