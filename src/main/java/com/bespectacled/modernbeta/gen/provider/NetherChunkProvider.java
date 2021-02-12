@@ -26,24 +26,9 @@ public class NetherChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    private double sandNoise[];
-    private double gravelNoise[];
-    private double stoneNoise[];
-
-    private double mainNoise[]; 
-    private double minLimitNoise[];
-    private double maxLimitNoise[];
-
-    private double scaleNoise[];
-    private double depthNoise[];
-    
-    private final double heightNoise[];
-    
     public NetherChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
         super(seed, 0, 128, 32, 0, 128, 2, 1, 1.0, 1.0, 80, 60, false, false, BlockStates.STONE, BlockStates.WATER, settings);
-        
-        this.heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         
         // Noise Generators
         minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -75,20 +60,20 @@ public class NetherChunkProvider extends AbstractChunkProvider {
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
 
-        sandNoise = beachNoiseOctaves.sampleArrBeta(
-            sandNoise, 
+        double[] sandNoise = beachNoiseOctaves.sampleArrBeta(
+            null, 
             chunkX * 16, chunkZ * 16, 0.0D, 
             16, 16, 1,
             thirtysecond, thirtysecond, 1.0D);
         
-        gravelNoise = beachNoiseOctaves.sampleArrBeta(
-            gravelNoise, 
+        double[] gravelNoise = beachNoiseOctaves.sampleArrBeta(
+            null, 
             chunkX * 16, 109.0134D, chunkZ * 16, 
             16, 1, 16, 
             thirtysecond, 1.0D, thirtysecond);
         
-        stoneNoise = stoneNoiseOctaves.sampleArrBeta(
-            stoneNoise, 
+        double[] stoneNoise = stoneNoiseOctaves.sampleArrBeta(
+            null, 
             chunkX * 16, chunkZ * 16, 0.0D, 
             16, 16, 1,
             thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D
@@ -212,7 +197,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
         
         BlockPos.Mutable mutable = new BlockPos.Mutable();
 
-        generateHeightmap(chunk.getPos().x * this.noiseSizeX, 0, chunk.getPos().z * this.noiseSizeZ);
+        double[] heightNoise = generateHeightmap(chunk.getPos().x * this.noiseSizeX, 0, chunk.getPos().z * this.noiseSizeZ);
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
@@ -285,7 +270,9 @@ public class NetherChunkProvider extends AbstractChunkProvider {
         }
     }
 
-    private void generateHeightmap(int x, int y, int z) {
+    private double[] generateHeightmap(int x, int y, int z) {
+        double[] heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
+        
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionX = this.noiseSizeX + 1;
         int noiseResolutionZ = this.noiseSizeZ + 1;
@@ -294,8 +281,8 @@ public class NetherChunkProvider extends AbstractChunkProvider {
         double coordinateScale = 684.41200000000003D * this.xzScale; 
         double heightScale = 684.41200000000003D * this.yScale;
         
-        double depthNoiseScaleX = 100D;
-        double depthNoiseScaleZ = 100D;
+        //double depthNoiseScaleX = 100D;
+        //double depthNoiseScaleZ = 100D;
 
         double mainNoiseScaleX = this.xzFactor; // Default: 80
         double mainNoiseScaleY = this.yFactor;  // Default: 60
@@ -304,6 +291,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
 
+        /*
         scaleNoise = scaleNoiseOctaves.sampleArrBeta(
             scaleNoise, 
             x, y, z, 
@@ -321,9 +309,10 @@ public class NetherChunkProvider extends AbstractChunkProvider {
             0.0D,
             depthNoiseScaleZ
         );
+        */
 
-        mainNoise = mainNoiseOctaves.sampleArrBeta(
-            mainNoise, 
+        double[] mainNoise = mainNoiseOctaves.sampleArrBeta(
+            null, 
             x, y, z, 
             noiseResolutionX, noiseResolutionY, noiseResolutionZ,
             coordinateScale / mainNoiseScaleX, 
@@ -331,8 +320,8 @@ public class NetherChunkProvider extends AbstractChunkProvider {
             coordinateScale / mainNoiseScaleZ
         );
 
-        minLimitNoise = minLimitNoiseOctaves.sampleArrBeta(
-            minLimitNoise, 
+        double[] minLimitNoise = minLimitNoiseOctaves.sampleArrBeta(
+            null, 
             x, y, z, 
             noiseResolutionX, noiseResolutionY, noiseResolutionZ,
             coordinateScale, 
@@ -340,8 +329,8 @@ public class NetherChunkProvider extends AbstractChunkProvider {
             coordinateScale
         );
 
-        maxLimitNoise = maxLimitNoiseOctaves.sampleArrBeta(
-            maxLimitNoise, 
+        double[] maxLimitNoise = maxLimitNoiseOctaves.sampleArrBeta(
+            null, 
             x, y, z, 
             noiseResolutionX, noiseResolutionY, noiseResolutionZ,
             coordinateScale, 
@@ -350,27 +339,28 @@ public class NetherChunkProvider extends AbstractChunkProvider {
         );
 
         int heightNoiseNdx = 0;
-        int flatNoiseNdx = 0;
+        //int flatNoiseNdx = 0;
         
-        double heightModArr[] = new double[noiseResolutionY];
+        double heightOffSets[] = new double[noiseResolutionY];
         
-        // Modifies density value to generate solid floor and ceiling
+        // Generates height offsets to create solid floor and ceiling
         for (int noiseY = 0; noiseY < noiseResolutionY; noiseY++) {
-            heightModArr[noiseY] = Math.cos(((double)noiseY * 3.1415926535897931D * 6D) / (double)noiseResolutionY) * 2D;
+            heightOffSets[noiseY] = Math.cos(((double)noiseY * 3.1415926535897931D * 6D) / (double)noiseResolutionY) * 2D;
             
-            double mod = noiseY;
+            double offset = noiseY;
             if (noiseY > noiseResolutionY / 2) {
-                mod = noiseResolutionY - 1 - noiseY;
+                offset = noiseResolutionY - 1 - noiseY;
             }
-            if (mod < this.noiseSizeY / 4D) {     // orig: mod < 4D
-                mod = this.noiseSizeY / 4D - mod; // orig: mod = 4D - mod;
-                heightModArr[noiseY] -= mod * mod * mod * 10D;
+            if (offset < this.noiseSizeY / 4D) {     // orig: mod < 4D
+                offset = this.noiseSizeY / 4D - offset; // orig: mod = 4D - mod;
+                heightOffSets[noiseY] -= offset * offset * offset * 10D;
             }
         }
 
         for (int noiseX = 0; noiseX < noiseResolutionX; noiseX++) {
             for (int noiseZ = 0; noiseZ < noiseResolutionZ; noiseZ++) {
                 
+                /*
                 double scaleVal = (scaleNoise[flatNoiseNdx] + 256D) / 512D;
 
                 if (scaleVal > 1.0D) {
@@ -408,11 +398,11 @@ public class NetherChunkProvider extends AbstractChunkProvider {
                 depthVal = (depthVal * (double) noiseResolutionY) / 16D;
                 
                 flatNoiseNdx++;
+                */             
 
                 for (int noiseY = 0; noiseY < noiseResolutionY; noiseY++) {
                     double heightVal = 0.0D;
-                    
-                    double heightMod = heightModArr[noiseY];
+                    double heightOffset = heightOffSets[noiseY];
                     
                     double minLimitVal = minLimitNoise[heightNoiseNdx] / lowerLimitScale;
                     double maxLimitVal = maxLimitNoise[heightNoiseNdx] / upperLimitScale;
@@ -425,7 +415,8 @@ public class NetherChunkProvider extends AbstractChunkProvider {
                     } else {
                         heightVal = minLimitVal + (maxLimitVal - minLimitVal) * mainNoiseVal;
                     }
-                    heightVal -= heightMod;
+                    
+                    heightVal -= heightOffset; 
                     
                     int slideOffset = 4;
                     if (noiseY > noiseResolutionY - slideOffset) {
@@ -451,6 +442,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
                 }
             }
         }
+        
+        return heightNoise;
     }
-    
 }

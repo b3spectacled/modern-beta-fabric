@@ -17,6 +17,7 @@ import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.AquiferSampler;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
@@ -30,20 +31,20 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
-    private final PerlinOctaveNoise noiseOctavesC;
+    private final PerlinOctaveNoise mainNoiseOctaves;
     private final PerlinOctaveNoise beachNoiseOctaves;
     private final PerlinOctaveNoise stoneNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
     public InfdevChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, -64, 192, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         Random rand = new Random(seed); 
         
         // Noise Generators
         minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
-        noiseOctavesC = new PerlinOctaveNoise(rand, 8, true);
+        mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
         beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
         stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
 
@@ -101,11 +102,15 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
                 
-                for (int y = this.worldHeight - 1; y >= 0; --y) {
+                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
                     
                     // Randomly place bedrock from y=0 to y=5
-                    if (y <= 0 + rand.nextInt(5)) {
+                    if (y <= this.minY + rand.nextInt(5)) {
                         chunk.setBlockState(mutable.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
+                        continue;
+                    }
+                    
+                    if (y < 50) {
                         continue;
                     }
                     
@@ -198,6 +203,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
+        AquiferSampler aquiferSampler = this.createAquiferSampler(chunk.getPos().x, chunk.getPos().z);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
@@ -206,10 +212,12 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 int bZ = chunkZ * this.noiseSizeZ + subChunkZ;
                 
                 for (int bY = 0; bY < this.noiseSizeY + 1; ++bY) {
-                    heightNoise[bY * this.noiseSizeX + 0] = this.generateHeightmap(bX, bY, bZ);
-                    heightNoise[bY * this.noiseSizeX + 1] = this.generateHeightmap(bX, bY, bZ + 1);
-                    heightNoise[bY * this.noiseSizeX + 2] = this.generateHeightmap(bX + 1, bY, bZ);
-                    heightNoise[bY * this.noiseSizeX + 3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
+                    int offsetY = bY + this.noiseMinY;
+                    
+                    heightNoise[bY * this.noiseSizeX + 0] = this.generateHeightmap(bX, offsetY, bZ);
+                    heightNoise[bY * this.noiseSizeX + 1] = this.generateHeightmap(bX, offsetY, bZ + 1);
+                    heightNoise[bY * this.noiseSizeX + 2] = this.generateHeightmap(bX + 1, offsetY, bZ);
+                    heightNoise[bY * this.noiseSizeX + 3] = this.generateHeightmap(bX + 1, offsetY, bZ + 1);
                 }
                 
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
@@ -255,7 +263,8 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                                 
                                 double density = nz1 + (nz2 - nz1) * lerpZ;
                                 
-                                BlockState blockToSet = getBlockState(structureWeightSampler, absX, y, absZ, density);
+                                //BlockState blockToSet = getBlockState(structureWeightSampler, absX, y, absZ, density);
+                                BlockState blockToSet = this.getBlockState(structureWeightSampler, aquiferSampler, absX, y, absZ, density);
                                 chunk.setBlockState(mutable.set(x, y, z), blockToSet, false);
                                 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
@@ -268,13 +277,13 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         }
     }
     
-    private double generateHeightmap(double x, double y, double z) {
+    private double generateHeightmap(int x, int y, int z) {
         // Check if y (in scaled space) is below sealevel
         // and increase density accordingly.
         //double elevGrad = y * 4.0 - 64.0;
-        double elevGrad = y * this.verticalNoiseResolution - (double)this.seaLevel;
-        if (elevGrad < 0.0) {
-            elevGrad *= 3.0;
+        double heightOffset = y * this.verticalNoiseResolution - (double)this.seaLevel;
+        if (heightOffset < 0.0) {
+            heightOffset *= 3.0;
         }
         
         double coordinateScale = 684.412D * this.xzScale; 
@@ -282,52 +291,53 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         
         double limitScale = 512.0D;
         
-        double res;
-        double mainNoiseVal = this.noiseOctavesC.sample(x * 8.55515, y * 1.71103, z * 8.55515) / 2.0;
+        double heightVal;
+        double mainNoiseVal = this.mainNoiseOctaves.sample(x * 8.55515, y * 1.71103, z * 8.55515) / 2.0;
         
         if (mainNoiseVal < -1) { // Lower limit(?)
-            res = MathHelper.clamp(
-                this.minLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
+            heightVal = MathHelper.clamp(
+                this.minLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - heightOffset, 
                 -10.0, 
                 10.0
             );
             
         } else if (mainNoiseVal > 1.0) { // Upper limit(?)
-            res = MathHelper.clamp(
-                this.maxLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
+            heightVal = MathHelper.clamp(
+                this.maxLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - heightOffset, 
                 -10.0, 
                 10.0
             );
             
         } else {
             double minLimitVal = MathHelper.clamp(
-                this.minLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
+                this.minLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - heightOffset, 
                 -10.0, 
                 10.0
             );
             
             double maxLimitVal = MathHelper.clamp(
-                this.maxLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
+                this.maxLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - heightOffset, 
                 -10.0, 
                 10.0
             );
             
             double mix = (mainNoiseVal + 1.0) / 2.0;
             
-            res = minLimitVal + (maxLimitVal - minLimitVal) * mix;
+            heightVal = minLimitVal + (maxLimitVal - minLimitVal) * mix;
         }
         
-        /*
-        res = this.sampleNoiseCave(
+        heightVal = this.sampleNoiseCave(
             (int)x * this.horizontalNoiseResolution,
             (int)y * this.verticalNoiseResolution,
             (int)z * this.horizontalNoiseResolution,
             (mainNoiseVal + 1.0) / 2.0,
-            res
+            heightVal
         );
-        */
+        
+        if (this.generateAquifers || this.generateNoiseCaves)
+            heightVal = this.applyBottomSlide(heightVal, y);
     
-        return res;
+        return heightVal;
     }
     
     private void sampleHeightmap(int absX, int absZ) {

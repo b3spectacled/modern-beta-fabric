@@ -1,7 +1,5 @@
 package com.bespectacled.modernbeta.gen.provider;
 
-import java.util.Random;
-
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
@@ -107,7 +105,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                 BlockState fillerBlock = biomeFillerBlock;
 
                 // Generate from top to bottom of world
-                for (int y = this.worldHeight + this.minY - 1; y >= this.minY; y--) {
+                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; y--) {
 
                     // Randomly place bedrock from y=0 (or minHeight) to y=5
                     if (y <= this.minY + rand.nextInt(5)) {
@@ -423,10 +421,10 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
                 for (int noiseY = this.noiseMinY; noiseY < noiseResolutionY; noiseY++) {
                     double heightVal = 0.0D;
-                    double scaleVal2 = (((double) noiseY - depthVal2) * heightStretch) / scaleVal;
+                    double heightOffset = (((double) noiseY - depthVal2) * heightStretch) / scaleVal;
                     
-                    if (scaleVal2 < 0.0D) {
-                        scaleVal2 *= 4D;
+                    if (heightOffset < 0.0D) {
+                        heightOffset *= 4D;
                     }
                     
                     // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
@@ -443,7 +441,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                     }
                     
                     // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
-                    double heightValWithOffset = heightVal - scaleVal2; 
+                    double heightValWithOffset = heightVal - heightOffset; 
                     
                     // Sample for noise caves
                     heightValWithOffset = this.sampleNoiseCave(
@@ -469,7 +467,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                     // Very bad.
                     // Do not increment index used to retrieve noise values unless we're at or over 0,
                     // So that the height value array can be fully populated without having to actually sample values
-                    // for entire subchunk range, which would change terrain shape.
+                    // for entire subchunk range, which would (probably?) change terrain shape.
                     if (noiseY >= 0)
                         mainNoiseNdx++;
                 }

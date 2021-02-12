@@ -1,7 +1,5 @@
 package com.bespectacled.modernbeta.gen.provider;
 
-import java.util.Random;
-
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -92,7 +90,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                 BlockState fillerBlock = biomeFillerBlock;
 
                 // Generate from top to bottom of world
-                for (int y = this.worldHeight + this.minY - 1; y >= this.minY; y--) {
+                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; y--) {
 
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= (this.minY + rand.nextInt(6)) - 1) {
@@ -360,10 +358,10 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
 
                 for (int noiseY = this.noiseMinY; noiseY < noiseResolutionY; noiseY++) {
                     double heightVal = 0.0D;
-                    double scaleVal2 = (((double) noiseY - depthVal2) * heightStretch) / scaleVal;
+                    double heightOffset = (((double) noiseY - depthVal2) * heightStretch) / scaleVal;
 
-                    if (scaleVal2 < 0.0D) {
-                        scaleVal2 *= 4D;
+                    if (heightOffset < 0.0D) {
+                        heightOffset *= 4D;
                     }
 
                     double minLimitVal = minLimitNoise[mainNoiseNdx] / lowerLimitScale;
@@ -378,7 +376,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                         heightVal = minLimitVal + (maxLimitVal - minLimitVal) * mainLimitVal;
                     }
                     
-                    double heightValWithOffset = heightVal - scaleVal2; 
+                    double heightValWithOffset = heightVal - heightOffset; 
                     
                     // Sample for noise caves
                     heightValWithOffset = this.sampleNoiseCave(

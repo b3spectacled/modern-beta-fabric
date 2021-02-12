@@ -84,7 +84,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 BlockState fillerBlock = biomeFillerBlock;
 
                 // Generate from top to bottom of world
-                for (int y = this.worldHeight - 1; y >= 0; y--) {
+                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; y--) {
 
                     BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
                     
