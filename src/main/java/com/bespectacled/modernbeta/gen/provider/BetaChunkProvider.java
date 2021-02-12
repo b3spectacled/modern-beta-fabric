@@ -107,7 +107,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                 BlockState fillerBlock = biomeFillerBlock;
 
                 // Generate from top to bottom of world
-                for (int y = this.worldHeight - 1; y >= this.minY; y--) {
+                for (int y = this.worldHeight + this.minY - 1; y >= this.minY; y--) {
 
                     // Randomly place bedrock from y=0 (or minHeight) to y=5
                     if (y <= this.minY + rand.nextInt(5)) {
@@ -447,7 +447,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                     
                     // Sample for noise caves
                     heightValWithOffset = this.sampleNoiseCave(
-                        (x + noiseX) * this.verticalNoiseResolution,
+                        (x + noiseX) * this.horizontalNoiseResolution,
                         noiseY * this.verticalNoiseResolution,
                         (z + noiseZ) * this.horizontalNoiseResolution,
                         heightVal,

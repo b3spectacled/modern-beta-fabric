@@ -15,6 +15,7 @@ import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.AquiferSampler;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
@@ -31,18 +32,17 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     
     public AlphaChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, -64, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
-        Random rand = new Random(seed);
+        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
-        minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
-        maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
-        mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
-        beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
-        stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
-        scaleNoiseOctaves = new PerlinOctaveNoise(rand, 10, true);
-        depthNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
-        forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
+        minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
+        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
+        scaleNoiseOctaves = new PerlinOctaveNoise(RAND, 10, true);
+        depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
 
         setForestOctaves(forestNoiseOctaves);
     }
@@ -92,11 +92,15 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                 BlockState fillerBlock = biomeFillerBlock;
 
                 // Generate from top to bottom of world
-                for (int y = this.worldHeight - 1; y >= 0; y--) {
+                for (int y = this.worldHeight + this.minY - 1; y >= this.minY; y--) {
 
                     // Randomly place bedrock from y=0 to y=5
-                    if (y <= (0 + rand.nextInt(6)) - 1) {
+                    if (y <= (this.minY + rand.nextInt(6)) - 1) {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
+                        continue;
+                    }
+                    
+                    if (y < 50) {
                         continue;
                     }
 
@@ -191,34 +195,31 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
+        AquiferSampler aquiferSampler = this.createAquiferSampler(chunk.getPos().x, chunk.getPos().z);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
 
         double[] heightNoise = generateHeightmap(chunk.getPos().x * this.noiseSizeX, 0, chunk.getPos().z * this.noiseSizeZ);
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
-                for (int subChunkY = this.noiseMinY; subChunkY < this.noiseSizeY; subChunkY++) {
+                for (int subChunkY = 0; subChunkY < this.noiseSizeY; subChunkY++) {
 
                     double lowerNW, lowerSW, lowerNE, lowerSE;
                     double upperNW, upperSW, upperNE, upperSE;
 
-                    lowerNW = lowerSW = lowerNE = lowerSE = 1.0;
-                    upperNW = upperSW = upperNE = upperSE = 1.0;
+                    lowerNW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
+                    lowerSW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
+                    lowerNE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
+                    lowerSE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
 
-                    if (subChunkY >= 0) {
-                        lowerNW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
-                        lowerSW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
-                        lowerNE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
-                        lowerSE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
-
-                        upperNW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNW) * lerpY; 
-                        upperSW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSW) * lerpY;
-                        upperNE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNE) * lerpY;
-                        upperSE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSE) * lerpY;
-                    }
+                    upperNW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNW) * lerpY; 
+                    upperSW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSW) * lerpY;
+                    upperNE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNE) * lerpY;
+                    upperSE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSE) * lerpY;
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; subY++) {
                         int y = subChunkY * this.verticalNoiseResolution + subY;
+                        y += this.minY;
                         
                         double curNW = lowerNW;
                         double curSW = lowerSW;
@@ -236,7 +237,8 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                                 int z = subZ + subChunkZ * this.horizontalNoiseResolution;
                                 int absZ = (chunk.getPos().z << 4) + z;
 
-                                BlockState blockToSet = getBlockState(structureWeightSampler, absX, y, absZ, density);
+                                //BlockState blockToSet = getBlockState(structureWeightSampler, absX, y, absZ, density);
+                                BlockState blockToSet = this.getBlockState(structureWeightSampler, aquiferSampler, absX, y, absZ, density);
                                 chunk.setBlockState(mutable.set(x, y, z), blockToSet, false);
 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
@@ -262,7 +264,8 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     private double[] generateHeightmap(int x, int y, int z) {
         double[] heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         
-        int noiseResolutionY = this.noiseSizeY + 1;
+        // For accurate terrain shape, worldHeight + minY should equal 128.
+        int noiseResolutionY = (this.worldHeight + this.minY) / this.verticalNoiseResolution + 1;
         int noiseResolutionX = this.noiseSizeX + 1;
         int noiseResolutionZ = this.noiseSizeZ + 1;
 
@@ -311,8 +314,10 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
             coordinateScale
         );
 
+        int mainNoiseNdx = 0;
         int heightNoiseNdx = 0;
         int flatNoiseNdx = 0;
+        
         for (int noiseX = 0; noiseX < noiseResolutionX; noiseX++) {
             for (int noiseZ = 0; noiseZ < noiseResolutionZ; noiseZ++) {
 
@@ -353,7 +358,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
 
                 flatNoiseNdx++;
 
-                for (int noiseY = 0; noiseY < noiseResolutionY; noiseY++) {
+                for (int noiseY = this.noiseMinY; noiseY < noiseResolutionY; noiseY++) {
                     double heightVal = 0.0D;
                     double scaleVal2 = (((double) noiseY - depthVal2) * heightStretch) / scaleVal;
 
@@ -361,9 +366,9 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                         scaleVal2 *= 4D;
                     }
 
-                    double minLimitVal = minLimitNoise[heightNoiseNdx] / lowerLimitScale;
-                    double maxLimitVal = maxLimitNoise[heightNoiseNdx] / upperLimitScale;
-                    double mainLimitVal = (mainNoise[heightNoiseNdx] / 10D + 1.0D) / 2D;
+                    double minLimitVal = minLimitNoise[mainNoiseNdx] / lowerLimitScale;
+                    double maxLimitVal = maxLimitNoise[mainNoiseNdx] / upperLimitScale;
+                    double mainLimitVal = (mainNoise[mainNoiseNdx] / 10D + 1.0D) / 2D;
 
                     if (mainLimitVal < 0.0D) {
                         heightVal = minLimitVal;
@@ -372,16 +377,29 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                     } else {
                         heightVal = minLimitVal + (maxLimitVal - minLimitVal) * mainLimitVal;
                     }
-                    heightVal -= scaleVal2;
+                    
+                    double heightValWithOffset = heightVal - scaleVal2; 
+                    
+                    // Sample for noise caves
+                    heightValWithOffset = this.sampleNoiseCave(
+                        (x + noiseX) * this.horizontalNoiseResolution,
+                        noiseY * this.verticalNoiseResolution,
+                        (z + noiseZ) * this.horizontalNoiseResolution,
+                        heightVal,
+                        heightValWithOffset
+                    );
 
                     int slideOffset = 4;
-                    
                     if (noiseY > noiseResolutionY - slideOffset) {
                         double topSlide = (float) (noiseY - (noiseResolutionY - slideOffset)) / 3F;
-                        heightVal = heightVal * (1.0D - topSlide) + -10D * topSlide;
+                        heightValWithOffset = heightValWithOffset * (1.0D - topSlide) + -10D * topSlide;
                     }
+                    
+                    if (this.generateAquifers || this.generateNoiseCaves)
+                        heightValWithOffset = this.applyBottomSlide(heightValWithOffset, noiseY);
 
-                    // Does not appear to enter here
+                    // Unused in original source
+                    /*
                     if ((double) noiseY < 0.0D) {
                         double bottomSlide = (0.0D - (double) noiseY) / 4D;
                         if (bottomSlide < 0.0D) {
@@ -390,11 +408,15 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                         if (bottomSlide > 1.0D) {
                             bottomSlide = 1.0D;
                         }
-                        heightVal = heightVal * (1.0D - bottomSlide) + -10D * bottomSlide;
+                        heightValWithOffset = heightValWithOffset * (1.0D - bottomSlide) + -10D * bottomSlide;
                     }
+                    */
 
-                    heightNoise[heightNoiseNdx] = heightVal;
+                    heightNoise[heightNoiseNdx] = heightValWithOffset;
                     heightNoiseNdx++;
+                    
+                    if (noiseY >= 0)
+                        mainNoiseNdx++;
                 }
             }
         }
@@ -430,6 +452,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
 
                     for (int subY = 0; subY < this.verticalNoiseResolution; subY++) {
                         int y = subChunkY * this.verticalNoiseResolution + subY;
+                        y += this.minY;
                         
                         double curNW = lowerNW;
                         double curSW = lowerSW;

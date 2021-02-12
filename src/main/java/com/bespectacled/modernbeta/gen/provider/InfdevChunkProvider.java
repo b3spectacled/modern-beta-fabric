@@ -28,8 +28,8 @@ import net.minecraft.world.gen.StructureWeightSampler;
  */
 public class InfdevChunkProvider extends AbstractChunkProvider {
     
-    private final PerlinOctaveNoise noiseOctavesA;
-    private final PerlinOctaveNoise noiseOctavesB;
+    private final PerlinOctaveNoise minLimitNoiseOctaves;
+    private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise noiseOctavesC;
     private final PerlinOctaveNoise beachNoiseOctaves;
     private final PerlinOctaveNoise stoneNoiseOctaves;
@@ -37,12 +37,12 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     
     public InfdevChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, -64, 128, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, 0, 128, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         Random rand = new Random(seed); 
         
         // Noise Generators
-        noiseOctavesA = new PerlinOctaveNoise(rand, 16, true);
-        noiseOctavesB = new PerlinOctaveNoise(rand, 16, true);
+        minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         noiseOctavesC = new PerlinOctaveNoise(rand, 8, true);
         beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
         stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
@@ -212,28 +212,24 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                     heightNoise[bY * this.noiseSizeX + 3] = this.generateHeightmap(bX + 1, bY, bZ + 1);
                 }
                 
-                for (int subChunkY = this.noiseMinY; subChunkY < this.noiseSizeY; ++subChunkY) {
+                for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
                     
                     double lower0, lower1, lower2, lower3;
                     double upper0, upper1, upper2, upper3;
                     
-                    lower0 = lower1 = lower2 = lower3 = 1.0;
-                    upper0 = upper1 = upper2 = upper3 = 1.0;
+                    lower0 = heightNoise[(subChunkY) * this.noiseSizeX + 0];
+                    lower1 = heightNoise[(subChunkY) * this.noiseSizeX + 1];
+                    lower2 = heightNoise[(subChunkY) * this.noiseSizeX + 2];
+                    lower3 = heightNoise[(subChunkY) * this.noiseSizeX + 3];
                     
-                    if (subChunkY >= 0) {
-                        lower0 = heightNoise[(subChunkY) * this.noiseSizeX + 0];
-                        lower1 = heightNoise[(subChunkY) * this.noiseSizeX + 1];
-                        lower2 = heightNoise[(subChunkY) * this.noiseSizeX + 2];
-                        lower3 = heightNoise[(subChunkY) * this.noiseSizeX + 3];
-                        
-                        upper0 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 0];
-                        upper1 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 1];
-                        upper2 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 2];
-                        upper3 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 3];
-                    }
+                    upper0 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 0];
+                    upper1 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 1];
+                    upper2 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 2];
+                    upper3 = heightNoise[(subChunkY + 1) * this.noiseSizeX + 3];
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
-                        int y = subY + subChunkY * this.verticalNoiseResolution;
+                        int y = subChunkY * this.verticalNoiseResolution + subY;
+                        y += this.minY;
                         
                         double lerpY = subY / (double)this.verticalNoiseResolution;
                         
@@ -287,40 +283,50 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         double limitScale = 512.0D;
         
         double res;
-        double noise = this.noiseOctavesC.sample(x * 8.55515, y * 1.71103, z * 8.55515) / 2.0;
+        double mainNoiseVal = this.noiseOctavesC.sample(x * 8.55515, y * 1.71103, z * 8.55515) / 2.0;
         
-        if (noise < -1) {
+        if (mainNoiseVal < -1) { // Lower limit(?)
             res = MathHelper.clamp(
-                this.noiseOctavesA.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
+                this.minLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
                 -10.0, 
                 10.0
             );
             
-        } else if (noise > 1.0) {
+        } else if (mainNoiseVal > 1.0) { // Upper limit(?)
             res = MathHelper.clamp(
-                this.noiseOctavesB.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
+                this.maxLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
                 -10.0, 
                 10.0
             );
             
         } else {
-            double noise2 = MathHelper.clamp(
-                this.noiseOctavesA.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
+            double minLimitVal = MathHelper.clamp(
+                this.minLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
                 -10.0, 
                 10.0
             );
             
-            double noise3 = MathHelper.clamp(
-                this.noiseOctavesB.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
+            double maxLimitVal = MathHelper.clamp(
+                this.maxLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - elevGrad, 
                 -10.0, 
                 10.0
             );
             
-            double mix = (noise + 1.0) / 2.0;
+            double mix = (mainNoiseVal + 1.0) / 2.0;
             
-            res = noise2 + (noise3 - noise2) * mix;
+            res = minLimitVal + (maxLimitVal - minLimitVal) * mix;
         }
         
+        /*
+        res = this.sampleNoiseCave(
+            (int)x * this.horizontalNoiseResolution,
+            (int)y * this.verticalNoiseResolution,
+            (int)z * this.horizontalNoiseResolution,
+            (mainNoiseVal + 1.0) / 2.0,
+            res
+        );
+        */
+    
         return res;
     }
     
@@ -355,6 +361,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
                         int y = subY + subChunkY * this.verticalNoiseResolution;
+                        y += this.minY;
                         
                         double mixY = subY / (double)this.verticalNoiseResolution;
                         

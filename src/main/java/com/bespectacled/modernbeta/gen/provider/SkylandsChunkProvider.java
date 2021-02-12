@@ -32,17 +32,16 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     public SkylandsChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
         super(seed, 0, 128, 64, 0, -10, 1, 2, 1.0, 1.0, 80, 160, false, false, BlockStates.STONE, BlockStates.WATER, settings);
-        Random rand = new Random();
-
+        
         // Noise Generators
-        minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
-        maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
-        mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
-        beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
-        stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
-        scaleNoiseOctaves = new PerlinOctaveNoise(rand, 10, true);
-        depthNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
-        forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
+        minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
+        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
+        scaleNoiseOctaves = new PerlinOctaveNoise(RAND, 10, true);
+        depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
 
         setForestOctaves(forestNoiseOctaves);
     }
@@ -237,18 +236,18 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         int noiseResolutionX = this.noiseSizeX + 1;
         int noiseResolutionZ = this.noiseSizeZ + 1;
         
-        int startX = x / this.noiseSizeX * 16;
-        int startZ = z / this.noiseSizeZ * 16;
+        //int startX = x / this.noiseSizeX * 16;
+        //int startZ = z / this.noiseSizeZ * 16;
         
-        BetaClimateSampler climateSampler = BetaClimateSampler.INSTANCE;
+        //BetaClimateSampler climateSampler = BetaClimateSampler.INSTANCE;
 
         // Var names taken from old customized preset names
         double coordinateScale = 684.41200000000003D * this.xzScale; 
         double heightScale = 684.41200000000003D * this.yScale;
 
-        double depthNoiseScaleX = 200D;
-        double depthNoiseScaleZ = 200D;
-        double depthNoiseScaleExponent = 0.5D;
+        //double depthNoiseScaleX = 200D;
+        //double depthNoiseScaleZ = 200D;
+        //double depthNoiseScaleExponent = 0.5D;
 
         double mainNoiseScaleX = this.xzFactor; // Default: 80
         double mainNoiseScaleY = this.yFactor;  // Default: 160
@@ -257,12 +256,14 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
         
-        double heightStretch = 8D;
+        //double heightStretch = 8D;
 
+        /*
         double[] scaleNoise = scaleNoiseOctaves.sampleArrBeta(null, x, z, noiseResolutionX, noiseResolutionZ, 1.121D, 1.121D, 0.5D);
         double[] depthNoise = depthNoiseOctaves.sampleArrBeta(null, x, z, noiseResolutionX, noiseResolutionZ, depthNoiseScaleX, depthNoiseScaleZ,
                 depthNoiseScaleExponent);
-
+        */
+        
         coordinateScale *= 2D;
 
         double[] mainNoise = mainNoiseOctaves.sampleArrBeta(null, x, y, z, noiseResolutionX, noiseResolutionY, noiseResolutionZ,
@@ -275,15 +276,16 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 coordinateScale, heightScale, coordinateScale);
 
         int heightNoiseNdx = 0;
-        int flatNoiseNdx = 0;
+        //int flatNoiseNdx = 0;
         int k = 16 / noiseResolutionX;
 
         for (int noiseX = 0; noiseX < noiseResolutionX; noiseX++) {
-            int relX = noiseX * k + k / 2;
+            //int relX = noiseX * k + k / 2;
 
             for (int noiseZ = 0; noiseZ < noiseResolutionZ; noiseZ++) {
-                int relZ = noiseZ * k + k / 2;
+                //int relZ = noiseZ * k + k / 2;
 
+                /* Noise is calculated but unused for whatever reason.
                 double curTemp = climateSampler.sampleTemp(startX + relX, startZ + relZ);
                 double curHumid = climateSampler.sampleHumid(startX + relX, startZ + relZ) * curTemp;
 
@@ -324,14 +326,18 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 double depthVal2 = (double) noiseResolutionY / 16D;
 
                 flatNoiseNdx++;
-
+                */
+                
                 for (int noiseY = 0; noiseY < noiseResolutionY; noiseY++) {
                     double heightVal = 0.0D;
+                    
+                    /*
                     double scaleVal2 = (((double) noiseY - depthVal2) * heightStretch) / scaleVal;
 
                     if (scaleVal2 < 0.0D) {
                         scaleVal2 *= -1D;
                     }
+                    */
 
                     double minLimitVal = minLimitNoise[heightNoiseNdx] / lowerLimitScale;
                     double maxLimitVal = maxLimitNoise[heightNoiseNdx] / upperLimitScale;
@@ -344,25 +350,33 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                     } else {
                         heightVal = minLimitVal + (maxLimitVal - minLimitVal) * mainNoiseVal;
                     }
-                    heightVal -= 8D;
+                    
+                    double heightValWithOffset = heightVal - 8D;
+                    
+                    // Sample for noise caves
+                    heightValWithOffset = this.sampleNoiseCave(
+                        (x + noiseX) * this.horizontalNoiseResolution,
+                        noiseY * this.verticalNoiseResolution,
+                        (z + noiseZ) * this.horizontalNoiseResolution,
+                        heightVal,
+                        heightValWithOffset
+                    );
                     
                     //int slideOffset = 32;
                     int slideOffset = this.noiseSizeY;
-
                     if (noiseY > noiseResolutionY - slideOffset) {
                         double topSlide = (float) (noiseY - (noiseResolutionY - slideOffset)) / ((float) slideOffset - 1.0F);
-                        heightVal = heightVal * (1.0D - topSlide) + -30D * topSlide;
+                        heightValWithOffset = heightValWithOffset * (1.0D - topSlide) + -30D * topSlide;
                     }
 
                     //slideOffset = 8;
                     slideOffset = this.noiseSizeY / 4;
-                    
                     if (noiseY < slideOffset) {
                         double bottomSlide = (float) (slideOffset - noiseY) / ((float) slideOffset - 1.0F);
-                        heightVal = heightVal * (1.0D - bottomSlide) + -30D * bottomSlide;
+                        heightValWithOffset = heightValWithOffset * (1.0D - bottomSlide) + -30D * bottomSlide;
                     }
 
-                    heightNoise[heightNoiseNdx] = heightVal;
+                    heightNoise[heightNoiseNdx] = heightValWithOffset;
                     heightNoiseNdx++;
                 }
             }
