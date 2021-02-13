@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.util;
 import java.util.LinkedList;
 
 public class DoubleArrPool {
-    private LinkedList<double[]> arrPool;
+    private final LinkedList<double[]> arrPool;
     
     private final int initialCapacity;
     private final int arraySize;
@@ -35,7 +35,7 @@ public class DoubleArrPool {
     
     public synchronized void returnArr(double[] arr) {
         if (arr == null || arr.length != this.arraySize)
-            throw new IllegalStateException("[Modern Beta] Returned double array pool of invalid type!");
+            throw new IllegalArgumentException("[Modern Beta] Returned double array of invalid type!");
         
         //System.out.println("Returning arr, new size: " + this.availableArrs.size());
         

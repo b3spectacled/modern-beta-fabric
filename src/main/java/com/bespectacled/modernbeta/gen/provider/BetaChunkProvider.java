@@ -122,7 +122,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                 BlockState fillerBlock = biomeFillerBlock;
 
                 // Generate from top to bottom of world
-                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; y--) {
+                //for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; y--) {
+                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= 0; y--) {
 
                     // Randomly place bedrock from y=0 (or minHeight) to y=5
                     if (y <= this.minY + rand.nextInt(5)) {
@@ -131,7 +132,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                     }
                     
                     // Don't surface build below 50, per 1.17 default surface builder
-                    if (y < 50) {
+                    if ((this.generateAquifers || this.generateNoiseCaves) && y < 50) {
                         continue;
                     }
 
