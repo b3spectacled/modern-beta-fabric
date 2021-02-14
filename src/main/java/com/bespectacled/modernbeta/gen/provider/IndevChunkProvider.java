@@ -26,7 +26,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 
@@ -92,7 +91,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
      * 1.17: Added synchronized to ensure that only one thread runs chunk generation
      */
     @Override
-    public synchronized Chunk provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+    public synchronized Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         ChunkPos pos = chunk.getPos();
 
         if (IndevUtil.inIndevRegion(pos.getStartX(), pos.getStartZ(), this.width, this.length)) {

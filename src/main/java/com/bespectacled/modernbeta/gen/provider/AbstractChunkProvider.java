@@ -17,7 +17,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.AquiferSampler;
@@ -59,13 +58,14 @@ public abstract class AbstractChunkProvider {
     protected final int bedrockFloor;
     protected final int bedrockCeiling;
     
-    protected final int verticalNoiseResolution;
-    protected final int horizontalNoiseResolution;
+    protected final int verticalNoiseResolution;   // Number of blocks in a horizontal subchunk
+    protected final int horizontalNoiseResolution; // Number of blocks in a vertical subchunk 
     
-    protected final int noiseSizeX;
-    protected final int noiseSizeZ;
-    protected final int noiseSizeY;
-    protected final int noiseMinY;
+    protected final int noiseSizeX; // Number of horizontal subchunks along x
+    protected final int noiseSizeZ; // Number of horizontal subchunks along z
+    protected final int noiseSizeY; // Number of vertical subchunks
+    protected final int noiseMinY;  // Subchunk index of bottom of the world
+    protected final int noisePosY;  // Number of positive (y >= 0) vertical subchunks
 
     protected final double xzScale;
     protected final double yScale;
@@ -141,6 +141,7 @@ public abstract class AbstractChunkProvider {
         this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
         this.noiseSizeY = this.worldHeight / this.verticalNoiseResolution;
         this.noiseMinY = this.minY / this.verticalNoiseResolution;
+        this.noisePosY = (this.worldHeight + this.minY) / this.verticalNoiseResolution;
         
         this.xzScale = xzScale;
         this.yScale = yScale;
@@ -167,7 +168,7 @@ public abstract class AbstractChunkProvider {
         HEIGHTMAP_CACHE.clear();
     }
     
-    public abstract Chunk provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource);
+    public abstract Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource);
     public abstract void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource);
     public abstract int getHeight(int x, int z, Heightmap.Type type);
     public abstract PerlinOctaveNoise getBeachNoiseOctaves();

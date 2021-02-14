@@ -127,7 +127,7 @@ public class OldGeneratorType {
                 )
                 .put(
                     Optional.<GeneratorType>of(INFDEV_OLD), (createWorldScreen, generatorSettings) -> {
-                        return new InfdevOldCustomizeLevelScreen(createWorldScreen, OldGeneratorSettings.INFDEV_SETTINGS, "createWorld.customize.infdev.title", BiomeType.CLASSIC, true);
+                        return new InfdevOldCustomizeLevelScreen(createWorldScreen, OldGeneratorSettings.INFDEV_OLD_SETTINGS, "createWorld.customize.infdev.title", BiomeType.CLASSIC, true);
                     }
                 )
                 .put(

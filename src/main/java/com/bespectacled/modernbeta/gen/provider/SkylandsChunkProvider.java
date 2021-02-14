@@ -1,19 +1,16 @@
 package com.bespectacled.modernbeta.gen.provider;
 
-import java.util.Random;
-
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.DoubleArrayPool;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
@@ -29,6 +26,9 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
+    private final DoubleArrayPool heightNoisePool;
+    private final DoubleArrayPool beachNoisePool;
+    
     public SkylandsChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
         super(seed, 0, 128, 64, 0, -10, 1, 2, 1.0, 1.0, 80, 160, false, false, BlockStates.STONE, BlockStates.WATER, settings);
@@ -42,19 +42,23 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         scaleNoiseOctaves = new PerlinOctaveNoise(RAND, 10, true);
         depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
         forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        
+        // Noise array pools
+        this.heightNoisePool = new DoubleArrayPool(64, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1));
+        this.beachNoisePool = new DoubleArrayPool(64, 16 * 16);
 
         setForestOctaves(forestNoiseOctaves);
     }
 
     @Override
-    public Chunk provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         generateTerrain(chunk, structureAccessor);
         return chunk;
     }
 
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        double thirtysecond = 0.03125D;
+        double eighth = 0.03125D;
 
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
@@ -63,8 +67,9 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        double[] stoneNoise = stoneNoiseOctaves.sampleArrBeta(null, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
-                thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
+        double[] stoneNoise = this.beachNoisePool.borrowArr();
+        
+        stoneNoise = stoneNoiseOctaves.sampleArrBeta(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
 
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 16; x++) {
@@ -129,6 +134,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
             }
         }
         
+        this.beachNoisePool.returnArr(stoneNoise);
     }
 
     @Override
@@ -150,14 +156,6 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         return null;
     }
     
-    private static void fillChunkY(int y) {
-        for (int z = 0; z < 16; ++z) {
-            for (int x = 0; x < 16; ++x) {
-                HEIGHTMAP_CHUNK[x][z] = y;
-            }
-        }
-    }
-    
     public void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
@@ -171,7 +169,8 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        double[] heightNoise = generateHeightmap(chunk.getPos().x * this.noiseSizeX, 0, chunk.getPos().z * this.noiseSizeZ);
+        double[] heightNoise = this.heightNoisePool.borrowArr();
+        this.generateHeightmap(heightNoise, chunk.getPos().x * this.noiseSizeX, 0, chunk.getPos().z * this.noiseSizeZ);
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
@@ -227,11 +226,11 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 }
             }
         }
+        
+        this.heightNoisePool.returnArr(heightNoise);
     }
     
-    private double[] generateHeightmap(int x, int y, int z) {
-        double[] heightNoise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
-        
+    private void generateHeightmap(double[] heightNoise, int x, int y, int z) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionX = this.noiseSizeX + 1;
         int noiseResolutionZ = this.noiseSizeZ + 1;
@@ -258,6 +257,10 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         
         //double heightStretch = 8D;
 
+        double[] mainNoise = this.heightNoisePool.borrowArr();
+        double[] minLimitNoise = this.heightNoisePool.borrowArr();
+        double[] maxLimitNoise = this.heightNoisePool.borrowArr();
+        
         /*
         double[] scaleNoise = scaleNoiseOctaves.sampleArrBeta(null, x, z, noiseResolutionX, noiseResolutionZ, 1.121D, 1.121D, 0.5D);
         double[] depthNoise = depthNoiseOctaves.sampleArrBeta(null, x, z, noiseResolutionX, noiseResolutionZ, depthNoiseScaleX, depthNoiseScaleZ,
@@ -266,14 +269,32 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         
         coordinateScale *= 2D;
 
-        double[] mainNoise = mainNoiseOctaves.sampleArrBeta(null, x, y, z, noiseResolutionX, noiseResolutionY, noiseResolutionZ,
-                coordinateScale / mainNoiseScaleX, heightScale / mainNoiseScaleY, coordinateScale / mainNoiseScaleZ);
+        mainNoise = mainNoiseOctaves.sampleArrBeta(
+            mainNoise, 
+            x, y, z, 
+            noiseResolutionX, noiseResolutionY, noiseResolutionZ,
+            coordinateScale / mainNoiseScaleX, 
+            heightScale / mainNoiseScaleY, 
+            coordinateScale / mainNoiseScaleZ
+        );
 
-        double[] minLimitNoise = minLimitNoiseOctaves.sampleArrBeta(null, x, y, z, noiseResolutionX, noiseResolutionY, noiseResolutionZ,
-                coordinateScale, heightScale, coordinateScale);
+        minLimitNoise = minLimitNoiseOctaves.sampleArrBeta(
+            minLimitNoise, 
+            x, y, z, 
+            noiseResolutionX, noiseResolutionY, noiseResolutionZ,
+            coordinateScale, 
+            heightScale, 
+            coordinateScale
+        );
 
-        double[] maxLimitNoise = maxLimitNoiseOctaves.sampleArrBeta(null, x, y, z, noiseResolutionX, noiseResolutionY, noiseResolutionZ,
-                coordinateScale, heightScale, coordinateScale);
+        maxLimitNoise = maxLimitNoiseOctaves.sampleArrBeta(
+            maxLimitNoise, 
+            x, y, z, 
+            noiseResolutionX, noiseResolutionY, noiseResolutionZ,
+            coordinateScale, 
+            heightScale, 
+            coordinateScale
+        );
 
         int heightNoiseNdx = 0;
         //int flatNoiseNdx = 0;
@@ -382,7 +403,9 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
             }
         }
         
-        return heightNoise;
+        this.heightNoisePool.returnArr(maxLimitNoise);
+        this.heightNoisePool.returnArr(minLimitNoise);
+        this.heightNoisePool.returnArr(mainNoise);
     }
     
     private void sampleHeightmap(int absX, int absZ) {
@@ -395,7 +418,8 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         int chunkX = absX >> 4;
         int chunkZ = absZ >> 4;
 
-        double[] heightNoise = generateHeightmap(chunkX * this.noiseSizeX, 0, chunkZ * this.noiseSizeZ);
+        double[] heightNoise = this.heightNoisePool.borrowArr();
+        this.generateHeightmap(heightNoise, chunkX * this.noiseSizeX, 0, chunkZ * this.noiseSizeZ);
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
@@ -456,6 +480,15 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 HEIGHTMAP_CACHE.put(structPos, HEIGHTMAP_CHUNK[pX][pZ] + 1); // +1 because it is one above the ground
             }
         }
+        
+        this.heightNoisePool.returnArr(heightNoise);
     }
 
+    private static void fillChunkY(int y) {
+        for (int z = 0; z < 16; ++z) {
+            for (int x = 0; x < 16; ++x) {
+                HEIGHTMAP_CHUNK[x][z] = y;
+            }
+        }
+    }
 }

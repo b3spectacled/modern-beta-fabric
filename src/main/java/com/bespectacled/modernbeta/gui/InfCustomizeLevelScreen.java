@@ -37,8 +37,6 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions, option, value) -> {
                     this.biomeType = value;
                     this.generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
-                    
-                    return;
                 })
         );
             

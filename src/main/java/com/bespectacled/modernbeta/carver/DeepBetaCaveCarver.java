@@ -15,9 +15,9 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ProbabilityConfig;
 import net.minecraft.world.gen.carver.Carver;
 
-public class BetaCaveCarver extends Carver<ProbabilityConfig> {
+public class DeepBetaCaveCarver extends Carver<ProbabilityConfig> {
 
-    public BetaCaveCarver(Codec<ProbabilityConfig> codec, int heightLimit) {
+    public DeepBetaCaveCarver(Codec<ProbabilityConfig> codec, int heightLimit) {
         super(codec, heightLimit);
     }
 
@@ -30,6 +30,9 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
     @Override
     public boolean carve(Chunk chunk, Function<BlockPos, Biome> posToBiome, Random random, int seaLevel, int chunkX,
             int chunkZ, int mainChunkX, int mainChunkZ, BitSet carvingMask, ProbabilityConfig carverConfig) {
+        // Grab some random value so caves don't generate like main cave carver
+        random.nextInt();
+        
         int caveCount = random.nextInt(random.nextInt(random.nextInt(40) + 1) + 1);
         if (random.nextInt(getMaxCaveCount()) != 0) {
             caveCount = 0;
@@ -167,11 +170,11 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
             maxX = 16;
         }
 
-        if (minY < 1) {
-            minY = 1;
+        if (minY < -63) {
+            minY = -63;
         }
-        if (maxY > 120) {
-            maxY = 120;
+        if (maxY > 0) {
+            maxY = 0;
         }
 
         if (minZ < 0) {
@@ -187,7 +190,6 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
         }
 
         for (int relX = minX; relX < maxX; relX++) {
-
             double scaledRelX = (((double) (relX + mainChunkX * 16) + 0.5D) - x) / yaw;
 
             for (int relZ = minZ; relZ < maxZ; relZ++) {
@@ -202,6 +204,8 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
 
                     if (isPositionExcluded(scaledRelX, scaledRelY, scaledRelZ, -1)) {
                         Block block = chunk.getBlockState(blockPos.set(relX, setY, relZ)).getBlock();
+                        // Block blockAbove = chunk.getBlockState(new BlockPos(relX, setY + 1,
+                        // relZ)).getBlock();
 
                         if (block == Blocks.GRASS_BLOCK) {
                             isGrassBlock = true;
@@ -209,7 +213,7 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
 
                         // Don't use canCarveBlock for accuracy, for now.
                         if (block == Blocks.STONE || block == Blocks.DIRT || block == Blocks.GRASS_BLOCK) { 
-                            if (relY < 10) { // Set lava below y = 10
+                            if (relY < -54) { // Set lava below y = 10
                                 chunk.setBlockState(blockPos.set(relX, setY, relZ), Blocks.LAVA.getDefaultState(), false);
                             } else {
                                 chunk.setBlockState(blockPos.set(relX, setY, relZ), Blocks.CAVE_AIR.getDefaultState(), false);
@@ -257,7 +261,7 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
             for (int relZ = relMinZ; relZ < relMaxZ; relZ++) {
                 for (int relY = maxY + 1; relY >= minY - 1; relY--) {
 
-                    if (relY < 0 || relY >= 128) {
+                    if (relY < -64 || relY >= 0) {
                         continue;
                     }
 
@@ -294,7 +298,7 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
     }
 
     protected int getCaveY(Random random) {
-        return random.nextInt(random.nextInt(120) + 8);
+        return random.nextInt(random.nextInt(64) + 8) - 64;
     }
 
     protected float getTunnelSystemWidth(Random random) {

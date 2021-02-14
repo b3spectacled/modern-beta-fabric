@@ -4,19 +4,19 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.BlockStructureWeightSampler;
-import com.bespectacled.modernbeta.gen.OldGenUtil;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.pool.BlockArrayPool;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 
@@ -31,14 +31,10 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise noiseOctavesE;
     private final PerlinOctaveNoise noiseOctavesF;
     private final PerlinOctaveNoise forestNoiseOctaves;
-
-    private final Block blockArr[][][];
     
     public InfdevOldChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
-        
-        this.blockArr = new Block[16][this.worldHeight][16];
+        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
         noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true); 
@@ -47,11 +43,9 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
         noiseOctavesD = new PerlinOctaveNoise(RAND, 4, true);
         noiseOctavesE = new PerlinOctaveNoise(RAND, 4, true);
         noiseOctavesF = new PerlinOctaveNoise(RAND, 5, true);
-        
         new PerlinOctaveNoise(RAND, 3, true);
         new PerlinOctaveNoise(RAND, 3, true);
         new PerlinOctaveNoise(RAND, 3, true);
-        
         forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
         
         if (this.providerSettings.contains("generateInfdevPyramid")) 
@@ -63,14 +57,42 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
     }
 
     @Override
-    public Chunk provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
-        generateTerrain(chunk.getPos().getStartX(), chunk.getPos().getStartZ(), biomeSource);  
-        setTerrain((ChunkRegion)worldAccess, chunk, structureAccessor, biomeSource);
+    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+        generateTerrain(chunk, structureAccessor, biomeSource);  
         return chunk;
     }
 
     @Override
-    public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {}
+    public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        
+        int startX = chunk.getPos().getStartX();
+        int startZ = chunk.getPos().getStartZ();
+        
+        for (int x = 0; x < 16; ++x) {
+            int absX = startX + x;
+            for (int z = 0; z < 16; ++z) {
+                int absZ = startZ + z;
+                
+                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
+                    BlockState blockstateToSet = chunk.getBlockState(mutable.set(x, y, z));
+                    Biome biome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
+                    
+                    if (blockstateToSet.equals(BlockStates.GRASS_BLOCK)) {
+                        blockstateToSet = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
+                    } else if (blockstateToSet.equals(BlockStates.DIRT)) {
+                        blockstateToSet = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
+                    } else if (blockstateToSet.equals(BlockStates.STONE)) {
+                        blockstateToSet = this.defaultBlock;
+                    } else if (blockstateToSet.equals(BlockStates.WATER)) {
+                        blockstateToSet = this.defaultFluid;
+                    }
+
+                    chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
+                }
+            }
+        }
+    }
 
     @Override
     public int getHeight(int x, int z, Type type) {
@@ -96,10 +118,9 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
     public PerlinOctaveNoise getBeachNoiseOctaves() {
         return null;
     }
-    
-    private void setTerrain(ChunkRegion region, Chunk chunk, StructureAccessor structureAccessor, OldBiomeSource biomeSource) {
-        int startX = chunk.getPos().getStartX();
-        int startZ = chunk.getPos().getStartZ();
+  
+    private void generateTerrain(Chunk chunk, StructureAccessor structureAccessor, OldBiomeSource biomeSource) {
+        Random rand = new Random();
         
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
@@ -107,76 +128,39 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
         BlockStructureWeightSampler structureWeightSampler = new BlockStructureWeightSampler(structureAccessor, chunk);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        Biome biome;
-        
-        for (int x = 0; x < 16; ++x) {
-            int absX = x + startX;
-            
-            for (int z = 0; z < 16; ++z) {
-                int absZ = z + startZ;
-                
-                for (int y = 0; y < this.worldHeight; ++y) {
-                    Block blockToSet = blockArr[x][y][z];
-                    
-                    // Second check is a hack to stop weird chunk borders generating from surface blocks for ocean biomes
-                    // being picked up and replacing topsoil blocks, somehow before biome reassignment.  Why?!
-                    if ((biomeSource.isBeta() || biomeSource.isVanilla()) && OldGenUtil.getSolidHeight(chunk, this.worldHeight, absX, absZ) >= this.seaLevel - 4) {
-                        biome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
-                        
-                        if (blockToSet == Blocks.GRASS_BLOCK) 
-                            blockToSet = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial().getBlock();
-                        if (blockToSet == Blocks.DIRT) 
-                            blockToSet = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial().getBlock();
-                    }
-                    
-                    blockToSet = structureWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
-
-                    if (blockToSet != Blocks.AIR) {
-                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.getBlockState(blockToSet), false);
-                    }
-                    
-                    heightmapOCEAN.trackUpdate(x, y, z, BlockStates.getBlockState(blockToSet));
-                    heightmapSURFACE.trackUpdate(x, y, z, BlockStates.getBlockState(blockToSet));
-                        
-                }
-            }
-        }
-        
-    }
-  
-    private void generateTerrain(int startX, int startZ, OldBiomeSource biomeSource) {
-        Random rand = new Random();
+        int startX = chunk.getPos().getStartX();
+        int startZ = chunk.getPos().getStartZ();
       
-        for (int relX = 0; relX < 16; ++relX) {
-            int x = startX + relX;
-            int rX = x / 1024;
+        for (int x = 0; x < 16; ++x) {
+            int absX = startX + x;
+            int rX = absX / 1024;
             
-            for (int relZ = 0; relZ < 16; ++relZ) {    
-                int z = startZ + relZ;
-                int rZ = z / 1024;
+            for (int z = 0; z < 16; ++z) {    
+                int absZ = startZ + z;
+                int rZ = absZ / 1024;
                 
                 float noiseA = (float)(
-                    this.noiseOctavesA.sample(x / 0.03125f, 0.0, z / 0.03125f) - 
-                    this.noiseOctavesB.sample(x / 0.015625f, 0.0, z / 0.015625f)) / 512.0f / 4.0f;
-                float noiseB = (float)this.noiseOctavesE.sample(x / 4.0f, z / 4.0f);
-                float noiseC = (float)this.noiseOctavesF.sample(x / 8.0f, z / 8.0f) / 8.0f;
+                    this.noiseOctavesA.sample(absX / 0.03125f, 0.0, absZ / 0.03125f) - 
+                    this.noiseOctavesB.sample(absX / 0.015625f, 0.0, absZ / 0.015625f)) / 512.0f / 4.0f;
+                float noiseB = (float)this.noiseOctavesE.sample(absX / 4.0f, absZ / 4.0f);
+                float noiseC = (float)this.noiseOctavesF.sample(absX / 8.0f, absZ / 8.0f) / 8.0f;
                 
                 noiseB = noiseB > 0.0f ? 
-                    ((float)(this.noiseOctavesC.sample(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
-                    ((float)(this.noiseOctavesD.sample(x * 0.25714284f, z * 0.25714284f) * noiseC));
+                    ((float)(this.noiseOctavesC.sample(absX * 0.25714284f * 2.0f, absZ * 0.25714284f * 2.0f) * noiseC / 4.0)) :
+                    ((float)(this.noiseOctavesD.sample(absX * 0.25714284f, absZ * 0.25714284f) * noiseC));
                     
                 int heightVal = (int)(noiseA + this.seaLevel + noiseB);
-                if ((float)this.noiseOctavesE.sample(x, z) < 0.0f) {
+                if ((float)this.noiseOctavesE.sample(absX, absZ) < 0.0f) {
                     heightVal = heightVal / 2 << 1;
-                    if ((float)this.noiseOctavesE.sample(x / 5, z / 5) < 0.0f) {
+                    if ((float)this.noiseOctavesE.sample(absX / 5, absZ / 5) < 0.0f) {
                         ++heightVal;
                     }
                 }
                 
-                for (int y = 0; y < this.worldHeight; ++y) {
+                for (int y = this.minY; y < this.worldHeight - Math.abs(this.minY); ++y) {
                     Block blockToSet = Blocks.AIR;
                     
-                    if (this.generateInfdevWall && (x == 0 || z == 0) && y <= heightVal + 2) {
+                    if (this.generateInfdevWall && (absX == 0 || absZ == 0) && y <= heightVal + 2) {
                         blockToSet = Blocks.OBSIDIAN;
                     }
                     else if (!biomeSource.isVanilla() && !biomeSource.isBeta() && y == heightVal + 1 && heightVal >= this.seaLevel && Math.random() < 0.02) {
@@ -200,8 +184,8 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                         int bX = (rX << 10) + 128 + rand.nextInt(512);
                         int bZ = (rZ << 10) + 128 + rand.nextInt(512);
                         
-                        bX = x - bX;
-                        bZ = z - bZ;
+                        bX = absX - bX;
+                        bZ = absZ - bZ;
                         
                         if (bX < 0) bX = -bX;
                         if (bZ < 0) bZ = -bZ;
@@ -217,17 +201,22 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                     if (y <= 0 + rand.nextInt(5)) {
                         blockToSet = Blocks.BEDROCK;
                     }
-                              
                     
-                    blockArr[relX][y][relZ] = blockToSet;
+                    blockToSet = structureWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
+                    BlockState blockstateToSet = BlockStates.getBlockState(blockToSet);
+
+                    if (blockToSet != Blocks.AIR) {
+                        chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
+                    }
+                    
+                    heightmapOCEAN.trackUpdate(x, y, z, blockstateToSet);
+                    heightmapSURFACE.trackUpdate(x, y, z, blockstateToSet);
                 }
-                    
             }
         }
     }
     
     private int sampleHeightMap(int sampleX, int sampleZ) {
-        
         int startX = (sampleX >> 4) << 4;
         int startZ = (sampleZ >> 4) << 4;
         

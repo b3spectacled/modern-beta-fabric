@@ -1,11 +1,10 @@
 package com.bespectacled.modernbeta.gen.provider;
 
-import java.util.Random;
-
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.DoubleArrayPool;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -15,7 +14,6 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.AquiferSampler;
 import net.minecraft.world.gen.ChunkRandom;
@@ -36,27 +34,29 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise stoneNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
+    private final DoubleArrayPool heightNoisePool;
+    
     public InfdevChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
         super(seed, -64, 192, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
-        Random rand = new Random(seed); 
         
         // Noise Generators
-        minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
-        maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
-        mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
-        beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
-        stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
-
-        new PerlinOctaveNoise(rand, 5, true); // Unused in original source
+        minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
+        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
+        new PerlinOctaveNoise(RAND, 5, true); // Unused in original source
+        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 5, true);
         
-        forestNoiseOctaves = new PerlinOctaveNoise(rand, 5, true);
+        // Noise pools
+        this.heightNoisePool = new DoubleArrayPool(64, (this.noiseSizeY + 1) * this.noiseSizeX);
 
         setForestOctaves(forestNoiseOctaves);
     }
 
     @Override
-    public Chunk provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         generateTerrain(chunk, structureAccessor);
         return chunk;
     }
@@ -188,7 +188,8 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     }
     
     private void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
-        double[] heightNoise = new double[(this.noiseSizeY + 1) * this.noiseSizeX];
+        //double[] heightNoise = new double[(this.noiseSizeY + 1) * this.noiseSizeX];
+        double[] heightNoise = this.heightNoisePool.borrowArr();
         
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
@@ -269,6 +270,8 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 }
             }
         }
+        
+        this.heightNoisePool.returnArr(heightNoise);
     }
     
     private double generateHeightmap(int x, int y, int z) {
@@ -335,7 +338,8 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     }
     
     private int sampleHeightmap(int sampleX, int sampleZ) {
-        double[] heightNoise = new double[(this.noiseSizeY + 1) * this.noiseSizeX];
+        //double[] heightNoise = new double[(this.noiseSizeY + 1) * this.noiseSizeX];
+        double[] heightNoise = this.heightNoisePool.borrowArr();
         
         int noiseX = MathHelper.floorDiv(sampleX, this.horizontalNoiseResolution);
         int noiseZ = MathHelper.floorDiv(sampleZ, this.horizontalNoiseResolution);
@@ -375,11 +379,13 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 double density = MathHelper.lerp3(lerpY, lerpX, lerpZ, lower0, upper0, lower2, upper2, lower1, upper1, lower3, upper3);
                 
                 if (density > 0.0) {
+                    this.heightNoisePool.returnArr(heightNoise);
                     return y + 1;
                 }
             }
         }
         
+        this.heightNoisePool.returnArr(heightNoise);
         return -1;
     }
 

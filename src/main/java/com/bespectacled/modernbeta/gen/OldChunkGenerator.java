@@ -92,7 +92,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {   
         return CompletableFuture.<Chunk>supplyAsync(
-            () -> this.chunkProvider.provideChunk(null, accessor, chunk, biomeSource), Util.getMainWorkerExecutor()
+            () -> this.chunkProvider.provideChunk(accessor, chunk, this.biomeSource), Util.getMainWorkerExecutor()
         );
     }
         
