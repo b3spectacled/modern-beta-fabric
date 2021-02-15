@@ -47,21 +47,13 @@ public class PerlinNoise extends Noise {
         }
     }
 
-    public final double lerp(double d, double d1, double d2) {
+    private static double lerp(double d, double d1, double d2) {
         return d1 + d * (d2 - d1);
-    }
-
-    
-    public final double grad(int hash, double x, double y) {
-        int integer7 = hash & 0xF;
-        double double8 = (1 - ((integer7 & 0x8) >> 3)) * x;
-        double double10 = (integer7 < 4) ? 0.0 : ((integer7 == 12 || integer7 == 14) ? x : y);
-        return (((integer7 & 0x1) == 0x0) ? double8 : (-double8)) + (((integer7 & 0x2) == 0x0) ? double10 : (-double10));
     }
 
     // Using alternate function from
     // https://adrianb.io/2014/08/09/perlinnoise.html
-    public final double grad(int hash, double x, double y, double z) {
+    private static double grad(int hash, double x, double y, double z) {
         switch (hash & 0xF) {
             case 0x0:
                 return x + y;
@@ -300,5 +292,4 @@ public class PerlinNoise extends Noise {
             }
         }
     }
-    
 }

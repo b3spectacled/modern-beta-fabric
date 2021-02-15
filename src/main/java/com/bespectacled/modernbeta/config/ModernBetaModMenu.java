@@ -7,11 +7,6 @@ import net.minecraft.client.gui.screen.Screen;
 
 public class ModernBetaModMenu implements ModMenuApi {
     @Override
-    public String getModId() {
-        return "modernbeta";
-    }
-
-    @Override
     public ConfigScreenFactory<Screen> getModConfigScreenFactory() {
         return screen -> AutoConfig.getConfigScreen(ModernBetaConfig.class, screen).get();
     }

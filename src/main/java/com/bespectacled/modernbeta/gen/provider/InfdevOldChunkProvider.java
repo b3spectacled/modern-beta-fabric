@@ -7,7 +7,6 @@ import com.bespectacled.modernbeta.gen.BlockStructureWeightSampler;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.pool.BlockArrayPool;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

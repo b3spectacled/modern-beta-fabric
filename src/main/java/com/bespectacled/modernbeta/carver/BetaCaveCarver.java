@@ -65,7 +65,7 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
 
     protected void carveTunnels(Chunk chunk, Random rand, int mainChunkX, int mainChunkZ, double x, double y, double z,
             float tunnelSysWidth, float f0, float f1, int branch, int branchCount, double tunnelWHRatio) {
-
+        
         float f2 = 0.0F;
         float f3 = 0.0F;
 
@@ -181,8 +181,7 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
             maxZ = 16;
         }
 
-        // Use vanilla methods, for now.
-        if (super.isRegionUncarvable(chunk, mainChunkX, mainChunkZ, minX, maxX, minY, maxY, minZ, maxZ)) { 
+        if (this.isRegionUncarvable(chunk, mainChunkX, mainChunkZ, minX, maxX, minY, maxY, minZ, maxZ)) { 
             return false;
         }
 
@@ -263,7 +262,8 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
 
                     Block block = chunk.getBlockState(blockPos.set(relX, relY, relZ)).getBlock();
 
-                    if (block.equals(Blocks.WATER)) {
+                    // Second check is to avoid overlapping (and generating lava in) noise caves.
+                    if (block.equals(Blocks.WATER) || (block.equals(Blocks.AIR) && relY < 10)) {
                         return true;
                     }
 

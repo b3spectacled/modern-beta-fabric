@@ -173,8 +173,8 @@ public class DeepBetaCaveCarver extends Carver<ProbabilityConfig> {
         if (minY < -63) {
             minY = -63;
         }
-        if (maxY > 0) {
-            maxY = 0;
+        if (maxY > 8) {
+            maxY = 8;
         }
 
         if (minZ < 0) {
@@ -184,8 +184,7 @@ public class DeepBetaCaveCarver extends Carver<ProbabilityConfig> {
             maxZ = 16;
         }
 
-        // Use vanilla methods, for now.
-        if (super.isRegionUncarvable(chunk, mainChunkX, mainChunkZ, minX, maxX, minY, maxY, minZ, maxZ)) { 
+        if (this.isRegionUncarvable(chunk, mainChunkX, mainChunkZ, minX, maxX, minY, maxY, minZ, maxZ)) { 
             return false;
         }
 
@@ -261,13 +260,14 @@ public class DeepBetaCaveCarver extends Carver<ProbabilityConfig> {
             for (int relZ = relMinZ; relZ < relMaxZ; relZ++) {
                 for (int relY = maxY + 1; relY >= minY - 1; relY--) {
 
-                    if (relY < -64 || relY >= 0) {
+                    if (relY < -64 || relY >= 8) {
                         continue;
                     }
 
                     Block block = chunk.getBlockState(blockPos.set(relX, relY, relZ)).getBlock();
 
-                    if (block.equals(Blocks.WATER)) {
+                    // Second check is to avoid overlapping lava in upper layer Beta caves.
+                    if (block.equals(Blocks.WATER) || (block.equals(Blocks.LAVA) && relY >= -54)) {
                         return true;
                     }
 

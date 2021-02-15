@@ -3,6 +3,10 @@ plugins {
 	id 'maven-publish'
 }
 
+repositories {
+    maven { url "https://maven.shedaniel.me/" }
+}
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -24,8 +28,9 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Configuration
-	modImplementation("me.shedaniel.cloth:config-2:${project.cloth_config_version}")
-	include("me.shedaniel.cloth:config-2:${project.cloth_config_version}")
+	modApi("me.shedaniel.cloth:cloth-config:${project.cloth_config_version}:fabric") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
 	modImplementation("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}")
 	include("me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}")
