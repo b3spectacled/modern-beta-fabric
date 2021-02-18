@@ -22,6 +22,7 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 
 public abstract class AbstractChunkProvider {
@@ -86,6 +87,12 @@ public abstract class AbstractChunkProvider {
         return this.seaLevel;
     }
     
+    protected ChunkRandom createChunkRand(int chunkX, int chunkZ) {
+        ChunkRandom chunkRand = new ChunkRandom();
+        chunkRand.setTerrainSeed(chunkX, chunkZ);
+        
+        return chunkRand;
+    }
     
     public static void setForestOctaves(PerlinOctaveNoise forestOctaves) {
         BetaDecorator.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestOctaves);

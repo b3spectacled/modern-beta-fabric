@@ -18,6 +18,7 @@ import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 
 public class InfdevOldChunkProvider extends AbstractChunkProvider {
@@ -46,11 +47,9 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
         noiseOctavesD = new PerlinOctaveNoise(RAND, 4, true);
         noiseOctavesE = new PerlinOctaveNoise(RAND, 4, true);
         noiseOctavesF = new PerlinOctaveNoise(RAND, 5, true);
-        
         new PerlinOctaveNoise(RAND, 3, true);
         new PerlinOctaveNoise(RAND, 3, true);
         new PerlinOctaveNoise(RAND, 3, true);
-        
         forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
         
         if (settings.contains("generateInfdevPyramid")) 
@@ -63,8 +62,6 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
 
     @Override
     public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
-        RAND.setSeed((long) chunk.getPos().x * 341873128712L + (long) chunk.getPos().z * 132897987541L);
-
         generateTerrain(chunk.getPos().getStartX(), chunk.getPos().getStartZ(), biomeSource);  
         setTerrain((ChunkRegion)worldAccess, chunk, structureAccessor, biomeSource);
     }
@@ -152,6 +149,10 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
     }
   
     private void generateTerrain(int startX, int startZ, OldBiomeSource biomeSource) {
+        int chunkX = startX >> 4;
+        int chunkZ = startZ >> 4;
+        
+        ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         
         for (int relX = 0; relX < 16; ++relX) {
             int x = startX + relX;
@@ -220,7 +221,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                             blockToSet = Blocks.BRICKS;     
                     }
                     
-                    if (y <= 0 + RAND.nextInt(5)) {
+                    if (y <= 0 + rand.nextInt(5)) {
                         blockToSet = Blocks.BEDROCK;
                     }
                               

@@ -22,6 +22,7 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 
 public class SkylandsChunkProvider extends AbstractChunkProvider {
@@ -84,8 +85,6 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
 
     @Override
     public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
-        RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
-
         BetaClimateSampler.getInstance().sampleTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
         generateTerrain(chunk, TEMPS, structureAccessor);
     }
@@ -97,6 +96,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
+        ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         BetaClimateSampler.getInstance().sampleTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
         BetaBiomes.getBiomesFromLookup(TEMPS, HUMIDS, BIOMES, null);
         
@@ -108,7 +108,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 16; x++) {
 
-                int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
+                int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
                 
                 int absX = (chunkX << 4) + x;
@@ -163,7 +163,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
                     if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                        flag = RAND.nextInt(4);
+                        flag = rand.nextInt(4);
                         fillerBlock = BlockStates.SANDSTONE;
                     }
                 }

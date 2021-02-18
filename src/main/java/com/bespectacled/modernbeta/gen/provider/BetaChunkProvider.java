@@ -22,6 +22,7 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 
 /*
@@ -104,8 +105,6 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
     @Override
     public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
-        RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
-
         BetaClimateSampler.getInstance().sampleTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
         generateTerrain(chunk, TEMPS, structureAccessor);
     }
@@ -117,6 +116,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
+        ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         BetaClimateSampler.getInstance().sampleTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
         BetaBiomes.getBiomesFromLookup(TEMPS, HUMIDS, BIOMES, null);
         
@@ -144,10 +144,10 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 16; x++) {
 
-                boolean genSandBeach = sandNoise[z + x * 16] + RAND.nextDouble() * 0.20000000000000001D > 0.0D;
-                boolean genGravelBeach = gravelNoise[z + x * 16] + RAND.nextDouble() * 0.20000000000000001D > 3D;
+                boolean genSandBeach = sandNoise[z + x * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
+                boolean genGravelBeach = gravelNoise[z + x * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
 
-                int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + RAND.nextDouble() * 0.25D);
+                int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
                 
                 int absX = chunk.getPos().getStartX() + x;
@@ -167,7 +167,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                 for (int y = this.worldHeight - 1; y >= 0; y--) {
 
                     // Randomly place bedrock from y=0 to y=5
-                    if (y <= 0 + RAND.nextInt(5)) {
+                    if (y <= 0 + rand.nextInt(5)) {
                         chunk.setBlockState(POS.set(x, y, z), BlockStates.BEDROCK, false);
                         continue;
                     }
@@ -225,7 +225,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
                     if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                        flag = RAND.nextInt(4);
+                        flag = rand.nextInt(4);
                         fillerBlock = BlockStates.SANDSTONE;
                     }
                 }
