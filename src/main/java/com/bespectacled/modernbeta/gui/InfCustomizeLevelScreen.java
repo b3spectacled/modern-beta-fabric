@@ -12,6 +12,8 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     
     private BiomeType biomeType;
     private boolean generateOceans;
+    private boolean generateNoiseCaves;
+    private boolean generateAquifers;
     
     private final boolean showOceansOption;
     
@@ -22,6 +24,8 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         
         this.biomeType = biomeType;
         this.generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
+        this.generateNoiseCaves = false;
+        this.generateAquifers = false;
     }
     
     @Override
@@ -44,11 +48,29 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         if (this.showOceansOption) {
             buttonList.addSingleOptionEntry(
                 CyclingOption.create("createWorld.customize.inf.generateOceans", 
-                (gameOptions) -> { return generateOceans; }, 
+                (gameOptions) -> { return this.generateOceans; }, 
                 (gameOptions, option, value) -> { // Setter
                     this.generateOceans = value;
                     this.generatorSettings.providerSettings.putBoolean("generateOceans", this.generateOceans);
             }));
         }
+        
+        /*
+        buttonList.addSingleOptionEntry(
+            CyclingOption.create("createWorld.customize.inf.generateNoiseCaves", 
+            (gameOptions) -> { return this.generateNoiseCaves; }, 
+            (gameOptions, option, value) -> { // Setter
+                this.generateNoiseCaves = value;
+                //this.generatorSettings.providerSettings.putBoolean("generateOceans", this.generateOceans);
+        }));
+        
+        buttonList.addSingleOptionEntry(
+            CyclingOption.create("createWorld.customize.inf.generateAquifers", 
+            (gameOptions) -> { return this.generateAquifers; }, 
+            (gameOptions, option, value) -> { // Setter
+                this.generateAquifers = value;
+                //this.generatorSettings.providerSettings.putBoolean("generateOceans", this.generateOceans);
+        }));
+        */
     }
 }

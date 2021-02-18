@@ -341,14 +341,14 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
         // Scale and Depth noise sample in 2D, noiseResolutionX * noiseResolutionZ
         
-        scaleNoise = scaleNoiseOctaves.sampleArrBeta(
+        scaleNoiseOctaves.sampleArrBeta(
             scaleNoise, 
             x, z, 
             noiseResolutionX, noiseResolutionZ, 
             1.121D, 1.121D, 0.5D
         );
         
-        depthNoise = depthNoiseOctaves.sampleArrBeta(
+        depthNoiseOctaves.sampleArrBeta(
             depthNoise, 
             x, z, 
             noiseResolutionX, noiseResolutionZ, 
@@ -357,7 +357,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
         // Main, Min Limit, and Max Limit noise sample in 3D, noiseResolutionX * noiseResolutionY * noiseResolutionZ
         
-        mainNoise = mainNoiseOctaves.sampleArrBeta(
+        mainNoiseOctaves.sampleArrBeta(
             mainNoise, 
             x, y, z, 
             noiseResolutionX, noiseResolutionY, noiseResolutionZ,
@@ -366,7 +366,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
             coordinateScale / mainNoiseScaleZ
         );
 
-        minLimitNoise = minLimitNoiseOctaves.sampleArrBeta(
+        minLimitNoiseOctaves.sampleArrBeta(
             minLimitNoise, 
             x, y, z, 
             noiseResolutionX, noiseResolutionY, noiseResolutionZ,
@@ -375,7 +375,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
             coordinateScale
         );
 
-        maxLimitNoise = maxLimitNoiseOctaves.sampleArrBeta(
+        maxLimitNoiseOctaves.sampleArrBeta(
             maxLimitNoise, 
             x, y, z, 
             noiseResolutionX, noiseResolutionY, noiseResolutionZ,

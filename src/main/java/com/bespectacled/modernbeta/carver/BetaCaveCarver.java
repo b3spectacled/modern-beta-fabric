@@ -47,11 +47,11 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
             }
 
             for (int j = 0; j < tunnelCount; ++j) {
-                float f0 = random.nextFloat() * 3.141593F * 2.0F;
-                float f1 = ((random.nextFloat() - 0.5F) * 2.0F) / 8F;
-                float tunnelSysWidth = getTunnelSystemWidth(random);
+                float tunnelYaw = random.nextFloat() * 3.141593F * 2.0F;
+                float tunnelPitch = ((random.nextFloat() - 0.5F) * 2.0F) / 8F;
+                float tunnelWidth = getTunnelSystemWidth(random);
 
-                carveTunnels(chunk, random, mainChunkX, mainChunkZ, x, y, z, tunnelSysWidth, f0, f1, 0, 0, 1.0D);
+                carveTunnels(chunk, random, mainChunkX, mainChunkZ, x, y, z, tunnelWidth, tunnelYaw, tunnelPitch, 0, 0, 1.0D);
             }
         }
 
@@ -64,7 +64,7 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
     }
 
     protected void carveTunnels(Chunk chunk, Random rand, int mainChunkX, int mainChunkZ, double x, double y, double z,
-            float tunnelSysWidth, float f0, float f1, int branch, int branchCount, double tunnelWHRatio) {
+            float tunnelWidth, float tunnelYaw, float tunnelPitch, int branch, int branchCount, double tunnelWHRatio) {
         
         float f2 = 0.0F;
         float f3 = 0.0F;
@@ -87,20 +87,20 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
 
         for (; branch < branchCount; branch++) {
             double yaw = 1.5D + (double) (MathHelper.sin(((float) branch * 3.141593F) / (float) branchCount)
-                    * tunnelSysWidth * 1.0F);
+                    * tunnelWidth * 1.0F);
             double pitch = yaw * tunnelWHRatio;
 
-            float f4 = MathHelper.cos(f1);
-            float f5 = MathHelper.sin(f1);
+            float f4 = MathHelper.cos(tunnelPitch);
+            float f5 = MathHelper.sin(tunnelPitch);
 
-            x += MathHelper.cos(f0) * f4;
+            x += MathHelper.cos(tunnelYaw) * f4;
             y += f5;
-            z += MathHelper.sin(f0) * f4;
+            z += MathHelper.sin(tunnelYaw) * f4;
 
-            f1 *= vary ? 0.92F : 0.7F;
+            tunnelPitch *= vary ? 0.92F : 0.7F;
 
-            f1 += f3 * 0.1F;
-            f0 += f2 * 0.1F;
+            tunnelPitch += f3 * 0.1F;
+            tunnelYaw += f2 * 0.1F;
 
             f3 *= 0.9F;
             f2 *= 0.75F;
@@ -108,11 +108,11 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
             f3 += (random.nextFloat() - random.nextFloat()) * random.nextFloat() * 2.0F;
             f2 += (random.nextFloat() - random.nextFloat()) * random.nextFloat() * 4F;
 
-            if (!noStarts && branch == randBranch && tunnelSysWidth > 1.0F) {
+            if (!noStarts && branch == randBranch && tunnelWidth > 1.0F) {
                 carveTunnels(chunk, rand, mainChunkX, mainChunkZ, x, y, z, random.nextFloat() * 0.5F + 0.5F,
-                        f0 - 1.570796F, f1 / 3F, branch, branchCount, 1.0D);
+                        tunnelYaw - 1.570796F, tunnelPitch / 3F, branch, branchCount, 1.0D);
                 carveTunnels(chunk, rand, mainChunkX, mainChunkZ, x, y, z, random.nextFloat() * 0.5F + 0.5F,
-                        f0 + 1.570796F, f1 / 3F, branch, branchCount, 1.0D);
+                        tunnelYaw + 1.570796F, tunnelPitch / 3F, branch, branchCount, 1.0D);
                 return;
             }
 
@@ -120,7 +120,7 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
                 continue;
             }
 
-            if (!canCarveBranch(mainChunkX, mainChunkZ, x, z, branch, branchCount, tunnelSysWidth)) {
+            if (!canCarveBranch(mainChunkX, mainChunkZ, x, z, branch, branchCount, tunnelWidth)) {
                 return;
             }
 

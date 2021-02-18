@@ -81,10 +81,6 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                         blockstateToSet = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                     } else if (blockstateToSet.equals(BlockStates.DIRT)) {
                         blockstateToSet = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
-                    } else if (blockstateToSet.equals(BlockStates.STONE)) {
-                        blockstateToSet = this.defaultBlock;
-                    } else if (blockstateToSet.equals(BlockStates.WATER)) {
-                        blockstateToSet = this.defaultFluid;
                     }
 
                     chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
@@ -95,22 +91,12 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
 
     @Override
     public int getHeight(int x, int z, Type type) {
-        BlockPos structPos = new BlockPos(x, 0, z);
-        int height = this.worldHeight - 1;
+        int groundHeight = this.sampleHeightmap(x, z) + 1;
         
-        if (HEIGHTMAP_CACHE.get(structPos) == null) {            
-            height = this.sampleHeightMap(x, z);
-            
-            HEIGHTMAP_CACHE.put(structPos, height);
-        } 
+        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
+            groundHeight = this.seaLevel + 1;
         
-        height = HEIGHTMAP_CACHE.get(structPos);
-        
-        // Not ideal
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && height < this.seaLevel)
-            height = this.seaLevel + 1;
-         
-        return height;
+        return groundHeight;
     }
     
     @Override
@@ -120,6 +106,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
   
     private void generateTerrain(Chunk chunk, StructureAccessor structureAccessor, OldBiomeSource biomeSource) {
         Random rand = new Random();
+        Random chunkRand = this.createChunkRand(chunk.getPos().x, chunk.getPos().z);
         
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
@@ -129,6 +116,9 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
+        
+        Block defaultBlock = this.defaultBlock.getBlock();
+        Block defaultFluid = this.defaultFluid.getBlock();
       
         for (int x = 0; x < 16; ++x) {
             int absX = startX + x;
@@ -169,13 +159,13 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                         blockToSet = Blocks.GRASS_BLOCK;
                     }
                     else if (y <= heightVal - 2) {
-                        blockToSet = Blocks.STONE;
+                        blockToSet = defaultBlock;
                     }
                     else if (y <= heightVal) {
                         blockToSet = Blocks.DIRT;
                     }
                     else if (y <= this.seaLevel) {
-                        blockToSet = Blocks.WATER;
+                        blockToSet = defaultFluid;
                     }
                     
                     if (this.generateInfdevPyramid) {
@@ -197,16 +187,14 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
                             blockToSet = Blocks.BRICKS;     
                     }
                     
-                    if (y <= 0 + rand.nextInt(5)) {
+                    if (y <= this.minY + chunkRand.nextInt(5)) {
                         blockToSet = Blocks.BEDROCK;
                     }
                     
                     blockToSet = structureWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
                     BlockState blockstateToSet = BlockStates.getBlockState(blockToSet);
-
-                    if (blockToSet != Blocks.AIR) {
-                        chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
-                    }
+                    
+                    chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
                     
                     heightmapOCEAN.trackUpdate(x, y, z, blockstateToSet);
                     heightmapSURFACE.trackUpdate(x, y, z, blockstateToSet);
@@ -215,7 +203,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
         }
     }
     
-    private int sampleHeightMap(int sampleX, int sampleZ) {
+    private int sampleHeightmap(int sampleX, int sampleZ) {
         int startX = (sampleX >> 4) << 4;
         int startZ = (sampleZ >> 4) << 4;
         
