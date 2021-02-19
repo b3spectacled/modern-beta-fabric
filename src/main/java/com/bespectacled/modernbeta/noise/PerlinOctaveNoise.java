@@ -3,16 +3,16 @@ package com.bespectacled.modernbeta.noise;
 import java.util.Random;
 
 public class PerlinOctaveNoise extends Noise {
-    private PerlinNoise generatorCollection[];
-    private int octaves;
+    private final PerlinNoise generatorCollection[];
+    private final int octaves;
     
-    public PerlinOctaveNoise(Random random, int i, boolean useOffset) {
-        octaves = i;
-        generatorCollection = new PerlinNoise[i];
-        for (int j = 0; j < i; j++) {
-            generatorCollection[j] = new PerlinNoise(random, useOffset);
+    public PerlinOctaveNoise(Random random, int octaves, boolean useOffset) {
+        this.octaves = octaves;
+        this.generatorCollection = new PerlinNoise[octaves];
+        
+        for (int j = 0; j < octaves; j++) {
+            this.generatorCollection[j] = new PerlinNoise(random, useOffset);
         }
-
     }
     
     public double[] sampleArrBeta(
@@ -40,7 +40,7 @@ public class PerlinOctaveNoise extends Noise {
 
         double frequency = 1.0;
         for (int i1 = 0; i1 < octaves; i1++) {
-            generatorCollection[i1].samplePerlinArrBeta(
+            this.generatorCollection[i1].samplePerlinArrBeta(
                 arr, 
                 x, y, z, 
                 sizeX, sizeY, sizeZ, 
@@ -68,7 +68,7 @@ public class PerlinOctaveNoise extends Noise {
 
         double frequency = 1.0;
         for (int i1 = 0; i1 < octaves; i1++) {
-            generatorCollection[i1].samplePerlinArr(
+            this.generatorCollection[i1].samplePerlinArr(
                 arr, 
                 x, y, z, 
                 sizeX, sizeY, sizeZ, 
@@ -104,5 +104,4 @@ public class PerlinOctaveNoise extends Noise {
         
         return total;
     }
-    
 }

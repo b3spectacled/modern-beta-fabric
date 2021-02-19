@@ -129,8 +129,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int startX = chunkPos.getStartX();
         int startZ = chunkPos.getStartZ();
         
-        Biome biome = OldGenUtil.getOceanBiome(region.getChunk(chunkPos.x, chunkPos.z), this, this.getBiomeSource(), generateOceans, this.getSeaLevel());
-
+        Biome biome = OldGenUtil.getOceanBiome(region.getChunk(chunkPos.x, chunkPos.z), this, this.getBiomeSource(), this.generateOceans, this.getSeaLevel());
+        
         // TODO: Remove chunkRandom at some point
         ChunkRandom chunkRandom = new ChunkRandom();
         long popSeed = chunkRandom.setPopulationSeed(region.getSeed(), startX, startZ);
@@ -146,13 +146,13 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver carver) {
-        BiomeAccess biomeAcc = access.withSource(biomeSource);
+        BiomeAccess biomeAcc = access.withSource(this.biomeSource);
         ChunkPos chunkPos = chunk.getPos();
 
         int mainChunkX = chunkPos.x;
         int mainChunkZ = chunkPos.z;
 
-        Biome biome = OldGenUtil.getOceanBiome(chunk, this, biomeSource, generateOceans, this.getSeaLevel());
+        Biome biome = OldGenUtil.getOceanBiome(chunk, this, this.biomeSource, this.generateOceans, this.getSeaLevel());
         GenerationSettings genSettings = biome.getGenerationSettings();
         
         BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(carver);
@@ -189,7 +189,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         StructureManager structureManager, 
         long seed
     ) {
-        Biome biome = OldGenUtil.getOceanBiome(chunk, this, biomeSource, generateOceans, this.getSeaLevel());
+        Biome biome = OldGenUtil.getOceanBiome(chunk, this, this.biomeSource, this.generateOceans, this.getSeaLevel());
 
         ((MixinChunkGeneratorInvoker)this).invokeSetStructureStart(
             ConfiguredStructureFeatures.STRONGHOLD, 
@@ -246,7 +246,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public int getWorldHeight() {
-        return chunkProvider.getWorldHeight();
+        // TODO: Causes issue with YOffset.BelowTop decorator (i.e. ORE_COAL_UPPER), find some workaround
+        //return chunkProvider.getWorldHeight();
+        return 384;
     }
 
     @Override

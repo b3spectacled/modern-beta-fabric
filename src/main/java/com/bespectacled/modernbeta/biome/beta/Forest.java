@@ -39,7 +39,6 @@ public class Forest {
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
-        DefaultBiomeFeatures.addAmethystGeodes(genSettings);
         
         genSettings.structureFeature(ConfiguredStructureFeatures.MANSION);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
@@ -57,6 +56,8 @@ public class Forest {
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);
         
         genSettings.feature(Feature.TOP_LAYER_MODIFICATION, OldConfiguredFeatures.BETA_FREEZE_TOP_LAYER);
+        
+        
         
         genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_BETA_CAVE_CARVER);
         genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);

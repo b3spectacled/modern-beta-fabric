@@ -27,7 +27,7 @@ public class NetherChunkProvider extends AbstractChunkProvider {
     
     public NetherChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 32, 0, 128, 2, 1, 1.0, 1.0, 80, 60, false, false, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, 0, 128, 32, 0, 128, 2, 1, 1.0, 1.0, 80, 60, false, false, false, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
         minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);

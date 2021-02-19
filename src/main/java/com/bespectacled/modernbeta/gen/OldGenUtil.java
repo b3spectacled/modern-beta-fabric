@@ -5,6 +5,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -24,8 +25,10 @@ public class OldGenUtil {
     }
     
     public static Biome getOceanBiome(Chunk chunk, ChunkGenerator gen, BiomeSource biomeSource, boolean generateOceans, int seaLevel) {
-        int x = chunk.getPos().getStartX();
-        int z = chunk.getPos().getStartZ();
+        ChunkPos chunkPos = chunk.getPos();
+        
+        int x = chunkPos.getStartX();
+        int z = chunkPos.getStartZ();
         
         int biomeX = x >> 2;
         int biomeZ = z >> 2;
@@ -35,7 +38,7 @@ public class OldGenUtil {
         if (generateOceans && gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null) < seaLevel - 4) {
             biome = ((OldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
         } else {
-            biome = biomeSource.getBiomeForNoiseGen(biomeX, 2, biomeZ);
+            biome = biomeSource.method_31609(chunkPos);
         }
 
         return biome;

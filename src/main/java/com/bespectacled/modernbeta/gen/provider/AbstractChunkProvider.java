@@ -11,6 +11,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -20,7 +21,9 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.AquiferSampler;
+import net.minecraft.world.gen.BlockInterpolator;
 import net.minecraft.world.gen.ChunkRandom;
+import net.minecraft.world.gen.GrimstoneInterpolator;
 import net.minecraft.world.gen.NoiseCaveSampler;
 import net.minecraft.world.gen.SimpleRandom;
 import net.minecraft.world.gen.StructureAccessor;
@@ -75,6 +78,7 @@ public abstract class AbstractChunkProvider {
     
     protected final boolean generateNoiseCaves;
     protected final boolean generateAquifers;
+    protected final boolean generateGrimstone;
     
     protected final BlockState defaultBlock;
     protected final BlockState defaultFluid;
@@ -84,7 +88,7 @@ public abstract class AbstractChunkProvider {
     protected final DoublePerlinNoiseSampler doublePerlinSampler0;
     protected final DoublePerlinNoiseSampler doublePerlinSampler1;
     
-    // TODO: Add array pools or some sort of reusable arrays, now that chunk generation appears to be completely threaded now.
+    protected final BlockInterpolator grimstoneInterpolator;
     
     public AbstractChunkProvider(long seed, OldGeneratorSettings settings) {
         this(
@@ -100,6 +104,7 @@ public abstract class AbstractChunkProvider {
             settings.generatorSettings.getGenerationShapeConfig().getSampling().getYScale(),
             settings.generatorSettings.getGenerationShapeConfig().getSampling().getXZFactor(),
             settings.generatorSettings.getGenerationShapeConfig().getSampling().getYFactor(),
+            true,
             true,
             true,
             settings.generatorSettings.getDefaultBlock(),
@@ -123,6 +128,7 @@ public abstract class AbstractChunkProvider {
         double yFactor,
         boolean generateNoiseCaves,
         boolean generateAquifers,
+        boolean generateGrimstone,
         BlockState defaultBlock,
         BlockState defaultFluid,
         OldGeneratorSettings settings
@@ -151,6 +157,7 @@ public abstract class AbstractChunkProvider {
         
         this.generateNoiseCaves = generateNoiseCaves;
         this.generateAquifers = generateAquifers;
+        this.generateGrimstone = generateGrimstone;
         
         this.defaultBlock = defaultBlock;
         this.defaultFluid = defaultFluid;
@@ -163,6 +170,7 @@ public abstract class AbstractChunkProvider {
         this.doublePerlinSampler1 = DoublePerlinNoiseSampler.create(new SimpleRandom(chunkRandom.nextLong()), -3, 1.0, 0.0, 2.0);
         
         this.noiseCaveSampler = this.generateNoiseCaves ? new NoiseCaveSampler(chunkRandom, this.noiseMinY) : null;
+        this.grimstoneInterpolator = new GrimstoneInterpolator(seed, this.defaultBlock, Blocks.GRIMSTONE.getDefaultState());
         
         RAND.setSeed(seed);
         HEIGHTMAP_CACHE.clear();
@@ -173,43 +181,16 @@ public abstract class AbstractChunkProvider {
     public abstract int getHeight(int x, int z, Heightmap.Type type);
     public abstract PerlinOctaveNoise getBeachNoiseOctaves();
     
-    public BlockState getBlockState(double density, int y) {
-        return this.getBlockState(density, y, 1.0);
+    public int getWorldHeight() {
+        return this.worldHeight;
     }
     
-    public BlockState getBlockState(double density, int y, double temp) {
-        BlockState blockStateToSet = BlockStates.AIR;
-        
-        if (density > 0.0) {
-            blockStateToSet = this.defaultBlock;
-        } else if (y < this.seaLevel) {
-            if (temp < 0.5D && y >= this.seaLevel - 1) {
-                // Does not work well with underwater structures
-                //blockStateToSet = BlockStates.ICE;
-                blockStateToSet = this.defaultFluid;
-            } else {
-                blockStateToSet = this.defaultFluid;
-            }
-
-        }
-        return blockStateToSet;
+    public int getSeaLevel() {
+        return this.seaLevel;
     }
     
-    protected BlockState getBlockState(StructureWeightSampler weightSampler, int x, int y, int z, double density) {
-        double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
-        clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
-        
-        clampedDensity += weightSampler.getWeight(x, y, z);
-        
-        BlockState blockStateToSet = BlockStates.AIR;
-        
-        if (clampedDensity > 0.0) {
-            blockStateToSet = this.defaultBlock;
-        } else if (y < this.getSeaLevel()) {
-            blockStateToSet = this.defaultFluid;
-        }
-        
-        return blockStateToSet;
+    public int getVerticalNoiseResolution() {
+        return this.verticalNoiseResolution;
     }
     
     protected BlockState getBlockStateSky(StructureWeightSampler weightSampler, int x, int y, int z, double density) {
@@ -239,7 +220,7 @@ public abstract class AbstractChunkProvider {
         BlockState blockStateToSet = BlockStates.AIR;
         
         if (clampedDensity > 0.0) {
-            blockStateToSet = this.defaultBlock;
+            blockStateToSet = this.grimstoneInterpolator.sample(x, y, z, this.generatorSettings);
         } else {
             int localSeaLevel = (aquiferSampler == null) ? this.getSeaLevel() : aquiferSampler.getWaterLevel();
             
@@ -285,18 +266,6 @@ public abstract class AbstractChunkProvider {
         }
         
         return noise;
-    }
-    
-    public int getWorldHeight() {
-        return this.worldHeight;
-    }
-    
-    public int getSeaLevel() {
-        return this.seaLevel;
-    }
-    
-    public int getVerticalNoiseResolution() {
-        return this.verticalNoiseResolution;
     }
     
     protected ChunkRandom createChunkRand(int chunkX, int chunkZ) {

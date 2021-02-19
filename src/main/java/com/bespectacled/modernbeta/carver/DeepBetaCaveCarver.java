@@ -211,7 +211,7 @@ public class DeepBetaCaveCarver extends Carver<ProbabilityConfig> {
                         }
 
                         // Don't use canCarveBlock for accuracy, for now.
-                        if (block == Blocks.STONE || block == Blocks.DIRT || block == Blocks.GRASS_BLOCK) { 
+                        if (block == Blocks.STONE || block == Blocks.DIRT || block == Blocks.GRASS_BLOCK || block == Blocks.GRIMSTONE) { 
                             if (relY < -54) { // Set lava below y = 10
                                 chunk.setBlockState(blockPos.set(relX, setY, relZ), Blocks.LAVA.getDefaultState(), false);
                             } else {

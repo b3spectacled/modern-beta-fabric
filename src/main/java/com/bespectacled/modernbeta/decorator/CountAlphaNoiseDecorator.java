@@ -1,16 +1,13 @@
 package com.bespectacled.modernbeta.decorator;
 
 import java.util.Random;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.decorator.SimpleDecorator;
+import net.minecraft.world.gen.decorator.AbstractCountDecorator;
 
-public class CountAlphaNoiseDecorator extends SimpleDecorator<CountNoiseDecoratorConfig> {
+public class CountAlphaNoiseDecorator extends AbstractCountDecorator<CountNoiseDecoratorConfig> {
     public PerlinOctaveNoise forestNoise;
 
     public CountAlphaNoiseDecorator(Codec<CountNoiseDecoratorConfig> codec) {
@@ -22,7 +19,7 @@ public class CountAlphaNoiseDecorator extends SimpleDecorator<CountNoiseDecorato
     }
 
     @Override
-    protected Stream<BlockPos> getPositions(Random random, CountNoiseDecoratorConfig config, BlockPos pos) {
+    protected int getCount(Random random, CountNoiseDecoratorConfig config, BlockPos pos) {
         if (forestNoise == null) {
             forestNoise = new PerlinOctaveNoise(random, 8, true);
         }
@@ -48,7 +45,7 @@ public class CountAlphaNoiseDecorator extends SimpleDecorator<CountNoiseDecorato
         // Unfortunately does not return the same tree density values,
         // would require simulating part of the b1.7.3 generation algorithm using the
         // rand var.
-        return IntStream.range(0, finalCount).<BlockPos>mapToObj(integer -> pos);
+        return finalCount;
     }
 
 }

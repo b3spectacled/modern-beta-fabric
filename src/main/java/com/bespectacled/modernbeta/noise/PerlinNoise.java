@@ -19,31 +19,30 @@ public class PerlinNoise extends Noise {
     }
 
     public PerlinNoise(Random random, boolean useOffset) {
-
         // Generate permutation array
-        permutations = new int[512];
+        this.permutations = new int[512];
 
-        xOffset = yOffset = zOffset = 0;
+        this.xOffset = this.yOffset = this.zOffset = 0;
         
         if (useOffset) {
-            xOffset = random.nextDouble() * 256D;
-            yOffset = random.nextDouble() * 256D;
-            zOffset = random.nextDouble() * 256D; 
+            this.xOffset = random.nextDouble() * 256D;
+            this.yOffset = random.nextDouble() * 256D;
+            this.zOffset = random.nextDouble() * 256D; 
         } 
         
         for (int i = 0; i < 256; i++) {
-            permutations[i] = i;
+            this.permutations[i] = i;
         }
 
         for (int i = 0; i < 256; i++) {
             int j = random.nextInt(256 - i) + i;
-            int k = permutations[i];
+            int k = this.permutations[i];
 
-            permutations[i] = permutations[j];
-            permutations[j] = k;
+            this.permutations[i] = this.permutations[j];
+            this.permutations[j] = k;
 
             // Repeat first 256 values to avoid buffer overflow
-            permutations[i + 256] = permutations[i];
+            this.permutations[i + 256] = this.permutations[i];
         }
     }
 
@@ -176,7 +175,7 @@ public class PerlinNoise extends Noise {
         // Iterate over a collection of noise points
         for (int sX = 0; sX < sizeX; sX++) {
             
-            double curX = (x + (double)sX) * scaleX + xOffset;
+            double curX = (x + (double)sX) * scaleX + this.xOffset;
             int floorX = MathHelper.floor(curX);
             
             int X = floorX & 0xFF;
@@ -186,7 +185,7 @@ public class PerlinNoise extends Noise {
             
             for (int sZ = 0; sZ < sizeZ; sZ++) {
                 
-                double curZ = (z + (double)sZ) * scaleZ + zOffset;
+                double curZ = (z + (double)sZ) * scaleZ + this.zOffset;
                 int floorZ = MathHelper.floor(curZ);
                 
                 int Z = floorZ & 0xFF;
@@ -196,7 +195,7 @@ public class PerlinNoise extends Noise {
                 
                 for (int sY = 0; sY < sizeY; sY++) {
                     
-                    double curY = (y + (double) sY) * scaleY + yOffset;
+                    double curY = (y + (double) sY) * scaleY + this.yOffset;
                     int floorY = MathHelper.floor(curY);
                     
                     int Y = floorY & 0xFF;
@@ -207,24 +206,24 @@ public class PerlinNoise extends Noise {
                     if (sY == 0 || Y != flagY) {
                         flagY = Y;
                         
-                        int A =  permutations[X] + Y;
-                        int AA = permutations[A] + Z;
-                        int AB = permutations[A + 1] + Z;
-                        int B =  permutations[X + 1] + Y;
-                        int BA = permutations[B] + Z;
-                        int BB = permutations[B + 1] + Z;
+                        int A =  this.permutations[X] + Y;
+                        int AA = this.permutations[A] + Z;
+                        int AB = this.permutations[A + 1] + Z;
+                        int B =  this.permutations[X + 1] + Y;
+                        int BA = this.permutations[B] + Z;
+                        int BB = this.permutations[B + 1] + Z;
                         
-                        lerp0 = lerp(u, grad(permutations[AA], curX, curY, curZ),
-                                grad(permutations[BA], curX - 1.0D, curY, curZ));
+                        lerp0 = lerp(u, grad(this.permutations[AA], curX, curY, curZ),
+                                grad(this.permutations[BA], curX - 1.0D, curY, curZ));
                         
-                        lerp1 = lerp(u, grad(permutations[AB], curX, curY - 1.0D, curZ),
-                                grad(permutations[BB], curX - 1.0D, curY - 1.0D, curZ));
+                        lerp1 = lerp(u, grad(this.permutations[AB], curX, curY - 1.0D, curZ),
+                                grad(this.permutations[BB], curX - 1.0D, curY - 1.0D, curZ));
                         
-                        lerp2 = lerp(u, grad(permutations[AA + 1], curX, curY, curZ - 1.0D),
-                                grad(permutations[BA + 1], curX - 1.0D, curY, curZ - 1.0D));
+                        lerp2 = lerp(u, grad(this.permutations[AA + 1], curX, curY, curZ - 1.0D),
+                                grad(this.permutations[BA + 1], curX - 1.0D, curY, curZ - 1.0D));
                         
-                        lerp3 = lerp(u, grad(permutations[AB + 1], curX, curY - 1.0D, curZ - 1.0D),
-                                grad(permutations[BB + 1], curX - 1.0D, curY - 1.0D, curZ - 1.0D));
+                        lerp3 = lerp(u, grad(this.permutations[AB + 1], curX, curY - 1.0D, curZ - 1.0D),
+                                grad(this.permutations[BB + 1], curX - 1.0D, curY - 1.0D, curZ - 1.0D));
 
                     }
                     
@@ -254,7 +253,7 @@ public class PerlinNoise extends Noise {
         frequency = 1.0D / frequency;
         
         for (int sX = 0; sX < sizeX; sX++) {
-            double curX = (x + (double)sX) * scaleX + xOffset;
+            double curX = (x + (double)sX) * scaleX + this.xOffset;
             int floorX = MathHelper.floor(curX);
             
             int X = floorX & 0xFF;
@@ -263,7 +262,7 @@ public class PerlinNoise extends Noise {
             double u = fade(curX);
             
             for (int sZ = 0; sZ < sizeZ; sZ++) {
-                double curZ = (z + (double) sZ) * scaleZ + zOffset;
+                double curZ = (z + (double) sZ) * scaleZ + this.zOffset;
                 int floorZ = MathHelper.floor(curZ);
                 
                 int Z = floorZ & 0xFF;
@@ -271,20 +270,20 @@ public class PerlinNoise extends Noise {
                 
                 double w = fade(curZ);
                 
-                int A = permutations[X] + 0;
-                int AA = permutations[A] + Z;
-                int B = permutations[X + 1] + 0;
-                int BA = permutations[B] + Z;
+                int A = this.permutations[X] + 0;
+                int AA = this.permutations[A] + Z;
+                int B = this.permutations[X + 1] + 0;
+                int BA = this.permutations[B] + Z;
                 
                 double lerp0 = lerp(
                     u, 
                     //grad(permutations[AA], curX, curZ), // Below should give same result but faster
-                    grad(permutations[AA], curX, 0.0D, curZ),
-                    grad(permutations[BA], curX - 1.0D, 0.0D, curZ));
+                    grad(this.permutations[AA], curX, 0.0D, curZ),
+                    grad(this.permutations[BA], curX - 1.0D, 0.0D, curZ));
                 double lerp1 = lerp(
                     u, 
-                    grad(permutations[AA + 1], curX, 0.0D, curZ - 1.0D),
-                    grad(permutations[BA + 1], curX - 1.0D, 0.0D, curZ - 1.0D));
+                    grad(this.permutations[AA + 1], curX, 0.0D, curZ - 1.0D),
+                    grad(this.permutations[BA + 1], curX - 1.0D, 0.0D, curZ - 1.0D));
                 
                 double res = lerp(w, lerp0, lerp1);
                 

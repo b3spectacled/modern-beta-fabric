@@ -17,7 +17,7 @@ public class FlatChunkProvider extends AbstractChunkProvider {
     
     public FlatChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
         new PerlinOctaveNoise(RAND, 16, true);
@@ -32,7 +32,6 @@ public class FlatChunkProvider extends AbstractChunkProvider {
 
     @Override
     public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
-        RAND.setSeed((long) chunk.getPos().x * 0x4f9939f508L + (long) chunk.getPos().z * 0x1ef1565bd5L);
         return chunk;
     }
     

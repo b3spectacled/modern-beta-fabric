@@ -36,7 +36,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
     
     public BetaChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
         minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -330,6 +330,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         double lowerLimitScale = 512D;
         double upperLimitScale = 512D;
         
+        //double baseSize = noiseResolutionY / 2D; // Or: 17 / 2D = 8.5
+        double baseSize = 8.5D;
         double heightStretch = 12D;
         
         double[] scaleNoise = this.twoDNoisePool.borrowArr();
@@ -442,8 +444,10 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                 }
 
                 scaleVal += 0.5D;
-                depthVal = (depthVal * (double) noiseResolutionY) / 16D;
-                double depthVal2 = (double) noiseResolutionY / 2D + depthVal * 4D;
+                //depthVal = (depthVal * (double) noiseResolutionY) / 16D;
+                //double depthVal2 = (double) noiseResolutionY / 2D + depthVal * 4D;
+                depthVal = depthVal * baseSize / 8D;
+                double depthVal2 = baseSize + depthVal * 4D;
                 
                 flatNoiseNdx++;
 
