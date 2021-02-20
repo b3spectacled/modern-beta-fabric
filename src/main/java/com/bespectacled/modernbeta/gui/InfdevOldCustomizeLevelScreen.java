@@ -16,6 +16,9 @@ public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
         
         this.generateInfdevPyramid = ModernBeta.BETA_CONFIG.generateInfdevPyramid;
         this.generateInfdevWall = ModernBeta.BETA_CONFIG.generateInfdevWall;
+        
+        this.generatorSettings.providerSettings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
+        this.generatorSettings.providerSettings.putBoolean("generateInfdevWall", this.generateInfdevWall);
     }
     
     @Override

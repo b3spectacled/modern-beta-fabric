@@ -26,6 +26,9 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         this.generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
         this.generateNoiseCaves = false;
         this.generateAquifers = false;
+        
+        this.generatorSettings.providerSettings.putString("biomeType", this.biomeType.getName());
+        this.generatorSettings.providerSettings.putBoolean("generateOceans", this.generateOceans);
     }
     
     @Override

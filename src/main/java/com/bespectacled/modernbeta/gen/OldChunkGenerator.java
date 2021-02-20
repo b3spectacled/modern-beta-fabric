@@ -246,7 +246,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public int getWorldHeight() {
-        // TODO: Causes issue with YOffset.BelowTop decorator (i.e. ORE_COAL_UPPER), find some workaround
+        // TODO: Causes issue with YOffset.BelowTop decorator (i.e. ORE_COAL_UPPER), find some workaround.
         //return chunkProvider.getWorldHeight();
         return 384;
     }

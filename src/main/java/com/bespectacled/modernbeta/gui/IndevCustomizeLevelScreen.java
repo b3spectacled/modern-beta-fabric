@@ -47,8 +47,6 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions, option, value) -> {
                     this.levelType = value;
                     this.generatorSettings.providerSettings.putString("levelType", this.levelType.getName());
-                    
-                    return;
                 })
         );
         
@@ -61,8 +59,6 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions, option, value) -> {
                     this.levelTheme = value;
                     this.generatorSettings.providerSettings.putString("levelTheme", this.levelTheme.getName());
-                    
-                    return;
                 })
         );
         
@@ -74,7 +70,6 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions, value) -> { // Setter
                     this.levelWidth = value.intValue();
                     this.generatorSettings.providerSettings.putInt("levelWidth", this.levelWidth);
-                    return;
                 },
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
@@ -94,7 +89,6 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions, value) -> { // Setter
                     this.levelLength = value.intValue();
                     this.generatorSettings.providerSettings.putInt("levelLength", this.levelLength);
-                    return;
                 },
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
@@ -114,7 +108,6 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions, value) -> { // Setter
                     this.levelHeight = value.intValue();
                     this.generatorSettings.providerSettings.putInt("levelHeight", this.levelHeight);
-                    return;
                 },
                 (gameOptions, doubleOptions) -> {
                     int seaLevel = this.levelHeight / 2;
@@ -137,7 +130,6 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions, value) -> { // Setter
                     this.caveRadius = value.floatValue();
                     this.generatorSettings.providerSettings.putFloat("caveRadius", this.caveRadius);
-                    return;
                 },
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(

@@ -102,7 +102,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
                 
-                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= 0; --y) {
+                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
                     
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= this.minY + rand.nextInt(5)) {
@@ -325,7 +325,7 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         
         heightVal = this.sampleNoiseCave(
             (int)x * this.horizontalNoiseResolution,
-            (int)y * this.verticalNoiseResolution,
+            (int)y * this.verticalNoiseResolution * 2,
             (int)z * this.horizontalNoiseResolution,
             this.maxLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale,
             heightVal
