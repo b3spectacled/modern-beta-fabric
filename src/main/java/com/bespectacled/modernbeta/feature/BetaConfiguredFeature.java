@@ -30,7 +30,7 @@ public class BetaConfiguredFeature {
     public static final ConfiguredFeature<?, ?> OLD_FANCY_OAK = register("old_fancy_oak", BetaFeature.OLD_FANCY_OAK.configure(FeatureConfig.DEFAULT));
     
     // Ores
-    public static final ConfiguredFeature<?, ?> ORE_CLAY = register("ore_clay", ((Feature.ORE.configure(new OreFeatureConfig(new BlockMatchRuleTest(Blocks.SAND), Blocks.CLAY.getDefaultState(), 33)).method_30377(128)).spreadHorizontally()).repeat(1));
+    public static final ConfiguredFeature<?, ?> ORE_CLAY = register("ore_clay", ((BetaFeature.ORE_CLAY.configure(new OreFeatureConfig(new BlockMatchRuleTest(Blocks.SAND), Blocks.CLAY.getDefaultState(), 33)).method_30377(128)).spreadHorizontally()).repeat(1));
     public static final ConfiguredFeature<?, ?> ORE_EMERALD_Y95 = register("ore_emerald_y95", Feature.NO_SURFACE_ORE.configure(new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, Blocks.EMERALD_ORE.getDefaultState(), 1)).decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(95, 0, 32))).spreadHorizontally().repeat(11));
     
     // Shrubs

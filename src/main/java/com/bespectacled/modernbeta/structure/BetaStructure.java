@@ -14,11 +14,6 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 public class BetaStructure {
-    
-    public static final StructurePieceType HOUSE_PIECE = IndevHouseGenerator.HousePiece::new;
-    public static final StructureFeature<DefaultFeatureConfig> HOUSE_STRUCTURE = new IndevHouseStructure(DefaultFeatureConfig.CODEC);
-    public static final ConfiguredStructureFeature<?, ?> CONF_HOUSE_STRUCTURE = HOUSE_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT);
-    
     //private static final String OCEAN_SHRINE_ID = "ocean_shrine";
     //private static final String OCEAN_SHRINE_BASE_ID = "ocean_shrine/base";
     
