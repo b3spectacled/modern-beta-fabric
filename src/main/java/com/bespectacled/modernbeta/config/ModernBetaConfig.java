@@ -1,7 +1,8 @@
 package com.bespectacled.modernbeta.config;
 
+import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
+
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
@@ -11,24 +12,23 @@ public class ModernBetaConfig implements ConfigData {
     
     /* Render */
     
-    //@ConfigEntry.Category(value = "betaRender")
     @ConfigEntry.Gui.Tooltip(count = 4)
     public long fixedSeed = 0L;
     
     @ConfigEntry.Gui.Tooltip(count = 3)
     public boolean useFixedSeed = false;
-
-    //@ConfigEntry.Category(value = "betaRender")
+    
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean renderBetaSkyColor = true;
 
-    //@ConfigEntry.Category(value = "betaRender")
     @ConfigEntry.Gui.Tooltip(count = 3)
     public boolean renderBetaBiomeColor = true;
 
-    //@ConfigEntry.Category(value = "betaRender")
     @ConfigEntry.Gui.Tooltip(count = 1)
     public boolean renderAlphaSunset = false;
+    
+    @ConfigEntry.Gui.Tooltip(count = 1)
+    public boolean renderGameVersion = false;
     
     /* Beta Generation */
     
@@ -38,7 +38,6 @@ public class ModernBetaConfig implements ConfigData {
     @ConfigEntry.Gui.Excluded
     public String biomeType = BiomeType.BETA.getName();
     
-
 
     /* Old Infdev Generation */
     

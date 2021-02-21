@@ -3,9 +3,9 @@ package com.bespectacled.modernbeta.gen.provider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
+import com.bespectacled.modernbeta.biome.beta.BetaBiomes.BetaBiomeType;
 import com.bespectacled.modernbeta.gen.GenUtil;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
-import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.BlockStates;
 
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
@@ -46,9 +46,6 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     
     private final double heightNoise[];
     
-    private static final double[] TEMPS = new double[256];
-    private static final double[] HUMIDS = new double[256];
-    
     private static final Identifier[] BIOMES = new Identifier[256];
     
     private final int verticalNoiseResolution;
@@ -85,8 +82,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
 
     @Override
     public void makeChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
-        BetaClimateSampler.getInstance().sampleTempHumid(chunk.getPos().x << 4, chunk.getPos().z << 4, TEMPS, HUMIDS);
-        generateTerrain(chunk, TEMPS, structureAccessor);
+        generateTerrain(chunk, structureAccessor);
     }
 
     @Override
@@ -97,10 +93,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         int chunkZ = chunk.getPos().z;
         
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
-        BetaClimateSampler.getInstance().sampleTempHumid(chunkX << 4, chunkZ << 4, TEMPS, HUMIDS);
-        BetaBiomes.getBiomesFromLookup(TEMPS, HUMIDS, BIOMES, null);
-        
-        Biome curBiome;
+        double[] tempHumid = new double[2];
         
         stoneNoise = stoneNoiseOctaves.sampleArrBeta(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1,
                 thirtysecond * 2D, thirtysecond * 2D, thirtysecond * 2D);
@@ -114,12 +107,17 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
 
-                curBiome = biomeSource.isBeta() ? 
-                        biomeSource.getBiomeRegistry().get(BIOMES[z + x * 16]) :
-                        region.getBiome(POS.set(absX, 0, absZ));
+                Biome biome;
+                if (biomeSource.isBeta()) {
+                    BetaClimateSampler.INSTANCE.sampleTempHumid(tempHumid, absX, absZ);
+                    biome = biomeSource.getBiomeRegistry().get(BetaBiomes.getBiomeFromLookup(tempHumid[0], tempHumid[1], BetaBiomeType.LAND));
+                } else {
+                    biome = region.getBiome(POS.set(absX, 0, absZ));
+                }
 
-                BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
-                BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
+
+                BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
+                BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
 
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
@@ -178,7 +176,6 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         fillChunkY(16);
         
         if (GROUND_CACHE_Y.get(structPos) == null) {
-            BetaClimateSampler.getInstance().sampleTempHumid((x >> 4) << 4, (z >> 4) << 4, TEMPS, HUMIDS);
             sampleHeightmap(x, z);
         }
 
@@ -200,7 +197,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         }
     }
     
-    public void generateTerrain(Chunk chunk, double[] temps, StructureAccessor structureAccessor) {
+    public void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
 
@@ -305,13 +302,12 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         double upperLimitScale = 512D;
         
         double heightStretch = 8D;
-
-        double temps[] = TEMPS;
-        double humids[] = HUMIDS;
-
+        
+        /*
         scaleNoise = scaleNoiseOctaves.sampleArrBeta(scaleNoise, x, z, noiseResolutionX, noiseResolutionZ, 1.121D, 1.121D, 0.5D);
         depthNoise = depthNoiseOctaves.sampleArrBeta(depthNoise, x, z, noiseResolutionX, noiseResolutionZ, depthNoiseScaleX, depthNoiseScaleZ,
                 depthNoiseScaleExponent);
+        */
 
         coordinateScale *= 2D;
 
@@ -325,15 +321,16 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 coordinateScale, heightScale, coordinateScale);
 
         int heightNoiseNdx = 0;
-        int flatNoiseNdx = 0;
+        //int flatNoiseNdx = 0;
         int k = 16 / noiseResolutionX;
 
         for (int noiseX = 0; noiseX < noiseResolutionX; noiseX++) {
-            int relX = noiseX * k + k / 2;
+            //int relX = noiseX * k + k / 2;
 
             for (int noiseZ = 0; noiseZ < noiseResolutionZ; noiseZ++) {
-                int relZ = noiseZ * k + k / 2;
+                //int relZ = noiseZ * k + k / 2;
 
+                /*
                 double curTemp = temps[relX * 16 + relZ];
                 double curHumid = humids[relX * 16 + relZ] * curTemp;
 
@@ -372,16 +369,18 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 depthVal = (depthVal * (double) noiseResolutionY) / 16D;
 
                 double depthVal2 = (double) noiseResolutionY / 16D;
-
-                flatNoiseNdx++;
+                */
+    
+                //flatNoiseNdx++;
 
                 for (int noiseY = 0; noiseY < noiseResolutionY; noiseY++) {
                     double heightVal = 0.0D;
+                    /*
                     double scaleVal2 = (((double) noiseY - depthVal2) * heightStretch) / scaleVal;
 
                     if (scaleVal2 < 0.0D) {
                         scaleVal2 *= -1D;
-                    }
+                    }*/
 
                     double minLimitVal = minLimitNoise[heightNoiseNdx] / lowerLimitScale;
                     double maxLimitVal = maxLimitNoise[heightNoiseNdx] / upperLimitScale;

@@ -9,10 +9,9 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.gen.provider.BetaChunkProvider;
+import com.bespectacled.modernbeta.gen.WorldType;
 import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 
 import org.spongepowered.asm.mixin.injection.At;
 import net.fabricmc.fabric.mixin.gamerule.IntRuleAccessor;

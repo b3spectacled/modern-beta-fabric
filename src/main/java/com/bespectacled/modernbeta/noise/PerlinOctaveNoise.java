@@ -1,7 +1,6 @@
 package com.bespectacled.modernbeta.noise;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class PerlinOctaveNoise extends Noise {
     private PerlinNoise generatorCollection[];

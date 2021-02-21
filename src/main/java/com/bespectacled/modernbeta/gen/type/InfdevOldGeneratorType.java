@@ -4,13 +4,13 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
-import com.bespectacled.modernbeta.gui.CustomizeInfdevOldLevelScreen;
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
+import com.bespectacled.modernbeta.gen.WorldType;
+import com.bespectacled.modernbeta.gui.InfdevOldCustomizeLevelScreen;
 import com.bespectacled.modernbeta.mixin.MixinGeneratorTypeAccessor;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 import com.google.common.collect.ImmutableMap;
 
 import net.fabricmc.api.EnvType;
@@ -26,7 +26,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 public final class InfdevOldGeneratorType extends GeneratorType {
     public static final GeneratorType INSTANCE = new InfdevOldGeneratorType();
     
-    public static final OldGeneratorSettings infdevOldSettings = new OldGeneratorSettings(new CompoundTag(), false);
+    public static final OldGeneratorSettings INFDEV_OLD_SETTINGS = new OldGeneratorSettings(new CompoundTag(), false);
     
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -34,7 +34,7 @@ public final class InfdevOldGeneratorType extends GeneratorType {
             .putAll(MixinGeneratorTypeAccessor.getScreenProviders())
             .put(
                 Optional.<GeneratorType>of(INSTANCE), (createWorldScreen, generatorSettings) -> {
-                    return new CustomizeInfdevOldLevelScreen(createWorldScreen, infdevOldSettings);
+                    return new InfdevOldCustomizeLevelScreen(createWorldScreen, INFDEV_OLD_SETTINGS, "createWorld.customize.infdev.title", BiomeType.CLASSIC, true);
                 }
             )
             .build();
@@ -52,8 +52,8 @@ public final class InfdevOldGeneratorType extends GeneratorType {
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        infdevOldSettings.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.INFDEV_OLD.getName(), BiomeType.CLASSIC.getName(), ModernBeta.BETA_CONFIG.generateOceans);
-        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, infdevOldSettings.providerSettings), seed, infdevOldSettings);
+        INFDEV_OLD_SETTINGS.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.INFDEV_OLD.getName(), BiomeType.CLASSIC.getName(), ModernBeta.BETA_CONFIG.generateOceans);
+        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, INFDEV_OLD_SETTINGS.providerSettings), seed, INFDEV_OLD_SETTINGS);
     }
     
     

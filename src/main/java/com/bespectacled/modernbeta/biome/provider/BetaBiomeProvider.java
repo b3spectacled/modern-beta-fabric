@@ -17,7 +17,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
     private static final double[] TEMP_HUMID_POINT = new double[2];
    
     public BetaBiomeProvider(long seed) {
-        BetaClimateSampler.getInstance().setSeed(seed);
+        BetaClimateSampler.INSTANCE.setSeed(seed);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        BetaClimateSampler.getInstance().sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
+        BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
         return registry.get(BetaBiomes.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.LAND));
     }
 
@@ -34,7 +34,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        BetaClimateSampler.getInstance().sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
+        BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
         return registry.get(BetaBiomes.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.OCEAN));
     }
 

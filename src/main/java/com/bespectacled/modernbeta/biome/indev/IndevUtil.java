@@ -1,9 +1,5 @@
 package com.bespectacled.modernbeta.biome.indev;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.StringTag;
-
 public class IndevUtil {
     public enum IndevTheme {
         NORMAL(0, "normal"),

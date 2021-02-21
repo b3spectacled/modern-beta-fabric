@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.structure.IndevHouseGenerator.HousePiece;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
@@ -14,8 +12,6 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.state.State;
-import net.minecraft.state.property.Property;
 import net.minecraft.structure.SimpleStructurePiece;
 import net.minecraft.structure.Structure;
 import net.minecraft.structure.StructureManager;

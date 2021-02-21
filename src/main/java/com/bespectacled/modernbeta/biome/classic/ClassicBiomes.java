@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
+import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.gen.WorldType;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;

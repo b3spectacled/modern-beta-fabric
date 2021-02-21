@@ -5,7 +5,6 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
@@ -17,7 +16,6 @@ import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.MutableClientWorld;
 
 import java.util.function.Supplier;
@@ -96,7 +94,7 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
     )
     private int injectBetaSkyColor(int skyColor) {
         if (this.useBetaColors && BETA_CONFIG.renderBetaSkyColor && this.isOverworld) {
-            skyColor = BetaClimateSampler.getInstance().getSkyColor(curBlockPos.getX(), curBlockPos.getZ());
+            skyColor = BetaClimateSampler.INSTANCE.getSkyColor(curBlockPos.getX(), curBlockPos.getZ());
         }
         
         return skyColor;

@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
-import com.bespectacled.modernbeta.gui.CustomizeIndevLevelScreen;
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
+import com.bespectacled.modernbeta.gui.IndevCustomizeLevelScreen;
 import com.bespectacled.modernbeta.mixin.MixinGeneratorTypeAccessor;
 import com.google.common.collect.ImmutableMap;
 import net.fabricmc.api.EnvType;
@@ -22,7 +22,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 public final class IndevGeneratorType extends GeneratorType {
     public static final GeneratorType INSTANCE = new IndevGeneratorType();
     
-    public static final OldGeneratorSettings indevSettings = new OldGeneratorSettings(new CompoundTag(), true);
+    public static final OldGeneratorSettings INDEV_SETTINGS = new OldGeneratorSettings(new CompoundTag(), true);
     
     // Add to Screen Providers
     private static Map<Optional<GeneratorType>, ScreenProvider> NEW_SCREEN_PROVIDERS = 
@@ -30,7 +30,7 @@ public final class IndevGeneratorType extends GeneratorType {
             .putAll(MixinGeneratorTypeAccessor.getScreenProviders())
             .put(
                 Optional.<GeneratorType>of(INSTANCE), (createWorldScreen, generatorSettings) -> {
-                    return new CustomizeIndevLevelScreen(createWorldScreen, indevSettings);
+                    return new IndevCustomizeLevelScreen(createWorldScreen, INDEV_SETTINGS, "createWorld.customize.indev.title");
                 }
             )
             .build();
@@ -48,8 +48,8 @@ public final class IndevGeneratorType extends GeneratorType {
 
     @Override
     protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
-        indevSettings.providerSettings = OldGeneratorSettings.createIndevSettings();
-        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, indevSettings.providerSettings), seed, indevSettings);
+        INDEV_SETTINGS.providerSettings = OldGeneratorSettings.createIndevSettings();
+        return new OldChunkGenerator(new OldBiomeSource(seed, biomes, INDEV_SETTINGS.providerSettings), seed, INDEV_SETTINGS);
     }
     
     

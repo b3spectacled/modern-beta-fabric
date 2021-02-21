@@ -1,9 +1,8 @@
-package com.bespectacled.modernbeta.gen.settings;
+package com.bespectacled.modernbeta.gen;
 
 import java.util.Optional;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.util.WorldEnum;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -72,7 +71,7 @@ public class OldGeneratorSettings {
     public static CompoundTag createIndevSettings() {
         CompoundTag settings = new CompoundTag();
         
-        settings.putString("worldType", WorldEnum.WorldType.INDEV.getName());
+        settings.putString("worldType", WorldType.INDEV.getName());
         settings.putString("levelType", ModernBeta.BETA_CONFIG.indevLevelType);
         settings.putString("levelTheme", ModernBeta.BETA_CONFIG.indevLevelTheme);
         settings.putInt("levelWidth", ModernBeta.BETA_CONFIG.indevLevelWidth);

@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 
 import com.bespectacled.modernbeta.biome.vanilla.VanillaBiomeLayer;
 import com.bespectacled.modernbeta.biome.vanilla.VanillaOceanLayer;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;

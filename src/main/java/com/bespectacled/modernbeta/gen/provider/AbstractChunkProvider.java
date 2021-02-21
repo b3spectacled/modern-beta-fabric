@@ -1,16 +1,15 @@
 package com.bespectacled.modernbeta.gen.provider;
 
-import java.util.Map;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.decorator.BetaDecorator;
-import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
+import com.bespectacled.modernbeta.gen.WorldType;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.BoundedHashMap;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.block.BlockState;
@@ -32,7 +31,7 @@ public abstract class AbstractChunkProvider {
     protected static final ObjectList<StructurePiece> STRUCTURE_LIST = new ObjectArrayList<StructurePiece>(10);
     protected static final ObjectList<JigsawJunction> JIGSAW_LIST = new ObjectArrayList<JigsawJunction>(32);
     
-    protected static final Map<BlockPos, Integer> GROUND_CACHE_Y = new BoundedHashMap<>(512);
+    protected static final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> GROUND_CACHE_Y = new Object2ObjectLinkedOpenHashMap<>(512);
     protected static final int[][] CHUNK_Y = new int[16][16];
     
     protected final int minY;

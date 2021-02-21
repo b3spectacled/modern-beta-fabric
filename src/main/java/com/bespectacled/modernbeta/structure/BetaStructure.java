@@ -1,7 +1,5 @@
 package com.bespectacled.modernbeta.structure;
 
-import org.apache.logging.log4j.Level;
-
 import com.bespectacled.modernbeta.ModernBeta;
 
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;

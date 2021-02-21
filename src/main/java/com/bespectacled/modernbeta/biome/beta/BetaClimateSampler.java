@@ -1,15 +1,15 @@
 package com.bespectacled.modernbeta.biome.beta;
 
-import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
-import com.bespectacled.modernbeta.util.BoundedHashMap;
-
+import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.util.math.MathHelper;
 
-public class BetaClimateSampler {
-    private static final BetaClimateSampler INSTANCE = new BetaClimateSampler();
+public enum BetaClimateSampler {
+    INSTANCE;
+    
     private final BiomeCache biomeCache;
     
     private SimplexOctaveNoise tempNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 9871L), 4);
@@ -22,10 +22,6 @@ public class BetaClimateSampler {
         this.biomeCache = new BiomeCache(this);
     }
     
-    public static BetaClimateSampler getInstance() {
-        return INSTANCE;
-    }
-    
     public void setSeed(long seed) {
         if (this.seed == seed) return;
         
@@ -34,43 +30,23 @@ public class BetaClimateSampler {
         this.biomeCache.clear();
     }
     
-    public void sampleTempHumid(double[] arr, int x, int z) {
-        this.biomeCache.getCachedChunk(x, z).sampleTempHumidAtPoint(arr, x, z);
+    public double sampleTemp(int x, int z) {
+        return this.biomeCache.getCachedChunk(x, z).sampleTempAtPoint(x, z);
     }
     
-    public void sampleTempHumid(int x, int z, double[] temps, double[] humids) {
-        int startX = (x >> 4) << 4;
-        int startZ = (z >> 4) << 4;
-        
-        double tempHumid[] = new double[2];
-        
-        BiomeCacheChunk cachedChunk = this.biomeCache.getCachedChunk(x, z);
-        
-        int ndx = 0;
-        for (int relX = 0; relX < 16; relX++) {
-            for (int relZ = 0; relZ < 16; relZ++) {
-                cachedChunk.sampleTempHumidAtPoint(tempHumid, startX + relX, startZ + relZ);
-                
-                temps[ndx] = tempHumid[0];
-                humids[ndx] = tempHumid[1];
-                
-                ndx++;
-            }
-        }
+    public double sampleHumid(int x, int z) {
+        return this.biomeCache.getCachedChunk(x, z).sampleHumidAtPoint(x, z);
+    }
+    
+    public void sampleTempHumid(double[] arr, int x, int z) {
+        this.biomeCache.getCachedChunk(x, z).sampleTempHumidAtPoint(arr, x, z);
     }
     
     public int getSkyColor(int x, int z) {
         float temp = (float)sampleSkyTemp(x, z);
         
         temp /= 3F;
-
-        if (temp < -1F) {
-            temp = -1F;
-        }
-
-        if (temp > 1.0F) {
-            temp = 1.0F;
-        }
+        temp = MathHelper.clamp(temp, -1F, 1F);
         
         return MathHelper.hsvToRgb(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F);
     }
@@ -96,22 +72,9 @@ public class BetaClimateSampler {
         humid = (humid * 0.14999999999999999D + 0.5D) * d2 + d * d1;
 
         temp = 1.0D - (1.0D - temp) * (1.0D - temp);
-        
-        if (temp < 0.0D) {
-            temp = 0.0D;
-        }
-        if (humid < 0.0D) {
-            humid = 0.0D;
-        }
-        if (temp > 1.0D) {
-            temp = 1.0D;
-        }
-        if (humid > 1.0D) {
-            humid = 1.0D;
-        }
 
-        arr[0] = temp;
-        arr[1] = humid;
+        arr[0] = MathHelper.clamp(temp, 0.0, 1.0);
+        arr[1] = MathHelper.clamp(humid, 0.0, 1.0);
     }
     
     private double sampleSkyTempAtPoint(int x, int z) {
@@ -125,29 +88,48 @@ public class BetaClimateSampler {
     }
     
     private class BiomeCache {
-        private final Map<Long, BiomeCacheChunk> biomeCache;
+        private final Long2ObjectLinkedOpenHashMap<BiomeCacheChunk> biomeCache;
         private final BetaClimateSampler climateSampler;
+        private final ReentrantReadWriteLock lock;
         
         public BiomeCache(BetaClimateSampler climateSampler) {
             this.climateSampler = climateSampler;
-            this.biomeCache = new BoundedHashMap<Long, BiomeCacheChunk>(1024); // 32 x 32 chunks
+            this.biomeCache = new Long2ObjectLinkedOpenHashMap<BiomeCacheChunk>(256, 0.75f);
+            this.lock = new ReentrantReadWriteLock();
         }
         
-        public synchronized void clear() {
-            this.biomeCache.clear();
+        public void clear() {
+            this.lock.writeLock().lock();
+            try {
+                this.biomeCache.clear();
+            } finally {
+                this.lock.writeLock().unlock();
+            }
         }
         
-        // Synchronized needed to prevent crash when more than one thread attempts to modify map, I think
-        public synchronized BiomeCacheChunk getCachedChunk(int x, int z) {
+        public BiomeCacheChunk getCachedChunk(int x, int z) {
             int chunkX = x >> 4;
             int chunkZ = z >> 4;
             
             long hashedCoord = (long)chunkX & 0xffffffffL | ((long)chunkZ & 0xffffffffL) << 32;
-            BiomeCacheChunk cachedChunk = this.biomeCache.get(hashedCoord);
+            BiomeCacheChunk cachedChunk;
+            
+            this.lock.readLock().lock();
+            try {
+                cachedChunk = this.biomeCache.get(hashedCoord);
+            } finally {
+                this.lock.readLock().unlock();
+            }
             
             if (cachedChunk == null) { 
-                cachedChunk = new BiomeCacheChunk(chunkX, chunkZ, this.climateSampler);
-                this.biomeCache.put(hashedCoord, cachedChunk);
+                this.lock.writeLock().lock();
+                try {
+                    cachedChunk = new BiomeCacheChunk(chunkX, chunkZ, this.climateSampler);
+                    this.biomeCache.put(hashedCoord, cachedChunk);
+                } finally {
+                    this.lock.writeLock().unlock();
+                }
+                
             }
             
             return cachedChunk;
@@ -180,6 +162,14 @@ public class BetaClimateSampler {
                     ndx++;
                 }
             }
+        }
+        
+        public double sampleTempAtPoint(int x, int z) {
+            return temps[x & 0xF | (z & 0xF) << 4];
+        }
+        
+        public double sampleHumidAtPoint(int x, int z) {
+            return humids[x & 0xF | (z & 0xF) << 4];
         }
         
         public void sampleTempHumidAtPoint(double[] tempHumid, int x, int z) {

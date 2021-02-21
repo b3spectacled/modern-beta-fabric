@@ -2,8 +2,7 @@ package com.bespectacled.modernbeta.biome;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.provider.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
+import com.bespectacled.modernbeta.gen.WorldType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -75,7 +74,7 @@ public class OldBiomeSource extends BiomeSource {
         // || this.biomeType == BiomeType.ICE_DESERT;
     }
     
-    public boolean isSkyDim() {
+    public boolean isSky() {
         return this.worldType != WorldType.INDEV && this.biomeType == BiomeType.SKY;
     }
     

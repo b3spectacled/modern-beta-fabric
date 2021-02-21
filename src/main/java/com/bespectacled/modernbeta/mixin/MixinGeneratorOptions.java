@@ -3,9 +3,7 @@ package com.bespectacled.modernbeta.mixin;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.gen.settings.OldGeneratorSettings;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
-import com.bespectacled.modernbeta.util.WorldEnum.WorldType;
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
 

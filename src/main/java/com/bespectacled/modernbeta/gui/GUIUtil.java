@@ -2,24 +2,20 @@ package com.bespectacled.modernbeta.gui;
 
 import java.util.Iterator;
 
-import com.bespectacled.modernbeta.util.WorldEnum;
-import com.bespectacled.modernbeta.util.WorldEnum.BiomeType;
+import com.bespectacled.modernbeta.biome.BiomeType;
 
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 public class GUIUtil {
-    public static final Text TEXT_BIOME_TYPE = new TranslatableText("createWorld.customize.type.biomeType");
+    public static final Text TEXT_BIOME_TYPE = new TranslatableText("createWorld.customize.biomeType");
     
-    public static final Text TEXT_ICE_DESERT = new TranslatableText("createWorld.customize.type.ice_desert");
-    public static final Text TEXT_SKY = new TranslatableText("createWorld.customize.type.sky");
-    
-    public static final Text TEXT_CLASSIC = new TranslatableText("createWorld.customize.type.classic");
-    public static final Text TEXT_WINTER = new TranslatableText("createWorld.customize.type.winter");
-    public static final Text TEXT_PLUS = new TranslatableText("createWorld.customize.type.plus");
-    public static final Text TEXT_VANILLA = new TranslatableText("createWorld.customize.type.vanilla");
-    public static final Text TEXT_BETA = new TranslatableText("createWorld.customize.type.beta");
-    public static final Text TEXT_RELEASE = new TranslatableText("createWorld.customize.type.release");
+    public static final Text TEXT_BETA = new TranslatableText("createWorld.customize.biomeType.beta");
+    public static final Text TEXT_SKY = new TranslatableText("createWorld.customize.biomeType.sky");
+    public static final Text TEXT_CLASSIC = new TranslatableText("createWorld.customize.biomeType.classic");
+    public static final Text TEXT_WINTER = new TranslatableText("createWorld.customize.biomeType.winter");
+    public static final Text TEXT_PLUS = new TranslatableText("createWorld.customize.biomeType.plus");
+    public static final Text TEXT_VANILLA = new TranslatableText("createWorld.customize.biomeType.vanilla");
     
     public static final Text TEXT_NORMAL = new TranslatableText("createWorld.customize.indev.theme.normal");
     public static final Text TEXT_HELL = new TranslatableText("createWorld.customize.indev.theme.hell");
