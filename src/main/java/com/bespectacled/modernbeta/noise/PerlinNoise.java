@@ -95,11 +95,11 @@ public class PerlinNoise extends Noise {
         return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
     }
     
-    public double samplePerlin(double x, double y) {
-        return this.samplePerlin(x, y, 0.0);
+    public double sample(double x, double y) {
+        return this.sample(x, y, 0.0);
     }
 
-    public double samplePerlin(double x, double y, double z) {
+    public double sample(double x, double y, double z) {
         x += this.xOffset;
         y += this.yOffset;
         z += this.zOffset;
@@ -155,8 +155,8 @@ public class PerlinNoise extends Noise {
                     grad(this.permutations[BB + 1], x - 1.0, y - 1.0, z - 1.0)))
         );
     }
-    
-    public void samplePerlinArr(
+   
+    public void sampleArr(
         double arr[], 
         double x, double y, double z, 
         int sizeX, int sizeY, int sizeZ, 
@@ -235,7 +235,7 @@ public class PerlinNoise extends Noise {
         }
     }
 
-    public void samplePerlinArrBeta(
+    public void sampleArrBeta(
         double arr[], 
         double x, double y, double z, 
         int sizeX, int sizeY, int sizeZ, 
@@ -243,7 +243,7 @@ public class PerlinNoise extends Noise {
         double frequency
     ) {
         if (sizeY != 1) {
-            this.samplePerlinArr(arr, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ, frequency);
+            this.sampleArr(arr, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ, frequency);
             
             return;
         }
@@ -290,5 +290,46 @@ public class PerlinNoise extends Noise {
                 arr[ndx++] += res * frequency;
             }
         }
+    }
+    
+    public double sample(double x, double z, double scaleX, double scaleZ, double frequency) {
+        frequency = 1.0D / frequency;
+        
+        x = x * scaleX + this.xOffset;
+        z = z * scaleZ + this.zOffset;
+        
+        int floorX = MathHelper.floor(x);
+        int floorZ = MathHelper.floor(z);
+        
+        // Find unit cube that contains point.
+        int X = floorX & 0xFF;
+        int Z = floorZ & 0xFF;
+        
+        // Find relative x, y, z of point in cube.
+        x -= floorX;
+        z -= floorZ;
+        
+        // Compute fade curves for x, y, z.
+        double u = fade(x);
+        double w = fade(z);
+        
+        int A = this.permutations[X] + 0;
+        int AA = this.permutations[A] + Z;
+        int B = this.permutations[X + 1] + 0;
+        int BA = this.permutations[B] + Z;
+        
+        double lerp0 = lerp(
+            u, 
+            //grad(permutations[AA], curX, curZ), // Below should give same result but faster
+            grad(this.permutations[AA], x, 0.0D, z),
+            grad(this.permutations[BA], x - 1.0D, 0.0D, z));
+        double lerp1 = lerp(
+            u, 
+            grad(this.permutations[AA + 1], x, 0.0D, z - 1.0D),
+            grad(this.permutations[BA + 1], x - 1.0D, 0.0D, z - 1.0D));
+        
+        double res = lerp(w, lerp0, lerp1);
+        
+        return res * frequency;
     }
 }

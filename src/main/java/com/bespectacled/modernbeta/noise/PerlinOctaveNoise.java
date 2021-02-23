@@ -15,6 +15,15 @@ public class PerlinOctaveNoise extends Noise {
         }
     }
     
+    public final double testSample(double x, double z, double scaleX, double scaleZ) {
+        double frequency = 1.0;
+        
+        return this.generatorCollection[0].sample(x, z, scaleX * frequency, scaleZ * frequency, frequency);
+    }
+    
+    /*
+     * Beta 2D array sampler.
+     */
     public double[] sampleArrBeta(
         double arr[], 
         int x, int z, 
@@ -25,6 +34,9 @@ public class PerlinOctaveNoise extends Noise {
         return sampleArrBeta(arr, x, 10D, z, sizeX, 1, sizeZ, scaleX, 1.0D, scaleZ);
     }
 
+    /*
+     * Beta 3D array sampler.
+     */
     public double[] sampleArrBeta(
         double arr[], 
         double x, double y, double z, 
@@ -40,7 +52,7 @@ public class PerlinOctaveNoise extends Noise {
 
         double frequency = 1.0;
         for (int i1 = 0; i1 < octaves; i1++) {
-            this.generatorCollection[i1].samplePerlinArrBeta(
+            this.generatorCollection[i1].sampleArrBeta(
                 arr, 
                 x, y, z, 
                 sizeX, sizeY, sizeZ, 
@@ -53,6 +65,9 @@ public class PerlinOctaveNoise extends Noise {
         return arr;
     }
     
+    /*
+     * Alpha array sampler.
+     */
     public double[] sampleArr(
         double arr[],
         double x, double y, double z, 
@@ -68,7 +83,7 @@ public class PerlinOctaveNoise extends Noise {
 
         double frequency = 1.0;
         for (int i1 = 0; i1 < octaves; i1++) {
-            this.generatorCollection[i1].samplePerlinArr(
+            this.generatorCollection[i1].sampleArr(
                 arr, 
                 x, y, z, 
                 sizeX, sizeY, sizeZ, 
@@ -81,25 +96,46 @@ public class PerlinOctaveNoise extends Noise {
         return arr;
     }
     
-    public final double sample(double x, double y, double z) {
+    /*
+     * Standard 2D Perlin noise sampler.
+     */
+    public final double sample(double x, double y) {
         double total = 0.0;
         double frequency = 1.0;
         
         for (int i = 0; i < this.octaves; ++i) {
-            total += this.generatorCollection[i].samplePerlin(x / frequency, y / frequency, z / frequency) * frequency;
+            total += this.generatorCollection[i].sample(x / frequency, y / frequency) * frequency;
             frequency *= 2.0;
         }
         
         return total;
     }
     
-    public final double sample(double x, double y) {
+    /*
+     * Standard 3D Perlin noise sampler.
+     */
+    public final double sample(double x, double y, double z) {
         double total = 0.0;
         double frequency = 1.0;
         
         for (int i = 0; i < this.octaves; ++i) {
-            total += this.generatorCollection[i].samplePerlin(x / frequency, y / frequency) * frequency;
+            total += this.generatorCollection[i].sample(x / frequency, y / frequency, z / frequency) * frequency;
             frequency *= 2.0;
+        }
+        
+        return total;
+    }
+    
+    /*
+     * Beta 2D noise sampler.
+     */
+    public final double sample(double x, double z, double scaleX, double scaleZ) {
+        double total = 0.0;
+        double frequency = 1.0;
+        
+        for (int i = 0; i < this.octaves; ++i) {
+            total += this.generatorCollection[i].sample(x, z, scaleX * frequency, scaleZ * frequency, frequency);
+            frequency /= 2.0;
         }
         
         return total;

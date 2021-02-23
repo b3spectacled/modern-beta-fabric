@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.gen;
 
 import java.util.Optional;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gui.IndevCustomizeLevelScreen;
@@ -47,6 +48,7 @@ public class OldGeneratorType {
         BETA = new GeneratorType("beta") {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
+                OldGeneratorSettings.BETA_SETTINGS.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.BETA, BiomeType.BETA, ModernBeta.BETA_CONFIG.generateOceans);
                 return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.BETA_SETTINGS.providerSettings), seed, OldGeneratorSettings.BETA_SETTINGS);
             }
         };
@@ -54,6 +56,7 @@ public class OldGeneratorType {
         SKYLANDS = new GeneratorType("skylands") {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
+                OldGeneratorSettings.BETA_SETTINGS.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.SKYLANDS, BiomeType.SKY, false);
                 return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.SKYLANDS_SETTINGS.providerSettings), seed, OldGeneratorSettings.SKYLANDS_SETTINGS);
             }
         };
@@ -61,6 +64,7 @@ public class OldGeneratorType {
         ALPHA = new GeneratorType("alpha") {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
+                OldGeneratorSettings.BETA_SETTINGS.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.ALPHA, BiomeType.CLASSIC, ModernBeta.BETA_CONFIG.generateOceans);
                 return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.ALPHA_SETTINGS.providerSettings), seed, OldGeneratorSettings.ALPHA_SETTINGS);
             }
         };
@@ -68,6 +72,7 @@ public class OldGeneratorType {
         INFDEV = new GeneratorType("infdev") {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
+                OldGeneratorSettings.BETA_SETTINGS.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.INFDEV, BiomeType.CLASSIC, ModernBeta.BETA_CONFIG.generateOceans);
                 return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.INFDEV_SETTINGS.providerSettings), seed, OldGeneratorSettings.INFDEV_SETTINGS);
             }
         };
@@ -75,6 +80,7 @@ public class OldGeneratorType {
         INFDEV_OLD = new GeneratorType("infdev_old") {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
+                OldGeneratorSettings.BETA_SETTINGS.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.INFDEV_OLD, BiomeType.CLASSIC, ModernBeta.BETA_CONFIG.generateOceans);
                 return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.INFDEV_OLD_SETTINGS.providerSettings), seed, OldGeneratorSettings.INFDEV_OLD_SETTINGS);
             }
         };
@@ -82,6 +88,7 @@ public class OldGeneratorType {
         INDEV = new GeneratorType("indev") {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
+                OldGeneratorSettings.BETA_SETTINGS.providerSettings = OldGeneratorSettings.createIndevSettings();
                 return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.INDEV_SETTINGS.providerSettings), seed, OldGeneratorSettings.INDEV_SETTINGS);
             }
         };
@@ -89,6 +96,7 @@ public class OldGeneratorType {
         NETHER = new GeneratorType("nether") {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
+                OldGeneratorSettings.BETA_SETTINGS.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.NETHER, BiomeType.BETA, false);
                 return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.NETHER_SETTINGS.providerSettings), seed, OldGeneratorSettings.NETHER_SETTINGS);
             }
         };
@@ -97,6 +105,7 @@ public class OldGeneratorType {
         FLAT = new GeneratorType("flat") {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> genSettings, long seed) {
+                OldGeneratorSettings.BETA_SETTINGS.providerSettings = OldGeneratorSettings.createInfSettings(WorldType.FLAT, BiomeType.BETA, false);
                 return new OldChunkGenerator(new OldBiomeSource(seed, biomes, OldGeneratorSettings.FLAT_SETTINGS.providerSettings), seed, OldGeneratorSettings.FLAT_SETTINGS);
             }
         };
