@@ -1,26 +1,36 @@
 package com.bespectacled.modernbeta.gui;
 
-import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
+import java.util.function.Consumer;
+
+import com.bespectacled.modernbeta.gen.WorldType;
+
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.option.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
 
 public abstract class AbstractCustomizeLevelScreen extends Screen {
     private final CreateWorldScreen parent;
-    protected final OldGeneratorSettings generatorSettings;
+    protected final CompoundTag providerSettings;
+    protected final WorldType worldType;
+    protected final Consumer<CompoundTag> consumer;
     
     protected ButtonListWidget buttonList;
     
-    public AbstractCustomizeLevelScreen(CreateWorldScreen parent, OldGeneratorSettings generatorSettings, String title) {
-        super(new TranslatableText(title));
+    public AbstractCustomizeLevelScreen(CreateWorldScreen parent, CompoundTag providerSettings, Consumer<CompoundTag> consumer) {
+        super(new TranslatableText("createWorld.customize.old.title"));
         
         this.parent = parent;
-        this.generatorSettings = generatorSettings;
+        this.providerSettings = providerSettings;
+        this.consumer = consumer;
+        
+        this.worldType = WorldType.fromName(this.providerSettings.getString("worldType"));
     }
     
     @Override
@@ -43,6 +53,21 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         ));
         
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        
+        this.buttonList.addSingleOptionEntry(
+            CyclingOption.create(
+                "createWorld.customize.worldType", 
+                WorldType.values(), 
+                (value) -> new TranslatableText("createWorld.customize.worldType." + value.getName()), 
+                (gameOptions) -> { return this.worldType; }, // Sets default value?
+                (gameOptions, option, value) -> {
+                    CompoundTag newProviderSettings = new CompoundTag();
+                    newProviderSettings.putString("worldType", value.getName());
+                    
+                    this.client.openScreen(value.createLevelScreen(this.parent, newProviderSettings, this.consumer));
+                })
+        );
+        
         this.children.add(this.buttonList);
     }
     

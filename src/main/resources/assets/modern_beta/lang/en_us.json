@@ -1,4 +1,5 @@
 {
+    "generator.old": "Modern Beta",
     "generator.beta": "Beta 1.7.3",
     "generator.skylands": "Skylands",
     "generator.alpha": "Alpha 1.1.2_01",
@@ -7,6 +8,15 @@
     "generator.infdev_old": "Inf 20100227",
     
     "createWorld.customize.unknown": "Unknown option!",
+    
+    "createWorld.customize.worldType": "World Type",
+    "createWorld.customize.worldType.beta": "Beta 1.7.3",
+    "createWorld.customize.worldType.skylands": "Skylands",
+    "createWorld.customize.worldType.alpha": "Alpha 1.1.2_01",
+    "createWorld.customize.worldType.indev": "Indev 20100223",
+    "createWorld.customize.worldType.infdev": "Inf 20100415",
+    "createWorld.customize.worldType.infdev_old": "Inf 20100227",
+    "createWorld.customize.worldType.flat": "Flat",
     
     "createWorld.customize.biomeType": "Biome Type",
     "createWorld.customize.biomeType.beta": "Beta",
@@ -17,6 +27,7 @@
     "createWorld.customize.biomeType.plus": "Classic + Winter",
     "createWorld.customize.biomeType.vanilla": "Vanilla/Modded",
     
+    "createWorld.customize.old.title": "Modern Beta World Configuration",
     "createWorld.customize.beta.title": "Beta World Type Configuration",
     "createWorld.customize.skylands.title": "Skylands World Type Configuration",
     "createWorld.customize.alpha.title": "Alpha World Type Configuration",

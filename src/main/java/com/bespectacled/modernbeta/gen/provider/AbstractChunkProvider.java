@@ -48,8 +48,8 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 public abstract class AbstractChunkProvider {
     protected static final Random RAND = new Random();
     
-    protected static final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> HEIGHTMAP_CACHE = new Object2ObjectLinkedOpenHashMap<>(512);
-    protected static final int[][] HEIGHTMAP_CHUNK = new int[16][16];
+    //protected static final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> HEIGHTMAP_CACHE = new Object2ObjectLinkedOpenHashMap<>(512);
+    //protected static final int[][] HEIGHTMAP_CHUNK = new int[16][16];
     
     protected final ChunkGeneratorSettings generatorSettings;
     protected final CompoundTag providerSettings;
@@ -88,7 +88,7 @@ public abstract class AbstractChunkProvider {
     protected final DoublePerlinNoiseSampler doublePerlinSampler0;
     protected final DoublePerlinNoiseSampler doublePerlinSampler1;
     
-    protected final BlockInterpolator grimstoneInterpolator;
+    protected final BlockInterpolator deepslateInterpolator;
     
     public AbstractChunkProvider(long seed, OldGeneratorSettings settings) {
         this(
@@ -170,10 +170,10 @@ public abstract class AbstractChunkProvider {
         this.doublePerlinSampler1 = DoublePerlinNoiseSampler.create(new SimpleRandom(chunkRandom.nextLong()), -3, 1.0, 0.0, 2.0);
         
         this.noiseCaveSampler = this.generateNoiseCaves ? new NoiseCaveSampler(chunkRandom, this.noiseMinY) : null;
-        this.grimstoneInterpolator = new GrimstoneInterpolator(seed, this.defaultBlock, Blocks.GRIMSTONE.getDefaultState());
+        this.deepslateInterpolator = new GrimstoneInterpolator(seed, this.defaultBlock, Blocks.GRIMSTONE.getDefaultState());
         
         RAND.setSeed(seed);
-        HEIGHTMAP_CACHE.clear();
+        //HEIGHTMAP_CACHE.clear();
     }
     
     public abstract Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource);
@@ -220,7 +220,7 @@ public abstract class AbstractChunkProvider {
         BlockState blockStateToSet = BlockStates.AIR;
         
         if (clampedDensity > 0.0) {
-            blockStateToSet = this.grimstoneInterpolator.sample(x, y, z, this.generatorSettings);
+            blockStateToSet = this.deepslateInterpolator.sample(x, y, z, this.generatorSettings);
         } else {
             int localSeaLevel = (aquiferSampler == null) ? this.getSeaLevel() : aquiferSampler.getWaterLevel();
             

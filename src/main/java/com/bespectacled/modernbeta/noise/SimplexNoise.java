@@ -8,9 +8,11 @@ import java.util.Random;
 public class SimplexNoise extends Noise {
     private static int[][] gradients;
     private int[] permutations;
-    public double xOffset;
-    public double yOffset;
-    public double zOffset;
+    
+    public double xOrigin;
+    public double yOrigin;
+    public double zOrigin;
+    
     private static final double UNSKEW_FACTOR_2D;
     private static final double SKEW_FACTOR_2D;
     
@@ -20,17 +22,20 @@ public class SimplexNoise extends Noise {
     
     public SimplexNoise(Random random) {
         this.permutations = new int[512];
-        this.xOffset = random.nextDouble() * 256.0;
-        this.yOffset = random.nextDouble() * 256.0;
-        this.zOffset = random.nextDouble() * 256.0;
+        this.xOrigin = random.nextDouble() * 256.0;
+        this.yOrigin = random.nextDouble() * 256.0;
+        this.zOrigin = random.nextDouble() * 256.0;
+        
         for (int i = 0; i < 256; ++i) {
             this.permutations[i] = i;
         }
+        
         for (int i = 0; i < 256; ++i) {
-            int integer4 = random.nextInt(256 - i) + i;
-            int integer5 = this.permutations[i];
-            this.permutations[i] = this.permutations[integer4];
-            this.permutations[integer4] = integer5;
+            int permNdx = random.nextInt(256 - i) + i;
+            int perm = this.permutations[i];
+            
+            this.permutations[i] = this.permutations[permNdx];
+            this.permutations[permNdx] = perm;
             this.permutations[i + 256] = this.permutations[i];
         }
     }
@@ -47,10 +52,10 @@ public class SimplexNoise extends Noise {
         int ndx = 0;
         
         for (int sX = 0; sX < sizeX; ++sX) {
-            double curX = (x + sX) * scaleX + this.xOffset;
+            double curX = (x + sX) * scaleX + this.xOrigin;
             
             for (int sY = 0; sY < sizeY; ++sY) {
-                double curY = (y + sY) * scaleY + this.yOffset;
+                double curY = (y + sY) * scaleY + this.yOrigin;
                 
                 double s = (curX + curY) * SimplexNoise.SKEW_FACTOR_2D;
                 int i = fastFloor(curX + s);
@@ -121,8 +126,8 @@ public class SimplexNoise extends Noise {
     }
     
     public double sample(double x, double y, double scaleX, double scaleY) {
-        x = x * scaleX + this.xOffset;
-        y = y * scaleY + this.yOffset;
+        x = x * scaleX + this.xOrigin;
+        y = y * scaleY + this.yOrigin;
         
         double s = (x + y) * SimplexNoise.SKEW_FACTOR_2D;
         int i = fastFloor(x + s);

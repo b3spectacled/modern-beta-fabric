@@ -10,9 +10,9 @@ public class PerlinNoise extends Noise {
 
     private int permutations[]; 
     
-    public double xOffset;
-    public double yOffset;
-    public double zOffset;
+    public double xOrigin;
+    public double yOrigin;
+    public double zOrigin;
 
     public PerlinNoise() {
         this(new Random(), false); 
@@ -22,12 +22,12 @@ public class PerlinNoise extends Noise {
         // Generate permutation array
         this.permutations = new int[512];
 
-        this.xOffset = this.yOffset = this.zOffset = 0;
+        this.xOrigin = this.yOrigin = this.zOrigin = 0;
         
         if (useOffset) {
-            this.xOffset = random.nextDouble() * 256D;
-            this.yOffset = random.nextDouble() * 256D;
-            this.zOffset = random.nextDouble() * 256D; 
+            this.xOrigin = random.nextDouble() * 256D;
+            this.yOrigin = random.nextDouble() * 256D;
+            this.zOrigin = random.nextDouble() * 256D; 
         } 
         
         for (int i = 0; i < 256; i++) {
@@ -95,14 +95,18 @@ public class PerlinNoise extends Noise {
         return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
     }
     
+    private int getGradient(int hash) {
+        return this.permutations[hash & 0xFF] & 0xFF;
+    }
+    
     public double sample(double x, double y) {
         return this.sample(x, y, 0.0);
     }
 
     public double sample(double x, double y, double z) {
-        x += this.xOffset;
-        y += this.yOffset;
-        z += this.zOffset;
+        x += this.xOrigin;
+        y += this.yOrigin;
+        z += this.zOrigin;
         
         int floorX = MathHelper.floor(x);
         int floorY = MathHelper.floor(y);
@@ -175,7 +179,7 @@ public class PerlinNoise extends Noise {
         // Iterate over a collection of noise points
         for (int sX = 0; sX < sizeX; sX++) {
             
-            double curX = (x + (double)sX) * scaleX + this.xOffset;
+            double curX = (x + (double)sX) * scaleX + this.xOrigin;
             int floorX = MathHelper.floor(curX);
             
             int X = floorX & 0xFF;
@@ -185,7 +189,7 @@ public class PerlinNoise extends Noise {
             
             for (int sZ = 0; sZ < sizeZ; sZ++) {
                 
-                double curZ = (z + (double)sZ) * scaleZ + this.zOffset;
+                double curZ = (z + (double)sZ) * scaleZ + this.zOrigin;
                 int floorZ = MathHelper.floor(curZ);
                 
                 int Z = floorZ & 0xFF;
@@ -195,7 +199,7 @@ public class PerlinNoise extends Noise {
                 
                 for (int sY = 0; sY < sizeY; sY++) {
                     
-                    double curY = (y + (double) sY) * scaleY + this.yOffset;
+                    double curY = (y + (double) sY) * scaleY + this.yOrigin;
                     int floorY = MathHelper.floor(curY);
                     
                     int Y = floorY & 0xFF;
@@ -253,7 +257,7 @@ public class PerlinNoise extends Noise {
         frequency = 1.0D / frequency;
         
         for (int sX = 0; sX < sizeX; sX++) {
-            double curX = (x + (double)sX) * scaleX + this.xOffset;
+            double curX = (x + (double)sX) * scaleX + this.xOrigin;
             int floorX = MathHelper.floor(curX);
             
             int X = floorX & 0xFF;
@@ -262,7 +266,7 @@ public class PerlinNoise extends Noise {
             double u = fade(curX);
             
             for (int sZ = 0; sZ < sizeZ; sZ++) {
-                double curZ = (z + (double) sZ) * scaleZ + this.zOffset;
+                double curZ = (z + (double) sZ) * scaleZ + this.zOrigin;
                 int floorZ = MathHelper.floor(curZ);
                 
                 int Z = floorZ & 0xFF;
@@ -292,11 +296,11 @@ public class PerlinNoise extends Noise {
         }
     }
     
-    public double sample(double x, double z, double scaleX, double scaleZ, double frequency) {
+    public double sample2D(double x, double z, double frequency) {
         frequency = 1.0D / frequency;
         
-        x = x * scaleX + this.xOffset;
-        z = z * scaleZ + this.zOffset;
+        x = x + this.xOrigin;
+        z = z + this.zOrigin;
         
         int floorX = MathHelper.floor(x);
         int floorZ = MathHelper.floor(z);
@@ -331,5 +335,68 @@ public class PerlinNoise extends Noise {
         double res = lerp(w, lerp0, lerp1);
         
         return res * frequency;
+    }
+    
+    /*
+     * From vanilla PerlinNoiseSampler.
+     */
+    public double sample3D(double x, double y, double z, double yScale, double yMax) {
+        x += this.xOrigin;
+        y += this.yOrigin;
+        z += this.zOrigin;
+        
+        int floorX = MathHelper.floor(x);
+        int floorY = MathHelper.floor(y);
+        int floorZ = MathHelper.floor(z);
+        
+        x -= floorX;
+        y -= floorY;
+        z -= floorZ;
+        
+        double yOffset = 0.0;
+        if (yScale != 0.0) {
+            if (yMax >= 0.0 && yMax < y) {
+                yOffset = yMax;
+            } else {
+                yOffset = y;
+            }
+            
+            yOffset = MathHelper.floor(yOffset / yScale + 1.0000000116860974E-7) * yScale;
+        } else {
+            yOffset = 0.0;
+        }
+        
+        return this.sample3D(floorX, floorY, floorZ, x, y - yOffset, z, y);
+    }
+    
+    /*
+     * From vanilla PerlinNoiseSampler.
+     */
+    private double sample3D(int floorX, int floorY, int floorZ, double localX, double localYOffset, double localZ, double localY) {
+        int vec0 = this.getGradient(floorX);
+        int vec1 = this.getGradient(floorX + 1);
+        int vec2 = this.getGradient(vec0 + floorY);
+        int vec3 = this.getGradient(vec0 + floorY + 1);
+        int vec4 = this.getGradient(vec1 + floorY);
+        int vec5 = this.getGradient(vec1 + floorY + 1);
+        
+        // Calculate dot of hashed gradient vector against 8 location vectors.
+        double grad0 = grad(this.getGradient(vec2 + floorZ), localX, localYOffset, localZ);
+        double grad1 = grad(this.getGradient(vec4 + floorZ), localX - 1.0, localYOffset, localZ);
+        
+        double grad2 = grad(this.getGradient(vec3 + floorZ), localX, localYOffset - 1.0, localZ);
+        double grad3 = grad(this.getGradient(vec5 + floorZ), localX - 1.0, localYOffset - 1.0, localZ);
+        
+        double grad4 = grad(this.getGradient(vec2 + floorZ + 1), localX, localYOffset, localZ - 1.0);
+        double grad5 = grad(this.getGradient(vec4 + floorZ + 1), localX - 1.0, localYOffset, localZ - 1.0);
+        
+        double grad6 = grad(this.getGradient(vec3 + floorZ + 1), localX, localYOffset - 1.0, localZ - 1.0);
+        double grad7 = grad(this.getGradient(vec5 + floorZ + 1), localX - 1.0, localYOffset - 1.0, localZ - 1.0);
+        
+        double u = fade(localX);
+        double v = fade(localY);
+        double w = fade(localZ);
+        
+        return MathHelper.lerp3(u, v, w, grad0, grad1, grad2, grad3, grad4, grad5, grad6, grad7);
     }
 }

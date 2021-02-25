@@ -54,6 +54,9 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
             DefaultFeatureConfig config, 
             HeightLimitView heightLimitView
         ) {
+            // Should only generate in Beta worlds
+            if (!(chunkGenerator instanceof OldChunkGenerator)) return;
+            
             int x = ChunkSectionPos.getBlockCoord(chunkX);
             int z = ChunkSectionPos.getBlockCoord(chunkZ);
             int y = chunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, heightLimitView);

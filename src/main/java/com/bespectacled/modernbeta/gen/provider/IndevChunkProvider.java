@@ -469,7 +469,6 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                         if (someBlock == Blocks.STONE) {
                             blockArr[x][y][z] = fillBlock;
                         }
-                        
                     }
                 }
             }

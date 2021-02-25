@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.gen.provider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseNew;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.DoubleArrayPool;
 
@@ -30,16 +29,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    private final PerlinOctaveNoiseNew minLimitNoiseOctavesNew;
-    private final PerlinOctaveNoiseNew maxLimitNoiseOctavesNew;
-    private final PerlinOctaveNoiseNew mainNoiseOctavesNew;
-    private final PerlinOctaveNoiseNew beachNoiseOctavesNew;
-    private final PerlinOctaveNoiseNew stoneNoiseOctavesNew;
-    private final PerlinOctaveNoiseNew scaleNoiseOctavesNew;
-    private final PerlinOctaveNoiseNew depthNoiseOctavesNew;
-    
     private final DoubleArrayPool twoDNoisePool;
-    private final DoubleArrayPool threeDNoisePool;
     private final DoubleArrayPool heightNoisePool;
     private final DoubleArrayPool beachNoisePool;
     
@@ -48,28 +38,17 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, false, false, true, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
-        minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
-        beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
-        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
-        scaleNoiseOctaves = new PerlinOctaveNoise(RAND, 10, true);
-        depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
-        
-        // Alternate Noise Generators
-        ChunkRandom worldGenRand = new ChunkRandom(seed);
-        minLimitNoiseOctavesNew = new PerlinOctaveNoiseNew(worldGenRand, 16);
-        maxLimitNoiseOctavesNew = new PerlinOctaveNoiseNew(worldGenRand, 16);
-        mainNoiseOctavesNew = new PerlinOctaveNoiseNew(worldGenRand, 8);
-        beachNoiseOctavesNew = new PerlinOctaveNoiseNew(worldGenRand, 4);
-        stoneNoiseOctavesNew = new PerlinOctaveNoiseNew(worldGenRand, 4);
-        scaleNoiseOctavesNew = new PerlinOctaveNoiseNew(worldGenRand, 10);
-        depthNoiseOctavesNew = new PerlinOctaveNoiseNew(worldGenRand, 16);
+        this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        this.mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        this.beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
+        this.stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
+        this.scaleNoiseOctaves = new PerlinOctaveNoise(RAND, 10, true);
+        this.depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        this.forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
         
         // Noise array pools
         this.twoDNoisePool = new DoubleArrayPool(64, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1));
-        this.threeDNoisePool = new DoubleArrayPool(64, (this.noisePosY + 1) * (this.noiseSizeX + 1) * (this.noiseSizeZ + 1));
         this.heightNoisePool = new DoubleArrayPool(64, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1));
         this.beachNoisePool = new DoubleArrayPool(64, 16 * 16);
 
@@ -77,7 +56,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     }
 
     @Override
-    public synchronized Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         generateTerrain(chunk, structureAccessor);
         return chunk;
     }
@@ -247,25 +226,25 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                 int noiseX = chunkX * this.noiseSizeX + subChunkX;
                 int noiseZ = chunkZ * this.noiseSizeZ + subChunkZ;
                 
-                double scale0 = scaleNoise[subChunkZ * (this.noiseSizeX + 1) + subChunkX];
-                double depth0 = depthNoise[subChunkZ * (this.noiseSizeX + 1) + subChunkX];
+                double scaleNW = scaleNoise[subChunkZ * (this.noiseSizeX + 1) + subChunkX];
+                double depthNW = depthNoise[subChunkZ * (this.noiseSizeX + 1) + subChunkX];
 
-                double scale1 = scaleNoise[(subChunkZ + 1) * (this.noiseSizeX + 1) + subChunkX];
-                double depth1 = depthNoise[(subChunkZ + 1) * (this.noiseSizeX + 1) + subChunkX];
+                double scaleSW = scaleNoise[(subChunkZ + 1) * (this.noiseSizeX + 1) + subChunkX];
+                double depthSW = depthNoise[(subChunkZ + 1) * (this.noiseSizeX + 1) + subChunkX];
                 
-                double scale2 = scaleNoise[subChunkZ * (this.noiseSizeX + 1) + (subChunkX + 1)];
-                double depth2 = depthNoise[subChunkZ * (this.noiseSizeX + 1) + (subChunkX + 1)];
+                double scaleNE = scaleNoise[subChunkZ * (this.noiseSizeX + 1) + (subChunkX + 1)];
+                double depthNE = depthNoise[subChunkZ * (this.noiseSizeX + 1) + (subChunkX + 1)];
                 
-                double scale3 = scaleNoise[(subChunkZ + 1) * (this.noiseSizeX + 1) + (subChunkX + 1)];
-                double depth3 = depthNoise[(subChunkZ + 1) * (this.noiseSizeX + 1) + (subChunkX + 1)];
-                
+                double scaleSE = scaleNoise[(subChunkZ + 1) * (this.noiseSizeX + 1) + (subChunkX + 1)];
+                double depthSE = depthNoise[(subChunkZ + 1) * (this.noiseSizeX + 1) + (subChunkX + 1)];
+
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY + 1; subChunkY++) {
                     int offsetY = subChunkY + this.noiseMinY;
                     
-                    heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX, offsetY, noiseZ, scale0, depth0);
-                    heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX, offsetY, noiseZ + 1, scale1, depth1);
-                    heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX + 1, offsetY, noiseZ, scale2, depth2);
-                    heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX + 1, offsetY, noiseZ + 1, scale3, depth3);
+                    heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX, offsetY, noiseZ, scaleNW, depthNW);
+                    heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX, offsetY, noiseZ + 1, scaleSW, depthSW);
+                    heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX + 1, offsetY, noiseZ, scaleNE, depthNE);
+                    heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX + 1, offsetY, noiseZ + 1, scaleSE, depthSE);    
                 }
                 
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; subChunkY++) {
@@ -359,14 +338,14 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         //double baseSize = noiseResolutionY / 2D; // Or: 17 / 2D = 8.5
         double baseSize = 8.5D;
         
-        double scale = this.scaleNoiseOctavesNew.sample(noiseX, 0, noiseZ, 1.0D, 0.0D, 1.0D);
+        double scale = this.scaleNoiseOctaves.sample(noiseX, 0, noiseZ, 1.0D, 0.0D, 1.0D);
         scale = (scale + 256D) / 512D;
         
         if (scale > 1.0D) {
             scale = 1.0D; 
         }
 
-        double depth0 = this.depthNoiseOctavesNew.sample(noiseX, 0, noiseZ, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
+        double depth0 = this.depthNoiseOctaves.sample(noiseX, 0, noiseZ, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
         depth0 /= 8000D;
         
         if (depth0 < 0.0D) {
@@ -427,14 +406,20 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         }
         
         // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
-        double mainNoise = (this.mainNoiseOctavesNew.sample(x, y, z, coordinateScale / mainNoiseScaleX, heightScale / mainNoiseScaleY, coordinateScale / mainNoiseScaleZ) / 10D + 1.0D) / 2D;
+        double mainNoise = (this.mainNoiseOctaves.sample(
+            x, y, z, 
+            coordinateScale / mainNoiseScaleX, 
+            heightScale / mainNoiseScaleY, 
+            coordinateScale / mainNoiseScaleZ
+        ) / 10D + 1.0D) / 2D;
+        
         if (mainNoise < 0.0D) {
-            density = this.minLimitNoiseOctavesNew.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
+            density = this.minLimitNoiseOctaves.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
         } else if (mainNoise > 1.0D) {
-            density = this.maxLimitNoiseOctavesNew.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
+            density = this.maxLimitNoiseOctaves.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
         } else {
-            double minLimitNoise = this.minLimitNoiseOctavesNew.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
-            double maxLimitNoise = this.maxLimitNoiseOctavesNew.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
+            double minLimitNoise = this.minLimitNoiseOctaves.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
+            double maxLimitNoise = this.maxLimitNoiseOctaves.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
             density = minLimitNoise + (maxLimitNoise - minLimitNoise) * mainNoise;
         }
         
@@ -442,7 +427,13 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         double densityWithOffset = density - densityOffset; 
         
         // Sample for noise caves
-        densityWithOffset = this.sampleNoiseCave(x * this.horizontalNoiseResolution, y * this.verticalNoiseResolution, z * this.horizontalNoiseResolution, density, densityWithOffset);
+        densityWithOffset = this.sampleNoiseCave(
+            x * this.horizontalNoiseResolution, 
+            y * this.verticalNoiseResolution, 
+            z * this.horizontalNoiseResolution, 
+            density, 
+            densityWithOffset
+        );
         
         int slideOffset = 4;
         if (y > noiseResolutionY - slideOffset) {

@@ -1,43 +1,62 @@
 package com.bespectacled.modernbeta.gen;
 
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.gen.provider.AbstractChunkProvider;
-import com.bespectacled.modernbeta.gen.provider.AlphaChunkProvider;
-import com.bespectacled.modernbeta.gen.provider.BetaChunkProvider;
-import com.bespectacled.modernbeta.gen.provider.FlatChunkProvider;
-import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
-import com.bespectacled.modernbeta.gen.provider.InfdevChunkProvider;
-import com.bespectacled.modernbeta.gen.provider.InfdevOldChunkProvider;
-import com.bespectacled.modernbeta.gen.provider.NetherChunkProvider;
-import com.bespectacled.modernbeta.gen.provider.SkylandsChunkProvider;
+import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.gen.provider.*;
+import com.bespectacled.modernbeta.gui.*;
+import com.bespectacled.modernbeta.util.TriFunction;
 
+import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.CompoundTag;
 
 public enum WorldType {
-    BETA("beta", BetaChunkProvider::new),
-    SKYLANDS("skylands", SkylandsChunkProvider::new),
-    ALPHA("alpha", AlphaChunkProvider::new),
-    INFDEV("infdev", InfdevChunkProvider::new),
-    INFDEV_OLD("infdev_old", InfdevOldChunkProvider::new),
-    INDEV("indev", IndevChunkProvider::new),
-    FLAT("flat", FlatChunkProvider::new),
-    NETHER("nether", NetherChunkProvider::new);
+    BETA("beta", true, BiomeType.BETA, BetaChunkProvider::new, InfCustomizeLevelScreen::new),
+    SKYLANDS("skylands", false, BiomeType.SKY, SkylandsChunkProvider::new, InfCustomizeLevelScreen::new),
+    ALPHA("alpha", true, BiomeType.CLASSIC, AlphaChunkProvider::new, InfCustomizeLevelScreen::new),
+    INFDEV("infdev", true, BiomeType.CLASSIC, InfdevChunkProvider::new, InfCustomizeLevelScreen::new),
+    INFDEV_OLD("infdev_old", true, BiomeType.CLASSIC, InfdevOldChunkProvider::new, InfdevOldCustomizeLevelScreen::new),
+    INDEV("indev", false, null, IndevChunkProvider::new, IndevCustomizeLevelScreen::new);
     
     private final String name;
+    private final boolean hasOceans;
+    private final BiomeType defaultBiomeType;
     private final BiFunction<Long, OldGeneratorSettings, AbstractChunkProvider> chunkProvider;
+    private final TriFunction<CreateWorldScreen, CompoundTag, Consumer<CompoundTag>, AbstractCustomizeLevelScreen> customizeScreen;
     
-    private WorldType(String name, BiFunction<Long, OldGeneratorSettings, AbstractChunkProvider> chunkProvider) {
+    private WorldType(
+        String name,
+        boolean hasOceans,
+        BiomeType defaultBiomeType, 
+        BiFunction<Long, OldGeneratorSettings, AbstractChunkProvider> chunkProvider, 
+        TriFunction<CreateWorldScreen, CompoundTag, Consumer<CompoundTag>, AbstractCustomizeLevelScreen> customizeScreen
+    ) {
         this.name = name;
+        this.hasOceans = hasOceans;
+        this.defaultBiomeType = defaultBiomeType;
         this.chunkProvider = chunkProvider;
+        this.customizeScreen = customizeScreen;
     }
     
     public String getName() {
         return this.name;
     }
     
+    public boolean hasOceans() {
+        return this.hasOceans;
+    }
+    
+    public BiomeType getDefaultBiomeType() {
+        return this.defaultBiomeType;
+    }
+    
     public AbstractChunkProvider createChunkProvider(long seed, OldGeneratorSettings settings) {
         return this.chunkProvider.apply(seed, settings);
+    }
+    
+    public AbstractCustomizeLevelScreen createLevelScreen(CreateWorldScreen parent, CompoundTag providerSettings, Consumer<CompoundTag> consumer) {
+        return this.customizeScreen.apply(parent, providerSettings, consumer);
     }
     
     public static WorldType fromName(String name) {

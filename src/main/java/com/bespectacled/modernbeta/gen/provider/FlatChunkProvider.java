@@ -17,7 +17,7 @@ public class FlatChunkProvider extends AbstractChunkProvider {
     
     public FlatChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, true, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
         new PerlinOctaveNoise(RAND, 16, true);
@@ -50,12 +50,12 @@ public class FlatChunkProvider extends AbstractChunkProvider {
                 BlockState topBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState fillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
                 
-                for (int y = 0; y <= this.seaLevel; ++y) {
+                for (int y = this.minY; y <= this.seaLevel; ++y) {
                     if (y == this.seaLevel) 
                         blockToSet = topBlock;
                     else if (y >= this.seaLevel - 2) 
                         blockToSet = fillerBlock;
-                    else if (y >= 1) 
+                    else if (y >= this.minY + 1) 
                         blockToSet = BlockStates.STONE;
                     else 
                         blockToSet = BlockStates.BEDROCK;

@@ -17,7 +17,8 @@
     "client.MixinWorldRenderer",
     "client.MixinBackgroundRenderer",
     "client.MixinGeneratorTypeAccessor",
-    "client.MixinInGameHud"
+    "client.MixinInGameHud",
+    "client.MixinMoreOptionsDialogInvoker"
   ],
   "injectors": {
     "defaultRequire": 1

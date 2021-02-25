@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.gen.provider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseNew;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.DoubleArrayPool;
 
@@ -25,11 +24,6 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise stoneNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    private final PerlinOctaveNoiseNew minLimitNoiseOctavesNew;
-    private final PerlinOctaveNoiseNew maxLimitNoiseOctavesNew;
-    private final PerlinOctaveNoiseNew mainNoiseOctavesNew;
-    private final PerlinOctaveNoiseNew stoneNoiseOctavesNew;
-    
     private final DoubleArrayPool heightNoisePool;
     private final DoubleArrayPool beachNoisePool;
     
@@ -38,24 +32,14 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         super(seed, 0, 128, 64, 0, -10, 1, 2, 1.0, 1.0, 80, 160, false, false, false, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
-        minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
+        this.mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
         new PerlinOctaveNoise(RAND, 4, true);
-        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
+        this.stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
         new PerlinOctaveNoise(RAND, 10, true);
         new PerlinOctaveNoise(RAND, 16, true);
-        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
-        
-        // Alternate Noise Generators
-        ChunkRandom worldGenRand = new ChunkRandom(seed);
-        minLimitNoiseOctavesNew = new PerlinOctaveNoiseNew(worldGenRand, 16);
-        maxLimitNoiseOctavesNew = new PerlinOctaveNoiseNew(worldGenRand, 16);
-        mainNoiseOctavesNew = new PerlinOctaveNoiseNew(worldGenRand, 8);
-        new PerlinOctaveNoiseNew(worldGenRand, 4);
-        stoneNoiseOctavesNew = new PerlinOctaveNoiseNew(worldGenRand, 4);
-        new PerlinOctaveNoiseNew(worldGenRand, 10);
-        new PerlinOctaveNoiseNew(worldGenRand, 16);
+        this.forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
         
         // Noise array pools
         this.heightNoisePool = new DoubleArrayPool(64, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1));
@@ -272,14 +256,20 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         double densityOffset = 8D;
         
         // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
-        double mainNoise = (this.mainNoiseOctavesNew.sample(x, y, z, coordinateScale / mainNoiseScaleX, heightScale / mainNoiseScaleY, coordinateScale / mainNoiseScaleZ) / 10D + 1.0D) / 2D;
+        double mainNoise = (this.mainNoiseOctaves.sample(
+            x, y, z, 
+            coordinateScale / mainNoiseScaleX, 
+            heightScale / mainNoiseScaleY, 
+            coordinateScale / mainNoiseScaleZ
+        ) / 10D + 1.0D) / 2D;
+        
         if (mainNoise < 0.0D) {
-            density = this.minLimitNoiseOctavesNew.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
+            density = this.minLimitNoiseOctaves.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
         } else if (mainNoise > 1.0D) {
-            density = this.maxLimitNoiseOctavesNew.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
+            density = this.maxLimitNoiseOctaves.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
         } else {
-            double minLimitNoise = this.minLimitNoiseOctavesNew.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
-            double maxLimitNoise = this.maxLimitNoiseOctavesNew.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
+            double minLimitNoise = this.minLimitNoiseOctaves.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
+            double maxLimitNoise = this.maxLimitNoiseOctaves.sample(x, y, z, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
             density = minLimitNoise + (maxLimitNoise - minLimitNoise) * mainNoise;
         }
         
@@ -287,7 +277,13 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         double densityWithOffset = density - densityOffset; 
         
         // Sample for noise caves
-        densityWithOffset = this.sampleNoiseCave(x * this.horizontalNoiseResolution, y * this.verticalNoiseResolution, z * this.horizontalNoiseResolution, density, densityWithOffset);
+        densityWithOffset = this.sampleNoiseCave(
+            x * this.horizontalNoiseResolution, 
+            y * this.verticalNoiseResolution, 
+            z * this.horizontalNoiseResolution, 
+            density, 
+            densityWithOffset
+        );
         
         //int slideOffset = 32;
         int slideOffset = this.noiseSizeY;
