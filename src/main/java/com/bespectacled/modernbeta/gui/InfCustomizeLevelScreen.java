@@ -16,6 +16,7 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     private boolean generateOceans;
     private boolean generateNoiseCaves;
     private boolean generateAquifers;
+    private boolean generateDeepslate;
     
     private final boolean showOceansOption;
     
@@ -26,13 +27,14 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         this.biomeType = this.worldType.getDefaultBiomeType();
         
         this.generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
-        this.generateNoiseCaves = false;
-        this.generateAquifers = false;
+        this.generateNoiseCaves = true; // TODO: Add configuration options later
+        this.generateAquifers = true;
+        this.generateDeepslate = true;
         
         this.providerSettings.putString("biomeType", this.biomeType.getName());
         this.providerSettings.putBoolean("generateOceans", this.generateOceans);
         
-        consumer.accept(this.providerSettings);
+        this.consumer.accept(this.providerSettings);
     }
     
     @Override
@@ -49,7 +51,7 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     this.biomeType = value;
                     this.providerSettings.putString("biomeType", this.biomeType.getName());
                     
-                    consumer.accept(this.providerSettings);
+                    this.consumer.accept(this.providerSettings);
                 })
         );
             
@@ -62,7 +64,7 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     this.generateOceans = value;
                     this.providerSettings.putBoolean("generateOceans", this.generateOceans);
                     
-                    consumer.accept(this.providerSettings);
+                    this.consumer.accept(this.providerSettings);
             }));
         }
         

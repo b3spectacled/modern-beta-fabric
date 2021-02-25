@@ -63,11 +63,16 @@ public class MixinGeneratorOptions {
             }
 
             // get other misc data
-            Registry<DimensionType> dimensions = dynamicRegistryManager.get(Registry.DIMENSION_TYPE_KEY);
-            Registry<Biome> biomes = dynamicRegistryManager.get(Registry.BIOME_KEY);
-            Registry<ChunkGeneratorSettings> chunkgens = dynamicRegistryManager.get(Registry.NOISE_SETTINGS_WORLDGEN);
-            SimpleRegistry<DimensionOptions> dimensionOptions = DimensionType.createDefaultDimensionOptions(dimensions,
-                    biomes, chunkgens, seed);
+            Registry<DimensionType> registryDimensionType = dynamicRegistryManager.get(Registry.DIMENSION_TYPE_KEY);
+            Registry<ChunkGeneratorSettings> registryChunkGenSettings = dynamicRegistryManager.get(Registry.NOISE_SETTINGS_WORLDGEN);
+            Registry<Biome> registryBiome = dynamicRegistryManager.get(Registry.BIOME_KEY);
+            
+            SimpleRegistry<DimensionOptions> dimensionOptions = DimensionType.createDefaultDimensionOptions(
+                registryDimensionType,
+                registryBiome, 
+                registryChunkGenSettings, 
+                seed
+            );
 
             String generate_structures = (String) properties.get("generate-structures");
             boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
@@ -80,12 +85,12 @@ public class MixinGeneratorOptions {
             
             CompoundTag providerSettings = isIndev ? OldGeneratorSettings.createIndevSettings() : OldGeneratorSettings.createInfSettings(worldType, biomeType, genOceans);
             
-            OldGeneratorSettings settings = new OldGeneratorSettings(OldGeneratorSettings.getChunkGeneratorSettings(worldType), providerSettings);
-            ChunkGenerator generator = new OldChunkGenerator(new OldBiomeSource(seed, biomes, settings.providerSettings), seed, settings);
+            OldGeneratorSettings settings = new OldGeneratorSettings(registryChunkGenSettings.get(ModernBeta.createId(worldType.getName())), providerSettings);
+            ChunkGenerator generator = new OldChunkGenerator(new OldBiomeSource(seed, registryBiome, settings.providerSettings), seed, settings);
 
             // return our chunk generator
             cir.setReturnValue(new GeneratorOptions(seed, generateStructures, false,
-                    GeneratorOptions.method_28608(dimensions, dimensionOptions, generator)));
+                    GeneratorOptions.method_28608(registryDimensionType, dimensionOptions, generator)));
         }
     }
 }

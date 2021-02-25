@@ -19,7 +19,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 
-public class InfdevOldChunkProvider extends AbstractChunkProvider {
+public class Infdev227ChunkProvider extends AbstractChunkProvider {
     private boolean generateInfdevPyramid = true;
     private boolean generateInfdevWall = true;
 
@@ -31,7 +31,7 @@ public class InfdevOldChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise noiseOctavesF;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    public InfdevOldChunkProvider(long seed, OldGeneratorSettings settings) {
+    public Infdev227ChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
         super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, false, BlockStates.STONE, BlockStates.WATER, settings);
         

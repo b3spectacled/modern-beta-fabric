@@ -55,9 +55,9 @@ public class ClassicBiomes {
         switch(worldType) {
             case ALPHA:
                 return ALPHA_BIOMES;
-            case INFDEV:
+            case INFDEV_415:
                 return INFDEV_BIOMES;
-            case INFDEV_OLD:
+            case INFDEV_227:
                 return INFDEV_OLD_BIOMES;
             default:
                 return ALPHA_BIOMES;

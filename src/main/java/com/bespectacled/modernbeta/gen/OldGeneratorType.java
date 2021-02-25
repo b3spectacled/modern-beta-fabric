@@ -34,31 +34,31 @@ public class OldGeneratorType {
     }
     
     private static GeneratorOptions createNewGeneratorOptions(
-            DynamicRegistryManager registryManager, 
-            GeneratorOptions generatorOptions,
-            CompoundTag providerSettings
-        ) {
-            WorldType worldType = WorldType.fromName(providerSettings.getString("worldType"));
-        
-            Registry<DimensionType> registryDimensionType = registryManager.<DimensionType>get(Registry.DIMENSION_TYPE_KEY);
-            Registry<ChunkGeneratorSettings> registryChunkGenSettings = registryManager.<ChunkGeneratorSettings>get(Registry.NOISE_SETTINGS_WORLDGEN);
-            Registry<Biome> registryBiome = registryManager.<Biome>get(Registry.BIOME_KEY); 
-            Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = () -> registryChunkGenSettings.get(ModernBeta.createId(worldType.getName()));
-            
-            OldBiomeSource biomeSource = new OldBiomeSource(generatorOptions.getSeed(), registryBiome, providerSettings);
-            OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(chunkGenSettingsSupplier.get(), providerSettings);
-            
-            return new GeneratorOptions(
-                generatorOptions.getSeed(),
-                generatorOptions.shouldGenerateStructures(),
-                generatorOptions.hasBonusChest(),
-                GeneratorOptions.method_28608(
-                    registryDimensionType, 
-                    generatorOptions.getDimensions(), 
-                    new OldChunkGenerator(biomeSource, generatorOptions.getSeed(), oldGeneratorSettings))
-            );
-        }
+        DynamicRegistryManager registryManager, 
+        GeneratorOptions generatorOptions,
+        CompoundTag providerSettings
+    ) {
+        WorldType worldType = WorldType.fromName(providerSettings.getString("worldType"));
     
+        Registry<DimensionType> registryDimensionType = registryManager.<DimensionType>get(Registry.DIMENSION_TYPE_KEY);
+        Registry<ChunkGeneratorSettings> registryChunkGenSettings = registryManager.<ChunkGeneratorSettings>get(Registry.NOISE_SETTINGS_WORLDGEN);
+        Registry<Biome> registryBiome = registryManager.<Biome>get(Registry.BIOME_KEY); 
+        Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = () -> registryChunkGenSettings.get(ModernBeta.createId(worldType.getName()));
+        
+        OldBiomeSource biomeSource = new OldBiomeSource(generatorOptions.getSeed(), registryBiome, providerSettings);
+        OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(chunkGenSettingsSupplier.get(), providerSettings);
+        
+        return new GeneratorOptions(
+            generatorOptions.getSeed(),
+            generatorOptions.shouldGenerateStructures(),
+            generatorOptions.hasBonusChest(),
+            GeneratorOptions.method_28608(
+                registryDimensionType, 
+                generatorOptions.getDimensions(), 
+                new OldChunkGenerator(biomeSource, generatorOptions.getSeed(), oldGeneratorSettings))
+        );
+    }
+
     static {
         OLD = new GeneratorType("old") {
             @Override

@@ -25,7 +25,7 @@ import net.minecraft.world.gen.StructureWeightSampler;
  * @author Paulevs
  *
  */
-public class InfdevChunkProvider extends AbstractChunkProvider {
+public class Infdev415ChunkProvider extends AbstractChunkProvider {
     
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
@@ -36,9 +36,9 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
     
     private final DoubleArrayPool heightNoisePool;
     
-    public InfdevChunkProvider(long seed, OldGeneratorSettings settings) {
+    public Infdev415ChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, -64, 192, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 160, true, true, false, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, -64, 192, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 400, true, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
         minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -286,10 +286,19 @@ public class InfdevChunkProvider extends AbstractChunkProvider {
         double coordinateScale = 684.412D * this.xzScale; 
         double heightScale = 984.412D * this.yScale;
         
+        double mainNoiseScaleX = this.xzFactor; // Default: 80
+        double mainNoiseScaleY = this.yFactor;  // Default: 400
+        double mainNoiseScaleZ = this.xzFactor;
+        
         double limitScale = 512.0D;
         
         double heightVal;
-        double mainNoiseVal = this.mainNoiseOctaves.sample(x * 8.55515, y * 1.71103, z * 8.55515) / 2.0;
+        
+        // Default values: 8.55515, 1.71103, 8.55515
+        double mainNoiseVal = this.mainNoiseOctaves.sample(
+            x * coordinateScale / mainNoiseScaleX, 
+            y * coordinateScale / mainNoiseScaleY, 
+            z * coordinateScale / mainNoiseScaleZ) / 2.0;
         
         if (mainNoiseVal < -1) { // Lower limit(?)
             heightVal = MathHelper.clamp(

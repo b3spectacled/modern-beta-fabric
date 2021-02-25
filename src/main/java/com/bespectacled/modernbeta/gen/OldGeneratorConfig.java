@@ -37,7 +37,7 @@ public class OldGeneratorConfig {
         BETA_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
         ALPHA_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
         SKYLANDS_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
-        INFDEV_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
+        INFDEV_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 400.0);
         NETHER_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 3.0, 80.0, 60.0);
         
         BETA_SHAPE_CONFIG = GenerationShapeConfig.create(

@@ -29,13 +29,12 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    private final DoubleArrayPool twoDNoisePool;
     private final DoubleArrayPool heightNoisePool;
     private final DoubleArrayPool beachNoisePool;
     
     public AlphaChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, false, false, true, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -48,7 +47,6 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         this.forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
         
         // Noise array pools
-        this.twoDNoisePool = new DoubleArrayPool(64, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1));
         this.heightNoisePool = new DoubleArrayPool(64, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1));
         this.beachNoisePool = new DoubleArrayPool(64, 16 * 16);
 
@@ -216,38 +214,12 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         double[] heightNoise = this.heightNoisePool.borrowArr();
-        double[] scaleNoise = this.twoDNoisePool.borrowArr();
-        double[] depthNoise = this.twoDNoisePool.borrowArr();
-        
-        this.generateScaleDepthArr(chunkX, chunkZ, scaleNoise, depthNoise);
+        this.generateHeightNoiseArr(chunkX * this.noiseSizeX, 0, chunkZ * this.noiseSizeZ, heightNoise);
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
-                int noiseX = chunkX * this.noiseSizeX + subChunkX;
-                int noiseZ = chunkZ * this.noiseSizeZ + subChunkZ;
-                
-                double scaleNW = scaleNoise[subChunkZ * (this.noiseSizeX + 1) + subChunkX];
-                double depthNW = depthNoise[subChunkZ * (this.noiseSizeX + 1) + subChunkX];
-
-                double scaleSW = scaleNoise[(subChunkZ + 1) * (this.noiseSizeX + 1) + subChunkX];
-                double depthSW = depthNoise[(subChunkZ + 1) * (this.noiseSizeX + 1) + subChunkX];
-                
-                double scaleNE = scaleNoise[subChunkZ * (this.noiseSizeX + 1) + (subChunkX + 1)];
-                double depthNE = depthNoise[subChunkZ * (this.noiseSizeX + 1) + (subChunkX + 1)];
-                
-                double scaleSE = scaleNoise[(subChunkZ + 1) * (this.noiseSizeX + 1) + (subChunkX + 1)];
-                double depthSE = depthNoise[(subChunkZ + 1) * (this.noiseSizeX + 1) + (subChunkX + 1)];
-
-                for (int subChunkY = 0; subChunkY < this.noiseSizeY + 1; subChunkY++) {
-                    int offsetY = subChunkY + this.noiseMinY;
-                    
-                    heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX, offsetY, noiseZ, scaleNW, depthNW);
-                    heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX, offsetY, noiseZ + 1, scaleSW, depthSW);
-                    heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX + 1, offsetY, noiseZ, scaleNE, depthNE);
-                    heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX + 1, offsetY, noiseZ + 1, scaleSE, depthSE);    
-                }
-                
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; subChunkY++) {
+                    
                     double lowerNW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerSW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerNE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
@@ -302,30 +274,6 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         }
         
         this.heightNoisePool.returnArr(heightNoise);
-        this.twoDNoisePool.returnArr(scaleNoise);
-        this.twoDNoisePool.returnArr(depthNoise);
-    }
-    
-    private void generateScaleDepthArr(int chunkX, int chunkZ, double[] scaleNoise, double[] depthNoise) {
-        int startNoiseX = chunkX * this.noiseSizeX;
-        int startNoiseZ = chunkZ * this.noiseSizeZ;
-        
-        int noiseResolutionX = this.noiseSizeX + 1;
-        int noiseResolutionZ = this.noiseSizeZ + 1;
-
-        double[] scaleDepth = new double[2];
-        
-        int ndx = 0;
-        for (int noiseZ = 0; noiseZ < noiseResolutionZ; noiseZ++) {
-            for (int noiseX = 0; noiseX < noiseResolutionX; noiseX++) {
-                this.generateScaleDepth(startNoiseX + noiseX, startNoiseZ + noiseZ, scaleDepth);
-                
-                scaleNoise[ndx] = scaleDepth[0];
-                depthNoise[ndx] = scaleDepth[1];
-                
-                ndx++;
-            }
-        }
     }
     
     private void generateScaleDepth(int noiseX, int noiseZ, double[] scaleDepth) {
@@ -380,6 +328,28 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         
         scaleDepth[0] = scale;
         scaleDepth[1] = depth1;
+    }
+    
+    private void generateHeightNoiseArr(int x, int y, int z, double[] heightNoise) {
+        int noiseResolutionX = this.noiseSizeX + 1;
+        int noiseResolutionZ = this.noiseSizeZ + 1;
+        int noiseResolutionY = this.noiseSizeY + 1;
+        
+        double[] scaleDepth = new double[2];
+        
+        int ndx = 0;
+        for (int noiseX = 0; noiseX < noiseResolutionX; ++noiseX) {
+            for (int noiseZ = 0; noiseZ < noiseResolutionZ; ++noiseZ) {
+                
+                this.generateScaleDepth(x + noiseX, z + noiseZ, scaleDepth);
+                
+                for (int noiseY = this.noiseMinY; noiseY < noiseResolutionY + this.noiseMinY; ++noiseY) {
+                    
+                    heightNoise[ndx] = this.generateHeightNoise(x + noiseX, noiseY, z + noiseZ, scaleDepth[0], scaleDepth[1]);
+                    ndx++;
+                }
+            }
+        }
     }
     
     private double generateHeightNoise(int x, int y, int z, double scale, double depth) {

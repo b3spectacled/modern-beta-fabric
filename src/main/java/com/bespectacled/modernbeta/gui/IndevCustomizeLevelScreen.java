@@ -40,7 +40,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         this.providerSettings.putInt("levelHeight", this.levelHeight);
         this.providerSettings.putFloat("caveRadius", this.caveRadius);
         
-        consumer.accept(this.providerSettings);
+        this.consumer.accept(this.providerSettings);
     }
     
     @Override
@@ -57,7 +57,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     this.levelType = value;
                     this.providerSettings.putString("levelType", this.levelType.getName());
                     
-                    consumer.accept(this.providerSettings);
+                    this.consumer.accept(this.providerSettings);
                 })
         );
         
@@ -71,7 +71,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     this.levelTheme = value;
                     this.providerSettings.putString("levelTheme", this.levelTheme.getName());
                     
-                    consumer.accept(this.providerSettings);
+                    this.consumer.accept(this.providerSettings);
                 })
         );
         
@@ -84,7 +84,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     this.levelWidth = value.intValue();
                     this.providerSettings.putInt("levelWidth", this.levelWidth);
                     
-                    consumer.accept(this.providerSettings);
+                    this.consumer.accept(this.providerSettings);
                 },
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
@@ -105,7 +105,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     this.levelLength = value.intValue();
                     this.providerSettings.putInt("levelLength", this.levelLength);
                     
-                    consumer.accept(this.providerSettings);
+                    this.consumer.accept(this.providerSettings);
                 },
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
@@ -126,7 +126,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     this.levelHeight = value.intValue();
                     this.providerSettings.putInt("levelHeight", this.levelHeight);
                     
-                    consumer.accept(this.providerSettings);
+                    this.consumer.accept(this.providerSettings);
                 },
                 (gameOptions, doubleOptions) -> {
                     int seaLevel = this.levelHeight / 2;
@@ -150,7 +150,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     this.caveRadius = value.floatValue();
                     this.providerSettings.putFloat("caveRadius", this.caveRadius);
                     
-                    consumer.accept(this.providerSettings);
+                    this.consumer.accept(this.providerSettings);
                 },
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
