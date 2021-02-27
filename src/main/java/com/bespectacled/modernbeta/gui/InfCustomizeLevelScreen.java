@@ -33,6 +33,12 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         
         this.providerSettings.putString("biomeType", this.biomeType.getName());
         this.providerSettings.putBoolean("generateOceans", this.generateOceans);
+
+        this.providerSettings.putBoolean("generateDeepslate", this.generateDeepslate);
+        if (this.worldType.isDensityBased()) 
+            this.providerSettings.putBoolean("generateNoiseCaves", this.generateNoiseCaves);
+        if (this.worldType.isDensityBased() && this.showOceansOption) 
+            this.providerSettings.putBoolean("generateAquifers", this.generateAquifers);
         
         this.consumer.accept(this.providerSettings);
     }
@@ -68,22 +74,39 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
             }));
         }
         
-        /*
-        buttonList.addSingleOptionEntry(
-            CyclingOption.create("createWorld.customize.inf.generateNoiseCaves", 
-            (gameOptions) -> { return this.generateNoiseCaves; }, 
-            (gameOptions, option, value) -> { // Setter
-                this.generateNoiseCaves = value;
-                //this.generatorSettings.providerSettings.putBoolean("generateOceans", this.generateOceans);
-        }));
+        if (this.worldType.isDensityBased()) {
+            buttonList.addSingleOptionEntry(
+                CyclingOption.create("createWorld.customize.inf.generateNoiseCaves", 
+                (gameOptions) -> { return this.generateNoiseCaves; }, 
+                (gameOptions, option, value) -> { // Setter
+                    this.generateNoiseCaves = value;
+                    this.providerSettings.putBoolean("generateNoiseCaves", this.generateNoiseCaves);
+                    
+                    this.consumer.accept(this.providerSettings);
+            }));
+        }
+        
+        if (this.worldType.isDensityBased() && this.showOceansOption) {
+            buttonList.addSingleOptionEntry(
+                CyclingOption.create("createWorld.customize.inf.generateAquifers", 
+                (gameOptions) -> { return this.generateAquifers; }, 
+                (gameOptions, option, value) -> { // Setter
+                    this.generateAquifers = value;
+                    this.providerSettings.putBoolean("generateAquifers", this.generateAquifers);
+                    
+                    this.consumer.accept(this.providerSettings);
+            }));
+        }
         
         buttonList.addSingleOptionEntry(
-            CyclingOption.create("createWorld.customize.inf.generateAquifers", 
-            (gameOptions) -> { return this.generateAquifers; }, 
+            CyclingOption.create("createWorld.customize.inf.generateDeepslate", 
+            (gameOptions) -> { return this.generateNoiseCaves; }, 
             (gameOptions, option, value) -> { // Setter
-                this.generateAquifers = value;
-                //this.generatorSettings.providerSettings.putBoolean("generateOceans", this.generateOceans);
+                this.generateDeepslate = value;
+                this.providerSettings.putBoolean("generateDeepslate", this.generateDeepslate);
+                
+                this.consumer.accept(this.providerSettings);
         }));
-        */
+        
     }
 }

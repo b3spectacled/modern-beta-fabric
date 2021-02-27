@@ -12,7 +12,7 @@ import net.minecraft.structure.StructureStart;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkSectionPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
@@ -40,8 +40,8 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
     }
     
     public static class Start extends StructureStart<DefaultFeatureConfig> {
-        public Start(StructureFeature<DefaultFeatureConfig> structureFeature, int chunkX, int chunkZ, BlockBox blockBox, int references, long seed) {
-            super(structureFeature, chunkX, chunkZ, blockBox, references, seed);
+        public Start(StructureFeature<DefaultFeatureConfig> structureFeature, ChunkPos chunkPos, BlockBox blockBox, int references, long seed) {
+            super(structureFeature, chunkPos, blockBox, references, seed);
         }
         
         @Override
@@ -49,7 +49,7 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
             DynamicRegistryManager registryManager, 
             ChunkGenerator chunkGenerator, 
             StructureManager manager, 
-            int chunkX, int chunkZ, 
+            ChunkPos chunkPos,
             Biome biome, 
             DefaultFeatureConfig config, 
             HeightLimitView heightLimitView
@@ -57,8 +57,8 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
             // Should only generate in Beta worlds
             if (!(chunkGenerator instanceof OldChunkGenerator)) return;
             
-            int x = ChunkSectionPos.getBlockCoord(chunkX);
-            int z = ChunkSectionPos.getBlockCoord(chunkZ);
+            int x = chunkPos.getStartX();
+            int z = chunkPos.getStartZ();
             int y = chunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, heightLimitView);
             
             BlockPos pos = new BlockPos(x, y, z);

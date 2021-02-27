@@ -10,14 +10,16 @@ import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.carver.IOldCaveCarver;
 import com.bespectacled.modernbeta.feature.OldFeatures;
 import com.bespectacled.modernbeta.gen.provider.AbstractChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
+import com.bespectacled.modernbeta.mixin.MixinConfiguredCarverAccessor;
 import com.bespectacled.modernbeta.structure.OldStructures;
-import com.bespectacled.modernbeta.util.MutableBiomeArray;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.class_5873;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureManager;
@@ -41,6 +43,7 @@ import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.carver.Carver;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
@@ -76,8 +79,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.worldType = WorldType.getWorldType(settings.providerSettings);
         this.chunkProvider = this.worldType.createChunkProvider(seed, settings);
         
-        //this.generateOceans = settings.providerSettings.contains("generateOceans") ? settings.providerSettings.getBoolean("generateOceans") : false;
-        this.generateOceans = false;
+        this.generateOceans = settings.providerSettings.contains("generateOceans") ? settings.providerSettings.getBoolean("generateOceans") : false;
+        //this.generateOceans = false;
     }
 
     public static void register() {
@@ -101,23 +104,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.chunkProvider.provideSurface(region, chunk, this.biomeSource);
         
         if (this.generateOceans) {
-            MutableBiomeArray mutableBiomes = MutableBiomeArray.inject(chunk.getBiomeArray());
-            ChunkPos pos = chunk.getPos();
-            Biome biome;
-            
-            for (int x = 0; x < 4; ++x) {
-                for (int z = 0; z < 4; ++z) {
-                    int absX = pos.getStartX() + x << 2;
-                    int absZ = pos.getStartZ() + z << 2;
-                    
-                    int y = OldGenUtil.getSolidHeight(chunk, this.getWorldHeight(), absX, absZ);
-                    
-                    if (y < this.getSeaLevel() - 4) {
-                        biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);
-                        mutableBiomes.setBiome(absX, 0, absZ, biome);
-                    }
-                }
-            }
+            int oceanCutoff = 40;
+            OldGenUtil.replaceOceansInChunk(chunk, this.biomeSource, this.getWorldHeight(), this.getMinimumY(), this.getSeaLevel(), oceanCutoff);
         }
     }
 
@@ -145,7 +133,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
-    public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver carver) {
+    public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver genCarver) {
         BiomeAccess biomeAcc = access.withSource(this.biomeSource);
         ChunkPos chunkPos = chunk.getPos();
 
@@ -154,8 +142,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
         Biome biome = OldGenUtil.getOceanBiome(chunk, this, this.biomeSource, this.generateOceans, this.getSeaLevel());
         GenerationSettings genSettings = biome.getGenerationSettings();
+        class_5873 heightContext = new class_5873(this);
         
-        BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(carver);
+        BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);
 
         this.random.setSeed(seed);
         long l = (this.random.nextLong() / 2L) * 2L + 1L;
@@ -163,17 +152,22 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
         for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
             for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
-                List<Supplier<ConfiguredCarver<?>>> carverList = genSettings.getCarversForStep(carver);
+                List<Supplier<ConfiguredCarver<?>>> carverList = genSettings.getCarversForStep(genCarver);
                 ListIterator<Supplier<ConfiguredCarver<?>>> carverIterator = carverList.listIterator();
+                ChunkPos caveChunkPos = new ChunkPos(chunkX, chunkZ);
 
                 while (carverIterator.hasNext()) {
                     ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
+                    Carver<?> carver = ((MixinConfiguredCarverAccessor)configuredCarver).getCarver();
                     
                     this.random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
                     
-                    if (configuredCarver.shouldCarve(random, chunkX, chunkZ)) {
-                        configuredCarver.carve(chunk, biomeAcc::getBiome, this.random, this.getSeaLevel(), chunkX, chunkZ,
-                                mainChunkX, mainChunkZ, bitSet);
+                    // Special case for old Beta carvers.
+                    if (carver instanceof IOldCaveCarver) {
+                        ((IOldCaveCarver)carver).carve(heightContext, chunk, this.random, chunkX, chunkZ, mainChunkX, mainChunkZ);
+                        
+                    } else if (configuredCarver.shouldCarve(random)) {
+                        configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, this.random, this.getSeaLevel(), caveChunkPos, bitSet);
 
                     }
                 }
@@ -249,6 +243,11 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         // TODO: Causes issue with YOffset.BelowTop decorator (i.e. ORE_COAL_UPPER), find some workaround.
         //return chunkProvider.getWorldHeight();
         return 384;
+    }
+    
+    @Override
+    public int getMinimumY() {
+        return this.settings.generatorSettings.getGenerationShapeConfig().getMinimumY();
     }
 
     @Override

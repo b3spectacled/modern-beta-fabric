@@ -38,6 +38,10 @@
     "createWorld.customize.inf.generateOceans": "Generate Oceans",
     "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",
     "createWorld.customize.infdev.generateInfdevWall": "Generate Infdev Obsidian Wall",
+    "createWorld.customize.inf.generateNoiseCaves": "Generate Noise Caves",
+    "createWorld.customize.inf.generateAquifers": "Generate Aquifers",
+    "createWorld.customize.inf.generateDeepslate": "Generate Deepslate",
+    "createWorld.customize.inf.generateDeepWorld": "Generate Deep World",
     
     "createWorld.customize.indev.levelType": "Level Type",
     "createWorld.customize.indev.levelTheme": "Level Theme",

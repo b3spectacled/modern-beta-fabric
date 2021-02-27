@@ -33,7 +33,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
     
     public Infdev227ChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, false, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, true, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
         noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true); 
@@ -192,7 +192,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
                     }
                     
                     blockToSet = structureWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
-                    BlockState blockstateToSet = BlockStates.getBlockState(blockToSet);
+                    BlockState blockstateToSet = this.getBlockState(absX, y, absZ, blockToSet);
                     
                     chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
                     

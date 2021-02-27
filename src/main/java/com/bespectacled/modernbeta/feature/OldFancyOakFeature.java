@@ -137,7 +137,7 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
     @Override
     public final boolean generate(FeatureContext<DefaultFeatureConfig> featureContext) {
         StructureWorldAccess world = featureContext.getWorld();
-        BlockPos pos = featureContext.getPos();
+        BlockPos pos = featureContext.getOrigin();
         Random random = featureContext.getRandom();
         
         maxHeight = 12;

@@ -1,35 +1,33 @@
 package com.bespectacled.modernbeta.carver;
 
-import java.util.BitSet;
 import java.util.Random;
-import java.util.function.Function;
-
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.ProbabilityConfig;
-import net.minecraft.world.gen.carver.Carver;
+import net.minecraft.world.gen.carver.CaveCarver;
+import net.minecraft.class_5871;
+import net.minecraft.class_5873;
 
-public class BetaCaveCarver extends Carver<ProbabilityConfig> {
+public class BetaCaveCarver extends CaveCarver implements IOldCaveCarver {
 
-    public BetaCaveCarver(Codec<ProbabilityConfig> codec, int heightLimit) {
-        super(codec, heightLimit);
+    public BetaCaveCarver(Codec<class_5871> codec) {
+        super(codec);
     }
 
-    @Override
-    public boolean shouldCarve(Random random, int chunkX, int chunkZ, ProbabilityConfig config) {
-        // TODO Auto-generated method stub
-        return true; // Handled in main carve function
-    }
-
-    @Override
-    public boolean carve(Chunk chunk, Function<BlockPos, Biome> posToBiome, Random random, int seaLevel, int chunkX,
-            int chunkZ, int mainChunkX, int mainChunkZ, BitSet carvingMask, ProbabilityConfig carverConfig) {
+    //@Override
+    public boolean carve(
+        class_5873 heightContext,
+        Chunk chunk,
+        Random random,
+        int chunkX,
+        int chunkZ, 
+        int mainChunkX, 
+        int mainChunkZ
+    ) {
         int caveCount = random.nextInt(random.nextInt(random.nextInt(40) + 1) + 1);
         if (random.nextInt(getMaxCaveCount()) != 0) {
             caveCount = 0;
@@ -58,14 +56,25 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
         return false;
     }
 
-    protected void carveCave(Chunk chunk, Random random, int mainChunkX, int mainChunkZ, double x, double y, double z) {
-        carveTunnels(chunk, random, mainChunkX, mainChunkZ, x, y, z, 1.0F + random.nextFloat() * 6F, 0.0F, 0.0F, -1, -1,
-                0.5D);
+    private void carveCave(Chunk chunk, Random random, int mainChunkX, int mainChunkZ, double x, double y, double z) {
+        carveTunnels(chunk, random, mainChunkX, mainChunkZ, x, y, z, 1.0F + random.nextFloat() * 6F, 0.0F, 0.0F, -1, -1, 0.5D);
     }
 
-    protected void carveTunnels(Chunk chunk, Random rand, int mainChunkX, int mainChunkZ, double x, double y, double z,
-            float tunnelWidth, float tunnelYaw, float tunnelPitch, int branch, int branchCount, double tunnelWHRatio) {
-        
+    private void carveTunnels(
+        Chunk chunk, 
+        Random rand, 
+        int mainChunkX, 
+        int mainChunkZ, 
+        double x, 
+        double y, 
+        double z,
+        float tunnelWidth, 
+        float tunnelYaw, 
+        float tunnelPitch, 
+        int branch,
+        int branchCount, 
+        double tunnelWHRatio
+    ) {
         float f2 = 0.0F;
         float f3 = 0.0F;
 
@@ -124,9 +133,7 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
                 return;
             }
 
-            carveRegion(chunk, null, 0, 64, mainChunkX, mainChunkZ, x, y, z, yaw, pitch, null); // Don't move this into
-                                                                                                // above if statement,
-                                                                                                // breaks.
+            this.carveRegion(chunk, mainChunkX, mainChunkZ, x, y, z, yaw, pitch);
 
             if (noStarts) {
                 break;
@@ -135,10 +142,16 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
 
     }
 
-    @Override
-    protected boolean carveRegion(Chunk chunk, Function<BlockPos, Biome> posToBiome, long seed, int seaLevel,
-            int mainChunkX, int mainChunkZ, double x, double y, double z, double yaw, double pitch,
-            BitSet carvingMask) {
+    private boolean carveRegion(
+        Chunk chunk,
+        int mainChunkX, 
+        int mainChunkZ, 
+        double x, 
+        double y, 
+        double z, 
+        double yaw, 
+        double pitch
+    ) {
         double ctrX = mainChunkX * 16 + 8;
         double ctrZ = mainChunkZ * 16 + 8;
 
@@ -207,7 +220,7 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
                         }
 
                         // Don't use canCarveBlock for accuracy, for now.
-                        if (block == Blocks.STONE || block == Blocks.DIRT || block == Blocks.GRASS_BLOCK || block == Blocks.GRIMSTONE) { 
+                        if (block == Blocks.STONE || block == Blocks.DIRT || block == Blocks.GRASS_BLOCK || block == Blocks.DEEPSLATE) { 
                             if (relY < 10) { // Set lava below y = 10
                                 chunk.setBlockState(blockPos.set(relX, setY, relZ), Blocks.LAVA.getDefaultState(), false);
                             } else {
@@ -229,9 +242,15 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
         return true;
     }
 
-    @Override
-    protected boolean canCarveBranch(int mainChunkX, int mainChunkZ, double x, double z, int branch, int branchCount,
-            float baseWidth) {
+    private boolean canCarveBranch(
+        int mainChunkX, 
+        int mainChunkZ, 
+        double x, 
+        double z, 
+        int branch, 
+        int branchCount,
+        float baseWidth
+    ) {
         double ctrX = mainChunkX * 16 + 8;
         double ctrZ = mainChunkZ * 16 + 8;
 
@@ -247,9 +266,17 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
         return true;
     }
 
-    @Override
-    protected boolean isRegionUncarvable(Chunk chunk, int mainChunkX, int mainChunkZ, int relMinX, int relMaxX,
-            int minY, int maxY, int relMinZ, int relMaxZ) {
+    private boolean isRegionUncarvable(
+        Chunk chunk, 
+        int mainChunkX, 
+        int mainChunkZ, 
+        int relMinX, 
+        int relMaxX,
+        int minY, 
+        int maxY,
+        int relMinZ, 
+        int relMaxZ
+    ) {
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
 
         for (int relX = relMinX; relX < relMaxX; relX++) {
@@ -278,28 +305,35 @@ public class BetaCaveCarver extends Carver<ProbabilityConfig> {
         return false;
     }
 
-    @Override
-    protected boolean isPositionExcluded(double scaledRelativeX, double scaledRelativeY, double scaledRelativeZ,
-            int y) {
-        return scaledRelativeY > -0.69999999999999996D && scaledRelativeX * scaledRelativeX
-                + scaledRelativeY * scaledRelativeY + scaledRelativeZ * scaledRelativeZ < 1.0D;
+    private boolean isPositionExcluded(
+        double scaledRelativeX, 
+        double scaledRelativeY, 
+        double scaledRelativeZ,   
+        int y
+    ) {
+        return 
+            scaledRelativeY > -0.69999999999999996D && 
+            scaledRelativeX * scaledRelativeX + 
+            scaledRelativeY * scaledRelativeY + 
+            scaledRelativeZ * scaledRelativeZ < 1.0D;
     }
 
     private boolean isOnBoundary(int minX, int maxX, int minZ, int maxZ, int relX, int relZ) {
         return relX != minX && relX != maxX - 1 && relZ != minZ && relZ != maxZ - 1;
+    }
+    
+    private int getCaveY(Random random) {
+        return random.nextInt(random.nextInt(120) + 8);
     }
 
     protected int getMaxCaveCount() {
         return 15;
     }
 
-    protected int getCaveY(Random random) {
-        return random.nextInt(random.nextInt(120) + 8);
-    }
-
     protected float getTunnelSystemWidth(Random random) {
         float width = random.nextFloat() * 2.0f + random.nextFloat();
         return width;
     }
+
 
 }

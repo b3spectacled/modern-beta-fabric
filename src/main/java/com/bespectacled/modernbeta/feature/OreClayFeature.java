@@ -20,7 +20,7 @@ public class OreClayFeature extends Feature<OreFeatureConfig> {
     @Override
     public boolean generate(FeatureContext<OreFeatureConfig> featureContext) {
         StructureWorldAccess world = featureContext.getWorld();
-        BlockPos pos = featureContext.getPos();
+        BlockPos pos = featureContext.getOrigin();
         OreFeatureConfig config = featureContext.getConfig();
         Random random = featureContext.getRandom();
         
@@ -74,9 +74,13 @@ public class OreClayFeature extends Feature<OreFeatureConfig> {
                             continue;
                         }
                         
+                        // TODO: Fix when mappings are done.
+                        /*
                         if(config.target.test(world.getBlockState(mutablePos.set(x, y, z)), random)) {
                             world.setBlockState(mutablePos, config.state, 2);
-                        }
+                        }*/
+                        
+                        
                     }
 
                 }

@@ -30,7 +30,7 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
     @Override
     public boolean generate(FeatureContext<DefaultFeatureConfig> featureContext) {
         StructureWorldAccess world = featureContext.getWorld();
-        BlockPos pos = featureContext.getPos();
+        BlockPos pos = featureContext.getOrigin();
         ChunkGenerator generator = featureContext.getGenerator();
         
         // Shouldn't be used if this isn't an instance of OldBiomeSource

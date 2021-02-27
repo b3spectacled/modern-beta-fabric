@@ -58,7 +58,7 @@ public class OldGeneratorConfig {
         
         ALPHA_SHAPE_CONFIG = GenerationShapeConfig.create(
             -64, 
-            192, 
+            192,  
             ALPHA_SAMPLING_CONFIG, 
             new SlideConfig(-10, 3, 0), 
             new SlideConfig(10, 3, 0),

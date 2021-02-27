@@ -56,6 +56,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     @Override
     public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         generateTerrain(chunk, structureAccessor);
+        //this.generateFlatTerrain(chunk);
         return chunk;
     }
 
@@ -106,6 +107,16 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
 
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= (this.minY + rand.nextInt(6)) - 1) {
+                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
+                        continue;
+                    }
+                    
+                    // TODO: As of 21w08b.
+                    // Check to remove later, not accurate but temporary to ensure bottom layer of world is always bedrock.
+                    // Game breaks during ore decoration breaks if any block at yMin is stone/deepslate
+                    // since the game checks all adjacent blocks for a particular position,
+                    // even if the downward direction is below the world limit!!
+                    if (y <= this.minY) {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                         continue;
                     }
@@ -476,7 +487,4 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         this.heightNoisePool.returnArr(heightNoise);
         return -1;
     }
-
-    
-
 }

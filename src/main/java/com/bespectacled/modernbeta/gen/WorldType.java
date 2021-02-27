@@ -12,16 +12,16 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.CompoundTag;
 
 public enum WorldType {
-    BETA("beta", true, BiomeType.BETA, BetaChunkProvider::new, InfCustomizeLevelScreen::new),
-    SKYLANDS("skylands", false, BiomeType.SKY, SkylandsChunkProvider::new, InfCustomizeLevelScreen::new),
-    ALPHA("alpha", true, BiomeType.CLASSIC, AlphaChunkProvider::new, InfCustomizeLevelScreen::new),
-    //INFDEV_611("infdev_611", true, BiomeType.CLASSIC, Infdev611ChunkProvider::new, InfCustomizeLevelScreen::new),
-    INFDEV_415("infdev", true, BiomeType.CLASSIC, Infdev415ChunkProvider::new, InfCustomizeLevelScreen::new),
-    INFDEV_227("infdev_old", true, BiomeType.CLASSIC, Infdev227ChunkProvider::new, InfdevOldCustomizeLevelScreen::new),
-    INDEV("indev", false, null, IndevChunkProvider::new, IndevCustomizeLevelScreen::new);
+    BETA("beta", true, true, BiomeType.BETA, BetaChunkProvider::new, InfCustomizeLevelScreen::new),
+    SKYLANDS("skylands", false, true, BiomeType.SKY, SkylandsChunkProvider::new, InfCustomizeLevelScreen::new),
+    ALPHA("alpha", true, true, BiomeType.CLASSIC, AlphaChunkProvider::new, InfCustomizeLevelScreen::new),
+    INFDEV_415("infdev", true, true, BiomeType.CLASSIC, Infdev415ChunkProvider::new, InfCustomizeLevelScreen::new),
+    INFDEV_227("infdev_old", true, false, BiomeType.CLASSIC, Infdev227ChunkProvider::new, InfdevOldCustomizeLevelScreen::new),
+    INDEV("indev", false, false, null, IndevChunkProvider::new, IndevCustomizeLevelScreen::new);
     
     private final String name;
     private final boolean hasOceans;
+    private final boolean isDensityBased;
     private final BiomeType defaultBiomeType;
     private final BiFunction<Long, OldGeneratorSettings, AbstractChunkProvider> chunkProvider;
     private final TriFunction<CreateWorldScreen, CompoundTag, Consumer<CompoundTag>, AbstractCustomizeLevelScreen> customizeScreen;
@@ -29,12 +29,14 @@ public enum WorldType {
     private WorldType(
         String name,
         boolean hasOceans,
+        boolean isDensityBased,
         BiomeType defaultBiomeType, 
         BiFunction<Long, OldGeneratorSettings, AbstractChunkProvider> chunkProvider, 
         TriFunction<CreateWorldScreen, CompoundTag, Consumer<CompoundTag>, AbstractCustomizeLevelScreen> customizeScreen
     ) {
         this.name = name;
         this.hasOceans = hasOceans;
+        this.isDensityBased = isDensityBased;
         this.defaultBiomeType = defaultBiomeType;
         this.chunkProvider = chunkProvider;
         this.customizeScreen = customizeScreen;
@@ -46,6 +48,10 @@ public enum WorldType {
     
     public boolean hasOceans() {
         return this.hasOceans;
+    }
+    
+    public boolean isDensityBased() {
+        return this.isDensityBased;
     }
     
     public BiomeType getDefaultBiomeType() {

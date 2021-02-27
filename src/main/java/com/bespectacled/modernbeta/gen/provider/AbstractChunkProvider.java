@@ -9,7 +9,8 @@ import com.bespectacled.modernbeta.mixin.MixinAquiferSamplerInvoker;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import net.minecraft.block.Block;
+//import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundTag;
@@ -78,7 +79,7 @@ public abstract class AbstractChunkProvider {
     
     protected final boolean generateNoiseCaves;
     protected final boolean generateAquifers;
-    protected final boolean generateGrimstone;
+    protected final boolean generateDeepslate;
     
     protected final BlockState defaultBlock;
     protected final BlockState defaultFluid;
@@ -128,11 +129,14 @@ public abstract class AbstractChunkProvider {
         double yFactor,
         boolean generateNoiseCaves,
         boolean generateAquifers,
-        boolean generateGrimstone,
+        boolean generateDeepslate,
         BlockState defaultBlock,
         BlockState defaultFluid,
         OldGeneratorSettings settings
     ) {
+        this.generatorSettings = settings.generatorSettings;
+        this.providerSettings = settings.providerSettings;
+        
         this.minY = minY;
         this.worldHeight = worldHeight;
         this.seaLevel = seaLevel;
@@ -155,22 +159,19 @@ public abstract class AbstractChunkProvider {
         this.xzFactor = xzFactor;
         this.yFactor = yFactor;
         
-        this.generateNoiseCaves = generateNoiseCaves;
-        this.generateAquifers = generateAquifers;
-        this.generateGrimstone = generateGrimstone;
+        this.generateNoiseCaves = (this.providerSettings.contains("generateNoiseCaves") && this.providerSettings.getBoolean("generateNoiseCaves")) ? generateNoiseCaves : false;
+        this.generateAquifers = (this.providerSettings.contains("generateAquifers") && this.providerSettings.getBoolean("generateAquifers")) ? generateAquifers : false;
+        this.generateDeepslate = (this.providerSettings.contains("generateDeepslate") && this.providerSettings.getBoolean("generateDeepslate")) ? generateDeepslate : false;
         
         this.defaultBlock = defaultBlock;
         this.defaultFluid = defaultFluid;
-        
-        this.generatorSettings = settings.generatorSettings;
-        this.providerSettings = settings.providerSettings;
         
         ChunkRandom chunkRandom = new ChunkRandom(seed);
         this.doublePerlinSampler0 = DoublePerlinNoiseSampler.create(new SimpleRandom(chunkRandom.nextLong()), -3, 1.0);
         this.doublePerlinSampler1 = DoublePerlinNoiseSampler.create(new SimpleRandom(chunkRandom.nextLong()), -3, 1.0, 0.0, 2.0);
         
         this.noiseCaveSampler = this.generateNoiseCaves ? new NoiseCaveSampler(chunkRandom, this.noiseMinY) : null;
-        this.deepslateInterpolator = new GrimstoneInterpolator(seed, this.defaultBlock, Blocks.GRIMSTONE.getDefaultState());
+        this.deepslateInterpolator = new GrimstoneInterpolator(seed, this.defaultBlock, this.generateDeepslate ? Blocks.DEEPSLATE.getDefaultState() : BlockStates.STONE);
         
         RAND.setSeed(seed);
         //HEIGHTMAP_CACHE.clear();
@@ -230,6 +231,16 @@ public abstract class AbstractChunkProvider {
         }
         
         return blockStateToSet;
+    }
+    
+    protected BlockState getBlockState(int x, int y, int z, Block blockToSet) {
+        BlockState blockState = BlockStates.getBlockState(blockToSet);
+        
+        if (blockToSet == this.defaultBlock.getBlock() && y <= 0) {
+            return this.deepslateInterpolator.sample(x, y, z, this.generatorSettings);
+        }
+        
+        return blockState;
     }
     
     protected double sampleNoiseCave(int x, int y, int z, double offset, double noise) {

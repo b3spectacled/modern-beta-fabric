@@ -59,6 +59,7 @@ public class IceDesert {
         genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_BETA_CAVE_CARVER);
         genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
         genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_DEEP_BETA_CAVE_CARVER);
+        genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CRACK);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.SNOW)

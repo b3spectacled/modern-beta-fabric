@@ -165,22 +165,12 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         double[] heightNoise = this.heightNoisePool.borrowArr();
+        this.generateHeightNoiseArr(chunkX * this.noiseSizeX, 0, chunkZ * this.noiseSizeZ, heightNoise);
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
-                int noiseX = chunkX * this.noiseSizeX + subChunkX;
-                int noiseZ = chunkZ * this.noiseSizeZ + subChunkZ;
-                
-                for (int subChunkY = 0; subChunkY < this.noiseSizeY + 1; subChunkY++) {
-                    int offsetY = subChunkY + this.noiseMinY;
-                    
-                    heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX, offsetY, noiseZ);
-                    heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX, offsetY, noiseZ + 1);
-                    heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX + 1, offsetY, noiseZ);
-                    heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + subChunkY] = this.generateHeightNoise(noiseX + 1, offsetY, noiseZ + 1);
-                }
-                
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; subChunkY++) {
+                    
                     double lowerNW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerSW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerNE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
@@ -234,6 +224,22 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         }
         
         this.heightNoisePool.returnArr(heightNoise);
+    }
+    
+    private void generateHeightNoiseArr(int x, int y, int z, double[] heightNoise) {
+        int noiseResolutionX = this.noiseSizeX + 1;
+        int noiseResolutionZ = this.noiseSizeZ + 1;
+        int noiseResolutionY = this.noiseSizeY + 1;
+        
+        int ndx = 0;
+        for (int noiseX = 0; noiseX < noiseResolutionX; ++noiseX) {
+            for (int noiseZ = 0; noiseZ < noiseResolutionZ; ++noiseZ) {
+                for (int noiseY = this.noiseMinY; noiseY < noiseResolutionY + this.noiseMinY; ++noiseY) {
+                    heightNoise[ndx] = this.generateHeightNoise(x + noiseX, noiseY, z + noiseZ);
+                    ndx++;
+                }
+            }
+        }
     }
     
     private double generateHeightNoise(int x, int y, int z) {
