@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.gen.provider;
 
 import java.util.Random;
+import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.decorator.OldDecorators;
@@ -52,7 +53,7 @@ public abstract class AbstractChunkProvider {
     //protected static final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> HEIGHTMAP_CACHE = new Object2ObjectLinkedOpenHashMap<>(512);
     //protected static final int[][] HEIGHTMAP_CHUNK = new int[16][16];
     
-    protected final ChunkGeneratorSettings generatorSettings;
+    protected final Supplier<ChunkGeneratorSettings> generatorSettings;
     protected final CompoundTag providerSettings;
     
     protected final int minY;
@@ -94,22 +95,22 @@ public abstract class AbstractChunkProvider {
     public AbstractChunkProvider(long seed, OldGeneratorSettings settings) {
         this(
             seed,
-            settings.generatorSettings.getGenerationShapeConfig().getMinimumY(),
-            settings.generatorSettings.getGenerationShapeConfig().getHeight(),
-            settings.generatorSettings.getSeaLevel(),
-            settings.generatorSettings.getBedrockFloorY(),
-            settings.generatorSettings.getBedrockCeilingY(),
-            settings.generatorSettings.getGenerationShapeConfig().getSizeVertical(),
-            settings.generatorSettings.getGenerationShapeConfig().getSizeHorizontal(),
-            settings.generatorSettings.getGenerationShapeConfig().getSampling().getXZScale(),
-            settings.generatorSettings.getGenerationShapeConfig().getSampling().getYScale(),
-            settings.generatorSettings.getGenerationShapeConfig().getSampling().getXZFactor(),
-            settings.generatorSettings.getGenerationShapeConfig().getSampling().getYFactor(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getMinimumY(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getHeight(),
+            settings.generatorSettings.get().getSeaLevel(),
+            settings.generatorSettings.get().getBedrockFloorY(),
+            settings.generatorSettings.get().getBedrockCeilingY(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getSizeVertical(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getSizeHorizontal(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getSampling().getXZScale(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getSampling().getYScale(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getSampling().getXZFactor(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getSampling().getYFactor(),
             true,
             true,
             true,
-            settings.generatorSettings.getDefaultBlock(),
-            settings.generatorSettings.getDefaultFluid(),
+            settings.generatorSettings.get().getDefaultBlock(),
+            settings.generatorSettings.get().getDefaultFluid(),
             settings
         );
     }
@@ -182,6 +183,10 @@ public abstract class AbstractChunkProvider {
     public abstract int getHeight(int x, int z, Heightmap.Type type);
     public abstract PerlinOctaveNoise getBeachNoiseOctaves();
     
+    public boolean skipChunk(int chunkX, int chunkZ) {
+        return false;
+    }
+    
     public int getWorldHeight() {
         return this.worldHeight;
     }
@@ -221,7 +226,7 @@ public abstract class AbstractChunkProvider {
         BlockState blockStateToSet = BlockStates.AIR;
         
         if (clampedDensity > 0.0) {
-            blockStateToSet = this.deepslateInterpolator.sample(x, y, z, this.generatorSettings);
+            blockStateToSet = this.deepslateInterpolator.sample(x, y, z, this.generatorSettings.get());
         } else {
             int localSeaLevel = (aquiferSampler == null) ? this.getSeaLevel() : aquiferSampler.getWaterLevel();
             
@@ -237,7 +242,7 @@ public abstract class AbstractChunkProvider {
         BlockState blockState = BlockStates.getBlockState(blockToSet);
         
         if (blockToSet == this.defaultBlock.getBlock() && y <= 0) {
-            return this.deepslateInterpolator.sample(x, y, z, this.generatorSettings);
+            return this.deepslateInterpolator.sample(x, y, z, this.generatorSettings.get());
         }
         
         return blockState;
@@ -258,18 +263,32 @@ public abstract class AbstractChunkProvider {
                 chunkZ, 
                 this.doublePerlinSampler0, 
                 this.doublePerlinSampler1, 
-                this.generatorSettings, 
+                this.generatorSettings.get(), 
                 null, 
                 this.noiseSizeY * this.verticalNoiseResolution
             ) : 
             null;     
     }
     
+    protected double applyTopSlide(double noise, int noiseY) {
+        int slideOffset = noiseY - this.noiseMinY;
+        int topSlideSize = this.generatorSettings.get().getGenerationShapeConfig().getTopSlide().getSize();
+        int topSlideOffset = this.generatorSettings.get().getGenerationShapeConfig().getTopSlide().getOffset();
+        int topSlideTarget = this.generatorSettings.get().getGenerationShapeConfig().getTopSlide().getTarget();
+        
+        if (topSlideSize > 0.0) {
+            double lerpedNoise = (slideOffset - topSlideOffset) / topSlideSize;
+            noise = MathHelper.clampedLerp(topSlideTarget, noise, lerpedNoise);
+        }
+        
+        return noise;
+    }
+    
     protected double applyBottomSlide(double noise, int noiseY) {
         int slideOffset = noiseY - this.noiseMinY;
-        int bottomSlideSize = this.generatorSettings.getGenerationShapeConfig().getBottomSlide().getSize();
-        int bottomSlideOffset = this.generatorSettings.getGenerationShapeConfig().getBottomSlide().getOffset();
-        int bottomSlideTarget = this.generatorSettings.getGenerationShapeConfig().getBottomSlide().getTarget();
+        int bottomSlideSize = this.generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getSize();
+        int bottomSlideOffset = this.generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getOffset();
+        int bottomSlideTarget = this.generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getTarget();
         
         if (bottomSlideSize > 0.0) {
             double lerpedNoise = (slideOffset - bottomSlideOffset) / bottomSlideSize;

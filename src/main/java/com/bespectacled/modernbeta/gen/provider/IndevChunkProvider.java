@@ -149,6 +149,11 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         return null;
     }
     
+    @Override
+    public boolean skipChunk(int chunkX, int chunkZ) {
+        return !IndevUtil.inIndevRegion(chunkX << 4, chunkZ << 4, this.width, this.length);
+    }
+    
     private void setTerrain(StructureAccessor structureAccessor, Chunk chunk, Block[][][] blockArr) {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
@@ -631,6 +636,10 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         }
             
         return true;
+    }
+    
+    public boolean inWorldBounds(int x, int z) {
+        return IndevUtil.inIndevRegion(x, z, this.width, this.length);
     }
     
     public void generateIndevHouse(ServerWorld world, BlockPos spawnPos) {

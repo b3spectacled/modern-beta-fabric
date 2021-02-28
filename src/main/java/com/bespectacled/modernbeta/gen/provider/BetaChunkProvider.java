@@ -448,7 +448,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
             densityWithOffset = densityWithOffset * (1.0D - topSlide) + -10D * topSlide;
         }
         
-        if (this.generateAquifers || this.generateNoiseCaves)
+        if (this.generateNoiseCaves)
             densityWithOffset = this.applyBottomSlide(densityWithOffset, y);
         
         return densityWithOffset;

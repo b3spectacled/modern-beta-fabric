@@ -9,7 +9,7 @@ public class OldBiomes {
         BetaBiomes.registerBiomes();
         ClassicBiomes.registerAlphaBiomes();
         ClassicBiomes.registerInfdevBiomes();
-        IndevBiomes.registerBiomes();
         ClassicBiomes.registerInfdevOldBiomes();
+        IndevBiomes.registerBiomes();
     }
 }

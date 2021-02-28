@@ -69,7 +69,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private final AbstractChunkProvider chunkProvider;
     
     public OldChunkGenerator(BiomeSource biomeSource, long seed, OldGeneratorSettings settings) {
-        super(biomeSource, seed, () -> settings.generatorSettings);
+        super(biomeSource, seed, settings.generatorSettings);
         
         this.random = new Random(seed);
         
@@ -80,7 +80,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.chunkProvider = this.worldType.createChunkProvider(seed, settings);
         
         this.generateOceans = settings.providerSettings.contains("generateOceans") ? settings.providerSettings.getBoolean("generateOceans") : false;
-        //this.generateOceans = false;
     }
 
     public static void register() {
@@ -117,7 +116,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int startX = chunkPos.getStartX();
         int startZ = chunkPos.getStartZ();
         
-        Biome biome = OldGenUtil.getOceanBiome(region.getChunk(chunkPos.x, chunkPos.z), this, this.getBiomeSource(), this.generateOceans, this.getSeaLevel());
+        // Skip feature population for Indev chunks outside of level area
+        if (this.chunkProvider.skipChunk(chunkPos.x, chunkPos.z)) return;
+        
+        Biome biome = OldGenUtil.getOceanBiome(region.getChunk(chunkPos.x, chunkPos.z), this, biomeSource, generateOceans, this.getSeaLevel());
         
         // TODO: Remove chunkRandom at some point
         ChunkRandom chunkRandom = new ChunkRandom();
@@ -247,7 +249,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public int getMinimumY() {
-        return this.settings.generatorSettings.getGenerationShapeConfig().getMinimumY();
+        return this.settings.generatorSettings.get().getGenerationShapeConfig().getMinimumY();
     }
 
     @Override

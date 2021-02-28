@@ -19,11 +19,11 @@ public class ClassicBiomes {
     public static final Identifier ALPHA_ID = ModernBeta.createId("alpha");
     public static final Identifier ALPHA_WINTER_ID = ModernBeta.createId("alpha_winter");
     
-    public static final Identifier INFDEV_ID = ModernBeta.createId("infdev");
-    public static final Identifier INFDEV_WINTER_ID = ModernBeta.createId("infdev_winter");
+    public static final Identifier INFDEV_415_ID = ModernBeta.createId("infdev_415");
+    public static final Identifier INFDEV_415_WINTER_ID = ModernBeta.createId("infdev_415_winter");
     
-    public static final Identifier INFDEV_OLD_ID = ModernBeta.createId("infdev_old");
-    public static final Identifier INFDEV_OLD_WINTER_ID = ModernBeta.createId("infdev_old_winter");
+    public static final Identifier INFDEV_227_ID = ModernBeta.createId("infdev_227");
+    public static final Identifier INFDEV_227_WINTER_ID = ModernBeta.createId("infdev_227_winter");
     
     public static final Map<BiomeType, Identifier> INFDEV_OLD_BIOMES = new HashMap<BiomeType, Identifier>();
     public static final Map<BiomeType, Identifier> INFDEV_BIOMES = new HashMap<BiomeType, Identifier>();
@@ -34,11 +34,11 @@ public class ClassicBiomes {
     public static final List<RegistryKey<Biome>> INFDEV_OLD_BIOME_KEYS;
     
     static {
-        INFDEV_OLD_BIOMES.put(BiomeType.CLASSIC, INFDEV_OLD_ID);
-        INFDEV_OLD_BIOMES.put(BiomeType.WINTER, INFDEV_OLD_WINTER_ID);
+        INFDEV_OLD_BIOMES.put(BiomeType.CLASSIC, INFDEV_227_ID);
+        INFDEV_OLD_BIOMES.put(BiomeType.WINTER, INFDEV_227_WINTER_ID);
         
-        INFDEV_BIOMES.put(BiomeType.CLASSIC, INFDEV_ID);
-        INFDEV_BIOMES.put(BiomeType.WINTER, INFDEV_WINTER_ID);
+        INFDEV_BIOMES.put(BiomeType.CLASSIC, INFDEV_415_ID);
+        INFDEV_BIOMES.put(BiomeType.WINTER, INFDEV_415_WINTER_ID);
         
         ALPHA_BIOMES.put(BiomeType.CLASSIC, ALPHA_ID);
         ALPHA_BIOMES.put(BiomeType.WINTER, ALPHA_WINTER_ID);
@@ -54,13 +54,13 @@ public class ClassicBiomes {
     }
     
     public static void registerInfdevBiomes() {
-        Registry.register(BuiltinRegistries.BIOME, INFDEV_ID, Infdev.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, INFDEV_WINTER_ID, InfdevWinter.BIOME);
+        Registry.register(BuiltinRegistries.BIOME, INFDEV_415_ID, Infdev415.BIOME);
+        Registry.register(BuiltinRegistries.BIOME, INFDEV_415_WINTER_ID, Infdev415Winter.BIOME);
     }
     
     public static void registerInfdevOldBiomes() {
-        Registry.register(BuiltinRegistries.BIOME, INFDEV_OLD_ID, InfdevOld.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, INFDEV_OLD_WINTER_ID, InfdevOldWinter.BIOME);
+        Registry.register(BuiltinRegistries.BIOME, INFDEV_227_ID, Infdev227.BIOME);
+        Registry.register(BuiltinRegistries.BIOME, INFDEV_227_WINTER_ID, Infdev227Winter.BIOME);
     }
     
     public static Map<BiomeType, Identifier> getBiomeMap(WorldType worldType) {

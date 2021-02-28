@@ -85,7 +85,7 @@ public class MixinGeneratorOptions {
             
             CompoundTag providerSettings = isIndev ? OldGeneratorSettings.createIndevSettings() : OldGeneratorSettings.createInfSettings(worldType, biomeType, genOceans);
             
-            OldGeneratorSettings settings = new OldGeneratorSettings(registryChunkGenSettings.get(ModernBeta.createId(worldType.getName())), providerSettings);
+            OldGeneratorSettings settings = new OldGeneratorSettings(() -> registryChunkGenSettings.get(ModernBeta.createId(worldType.getName())), providerSettings);
             ChunkGenerator generator = new OldChunkGenerator(new OldBiomeSource(seed, registryBiome, settings.providerSettings), seed, settings);
 
             // return our chunk generator

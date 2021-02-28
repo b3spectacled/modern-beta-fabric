@@ -1,11 +1,5 @@
 {
     "generator.old": "Modern Beta",
-    "generator.beta": "Beta 1.7.3",
-    "generator.skylands": "Skylands",
-    "generator.alpha": "Alpha 1.1.2_01",
-    "generator.indev": "Indev 20100223",
-    "generator.infdev": "Inf 20100415",
-    "generator.infdev_old": "Inf 20100227",
     
     "createWorld.customize.unknown": "Unknown option!",
     
@@ -14,9 +8,8 @@
     "createWorld.customize.worldType.skylands": "Skylands",
     "createWorld.customize.worldType.alpha": "Alpha 1.1.2_01",
     "createWorld.customize.worldType.indev": "Indev 20100223",
-    "createWorld.customize.worldType.infdev": "Inf 20100415",
-    "createWorld.customize.worldType.infdev_old": "Inf 20100227",
-    "createWorld.customize.worldType.flat": "Flat",
+    "createWorld.customize.worldType.infdev_415": "Infdev 20100415",
+    "createWorld.customize.worldType.infdev_227": "Infdev 20100227",
     
     "createWorld.customize.biomeType": "Biome Type",
     "createWorld.customize.biomeType.beta": "Beta",

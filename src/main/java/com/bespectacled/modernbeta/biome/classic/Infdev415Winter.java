@@ -17,7 +17,8 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
-public class InfdevOld {
+public class Infdev415Winter {
+    
     public static final Biome BIOME = create();
     
     private static Biome create() {
@@ -27,6 +28,7 @@ public class InfdevOld {
         DefaultBiomeFeatures.addOceanMobs(spawnSettings, 10, 4, 10);
         
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnEntry(EntityType.WOLF, 5, 4, 4));
+        spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, new SpawnSettings.SpawnEntry(EntityType.SALMON, 15, 1, 5));
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
@@ -47,8 +49,10 @@ public class InfdevOld {
         genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
         genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_EMERALD_Y95);
         
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_CACTUS_ALPHA);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_OLD_INFDEV_BEES);
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INFDEV_BEES);
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_SUGAR_CANE);
@@ -58,17 +62,17 @@ public class InfdevOld {
         genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_DEEP_BETA_CAVE_CARVER);
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.RAIN)
+            .precipitation(Biome.Precipitation.SNOW)
             .category(Biome.Category.FOREST)
             .depth(0.37F)
             .scale(0.4F)
-            .temperature(0.6F)
-            .downfall(0.6F)
+            .temperature(0.0F)
+            .downfall(0.0F)
             .effects((new BiomeEffects.Builder())
                 .grassColor(11272039)
                 .foliageColor(5242667)
-                .skyColor(255)
-                .fogColor(11908351)
+                .skyColor(10079487)
+                .fogColor(11587839)
                 .waterColor(2835199)
                 .waterFogColor(329011)
                 .build())

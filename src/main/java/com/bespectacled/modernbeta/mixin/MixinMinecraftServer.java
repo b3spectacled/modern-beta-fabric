@@ -48,12 +48,17 @@ public class MixinMinecraftServer {
             
             if (beachNoiseOctaves != null) { // Attempt to place a beach spawn if provider generates classic beaches.
                 ModernBeta.LOGGER.log(Level.INFO, "Setting a beach spawn..");
-                //spawnPos = getInitialOldSpawn(oldGen, beachNoiseOctaves, oldGen.getSeaLevel());
+                spawnPos = getInitialOldSpawn(oldGen, beachNoiseOctaves, oldGen.getSeaLevel());
             }
             
             if (spawnPos != null && oldGen.getWorldType() == WorldType.INDEV) {
                 ModernBeta.LOGGER.log(Level.INFO, "[Indev] Spawning..");
                 IndevChunkProvider indevChunkProvider = (IndevChunkProvider)oldGen.getChunkProvider();
+                
+                // Ensure spawn location and Indev house is within level bounds.
+                if (!indevChunkProvider.inWorldBounds(spawnPos.getX(), spawnPos.getZ())) {
+                    spawnPos = new BlockPos(0, indevChunkProvider.getHeight(0, 0, Heightmap.Type.WORLD_SURFACE_WG), 0);
+                }
                 
                 // Generate Indev house
                 indevChunkProvider.generateIndevHouse(world, spawnPos);

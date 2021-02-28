@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.gen;
 
+import java.util.function.Supplier;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -20,22 +22,15 @@ public class OldGeneratorSettings {
     public static final ChunkGeneratorSettings INFDEV_227_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings INDEV_GENERATOR_SETTINGS;
     
-    public static final OldGeneratorSettings BETA_SETTINGS;
-    public static final OldGeneratorSettings SKYLANDS_SETTINGS;
-    public static final OldGeneratorSettings ALPHA_SETTINGS;
-    public static final OldGeneratorSettings INFDEV_SETTINGS;
-    public static final OldGeneratorSettings INFDEV_OLD_SETTINGS;
-    public static final OldGeneratorSettings INDEV_SETTINGS;
-    
     public static final Codec<OldGeneratorSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ChunkGeneratorSettings.CODEC.fieldOf("type").forGetter(settings -> settings.generatorSettings),
-            CompoundTag.CODEC.fieldOf("settings").forGetter(settings -> settings.providerSettings)
+            ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(settings -> settings.generatorSettings),
+            CompoundTag.CODEC.fieldOf("provider_settings").forGetter(settings -> settings.providerSettings)
         ).apply(instance, OldGeneratorSettings::new));
 
-    public final ChunkGeneratorSettings generatorSettings;
+    public final Supplier<ChunkGeneratorSettings> generatorSettings;
     public CompoundTag providerSettings;
 
-    public OldGeneratorSettings(ChunkGeneratorSettings generatorSettings, CompoundTag providerSettings) {
+    public OldGeneratorSettings(Supplier<ChunkGeneratorSettings> generatorSettings, CompoundTag providerSettings) {
         this.generatorSettings = generatorSettings;
         this.providerSettings = providerSettings;
     }
@@ -70,8 +65,6 @@ public class OldGeneratorSettings {
     }
     
     static {
-        boolean generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
-        
         BETA_GENERATOR_SETTINGS = register(WorldType.BETA.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true));
         ALPHA_GENERATOR_SETTINGS = register(WorldType.ALPHA.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.ALPHA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true));
         SKYLANDS_GENERATOR_SETTINGS = register(WorldType.SKYLANDS.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.SKYLANDS_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, -10, 0, false, true, false, false));
@@ -79,12 +72,5 @@ public class OldGeneratorSettings {
         INFDEV_415_GENERATOR_SETTINGS = register(WorldType.INFDEV_415.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true));
         INFDEV_227_GENERATOR_SETTINGS = register(WorldType.INFDEV_227.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true));
         INDEV_GENERATOR_SETTINGS = register(WorldType.INDEV.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.INDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, false)); 
-        
-        BETA_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.BETA_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.BETA, BiomeType.BETA, generateOceans));
-        SKYLANDS_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.SKYLANDS_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.SKYLANDS, BiomeType.SKY, false));
-        ALPHA_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.ALPHA_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.ALPHA, BiomeType.CLASSIC, generateOceans));
-        INFDEV_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.INFDEV_415_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.INFDEV_415, BiomeType.CLASSIC, generateOceans));
-        INFDEV_OLD_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.INFDEV_415_GENERATOR_SETTINGS, OldGeneratorSettings.createInfSettings(WorldType.INFDEV_227, BiomeType.CLASSIC, generateOceans));
-        INDEV_SETTINGS = new OldGeneratorSettings(OldGeneratorSettings.INDEV_GENERATOR_SETTINGS, OldGeneratorSettings.createIndevSettings());
     }
 }

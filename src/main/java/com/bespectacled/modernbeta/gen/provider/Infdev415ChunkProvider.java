@@ -344,7 +344,7 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
             heightVal
         );
         
-        if (this.generateAquifers || this.generateNoiseCaves)
+        if (this.generateNoiseCaves)
             heightVal = this.applyBottomSlide(heightVal, y);
     
         return heightVal;

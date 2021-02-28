@@ -15,8 +15,8 @@ public enum WorldType {
     BETA("beta", true, true, BiomeType.BETA, BetaChunkProvider::new, InfCustomizeLevelScreen::new),
     SKYLANDS("skylands", false, true, BiomeType.SKY, SkylandsChunkProvider::new, InfCustomizeLevelScreen::new),
     ALPHA("alpha", true, true, BiomeType.CLASSIC, AlphaChunkProvider::new, InfCustomizeLevelScreen::new),
-    INFDEV_415("infdev", true, true, BiomeType.CLASSIC, Infdev415ChunkProvider::new, InfCustomizeLevelScreen::new),
-    INFDEV_227("infdev_old", true, false, BiomeType.CLASSIC, Infdev227ChunkProvider::new, InfdevOldCustomizeLevelScreen::new),
+    INFDEV_415("infdev_415", true, true, BiomeType.CLASSIC, Infdev415ChunkProvider::new, InfCustomizeLevelScreen::new),
+    INFDEV_227("infdev_227", true, false, BiomeType.CLASSIC, Infdev227ChunkProvider::new, InfdevOldCustomizeLevelScreen::new),
     INDEV("indev", false, false, null, IndevChunkProvider::new, IndevCustomizeLevelScreen::new);
     
     private final String name;

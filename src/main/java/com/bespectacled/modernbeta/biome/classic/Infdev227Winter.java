@@ -17,7 +17,7 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
-public class InfdevOldWinter {
+public class Infdev227Winter {
     
     public static final Biome BIOME = create();
     

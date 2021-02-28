@@ -44,9 +44,9 @@ public class OldGeneratorType {
         Registry<ChunkGeneratorSettings> registryChunkGenSettings = registryManager.<ChunkGeneratorSettings>get(Registry.NOISE_SETTINGS_WORLDGEN);
         Registry<Biome> registryBiome = registryManager.<Biome>get(Registry.BIOME_KEY); 
         Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = () -> registryChunkGenSettings.get(ModernBeta.createId(worldType.getName()));
-        
+       
         OldBiomeSource biomeSource = new OldBiomeSource(generatorOptions.getSeed(), registryBiome, providerSettings);
-        OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(chunkGenSettingsSupplier.get(), providerSettings);
+        OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(chunkGenSettingsSupplier, providerSettings);
         
         return new GeneratorOptions(
             generatorOptions.getSeed(),
@@ -62,8 +62,8 @@ public class OldGeneratorType {
     static {
         OLD = new GeneratorType("old") {
             @Override
-            protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> chunkGeneratorSettingsRegistry, long seed) {
-                ChunkGeneratorSettings generatorSettings = chunkGeneratorSettingsRegistry.getOrEmpty(ModernBeta.createId(WorldType.BETA.getName())).get();
+            protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> registryChunkGenSettings, long seed) {
+                Supplier<ChunkGeneratorSettings> generatorSettings = () -> registryChunkGenSettings.get(ModernBeta.createId(WorldType.BETA.getName()));
                 CompoundTag providerSettings = OldGeneratorSettings.createInfSettings(WorldType.BETA, BiomeType.BETA, ModernBeta.BETA_CONFIG.generateOceans);
                 OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(generatorSettings, providerSettings);
                 
