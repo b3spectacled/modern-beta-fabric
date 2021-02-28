@@ -15,7 +15,8 @@
     "MixinWorldRenderer",
     "MixinBackgroundRenderer",
     "MixinGeneratorTypeAccessor",
-    "MixinInGameHud"
+    "MixinInGameHud",
+    "MixinMoreOptionsDialogInvoker"
   ],
   "injectors": {
     "defaultRequire": 1

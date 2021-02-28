@@ -1,11 +1,16 @@
 package com.bespectacled.modernbeta.biome.beta;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
 
 public class BetaBiomes {
     public enum BetaBiomeType {
@@ -23,13 +28,11 @@ public class BetaBiomes {
     public static final Identifier TAIGA_ID = ModernBeta.createId("taiga");
     public static final Identifier TUNDRA_ID = ModernBeta.createId("tundra");
     public static final Identifier ICE_DESERT_ID = ModernBeta.createId("ice_desert");
-
     public static final Identifier OCEAN_ID = ModernBeta.createId("ocean");
     public static final Identifier LUKEWARM_OCEAN_ID = ModernBeta.createId("lukewarm_ocean");
     public static final Identifier WARM_OCEAN_ID = ModernBeta.createId("warm_ocean");
     public static final Identifier COLD_OCEAN_ID = ModernBeta.createId("cold_ocean");
     public static final Identifier FROZEN_OCEAN_ID = ModernBeta.createId("frozen_ocean");
-    
     public static final Identifier SKY_ID = ModernBeta.createId("sky");
     
     public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(
@@ -44,15 +47,15 @@ public class BetaBiomes {
         TAIGA_ID,
         TUNDRA_ID, 
         ICE_DESERT_ID,
-
         OCEAN_ID, 
         LUKEWARM_OCEAN_ID,
         WARM_OCEAN_ID, 
         COLD_OCEAN_ID,
         FROZEN_OCEAN_ID,
-
         SKY_ID
     );
+    
+    public static final List<RegistryKey<Biome>> BIOME_KEYS = BIOMES.stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
     
     public static void registerBiomes() {
         Registry.register(BuiltinRegistries.BIOME, FOREST_ID, Forest.BIOME);
@@ -66,13 +69,11 @@ public class BetaBiomes {
         Registry.register(BuiltinRegistries.BIOME, TAIGA_ID, Taiga.BIOME);
         Registry.register(BuiltinRegistries.BIOME, TUNDRA_ID, Tundra.BIOME);
         Registry.register(BuiltinRegistries.BIOME, ICE_DESERT_ID, IceDesert.BIOME);
-        
         Registry.register(BuiltinRegistries.BIOME, OCEAN_ID, Ocean.BIOME);
         Registry.register(BuiltinRegistries.BIOME, LUKEWARM_OCEAN_ID, LukewarmOcean.BIOME);
         Registry.register(BuiltinRegistries.BIOME, WARM_OCEAN_ID, WarmOcean.BIOME);
         Registry.register(BuiltinRegistries.BIOME, COLD_OCEAN_ID, ColdOcean.BIOME);
         Registry.register(BuiltinRegistries.BIOME, FROZEN_OCEAN_ID, FrozenOcean.BIOME);
-        
         Registry.register(BuiltinRegistries.BIOME, SKY_ID, Sky.BIOME);
     }
     

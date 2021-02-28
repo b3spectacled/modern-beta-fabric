@@ -3,9 +3,14 @@ package com.bespectacled.modernbeta;
 import net.fabricmc.api.EnvType;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.minecraft.world.gen.GenerationStep;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -28,6 +33,7 @@ import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
 import com.bespectacled.modernbeta.biome.indev.IndevBiomes;
 import com.bespectacled.modernbeta.biome.vanilla.VanillaBiomeModifier;
+import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 
@@ -75,6 +81,8 @@ public class ModernBeta implements ModInitializer {
             InfdevOldGeneratorType.register();
             IndevGeneratorType.register();      
         }
+        
+        Compat.setupCompat();
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");
 

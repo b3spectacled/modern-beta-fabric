@@ -1,13 +1,11 @@
 package com.bespectacled.modernbeta.biome.provider;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes.BetaBiomeType;
 
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -40,13 +38,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
 
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        List<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
-
-        for (Identifier i : BetaBiomes.BIOMES) {
-            biomeList.add(RegistryKey.of(Registry.BIOME_KEY, i));
-        }
-        
-        return biomeList;
+        return BetaBiomes.BIOME_KEYS;
     }
 
 }
