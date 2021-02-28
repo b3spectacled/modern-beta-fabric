@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.biome.provider;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.util.Identifier;
@@ -22,9 +22,6 @@ public class SingleBiomeProvider extends AbstractBiomeProvider {
 
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        List<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
-        biomeList.add(RegistryKey.of(Registry.BIOME_KEY, this.biomeId));
-        
-        return biomeList;
+        return Arrays.asList(RegistryKey.of(Registry.BIOME_KEY, this.biomeId));
     }
 }

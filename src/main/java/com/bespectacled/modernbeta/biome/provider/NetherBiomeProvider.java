@@ -1,9 +1,7 @@
 package com.bespectacled.modernbeta.biome.provider;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
@@ -31,19 +29,11 @@ public class NetherBiomeProvider extends AbstractBiomeProvider {
 
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        List<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
-        
-        Iterator<Entry<RegistryKey<Biome>, Biome>> biomeIter = BuiltinRegistries.BIOME.getEntries().iterator();
-        
-        while (biomeIter.hasNext()) {
-            Entry<RegistryKey<Biome>, Biome> entry = (Entry<RegistryKey<Biome>, Biome>)biomeIter.next();
-            
-            if (entry.getValue().getCategory() == Category.NETHER) {
-                biomeList.add(entry.getKey());
-            }
-        }
-        
-        return biomeList;
+        return BuiltinRegistries.BIOME.getEntries()
+            .stream()
+            .filter(e -> e.getValue().getCategory() == Category.NETHER)
+            .map(e -> e.getKey())
+            .collect(Collectors.toList());
     }
 
 }

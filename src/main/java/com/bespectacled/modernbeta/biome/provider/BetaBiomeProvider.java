@@ -1,13 +1,12 @@
 package com.bespectacled.modernbeta.biome.provider;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
+import com.bespectacled.modernbeta.biome.beta.BetaClimateMap;
+import com.bespectacled.modernbeta.biome.beta.BetaClimateMap.BetaBiomeType;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
-import com.bespectacled.modernbeta.biome.beta.BetaBiomes.BetaBiomeType;
 
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -29,7 +28,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
         int absZ = biomeZ << 2;
         
         BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
-        return registry.get(BetaBiomes.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], this.betaBiomeType));
+        return registry.get(BetaClimateMap.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], this.betaBiomeType));
     }
  
     @Override
@@ -38,24 +37,18 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
         int absZ = biomeZ << 2;
         
         BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
-        return registry.get(BetaBiomes.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.OCEAN));
+        return registry.get(BetaClimateMap.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.OCEAN));
     }
     
     @Override
     public Biome getBiomeForSurfaceGen(Registry<Biome> registry, int x, int y, int z) {
         BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID_POINT, x, z);
-        return registry.get(BetaBiomes.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], this.betaBiomeType));
+        return registry.get(BetaClimateMap.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], this.betaBiomeType));
     }
 
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        List<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
-
-        for (Identifier i : BetaBiomes.BIOMES) {
-            biomeList.add(RegistryKey.of(Registry.BIOME_KEY, i));
-        }
-        
-        return biomeList;
+        return BetaBiomes.BIOME_KEYS;
     }
 
 }

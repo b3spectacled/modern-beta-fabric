@@ -1,6 +1,5 @@
 package com.bespectacled.modernbeta.biome.provider;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.bespectacled.modernbeta.biome.indev.IndevBiomes;
@@ -8,7 +7,6 @@ import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -80,13 +78,7 @@ public class IndevBiomeProvider extends AbstractBiomeProvider {
 
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        List<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
-
-        for (Identifier i : IndevBiomes.BIOMES) {
-            biomeList.add(RegistryKey.of(Registry.BIOME_KEY, i));
-        }
-        
-        return biomeList;
+        return IndevBiomes.BIOME_KEYS;
     }
 
 }

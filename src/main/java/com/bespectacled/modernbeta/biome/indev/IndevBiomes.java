@@ -1,11 +1,16 @@
 package com.bespectacled.modernbeta.biome.indev;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
 
 public class IndevBiomes {
     public static final Identifier INDEV_EDGE_ID = ModernBeta.createId("indev_edge");
@@ -33,6 +38,8 @@ public class IndevBiomes {
         INDEV_WOODS_ID,
         INDEV_SNOWY_ID
     );
+    
+    public static final List<RegistryKey<Biome>> BIOME_KEYS = BIOMES.stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
 
     public static void registerBiomes() {
         Registry.register(BuiltinRegistries.BIOME, INDEV_EDGE_ID, IndevNormalEdge.BIOME);

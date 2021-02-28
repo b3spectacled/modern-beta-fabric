@@ -1,7 +1,9 @@
 package com.bespectacled.modernbeta.biome.classic;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
@@ -10,6 +12,8 @@ import com.bespectacled.modernbeta.gen.WorldType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
 
 public class ClassicBiomes {
     public static final Identifier ALPHA_ID = ModernBeta.createId("alpha");
@@ -25,6 +29,10 @@ public class ClassicBiomes {
     public static final Map<BiomeType, Identifier> INFDEV_BIOMES = new HashMap<BiomeType, Identifier>();
     public static final Map<BiomeType, Identifier> ALPHA_BIOMES = new HashMap<BiomeType, Identifier>();
     
+    public static final List<RegistryKey<Biome>> ALPHA_BIOME_KEYS;
+    public static final List<RegistryKey<Biome>> INFDEV_BIOME_KEYS;
+    public static final List<RegistryKey<Biome>> INFDEV_OLD_BIOME_KEYS;
+    
     static {
         INFDEV_OLD_BIOMES.put(BiomeType.CLASSIC, INFDEV_OLD_ID);
         INFDEV_OLD_BIOMES.put(BiomeType.WINTER, INFDEV_OLD_WINTER_ID);
@@ -34,6 +42,10 @@ public class ClassicBiomes {
         
         ALPHA_BIOMES.put(BiomeType.CLASSIC, ALPHA_ID);
         ALPHA_BIOMES.put(BiomeType.WINTER, ALPHA_WINTER_ID);
+        
+        ALPHA_BIOME_KEYS = ALPHA_BIOMES.values().stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
+        INFDEV_BIOME_KEYS = INFDEV_BIOMES.values().stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
+        INFDEV_OLD_BIOME_KEYS = INFDEV_OLD_BIOMES.values().stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
     }
     
     public static void registerAlphaBiomes() {

@@ -1,17 +1,18 @@
 package com.bespectacled.modernbeta.biome.beta;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
 
 public class BetaBiomes {
-    public enum BetaBiomeType {
-        LAND, OCEAN, ICE_DESERT
-    }
-    
     public static final Identifier FOREST_ID = ModernBeta.createId("forest");
     public static final Identifier SHRUBLAND_ID = ModernBeta.createId("shrubland");
     public static final Identifier DESERT_ID = ModernBeta.createId("desert");
@@ -54,6 +55,8 @@ public class BetaBiomes {
         SKY_ID
     );
     
+    public static final List<RegistryKey<Biome>> BIOME_KEYS = BIOMES.stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
+    
     public static void registerBiomes() {
         Registry.register(BuiltinRegistries.BIOME, FOREST_ID, Forest.BIOME);
         Registry.register(BuiltinRegistries.BIOME, SHRUBLAND_ID, Shrubland.BIOME);
@@ -74,149 +77,5 @@ public class BetaBiomes {
         Registry.register(BuiltinRegistries.BIOME, FROZEN_OCEAN_ID, FrozenOcean.BIOME);
         
         Registry.register(BuiltinRegistries.BIOME, SKY_ID, Sky.BIOME);
-    }
-    
-    /*
-     * Beta Biome Cache 
-     */
-    
-    private static final Identifier LAND_BIOME_TABLE[] = new Identifier[4096];
-    private static final Identifier ICE_DESERT_BIOME_TABLE[] = new Identifier[4096];
-    private static final Identifier OCEAN_BIOME_TABLE[] = new Identifier[4096];
-    
-    static {
-        generateBiomeLookup();
-    }
-    
-    public static Identifier getBiomeFromLookup(double temp, double humid, BetaBiomeType type) {
-        int i = (int) (temp * 63D);
-        int j = (int) (humid * 63D);
-        
-        Identifier biomeId;
-        
-        switch(type) {
-            case OCEAN:
-                biomeId = OCEAN_BIOME_TABLE[i + j * 64];
-                break;
-            case ICE_DESERT:
-                biomeId= ICE_DESERT_BIOME_TABLE[i + j * 64];
-                break;
-            default:
-                biomeId = LAND_BIOME_TABLE[i + j * 64];
-        }
-
-        return biomeId;
-    }
-    
-    private static void generateBiomeLookup() {
-        for (int i = 0; i < 64; i++) {
-            for (int j = 0; j < 64; j++) {
-                LAND_BIOME_TABLE[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F, false);
-                ICE_DESERT_BIOME_TABLE[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F, true);
-                OCEAN_BIOME_TABLE[i + j * 64] = getOceanBiome((float) i / 63F, (float) j / 63F);
-            }
-        }
-    }
-    
-    private static Identifier getBiome(float temp, float humid, boolean genIceDesert) {
-        humid *= temp;
-
-        if (temp < 0.1F) {
-            if (genIceDesert)
-                return ICE_DESERT_ID;
-            else
-                return TUNDRA_ID;
-        }
-
-        if (humid < 0.2F) {
-            if (temp < 0.5F) {
-                return TUNDRA_ID;
-            }
-            if (temp < 0.95F) {
-                return SAVANNA_ID;
-            } else {
-                return DESERT_ID;
-            }
-        }
-
-        if (humid > 0.5F && temp < 0.7F) {
-            return SWAMPLAND_ID;
-        }
-
-        if (temp < 0.5F) {
-            return TAIGA_ID;
-        }
-
-        if (temp < 0.97F) {
-            if (humid < 0.35F) {
-                return SHRUBLAND_ID;
-            } else {
-                return FOREST_ID;
-            }
-        }
-
-        if (humid < 0.45F) {
-            return PLAINS_ID;
-        }
-
-        if (humid < 0.9F) {
-            return SEASONAL_FOREST_ID;
-        } else {
-            return RAINFOREST_ID;
-        }
-
-    }
-
-    private static Identifier getOceanBiome(float temp, float humid) {
-        humid *= temp;
-
-        // == Vanilla Biome IDs ==
-        // 0 = Ocean
-        // 44 = Warm Ocean
-        // 45 = Lukewarm Ocean
-        // 46 = Cold Ocean
-        // 10 = Frozen Ocean
-
-        if (temp < 0.1F) {
-            return FROZEN_OCEAN_ID;
-        }
-
-        if (humid < 0.2F) {
-            if (temp < 0.5F) {
-                return FROZEN_OCEAN_ID;
-            }
-            if (temp < 0.95F) {
-                return OCEAN_ID;
-            } else {
-                return OCEAN_ID;
-            }
-        }
-
-        if (humid > 0.5F && temp < 0.7F) {
-            return COLD_OCEAN_ID;
-        }
-
-        if (temp < 0.5F) {
-            return FROZEN_OCEAN_ID;
-        }
-
-        if (temp < 0.97F) {
-            if (humid < 0.35F) {
-                return OCEAN_ID;
-            } else {
-                return OCEAN_ID;
-            }
-        }
-
-        if (humid < 0.45F) {
-            return OCEAN_ID;
-        }
-
-        if (humid < 0.9F) {
-            return LUKEWARM_OCEAN_ID;
-        } else {
-            return WARM_OCEAN_ID;
-        }
-
     }
 }

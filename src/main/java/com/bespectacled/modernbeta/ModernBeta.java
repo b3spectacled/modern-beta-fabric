@@ -20,6 +20,7 @@ import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.OldBiomes;
 import com.bespectacled.modernbeta.biome.vanilla.VanillaBiomeModifier;
+import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.OldGeneratorType;
@@ -49,12 +50,13 @@ public class ModernBeta implements ModInitializer {
         OldBiomes.register();
         OldBiomeSource.register();
         OldChunkGenerator.register();
-        
         VanillaBiomeModifier.addShrineToOceans();
         
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             OldGeneratorType.register();
         }
+
+        Compat.setupCompat();
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");
 

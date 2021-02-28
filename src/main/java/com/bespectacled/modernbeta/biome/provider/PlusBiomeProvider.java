@@ -1,8 +1,8 @@
 package com.bespectacled.modernbeta.biome.provider;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
@@ -33,13 +33,6 @@ public class PlusBiomeProvider extends AbstractBiomeProvider {
 
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        List<RegistryKey<Biome>> biomeList = new ArrayList<RegistryKey<Biome>>();
-
-        for (Identifier i : this.biomeMapping.values()) {
-            biomeList.add(RegistryKey.of(Registry.BIOME_KEY, i));
-        }
-        
-        return biomeList;
+        return this.biomeMapping.values().stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
     }
-
 }

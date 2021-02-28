@@ -4,12 +4,15 @@ import java.util.Random;
 
 import com.mojang.serialization.Codec;
 
+import net.minecraft.class_5867;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreFeature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.feature.OreFeatureConfig.class_5876;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 
 public class OreClayFeature extends Feature<OreFeatureConfig> {
@@ -23,6 +26,7 @@ public class OreClayFeature extends Feature<OreFeatureConfig> {
         BlockPos pos = featureContext.getOrigin();
         OreFeatureConfig config = featureContext.getConfig();
         Random random = featureContext.getRandom();
+        class_5867 worldAccess = new class_5867(world);
         
         int startX = pos.getX();
         int startY = pos.getY();
@@ -79,7 +83,12 @@ public class OreClayFeature extends Feature<OreFeatureConfig> {
                         if(config.target.test(world.getBlockState(mutablePos.set(x, y, z)), random)) {
                             world.setBlockState(mutablePos, config.state, 2);
                         }*/
-                        
+                        for (final class_5876 rule : config.field_29063) {
+                            mutablePos.set(x, y, z);
+                            if (OreFeature.method_33983(world.getBlockState(mutablePos), worldAccess::method_33946, random, config, rule, mutablePos)) {
+                                world.setBlockState(mutablePos, rule.field_29069, 2);
+                            }
+                        }
                         
                     }
 
