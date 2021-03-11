@@ -267,6 +267,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
                                 heightmapSURFACE.trackUpdate(x, y, z, blockToSet);
+                                this.scheduleFluidTick(chunk, aquiferSampler, mutable.set(absX, y, absZ), blockToSet);
 
                                 density += progress;
                             }
@@ -320,7 +321,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
             }
 
             depth0 /= 1.3999999999999999D;
-            depth0 /= 2D;
+            if (!this.generateDeepOceans) depth0 /= 2D; // Omitting this creates the Infdev 20100611 generator.
 
             scale = 0.0D;
 
@@ -411,8 +412,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         densityWithOffset = this.sampleNoiseCave(
             x * this.horizontalNoiseResolution, 
             y * this.verticalNoiseResolution, 
-            z * this.horizontalNoiseResolution, 
-            density, 
+            z * this.horizontalNoiseResolution,
             densityWithOffset
         );
         

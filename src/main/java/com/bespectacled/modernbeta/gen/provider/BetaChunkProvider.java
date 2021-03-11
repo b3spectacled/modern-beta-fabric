@@ -263,14 +263,14 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                                 int z = (subChunkZ * this.horizontalNoiseResolution + subZ);
                                 int absZ = (chunk.getPos().z << 4) + z;
                                 
-                                //double temp = BetaClimateSampler.getInstance().sampleTemp(absX, absZ);
-
-                                //BlockState blockToSet = getBlockState(structureWeightSampler, absX, y, absZ, density);
+                                //double temp = BetaClimateSampler.INSTANCE.sampleTemp(absX, absZ);
+                                //BlockState blockToSet = this.getBlockState(structureWeightSampler, aquiferSampler, absX, y, absZ, density, temp);
                                 BlockState blockToSet = this.getBlockState(structureWeightSampler, aquiferSampler, absX, y, absZ, density);
                                 chunk.setBlockState(mutable.set(x, y, z), blockToSet, false);
 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
                                 heightmapSURFACE.trackUpdate(x, y, z, blockToSet);
+                                this.scheduleFluidTick(chunk, aquiferSampler, mutable.set(absX, y, absZ), blockToSet);
 
                                 density += progress;
                             }
@@ -336,7 +336,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
             }
 
             depth0 /= 1.3999999999999999D;
-            depth0 /= 2D;
+            if (!this.generateDeepOceans) depth0 /= 2D;
 
             scale = 0.0D;
 
@@ -437,8 +437,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         densityWithOffset = this.sampleNoiseCave(
             x * this.horizontalNoiseResolution, 
             y * this.verticalNoiseResolution, 
-            z * this.horizontalNoiseResolution, 
-            density, 
+            z * this.horizontalNoiseResolution,
             densityWithOffset
         );
         
@@ -455,8 +454,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
     }
     
     private int sampleHeightmap(int sampleX, int sampleZ) {
-        int startX = (sampleX >> 4) << 4;
-        int startZ = (sampleZ >> 4) << 4;
+        int startX = MathHelper.floorDiv(sampleX, 16) * 16;
+        int startZ = MathHelper.floorDiv(sampleZ, 16) * 16;
         int transformCoord = 16 / (this.noiseSizeX + 1);
         
         int noiseX = MathHelper.floorDiv(sampleX, this.horizontalNoiseResolution);

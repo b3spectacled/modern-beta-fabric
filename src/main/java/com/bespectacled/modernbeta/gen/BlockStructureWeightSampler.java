@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.PoolStructurePiece;
+import net.minecraft.structure.StrongholdGenerator;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.world.chunk.Chunk;
@@ -29,6 +30,11 @@ public class BlockStructureWeightSampler extends StructureWeightSampler {
         while (pieceIterator.hasNext()) {
             StructurePiece curStructurePiece = (StructurePiece) pieceIterator.next();
             BlockBox blockBox = curStructurePiece.getBoundingBox();
+            
+            // Skip if stronghold (don't generate padding)
+            if (isStrongholdPiece(curStructurePiece)) {
+                break;
+            }
 
             int sX = Math.max(0, Math.max(blockBox.minX - x, x - blockBox.maxX));
             int sY = y - (blockBox.minY + ((curStructurePiece instanceof PoolStructurePiece)
@@ -60,5 +66,19 @@ public class BlockStructureWeightSampler extends StructureWeightSampler {
         junctionIterator.back(junctions.size());
         
         return blockToSet;
+    }
+    
+    private static boolean isStrongholdPiece(StructurePiece piece) {
+        return 
+            piece instanceof StrongholdGenerator.ChestCorridor ||
+            piece instanceof StrongholdGenerator.Corridor ||
+            piece instanceof StrongholdGenerator.FiveWayCrossing ||
+            piece instanceof StrongholdGenerator.Library || 
+            piece instanceof StrongholdGenerator.PortalRoom ||
+            piece instanceof StrongholdGenerator.PrisonHall || 
+            piece instanceof StrongholdGenerator.SpiralStaircase ||
+            piece instanceof StrongholdGenerator.SmallCorridor ||
+            piece instanceof StrongholdGenerator.SquareRoom ||
+            piece instanceof StrongholdGenerator.Stairs;
     }
 }

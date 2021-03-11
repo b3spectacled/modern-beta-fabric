@@ -12,16 +12,16 @@ public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
     private boolean generateInfdevPyramid;
     private boolean generateInfdevWall;
     
-    public InfdevOldCustomizeLevelScreen(CreateWorldScreen parent, CompoundTag providerSettings, Consumer<CompoundTag> consumer) {
-        super(parent, providerSettings, consumer);
+    public InfdevOldCustomizeLevelScreen(CreateWorldScreen parent, CompoundTag settings, Consumer<CompoundTag> consumer) {
+        super(parent, settings, consumer);
         
         this.generateInfdevPyramid = ModernBeta.BETA_CONFIG.generateInfdevPyramid;
         this.generateInfdevWall = ModernBeta.BETA_CONFIG.generateInfdevWall;
         
-        this.providerSettings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
-        this.providerSettings.putBoolean("generateInfdevWall", this.generateInfdevWall);
+        this.settings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
+        this.settings.putBoolean("generateInfdevWall", this.generateInfdevWall);
         
-        this.consumer.accept(this.providerSettings);
+        this.consumer.accept(this.settings);
     }
     
     @Override
@@ -33,9 +33,9 @@ public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
                (gameOptions) -> { return generateInfdevPyramid; }, 
                (gameOptions, option, value) -> { // Setter
                    this.generateInfdevPyramid = value;
-                   this.providerSettings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
+                   this.settings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
                    
-                   this.consumer.accept(this.providerSettings);
+                   this.consumer.accept(this.settings);
        }));
        
        this.buttonList.addSingleOptionEntry(
@@ -43,9 +43,9 @@ public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
                (gameOptions) -> { return generateInfdevWall; }, 
                (gameOptions, option, value) -> { // Setter
                    this.generateInfdevWall = value;
-                   this.providerSettings.putBoolean("generateInfdevWall", this.generateInfdevWall);
+                   this.settings.putBoolean("generateInfdevWall", this.generateInfdevWall);
                    
-                   this.consumer.accept(this.providerSettings);
+                   this.consumer.accept(this.settings);
        }));
     }
 }

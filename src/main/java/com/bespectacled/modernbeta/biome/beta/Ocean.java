@@ -24,7 +24,6 @@ public class Ocean {
     
     private static Biome create() {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
-        DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
         DefaultBiomeFeatures.addOceanMobs(spawnSettings, 10, 4, 10);
         
         spawnSettings.spawn(SpawnGroup.WATER_CREATURE, new SpawnEntry(EntityType.DOLPHIN, 1, 1, 2));

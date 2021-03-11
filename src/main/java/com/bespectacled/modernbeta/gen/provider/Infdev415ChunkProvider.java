@@ -252,6 +252,7 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
                                 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
                                 heightmapSURFACE.trackUpdate(x, y, z, blockToSet);
+                                this.scheduleFluidTick(chunk, aquiferSampler, mutable.set(absX, y, absZ), blockToSet);
                             }
                         }
                     }
@@ -282,9 +283,9 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
         // Check if y (in scaled space) is below sealevel
         // and increase density accordingly.
         //double elevGrad = y * 4.0 - 64.0;
-        double heightOffset = y * this.verticalNoiseResolution - (double)this.seaLevel;
-        if (heightOffset < 0.0) {
-            heightOffset *= 3.0;
+        double densityOffset = y * this.verticalNoiseResolution - (double)this.seaLevel;
+        if (densityOffset < 0.0) {
+            densityOffset *= 3.0;
         }
         
         double coordinateScale = 684.412D * this.xzScale; 
@@ -296,7 +297,7 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
         
         double limitScale = 512.0D;
         
-        double heightVal;
+        double density;
         
         // Default values: 8.55515, 1.71103, 8.55515
         double mainNoiseVal = this.mainNoiseOctaves.sample(
@@ -305,49 +306,48 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
             z * coordinateScale / mainNoiseScaleZ) / 2.0;
         
         if (mainNoiseVal < -1) { // Lower limit(?)
-            heightVal = MathHelper.clamp(
-                this.minLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - heightOffset, 
+            density = MathHelper.clamp(
+                this.minLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - densityOffset, 
                 -10.0, 
                 10.0
             );
             
         } else if (mainNoiseVal > 1.0) { // Upper limit(?)
-            heightVal = MathHelper.clamp(
-                this.maxLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - heightOffset, 
+            density = MathHelper.clamp(
+                this.maxLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - densityOffset, 
                 -10.0, 
                 10.0
             );
             
         } else {
             double minLimitVal = MathHelper.clamp(
-                this.minLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - heightOffset, 
+                this.minLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - densityOffset, 
                 -10.0, 
                 10.0
             );
             
             double maxLimitVal = MathHelper.clamp(
-                this.maxLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - heightOffset, 
+                this.maxLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale - densityOffset, 
                 -10.0, 
                 10.0
             );
             
             double mix = (mainNoiseVal + 1.0) / 2.0;
             
-            heightVal = minLimitVal + (maxLimitVal - minLimitVal) * mix;
+            density = minLimitVal + (maxLimitVal - minLimitVal) * mix;
         }
         
-        heightVal = this.sampleNoiseCave(
-            (int)x * this.horizontalNoiseResolution,
-            (int)y * this.verticalNoiseResolution * 2,
-            (int)z * this.horizontalNoiseResolution,
-            this.maxLimitNoiseOctaves.sample(x * coordinateScale, y * heightScale, z * coordinateScale) / limitScale,
-            heightVal
+        density = this.sampleNoiseCave(
+            x * this.horizontalNoiseResolution,
+            y * this.verticalNoiseResolution,
+            z * this.horizontalNoiseResolution,
+            density
         );
         
         if (this.generateNoiseCaves)
-            heightVal = this.applyBottomSlide(heightVal, y);
+            density = this.applyBottomSlide(density, y);
     
-        return heightVal;
+        return density;
     }
     
     private int sampleHeightmap(int sampleX, int sampleZ) {

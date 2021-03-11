@@ -14,33 +14,46 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     
     private BiomeType biomeType;
     private boolean generateOceans;
+    private boolean generateDeepOceans;
     private boolean generateNoiseCaves;
     private boolean generateAquifers;
     private boolean generateDeepslate;
     
     private final boolean showOceansOption;
+    private final boolean showDeepOceansOption;
+    private final boolean showNoiseOptions;
     
-    public InfCustomizeLevelScreen(CreateWorldScreen parent, CompoundTag providerSettings, Consumer<CompoundTag> consumer) {
-        super(parent, providerSettings, consumer);
+    public InfCustomizeLevelScreen(CreateWorldScreen parent, CompoundTag settings, Consumer<CompoundTag> consumer) {
+        super(parent, settings, consumer);
         
-        this.showOceansOption = this.worldType.hasOceans();
         this.biomeType = this.worldType.getDefaultBiomeType();
-        
         this.generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
-        this.generateNoiseCaves = true; // TODO: Add configuration options later
-        this.generateAquifers = true;
-        this.generateDeepslate = true;
+        this.generateDeepOceans = ModernBeta.BETA_CONFIG.generateDeepOceans;
+        this.generateNoiseCaves = ModernBeta.BETA_CONFIG.generateNoiseCaves;
+        this.generateAquifers = ModernBeta.BETA_CONFIG.generateAquifers;
+        this.generateDeepslate = ModernBeta.BETA_CONFIG.generateDeepslate;
         
-        this.providerSettings.putString("biomeType", this.biomeType.getName());
-        this.providerSettings.putBoolean("generateOceans", this.generateOceans);
-
-        this.providerSettings.putBoolean("generateDeepslate", this.generateDeepslate);
-        if (this.worldType.isDensityBased()) 
-            this.providerSettings.putBoolean("generateNoiseCaves", this.generateNoiseCaves);
-        if (this.worldType.isDensityBased() && this.showOceansOption) 
-            this.providerSettings.putBoolean("generateAquifers", this.generateAquifers);
+        this.showOceansOption = this.worldType.showOceansOption();
+        this.showDeepOceansOption = this.worldType.showDeepOceansOption();
+        this.showNoiseOptions = this.worldType.showNoiseOptions();
         
-        this.consumer.accept(this.providerSettings);
+        this.settings.putString("biomeType", this.biomeType.getName());
+        
+        if (this.showOceansOption)
+            this.settings.putBoolean("generateOceans", this.generateOceans);
+        
+        if (this.showDeepOceansOption)
+            this.settings.putBoolean("generateDeepOceans", this.generateDeepOceans);
+        
+        if (this.showNoiseOptions) 
+            this.settings.putBoolean("generateNoiseCaves", this.generateNoiseCaves);
+        
+        if (this.showNoiseOptions && this.showOceansOption) 
+            this.settings.putBoolean("generateAquifers", this.generateAquifers);
+        
+        this.settings.putBoolean("generateDeepslate", this.generateDeepslate);
+        
+        this.consumer.accept(this.settings);
     }
     
     @Override
@@ -55,9 +68,9 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return this.biomeType; }, 
                 (gameOptions, option, value) -> {
                     this.biomeType = value;
-                    this.providerSettings.putString("biomeType", this.biomeType.getName());
+                    this.settings.putString("biomeType", this.biomeType.getName());
                     
-                    this.consumer.accept(this.providerSettings);
+                    this.consumer.accept(this.settings);
                 })
         );
             
@@ -68,33 +81,45 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return this.generateOceans; }, 
                 (gameOptions, option, value) -> { // Setter
                     this.generateOceans = value;
-                    this.providerSettings.putBoolean("generateOceans", this.generateOceans);
+                    this.settings.putBoolean("generateOceans", this.generateOceans);
                     
-                    this.consumer.accept(this.providerSettings);
+                    this.consumer.accept(this.settings);
             }));
         }
         
-        if (this.worldType.isDensityBased()) {
+        if (this.showDeepOceansOption) {
+            buttonList.addSingleOptionEntry(
+                CyclingOption.create("createWorld.customize.inf.generateDeepOceans", 
+                (gameOptions) -> { return this.generateDeepOceans; }, 
+                (gameOptions, option, value) -> { // Setter
+                    this.generateDeepOceans = value;
+                    this.settings.putBoolean("generateDeepOceans", this.generateDeepOceans);
+                    
+                    this.consumer.accept(this.settings);
+            }));
+        }
+        
+        if (this.showNoiseOptions) {
             buttonList.addSingleOptionEntry(
                 CyclingOption.create("createWorld.customize.inf.generateNoiseCaves", 
                 (gameOptions) -> { return this.generateNoiseCaves; }, 
                 (gameOptions, option, value) -> { // Setter
                     this.generateNoiseCaves = value;
-                    this.providerSettings.putBoolean("generateNoiseCaves", this.generateNoiseCaves);
+                    this.settings.putBoolean("generateNoiseCaves", this.generateNoiseCaves);
                     
-                    this.consumer.accept(this.providerSettings);
+                    this.consumer.accept(this.settings);
             }));
         }
         
-        if (this.worldType.isDensityBased() && this.showOceansOption) {
+        if (this.showNoiseOptions && this.showOceansOption) {
             buttonList.addSingleOptionEntry(
                 CyclingOption.create("createWorld.customize.inf.generateAquifers", 
                 (gameOptions) -> { return this.generateAquifers; }, 
                 (gameOptions, option, value) -> { // Setter
                     this.generateAquifers = value;
-                    this.providerSettings.putBoolean("generateAquifers", this.generateAquifers);
+                    this.settings.putBoolean("generateAquifers", this.generateAquifers);
                     
-                    this.consumer.accept(this.providerSettings);
+                    this.consumer.accept(this.settings);
             }));
         }
         
@@ -103,9 +128,9 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
             (gameOptions) -> { return this.generateNoiseCaves; }, 
             (gameOptions, option, value) -> { // Setter
                 this.generateDeepslate = value;
-                this.providerSettings.putBoolean("generateDeepslate", this.generateDeepslate);
+                this.settings.putBoolean("generateDeepslate", this.generateDeepslate);
                 
-                this.consumer.accept(this.providerSettings);
+                this.consumer.accept(this.settings);
         }));
         
     }

@@ -3,23 +3,23 @@ package com.bespectacled.modernbeta.carver;
 import java.util.Random;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.class_5871;
-import net.minecraft.class_5873;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.carver.CarverConfig;
+import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.CaveCarver;
 
 public class DeepBetaCaveCarver extends CaveCarver implements IOldCaveCarver {
 
-    public DeepBetaCaveCarver(Codec<class_5871> codec) {
+    public DeepBetaCaveCarver(Codec<CarverConfig> codec) {
         super(codec);
     }
 
     public boolean carve(
-        class_5873 heightContext,
+        CarverContext heightContext,
         Chunk chunk,
         Random random,
         int chunkX,

@@ -7,16 +7,22 @@ import java.util.Random;
  * 
  * */
 public class SimplexOctaveNoise extends Noise {
-    private SimplexNoise[] generators;
-    private int octaves;
-    private double scaleDivisor;
+    private final SimplexNoise[] generators;
+    private final int octaves;
+    private final double scaleDivisor;
     
-    public SimplexOctaveNoise(Random random, int integer) {
-        this.octaves = integer;
-        this.generators = new SimplexNoise[integer];
+    public SimplexOctaveNoise(Random random, int octaves) {
+        this.octaves = octaves;
+        this.generators = new SimplexNoise[octaves];
         this.scaleDivisor = 1.5D;
         
-        for (int i = 0; i < integer; ++i) {
+        for (int i = 0; i < octaves; ++i) {
+            this.generators[i] = new SimplexNoise(random);
+        }
+    }
+    
+    public void setOctaves(Random random) {
+        for (int i = 0; i < this.octaves; ++i) {
             this.generators[i] = new SimplexNoise(random);
         }
     }

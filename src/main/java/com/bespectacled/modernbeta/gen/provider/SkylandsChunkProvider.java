@@ -29,7 +29,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     
     public SkylandsChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 64, 0, -10, 1, 2, 1.0, 1.0, 80, 160, false, false, false, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, 0, 128, 64, 0, -10, 1, 2, 2.0, 1.0, 80, 160, false, false, false, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -249,8 +249,6 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         double coordinateScale = 684.41200000000003D * this.xzScale; 
         double heightScale = 684.41200000000003D * this.yScale;
         
-        coordinateScale *= 2D;
-        
         double mainNoiseScaleX = this.xzFactor; // Default: 80
         double mainNoiseScaleY = this.yFactor;  // Default: 160
         double mainNoiseScaleZ = this.xzFactor;
@@ -286,8 +284,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         densityWithOffset = this.sampleNoiseCave(
             x * this.horizontalNoiseResolution, 
             y * this.verticalNoiseResolution, 
-            z * this.horizontalNoiseResolution, 
-            density, 
+            z * this.horizontalNoiseResolution,
             densityWithOffset
         );
         

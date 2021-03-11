@@ -9,6 +9,7 @@ public enum BiomeType {
     WINTER("winter"),
     PLUS("plus"),
     VANILLA("vanilla");
+    //RELEASE("release");
     //NETHER("nether");
     
     private final String name;

@@ -17,13 +17,13 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
-public class OldGenUtil {
+public class OldGeneratorUtil {
     private static final BlockPos.Mutable POS = new BlockPos.Mutable();
     
     public static int getSolidHeight(Chunk chunk, int worldHeight, int x, int z) {
         for (int y = worldHeight - 1; y >= 0; y--) {
             BlockState someBlock = chunk.getBlockState(POS.set(x, y, z));
-            if (!(someBlock.equals(BlockStates.AIR) || someBlock.equals(BlockStates.WATER)))
+            if (!(someBlock.equals(BlockStates.AIR) || someBlock.equals(BlockStates.WATER) || someBlock.equals(BlockStates.ICE)))
                 return y;
         }
         return 0;
@@ -64,7 +64,7 @@ public class OldGenUtil {
                 int absX = chunkPos.getStartX() + (x << 2);
                 int absZ = chunkPos.getStartZ() + (z << 2);
                 
-                if (OldGenUtil.getSolidHeight(chunk, worldHeight + minY, absX, absZ) < seaLevel - 4) {
+                if (OldGeneratorUtil.getSolidHeight(chunk, worldHeight + minY, absX, absZ) < seaLevel - 4) {
                     BlockPos blockPos = new BlockPos(x, 0, z);
                     oceanPositions.put(blockPos, ((OldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2));
                 }
@@ -77,6 +77,7 @@ public class OldGenUtil {
             int offsetBiomeY = i >> BiomeUtil.HORIZONTAL_SECTION_COUNT + BiomeUtil.HORIZONTAL_SECTION_COUNT;
             int offsetBiomeZ = i >> BiomeUtil.HORIZONTAL_SECTION_COUNT & BiomeUtil.HORIZONTAL_BIT_MASK;
             
+            // Skip if below y-cutoff.
             int biomeY = biomeMinY + offsetBiomeY;
             boolean isAboveCutoff = biomeY >= biomeCutoff;
             

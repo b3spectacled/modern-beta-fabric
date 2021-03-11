@@ -56,7 +56,13 @@ public class ModernBeta implements ModInitializer {
             OldGeneratorType.register();
         }
 
+        // Set up mod compatibility
         Compat.setupCompat();
+        
+        // Serialize various world gen stuff to JSON
+        //OldConfiguredFeatures.export();
+        //OldBiomes.export();
+        //OldGeneratorSettings.export();
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");
 

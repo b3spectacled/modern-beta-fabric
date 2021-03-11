@@ -10,7 +10,8 @@
     "MixinChunkGeneratorInvoker",
     "MixinStructureWeightSampler",
     "MixinAquiferSamplerInvoker",
-    "MixinConfiguredCarverAccessor"
+    "MixinConfiguredCarverAccessor",
+    "MixinChunkGeneratorSettingsInvoker"
   ],
   "client": [
     "client.MixinBlockColors",

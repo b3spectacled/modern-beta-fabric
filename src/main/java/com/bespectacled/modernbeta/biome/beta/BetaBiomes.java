@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.biome.OldBiomes;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -58,24 +58,24 @@ public class BetaBiomes {
     public static final List<RegistryKey<Biome>> BIOME_KEYS = BIOMES.stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
     
     public static void registerBiomes() {
-        Registry.register(BuiltinRegistries.BIOME, FOREST_ID, Forest.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, SHRUBLAND_ID, Shrubland.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, DESERT_ID, Desert.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, SAVANNA_ID, Savanna.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, PLAINS_ID, Plains.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, SEASONAL_FOREST_ID, SeasonalForest.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, RAINFOREST_ID, Rainforest.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, SWAMPLAND_ID, Swampland.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, TAIGA_ID, Taiga.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, TUNDRA_ID, Tundra.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, ICE_DESERT_ID, IceDesert.BIOME);
+        OldBiomes.register(FOREST_ID, Forest.BIOME);
+        OldBiomes.register(SHRUBLAND_ID, Shrubland.BIOME);
+        OldBiomes.register(DESERT_ID, Desert.BIOME);
+        OldBiomes.register(SAVANNA_ID, Savanna.BIOME);
+        OldBiomes.register(PLAINS_ID, Plains.BIOME);
+        OldBiomes.register(SEASONAL_FOREST_ID, SeasonalForest.BIOME);
+        OldBiomes.register(RAINFOREST_ID, Rainforest.BIOME);
+        OldBiomes.register(SWAMPLAND_ID, Swampland.BIOME);
+        OldBiomes.register(TAIGA_ID, Taiga.BIOME);
+        OldBiomes.register(TUNDRA_ID, Tundra.BIOME);
+        OldBiomes.register(ICE_DESERT_ID, IceDesert.BIOME);
         
-        Registry.register(BuiltinRegistries.BIOME, OCEAN_ID, Ocean.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, LUKEWARM_OCEAN_ID, LukewarmOcean.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, WARM_OCEAN_ID, WarmOcean.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, COLD_OCEAN_ID, ColdOcean.BIOME);
-        Registry.register(BuiltinRegistries.BIOME, FROZEN_OCEAN_ID, FrozenOcean.BIOME);
+        OldBiomes.register(OCEAN_ID, Ocean.BIOME);
+        OldBiomes.register(LUKEWARM_OCEAN_ID, LukewarmOcean.BIOME);
+        OldBiomes.register(WARM_OCEAN_ID, WarmOcean.BIOME);
+        OldBiomes.register(COLD_OCEAN_ID, ColdOcean.BIOME);
+        OldBiomes.register(FROZEN_OCEAN_ID, FrozenOcean.BIOME);
         
-        Registry.register(BuiltinRegistries.BIOME, SKY_ID, Sky.BIOME);
+        OldBiomes.register(SKY_ID, Sky.BIOME);
     }
 }

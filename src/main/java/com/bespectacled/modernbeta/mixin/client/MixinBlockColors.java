@@ -6,7 +6,11 @@ import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.world.FoliageColors;
 import net.minecraft.client.color.world.GrassColors;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockRenderView;
+
+import java.util.Random;
+
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -16,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
+import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
 
 @Mixin(value = BlockColors.class, priority = 1)
@@ -30,6 +35,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Unique private static final BlockState TALL_FERN = Blocks.LARGE_FERN.getDefaultState();
     
     @Unique private static final double[] TEMP_HUMID = new double[2];
+    @Unique private static final PerlinOctaveNoise COLOR_NOISE = new PerlinOctaveNoise(new Random(), 1, true);
 
     @Unique
     public void setSeed(long seed) {
@@ -85,6 +91,11 @@ public class MixinBlockColors implements MutableBlockColors {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
+        
+        double tempModifier = MathHelper.clamp(1.0 - (256D - y) / 128D, 0.0, 0.5);
+        //double tempModifier = 0.0;
+        
+        //double modifier = COLOR_NOISE.sample(x >> 2, z >> 2) * 0.1;
 
         if (state.equals(GRASS) || state.equals(FERN) || state.equals(TALL_GRASS) || state.equals(TALL_FERN)) {
             long shift = x * 0x2fc20f + z * 0x5d8875 + y;
@@ -95,7 +106,7 @@ public class MixinBlockColors implements MutableBlockColors {
         }
 
         BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID, x, z);
-        return GrassColors.getColor(TEMP_HUMID[0], TEMP_HUMID[1]);
+        return GrassColors.getColor(MathHelper.clamp(TEMP_HUMID[0] - tempModifier, 0.0, 1.0), TEMP_HUMID[1]);
     }
 
     @Unique
@@ -105,9 +116,13 @@ public class MixinBlockColors implements MutableBlockColors {
         }
 
         int x = pos.getX();
+        int y = pos.getY();
         int z = pos.getZ();
+        
+        double tempModifier = MathHelper.clamp(1.0 - (256D - y) / 128D, 0.0, 0.5);
+        //double tempModifier = 0.0;
 
         BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID, x, z);
-        return FoliageColors.getColor(TEMP_HUMID[0], TEMP_HUMID[1]);
+        return FoliageColors.getColor(MathHelper.clamp(TEMP_HUMID[0] - tempModifier, 0.0, 1.0), TEMP_HUMID[1]);
     }
 }

@@ -36,6 +36,18 @@ public class ModernBetaConfig implements ConfigData {
     public boolean generateOceans = true;
     
     @ConfigEntry.Gui.Excluded
+    public boolean generateDeepOceans = false;
+    
+    @ConfigEntry.Gui.Excluded
+    public boolean generateNoiseCaves = true;
+    
+    @ConfigEntry.Gui.Excluded
+    public boolean generateAquifers = true;
+    
+    @ConfigEntry.Gui.Excluded
+    public boolean generateDeepslate = true;
+    
+    @ConfigEntry.Gui.Excluded
     public String biomeType = BiomeType.BETA.getName();
     
     /* Old Infdev Generation */

@@ -19,7 +19,6 @@ import com.bespectacled.modernbeta.structure.OldStructures;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.class_5873;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureManager;
@@ -44,6 +43,7 @@ import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.Carver;
+import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
@@ -52,12 +52,14 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 public class OldChunkGenerator extends NoiseChunkGenerator {
-    
     public static final Codec<OldChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
-        .group(BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
-                Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
-                OldGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
+        .group(
+            BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
+            Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
+            OldGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
         .apply(instance, instance.stable(OldChunkGenerator::new)));
+    
+    private static final int OCEAN_Y_CUT_OFF = 40;
     
     private final Random random;
     
@@ -103,8 +105,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.chunkProvider.provideSurface(region, chunk, this.biomeSource);
         
         if (this.generateOceans) {
-            int oceanCutoff = 40;
-            OldGenUtil.replaceOceansInChunk(chunk, this.biomeSource, this.getWorldHeight(), this.getMinimumY(), this.getSeaLevel(), oceanCutoff);
+            OldGeneratorUtil.replaceOceansInChunk(chunk, this.biomeSource, this.getWorldHeight(), this.getMinimumY(), this.getSeaLevel(), OCEAN_Y_CUT_OFF);
         }
     }
 
@@ -119,7 +120,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         // Skip feature population for Indev chunks outside of level area
         if (this.chunkProvider.skipChunk(chunkPos.x, chunkPos.z)) return;
         
-        Biome biome = OldGenUtil.getOceanBiome(region.getChunk(chunkPos.x, chunkPos.z), this, biomeSource, generateOceans, this.getSeaLevel());
+        Biome biome = OldGeneratorUtil.getOceanBiome(region.getChunk(chunkPos.x, chunkPos.z), this, biomeSource, generateOceans, this.getSeaLevel());
         
         // TODO: Remove chunkRandom at some point
         ChunkRandom chunkRandom = new ChunkRandom();
@@ -142,9 +143,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int mainChunkX = chunkPos.x;
         int mainChunkZ = chunkPos.z;
 
-        Biome biome = OldGenUtil.getOceanBiome(chunk, this, this.biomeSource, this.generateOceans, this.getSeaLevel());
+        Biome biome = OldGeneratorUtil.getOceanBiome(chunk, this, this.biomeSource, this.generateOceans, this.getSeaLevel());
         GenerationSettings genSettings = biome.getGenerationSettings();
-        class_5873 heightContext = new class_5873(this);
+        CarverContext heightContext = new CarverContext(this);
         
         BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);
 
@@ -185,7 +186,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         StructureManager structureManager, 
         long seed
     ) {
-        Biome biome = OldGenUtil.getOceanBiome(chunk, this, this.biomeSource, this.generateOceans, this.getSeaLevel());
+        Biome biome = OldGeneratorUtil.getOceanBiome(chunk, this, this.biomeSource, this.generateOceans, this.getSeaLevel());
 
         ((MixinChunkGeneratorInvoker)this).invokeSetStructureStart(
             ConfiguredStructureFeatures.STRONGHOLD, 

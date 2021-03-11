@@ -7,6 +7,7 @@ import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.decorator.OldDecorators;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.mixin.MixinAquiferSamplerInvoker;
+import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
@@ -25,7 +26,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.AquiferSampler;
 import net.minecraft.world.gen.BlockInterpolator;
 import net.minecraft.world.gen.ChunkRandom;
-import net.minecraft.world.gen.GrimstoneInterpolator;
+import net.minecraft.world.gen.DeepslateInterpolator;
 import net.minecraft.world.gen.NoiseCaveSampler;
 import net.minecraft.world.gen.SimpleRandom;
 import net.minecraft.world.gen.StructureAccessor;
@@ -56,6 +57,8 @@ public abstract class AbstractChunkProvider {
     protected final Supplier<ChunkGeneratorSettings> generatorSettings;
     protected final CompoundTag providerSettings;
     
+    protected final long seed;
+    
     protected final int minY;
     protected final int worldHeight;
     protected final int seaLevel;
@@ -63,8 +66,8 @@ public abstract class AbstractChunkProvider {
     protected final int bedrockFloor;
     protected final int bedrockCeiling;
     
-    protected final int verticalNoiseResolution;   // Number of blocks in a horizontal subchunk
-    protected final int horizontalNoiseResolution; // Number of blocks in a vertical subchunk 
+    protected final int verticalNoiseResolution;   // Number of blocks in a vertical subchunk
+    protected final int horizontalNoiseResolution; // Number of blocks in a horizontal subchunk 
     
     protected final int noiseSizeX; // Number of horizontal subchunks along x
     protected final int noiseSizeZ; // Number of horizontal subchunks along z
@@ -77,7 +80,8 @@ public abstract class AbstractChunkProvider {
     
     protected final double xzFactor;
     protected final double yFactor;
-    
+
+    protected final boolean generateDeepOceans;
     protected final boolean generateNoiseCaves;
     protected final boolean generateAquifers;
     protected final boolean generateDeepslate;
@@ -106,9 +110,9 @@ public abstract class AbstractChunkProvider {
             settings.generatorSettings.get().getGenerationShapeConfig().getSampling().getYScale(),
             settings.generatorSettings.get().getGenerationShapeConfig().getSampling().getXZFactor(),
             settings.generatorSettings.get().getGenerationShapeConfig().getSampling().getYFactor(),
-            true,
-            true,
-            true,
+            ((MixinChunkGeneratorSettingsInvoker)(Object)settings.generatorSettings.get()).invokeHasNoiseCaves(),
+            ((MixinChunkGeneratorSettingsInvoker)(Object)settings.generatorSettings.get()).invokeHasAquifers(),
+            ((MixinChunkGeneratorSettingsInvoker)(Object)settings.generatorSettings.get()).invokeHasDeepslate(),
             settings.generatorSettings.get().getDefaultBlock(),
             settings.generatorSettings.get().getDefaultFluid(),
             settings
@@ -123,9 +127,9 @@ public abstract class AbstractChunkProvider {
         int bedrockFloor,
         int bedrockCeiling,
         int sizeVertical, 
-        int sizeHorizontal, 
+        int sizeHorizontal,
         double xzScale, 
-        double yScale, 
+        double yScale,
         double xzFactor, 
         double yFactor,
         boolean generateNoiseCaves,
@@ -137,6 +141,8 @@ public abstract class AbstractChunkProvider {
     ) {
         this.generatorSettings = settings.generatorSettings;
         this.providerSettings = settings.providerSettings;
+        
+        this.seed = seed;
         
         this.minY = minY;
         this.worldHeight = worldHeight;
@@ -160,6 +166,7 @@ public abstract class AbstractChunkProvider {
         this.xzFactor = xzFactor;
         this.yFactor = yFactor;
         
+        this.generateDeepOceans = this.providerSettings.contains("generateDeepOceans") ? this.providerSettings.getBoolean("generateDeepOceans") : false;
         this.generateNoiseCaves = (this.providerSettings.contains("generateNoiseCaves") && this.providerSettings.getBoolean("generateNoiseCaves")) ? generateNoiseCaves : false;
         this.generateAquifers = (this.providerSettings.contains("generateAquifers") && this.providerSettings.getBoolean("generateAquifers")) ? generateAquifers : false;
         this.generateDeepslate = (this.providerSettings.contains("generateDeepslate") && this.providerSettings.getBoolean("generateDeepslate")) ? generateDeepslate : false;
@@ -172,7 +179,7 @@ public abstract class AbstractChunkProvider {
         this.doublePerlinSampler1 = DoublePerlinNoiseSampler.create(new SimpleRandom(chunkRandom.nextLong()), -3, 1.0, 0.0, 2.0);
         
         this.noiseCaveSampler = this.generateNoiseCaves ? new NoiseCaveSampler(chunkRandom, this.noiseMinY) : null;
-        this.deepslateInterpolator = new GrimstoneInterpolator(seed, this.defaultBlock, this.generateDeepslate ? Blocks.DEEPSLATE.getDefaultState() : BlockStates.STONE);
+        this.deepslateInterpolator = new DeepslateInterpolator(seed, this.defaultBlock, this.generateDeepslate ? Blocks.DEEPSLATE.getDefaultState() : BlockStates.STONE);
         
         RAND.setSeed(seed);
         //HEIGHTMAP_CACHE.clear();
@@ -214,6 +221,10 @@ public abstract class AbstractChunkProvider {
     }
     
     protected BlockState getBlockState(StructureWeightSampler weightSampler, AquiferSampler aquiferSampler, int x, int y, int z, double density) {
+        return this.getBlockState(weightSampler, aquiferSampler, x, y, z, density, 1.0D);
+    }
+    
+    protected BlockState getBlockState(StructureWeightSampler weightSampler, AquiferSampler aquiferSampler, int x, int y, int z, double density, double temp) {
         double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
         clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
         clampedDensity += weightSampler.getWeight(x, y, z);
@@ -227,11 +238,16 @@ public abstract class AbstractChunkProvider {
         
         if (clampedDensity > 0.0) {
             blockStateToSet = this.deepslateInterpolator.sample(x, y, z, this.generatorSettings.get());
+        } else if (aquiferSampler != null && y < this.minY + 9) { 
+            blockStateToSet = BlockStates.LAVA;
         } else {
             int localSeaLevel = (aquiferSampler == null) ? this.getSeaLevel() : aquiferSampler.getWaterLevel();
             
             if (y < localSeaLevel) {
                 blockStateToSet = this.defaultFluid;
+                
+                if (temp < 0.5D && y == this.getSeaLevel() - 1)
+                    blockStateToSet = BlockStates.ICE;
             }
         }
         
@@ -248,9 +264,9 @@ public abstract class AbstractChunkProvider {
         return blockState;
     }
     
-    protected double sampleNoiseCave(int x, int y, int z, double offset, double noise) {
+    protected double sampleNoiseCave(int x, int y, int z, double noise) {
         if (this.noiseCaveSampler != null) {
-            return this.noiseCaveSampler.sample(x, y, z, offset, noise);
+            return this.noiseCaveSampler.sample(x, y, z, noise);
         }
         
         return noise;
@@ -259,7 +275,7 @@ public abstract class AbstractChunkProvider {
     protected AquiferSampler createAquiferSampler(int chunkX, int chunkZ) {
         return this.generateAquifers ? 
             new AquiferSampler(
-                chunkX, 
+                chunkX,
                 chunkZ, 
                 this.doublePerlinSampler0, 
                 this.doublePerlinSampler1, 
@@ -268,6 +284,12 @@ public abstract class AbstractChunkProvider {
                 this.noiseSizeY * this.verticalNoiseResolution
             ) : 
             null;     
+    }
+    
+    protected void scheduleFluidTick(Chunk chunk, AquiferSampler aquiferSampler, BlockPos pos, BlockState blockState) {
+        if (aquiferSampler != null && aquiferSampler.needsFluidTick() && !blockState.getFluidState().isEmpty()) {
+            chunk.getFluidTickScheduler().schedule(pos, blockState.getFluidState().getFluid(), 0);
+        }
     }
     
     protected double applyTopSlide(double noise, int noiseY) {

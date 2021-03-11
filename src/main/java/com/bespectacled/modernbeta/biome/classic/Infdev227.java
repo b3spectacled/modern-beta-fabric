@@ -24,8 +24,8 @@ public class Infdev227 {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         DefaultBiomeFeatures.addFarmAnimals(spawnSettings);
         DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
-        DefaultBiomeFeatures.addOceanMobs(spawnSettings, 10, 4, 10);
         
+        spawnSettings.spawn(SpawnGroup.WATER_CREATURE, new SpawnSettings.SpawnEntry(EntityType.SQUID, 10, 1, 4));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnEntry(EntityType.WOLF, 5, 4, 4));
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();

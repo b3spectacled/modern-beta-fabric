@@ -30,7 +30,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 
 public class IndevChunkProvider extends AbstractChunkProvider {
-    
     private PerlinOctaveNoiseCombined heightNoise1;
     private PerlinOctaveNoiseCombined heightNoise2;
     
@@ -306,8 +305,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             for (int z = 0; z < this.length; ++z) {
                 double islandVar2 = Math.abs((z / (this.length - 1.0) - 0.5) * 2.0);
                 
-                double heightLow = heightNoise1.sampleIndevOctavesCombined(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
-                double heightHigh = heightNoise2.sampleIndevOctavesCombined(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
+                double heightLow = heightNoise1.sample(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
+                double heightHigh = heightNoise2.sample(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
                 
                 double heightCheck = heightNoise3.sample(x, z) / 8.0;
                 
@@ -354,8 +353,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
-                double var1 = erodeNoise1.sampleIndevOctavesCombined(x << 1, z << 1) / 8.0;
-                int var2 = erodeNoise2.sampleIndevOctavesCombined(x << 1, z << 1) > 0.0 ? 1 : 0;
+                double var1 = erodeNoise1.sample(x << 1, z << 1) / 8.0;
+                int var2 = erodeNoise2.sample(x << 1, z << 1) > 0.0 ? 1 : 0;
             
                 if (var1 > 2.0) {
                     int var3 = heightmap[x + z * this.width];

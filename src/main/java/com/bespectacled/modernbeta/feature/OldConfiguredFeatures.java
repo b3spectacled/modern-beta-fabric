@@ -1,12 +1,28 @@
 package com.bespectacled.modernbeta.feature;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.decorator.OldDecorators;
 import com.bespectacled.modernbeta.decorator.CountNoiseDecoratorConfig;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.rule.BlockMatchRuleTest;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.YOffset;
@@ -26,6 +42,8 @@ import net.minecraft.world.gen.stateprovider.SimpleBlockStateProvider;
 import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider;
 
 public class OldConfiguredFeatures {
+    private static final Map<Identifier, ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = new HashMap<Identifier, ConfiguredFeature<?, ?>>();
+    
     // Custom Features
     public static final ConfiguredFeature<?, ?> BETA_FREEZE_TOP_LAYER = register("beta_freeze_top_layer", OldFeatures.BETA_FREEZE_TOP_LAYER.configure(FeatureConfig.DEFAULT));
     public static final ConfiguredFeature<?, ?> OLD_FANCY_OAK = register("old_fancy_oak", OldFeatures.OLD_FANCY_OAK.configure(FeatureConfig.DEFAULT));
@@ -68,6 +86,25 @@ public class OldConfiguredFeatures {
     public static final ConfiguredFeature<?, ?> TREES_INDEV_WOODS_BEES = register("trees_indev_woods_bees", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(ConfiguredFeatures.OAK_BEES_0002.withChance(0.1f)), ConfiguredFeatures.OAK_BEES_0002)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(Decorator.COUNT_EXTRA.configure(new CountExtraDecoratorConfig(30, 0.1f, 1))));
     
     private static <F extends FeatureConfig> ConfiguredFeature<F, ?> register(String id, ConfiguredFeature<F, ?> feature) {
+        CONFIGURED_FEATURES.put(ModernBeta.createId(id), feature);
         return Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, ModernBeta.createId(id), feature);
+    }
+    
+    public static void export() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Path dir = Paths.get("..\\src\\main\\resources\\data\\modern_beta\\configured_features");
+        
+        for (Identifier i : CONFIGURED_FEATURES.keySet()) {
+            ConfiguredFeature<?, ?> f = CONFIGURED_FEATURES.get(i);
+            Function<Supplier<ConfiguredFeature<?, ?>>, DataResult<JsonElement>> toJson = JsonOps.INSTANCE.withEncoder(ConfiguredFeature.REGISTRY_CODEC);
+            
+            try {
+                JsonElement json = toJson.apply(() -> f).result().get();
+                Files.write(dir.resolve(i.getPath() + ".json"), gson.toJson(json).getBytes(StandardCharsets.UTF_8));
+            } catch (IOException e) {
+                ModernBeta.LOGGER.error("[Modern Beta] Couldn't serialize configured features!");
+                e.printStackTrace();
+            }
+        }
     }
 }

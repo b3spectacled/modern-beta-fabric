@@ -8,19 +8,19 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.carver.CarverConfig;
+import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.CaveCarver;
-import net.minecraft.class_5871;
-import net.minecraft.class_5873;
 
 public class BetaCaveCarver extends CaveCarver implements IOldCaveCarver {
 
-    public BetaCaveCarver(Codec<class_5871> codec) {
+    public BetaCaveCarver(Codec<CarverConfig> codec) {
         super(codec);
     }
 
     //@Override
     public boolean carve(
-        class_5873 heightContext,
+        CarverContext heightContext,
         Chunk chunk,
         Random random,
         int chunkX,

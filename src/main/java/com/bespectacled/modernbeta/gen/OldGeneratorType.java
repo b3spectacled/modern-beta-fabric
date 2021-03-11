@@ -64,7 +64,15 @@ public class OldGeneratorType {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> registryChunkGenSettings, long seed) {
                 Supplier<ChunkGeneratorSettings> generatorSettings = () -> registryChunkGenSettings.get(ModernBeta.createId(WorldType.BETA.getName()));
-                CompoundTag providerSettings = OldGeneratorSettings.createInfSettings(WorldType.BETA, BiomeType.BETA, ModernBeta.BETA_CONFIG.generateOceans);
+                CompoundTag providerSettings = OldGeneratorSettings.createInfSettings(
+                    WorldType.BETA, 
+                    BiomeType.BETA, 
+                    ModernBeta.BETA_CONFIG.generateOceans,
+                    ModernBeta.BETA_CONFIG.generateNoiseCaves,
+                    ModernBeta.BETA_CONFIG.generateAquifers,
+                    ModernBeta.BETA_CONFIG.generateDeepslate
+                );
+                
                 OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(generatorSettings, providerSettings);
                 
                 return new OldChunkGenerator(new OldBiomeSource(seed, biomes, oldGeneratorSettings.providerSettings), seed, oldGeneratorSettings);
@@ -78,7 +86,14 @@ public class OldGeneratorType {
                     Optional.<GeneratorType>of(OLD), (screen, generatorOptions) -> {                        
                         return new InfCustomizeLevelScreen(
                             screen, 
-                            OldGeneratorSettings.createInfSettings(WorldType.BETA, BiomeType.BETA, true),
+                            OldGeneratorSettings.createInfSettings(
+                                WorldType.BETA, 
+                                BiomeType.BETA, 
+                                ModernBeta.BETA_CONFIG.generateOceans,
+                                ModernBeta.BETA_CONFIG.generateNoiseCaves,
+                                ModernBeta.BETA_CONFIG.generateAquifers,
+                                ModernBeta.BETA_CONFIG.generateDeepslate
+                            ),
                             ((providerSettings) -> ((MixinMoreOptionsDialogInvoker)screen.moreOptionsDialog).invokeSetGeneratorOptions(
                                 createNewGeneratorOptions(
                                     screen.moreOptionsDialog.getRegistryManager(),

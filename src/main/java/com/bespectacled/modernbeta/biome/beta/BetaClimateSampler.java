@@ -26,7 +26,7 @@ public enum BetaClimateSampler {
         if (this.seed == seed) return;
         
         this.seed = seed;
-        this.initOctaves(seed);
+        this.initNoise(seed);
         this.biomeCache.clear();
     }
     
@@ -81,7 +81,7 @@ public enum BetaClimateSampler {
         return this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
     }
     
-    private void initOctaves(long seed) {
+    private void initNoise(long seed) {
         this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
         this.humidNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
         this.noiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
@@ -139,12 +139,12 @@ public enum BetaClimateSampler {
     private class BiomeCacheChunk {
         private final double temps[];
         private final double humids[];
-        private final double skyTemps[];
+        private final float skyTemps[]; // Lower precision, change back to double if there are issues.
         
         public BiomeCacheChunk(int chunkX, int chunkZ, BetaClimateSampler climateSampler) {
             this.temps = new double[256];
             this.humids = new double[256];
-            this.skyTemps = new double[256];
+            this.skyTemps = new float[256];
             
             int startX = chunkX << 4;
             int startZ = chunkZ << 4;
@@ -157,7 +157,7 @@ public enum BetaClimateSampler {
                     
                     temps[ndx] = tempHumid[0];
                     humids[ndx] = tempHumid[1];
-                    skyTemps[ndx] = climateSampler.sampleSkyTempAtPoint(x, z);
+                    skyTemps[ndx] = (float)climateSampler.sampleSkyTempAtPoint(x, z);
 
                     ndx++;
                 }

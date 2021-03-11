@@ -24,8 +24,9 @@ public class Rainforest {
     private static Biome create() {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         DefaultBiomeFeatures.addFarmAnimals(spawnSettings);
-        DefaultBiomeFeatures.addOceanMobs(spawnSettings, 10, 4, 10);
+        DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
         
+        spawnSettings.spawn(SpawnGroup.WATER_CREATURE, new SpawnSettings.SpawnEntry(EntityType.SQUID, 10, 1, 4));
         spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnEntry(EntityType.OCELOT, 2, 1, 3));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnEntry(EntityType.PANDA, 2, 1, 2));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnEntry(EntityType.PARROT, 40, 1, 2));

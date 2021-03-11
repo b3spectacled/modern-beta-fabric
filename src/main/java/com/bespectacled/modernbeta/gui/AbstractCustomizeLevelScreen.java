@@ -17,20 +17,20 @@ import net.minecraft.text.TranslatableText;
 
 public abstract class AbstractCustomizeLevelScreen extends Screen {
     private final CreateWorldScreen parent;
-    protected final CompoundTag providerSettings;
+    protected final CompoundTag settings;
     protected final WorldType worldType;
     protected final Consumer<CompoundTag> consumer;
     
     protected ButtonListWidget buttonList;
     
-    public AbstractCustomizeLevelScreen(CreateWorldScreen parent, CompoundTag providerSettings, Consumer<CompoundTag> consumer) {
+    public AbstractCustomizeLevelScreen(CreateWorldScreen parent, CompoundTag settings, Consumer<CompoundTag> consumer) {
         super(new TranslatableText("createWorld.customize.old.title"));
         
         this.parent = parent;
-        this.providerSettings = providerSettings;
+        this.settings = settings;
         this.consumer = consumer;
         
-        this.worldType = WorldType.fromName(this.providerSettings.getString("worldType"));
+        this.worldType = WorldType.fromName(this.settings.getString("worldType"));
     }
     
     @Override

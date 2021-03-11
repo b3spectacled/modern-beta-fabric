@@ -25,7 +25,6 @@ public class IceDesert {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         DefaultBiomeFeatures.addSnowyMobs(spawnSettings);
         
-        spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, new SpawnEntry(EntityType.SALMON, 15, 1, 5));
         spawnSettings.spawn(SpawnGroup.WATER_CREATURE, new SpawnEntry(EntityType.SQUID, 10, 1, 4));
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();

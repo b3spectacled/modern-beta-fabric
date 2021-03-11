@@ -2,6 +2,8 @@ package com.bespectacled.modernbeta.biome.indev;
 
 import com.bespectacled.modernbeta.feature.OldConfiguredFeatures;
 
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
@@ -14,14 +16,15 @@ import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 public class IndevParadise {
     public static final Biome BIOME = create();
+    public static final Biome EDGE_COMPAT = create();
     
     private static Biome create() {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         DefaultBiomeFeatures.addFarmAnimals(spawnSettings);
         DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
-        DefaultBiomeFeatures.addWarmOceanMobs(spawnSettings, 10, 1);
         
         spawnSettings.playerSpawnFriendly();
+        spawnSettings.spawn(SpawnGroup.WATER_CREATURE, new SpawnSettings.SpawnEntry(EntityType.SQUID, 10, 1, 4));
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);

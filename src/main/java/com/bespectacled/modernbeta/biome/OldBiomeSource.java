@@ -4,12 +4,9 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateMap.BetaBiomeType;
 import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
-import com.bespectacled.modernbeta.biome.provider.BetaBiomeProvider;
-import com.bespectacled.modernbeta.biome.provider.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.biome.provider.IndevBiomeProvider;
-import com.bespectacled.modernbeta.biome.provider.PlusBiomeProvider;
-import com.bespectacled.modernbeta.biome.provider.SingleBiomeProvider;
-import com.bespectacled.modernbeta.biome.provider.VanillaBiomeProvider;
+import com.bespectacled.modernbeta.biome.indev.IndevBiomes;
+import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
+import com.bespectacled.modernbeta.biome.provider.*;
 import com.bespectacled.modernbeta.gen.WorldType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -106,7 +103,7 @@ public class OldBiomeSource extends BiomeSource {
         BiomeType biomeType = BiomeType.getBiomeType(settings);
         
         if (worldType == WorldType.INDEV)
-            return new IndevBiomeProvider(seed, settings); 
+            return new SingleBiomeProvider(seed, IndevBiomes.BIOMES.get(IndevTheme.fromName(settings.getString("levelTheme"))));
         
         switch(biomeType) {
             case BETA: return new BetaBiomeProvider(seed, BetaBiomeType.LAND);
@@ -115,6 +112,7 @@ public class OldBiomeSource extends BiomeSource {
             case CLASSIC: return new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.CLASSIC));
             case WINTER: return new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.WINTER));
             case VANILLA: return new VanillaBiomeProvider(seed);
+            //case RELEASE: return new ReleaseBiomeProvider(seed);
             //case NETHER: return new NetherBiomeProvider(seed);
             default: throw new IllegalArgumentException("[Modern Beta] No biome provider matching biome type.  This shouldn't happen!");
         }

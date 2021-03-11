@@ -21,14 +21,9 @@
     "createWorld.customize.biomeType.vanilla": "Vanilla/Modded",
     
     "createWorld.customize.old.title": "Modern Beta World Configuration",
-    "createWorld.customize.beta.title": "Beta World Type Configuration",
-    "createWorld.customize.skylands.title": "Skylands World Type Configuration",
-    "createWorld.customize.alpha.title": "Alpha World Type Configuration",
-    "createWorld.customize.infdev.title": "Infdev World Type Configuration",
-    "createWorld.customize.indev.title": "Indev World Type Configuration",
-    "createWorld.customize.nether.title": "Nether World Type Configuration",
     
     "createWorld.customize.inf.generateOceans": "Generate Oceans",
+    "createWorld.customize.inf.generateDeepOceans": "Generate Deep Oceans",
     "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",
     "createWorld.customize.infdev.generateInfdevWall": "Generate Infdev Obsidian Wall",
     "createWorld.customize.inf.generateNoiseCaves": "Generate Noise Caves",

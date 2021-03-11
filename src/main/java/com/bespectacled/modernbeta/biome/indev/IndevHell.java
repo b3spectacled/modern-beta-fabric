@@ -14,6 +14,7 @@ import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 public class IndevHell {
     public static final Biome BIOME = create();
+    public static final Biome EDGE_COMPAT = create();
     
     private static Biome create() {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();

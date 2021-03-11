@@ -24,7 +24,6 @@ public class FrozenOcean {
     
     private static Biome create() {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
-        DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
         DefaultBiomeFeatures.addOceanMobs(spawnSettings, 10, 4, 10);
         
         spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, new SpawnEntry(EntityType.SALMON, 15, 1, 5));
