@@ -36,8 +36,8 @@ public class OldBiomes {
         BetaBiomes.registerBiomes();
         ClassicBiomes.registerAlphaBiomes();
         ClassicBiomes.registerInfdev415Biomes();
-        ClassicBiomes.registerInfdev227Biomes();
         IndevBiomes.registerBiomes();
+        ClassicBiomes.registerInfdev227Biomes();
     }
     
     public static void export() {

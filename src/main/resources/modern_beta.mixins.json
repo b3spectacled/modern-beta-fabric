@@ -11,7 +11,8 @@
     "MixinStructureWeightSampler",
     "MixinAquiferSamplerInvoker",
     "MixinConfiguredCarverAccessor",
-    "MixinChunkGeneratorSettingsInvoker"
+    "MixinChunkGeneratorSettingsInvoker",
+    "MixinVanillaLayeredBiomeSourceAccessor"
   ],
   "client": [
     "client.MixinBlockColors",
@@ -20,7 +21,8 @@
     "client.MixinBackgroundRenderer",
     "client.MixinGeneratorTypeAccessor",
     "client.MixinInGameHud",
-    "client.MixinMoreOptionsDialogInvoker"
+    "client.MixinMoreOptionsDialogInvoker",
+    "client.MixinSkyProperties"
   ],
   "injectors": {
     "defaultRequire": 1

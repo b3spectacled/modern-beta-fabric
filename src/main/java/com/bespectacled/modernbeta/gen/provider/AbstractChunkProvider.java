@@ -91,8 +91,8 @@ public abstract class AbstractChunkProvider {
     
     protected final NoiseCaveSampler noiseCaveSampler;
     
-    protected final DoublePerlinNoiseSampler doublePerlinSampler0;
-    protected final DoublePerlinNoiseSampler doublePerlinSampler1;
+    protected final DoublePerlinNoiseSampler edgeDensityNoise;
+    protected final DoublePerlinNoiseSampler waterLevelNoise;
     
     protected final BlockInterpolator deepslateInterpolator;
     
@@ -175,8 +175,8 @@ public abstract class AbstractChunkProvider {
         this.defaultFluid = defaultFluid;
         
         ChunkRandom chunkRandom = new ChunkRandom(seed);
-        this.doublePerlinSampler0 = DoublePerlinNoiseSampler.create(new SimpleRandom(chunkRandom.nextLong()), -3, 1.0);
-        this.doublePerlinSampler1 = DoublePerlinNoiseSampler.create(new SimpleRandom(chunkRandom.nextLong()), -3, 1.0, 0.0, 2.0);
+        this.edgeDensityNoise = DoublePerlinNoiseSampler.create(new SimpleRandom(chunkRandom.nextLong()), -3, 1.0);
+        this.waterLevelNoise = DoublePerlinNoiseSampler.create(new SimpleRandom(chunkRandom.nextLong()), -3, 1.0, 0.0, 2.0);
         
         this.noiseCaveSampler = this.generateNoiseCaves ? new NoiseCaveSampler(chunkRandom, this.noiseMinY) : null;
         this.deepslateInterpolator = new DeepslateInterpolator(seed, this.defaultBlock, this.generateDeepslate ? Blocks.DEEPSLATE.getDefaultState() : BlockStates.STONE);
@@ -277,10 +277,10 @@ public abstract class AbstractChunkProvider {
             new AquiferSampler(
                 chunkX,
                 chunkZ, 
-                this.doublePerlinSampler0, 
-                this.doublePerlinSampler1, 
+                this.edgeDensityNoise, 
+                this.waterLevelNoise, 
                 this.generatorSettings.get(), 
-                null, 
+                null, // NoiseColumnSampler, unused?
                 this.noiseSizeY * this.verticalNoiseResolution
             ) : 
             null;     

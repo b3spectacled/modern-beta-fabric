@@ -15,6 +15,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -112,6 +113,7 @@ public class OldBiomeSource extends BiomeSource {
             case CLASSIC: return new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.CLASSIC));
             case WINTER: return new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.WINTER));
             case VANILLA: return new VanillaBiomeProvider(seed);
+            //case LUSH: return new SingleBiomeProvider(seed, new Identifier("lush_caves"));
             //case RELEASE: return new ReleaseBiomeProvider(seed);
             //case NETHER: return new NetherBiomeProvider(seed);
             default: throw new IllegalArgumentException("[Modern Beta] No biome provider matching biome type.  This shouldn't happen!");

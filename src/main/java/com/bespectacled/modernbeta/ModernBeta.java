@@ -20,6 +20,7 @@ import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.OldBiomes;
 import com.bespectacled.modernbeta.biome.vanilla.VanillaBiomeModifier;
+import com.bespectacled.modernbeta.biome.vanilla.VanillaTemperatureGroup;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
@@ -63,6 +64,8 @@ public class ModernBeta implements ModInitializer {
         //OldConfiguredFeatures.export();
         //OldBiomes.export();
         //OldGeneratorSettings.export();
+        
+        VanillaTemperatureGroup.NORMAL_BIOMES.isEmpty();
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");
 

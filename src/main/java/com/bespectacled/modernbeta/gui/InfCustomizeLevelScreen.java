@@ -6,6 +6,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
@@ -52,25 +53,29 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
             this.settings.putBoolean("generateAquifers", this.generateAquifers);
         
         this.settings.putBoolean("generateDeepslate", this.generateDeepslate);
-        
-        this.consumer.accept(this.settings);
     }
     
     @Override
     protected void init() {
         super.init();
+        /*
+        this.addButton(new ButtonWidget(
+            this.width - 155, 8, 150, 20, 
+            new TranslatableText("createworld.customize.inf.biomes"),
+            (buttonWidget) -> {
+                this.client.openScreen(new CustomizeBiomesScreen(this, this.settings, this.consumer));
+            }
+        ));*/
         
         buttonList.addSingleOptionEntry(
             CyclingOption.create(
-                "createWorld.customize.biomeType", 
+                "createWorld.customize.biomeType",
                 BiomeType.values(), 
                 (value) -> new TranslatableText("createWorld.customize.biomeType." + value.getName()), 
                 (gameOptions) -> { return this.biomeType; }, 
                 (gameOptions, option, value) -> {
                     this.biomeType = value;
                     this.settings.putString("biomeType", this.biomeType.getName());
-                    
-                    this.consumer.accept(this.settings);
                 })
         );
             
@@ -82,8 +87,6 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions, option, value) -> { // Setter
                     this.generateOceans = value;
                     this.settings.putBoolean("generateOceans", this.generateOceans);
-                    
-                    this.consumer.accept(this.settings);
             }));
         }
         
@@ -94,8 +97,6 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions, option, value) -> { // Setter
                     this.generateDeepOceans = value;
                     this.settings.putBoolean("generateDeepOceans", this.generateDeepOceans);
-                    
-                    this.consumer.accept(this.settings);
             }));
         }
         
@@ -106,8 +107,6 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions, option, value) -> { // Setter
                     this.generateNoiseCaves = value;
                     this.settings.putBoolean("generateNoiseCaves", this.generateNoiseCaves);
-                    
-                    this.consumer.accept(this.settings);
             }));
         }
         
@@ -118,8 +117,6 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions, option, value) -> { // Setter
                     this.generateAquifers = value;
                     this.settings.putBoolean("generateAquifers", this.generateAquifers);
-                    
-                    this.consumer.accept(this.settings);
             }));
         }
         
@@ -129,8 +126,6 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
             (gameOptions, option, value) -> { // Setter
                 this.generateDeepslate = value;
                 this.settings.putBoolean("generateDeepslate", this.generateDeepslate);
-                
-                this.consumer.accept(this.settings);
         }));
         
     }

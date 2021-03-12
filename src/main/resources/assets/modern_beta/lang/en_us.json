@@ -22,6 +22,10 @@
     
     "createWorld.customize.old.title": "Modern Beta World Configuration",
     
+    "createworld.customize.inf.biomes": "Vanilla/Modded Biomes",
+    "createworld.customize.biomes.enable_all": "Enable All",
+    "createworld.customize.biomes.disable_all": "Disable All",
+    
     "createWorld.customize.inf.generateOceans": "Generate Oceans",
     "createWorld.customize.inf.generateDeepOceans": "Generate Deep Oceans",
     "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",

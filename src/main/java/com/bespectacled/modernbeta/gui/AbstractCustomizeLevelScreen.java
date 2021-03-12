@@ -39,8 +39,8 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
             this.width / 2 - 155, this.height - 28, 150, 20, 
             ScreenTexts.DONE, 
             (buttonWidget) -> {
+                this.consumer.accept(this.settings);
                 this.client.openScreen(this.parent);
-                return;
             }
         ));
 

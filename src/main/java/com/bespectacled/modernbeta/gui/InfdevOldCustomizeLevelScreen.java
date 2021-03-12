@@ -20,8 +20,6 @@ public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
         
         this.settings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
         this.settings.putBoolean("generateInfdevWall", this.generateInfdevWall);
-        
-        this.consumer.accept(this.settings);
     }
     
     @Override
@@ -34,8 +32,6 @@ public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
                (gameOptions, option, value) -> { // Setter
                    this.generateInfdevPyramid = value;
                    this.settings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
-                   
-                   this.consumer.accept(this.settings);
        }));
        
        this.buttonList.addSingleOptionEntry(
@@ -44,8 +40,6 @@ public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
                (gameOptions, option, value) -> { // Setter
                    this.generateInfdevWall = value;
                    this.settings.putBoolean("generateInfdevWall", this.generateInfdevWall);
-                   
-                   this.consumer.accept(this.settings);
        }));
     }
 }

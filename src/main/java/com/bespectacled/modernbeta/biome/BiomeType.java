@@ -8,7 +8,9 @@ public enum BiomeType {
     CLASSIC("classic"),
     WINTER("winter"),
     PLUS("plus"),
+    //LUSH("lush"),
     VANILLA("vanilla");
+    
     //RELEASE("release");
     //NETHER("nether");
     
