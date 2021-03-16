@@ -80,6 +80,14 @@ public abstract class AbstractChunkProvider {
     
     protected final double xzFactor;
     protected final double yFactor;
+    
+    protected final int topSlideTarget;
+    protected final int topSlideSize;
+    protected final int topSlideOffset;
+    
+    protected final int bottomSlideTarget;
+    protected final int bottomSlideSize;
+    protected final int bottomSlideOffset;
 
     protected final boolean generateDeepOceans;
     protected final boolean generateNoiseCaves;
@@ -110,6 +118,12 @@ public abstract class AbstractChunkProvider {
             settings.generatorSettings.get().getGenerationShapeConfig().getSampling().getYScale(),
             settings.generatorSettings.get().getGenerationShapeConfig().getSampling().getXZFactor(),
             settings.generatorSettings.get().getGenerationShapeConfig().getSampling().getYFactor(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getTopSlide().getTarget(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getTopSlide().getSize(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getTopSlide().getOffset(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getTarget(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getSize(),
+            settings.generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getOffset(),
             ((MixinChunkGeneratorSettingsInvoker)(Object)settings.generatorSettings.get()).invokeHasNoiseCaves(),
             ((MixinChunkGeneratorSettingsInvoker)(Object)settings.generatorSettings.get()).invokeHasAquifers(),
             ((MixinChunkGeneratorSettingsInvoker)(Object)settings.generatorSettings.get()).invokeHasDeepslate(),
@@ -132,6 +146,12 @@ public abstract class AbstractChunkProvider {
         double yScale,
         double xzFactor, 
         double yFactor,
+        int topSlideTarget,
+        int topSlideSize,
+        int topSlideOffset,
+        int bottomSlideTarget,
+        int bottomSlideSize,
+        int bottomSlideOffset,
         boolean generateNoiseCaves,
         boolean generateAquifers,
         boolean generateDeepslate,
@@ -166,6 +186,14 @@ public abstract class AbstractChunkProvider {
         this.xzFactor = xzFactor;
         this.yFactor = yFactor;
         
+        this.topSlideTarget = topSlideTarget;
+        this.topSlideSize = topSlideSize;
+        this.topSlideOffset = topSlideOffset;
+        
+        this.bottomSlideTarget = bottomSlideTarget;
+        this.bottomSlideSize = bottomSlideSize;
+        this.bottomSlideOffset = bottomSlideOffset;
+        
         this.generateDeepOceans = this.providerSettings.contains("generateDeepOceans") ? this.providerSettings.getBoolean("generateDeepOceans") : false;
         this.generateNoiseCaves = (this.providerSettings.contains("generateNoiseCaves") && this.providerSettings.getBoolean("generateNoiseCaves")) ? generateNoiseCaves : false;
         this.generateAquifers = (this.providerSettings.contains("generateAquifers") && this.providerSettings.getBoolean("generateAquifers")) ? generateAquifers : false;
@@ -196,6 +224,10 @@ public abstract class AbstractChunkProvider {
     
     public int getWorldHeight() {
         return this.worldHeight;
+    }
+    
+    public int getMinimumY() {
+        return this.minY;
     }
     
     public int getSeaLevel() {
@@ -238,7 +270,7 @@ public abstract class AbstractChunkProvider {
         
         if (clampedDensity > 0.0) {
             blockStateToSet = this.deepslateInterpolator.sample(x, y, z, this.generatorSettings.get());
-        } else if (aquiferSampler != null && y < this.minY + 9) { 
+        } else if (this.generateAquifers && y < this.minY + 9) { 
             blockStateToSet = BlockStates.LAVA;
         } else {
             int localSeaLevel = (aquiferSampler == null) ? this.getSeaLevel() : aquiferSampler.getWaterLevel();
@@ -294,13 +326,10 @@ public abstract class AbstractChunkProvider {
     
     protected double applyTopSlide(double noise, int noiseY) {
         int slideOffset = noiseY - this.noiseMinY;
-        int topSlideSize = this.generatorSettings.get().getGenerationShapeConfig().getTopSlide().getSize();
-        int topSlideOffset = this.generatorSettings.get().getGenerationShapeConfig().getTopSlide().getOffset();
-        int topSlideTarget = this.generatorSettings.get().getGenerationShapeConfig().getTopSlide().getTarget();
         
-        if (topSlideSize > 0.0) {
-            double lerpedNoise = (slideOffset - topSlideOffset) / topSlideSize;
-            noise = MathHelper.clampedLerp(topSlideTarget, noise, lerpedNoise);
+        if (this.topSlideSize > 0.0) {
+            double slideDelta = (this.noiseSizeY - slideOffset - this.topSlideOffset) / this.topSlideSize;
+            noise = MathHelper.clampedLerp(topSlideTarget, noise, slideDelta);
         }
         
         return noise;
@@ -308,13 +337,10 @@ public abstract class AbstractChunkProvider {
     
     protected double applyBottomSlide(double noise, int noiseY) {
         int slideOffset = noiseY - this.noiseMinY;
-        int bottomSlideSize = this.generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getSize();
-        int bottomSlideOffset = this.generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getOffset();
-        int bottomSlideTarget = this.generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getTarget();
         
-        if (bottomSlideSize > 0.0) {
-            double lerpedNoise = (slideOffset - bottomSlideOffset) / bottomSlideSize;
-            noise = MathHelper.clampedLerp(bottomSlideTarget, noise, lerpedNoise);
+        if (this.bottomSlideSize > 0.0) {
+            double slideDelta = (slideOffset - this.bottomSlideOffset) / this.bottomSlideSize;
+            noise = MathHelper.clampedLerp(this.bottomSlideTarget, noise, slideDelta);
         }
         
         return noise;

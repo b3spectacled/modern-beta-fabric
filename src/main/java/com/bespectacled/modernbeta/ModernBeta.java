@@ -64,8 +64,6 @@ public class ModernBeta implements ModInitializer {
         //OldConfiguredFeatures.export();
         //OldBiomes.export();
         //OldGeneratorSettings.export();
-        
-        VanillaTemperatureGroup.NORMAL_BIOMES.isEmpty();
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");
 

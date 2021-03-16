@@ -11,10 +11,10 @@ import net.minecraft.world.gen.carver.CarverDebugConfig;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 
 public class OldCarvers {
-    public static final BetaCaveCarver BETA_CAVE_CARVER = (BetaCaveCarver) register("beta_cave", new BetaCaveCarver(CarverConfig.CONFIG_CODEC));
-    public static final ConfiguredCarver<?> CONF_BETA_CAVE_CARVER = register("beta_cave", new ConfiguredCarver<CarverConfig>(BETA_CAVE_CARVER, new CarverConfig(0.25f, CarverDebugConfig.create(false, Blocks.CRIMSON_BUTTON.getDefaultState()))));
-   
-    public static final DeepBetaCaveCarver DEEP_BETA_CAVE_CARVER = (DeepBetaCaveCarver) register("deep_beta_cave", new DeepBetaCaveCarver(CarverConfig.CONFIG_CODEC));
+    public static final Carver<CarverConfig> OLD_BETA_CAVE_CARVER = register("old_beta_cave", new OldBetaCaveCarver(CarverConfig.CONFIG_CODEC));
+    public static final Carver<CarverConfig> DEEP_BETA_CAVE_CARVER = register("deep_beta_cave", new DeepBetaCaveCarver(CarverConfig.CONFIG_CODEC));
+    
+    public static final ConfiguredCarver<?> CONF_OLD_BETA_CAVE_CARVER = register("old_beta_cave", new ConfiguredCarver<CarverConfig>(OLD_BETA_CAVE_CARVER, new CarverConfig(0.25f, CarverDebugConfig.create(false, Blocks.CRIMSON_BUTTON.getDefaultState())))); 
     public static final ConfiguredCarver<?> CONF_DEEP_BETA_CAVE_CARVER = register("deep_beta_cave", new ConfiguredCarver<CarverConfig>(DEEP_BETA_CAVE_CARVER, new CarverConfig(0.25f, CarverDebugConfig.create(false, Blocks.CRIMSON_BUTTON.getDefaultState()))));
     
     public static Carver<CarverConfig> register(String id, Carver<CarverConfig> carver) {

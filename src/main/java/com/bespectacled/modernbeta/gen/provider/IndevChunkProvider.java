@@ -69,7 +69,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     
     public IndevChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 320, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, false, false, false, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, 0, 320, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, settings);
         
         this.theme = this.providerSettings.contains("levelTheme") ? IndevTheme.fromName(this.providerSettings.getString("levelTheme")) : IndevTheme.NORMAL;
         this.type = this.providerSettings.contains("levelType") ? IndevType.fromName(this.providerSettings.getString("levelType")) : IndevType.ISLAND;

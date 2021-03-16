@@ -57,7 +57,7 @@ public class Sky {
         
         genSettings.feature(Feature.TOP_LAYER_MODIFICATION, OldConfiguredFeatures.BETA_FREEZE_TOP_LAYER);
         
-        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_BETA_CAVE_CARVER);
+        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.NONE)

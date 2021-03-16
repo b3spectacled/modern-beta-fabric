@@ -19,14 +19,12 @@ public class OldGeneratorConfig {
     public static final NoiseSamplingConfig ALPHA_SAMPLING_CONFIG;
     public static final NoiseSamplingConfig SKYLANDS_SAMPLING_CONFIG;
     public static final NoiseSamplingConfig INFDEV_SAMPLING_CONFIG;
-    public static final NoiseSamplingConfig NETHER_SAMPLING_CONFIG;
     
     public static final GenerationShapeConfig BETA_SHAPE_CONFIG;
     public static final GenerationShapeConfig ALPHA_SHAPE_CONFIG;
     public static final GenerationShapeConfig SKYLANDS_SHAPE_CONFIG;
     public static final GenerationShapeConfig INFDEV_SHAPE_CONFIG;
     public static final GenerationShapeConfig INDEV_SHAPE_CONFIG;
-    public static final GenerationShapeConfig NETHER_SHAPE_CONFIG;
     
     
     static {
@@ -38,7 +36,6 @@ public class OldGeneratorConfig {
         ALPHA_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
         SKYLANDS_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
         INFDEV_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 400.0);
-        NETHER_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 3.0, 80.0, 60.0);
         
         BETA_SHAPE_CONFIG = GenerationShapeConfig.create(
             -64, 
@@ -51,7 +48,7 @@ public class OldGeneratorConfig {
             1, 
             -0.46875, 
             true, 
-            true, 
+            true,
             false, 
             false
         );
@@ -92,7 +89,7 @@ public class OldGeneratorConfig {
             -64, 
             192, 
             INFDEV_SAMPLING_CONFIG, 
-            new SlideConfig(-10, 3, 0), 
+            new SlideConfig(0, 0, 0), 
             new SlideConfig(15, 3, 0),
             1, 
             1, 
@@ -106,28 +103,12 @@ public class OldGeneratorConfig {
         
         INDEV_SHAPE_CONFIG = GenerationShapeConfig.create(
             0, 
-            256, 
+            320, 
             INFDEV_SAMPLING_CONFIG, 
-            new SlideConfig(-10, 3, 0), 
-            new SlideConfig(15, 3, 0),
+            new SlideConfig(0, 0, 0), 
+            new SlideConfig(0, 0, 0),
             1, 
             1, 
-            1, 
-            -0.46875, 
-            true, 
-            true, 
-            false, 
-            false
-        );
-        
-        NETHER_SHAPE_CONFIG = GenerationShapeConfig.create(
-            0, 
-            128, 
-            NETHER_SAMPLING_CONFIG, 
-            new SlideConfig(-10, 3, 0), 
-            new SlideConfig(-30, 0, 0),
-            1, 
-            2, 
             1, 
             -0.46875, 
             true, 
