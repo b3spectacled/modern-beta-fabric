@@ -74,13 +74,16 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
                 int absZ = startZ + z;
                 
                 for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
-                    BlockState blockstateToSet = chunk.getBlockState(mutable.set(x, y, z));
                     Biome biome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
+                    BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
+                    BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
+                    
+                    BlockState blockstateToSet = chunk.getBlockState(mutable.set(x, y, z));
                     
                     if (blockstateToSet.equals(BlockStates.GRASS_BLOCK)) {
-                        blockstateToSet = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
+                        blockstateToSet = topBlock;
                     } else if (blockstateToSet.equals(BlockStates.DIRT)) {
-                        blockstateToSet = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
+                        blockstateToSet = fillerBlock;
                     }
 
                     chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);

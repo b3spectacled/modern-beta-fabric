@@ -25,10 +25,10 @@ public class OldStructures {
     public static void register() {
         
         Registry.register(
-                Registry.STRUCTURE_PIECE, 
-                OCEAN_SHRINE_BASE_ID,
-                OCEAN_SHRINE_PIECE
-            );
+            Registry.STRUCTURE_PIECE, 
+            OCEAN_SHRINE_BASE_ID,
+            OCEAN_SHRINE_PIECE
+        );
             
         FabricStructureBuilder.create(
             OCEAN_SHRINE_ID, 

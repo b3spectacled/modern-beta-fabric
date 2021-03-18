@@ -13,6 +13,7 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.SimpleStructurePiece;
 import net.minecraft.structure.Structure;
 import net.minecraft.structure.StructureManager;
@@ -55,15 +56,14 @@ public class OceanShrineGenerator {
             this.initializeStructureData(manager);
         }
         
-        public Piece(StructureManager manager, CompoundTag tag) {
+        public Piece(ServerWorld serverWorld, CompoundTag tag) {
             super(OldStructures.OCEAN_SHRINE_PIECE, tag);
             this.template = new Identifier(tag.getString("Template"));
             this.rot = BlockRotation.valueOf(tag.getString("Rot"));
             
-            this.initializeStructureData(manager);
+            this.initializeStructureData(serverWorld.getStructureManager());
         }
-       
-        
+      
         private void initializeStructureData(StructureManager manager) {
             Structure structure = manager.getStructureOrBlank(this.template);
             StructurePlacementData placementData = (new StructurePlacementData())
@@ -73,10 +73,10 @@ public class OceanShrineGenerator {
             this.setStructureData(structure, this.pos, placementData);      
         }
         
-        protected void writeNbt(CompoundTag tag) {
-            super.writeNbt(tag);
-            tag.putString("Template", this.template.toString());
-            tag.putString("Rot", this.rot.name());
+        protected void writeNbt(ServerWorld serverWorld, CompoundTag compoundTag) {
+            super.writeNbt(serverWorld, compoundTag);
+            compoundTag.putString("Template", this.template.toString());
+            compoundTag.putString("Rot", this.rot.name());
         }
         
         @Override

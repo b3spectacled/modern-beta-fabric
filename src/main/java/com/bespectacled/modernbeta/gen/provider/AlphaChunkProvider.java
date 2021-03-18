@@ -34,7 +34,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     
     public AlphaChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -56,13 +56,12 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     @Override
     public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         generateTerrain(chunk, structureAccessor);
-        //this.generateFlatTerrain(chunk);
         return chunk;
     }
 
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        double eighth = 0.03125D; // eighth 
+        double eighth = 0.03125D;
 
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
@@ -363,8 +362,6 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     }
     
     private double generateHeightNoise(int noiseX, int noiseY, int noiseZ, double scale, double depth) {
-        int noiseResolutionY = this.noisePosY + 1;
-        
         // Var names taken from old customized preset names
         double coordinateScale = 684.41200000000003D * this.xzScale; 
         double heightScale = 684.41200000000003D * this.yScale;
@@ -414,21 +411,8 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
             densityWithOffset
         );
         
-        /*
-        int slideOffset = 4;
-        if (noiseY > noiseResolutionY - slideOffset) {
-            double topSlide = (float) (noiseY - (noiseResolutionY - slideOffset)) / 3F;
-            densityWithOffset = densityWithOffset * (1.0D - topSlide) + -10D * topSlide;
-        }*/
-        
-        int topSlideStart = noiseResolutionY - 4 - this.topSlideOffset;
-        if (noiseY > topSlideStart) {
-            double topSlideDelta = (float) (noiseY - topSlideStart) / (float) this.topSlideSize;
-            densityWithOffset = densityWithOffset * (1.0D - topSlideDelta) + this.topSlideTarget * topSlideDelta;
-        }
-        
-        if (this.generateNoiseCaves)
-            densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY);
+        densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
+        densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);
         
         return densityWithOffset;
     }

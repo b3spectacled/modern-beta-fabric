@@ -63,7 +63,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
     
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        double eighth = 0.03125D; // eighth
+        double eighth = 0.03125D;
 
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
@@ -101,6 +101,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                 boolean genGravelBeach = gravelNoise[z + x * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
                 
                 int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
+                
                 int flag = -1;
                 
                 int absX = chunk.getPos().getStartX() + x;
@@ -388,8 +389,6 @@ public class BetaChunkProvider extends AbstractChunkProvider {
     }
     
     private double generateHeightNoise(int noiseX, int noiseY, int noiseZ, double scale, double depth) {
-        int noiseResolutionY = this.noisePosY + 1;
-        
         // Var names taken from old customized preset names
         double coordinateScale = 684.41200000000003D * this.xzScale; 
         double heightScale = 684.41200000000003D * this.yScale;
@@ -439,29 +438,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
             densityWithOffset
         );
         
-        /*
-        int slideOffset = 4;
-        if (noiseY > noiseResolutionY - slideOffset) {
-            double topSlide = (float) (noiseY - (noiseResolutionY - slideOffset)) / 3F;
-            densityWithOffset = densityWithOffset * (1.0D - topSlide) + -10D * topSlide;
-        }*/
-        
-        int topSlideStart = noiseResolutionY - 4 - this.topSlideOffset; // Interpolation starts at topmost subchunk
-        if (noiseY > topSlideStart) {
-            double topSlideDelta = (float) (noiseY - topSlideStart) / (float) this.topSlideSize;
-            densityWithOffset = densityWithOffset * (1.0D - topSlideDelta) + this.topSlideTarget * topSlideDelta;
-        }
-        
-        if (this.generateNoiseCaves) {
-            //densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY);
-            
-            
-            int bottomSlideStart = this.noiseMinY + 3 - this.bottomSlideOffset;
-            if (noiseY < bottomSlideStart) {
-                double bottomSlideDelta = (float) (bottomSlideStart - noiseY) / ((float) this.bottomSlideSize);
-                densityWithOffset = densityWithOffset * (1.0D - bottomSlideDelta) + this.bottomSlideTarget * bottomSlideDelta;
-            }
-        }
+        densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
+        densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);
         
         return densityWithOffset;
     }

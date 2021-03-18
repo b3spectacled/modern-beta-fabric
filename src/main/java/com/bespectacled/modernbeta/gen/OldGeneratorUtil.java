@@ -43,7 +43,7 @@ public class OldGeneratorUtil {
         if (generateOceans && gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null) < seaLevel - 4) {
             biome = ((OldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
         } else {
-            biome = biomeSource.method_31609(chunkPos);
+            biome = biomeSource.getBiomeForNoiseGen(chunkPos);
         }
 
         return biome;

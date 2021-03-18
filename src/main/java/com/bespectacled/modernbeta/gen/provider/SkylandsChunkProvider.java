@@ -243,8 +243,6 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     }
     
     private double generateHeightNoise(int noiseX, int noiseY, int noiseZ) {
-        int noiseResolutionY = this.noiseSizeY + 1;
-        
         // Var names taken from old customized preset names
         double coordinateScale = 684.41200000000003D * this.xzScale; 
         double heightScale = 684.41200000000003D * this.yScale;
@@ -288,32 +286,8 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
             densityWithOffset
         );
         
-        /*
-        //int slideOffset = 32;
-        int slideOffset = this.noiseSizeY;
-        if (y > noiseResolutionY - slideOffset) {
-            double topSlide = (float) (y - (noiseResolutionY - slideOffset)) / ((float) slideOffset - 1.0F);
-            densityWithOffset = densityWithOffset * (1.0D - topSlide) + -30D * topSlide;
-        }
-
-        //slideOffset = 8;
-        slideOffset = this.noiseSizeY / 4;
-        if (y < slideOffset) {
-            double bottomSlide = (float) (slideOffset - y) / ((float) slideOffset - 1.0F);
-            densityWithOffset = densityWithOffset * (1.0D - bottomSlide) + -30D * bottomSlide;
-        }*/
-        
-        int topSlideStart = noiseResolutionY - this.noiseSizeY - this.topSlideOffset;
-        if (noiseY > topSlideStart) {
-            double topSlideDelta = (float) (noiseY - topSlideStart) / ((float) this.topSlideSize);
-            densityWithOffset = densityWithOffset * (1.0D - topSlideDelta) + this.topSlideTarget * topSlideDelta;
-        }
-        
-        int bottomSlideStart = this.noiseMinY + 8 - this.bottomSlideOffset;
-        if (noiseY < bottomSlideStart) {
-            double bottomSlideDelta = (float) (bottomSlideStart - noiseY) / ((float) this.bottomSlideSize);
-            densityWithOffset = densityWithOffset * (1.0D - bottomSlideDelta) + this.bottomSlideTarget * bottomSlideDelta;
-        }
+        densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, this.noiseSizeY);
+        densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -8);
         
         return densityWithOffset;
     }

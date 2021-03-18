@@ -12,9 +12,9 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.CompoundTag;
 
 public enum WorldType {
-    BETA("beta", true, true, true, BiomeType.BETA, BetaChunkProvider::new, InfCustomizeLevelScreen::new),
+    BETA("beta", true, false, true, BiomeType.BETA, BetaChunkProvider::new, InfCustomizeLevelScreen::new),
     SKYLANDS("skylands", false, false, true, BiomeType.SKY, SkylandsChunkProvider::new, InfCustomizeLevelScreen::new),
-    ALPHA("alpha", true, true, true, BiomeType.CLASSIC, AlphaChunkProvider::new, InfCustomizeLevelScreen::new),
+    ALPHA("alpha", true, false, true, BiomeType.CLASSIC, AlphaChunkProvider::new, InfCustomizeLevelScreen::new),
     INFDEV_415("infdev_415", true, false, true, BiomeType.CLASSIC, Infdev415ChunkProvider::new, InfCustomizeLevelScreen::new),
     INFDEV_227("infdev_227", true, false, false, BiomeType.CLASSIC, Infdev227ChunkProvider::new, InfdevOldCustomizeLevelScreen::new),
     INDEV("indev", false, false, false, null, IndevChunkProvider::new, IndevCustomizeLevelScreen::new);

@@ -38,7 +38,7 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
     
     public Infdev415ChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, -64, 192, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 400, 0, 0, 0, 0, 0, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, -64, 192, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 400, -10, 3, 0, 15, 3, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
         minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -63,7 +63,7 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
 
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        double thirtysecond = 0.03125D; // eighth
+        double thirtysecond = 0.03125D;
         
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
@@ -305,37 +305,28 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
             noiseY * coordinateScale / mainNoiseScaleY, 
             noiseZ * coordinateScale / mainNoiseScaleZ) / 2.0;
         
-        if (mainNoiseVal < -1) { // Lower limit(?)
-            density = MathHelper.clamp(
-                this.minLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset, 
-                -10.0, 
-                10.0
-            );
+        // Do not clamp noise if generating with noise caves!
+        if (mainNoiseVal < -1) {
+            density = this.minLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
+            if (!this.generateNoiseCaves) 
+                density = MathHelper.clamp(density, -10D, 10D);
             
-        } else if (mainNoiseVal > 1.0) { // Upper limit(?)
-            density = MathHelper.clamp(
-                this.maxLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset, 
-                -10.0, 
-                10.0
-            );
+        } else if (mainNoiseVal > 1.0) {
+            density = this.maxLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
+            if (!this.generateNoiseCaves) 
+                density = MathHelper.clamp(density, -10D, 10D);
             
         } else {
-            double minLimitVal = MathHelper.clamp(
-                this.minLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset, 
-                -10.0, 
-                10.0
-            );
-            
-            double maxLimitVal = MathHelper.clamp(
-                this.maxLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset, 
-                -10.0, 
-                10.0
-            );
+            double minLimitVal = this.minLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
+            double maxLimitVal = this.maxLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;     
+            if (!this.generateNoiseCaves) {
+                minLimitVal = MathHelper.clamp(minLimitVal, -10D, 10D);
+                maxLimitVal = MathHelper.clamp(maxLimitVal, -10D, 10D);
+            }
             
             double mix = (mainNoiseVal + 1.0) / 2.0;
-            
             density = minLimitVal + (maxLimitVal - minLimitVal) * mix;
-        }
+        };
         
         density = this.sampleNoiseCave(
             noiseX * this.horizontalNoiseResolution,
@@ -344,9 +335,8 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
             density
         );
         
-        if (this.generateNoiseCaves)
-            density = this.applyBottomSlide(density, noiseY);
-    
+        density = this.applyBottomSlide(density, noiseY, -3);
+        
         return density;
     }
     
@@ -401,5 +391,18 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
         this.heightNoisePool.returnArr(heightNoise);
         return -1;
     }
-
+    
+    // Vanilla implementation seems to work better here
+    /*
+    @Override
+    protected double applyBottomSlide(double noise, int noiseY, int resolutionY, int initialOffset) {
+        int slideOffset = noiseY - initialOffset - this.noiseMinY;
+        
+        if (this.bottomSlideSize > 0.0) {
+            double slideDelta = (slideOffset - this.bottomSlideOffset) / this.bottomSlideSize;
+            noise = MathHelper.clampedLerp(this.bottomSlideTarget, noise, slideDelta);
+        }
+        
+        return noise;
+    }*/
 }

@@ -324,26 +324,24 @@ public abstract class AbstractChunkProvider {
         }
     }
     
-    protected double applyTopSlide(double noise, int noiseY) {
-        int slideOffset = noiseY - this.noiseMinY;
-        
-        if (this.topSlideSize > 0.0) {
-            double slideDelta = (this.noiseSizeY - slideOffset - this.topSlideOffset) / this.topSlideSize;
-            noise = MathHelper.clampedLerp(topSlideTarget, noise, slideDelta);
+    protected double applyTopSlide(double density, int noiseY, int initialOffset) {
+        int topSlideStart = (this.noiseSizeY + this.noiseMinY + 1) - initialOffset - this.topSlideOffset;
+        if (noiseY > topSlideStart) {
+            double topSlideDelta = (float) (noiseY - topSlideStart) / (float) this.topSlideSize;
+            density = density * (1.0D - topSlideDelta) + this.topSlideTarget * topSlideDelta;
         }
         
-        return noise;
+        return density;
     }
     
-    protected double applyBottomSlide(double noise, int noiseY) {
-        int slideOffset = noiseY - this.noiseMinY;
-        
-        if (this.bottomSlideSize > 0.0) {
-            double slideDelta = (slideOffset - this.bottomSlideOffset) / this.bottomSlideSize;
-            noise = MathHelper.clampedLerp(this.bottomSlideTarget, noise, slideDelta);
+    protected double applyBottomSlide(double density, int noiseY, int initialOffset) {
+        int bottomSlideStart = this.noiseMinY - initialOffset - this.bottomSlideOffset;
+        if (noiseY < bottomSlideStart) {
+            double bottomSlideDelta = (float) (bottomSlideStart - noiseY) / ((float) this.bottomSlideSize);
+            density = density * (1.0D - bottomSlideDelta) + this.bottomSlideTarget * bottomSlideDelta;
         }
         
-        return noise;
+        return density;
     }
     
     protected ChunkRandom createChunkRand(int chunkX, int chunkZ) {

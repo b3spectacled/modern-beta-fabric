@@ -26,7 +26,6 @@ public class OldGeneratorConfig {
     public static final GenerationShapeConfig INFDEV_SHAPE_CONFIG;
     public static final GenerationShapeConfig INDEV_SHAPE_CONFIG;
     
-    
     static {
         STRUCTURES = new StructuresConfig(true);
         INDEV_STRONGHOLD = Optional.of(new StrongholdConfig(0, 0, 1));
@@ -47,8 +46,8 @@ public class OldGeneratorConfig {
             2, 
             1, 
             -0.46875, 
-            true, 
-            true,
+            false, 
+            false,
             false, 
             false
         );
@@ -63,8 +62,8 @@ public class OldGeneratorConfig {
             2, 
             1, 
             -0.46875, 
-            true, 
-            true, 
+            false, 
+            false, 
             false, 
             false
         );
@@ -73,14 +72,14 @@ public class OldGeneratorConfig {
             0, 
             128, 
             SKYLANDS_SAMPLING_CONFIG, 
-            new SlideConfig(-10, 3, 0), 
-            new SlideConfig(-30, 0, 0),
+            new SlideConfig(-30, 31, 0), 
+            new SlideConfig(-30, 7, 0),
             2, 
             1, 
             1, 
             -0.46875, 
-            true, 
-            true, 
+            false, 
+            false, 
             false, 
             false
         );
@@ -95,8 +94,8 @@ public class OldGeneratorConfig {
             1, 
             1, 
             -0.46875, 
-            true, 
-            true, 
+            false, 
+            false, 
             false, 
             false
         );
@@ -111,8 +110,8 @@ public class OldGeneratorConfig {
             1, 
             1, 
             -0.46875, 
-            true, 
-            true, 
+            false, 
+            false, 
             false, 
             false
         );
