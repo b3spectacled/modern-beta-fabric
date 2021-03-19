@@ -13,19 +13,11 @@
     
     "createWorld.customize.biomeType": "Biome Type",
     "createWorld.customize.biomeType.beta": "Beta",
-    "createWorld.customize.biomeType.beta_ice_desert": "Beta + Ice Desert",
     "createWorld.customize.biomeType.single": "Single",
-    "createWorld.customize.biomeType.classic": "Classic",
-    "createWorld.customize.biomeType.sky": "Sky Dimension",
-    "createWorld.customize.biomeType.winter": "Winter Mode",
-    "createWorld.customize.biomeType.plus": "Classic + Winter",
     "createWorld.customize.biomeType.vanilla": "Vanilla/Modded",
+    "createWorld.customize.biomeType.biomes": "Biomes",
     
     "createWorld.customize.old.title": "Modern Beta World Configuration",
-    
-    "createWorld.customize.inf.biomes": "Biomes",
-    "createWorld.customize.biomes.enable_all": "Enable All",
-    "createWorld.customize.biomes.disable_all": "Disable All",
     
     "createWorld.customize.inf.generateOceans": "Generate Oceans",
     "createWorld.customize.inf.generateDeepOceans": "Generate Deep Oceans",

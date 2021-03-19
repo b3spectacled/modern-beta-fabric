@@ -27,7 +27,7 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
     protected ButtonListWidget buttonList;
     protected ButtonWidget buttonSingleBiome;
     
-    protected ScreenButtonOption singleBiomeButton;
+    protected ScreenButtonOption biomeButton;
     
     public AbstractCustomizeLevelScreen(
         CreateWorldScreen parent, 

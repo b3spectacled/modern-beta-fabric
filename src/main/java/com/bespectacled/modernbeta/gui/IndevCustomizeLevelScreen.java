@@ -59,8 +59,8 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     protected void init() {
         super.init();
         
-        this.singleBiomeButton = new ScreenButtonOption(
-            "createWorld.customize.inf.biomes",
+        this.biomeButton = new ScreenButtonOption(
+            "createWorld.customize.biomeType.biomes",
             biomeType -> ((BiomeType)biomeType) == BiomeType.SINGLE,
             buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
               this, 
@@ -84,7 +84,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     this.biomeProviderSettings.putString("singleBiome", this.levelTheme.getDefaultBiome().toString());
                 }
             ),
-            this.singleBiomeButton
+            this.biomeButton
         );
         this.setSingleBiomeButtonVisibility();
         
@@ -182,6 +182,6 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
 
     @Override
     protected void setSingleBiomeButtonVisibility() {
-        this.singleBiomeButton.setButtonActive(BiomeType.SINGLE);
+        this.biomeButton.setButtonActive(BiomeType.SINGLE);
     }
 }

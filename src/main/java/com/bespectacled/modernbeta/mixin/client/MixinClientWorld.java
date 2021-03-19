@@ -61,7 +61,7 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
            
            if (!BETA_CONFIG.useFixedSeed && 
                gen instanceof OldChunkGenerator && 
-               ((OldChunkGenerator)gen).getChunkProvider() instanceof IndevChunkProvider &&
+               !(((OldChunkGenerator)gen).getChunkProvider() instanceof IndevChunkProvider) &&
                ((OldBiomeSource)gen.getBiomeSource()).isBeta()
            ) {
                useBetaColors = true;

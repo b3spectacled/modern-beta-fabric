@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.gui;
 
+import com.bespectacled.modernbeta.mixin.client.*;
+
 import java.util.function.Predicate;
 
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
@@ -10,8 +12,8 @@ import net.minecraft.text.TranslatableText;
 
 public class ScreenButtonOption extends Option {
     private final String key;
-    private final ButtonWidget.PressAction onPress;
-    private final Predicate<Object> activePredicate;
+    private ButtonWidget.PressAction onPress;
+    private Predicate<Object> activePredicate;
     
     private AbstractButtonWidget button;
     
@@ -42,5 +44,13 @@ public class ScreenButtonOption extends Option {
         } else {
             this.button.active = false;
         }
+    }
+    
+    public void updateOnPressAction(ButtonWidget.PressAction onPress) {
+        ((MixinButtonWidgetAccessor)this.button).setOnPress(onPress);
+    }
+    
+    public void updateActivePredicate(Predicate<Object> activePredicate) {
+        this.activePredicate = activePredicate;
     }
 }

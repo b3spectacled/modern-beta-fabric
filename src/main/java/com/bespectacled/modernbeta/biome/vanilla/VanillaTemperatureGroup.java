@@ -3,9 +3,7 @@ package com.bespectacled.modernbeta.biome.vanilla;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
 
