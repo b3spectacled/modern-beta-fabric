@@ -1,25 +1,31 @@
 package com.bespectacled.modernbeta.gui;
 
-import java.util.function.Consumer;
-
+import java.util.function.BiConsumer;
 import com.bespectacled.modernbeta.ModernBeta;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
     private boolean generateInfdevPyramid;
     private boolean generateInfdevWall;
     
-    public InfdevOldCustomizeLevelScreen(CreateWorldScreen parent, CompoundTag settings, Consumer<CompoundTag> consumer) {
-        super(parent, settings, consumer);
+    public InfdevOldCustomizeLevelScreen(
+        CreateWorldScreen parent, 
+        DynamicRegistryManager registryManager, 
+        CompoundTag biomeProviderSettings, 
+        CompoundTag chunkProviderSettings, 
+        BiConsumer<CompoundTag, CompoundTag> consumer
+    ) {
+        super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
         
         this.generateInfdevPyramid = ModernBeta.BETA_CONFIG.generateInfdevPyramid;
         this.generateInfdevWall = ModernBeta.BETA_CONFIG.generateInfdevWall;
         
-        this.settings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
-        this.settings.putBoolean("generateInfdevWall", this.generateInfdevWall);
+        this.chunkProviderSettings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
+        this.chunkProviderSettings.putBoolean("generateInfdevWall", this.generateInfdevWall);
     }
     
     @Override
@@ -31,7 +37,7 @@ public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
                (gameOptions) -> { return generateInfdevPyramid; }, 
                (gameOptions, option, value) -> { // Setter
                    this.generateInfdevPyramid = value;
-                   this.settings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
+                   this.chunkProviderSettings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
        }));
        
        this.buttonList.addSingleOptionEntry(
@@ -39,7 +45,7 @@ public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
                (gameOptions) -> { return generateInfdevWall; }, 
                (gameOptions, option, value) -> { // Setter
                    this.generateInfdevWall = value;
-                   this.settings.putBoolean("generateInfdevWall", this.generateInfdevWall);
+                   this.chunkProviderSettings.putBoolean("generateInfdevWall", this.generateInfdevWall);
        }));
     }
 }

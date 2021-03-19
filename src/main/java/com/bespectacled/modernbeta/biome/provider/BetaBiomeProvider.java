@@ -7,6 +7,7 @@ import com.bespectacled.modernbeta.biome.beta.BetaClimateMap;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateMap.BetaBiomeType;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -14,10 +15,8 @@ import net.minecraft.world.biome.Biome;
 public class BetaBiomeProvider extends AbstractBiomeProvider {
     private static final double[] TEMP_HUMID_POINT = new double[2];
     
-    private final BetaBiomeType betaBiomeType;
-   
-    public BetaBiomeProvider(long seed, BetaBiomeType betaBiomeType) {
-        this.betaBiomeType = betaBiomeType;
+    public BetaBiomeProvider(long seed, CompoundTag settings) {
+        super(seed, settings);
         
         BetaClimateSampler.INSTANCE.setSeed(seed);
     }
@@ -30,7 +29,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
         //int cutoffBiomeY = 128 >> 2;
         
         BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
-        return registry.get(BetaClimateMap.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], this.betaBiomeType));
+        return registry.get(BetaClimateMap.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.LAND));
     }
  
     @Override
@@ -45,7 +44,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
     @Override
     public Biome getBiomeForSurfaceGen(Registry<Biome> registry, int x, int y, int z) {
         BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID_POINT, x, z);
-        return registry.get(BetaClimateMap.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], this.betaBiomeType));
+        return registry.get(BetaClimateMap.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.LAND));
     }
 
     @Override

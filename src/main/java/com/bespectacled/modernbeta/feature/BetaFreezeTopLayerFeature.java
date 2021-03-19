@@ -1,8 +1,8 @@
 package com.bespectacled.modernbeta.feature;
 
 import com.bespectacled.modernbeta.biome.*;
-import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
+import com.bespectacled.modernbeta.biome.provider.SingleBiomeProvider;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
@@ -11,6 +11,7 @@ import net.minecraft.block.FluidBlock;
 import net.minecraft.block.SnowyBlock;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.StructureWorldAccess;
@@ -39,7 +40,7 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutableDown = new BlockPos.Mutable();
 
-        OldBiomeSource betaSource = (OldBiomeSource)generator.getBiomeSource();
+        OldBiomeSource biomeSource = (OldBiomeSource)generator.getBiomeSource();
         
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
@@ -47,10 +48,14 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 int absZ = pos.getZ() + z;
                 int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING, absX, absZ);
                 
-                double temp = (betaSource.isSky()) ? 
-                    betaSource.getBiomeRegistry().get(BetaBiomes.SKY_ID).getTemperature() :
-                    BetaClimateSampler.INSTANCE.sampleTemp(absX, absZ);
-
+                double temp;
+                if (biomeSource.getBiomeType() == BiomeType.SINGLE) {
+                    Identifier biomeId = ((SingleBiomeProvider)biomeSource.getBiomeProvider()).getBiomeId();
+                    temp = biomeSource.getBiomeRegistry().get(biomeId).getTemperature();
+                } else {
+                    temp = BetaClimateSampler.INSTANCE.sampleTemp(absX, absZ);
+                }    
+                
                 mutable.set(absX, y, absZ);
                 mutableDown.set(mutable).move(Direction.DOWN, 1);
                 

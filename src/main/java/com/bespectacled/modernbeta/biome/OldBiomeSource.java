@@ -1,13 +1,7 @@
 package com.bespectacled.modernbeta.biome;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
-import com.bespectacled.modernbeta.biome.beta.BetaClimateMap.BetaBiomeType;
-import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
-import com.bespectacled.modernbeta.biome.indev.IndevBiomes;
-import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.provider.*;
-import com.bespectacled.modernbeta.gen.WorldType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -32,22 +26,24 @@ public class OldBiomeSource extends BiomeSource {
     private final Registry<Biome> biomeRegistry;
     private final CompoundTag settings;
     
-    private final WorldType worldType;
     private final BiomeType biomeType;
-    
     private final AbstractBiomeProvider biomeProvider;
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, CompoundTag settings) {
-        super(getBiomeProvider(seed, settings).getBiomesForRegistry().stream().map((registryKey) -> () -> (Biome) biomeRegistry.get(registryKey)));
+        super(BiomeType
+            .getBiomeType(settings)
+            .createBiomeProvider(seed, settings)
+            .getBiomesForRegistry()
+            .stream()
+            .map((registryKey) -> () -> (Biome) biomeRegistry.get(registryKey))
+        );
         
         this.seed = seed;
         this.biomeRegistry = biomeRegistry;
         this.settings = settings;
         
-        this.worldType = WorldType.getWorldType(settings);
         this.biomeType = BiomeType.getBiomeType(settings);
-        
-        this.biomeProvider = getBiomeProvider(seed, settings);
+        this.biomeProvider = BiomeType.getBiomeType(settings).createBiomeProvider(seed, settings);
     }
 
     @Override
@@ -75,12 +71,12 @@ public class OldBiomeSource extends BiomeSource {
         return this.biomeType == BiomeType.BETA;
     }
     
-    public boolean isSky() {
-        return this.biomeType == BiomeType.SKY;
+    public BiomeType getBiomeType() {
+        return this.biomeType;
     }
     
-    public boolean isIndev() {
-        return this.worldType == WorldType.INDEV;
+    public AbstractBiomeProvider getBiomeProvider() {
+        return this.biomeProvider;
     }
     
     @Override
@@ -96,26 +92,5 @@ public class OldBiomeSource extends BiomeSource {
 
     public static void register() {
         Registry.register(Registry.BIOME_SOURCE, ModernBeta.createId("old"), CODEC);
-    }
-    
-    private static AbstractBiomeProvider getBiomeProvider(long seed, CompoundTag settings) {
-        WorldType worldType = WorldType.getWorldType(settings);
-        BiomeType biomeType = BiomeType.getBiomeType(settings);
-        
-        if (worldType == WorldType.INDEV)
-            return new SingleBiomeProvider(seed, IndevBiomes.BIOMES.get(IndevTheme.fromName(settings.getString("levelTheme"))));
-        
-        switch(biomeType) {
-            case BETA: return new BetaBiomeProvider(seed, BetaBiomeType.LAND);
-            case SKY: return new SingleBiomeProvider(seed, BetaBiomes.SKY_ID);
-            case PLUS: return new PlusBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType));
-            case CLASSIC: return new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.CLASSIC));
-            case WINTER: return new SingleBiomeProvider(seed, ClassicBiomes.getBiomeMap(worldType).get(BiomeType.WINTER));
-            case VANILLA: return new VanillaBiomeProvider(seed);
-            //case LUSH: return new SingleBiomeProvider(seed, new Identifier("lush_caves"));
-            //case RELEASE: return new ReleaseBiomeProvider(seed);
-            //case NETHER: return new NetherBiomeProvider(seed);
-            default: throw new IllegalArgumentException("[Modern Beta] No biome provider matching biome type.  This shouldn't happen!");
-        }
     }
 }

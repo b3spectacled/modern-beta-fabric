@@ -1,7 +1,6 @@
 package com.bespectacled.modernbeta.gui;
 
-import java.util.function.Consumer;
-
+import java.util.function.BiConsumer;
 import com.bespectacled.modernbeta.gen.WorldType;
 
 import net.minecraft.client.gui.DrawableHelper;
@@ -14,23 +13,38 @@ import net.minecraft.client.option.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.registry.DynamicRegistryManager;
 
 public abstract class AbstractCustomizeLevelScreen extends Screen {
     private final CreateWorldScreen parent;
-    protected final CompoundTag settings;
+    protected final DynamicRegistryManager registryManager;
+    protected final CompoundTag biomeProviderSettings;
+    protected final CompoundTag chunkProviderSettings;
+    protected final BiConsumer<CompoundTag, CompoundTag> consumer;
+    
     protected final WorldType worldType;
-    protected final Consumer<CompoundTag> consumer;
     
     protected ButtonListWidget buttonList;
+    protected ButtonWidget buttonSingleBiome;
     
-    public AbstractCustomizeLevelScreen(CreateWorldScreen parent, CompoundTag settings, Consumer<CompoundTag> consumer) {
+    protected ScreenButtonOption singleBiomeButton;
+    
+    public AbstractCustomizeLevelScreen(
+        CreateWorldScreen parent, 
+        DynamicRegistryManager registryManager, 
+        CompoundTag biomeProviderSettings, 
+        CompoundTag chunkProviderSettings, 
+        BiConsumer<CompoundTag, CompoundTag> consumer
+    ) {
         super(new TranslatableText("createWorld.customize.old.title"));
         
         this.parent = parent;
-        this.settings = settings;
+        this.registryManager = registryManager;
+        this.biomeProviderSettings = biomeProviderSettings;
+        this.chunkProviderSettings = chunkProviderSettings;
         this.consumer = consumer;
         
-        this.worldType = WorldType.fromName(this.settings.getString("worldType"));
+        this.worldType = WorldType.fromName(this.chunkProviderSettings.getString("worldType"));
     }
     
     @Override
@@ -39,7 +53,7 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
             this.width / 2 - 155, this.height - 28, 150, 20, 
             ScreenTexts.DONE, 
             (buttonWidget) -> {
-                this.consumer.accept(this.settings);
+                this.consumer.accept(this.biomeProviderSettings, this.chunkProviderSettings);
                 this.client.openScreen(this.parent);
             }
         ));
@@ -57,14 +71,21 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.worldType", 
-                WorldType.values(), 
+                WorldType.values(),
                 (value) -> new TranslatableText("createWorld.customize.worldType." + value.getName()), 
                 (gameOptions) -> { return this.worldType; }, // Sets default value?
                 (gameOptions, option, value) -> {
-                    CompoundTag newProviderSettings = new CompoundTag();
-                    newProviderSettings.putString("worldType", value.getName());
+                    CompoundTag newBiomeProviderSettings = new CompoundTag();
+                    CompoundTag newChunkProviderSettings = new CompoundTag();
+                    newChunkProviderSettings.putString("worldType", value.getName());
                     
-                    this.client.openScreen(value.createLevelScreen(this.parent, newProviderSettings, this.consumer));
+                    this.client.openScreen(value.createLevelScreen(
+                        this.parent, 
+                        this.registryManager,
+                        newBiomeProviderSettings,
+                        newChunkProviderSettings,
+                        this.consumer
+                    ));
                 })
         );
         
@@ -80,4 +101,6 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         
         super.render(matrixStack, mouseX, mouseY, tickDelta);
     }
+    
+    protected abstract void setSingleBiomeButtonVisibility();
 }

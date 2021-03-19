@@ -1,15 +1,17 @@
 package com.bespectacled.modernbeta.gui;
 
-import java.util.function.Consumer;
-
+import java.util.function.BiConsumer;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
 
+import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
 
 public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     
@@ -24,8 +26,14 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     private final boolean showDeepOceansOption;
     private final boolean showNoiseOptions;
     
-    public InfCustomizeLevelScreen(CreateWorldScreen parent, CompoundTag settings, Consumer<CompoundTag> consumer) {
-        super(parent, settings, consumer);
+    public InfCustomizeLevelScreen(
+        CreateWorldScreen parent, 
+        DynamicRegistryManager registryManager, 
+        CompoundTag biomeProviderSettings, 
+        CompoundTag chunkProviderSettings, 
+        BiConsumer<CompoundTag, CompoundTag> consumer
+    ) {
+        super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
         
         this.biomeType = this.worldType.getDefaultBiomeType();
         this.generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
@@ -38,36 +46,42 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         this.showDeepOceansOption = this.worldType.showDeepOceansOption();
         this.showNoiseOptions = this.worldType.showNoiseOptions();
         
-        this.settings.putString("biomeType", this.biomeType.getName());
+        this.biomeProviderSettings.putString("biomeType", this.biomeType.getName());
+        this.biomeProviderSettings.putString("singleBiome", this.worldType.getDefaultBiome().toString());
         
         if (this.showOceansOption)
-            this.settings.putBoolean("generateOceans", this.generateOceans);
+            this.chunkProviderSettings.putBoolean("generateOceans", this.generateOceans);
         
         if (this.showDeepOceansOption)
-            this.settings.putBoolean("generateDeepOceans", this.generateDeepOceans);
+            this.chunkProviderSettings.putBoolean("generateDeepOceans", this.generateDeepOceans);
         
         if (this.showNoiseOptions) 
-            this.settings.putBoolean("generateNoiseCaves", this.generateNoiseCaves);
+            this.chunkProviderSettings.putBoolean("generateNoiseCaves", this.generateNoiseCaves);
         
         if (this.showNoiseOptions && this.showOceansOption) 
-            this.settings.putBoolean("generateAquifers", this.generateAquifers);
+            this.chunkProviderSettings.putBoolean("generateAquifers", this.generateAquifers);
         
-        this.settings.putBoolean("generateDeepslate", this.generateDeepslate);
+        this.chunkProviderSettings.putBoolean("generateDeepslate", this.generateDeepslate);
     }
     
     @Override
     protected void init() {
         super.init();
-        /*
-        this.addButton(new ButtonWidget(
-            this.width - 155, 8, 150, 20, 
-            new TranslatableText("createworld.customize.inf.biomes"),
-            (buttonWidget) -> {
-                this.client.openScreen(new CustomizeBiomesScreen(this, this.settings, this.consumer));
-            }
-        ));*/
         
-        buttonList.addSingleOptionEntry(
+        this.singleBiomeButton = new ScreenButtonOption(
+            "createWorld.customize.inf.biomes",
+            biomeType -> ((BiomeType)biomeType) == BiomeType.SINGLE,
+            buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
+              this, 
+              this.registryManager,
+              (biome) -> {
+                  this.biomeProviderSettings.putString("singleBiome", this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString());
+              }, 
+              this.registryManager.<Biome>get(Registry.BIOME_KEY).get(this.worldType.getDefaultBiome())  
+            ))
+        );
+        
+        buttonList.addOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.biomeType",
                 BiomeType.values(), 
@@ -75,18 +89,25 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return this.biomeType; }, 
                 (gameOptions, option, value) -> {
                     this.biomeType = value;
-                    this.settings.putString("biomeType", this.biomeType.getName());
-                })
+                    this.biomeProviderSettings.putString("biomeType", this.biomeType.getName());
+                    
+                    // Set single biome button active state based on current biomeType.
+                    this.setSingleBiomeButtonVisibility();
+                }
+            ),
+            this.singleBiomeButton
         );
-            
-   
+        
+        // Set single biome active state right after it's added to button list.
+        this.setSingleBiomeButtonVisibility();
+        
         if (this.showOceansOption) {
             buttonList.addSingleOptionEntry(
                 CyclingOption.create("createWorld.customize.inf.generateOceans", 
                 (gameOptions) -> { return this.generateOceans; }, 
                 (gameOptions, option, value) -> { // Setter
                     this.generateOceans = value;
-                    this.settings.putBoolean("generateOceans", this.generateOceans);
+                    this.chunkProviderSettings.putBoolean("generateOceans", this.generateOceans);
             }));
         }
         
@@ -96,7 +117,7 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return this.generateDeepOceans; }, 
                 (gameOptions, option, value) -> { // Setter
                     this.generateDeepOceans = value;
-                    this.settings.putBoolean("generateDeepOceans", this.generateDeepOceans);
+                    this.chunkProviderSettings.putBoolean("generateDeepOceans", this.generateDeepOceans);
             }));
         }
         
@@ -106,7 +127,7 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return this.generateNoiseCaves; }, 
                 (gameOptions, option, value) -> { // Setter
                     this.generateNoiseCaves = value;
-                    this.settings.putBoolean("generateNoiseCaves", this.generateNoiseCaves);
+                    this.chunkProviderSettings.putBoolean("generateNoiseCaves", this.generateNoiseCaves);
             }));
         }
         
@@ -116,7 +137,7 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return this.generateAquifers; }, 
                 (gameOptions, option, value) -> { // Setter
                     this.generateAquifers = value;
-                    this.settings.putBoolean("generateAquifers", this.generateAquifers);
+                    this.chunkProviderSettings.putBoolean("generateAquifers", this.generateAquifers);
             }));
         }
         
@@ -125,8 +146,12 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
             (gameOptions) -> { return this.generateNoiseCaves; }, 
             (gameOptions, option, value) -> { // Setter
                 this.generateDeepslate = value;
-                this.settings.putBoolean("generateDeepslate", this.generateDeepslate);
+                this.chunkProviderSettings.putBoolean("generateDeepslate", this.generateDeepslate);
         }));
-        
+    }
+
+    @Override
+    protected void setSingleBiomeButtonVisibility() {
+        this.singleBiomeButton.setButtonActive(this.biomeType);
     }
 }

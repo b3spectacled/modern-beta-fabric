@@ -51,9 +51,16 @@ public class OldGeneratorSettings {
         this.providerSettings = providerSettings;
     }
     
+    public static CompoundTag createBiomeSettings(BiomeType biomeType) {
+        CompoundTag settings = new CompoundTag();
+        
+        settings.putString("biomeType", biomeType.getName());
+        
+        return settings;
+    }
+    
     public static CompoundTag createInfSettings(
-        WorldType worldType, 
-        BiomeType biomeType, 
+        WorldType worldType,
         boolean generateOceans, 
         boolean generateNoiseCaves, 
         boolean generateAquifers, 
@@ -62,7 +69,6 @@ public class OldGeneratorSettings {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", worldType.getName());
-        settings.putString("biomeType", biomeType.getName());
         settings.putBoolean("generateOceans", generateOceans);
         settings.putBoolean("generateNoiseCaves", generateNoiseCaves);
         settings.putBoolean("generateAquifers", generateAquifers);

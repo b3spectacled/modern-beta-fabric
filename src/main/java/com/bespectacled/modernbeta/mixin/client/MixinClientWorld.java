@@ -16,6 +16,7 @@ import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.util.MutableClientWorld;
 
 import java.util.function.Supplier;
@@ -60,8 +61,8 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
            
            if (!BETA_CONFIG.useFixedSeed && 
                gen instanceof OldChunkGenerator && 
-               ((OldBiomeSource)gen.getBiomeSource()).isBeta() &&
-               !((OldBiomeSource)gen.getBiomeSource()).isIndev()
+               ((OldChunkGenerator)gen).getChunkProvider() instanceof IndevChunkProvider &&
+               ((OldBiomeSource)gen.getBiomeSource()).isBeta()
            ) {
                useBetaColors = true;
                worldSeed = gen.worldSeed;

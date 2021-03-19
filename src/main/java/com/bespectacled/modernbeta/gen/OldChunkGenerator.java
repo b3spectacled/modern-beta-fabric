@@ -13,6 +13,7 @@ import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.carver.IOldCaveCarver;
 import com.bespectacled.modernbeta.feature.OldFeatures;
 import com.bespectacled.modernbeta.gen.provider.AbstractChunkProvider;
+import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.mixin.MixinConfiguredCarverAccessor;
 import com.bespectacled.modernbeta.structure.OldStructures;
@@ -137,6 +138,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver genCarver) {
+        if (this.chunkProvider instanceof IndevChunkProvider) return; // Skip since Indev Provider has its own carver.
+        
         BiomeAccess biomeAcc = access.withSource(this.biomeSource);
         ChunkPos chunkPos = chunk.getPos();
 
@@ -250,7 +253,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public int getMinimumY() {
-        return this.getChunkProvider().getMinimumY();
+        //return this.getChunkProvider().getMinimumY();
+        return -64;
     }
 
     @Override

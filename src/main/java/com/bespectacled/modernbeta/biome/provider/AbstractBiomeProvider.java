@@ -2,11 +2,20 @@ package com.bespectacled.modernbeta.biome.provider;
 
 import java.util.List;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public abstract class AbstractBiomeProvider {
+    protected final long seed;
+    protected final CompoundTag settings;
+    
+    public AbstractBiomeProvider(long seed, CompoundTag settings) {
+        this.seed = seed;
+        this.settings = settings;
+    }
+    
     public abstract Biome getBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ);
     
     public Biome getOceanBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {

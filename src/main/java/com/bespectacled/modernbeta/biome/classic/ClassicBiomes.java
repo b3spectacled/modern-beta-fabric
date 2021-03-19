@@ -25,14 +25,14 @@ public class ClassicBiomes {
     public static final Map<BiomeType, Identifier> ALPHA_BIOMES = new HashMap<BiomeType, Identifier>();
     
     static {
-        INFDEV_227_BIOMES.put(BiomeType.CLASSIC, INFDEV_227_ID);
-        INFDEV_227_BIOMES.put(BiomeType.WINTER, INFDEV_227_WINTER_ID);
+        //INFDEV_227_BIOMES.put(BiomeType.CLASSIC, INFDEV_227_ID);
+        //INFDEV_227_BIOMES.put(BiomeType.WINTER, INFDEV_227_WINTER_ID);
         
-        INFDEV_415_BIOMES.put(BiomeType.CLASSIC, INFDEV_415_ID);
-        INFDEV_415_BIOMES.put(BiomeType.WINTER, INFDEV_415_WINTER_ID);
+        //INFDEV_415_BIOMES.put(BiomeType.CLASSIC, INFDEV_415_ID);
+        //INFDEV_415_BIOMES.put(BiomeType.WINTER, INFDEV_415_WINTER_ID);
         
-        ALPHA_BIOMES.put(BiomeType.CLASSIC, ALPHA_ID);
-        ALPHA_BIOMES.put(BiomeType.WINTER, ALPHA_WINTER_ID);
+        //ALPHA_BIOMES.put(BiomeType.CLASSIC, ALPHA_ID);
+        //ALPHA_BIOMES.put(BiomeType.WINTER, ALPHA_WINTER_ID);
     }
     
     public static void registerAlphaBiomes() {

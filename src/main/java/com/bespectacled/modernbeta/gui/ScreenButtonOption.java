@@ -1,0 +1,46 @@
+package com.bespectacled.modernbeta.gui;
+
+import java.util.function.Predicate;
+
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.option.Option;
+import net.minecraft.text.TranslatableText;
+
+public class ScreenButtonOption extends Option {
+    private final String key;
+    private final ButtonWidget.PressAction onPress;
+    private final Predicate<Object> activePredicate;
+    
+    private AbstractButtonWidget button;
+    
+    public ScreenButtonOption(String key, Predicate<Object> activePredicate, ButtonWidget.PressAction onPress) {
+        super(key);
+        
+        this.key = key;
+        this.activePredicate = activePredicate;
+        this.onPress = onPress;
+    }
+
+    @Override
+    public AbstractButtonWidget createButton(GameOptions options, int x, int y, int width) {
+        this.button = new ButtonWidget(
+            x, y, width, 20,
+            new TranslatableText(this.key),
+            this.onPress
+        );
+        
+        return this.button;
+    }
+    
+    public void setButtonActive(Object obj) {
+        if (this.button == null) return;
+        
+        if (this.activePredicate.test(obj)) {
+            this.button.active = true;
+        } else {
+            this.button.active = false;
+        }
+    }
+}

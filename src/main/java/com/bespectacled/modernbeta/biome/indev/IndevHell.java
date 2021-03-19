@@ -1,11 +1,13 @@
 package com.bespectacled.modernbeta.biome.indev;
 
+import com.bespectacled.modernbeta.carver.OldCarvers;
 import com.bespectacled.modernbeta.feature.OldConfiguredFeatures;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
+import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.GenerationStep.Feature;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
@@ -48,6 +50,9 @@ public class IndevHell {
         
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_SUGAR_CANE);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);
+        
+        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER);
+        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_DEEP_BETA_CAVE_CARVER);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.NONE)

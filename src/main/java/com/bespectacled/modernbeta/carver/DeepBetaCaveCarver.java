@@ -325,6 +325,8 @@ public class DeepBetaCaveCarver extends CaveCarver implements IOldCaveCarver {
     
     protected int getCaveY(CarverContext context, Random random) {
         int range = Math.abs(context.getMinY());
+        if (range == 0) range = 64;
+        
         return random.nextInt(random.nextInt(range) + 8) - range;
     }
 

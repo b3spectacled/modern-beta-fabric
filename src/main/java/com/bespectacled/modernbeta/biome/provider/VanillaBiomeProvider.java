@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.bespectacled.modernbeta.biome.vanilla.VanillaBiomeLayer;
 import com.bespectacled.modernbeta.biome.vanilla.VanillaOceanLayer;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -18,7 +19,9 @@ public class VanillaBiomeProvider extends AbstractBiomeProvider {
     private final BiomeLayerSampler biomeSampler;
     private final BiomeLayerSampler oceanSampler;
     
-    public VanillaBiomeProvider(long seed) {
+    public VanillaBiomeProvider(long seed, CompoundTag settings) {
+        super(seed, settings);
+        
         this.biomeSampler = VanillaBiomeLayer.build(seed, false, 4, -1);
         this.oceanSampler = VanillaOceanLayer.build(seed, false, 6, -1);
     }

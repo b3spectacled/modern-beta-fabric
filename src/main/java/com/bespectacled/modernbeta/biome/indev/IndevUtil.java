@@ -1,19 +1,23 @@
 package com.bespectacled.modernbeta.biome.indev;
 
+import net.minecraft.util.Identifier;
+
 public class IndevUtil {
     public enum IndevTheme {
-        NORMAL(0, "normal"),
-        HELL(1, "hell"),
-        PARADISE(2, "paradise"),
-        WOODS(3, "woods"),
-        SNOWY(4, "snowy");
+        NORMAL(0, "normal", IndevBiomes.INDEV_NORMAL_ID),
+        HELL(1, "hell", IndevBiomes.INDEV_HELL_ID),
+        PARADISE(2, "paradise", IndevBiomes.INDEV_PARADISE_ID),
+        WOODS(3, "woods", IndevBiomes.INDEV_WOODS_ID),
+        SNOWY(4, "snowy", IndevBiomes.INDEV_SNOWY_ID);
         
         private final int id;
         private final String name;
+        private final Identifier defaultBiome;
         
-        private IndevTheme(int id, String name) {
+        private IndevTheme(int id, String name, Identifier defaultBiome) {
             this.id = id;
             this.name = name;
+            this.defaultBiome = defaultBiome;
         }
         
         public int getId() {
@@ -22,6 +26,10 @@ public class IndevUtil {
         
         public String getName() {
             return this.name;
+        }
+        
+        public Identifier getDefaultBiome() {
+            return this.defaultBiome;
         }
         
         public static IndevTheme fromId(int id) {

@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.config;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 
@@ -49,6 +50,9 @@ public class ModernBetaConfig implements ConfigData {
     
     @ConfigEntry.Gui.Excluded
     public String biomeType = BiomeType.BETA.getName();
+    
+    @ConfigEntry.Gui.Excluded
+    public String singleBiome = ModernBeta.createId("alpha").toString();
     
     /* Old Infdev Generation */
     

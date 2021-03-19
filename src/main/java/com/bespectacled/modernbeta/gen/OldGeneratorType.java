@@ -36,17 +36,18 @@ public class OldGeneratorType {
     private static GeneratorOptions createNewGeneratorOptions(
         DynamicRegistryManager registryManager, 
         GeneratorOptions generatorOptions,
-        CompoundTag providerSettings
+        CompoundTag biomeProviderSettings,
+        CompoundTag chunkProviderSettings
     ) {
-        WorldType worldType = WorldType.fromName(providerSettings.getString("worldType"));
+        WorldType worldType = WorldType.fromName(chunkProviderSettings.getString("worldType"));
     
         Registry<DimensionType> registryDimensionType = registryManager.<DimensionType>get(Registry.DIMENSION_TYPE_KEY);
         Registry<ChunkGeneratorSettings> registryChunkGenSettings = registryManager.<ChunkGeneratorSettings>get(Registry.NOISE_SETTINGS_WORLDGEN);
         Registry<Biome> registryBiome = registryManager.<Biome>get(Registry.BIOME_KEY); 
         Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = () -> registryChunkGenSettings.get(ModernBeta.createId(worldType.getName()));
        
-        OldBiomeSource biomeSource = new OldBiomeSource(generatorOptions.getSeed(), registryBiome, providerSettings);
-        OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(chunkGenSettingsSupplier, providerSettings);
+        OldBiomeSource biomeSource = new OldBiomeSource(generatorOptions.getSeed(), registryBiome, biomeProviderSettings);
+        OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(chunkGenSettingsSupplier, chunkProviderSettings);
         
         return new GeneratorOptions(
             generatorOptions.getSeed(),
@@ -64,18 +65,18 @@ public class OldGeneratorType {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> registryChunkGenSettings, long seed) {
                 Supplier<ChunkGeneratorSettings> generatorSettings = () -> registryChunkGenSettings.get(ModernBeta.createId(WorldType.BETA.getName()));
-                CompoundTag providerSettings = OldGeneratorSettings.createInfSettings(
-                    WorldType.BETA, 
-                    BiomeType.BETA, 
+                CompoundTag biomeProviderSettings = OldGeneratorSettings.createBiomeSettings(BiomeType.BETA);
+                CompoundTag chunkProviderSettings = OldGeneratorSettings.createInfSettings(
+                    WorldType.BETA,
                     ModernBeta.BETA_CONFIG.generateOceans,
                     ModernBeta.BETA_CONFIG.generateNoiseCaves,
                     ModernBeta.BETA_CONFIG.generateAquifers,
                     ModernBeta.BETA_CONFIG.generateDeepslate
                 );
                 
-                OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(generatorSettings, providerSettings);
+                OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(generatorSettings, chunkProviderSettings);
                 
-                return new OldChunkGenerator(new OldBiomeSource(seed, biomes, oldGeneratorSettings.providerSettings), seed, oldGeneratorSettings);
+                return new OldChunkGenerator(new OldBiomeSource(seed, biomes, biomeProviderSettings), seed, oldGeneratorSettings);
             }
         };
         
@@ -85,20 +86,22 @@ public class OldGeneratorType {
                 .put(
                     Optional.<GeneratorType>of(OLD), (screen, generatorOptions) -> {                        
                         return new InfCustomizeLevelScreen(
-                            screen, 
+                            screen,
+                            screen.moreOptionsDialog.getRegistryManager(),
+                            OldGeneratorSettings.createBiomeSettings(BiomeType.BETA),
                             OldGeneratorSettings.createInfSettings(
-                                WorldType.BETA, 
-                                BiomeType.BETA, 
+                                WorldType.BETA,
                                 ModernBeta.BETA_CONFIG.generateOceans,
                                 ModernBeta.BETA_CONFIG.generateNoiseCaves,
                                 ModernBeta.BETA_CONFIG.generateAquifers,
                                 ModernBeta.BETA_CONFIG.generateDeepslate
                             ),
-                            ((providerSettings) -> ((MixinMoreOptionsDialogInvoker)screen.moreOptionsDialog).invokeSetGeneratorOptions(
+                            ((biomeProviderSettings, chunkProviderSettings) -> ((MixinMoreOptionsDialogInvoker)screen.moreOptionsDialog).invokeSetGeneratorOptions(
                                 createNewGeneratorOptions(
                                     screen.moreOptionsDialog.getRegistryManager(),
                                     generatorOptions,
-                                    providerSettings
+                                    biomeProviderSettings,
+                                    chunkProviderSettings
                             )))
                         );
                     }

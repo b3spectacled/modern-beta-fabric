@@ -3,25 +3,55 @@ package com.bespectacled.modernbeta.biome.provider;
 import java.util.Arrays;
 import java.util.List;
 
+import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class SingleBiomeProvider extends AbstractBiomeProvider {
-    private final Identifier biomeId;
+    private Identifier biomeId;
     
-    public SingleBiomeProvider(long seed, Identifier biomeId) {
-        this.biomeId = biomeId;
+    public SingleBiomeProvider(long seed, CompoundTag settings) {
+        super(seed, settings);
+        
+        this.biomeId = (settings.contains("singleBiome")) ?
+            new Identifier(settings.getString("singleBiome")) :
+            this.loadLegacySettings(settings);
     }
 
     @Override
     public Biome getBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
         return registry.get(biomeId); 
     }
+    
+    public Identifier getBiomeId() {
+        return this.biomeId;
+    }
 
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
         return Arrays.asList(RegistryKey.of(Registry.BIOME_KEY, this.biomeId));
+    }
+    
+    private Identifier loadLegacySettings(CompoundTag settings) {
+        Identifier biomeId = ClassicBiomes.ALPHA_ID;
+        
+        String oldWorldType = settings.getString("worldType");
+        String oldBiomeType = settings.getString("biomeType");
+        
+        if (oldWorldType.equals("alpha")) {
+            if (oldBiomeType.equals("classic")) biomeId = ClassicBiomes.ALPHA_ID;
+            if (oldBiomeType.equals("winter")) biomeId = ClassicBiomes.ALPHA_WINTER_ID;
+        } else if (oldWorldType.equals("infdev")) {
+            if (oldBiomeType.equals("classic")) biomeId = ClassicBiomes.INFDEV_415_ID;
+            if (oldBiomeType.equals("winter")) biomeId = ClassicBiomes.INFDEV_415_WINTER_ID;
+        } else if (oldWorldType.equals("alpha")) {
+            if (oldBiomeType.equals("classic")) biomeId = ClassicBiomes.INFDEV_227_ID;
+            if (oldBiomeType.equals("winter")) biomeId = ClassicBiomes.INFDEV_227_WINTER_ID;
+        }
+        
+        return biomeId;
     }
 }
