@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.gui;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
-import com.bespectacled.modernbeta.gui.option.DummyButtonOption;
+import com.bespectacled.modernbeta.gui.option.TextOption;
 import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
 
 import net.minecraft.client.gui.DrawableHelper;
@@ -139,10 +139,10 @@ public class BetaCustomizeBiomesScreen extends Screen {
     
     private void addBiomeButtonEntry(String key, String biomeText, Identifier biomeId, Consumer<Identifier> updateIdConsumer) {
         this.buttonList.addOptionEntry(
-            new DummyButtonOption(biomeText),
+            new TextOption(biomeText),
             new ScreenButtonOption(
                 this.createTranslatableBiomeString(biomeId),
-                (o) -> true,
+                (b) -> true,
                 buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
                   this, 
                   this.registryManager,

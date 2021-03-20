@@ -26,6 +26,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 
@@ -52,9 +53,10 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     private Block blockArr[][][];
     private int heightmap[]; 
     
-    private final IndevTheme theme;
-    private final IndevType type;
+    private final IndevTheme levelTheme;
+    private final IndevType levelType;
     private final BlockState fluidBlock;
+    private final BlockState topsoilBlock;
     
     private final int width;
     private final int length;
@@ -71,9 +73,10 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         //super(seed, settings);
         super(seed, 0, 320, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, settings);
         
-        this.theme = this.providerSettings.contains("levelTheme") ? IndevTheme.fromName(this.providerSettings.getString("levelTheme")) : IndevTheme.NORMAL;
-        this.type = this.providerSettings.contains("levelType") ? IndevType.fromName(this.providerSettings.getString("levelType")) : IndevType.ISLAND;
-        this.fluidBlock = (this.theme == IndevTheme.HELL) ? BlockStates.LAVA : BlockStates.WATER;
+        this.levelTheme = this.providerSettings.contains("levelTheme") ? IndevTheme.fromName(this.providerSettings.getString("levelTheme")) : IndevTheme.NORMAL;
+        this.levelType = this.providerSettings.contains("levelType") ? IndevType.fromName(this.providerSettings.getString("levelType")) : IndevType.ISLAND;
+        this.fluidBlock = (this.levelTheme == IndevTheme.HELL) ? BlockStates.LAVA : BlockStates.WATER;
+        this.topsoilBlock = (this.levelTheme == IndevTheme.HELL) ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;
         
         this.width = this.providerSettings.contains("levelWidth") ? this.providerSettings.getInt("levelWidth") : 256;
         this.length = this.providerSettings.contains("levelLength") ? this.providerSettings.getInt("levelLength") : 256;
@@ -81,7 +84,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         this.caveRadius = this.providerSettings.contains("caveRadius") ? this.providerSettings.getFloat("caveRadius") : 1.0f;
         
         this.waterLevel = this.height / 2;
-        this.layers = (this.type == IndevType.FLOATING) ? (this.height - 64) / 48 + 1 : 1;
+        this.layers = (this.levelType == IndevType.FLOATING) ? (this.height - 64) / 48 + 1 : 1;
         
         this.pregenerated = false;  
     }
@@ -101,8 +104,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             
             setTerrain(structureAccessor, chunk, blockArr);
      
-        } else if (this.type != IndevType.FLOATING) {
-            if (this.type == IndevType.ISLAND)
+        } else if (this.levelType != IndevType.FLOATING) {
+            if (this.levelType == IndevType.ISLAND)
                 generateWaterBorder(chunk);
             else {
                 generateWorldBorder(chunk);
@@ -113,7 +116,40 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
 
     @Override
-    public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {}
+    public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        
+        int startX = chunk.getPos().getStartX();
+        int startZ = chunk.getPos().getStartZ();
+        
+        for (int x = 0; x < 16; ++x) {
+            int absX = startX + x;
+            for (int z = 0; z < 16; ++z) {
+                int absZ = startZ + z;
+                
+                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
+                    Biome biome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
+                    BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
+                    BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
+                    
+                    BlockState blockstateToSet = chunk.getBlockState(mutable.set(x, y, z));
+                    
+                    // Skip replacing surface blocks if this is a Hell level and biome surface is standard grass/dirt.
+                    if (this.levelTheme == IndevTheme.HELL && topBlock.equals(BlockStates.GRASS_BLOCK) && fillerBlock.equals(BlockStates.DIRT))
+                        continue;
+                    
+                    if (blockstateToSet.equals(this.topsoilBlock)) {
+                        blockstateToSet = topBlock;
+                    } else if (blockstateToSet.equals(BlockStates.DIRT)) {
+                        blockstateToSet = fillerBlock;
+                    }
+
+                    chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
+                }
+            }
+        }
+        
+    }
     
     @Override
     public synchronized int getHeight(int x, int z, Type type) {
@@ -181,7 +217,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.getBlockState(blockToSet), false);
                     }
                     
-                    if (this.type == IndevType.FLOATING) continue;
+                    if (this.levelType == IndevType.FLOATING) continue;
                      
                     if (y <= 1 && blockToSet == Blocks.AIR) {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.LAVA, false);
@@ -203,7 +239,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         
         for (int l = 0; l < this.layers; ++l) { 
             // Floating island layer generation depends on water level being lowered on each iteration
-            this.waterLevel = (this.type == IndevType.FLOATING) ? this.height - 32 - l * 48 : this.waterLevel; 
+            this.waterLevel = (this.levelType == IndevType.FLOATING) ? this.height - 32 - l * 48 : this.waterLevel; 
             //this.groundLevel = this.waterLevel - 2;
             
             // Noise Generators (Here instead of constructor to randomize floating layer generation)    
@@ -267,7 +303,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                          if (y <= stoneTransition)
                              blockToSet = Blocks.STONE;
                          
-                         if (this.type == IndevType.FLOATING && y < var5)
+                         if (this.levelType == IndevType.FLOATING && y < var5)
                              blockToSet = Blocks.AIR;
 
                          Block someBlock = blockArr[x][y][z];
@@ -316,7 +352,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                 
                 double heightResult = Math.max(heightLow, heightHigh) / 2.0;
                 
-                if (this.type == IndevType.ISLAND) {
+                if (this.levelType == IndevType.ISLAND) {
                     double islandVar3 = Math.sqrt(islandVar1 * islandVar1 + islandVar2 * islandVar2) * 1.2000000476837158;
                     islandVar3 = Math.min(islandVar3, islandNoise.sample(x * 0.05f, z * 0.05f) / 4.0 + 1.0);
                     islandVar3 = Math.max(islandVar3, Math.max(islandVar1, islandVar2));
@@ -371,22 +407,22 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         
         int seaLevel = this.waterLevel - 1;
         
-        if (this.theme == IndevTheme.PARADISE) seaLevel += 2;
+        if (this.levelTheme == IndevTheme.PARADISE) seaLevel += 2;
         
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
                 boolean genSand = sandNoiseOctaves.sample(x, z) > 8.0;
                 boolean genGravel = gravelNoiseOctaves.sample(x, z) > 12.0;
                 
-                if (this.type == IndevType.ISLAND) {
+                if (this.levelType == IndevType.ISLAND) {
                     genSand = sandNoiseOctaves.sample(x, z) > -8.0;
                 }
                 
-                if (this.theme == IndevTheme.PARADISE) {
+                if (this.levelTheme == IndevTheme.PARADISE) {
                     genSand = sandNoiseOctaves.sample(x, z) > -32.0;
                 }
                 
-                if (this.theme == IndevTheme.HELL || this.theme == IndevTheme.WOODS) {
+                if (this.levelTheme == IndevTheme.HELL || this.levelTheme == IndevTheme.WOODS) {
                     genSand = sandNoiseOctaves.sample(x, z) > -8.0;
                 }
                 
@@ -403,7 +439,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                     Block surfaceBlock = null;
                     
                     if (heightResult <= seaLevel && genSand) {
-                        surfaceBlock = (this.theme == IndevTheme.HELL) ? Blocks.GRASS_BLOCK : Blocks.SAND; 
+                        surfaceBlock = (this.levelTheme == IndevTheme.HELL) ? Blocks.GRASS_BLOCK : Blocks.SAND; 
                     }
                     
                     if (block != Blocks.AIR && surfaceBlock != null) {
@@ -484,7 +520,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Watering..");
         Block toFill = this.fluidBlock.getBlock();
         
-        if (this.type == IndevType.FLOATING) {
+        if (this.levelType == IndevType.FLOATING) {
             return;
         }
         
@@ -513,7 +549,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     private void floodLava(Block[][][] blockArr) {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Melting..");
         
-        if (this.type == IndevType.FLOATING) {
+        if (this.levelType == IndevType.FLOATING) {
             return;
         }
 
@@ -566,7 +602,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     private void plantSurface(Block[][][] blockArr) {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Planting..");
         
-        Block blockToPlant = this.theme == IndevTheme.HELL ? Blocks.PODZOL : Blocks.GRASS_BLOCK;
+        Block blockToPlant = this.topsoilBlock.getBlock();
         
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
@@ -583,10 +619,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     private void generateWorldBorder(Chunk chunk) {
-        BlockState topBlock = BlockStates.GRASS_BLOCK;
+        BlockState topBlock = this.topsoilBlock;
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-        
-        if (this.theme == IndevTheme.HELL) topBlock = BlockStates.PODZOL;
          
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
@@ -649,8 +683,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         int spawnZ = spawnPos.getZ();
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        Block floorBlock = this.theme == IndevTheme.HELL ? Blocks.MOSSY_COBBLESTONE : Blocks.STONE;
-        Block wallBlock = this.theme == IndevTheme.HELL ? Blocks.MOSSY_COBBLESTONE : Blocks.OAK_PLANKS;
+        Block floorBlock = this.levelTheme == IndevTheme.HELL ? Blocks.MOSSY_COBBLESTONE : Blocks.STONE;
+        Block wallBlock = this.levelTheme == IndevTheme.HELL ? Blocks.MOSSY_COBBLESTONE : Blocks.OAK_PLANKS;
         
         for (int x = spawnX - 3; x <= spawnX + 3; ++x) {
             for (int y = spawnY - 2; y <= spawnY + 2; ++y) {
@@ -677,10 +711,10 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     public IndevType getType() {
-        return this.type;
+        return this.levelType;
     }
     
     public IndevTheme getTheme() {
-        return this.theme;
+        return this.levelTheme;
     }
 }

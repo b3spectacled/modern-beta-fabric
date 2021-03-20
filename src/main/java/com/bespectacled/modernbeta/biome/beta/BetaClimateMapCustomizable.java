@@ -1,7 +1,9 @@
 package com.bespectacled.modernbeta.biome.beta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.bespectacled.modernbeta.biome.beta.BetaClimateMap.BetaBiomeType;
 
@@ -11,49 +13,35 @@ import net.minecraft.util.Identifier;
 public class BetaClimateMapCustomizable {
     private final CompoundTag biomeProviderSettings;
     
-    private final Identifier desertId;
-    private final Identifier forestId;
-    private final Identifier iceDesertId;
-    private final Identifier plainsId;
-    private final Identifier rainforestId;
-    private final Identifier savannaId;
-    private final Identifier shrublandId;
-    private final Identifier seasonalForestId;
-    private final Identifier swamplandId;
-    private final Identifier taigaId;
-    private final Identifier tundraId;
-    
-    private final Identifier oceanId;
-    private final Identifier coldOceanId;
-    private final Identifier frozenOceanId;
-    private final Identifier lukewarmOceanId;
-    private final Identifier warmOceanId;
-    
     private final Identifier LAND_BIOME_TABLE[] = new Identifier[4096];
     private final Identifier OCEAN_BIOME_TABLE[] = new Identifier[4096];
     
-    private final List<Identifier> biomeIds = new ArrayList<Identifier>();
+    private final List<Identifier> biomeIds;
+    private final Map<String, Identifier> biomeMap;
     
     public BetaClimateMapCustomizable(CompoundTag biomeProviderSettings) {
         this.biomeProviderSettings = biomeProviderSettings;
         
-        this.desertId = this.loadBiomeId("desert", BetaBiomes.DESERT_ID);
-        this.forestId = this.loadBiomeId("forest", BetaBiomes.FOREST_ID);
-        this.iceDesertId = this.loadBiomeId("ice_desert", BetaBiomes.TUNDRA_ID);
-        this.plainsId = this.loadBiomeId("plains", BetaBiomes.PLAINS_ID);
-        this.rainforestId = this.loadBiomeId("rainforest", BetaBiomes.RAINFOREST_ID);
-        this.savannaId = this.loadBiomeId("savanna", BetaBiomes.SAVANNA_ID);
-        this.shrublandId = this.loadBiomeId("shrubland", BetaBiomes.SHRUBLAND_ID);
-        this.seasonalForestId = this.loadBiomeId("seasonal_forest", BetaBiomes.SEASONAL_FOREST_ID);
-        this.swamplandId = this.loadBiomeId("swampland", BetaBiomes.SWAMPLAND_ID);
-        this.taigaId = this.loadBiomeId("taiga", BetaBiomes.TAIGA_ID);
-        this.tundraId = this.loadBiomeId("tundra", BetaBiomes.TUNDRA_ID);
+        this.biomeIds = new ArrayList<Identifier>();
+        this.biomeMap = new HashMap<String, Identifier>();
         
-        this.oceanId = this.loadBiomeId("ocean", BetaBiomes.OCEAN_ID);
-        this.coldOceanId = this.loadBiomeId("cold_ocean", BetaBiomes.COLD_OCEAN_ID);
-        this.frozenOceanId = this.loadBiomeId("frozen_ocean", BetaBiomes.FROZEN_OCEAN_ID);
-        this.lukewarmOceanId = this.loadBiomeId("lukewarm_ocean",  BetaBiomes.LUKEWARM_OCEAN_ID);
-        this.warmOceanId = this.loadBiomeId("warm_ocean",  BetaBiomes.WARM_OCEAN_ID);
+        this.loadBiomeId("desert", BetaBiomes.DESERT_ID);
+        this.loadBiomeId("forest", BetaBiomes.FOREST_ID);
+        this.loadBiomeId("ice_desert", BetaBiomes.TUNDRA_ID);
+        this.loadBiomeId("plains", BetaBiomes.PLAINS_ID);
+        this.loadBiomeId("rainforest", BetaBiomes.RAINFOREST_ID);
+        this.loadBiomeId("savanna", BetaBiomes.SAVANNA_ID);
+        this.loadBiomeId("shrubland", BetaBiomes.SHRUBLAND_ID);
+        this.loadBiomeId("seasonal_forest", BetaBiomes.SEASONAL_FOREST_ID);
+        this.loadBiomeId("swampland", BetaBiomes.SWAMPLAND_ID);
+        this.loadBiomeId("taiga", BetaBiomes.TAIGA_ID);
+        this.loadBiomeId("tundra", BetaBiomes.TUNDRA_ID);
+        
+        this.loadBiomeId("ocean", BetaBiomes.OCEAN_ID);
+        this.loadBiomeId("cold_ocean", BetaBiomes.COLD_OCEAN_ID);
+        this.loadBiomeId("frozen_ocean", BetaBiomes.FROZEN_OCEAN_ID);
+        this.loadBiomeId("lukewarm_ocean",  BetaBiomes.LUKEWARM_OCEAN_ID);
+        this.loadBiomeId("warm_ocean",  BetaBiomes.WARM_OCEAN_ID);
         
         this.generateBiomeLookup();
     }
@@ -91,44 +79,44 @@ public class BetaClimateMapCustomizable {
         humid *= temp;
 
         if (temp < 0.1F) {
-            return this.iceDesertId;
+            return biomeMap.get("ice_desert");
         }
 
         if (humid < 0.2F) {
             if (temp < 0.5F) {
-                return this.tundraId;
+                return biomeMap.get("tundra");
             }
             if (temp < 0.95F) {
-                return this.savannaId;
+                return biomeMap.get("savanna");
             } else {
-                return this.desertId;
+                return biomeMap.get("desert");
             }
         }
 
         if (humid > 0.5F && temp < 0.7F) {
-            return this.swamplandId;
+            return biomeMap.get("swampland");
         }
 
         if (temp < 0.5F) {
-            return this.taigaId;
+            return biomeMap.get("taiga");
         }
 
         if (temp < 0.97F) {
             if (humid < 0.35F) {
-                return this.shrublandId;
+                return biomeMap.get("shrubland");
             } else {
-                return this.forestId;
+                return biomeMap.get("forest");
             }
         }
 
         if (humid < 0.45F) {
-            return this.plainsId;
+            return biomeMap.get("plains");
         }
 
         if (humid < 0.9F) {
-            return this.seasonalForestId;
+            return biomeMap.get("seasonal_forest");
         } else {
-            return this.rainforestId;
+            return biomeMap.get("rainforest");
         }
 
     }
@@ -137,44 +125,44 @@ public class BetaClimateMapCustomizable {
         humid *= temp;
 
         if (temp < 0.1F) {
-            return this.frozenOceanId;
+            return biomeMap.get("frozen_ocean");
         }
 
         if (humid < 0.2F) {
             if (temp < 0.5F) {
-                return this.frozenOceanId;
+                return biomeMap.get("frozen_ocean");
             }
             if (temp < 0.95F) {
-                return this.oceanId;
+                return biomeMap.get("ocean");
             } else {
-                return this.oceanId;
+                return biomeMap.get("ocean");
             }
         }
 
         if (humid > 0.5F && temp < 0.7F) {
-            return this.coldOceanId;
+            return biomeMap.get("cold_ocean");
         }
 
         if (temp < 0.5F) {
-            return this.frozenOceanId;
+            return biomeMap.get("frozen_ocean");
         }
 
         if (temp < 0.97F) {
             if (humid < 0.35F) {
-                return this.oceanId;
+                return biomeMap.get("ocean");
             } else {
-                return this.oceanId;
+                return biomeMap.get("ocean");
             }
         }
 
         if (humid < 0.45F) {
-            return this.oceanId;
+            return biomeMap.get("ocean");
         }
 
         if (humid < 0.9F) {
-            return this.lukewarmOceanId;
+            return biomeMap.get("lukewarm_ocean");
         } else {
-            return this.warmOceanId;
+            return biomeMap.get("warm_ocean");
         }
 
     }
@@ -182,6 +170,7 @@ public class BetaClimateMapCustomizable {
     private Identifier loadBiomeId(String key, Identifier defaultId) {
         Identifier biomeId = (this.biomeProviderSettings.contains(key)) ? new Identifier(this.biomeProviderSettings.getString(key)) : defaultId;
         this.biomeIds.add(biomeId);
+        this.biomeMap.put(key, biomeId);
         
         return biomeId;
     }

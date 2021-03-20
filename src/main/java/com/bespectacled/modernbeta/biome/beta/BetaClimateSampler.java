@@ -16,10 +16,6 @@ public enum BetaClimateSampler {
     private SimplexOctaveNoise humidNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 39811L), 4);
     private SimplexOctaveNoise noiseOctaves = new SimplexOctaveNoise(new Random(1 * 543321L), 2);
     
-    private boolean isFixed = false;
-    private double fixedTemp = 0.5D;
-    private double fixedHumid = 0.5D;
-    
     private long seed;
     
     private BetaClimateSampler() {
@@ -29,24 +25,17 @@ public enum BetaClimateSampler {
     public void setSeed(long seed) {
         if (this.seed == seed) return;
         
-        this.isFixed = false;
         this.seed = seed;
         this.initNoise(seed);
         this.biomeCache.clear();
     }
     
-    public void setFixed(double temp, double humid) {
-        this.isFixed = true;
-        this.fixedTemp = temp;
-        this.fixedHumid = humid;
-    }
-    
     public double sampleTemp(int x, int z) {
-        return isFixed ? this.fixedTemp : this.biomeCache.getCachedChunk(x, z).sampleTempAtPoint(x, z);
+        return this.biomeCache.getCachedChunk(x, z).sampleTempAtPoint(x, z);
     }
     
     public double sampleHumid(int x, int z) {
-        return isFixed ? this.fixedHumid : this.biomeCache.getCachedChunk(x, z).sampleHumidAtPoint(x, z);
+        return this.biomeCache.getCachedChunk(x, z).sampleHumidAtPoint(x, z);
     }
     
     public void sampleTempHumid(double[] arr, int x, int z) {

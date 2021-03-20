@@ -51,6 +51,7 @@ public class ScreenButtonOption extends Option {
     
     public void updateOnPressAction(ButtonWidget.PressAction onPress) {
         ((MixinButtonWidgetAccessor)this.button).setOnPress(onPress);
+        this.onPress = onPress;
     }
     
     public void updateActivePredicate(Predicate<Object> activePredicate) {

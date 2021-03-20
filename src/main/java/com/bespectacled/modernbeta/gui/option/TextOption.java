@@ -12,13 +12,13 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 
 /*
- * Option Wrapper for Text Field
+ * Option Wrapper for Static Text Field
  */
-public class DummyButtonOption extends Option {
+public class TextOption extends Option {
     private final String key;
     private AbstractButtonWidget button;
 
-    public DummyButtonOption(String key) {
+    public TextOption(String key) {
         super(key);
         
         this.key = key;
