@@ -47,7 +47,7 @@ public class OldGeneratorType {
         Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = () -> registryChunkGenSettings.get(ModernBeta.createId(worldType.getName()));
        
         OldBiomeSource biomeSource = new OldBiomeSource(generatorOptions.getSeed(), registryBiome, biomeProviderSettings);
-        OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(chunkGenSettingsSupplier, chunkProviderSettings);
+        OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(chunkGenSettingsSupplier, chunkProviderSettings); 
         
         return new GeneratorOptions(
             generatorOptions.getSeed(),

@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.gui;
 import java.util.function.BiConsumer;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -68,7 +69,7 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     protected void init() {
         super.init();
 
-        this.biomeButton = new ScreenButtonOption(
+        this.biomeOption = new ScreenButtonOption(
             "createWorld.customize.biomeType.biomes",
             biomeType -> ((BiomeType)biomeType) == BiomeType.SINGLE,
             buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
@@ -93,14 +94,15 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     
                     // Update biome button and active state based on current biomeType.
                     this.updateBiomeButton();
-                    this.setSingleBiomeButtonVisibility();
+                    this.updateBiomeButtonActive();
                 }
             ),
-            this.biomeButton
+            this.biomeOption
         );
         
         // Set single biome active state right after it's added to button list.
         this.updateBiomeButton();
+        this.updateBiomeButtonActive();
         
         if (this.showOceansOption) {
             buttonList.addSingleOptionEntry(
@@ -152,14 +154,14 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     }
 
     @Override
-    protected void setSingleBiomeButtonVisibility() {
-        this.biomeButton.setButtonActive(this.biomeType);
+    protected void updateBiomeButtonActive() {
+        this.biomeOption.setButtonActive(this.biomeType);
     }
     
     private void updateBiomeButton() {
         if (this.biomeType == BiomeType.BETA) {
-            this.biomeButton.updateActivePredicate(biomeType -> ((BiomeType)biomeType) == BiomeType.BETA);
-            this.biomeButton.updateOnPressAction(
+            this.biomeOption.updateActivePredicate(biomeType -> ((BiomeType)biomeType) == BiomeType.BETA);
+            this.biomeOption.updateOnPressAction(
                 buttonWidget -> this.client.openScreen(new BetaCustomizeBiomesScreen(
                     this, 
                     this.registryManager,
@@ -167,8 +169,8 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     biomeProviderSettings -> { this.consumer.accept(biomeProviderSettings, this.chunkProviderSettings); }
             )));
         } else {
-            this.biomeButton.updateActivePredicate(biomeType -> ((BiomeType)biomeType) == BiomeType.SINGLE);
-            this.biomeButton.updateOnPressAction(
+            this.biomeOption.updateActivePredicate(biomeType -> ((BiomeType)biomeType) == BiomeType.SINGLE);
+            this.biomeOption.updateOnPressAction(
                 buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
                     this, 
                     this.registryManager,

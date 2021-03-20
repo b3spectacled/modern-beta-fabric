@@ -6,6 +6,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
+import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -59,7 +60,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     protected void init() {
         super.init();
         
-        this.biomeButton = new ScreenButtonOption(
+        this.biomeOption = new ScreenButtonOption(
             "createWorld.customize.biomeType.biomes",
             biomeType -> ((BiomeType)biomeType) == BiomeType.SINGLE,
             buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
@@ -84,9 +85,9 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     this.biomeProviderSettings.putString("singleBiome", this.levelTheme.getDefaultBiome().toString());
                 }
             ),
-            this.biomeButton
+            this.biomeOption
         );
-        this.setSingleBiomeButtonVisibility();
+        this.updateBiomeButtonActive();
         
         this.buttonList.addSingleOptionEntry(
                 CyclingOption.create(
@@ -181,7 +182,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     }
 
     @Override
-    protected void setSingleBiomeButtonVisibility() {
-        this.biomeButton.setButtonActive(BiomeType.SINGLE);
+    protected void updateBiomeButtonActive() {
+        this.biomeOption.setButtonActive(BiomeType.SINGLE);
     }
 }

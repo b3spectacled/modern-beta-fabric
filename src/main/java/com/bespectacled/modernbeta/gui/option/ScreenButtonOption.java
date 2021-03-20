@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.gui;
+package com.bespectacled.modernbeta.gui.option;
 
 import com.bespectacled.modernbeta.mixin.client.*;
 
@@ -10,6 +10,9 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.TranslatableText;
 
+/*
+ * Option Wrapper for Screen Open Button
+ */
 public class ScreenButtonOption extends Option {
     private final String key;
     private ButtonWidget.PressAction onPress;

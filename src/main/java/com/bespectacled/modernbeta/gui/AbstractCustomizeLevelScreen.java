@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.gui;
 
 import java.util.function.BiConsumer;
 import com.bespectacled.modernbeta.gen.WorldType;
+import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -25,9 +26,7 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
     protected final WorldType worldType;
     
     protected ButtonListWidget buttonList;
-    protected ButtonWidget buttonSingleBiome;
-    
-    protected ScreenButtonOption biomeButton;
+    protected ScreenButtonOption biomeOption;
     
     public AbstractCustomizeLevelScreen(
         CreateWorldScreen parent, 
@@ -102,5 +101,5 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         super.render(matrixStack, mouseX, mouseY, tickDelta);
     }
     
-    protected abstract void setSingleBiomeButtonVisibility();
+    protected abstract void updateBiomeButtonActive();
 }
