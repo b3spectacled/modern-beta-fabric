@@ -94,15 +94,15 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
 
                 int flag = -1;
                 
-                Biome curBiome = getBiomeForSurfaceGen(mutable.set(absX, topY, absZ), region, biomeSource);
+                Biome biome = getBiomeForSurfaceGen(mutable.set(absX, topY, absZ), region, biomeSource);
 
-                BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
-                BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
+                BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
+                BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
 
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
 
-                boolean hasCustomSurface = this.useCustomSurfaceBuilder(region, chunk, rand, mutable.set(absX, topY, absZ), stoneNoise[z + x * 16]);
+                boolean hasCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; y--) {

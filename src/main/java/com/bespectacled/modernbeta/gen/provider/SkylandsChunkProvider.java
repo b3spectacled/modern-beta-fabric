@@ -30,7 +30,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     
     public SkylandsChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 64, 0, -10, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, 0, 128, 0, 0, -10, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, settings);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -79,15 +79,15 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
 
-                Biome curBiome = getBiomeForSurfaceGen(mutable.set(absX, topY, absZ), region, biomeSource);
+                Biome biome = getBiomeForSurfaceGen(mutable.set(absX, topY, absZ), region, biomeSource);
                 
-                BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
-                BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
+                BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
+                BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
 
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
                 
-                boolean hasCustomSurface = this.useCustomSurfaceBuilder(region, chunk, rand, mutable.set(absX, topY, absZ), stoneNoise[z + x * 16]);
+                boolean hasCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
 
                 // Generate from top to bottom of world
                 for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; y--) {

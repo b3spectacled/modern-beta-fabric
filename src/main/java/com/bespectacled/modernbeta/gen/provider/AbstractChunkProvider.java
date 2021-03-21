@@ -1,10 +1,13 @@
 package com.bespectacled.modernbeta.gen.provider;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.decorator.OldDecorators;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.mixin.MixinAquiferSamplerInvoker;
@@ -17,6 +20,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
@@ -26,7 +30,7 @@ import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Category;
+import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.AquiferSampler;
 import net.minecraft.world.gen.BlockInterpolator;
@@ -361,15 +365,12 @@ public abstract class AbstractChunkProvider {
         return chunkRand;
     }
     
-    protected boolean useCustomSurfaceBuilder(ChunkRegion region, Chunk chunk, ChunkRandom random, BlockPos.Mutable mutable, double stoneNoise) {
-        Biome biome = region.getBiome(mutable);
-        Category biomeCategory = biome.getCategory();
-        
+    protected boolean useCustomSurfaceBuilder(Biome biome, Identifier biomeId, ChunkRegion region, Chunk chunk, ChunkRandom random, BlockPos.Mutable mutable) {
         int x = mutable.getX();
         int y = mutable.getY();
         int z = mutable.getZ();
         
-        if (biomeCategory == Category.MESA || biomeCategory == Category.EXTREME_HILLS) {
+        if (Compat.BIOMES_WITH_CUSTOM_SURFACES.contains(biomeId)) {
             double surfaceNoise = this.surfaceDepthNoise.sample(x * 0.0625, z * 0.0625, 0.0625, (x & 0xF) * 0.0625) * 15.0;
             biome.buildSurface(
                 random, 
