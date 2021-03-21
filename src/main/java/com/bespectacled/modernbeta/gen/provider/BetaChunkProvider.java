@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.gen.provider;
 
+import java.util.function.Predicate;
+
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
@@ -201,12 +203,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
     @Override
     public int getHeight(int x, int z, Type type) {
-        int groundHeight = sampleHeightmap(x, z);
-        
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
-            groundHeight = this.seaLevel;
-        
-        return groundHeight;
+        return this.sampleHeightmap(x, z, type.getBlockPredicate());
     }
     
     @Override
@@ -448,7 +445,10 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         return densityWithOffset;
     }
     
-    private int sampleHeightmap(int sampleX, int sampleZ) {
+    private int sampleHeightmap(int sampleX, int sampleZ, Predicate<BlockState> predicate) {
+        int chunkX = sampleX >> 4;
+        int chunkZ = sampleZ >> 4;
+            
         int startX = MathHelper.floorDiv(sampleX, 16) * 16;
         int startZ = MathHelper.floorDiv(sampleZ, 16) * 16;
         int transformCoord = 16 / (this.noiseSizeX + 1);
@@ -463,6 +463,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         double lerpZ = modZ / (double)this.horizontalNoiseResolution;
         
         double[] heightNoise = this.heightNoisePool.borrowArr();
+        AquiferSampler aquiferSampler = this.createAquiferSampler(chunkX, chunkZ);
         
         double[] scaleDepth0 = new double[2];
         double[] scaleDepth1 = new double[2];
@@ -513,7 +514,9 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                 double lerpY = subY / (double)this.verticalNoiseResolution;
                 double density = MathHelper.lerp3(lerpY, lerpX, lerpZ, lowerNW, upperNW, lowerNE, upperNE, lowerSW, upperSW, lowerSE, upperSE);
                 
-                if (density > 0.0) {
+                BlockState state = this.getBlockState(StructureWeightSampler.INSTANCE, aquiferSampler, sampleX, y, sampleZ, density);
+                
+                if (predicate != null && predicate.test(state)) {
                     this.heightNoisePool.returnArr(heightNoise);
                     return y + 1;
                 }
@@ -521,6 +524,6 @@ public class BetaChunkProvider extends AbstractChunkProvider {
         }
         
         this.heightNoisePool.returnArr(heightNoise);
-        return -1;
+        return this.minY;
     }
 }

@@ -1,8 +1,6 @@
 package com.bespectacled.modernbeta.gen.provider;
 
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
@@ -16,7 +14,7 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 
 import net.minecraft.block.Block;
-//import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +28,6 @@ import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.AquiferSampler;
 import net.minecraft.world.gen.BlockInterpolator;
@@ -60,8 +57,8 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 public abstract class AbstractChunkProvider {
     protected static final Random RAND = new Random();
     
-    //protected static final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> HEIGHTMAP_CACHE = new Object2ObjectLinkedOpenHashMap<>(512);
-    //protected static final int[][] HEIGHTMAP_CHUNK = new int[16][16];
+    protected static final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> HEIGHTMAP_CACHE = new Object2ObjectLinkedOpenHashMap<>(512);
+    protected static final int[][] HEIGHTMAP_CHUNK = new int[16][16];
     
     protected final Supplier<ChunkGeneratorSettings> generatorSettings;
     protected final CompoundTag providerSettings;
@@ -224,7 +221,7 @@ public abstract class AbstractChunkProvider {
             new OctavePerlinNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
         
         RAND.setSeed(seed);
-        //HEIGHTMAP_CACHE.clear();
+        HEIGHTMAP_CACHE.clear();
     }
     
     public abstract Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource);

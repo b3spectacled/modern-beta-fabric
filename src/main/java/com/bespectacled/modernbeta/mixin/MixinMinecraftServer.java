@@ -77,8 +77,15 @@ public class MixinMinecraftServer {
     private static BlockPos getInitialOldSpawn(OldChunkGenerator gen, PerlinOctaveNoise beachNoiseOctaves, int seaLevel) {
         int x = 0;
         int z;
+        int attempts = 0;
         
         for (z = 0; !isBlockSand(x, z, gen, beachNoiseOctaves, seaLevel); z += spawnRand.nextInt(64) - spawnRand.nextInt(64)) {
+            if (attempts >= 10000) {
+                ModernBeta.LOGGER.log(Level.INFO, "Exceeded spawn attempts, spawning anyway..");
+                break;
+            }
+            attempts++;
+            
             x += spawnRand.nextInt(64) - spawnRand.nextInt(64);
         }
         

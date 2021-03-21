@@ -343,6 +343,6 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
         }
         
         this.heightNoisePool.returnArr(heightNoise);
-        return -1;
+        return this.minY;
     }
 }

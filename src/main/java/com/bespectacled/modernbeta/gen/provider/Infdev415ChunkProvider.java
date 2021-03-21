@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.gen.provider;
 
+import java.util.function.Predicate;
+
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gen.OldGeneratorUtil;
@@ -177,12 +179,7 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
 
     @Override
     public int getHeight(int x, int z, Type type) {
-        int groundHeight = sampleHeightmap(x, z);
-        
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
-            groundHeight = this.seaLevel;
-        
-        return groundHeight;
+        return sampleHeightmap(x, z, type.getBlockPredicate());
     }
     
     @Override
@@ -343,9 +340,9 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
         return density;
     }
     
-    private int sampleHeightmap(int sampleX, int sampleZ) {
-        //double[] heightNoise = new double[(this.noiseSizeY + 1) * this.noiseSizeX];
-        double[] heightNoise = this.heightNoisePool.borrowArr();
+    private int sampleHeightmap(int sampleX, int sampleZ, Predicate<BlockState> predicate)  {
+        int chunkX = sampleX >> 4;
+        int chunkZ = sampleZ >> 4;
         
         int noiseX = MathHelper.floorDiv(sampleX, this.horizontalNoiseResolution);
         int noiseZ = MathHelper.floorDiv(sampleZ, this.horizontalNoiseResolution);
@@ -355,6 +352,9 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
         
         double lerpX = modX / (double)this.horizontalNoiseResolution;
         double lerpZ = modZ / (double)this.horizontalNoiseResolution;
+        
+        double[] heightNoise = this.heightNoisePool.borrowArr();
+        AquiferSampler aquiferSampler = this.createAquiferSampler(chunkX, chunkZ);
         
         for (int noiseY = 0; noiseY < this.noiseSizeY + 1; ++noiseY) {
             int offsetY = noiseY + this.noiseMinY;
@@ -381,10 +381,11 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
                 y += this.minY;
                         
                 double lerpY = subY / (double)this.verticalNoiseResolution;
-                
                 double density = MathHelper.lerp3(lerpY, lerpX, lerpZ, lower0, upper0, lower2, upper2, lower1, upper1, lower3, upper3);
                 
-                if (density > 0.0) {
+                BlockState state = this.getBlockState(StructureWeightSampler.INSTANCE, aquiferSampler, sampleX, y, sampleZ, density);
+                
+                if (predicate != null && predicate.test(state)) {
                     this.heightNoisePool.returnArr(heightNoise);
                     return y + 1;
                 }
@@ -392,20 +393,6 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
         }
         
         this.heightNoisePool.returnArr(heightNoise);
-        return -1;
+        return this.minY;
     }
-    
-    // Vanilla implementation seems to work better here
-    /*
-    @Override
-    protected double applyBottomSlide(double noise, int noiseY, int resolutionY, int initialOffset) {
-        int slideOffset = noiseY - initialOffset - this.noiseMinY;
-        
-        if (this.bottomSlideSize > 0.0) {
-            double slideDelta = (slideOffset - this.bottomSlideOffset) / this.bottomSlideSize;
-            noise = MathHelper.clampedLerp(this.bottomSlideTarget, noise, slideDelta);
-        }
-        
-        return noise;
-    }*/
 }

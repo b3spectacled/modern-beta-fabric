@@ -16,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.WorldView;
+import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
@@ -34,13 +35,10 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
         BlockPos pos = featureContext.getOrigin();
         ChunkGenerator generator = featureContext.getGenerator();
         
-        // Shouldn't be used if this isn't an instance of OldBiomeSource
-        if (!(generator.getBiomeSource() instanceof OldBiomeSource)) return false;
-        
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutableDown = new BlockPos.Mutable();
 
-        OldBiomeSource biomeSource = (OldBiomeSource)generator.getBiomeSource();
+        BiomeSource biomeSource = generator.getBiomeSource();
         
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
@@ -48,16 +46,15 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 int absZ = pos.getZ() + z;
                 int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING, absX, absZ);
                 
-                double temp;
-                if (biomeSource.getBiomeType() == BiomeType.SINGLE) {
-                    Identifier biomeId = ((SingleBiomeProvider)biomeSource.getBiomeProvider()).getBiomeId();
-                    temp = biomeSource.getBiomeRegistry().get(biomeId).getTemperature();
-                } else {
-                    temp = BetaClimateSampler.INSTANCE.sampleTemp(absX, absZ);
-                }    
-                
                 mutable.set(absX, y, absZ);
                 mutableDown.set(mutable).move(Direction.DOWN, 1);
+                
+                double temp;
+                if (generator.getBiomeSource() instanceof OldBiomeSource && ((OldBiomeSource)biomeSource).getBiomeType() == BiomeType.BETA) {
+                    temp = BetaClimateSampler.INSTANCE.sampleTemp(absX, absZ);  
+                } else {
+                    temp = world.getBiome(mutable).getTemperature();
+                }
                 
                 if (canSetIce(world, mutableDown, false, temp)) {
                     world.setBlockState(mutableDown, Blocks.ICE.getDefaultState(), 2);
