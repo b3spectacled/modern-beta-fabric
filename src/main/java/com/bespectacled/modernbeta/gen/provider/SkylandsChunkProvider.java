@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.gen.provider;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
+import com.bespectacled.modernbeta.gen.OldGeneratorUtil;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.DoubleArrayPool;
@@ -71,24 +72,27 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
 
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 16; x++) {
+                int absX = (chunkX << 4) + x; 
+                int absZ = (chunkZ << 4) + z;
+                int topY = OldGeneratorUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z) + 1;
 
                 int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
-                
-                int absX = (chunkX << 4) + x; 
-                int absZ = (chunkZ << 4) + z;
 
-                Biome curBiome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
+                Biome curBiome = getBiomeForSurfaceGen(mutable.set(absX, topY, absZ), region, biomeSource);
                 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
 
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
+                
+                boolean hasCustomSurface = this.useCustomSurfaceBuilder(region, chunk, rand, mutable.set(absX, topY, absZ), stoneNoise[z + x * 16]);
 
                 // Generate from top to bottom of world
                 for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; y--) {
-
+                    if (hasCustomSurface) break;
+                    
                     BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
                     
                     if (someBlock.equals(BlockStates.AIR)) { // Skip if air block

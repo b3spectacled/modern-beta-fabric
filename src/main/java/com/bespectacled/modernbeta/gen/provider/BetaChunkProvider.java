@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.gen.provider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
+import com.bespectacled.modernbeta.gen.OldGeneratorUtil;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.DoubleArrayPool;
@@ -97,6 +98,10 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 16; x++) {
+                int absX = (chunkX << 4) + x;
+                int absZ = (chunkZ << 4) + z;
+                int topY = OldGeneratorUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z) + 1;
+                
                 boolean genSandBeach = sandNoise[z + x * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
                 boolean genGravelBeach = gravelNoise[z + x * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
                 
@@ -104,16 +109,15 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                 
                 int flag = -1;
                 
-                int absX = chunk.getPos().getStartX() + x;
-                int absZ = chunk.getPos().getStartZ() + z;
-                    
-                Biome curBiome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
+                Biome curBiome = getBiomeForSurfaceGen(mutable.set(absX, topY, absZ), region, biomeSource);
 
                 BlockState biomeTopBlock = curBiome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = curBiome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
 
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
+                
+                boolean hasCustomSurface = this.useCustomSurfaceBuilder(region, chunk, rand, mutable.set(absX, topY, absZ), stoneNoise[z + x * 16]); 
 
                 // Generate from top to bottom of world
                 for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; y--) {
@@ -125,7 +129,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                     }
                     
                     // Don't surface build below 50, per 1.17 default surface builder
-                    if ((this.generateAquifers || this.generateNoiseCaves) && y < 50) {
+                    if (hasCustomSurface || (this.generateAquifers || this.generateNoiseCaves) && y < 50) {
                         continue;
                     }
 

@@ -71,6 +71,10 @@ public class OldBiomeSource extends BiomeSource {
         return this.biomeType == BiomeType.BETA;
     }
     
+    public boolean isSingle() {
+        return this.biomeType == BiomeType.SINGLE;
+    }
+    
     public BiomeType getBiomeType() {
         return this.biomeType;
     }

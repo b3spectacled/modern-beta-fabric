@@ -7,6 +7,7 @@ import com.bespectacled.modernbeta.biome.beta.*;
 import com.bespectacled.modernbeta.biome.classic.*;
 import com.bespectacled.modernbeta.biome.indev.*;
 import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.biome.CaveBiomeType;
 import com.bespectacled.modernbeta.gen.provider.*;
 import com.bespectacled.modernbeta.gui.*;
 import com.bespectacled.modernbeta.util.PentaFunction;
@@ -16,12 +17,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public enum WorldType {
-    BETA("beta", true, false, true, BiomeType.BETA, BetaBiomes.FOREST_ID, BetaChunkProvider::new, InfCustomizeLevelScreen::new),
-    SKYLANDS("skylands", false, false, true, BiomeType.SINGLE, BetaBiomes.SKY_ID, SkylandsChunkProvider::new, InfCustomizeLevelScreen::new),
-    ALPHA("alpha", true, false, true, BiomeType.SINGLE, ClassicBiomes.ALPHA_ID, AlphaChunkProvider::new, InfCustomizeLevelScreen::new),
-    INFDEV_415("infdev_415", true, false, true, BiomeType.SINGLE, ClassicBiomes.INFDEV_415_ID, Infdev415ChunkProvider::new, InfCustomizeLevelScreen::new),
-    INFDEV_227("infdev_227", true, false, false, BiomeType.SINGLE, ClassicBiomes.INFDEV_227_ID, Infdev227ChunkProvider::new, InfdevOldCustomizeLevelScreen::new),
-    INDEV("indev", false, false, false, BiomeType.SINGLE, IndevBiomes.INDEV_NORMAL_ID, IndevChunkProvider::new, IndevCustomizeLevelScreen::new);
+    BETA("beta", true, false, true, BiomeType.BETA, CaveBiomeType.VANILLA, BetaBiomes.FOREST_ID, BetaChunkProvider::new, InfCustomizeLevelScreen::new),
+    SKYLANDS("skylands", false, false, true, BiomeType.SINGLE, CaveBiomeType.NONE, BetaBiomes.SKY_ID, SkylandsChunkProvider::new, InfCustomizeLevelScreen::new),
+    ALPHA("alpha", true, false, true, BiomeType.SINGLE, CaveBiomeType.NONE, ClassicBiomes.ALPHA_ID, AlphaChunkProvider::new, InfCustomizeLevelScreen::new),
+    INFDEV_415("infdev_415", true, false, true, BiomeType.SINGLE, CaveBiomeType.NONE, ClassicBiomes.INFDEV_415_ID, Infdev415ChunkProvider::new, InfCustomizeLevelScreen::new),
+    INFDEV_227("infdev_227", true, false, false, BiomeType.SINGLE, CaveBiomeType.NONE, ClassicBiomes.INFDEV_227_ID, Infdev227ChunkProvider::new, InfdevOldCustomizeLevelScreen::new),
+    INDEV("indev", false, false, false, BiomeType.SINGLE, CaveBiomeType.NONE, IndevBiomes.INDEV_NORMAL_ID, IndevChunkProvider::new, IndevCustomizeLevelScreen::new);
     //RELEASE("release", true, false, true, BiomeType.BETA, ReleaseChunkProvider::new, InfCustomizeLevelScreen::new);
     
     private final String name;
@@ -29,6 +30,7 @@ public enum WorldType {
     private final boolean showDeepOceansOption;
     private final boolean showNoiseOptions;
     private final BiomeType defaultBiomeType;
+    private final CaveBiomeType defaultCaveBiomeType;
     private final Identifier defaultBiome;
     private final BiFunction<Long, OldGeneratorSettings, AbstractChunkProvider> chunkProvider;
     private final PentaFunction<CreateWorldScreen, DynamicRegistryManager, CompoundTag, CompoundTag, BiConsumer<CompoundTag, CompoundTag>, AbstractCustomizeLevelScreen> customizeScreen;
@@ -39,6 +41,7 @@ public enum WorldType {
         boolean showDeepOceansOption,
         boolean showNoiseOptions,
         BiomeType defaultBiomeType,
+        CaveBiomeType defaultCaveBiomeType,
         Identifier defaultBiome,
         BiFunction<Long, OldGeneratorSettings, AbstractChunkProvider> chunkProvider, 
         PentaFunction<CreateWorldScreen, DynamicRegistryManager, CompoundTag, CompoundTag, BiConsumer<CompoundTag, CompoundTag>, AbstractCustomizeLevelScreen> customizeScreen
@@ -48,6 +51,7 @@ public enum WorldType {
         this.showDeepOceansOption = showDeepOceansOption;
         this.showNoiseOptions = showNoiseOptions;
         this.defaultBiomeType = defaultBiomeType;
+        this.defaultCaveBiomeType = defaultCaveBiomeType;
         this.defaultBiome = defaultBiome;
         this.chunkProvider = chunkProvider;
         this.customizeScreen = customizeScreen;
@@ -71,6 +75,10 @@ public enum WorldType {
     
     public BiomeType getDefaultBiomeType() {
         return this.defaultBiomeType;
+    }
+    
+    public CaveBiomeType getDefaultCaveBiomeType() {
+        return this.defaultCaveBiomeType;
     }
     
     public Identifier getDefaultBiome() {

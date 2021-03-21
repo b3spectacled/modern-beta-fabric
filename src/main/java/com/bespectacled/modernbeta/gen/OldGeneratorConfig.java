@@ -46,7 +46,7 @@ public class OldGeneratorConfig {
             2, 
             1, 
             -0.46875, 
-            false, 
+            true, 
             false,
             false, 
             false
@@ -62,7 +62,7 @@ public class OldGeneratorConfig {
             2, 
             1, 
             -0.46875, 
-            false, 
+            true, 
             false, 
             false, 
             false
@@ -78,7 +78,7 @@ public class OldGeneratorConfig {
             1, 
             1, 
             -0.46875, 
-            false, 
+            true, 
             false, 
             false, 
             false
@@ -94,7 +94,7 @@ public class OldGeneratorConfig {
             1, 
             1, 
             -0.46875, 
-            false, 
+            true, 
             false, 
             false, 
             false
@@ -110,7 +110,7 @@ public class OldGeneratorConfig {
             1, 
             1, 
             -0.46875, 
-            false, 
+            true, 
             false, 
             false, 
             false

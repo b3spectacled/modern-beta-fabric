@@ -69,8 +69,8 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
         int startZ = chunk.getPos().getStartZ();
         
         for (int x = 0; x < 16; ++x) {
-            int absX = startX + x;
             for (int z = 0; z < 16; ++z) {
+                int absX = startX + x;
                 int absZ = startZ + z;
                 
                 for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {

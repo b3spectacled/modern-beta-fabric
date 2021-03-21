@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.gen.provider;
 
 import java.util.Random;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.decorator.OldDecorators;
@@ -19,9 +20,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
+import net.minecraft.util.math.noise.NoiseSampler;
+import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
+import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.AquiferSampler;
 import net.minecraft.world.gen.BlockInterpolator;
@@ -103,6 +108,7 @@ public abstract class AbstractChunkProvider {
     protected final DoublePerlinNoiseSampler waterLevelNoise;
     
     protected final BlockInterpolator deepslateInterpolator;
+    protected final NoiseSampler surfaceDepthNoise; // For vanilla surface builders
     
     public AbstractChunkProvider(long seed, OldGeneratorSettings settings) {
         this(
@@ -208,6 +214,10 @@ public abstract class AbstractChunkProvider {
         
         this.noiseCaveSampler = this.generateNoiseCaves ? new NoiseCaveSampler(chunkRandom, this.noiseMinY) : null;
         this.deepslateInterpolator = new DeepslateInterpolator(seed, this.defaultBlock, this.generateDeepslate ? Blocks.DEEPSLATE.getDefaultState() : BlockStates.STONE);
+        
+        this.surfaceDepthNoise = this.generatorSettings.get().getGenerationShapeConfig().hasSimplexSurfaceNoise() ? 
+            new OctaveSimplexNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0)) : 
+            new OctavePerlinNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
         
         RAND.setSeed(seed);
         //HEIGHTMAP_CACHE.clear();
@@ -349,6 +359,33 @@ public abstract class AbstractChunkProvider {
         chunkRand.setTerrainSeed(chunkX, chunkZ);
         
         return chunkRand;
+    }
+    
+    protected boolean useCustomSurfaceBuilder(ChunkRegion region, Chunk chunk, ChunkRandom random, BlockPos.Mutable mutable, double stoneNoise) {
+        Biome biome = region.getBiome(mutable);
+        Category biomeCategory = biome.getCategory();
+        
+        int x = mutable.getX();
+        int y = mutable.getY();
+        int z = mutable.getZ();
+        
+        if (biomeCategory == Category.MESA || biomeCategory == Category.EXTREME_HILLS) {
+            double surfaceNoise = this.surfaceDepthNoise.sample(x * 0.0625, z * 0.0625, 0.0625, (x & 0xF) * 0.0625) * 15.0;
+            biome.buildSurface(
+                random, 
+                chunk, 
+                x, z, y, 
+                surfaceNoise, 
+                this.defaultBlock, 
+                this.defaultFluid, 
+                this.seaLevel, 
+                region.getSeed()
+            );
+            
+            return true;
+        }
+        
+        return false;
     }
     
     public static Biome getBiomeForSurfaceGen(BlockPos pos, ChunkRegion region, OldBiomeSource biomeSource) {

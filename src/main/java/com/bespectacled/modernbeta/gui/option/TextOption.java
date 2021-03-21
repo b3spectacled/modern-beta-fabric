@@ -36,8 +36,15 @@ public class TextOption extends Option {
                 MinecraftClient client = MinecraftClient.getInstance();
                 TextRenderer textRenderer = client.textRenderer;
                 
-                int textColor = 16777215;
-                DrawableHelper.drawCenteredText(matrices, textRenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, textColor | MathHelper.ceil(this.alpha * 255.0f) << 24);
+                int textColor = 0xFFFFFF;
+                DrawableHelper.drawCenteredText(
+                    matrices, 
+                    textRenderer, 
+                    this.getMessage(), 
+                    this.x + this.width / 2, 
+                    this.y + (this.height - 8) / 2, 
+                    textColor | MathHelper.ceil(this.alpha * 255.0f) << 24
+                );
             
             }
         };

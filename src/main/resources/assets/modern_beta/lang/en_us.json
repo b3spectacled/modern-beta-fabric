@@ -17,6 +17,10 @@
     "createWorld.customize.biomeType.vanilla": "Vanilla/Modded",
     "createWorld.customize.biomeType.biomes": "Biomes",
     
+    "createWorld.customize.caveBiomeType": "Cave Biome Type",
+    "createWorld.customize.caveBiomeType.vanilla": "Vanilla",
+    "createWorld.customize.caveBiomeType.none": "None",
+    
     "createWorld.customize.old.title": "Modern Beta World Configuration",
     
     "createWorld.customize.inf.generateOceans": "Generate Oceans",

@@ -220,7 +220,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                     if (this.levelType == IndevType.FLOATING) continue;
                      
                     if (y <= 1 && blockToSet == Blocks.AIR) {
-                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.LAVA, false);
+                        //chunk.setBlockState(mutable.set(x, y, z), BlockStates.LAVA, false);
+                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                     } else if (y <= 1) {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                     }

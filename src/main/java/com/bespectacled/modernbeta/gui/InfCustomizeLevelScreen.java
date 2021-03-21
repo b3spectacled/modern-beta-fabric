@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.gui;
 import java.util.function.BiConsumer;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.biome.CaveBiomeType;
 import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
@@ -17,6 +18,7 @@ import net.minecraft.world.biome.Biome;
 public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     
     private BiomeType biomeType;
+    private CaveBiomeType caveBiomeType;
     private boolean generateOceans;
     private boolean generateDeepOceans;
     private boolean generateNoiseCaves;
@@ -37,6 +39,7 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
         
         this.biomeType = this.worldType.getDefaultBiomeType();
+        this.caveBiomeType = this.worldType.getDefaultCaveBiomeType();
         this.generateOceans = ModernBeta.BETA_CONFIG.generateOceans;
         this.generateDeepOceans = ModernBeta.BETA_CONFIG.generateDeepOceans;
         this.generateNoiseCaves = ModernBeta.BETA_CONFIG.generateNoiseCaves;
@@ -48,6 +51,7 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         this.showNoiseOptions = this.worldType.showNoiseOptions();
         
         this.biomeProviderSettings.putString("biomeType", this.biomeType.getName());
+        this.biomeProviderSettings.putString("caveBiomeType", this.caveBiomeType.getName());
         this.biomeProviderSettings.putString("singleBiome", this.worldType.getDefaultBiome().toString());
         
         if (this.showOceansOption)
@@ -103,6 +107,20 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         // Set single biome active state right after it's added to button list.
         this.updateBiomeButton();
         this.updateBiomeButtonActive();
+        
+        /*
+        buttonList.addSingleOptionEntry(
+            CyclingOption.create(
+                "createWorld.customize.caveBiomeType",
+                CaveBiomeType.values(), 
+                (value) -> new TranslatableText("createWorld.customize.caveBiomeType." + value.getName()), 
+                (gameOptions) -> { return this.caveBiomeType; }, 
+                (gameOptions, option, value) -> {
+                    this.caveBiomeType = value;
+                    this.biomeProviderSettings.putString("caveBiomeType", this.caveBiomeType.getName());
+                }
+            )
+        );*/
         
         if (this.showOceansOption) {
             buttonList.addSingleOptionEntry(

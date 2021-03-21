@@ -253,8 +253,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public int getMinimumY() {
-        //return this.getChunkProvider().getMinimumY();
-        return -64;
+        return this.getChunkProvider().getMinimumY();
+        //return -64;
     }
 
     @Override
