@@ -38,22 +38,31 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     ) {
         super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
         
-        this.levelType = IndevType.fromName(ModernBeta.BETA_CONFIG.indevLevelType);
-        this.levelTheme = IndevTheme.fromName(ModernBeta.BETA_CONFIG.indevLevelTheme);
-        this.levelWidth = ModernBeta.BETA_CONFIG.indevLevelWidth;
-        this.levelLength = ModernBeta.BETA_CONFIG.indevLevelLength;
-        this.levelHeight = ModernBeta.BETA_CONFIG.indevLevelHeight;
-        this.caveRadius = ModernBeta.BETA_CONFIG.indevCaveRadius;
+        this.levelType = this.chunkProviderSettings.contains("levelType") ? 
+            IndevType.fromName(this.chunkProviderSettings.getString("levelType")) : 
+            IndevType.fromName(ModernBeta.BETA_CONFIG.indevLevelType);
         
-        this.chunkProviderSettings.putString("levelType", this.levelType.getName());
-        this.chunkProviderSettings.putString("levelTheme", this.levelTheme.getName());
-        this.chunkProviderSettings.putInt("levelWidth", this.levelWidth);
-        this.chunkProviderSettings.putInt("levelLength", this.levelLength);
-        this.chunkProviderSettings.putInt("levelHeight", this.levelHeight);
-        this.chunkProviderSettings.putFloat("caveRadius", this.caveRadius);
+        this.levelTheme = this.chunkProviderSettings.contains("levelTheme") ? 
+            IndevTheme.fromName(this.chunkProviderSettings.getString("levelTheme")) :                 
+            IndevTheme.fromName(ModernBeta.BETA_CONFIG.indevLevelTheme);
         
-        this.biomeProviderSettings.putString("biomeType", BiomeType.SINGLE.getName());
-        this.biomeProviderSettings.putString("singleBiome", this.levelTheme.getDefaultBiome().toString());
+        this.levelWidth = this.chunkProviderSettings.contains("levelWidth") ?
+            this.chunkProviderSettings.getInt("levelWidth") :
+            ModernBeta.BETA_CONFIG.indevLevelWidth;
+        
+        this.levelLength = this.chunkProviderSettings.contains("levelLength") ?
+            this.chunkProviderSettings.getInt("levelLength") :
+            ModernBeta.BETA_CONFIG.indevLevelLength;
+        
+        this.levelHeight = this.chunkProviderSettings.contains("levelHeight") ?
+            this.chunkProviderSettings.getInt("levelHeight") :
+            ModernBeta.BETA_CONFIG.indevLevelHeight;
+        
+        this.caveRadius = this.chunkProviderSettings.contains("caveRadius") ?
+            this.chunkProviderSettings.getFloat("caveRadius") :
+            ModernBeta.BETA_CONFIG.indevCaveRadius;
+        
+        
     }
     
     @Override
@@ -67,9 +76,10 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
               this, 
               this.registryManager,
               (biome) -> {
-                  this.biomeProviderSettings.putString("singleBiome", this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString());
-              }, 
-              this.registryManager.<Biome>get(Registry.BIOME_KEY).get(this.levelTheme.getDefaultBiome())  
+                  this.singleBiome = this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome);
+                  this.biomeProviderSettings.putString("singleBiome", this.singleBiome.toString());
+              },
+              this.registryManager.<Biome>get(Registry.BIOME_KEY).get(this.singleBiome)  
             ))
         );
         
@@ -83,11 +93,21 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     this.levelTheme = value;
                     this.chunkProviderSettings.putString("levelTheme", this.levelTheme.getName());
                     this.biomeProviderSettings.putString("singleBiome", this.levelTheme.getDefaultBiome().toString());
+                    
+                    this.client.openScreen(
+                        this.worldType.createLevelScreen(
+                            this.parent, 
+                            this.registryManager, 
+                            this.biomeProviderSettings, 
+                            this.chunkProviderSettings, 
+                            this.consumer
+                    ));
                 }
             ),
             this.biomeOption
         );
-        this.updateBiomeButtonActive();
+        
+        this.updateButtonActive(this.biomeOption);
         
         this.buttonList.addSingleOptionEntry(
                 CyclingOption.create(
@@ -182,7 +202,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     }
 
     @Override
-    protected void updateBiomeButtonActive() {
-        this.biomeOption.setButtonActive(BiomeType.SINGLE);
+    protected void updateButtonActive(ScreenButtonOption option) {
+        option.setButtonActive(BiomeType.SINGLE);
     }
 }

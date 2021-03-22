@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.gui;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
@@ -28,24 +30,8 @@ public class BetaCustomizeBiomesScreen extends Screen {
     private final CompoundTag betaBiomeSettings;
     
     private ButtonListWidget buttonList;
-    
-    private Identifier desertId;
-    private Identifier forestId;
-    private Identifier iceDesertId;
-    private Identifier plainsId;
-    private Identifier rainforestId;
-    private Identifier savannaId;
-    private Identifier shrublandId;
-    private Identifier seasonalForestId;
-    private Identifier swamplandId;
-    private Identifier taigaId;
-    private Identifier tundraId;
-    
-    private Identifier oceanId;
-    private Identifier coldOceanId;
-    private Identifier frozenOceanId;
-    private Identifier lukewarmOceanId;
-    private Identifier warmOceanId;
+
+    private final Map<String, Identifier> biomeMap;
     
     protected BetaCustomizeBiomesScreen(
         AbstractCustomizeLevelScreen parent, 
@@ -53,31 +39,33 @@ public class BetaCustomizeBiomesScreen extends Screen {
         CompoundTag biomeProviderSettings,
         Consumer<CompoundTag> consumer
     ) {
-        super(new TranslatableText("Beta Biomes Configuration"));
+        super(new TranslatableText("createWorld.customize.beta.title"));
         
         this.parent = parent;
         this.registryManager = registryManager;
         this.biomeProviderSettings = biomeProviderSettings;
         this.consumer = consumer;
+        
         this.betaBiomeSettings = new CompoundTag();
+        this.biomeMap = new HashMap<String, Identifier>();
         
-        this.desertId = this.loadBiomeId("desert", BetaBiomes.DESERT_ID, this.biomeProviderSettings);
-        this.forestId = this.loadBiomeId("forest", BetaBiomes.FOREST_ID, this.biomeProviderSettings);
-        this.iceDesertId = this.loadBiomeId("ice_desert", BetaBiomes.TUNDRA_ID, this.biomeProviderSettings);
-        this.plainsId = this.loadBiomeId("plains", BetaBiomes.PLAINS_ID, this.biomeProviderSettings);
-        this.rainforestId = this.loadBiomeId("rainforest", BetaBiomes.RAINFOREST_ID, this.biomeProviderSettings);
-        this.savannaId = this.loadBiomeId("savanna", BetaBiomes.SAVANNA_ID, this.biomeProviderSettings);
-        this.shrublandId = this.loadBiomeId("shrubland", BetaBiomes.SHRUBLAND_ID, this.biomeProviderSettings);
-        this.seasonalForestId = this.loadBiomeId("seasonal_forest", BetaBiomes.SEASONAL_FOREST_ID, this.biomeProviderSettings);
-        this.swamplandId = this.loadBiomeId("swampland", BetaBiomes.SWAMPLAND_ID, this.biomeProviderSettings);
-        this.taigaId = this.loadBiomeId("taiga", BetaBiomes.TAIGA_ID, this.biomeProviderSettings);
-        this.tundraId = this.loadBiomeId("tundra", BetaBiomes.TUNDRA_ID, this.biomeProviderSettings);
+        this.loadBiomeId("desert", BetaBiomes.DESERT_ID);
+        this.loadBiomeId("forest", BetaBiomes.FOREST_ID);
+        this.loadBiomeId("ice_desert", BetaBiomes.TUNDRA_ID);
+        this.loadBiomeId("plains", BetaBiomes.PLAINS_ID);
+        this.loadBiomeId("rainforest", BetaBiomes.RAINFOREST_ID);
+        this.loadBiomeId("savanna", BetaBiomes.SAVANNA_ID);
+        this.loadBiomeId("shrubland", BetaBiomes.SHRUBLAND_ID);
+        this.loadBiomeId("seasonal_forest", BetaBiomes.SEASONAL_FOREST_ID);
+        this.loadBiomeId("swampland", BetaBiomes.SWAMPLAND_ID);
+        this.loadBiomeId("taiga", BetaBiomes.TAIGA_ID);
+        this.loadBiomeId("tundra", BetaBiomes.TUNDRA_ID);
         
-        this.oceanId = this.loadBiomeId("ocean", BetaBiomes.OCEAN_ID, this.biomeProviderSettings);
-        this.coldOceanId = this.loadBiomeId("cold_ocean", BetaBiomes.COLD_OCEAN_ID, this.biomeProviderSettings);
-        this.frozenOceanId = this.loadBiomeId("frozen_ocean", BetaBiomes.FROZEN_OCEAN_ID, this.biomeProviderSettings);
-        this.lukewarmOceanId = this.loadBiomeId("lukewarm_ocean",  BetaBiomes.LUKEWARM_OCEAN_ID, this.biomeProviderSettings);
-        this.warmOceanId = this.loadBiomeId("warm_ocean",  BetaBiomes.WARM_OCEAN_ID, this.biomeProviderSettings);
+        this.loadBiomeId("ocean", BetaBiomes.OCEAN_ID);
+        this.loadBiomeId("cold_ocean", BetaBiomes.COLD_OCEAN_ID);
+        this.loadBiomeId("frozen_ocean", BetaBiomes.FROZEN_OCEAN_ID);
+        this.loadBiomeId("lukewarm_ocean",  BetaBiomes.LUKEWARM_OCEAN_ID);
+        this.loadBiomeId("warm_ocean",  BetaBiomes.WARM_OCEAN_ID);
     }
     
     @Override
@@ -102,23 +90,23 @@ public class BetaCustomizeBiomesScreen extends Screen {
             
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         
-        this.addBiomeButtonEntry("desert", this.createTranslatableBiomeString(BetaBiomes.DESERT_ID), this.desertId, biomeId -> this.desertId = biomeId);
-        this.addBiomeButtonEntry("forest", this.createTranslatableBiomeString(BetaBiomes.FOREST_ID), this.forestId, biomeId -> this.forestId = biomeId);
-        this.addBiomeButtonEntry("ice_desert", this.createTranslatableBiomeString(BetaBiomes.ICE_DESERT_ID), this.iceDesertId, biomeId -> this.iceDesertId = biomeId);
-        this.addBiomeButtonEntry("plains", this.createTranslatableBiomeString(BetaBiomes.PLAINS_ID), this.plainsId, biomeId -> this.plainsId = biomeId);
-        this.addBiomeButtonEntry("rainforest", this.createTranslatableBiomeString(BetaBiomes.RAINFOREST_ID), this.rainforestId, biomeId -> this.rainforestId = biomeId);
-        this.addBiomeButtonEntry("savanna", this.createTranslatableBiomeString(BetaBiomes.SAVANNA_ID), this.savannaId, biomeId -> this.savannaId = biomeId);
-        this.addBiomeButtonEntry("shrubland", this.createTranslatableBiomeString(BetaBiomes.SHRUBLAND_ID), this.shrublandId, biomeId -> this.shrublandId = biomeId);
-        this.addBiomeButtonEntry("seasonal_forest", this.createTranslatableBiomeString(BetaBiomes.SEASONAL_FOREST_ID), this.seasonalForestId, biomeId -> this.seasonalForestId = biomeId);
-        this.addBiomeButtonEntry("swampland", this.createTranslatableBiomeString(BetaBiomes.SWAMPLAND_ID), this.swamplandId, biomeId -> this.swamplandId = biomeId);
-        this.addBiomeButtonEntry("taiga", this.createTranslatableBiomeString(BetaBiomes.TAIGA_ID), this.taigaId, biomeId -> this.taigaId = biomeId);
-        this.addBiomeButtonEntry("tundra", this.createTranslatableBiomeString(BetaBiomes.TUNDRA_ID), this.tundraId, biomeId -> this.tundraId = biomeId);
+        this.addBiomeButtonEntry("desert", this.createTranslatableBiomeString(BetaBiomes.DESERT_ID));
+        this.addBiomeButtonEntry("forest", this.createTranslatableBiomeString(BetaBiomes.FOREST_ID));
+        this.addBiomeButtonEntry("ice_desert", this.createTranslatableBiomeString(BetaBiomes.ICE_DESERT_ID));
+        this.addBiomeButtonEntry("plains", this.createTranslatableBiomeString(BetaBiomes.PLAINS_ID));
+        this.addBiomeButtonEntry("rainforest", this.createTranslatableBiomeString(BetaBiomes.RAINFOREST_ID));
+        this.addBiomeButtonEntry("savanna", this.createTranslatableBiomeString(BetaBiomes.SAVANNA_ID));
+        this.addBiomeButtonEntry("shrubland", this.createTranslatableBiomeString(BetaBiomes.SHRUBLAND_ID));
+        this.addBiomeButtonEntry("seasonal_forest", this.createTranslatableBiomeString(BetaBiomes.SEASONAL_FOREST_ID));
+        this.addBiomeButtonEntry("swampland", this.createTranslatableBiomeString(BetaBiomes.SWAMPLAND_ID));
+        this.addBiomeButtonEntry("taiga", this.createTranslatableBiomeString(BetaBiomes.TAIGA_ID));
+        this.addBiomeButtonEntry("tundra", this.createTranslatableBiomeString(BetaBiomes.TUNDRA_ID));
         
-        this.addBiomeButtonEntry("ocean", this.createTranslatableBiomeString(BetaBiomes.OCEAN_ID), this.oceanId, biomeId -> this.oceanId = biomeId);
-        this.addBiomeButtonEntry("cold_ocean", this.createTranslatableBiomeString(BetaBiomes.COLD_OCEAN_ID), this.coldOceanId, biomeId -> this.coldOceanId = biomeId);
-        this.addBiomeButtonEntry("frozen_ocean", this.createTranslatableBiomeString(BetaBiomes.FROZEN_OCEAN_ID), this.frozenOceanId, biomeId -> this.frozenOceanId = biomeId);
-        this.addBiomeButtonEntry("lukewarm_ocean", this.createTranslatableBiomeString(BetaBiomes.LUKEWARM_OCEAN_ID), this.lukewarmOceanId, biomeId -> this.lukewarmOceanId = biomeId);
-        this.addBiomeButtonEntry("warm_ocean", this.createTranslatableBiomeString(BetaBiomes.WARM_OCEAN_ID), this.warmOceanId, biomeId -> this.warmOceanId = biomeId);
+        this.addBiomeButtonEntry("ocean", this.createTranslatableBiomeString(BetaBiomes.OCEAN_ID));
+        this.addBiomeButtonEntry("cold_ocean", this.createTranslatableBiomeString(BetaBiomes.COLD_OCEAN_ID));
+        this.addBiomeButtonEntry("frozen_ocean", this.createTranslatableBiomeString(BetaBiomes.FROZEN_OCEAN_ID));
+        this.addBiomeButtonEntry("lukewarm_ocean", this.createTranslatableBiomeString(BetaBiomes.LUKEWARM_OCEAN_ID));
+        this.addBiomeButtonEntry("warm_ocean", this.createTranslatableBiomeString(BetaBiomes.WARM_OCEAN_ID));
         
         this.children.add(this.buttonList);
     }
@@ -133,24 +121,28 @@ public class BetaCustomizeBiomesScreen extends Screen {
         super.render(matrixStack, mouseX, mouseY, tickDelta);
     }
     
-    private Identifier loadBiomeId(String key, Identifier defaultId, CompoundTag source) {
-        return (source.contains(key)) ? new Identifier(source.getString(key)) : defaultId;
+    private Identifier loadBiomeId(String key, Identifier defaultId) {
+        CompoundTag source = this.biomeProviderSettings;
+        Identifier biomeId = (source.contains(key)) ? new Identifier(source.getString(key)) : defaultId;
+        this.biomeMap.put(key, biomeId);
+        
+        return biomeId;
     }
     
-    private void addBiomeButtonEntry(String key, String biomeText, Identifier biomeId, Consumer<Identifier> updateIdConsumer) {
+    private void addBiomeButtonEntry(String key, String biomeText) {
         this.buttonList.addOptionEntry(
             new TextOption(biomeText),
             new ScreenButtonOption(
-                this.createTranslatableBiomeString(biomeId),
+                this.createTranslatableBiomeString(this.biomeMap.get(key)),
                 (b) -> true,
                 buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
-                  this, 
+                  this,
                   this.registryManager,
                   (biome) -> {
                       this.betaBiomeSettings.putString(key, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString());
-                      updateIdConsumer.accept(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome));
+                      this.biomeMap.put(key, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome));
                   }, 
-                  this.registryManager.<Biome>get(Registry.BIOME_KEY).get(biomeId)  
+                  this.registryManager.<Biome>get(Registry.BIOME_KEY).get(this.biomeMap.get(key))  
                 ))
             )
         );

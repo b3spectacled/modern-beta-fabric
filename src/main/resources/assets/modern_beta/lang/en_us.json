@@ -22,6 +22,7 @@
     "createWorld.customize.caveBiomeType.none": "None",
     
     "createWorld.customize.old.title": "Modern Beta World Configuration",
+    "createWorld.customize.beta.title": "Beta Biomes Configuration",
     
     "createWorld.customize.inf.generateOceans": "Generate Oceans",
     "createWorld.customize.inf.generateDeepOceans": "Generate Deep Oceans",

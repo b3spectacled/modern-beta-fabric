@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.mixin;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.biome.CaveBiomeType;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
@@ -79,17 +80,12 @@ public class MixinGeneratorOptions {
             
             WorldType worldType = WorldType.fromName(levelType);
             BiomeType biomeType = BiomeType.fromName(ModernBeta.BETA_CONFIG.biomeType);
+            CaveBiomeType caveBiomeType = CaveBiomeType.VANILLA;
             
-            CompoundTag biomeProviderSettings = OldGeneratorSettings.createBiomeSettings(biomeType);
+            CompoundTag biomeProviderSettings = OldGeneratorSettings.createBiomeSettings(biomeType, caveBiomeType, worldType.getDefaultBiome());
             CompoundTag chunkProviderSettings = levelType.equals("indev") ? 
                 OldGeneratorSettings.createIndevSettings() : 
-                OldGeneratorSettings.createInfSettings(
-                    worldType,
-                    levelType.equals(WorldType.SKYLANDS.getName()) ? false : ModernBeta.BETA_CONFIG.generateOceans,
-                    ModernBeta.BETA_CONFIG.generateNoiseCaves,
-                    levelType.equals(WorldType.SKYLANDS.getName()) ? false : ModernBeta.BETA_CONFIG.generateAquifers,
-                    ModernBeta.BETA_CONFIG.generateDeepslate
-                );
+                OldGeneratorSettings.createInfSettings(worldType);
             
             OldGeneratorSettings settings = new OldGeneratorSettings(() -> registryChunkGenSettings.get(ModernBeta.createId(worldType.getName())), chunkProviderSettings);
             ChunkGenerator generator = new OldChunkGenerator(new OldBiomeSource(seed, registryBiome, biomeProviderSettings), seed, settings);

@@ -1,6 +1,10 @@
 package com.bespectacled.modernbeta.gui;
 
 import java.util.function.BiConsumer;
+
+import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.biome.CaveBiomeType;
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gen.WorldType;
 import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
 
@@ -14,16 +18,20 @@ import net.minecraft.client.option.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public abstract class AbstractCustomizeLevelScreen extends Screen {
-    private final CreateWorldScreen parent;
+    protected final CreateWorldScreen parent;
     protected final DynamicRegistryManager registryManager;
     protected final CompoundTag biomeProviderSettings;
     protected final CompoundTag chunkProviderSettings;
     protected final BiConsumer<CompoundTag, CompoundTag> consumer;
     
     protected final WorldType worldType;
+    protected BiomeType biomeType;
+    protected CaveBiomeType caveBiomeType;
+    protected Identifier singleBiome;
     
     protected ButtonListWidget buttonList;
     protected ScreenButtonOption biomeOption;
@@ -44,8 +52,14 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         this.consumer = consumer;
         
         this.worldType = WorldType.fromName(this.chunkProviderSettings.getString("worldType"));
+        this.biomeType = BiomeType.fromName(this.biomeProviderSettings.getString("biomeType"));
+        this.caveBiomeType = CaveBiomeType.fromName(this.biomeProviderSettings.getString("caveBiomeType"));
+        this.singleBiome = new Identifier(this.biomeProviderSettings.getString("singleBiome"));
     }
     
+    /*
+     * Note: Remember that this is called every time a screen is switched!
+     */
     @Override
     protected void init() {
         this.addButton(new ButtonWidget(
@@ -74,9 +88,8 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
                 (value) -> new TranslatableText("createWorld.customize.worldType." + value.getName()), 
                 (gameOptions) -> { return this.worldType; }, // Sets default value?
                 (gameOptions, option, value) -> {
-                    CompoundTag newBiomeProviderSettings = new CompoundTag();
-                    CompoundTag newChunkProviderSettings = new CompoundTag();
-                    newChunkProviderSettings.putString("worldType", value.getName());
+                    CompoundTag newBiomeProviderSettings = OldGeneratorSettings.createBiomeSettings(value.getDefaultBiomeType(), value.getDefaultCaveBiomeType(), value.getDefaultBiome());
+                    CompoundTag newChunkProviderSettings = value == WorldType.INDEV ? OldGeneratorSettings.createIndevSettings() : OldGeneratorSettings.createInfSettings(value);
                     
                     this.client.openScreen(value.createLevelScreen(
                         this.parent, 
@@ -101,5 +114,5 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         super.render(matrixStack, mouseX, mouseY, tickDelta);
     }
     
-    protected abstract void updateBiomeButtonActive();
+    protected abstract void updateButtonActive(ScreenButtonOption option);
 }

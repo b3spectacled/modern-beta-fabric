@@ -21,6 +21,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.util.Util;
@@ -273,6 +274,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     public AbstractChunkProvider getChunkProvider() {
         return this.chunkProvider;
+    }
+    
+    public CompoundTag getProviderSettings() {
+        return this.settings.providerSettings;
     }
     
 }

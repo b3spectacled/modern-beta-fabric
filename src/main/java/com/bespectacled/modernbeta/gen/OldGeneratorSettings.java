@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.biome.CaveBiomeType;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -51,28 +52,24 @@ public class OldGeneratorSettings {
         this.providerSettings = providerSettings;
     }
     
-    public static CompoundTag createBiomeSettings(BiomeType biomeType) {
+    public static CompoundTag createBiomeSettings(BiomeType biomeType, CaveBiomeType caveBiomeType, Identifier singleBiome) {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("biomeType", biomeType.getName());
+        settings.putString("caveBiomeType", caveBiomeType.getName());
+        settings.putString("singleBiome", singleBiome.toString());
         
         return settings;
     }
     
-    public static CompoundTag createInfSettings(
-        WorldType worldType,
-        boolean generateOceans, 
-        boolean generateNoiseCaves, 
-        boolean generateAquifers, 
-        boolean generateDeepslate
-    ) {
+    public static CompoundTag createInfSettings(WorldType worldType) {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", worldType.getName());
-        settings.putBoolean("generateOceans", generateOceans);
-        settings.putBoolean("generateNoiseCaves", generateNoiseCaves);
-        settings.putBoolean("generateAquifers", generateAquifers);
-        settings.putBoolean("generateDeepslate", generateDeepslate);
+        settings.putBoolean("generateOceans", ModernBeta.BETA_CONFIG.generateOceans);
+        settings.putBoolean("generateNoiseCaves", ModernBeta.BETA_CONFIG.generateNoiseCaves);
+        settings.putBoolean("generateAquifers", ModernBeta.BETA_CONFIG.generateAquifers);
+        settings.putBoolean("generateDeepslate", ModernBeta.BETA_CONFIG.generateDeepslate);
         
         return settings;
     }

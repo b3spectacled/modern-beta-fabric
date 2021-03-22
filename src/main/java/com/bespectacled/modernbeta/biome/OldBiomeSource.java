@@ -19,12 +19,12 @@ public class OldBiomeSource extends BiomeSource {
         .group(
             Codec.LONG.fieldOf("seed").stable().forGetter(biomeSource -> biomeSource.seed),
             RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(biomeSource -> biomeSource.biomeRegistry),
-            CompoundTag.CODEC.fieldOf("settings").forGetter(biomeSource -> biomeSource.settings)
+            CompoundTag.CODEC.fieldOf("settings").forGetter(biomeSource -> biomeSource.providerSettings)
         ).apply(instance, (instance).stable(OldBiomeSource::new)));
     
     private final long seed;
     private final Registry<Biome> biomeRegistry;
-    private final CompoundTag settings;
+    private final CompoundTag providerSettings;
     
     private final BiomeType biomeType;
     private final AbstractBiomeProvider biomeProvider;
@@ -40,7 +40,7 @@ public class OldBiomeSource extends BiomeSource {
         
         this.seed = seed;
         this.biomeRegistry = biomeRegistry;
-        this.settings = settings;
+        this.providerSettings = settings;
         
         this.biomeType = BiomeType.getBiomeType(settings);
         this.biomeProvider = BiomeType.getBiomeType(settings).createBiomeProvider(seed, settings);
@@ -83,6 +83,10 @@ public class OldBiomeSource extends BiomeSource {
         return this.biomeProvider;
     }
     
+    public CompoundTag getProviderSettings() {
+        return this.providerSettings;
+    }
+    
     @Override
     protected Codec<? extends BiomeSource> getCodec() {
         return OldBiomeSource.CODEC;
@@ -91,7 +95,7 @@ public class OldBiomeSource extends BiomeSource {
     @Environment(EnvType.CLIENT)
     @Override
     public BiomeSource withSeed(long seed) {
-        return new OldBiomeSource(seed, this.biomeRegistry, this.settings);
+        return new OldBiomeSource(seed, this.biomeRegistry, this.providerSettings);
     }
 
     public static void register() {

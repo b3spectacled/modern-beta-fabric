@@ -21,8 +21,13 @@ public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
     ) {
         super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
         
-        this.generateInfdevPyramid = ModernBeta.BETA_CONFIG.generateInfdevPyramid;
-        this.generateInfdevWall = ModernBeta.BETA_CONFIG.generateInfdevWall;
+        this.generateInfdevPyramid = this.chunkProviderSettings.contains("generateInfdevPyramid") ? 
+            this.chunkProviderSettings.getBoolean("generateInfdevPyramid") :    
+            ModernBeta.BETA_CONFIG.generateInfdevPyramid;
+        
+        this.generateInfdevWall = this.chunkProviderSettings.contains("generateInfdevWall") ? 
+            this.chunkProviderSettings.getBoolean("generateInfdevWall") :
+            ModernBeta.BETA_CONFIG.generateInfdevWall;
         
         this.chunkProviderSettings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
         this.chunkProviderSettings.putBoolean("generateInfdevWall", this.generateInfdevWall);
