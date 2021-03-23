@@ -16,6 +16,7 @@
     "createWorld.customize.biomeType.single": "Single",
     "createWorld.customize.biomeType.vanilla": "Vanilla/Modded",
     "createWorld.customize.biomeType.biomes": "Biomes",
+    "createWorld.customize.biomeType.biome": "Biome",
     
     "createWorld.customize.caveBiomeType": "Cave Biome Type",
     "createWorld.customize.caveBiomeType.vanilla": "Vanilla",
@@ -31,7 +32,6 @@
     "createWorld.customize.inf.generateNoiseCaves": "Generate Noise Caves",
     "createWorld.customize.inf.generateAquifers": "Generate Aquifers",
     "createWorld.customize.inf.generateDeepslate": "Generate Deepslate",
-    "createWorld.customize.inf.generateDeepWorld": "Generate Deep World",
     
     "createWorld.customize.indev.levelType": "Level Type",
     "createWorld.customize.indev.levelTheme": "Level Theme",

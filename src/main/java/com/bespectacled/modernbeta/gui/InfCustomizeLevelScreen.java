@@ -4,7 +4,9 @@ import java.util.function.BiConsumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
+import com.bespectacled.modernbeta.util.GUIUtil;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -69,7 +71,8 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         super.init();
         
         this.biomeOption = new ScreenButtonOption(
-            "createWorld.customize.biomeType.biomes", // Key
+            this.biomeType == BiomeType.SINGLE ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.biomes", // Key
+            this.biomeType == BiomeType.SINGLE ? GUIUtil.createTranslatableBiomeString(this.singleBiome) : null,
             type -> type != BiomeType.VANILLA, // Active Predicate
             this.getOnPress(this.biomeType) // On Press Action
         );
@@ -82,13 +85,19 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return this.biomeType; }, 
                 (gameOptions, option, value) -> {
                     this.biomeType = value;
-                    this.biomeProviderSettings.putString("biomeType", this.biomeType.getName());
+                    //this.biomeProviderSettings.putString("biomeType", this.biomeType.getName());
+                    
+                    CompoundTag newBiomeProviderSettings = OldGeneratorSettings.createBiomeSettings(
+                        this.biomeType, 
+                        this.caveBiomeType, 
+                        this.worldType.getDefaultBiome()
+                    );
                     
                     this.client.openScreen(
                         this.worldType.createLevelScreen(
                             this.parent, 
                             this.registryManager, 
-                            this.biomeProviderSettings, 
+                            newBiomeProviderSettings, 
                             this.chunkProviderSettings, 
                             this.consumer
                     ));
@@ -100,7 +109,7 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         
         if (this.showOceansOption && this.biomeType != BiomeType.SINGLE) {
             buttonList.addSingleOptionEntry(
-                CyclingOption.create("createWorld.customize.inf.generateOceans", 
+                CyclingOption.create("createWorld.customize.inf.generateOceans",
                 (gameOptions) -> { return this.generateOceans; }, 
                 (gameOptions, option, value) -> { // Setter
                     this.generateOceans = value;

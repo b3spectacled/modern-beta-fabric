@@ -12,6 +12,7 @@ import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.WorldType;
 import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.BlockStates;
 
 import org.spongepowered.asm.mixin.injection.At;
 import net.fabricmc.fabric.mixin.gamerule.IntRuleAccessor;
@@ -22,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
@@ -91,16 +93,17 @@ public class MixinMinecraftServer {
         
         int y = gen.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG, null);
         
-        return new BlockPos(x, y - 1, z);
+        return new BlockPos(x, y, z);
     }
     
     @Unique
     private static boolean isBlockSand(int x, int z, OldChunkGenerator gen, PerlinOctaveNoise beachNoiseOctaves, int seaLevel) {
         double thirtysecond = 0.03125D;
-        int y = gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
+        int y = gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR, null);
+        Biome biome = gen.getBiomeSource().getBiomeForNoiseGen(x >> 2, 0, z >> 2);
         
         return 
-            (gen.getBiomeSource().getBiomeForNoiseGen(x >> 2, 0, z >> 2).getCategory() == Category.DESERT && y > seaLevel - 1) || 
+            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y > seaLevel - 1) || 
             (beachNoiseOctaves.sample(x * thirtysecond, z * thirtysecond, 0.0) + spawnRand.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
     

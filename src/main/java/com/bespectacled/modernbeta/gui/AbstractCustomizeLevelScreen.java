@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.gui;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 
 import com.bespectacled.modernbeta.biome.BiomeType;
@@ -11,12 +12,14 @@ import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
+import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -52,6 +55,7 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         this.consumer = consumer;
         
         this.worldType = WorldType.fromName(this.chunkProviderSettings.getString("worldType"));
+        
         this.biomeType = BiomeType.fromName(this.biomeProviderSettings.getString("biomeType"));
         this.caveBiomeType = CaveBiomeType.fromName(this.biomeProviderSettings.getString("caveBiomeType"));
         this.singleBiome = new Identifier(this.biomeProviderSettings.getString("singleBiome"));
@@ -112,6 +116,12 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         DrawableHelper.drawCenteredText(matrixStack, this.textRenderer, this.title, this.width / 2, 16, 16777215);
         
         super.render(matrixStack, mouseX, mouseY, tickDelta);
+        
+        // Render tooltips
+        List<OrderedText> tooltips = GameOptionsScreen.getHoveredButtonTooltip(this.buttonList, mouseX, mouseY);
+        if (tooltips != null) {
+            this.renderOrderedTooltip(matrixStack, tooltips, mouseX, mouseY);
+        }
     }
     
     protected abstract void updateButtonActive(ScreenButtonOption option);

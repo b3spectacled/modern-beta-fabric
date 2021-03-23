@@ -7,6 +7,7 @@ import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
 import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
+import com.bespectacled.modernbeta.util.GUIUtil;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -70,7 +71,8 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         super.init();
         
         this.biomeOption = new ScreenButtonOption(
-            "createWorld.customize.biomeType.biomes",
+            "createWorld.customize.biomeType.biome",
+            GUIUtil.createTranslatableBiomeString(this.singleBiome),
             biomeType -> ((BiomeType)biomeType) == BiomeType.SINGLE,
             buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
               this, 
