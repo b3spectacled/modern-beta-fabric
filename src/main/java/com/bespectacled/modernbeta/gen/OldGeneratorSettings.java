@@ -13,7 +13,11 @@ import java.util.function.Supplier;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.biome.CaveBiomeType;
+import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
+import com.bespectacled.modernbeta.config.ModernBetaBiomeConfig;
+import com.bespectacled.modernbeta.config.ModernBetaGenerationConfig;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.GUIUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -28,6 +32,8 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class OldGeneratorSettings {
+    public static final ModernBetaGenerationConfig GEN_CONFIG = ModernBeta.BETA_CONFIG.generationConfig;
+    public static final ModernBetaBiomeConfig BIOME_CONFIG = ModernBeta.BETA_CONFIG.biomeConfig;
     
     public static final ChunkGeneratorSettings BETA_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings ALPHA_GENERATOR_SETTINGS;
@@ -66,10 +72,10 @@ public class OldGeneratorSettings {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", worldType.getName());
-        settings.putBoolean("generateOceans", ModernBeta.BETA_CONFIG.generateOceans);
-        settings.putBoolean("generateNoiseCaves", ModernBeta.BETA_CONFIG.generateNoiseCaves);
-        settings.putBoolean("generateAquifers", ModernBeta.BETA_CONFIG.generateAquifers);
-        settings.putBoolean("generateDeepslate", ModernBeta.BETA_CONFIG.generateDeepslate);
+        settings.putBoolean("generateOceans", GEN_CONFIG.generateOceans);
+        settings.putBoolean("generateNoiseCaves", GEN_CONFIG.generateNoiseCaves);
+        settings.putBoolean("generateAquifers", GEN_CONFIG.generateAquifers);
+        settings.putBoolean("generateDeepslate", GEN_CONFIG.generateDeepslate);
         
         return settings;
     }
@@ -78,12 +84,34 @@ public class OldGeneratorSettings {
         CompoundTag settings = new CompoundTag();
         
         settings.putString("worldType", WorldType.INDEV.getName());
-        settings.putString("levelType", ModernBeta.BETA_CONFIG.indevLevelType);
-        settings.putString("levelTheme", ModernBeta.BETA_CONFIG.indevLevelTheme);
-        settings.putInt("levelWidth", ModernBeta.BETA_CONFIG.indevLevelWidth);
-        settings.putInt("levelLength", ModernBeta.BETA_CONFIG.indevLevelLength);
-        settings.putInt("levelHeight", ModernBeta.BETA_CONFIG.indevLevelHeight);
-        settings.putFloat("caveRadius", ModernBeta.BETA_CONFIG.indevCaveRadius);
+        settings.putString("levelType", GEN_CONFIG.indevLevelType);
+        settings.putString("levelTheme", GEN_CONFIG.indevLevelTheme);
+        settings.putInt("levelWidth", GEN_CONFIG.indevLevelWidth);
+        settings.putInt("levelLength", GEN_CONFIG.indevLevelLength);
+        settings.putInt("levelHeight", GEN_CONFIG.indevLevelHeight);
+        settings.putFloat("caveRadius", GEN_CONFIG.indevCaveRadius);
+        
+        return settings;
+    }
+    
+    public static CompoundTag addBetaBiomeSettings(CompoundTag settings) {
+        settings.putString("desert", BIOME_CONFIG.betaDesertBiome);
+        settings.putString("forest", BIOME_CONFIG.betaForestBiome);
+        settings.putString("ice_desert", BIOME_CONFIG.betaIceDesertBiome);
+        settings.putString("plains", BIOME_CONFIG.betaPlainsBiome);
+        settings.putString("rainforest", BIOME_CONFIG.betaRainforestBiome);
+        settings.putString("savanna", BIOME_CONFIG.betaSavannaBiome);
+        settings.putString("shrubland", BIOME_CONFIG.betaShrublandBiome);
+        settings.putString("seasonal_forest", BIOME_CONFIG.betaSeasonalForestBiome);
+        settings.putString("swampland", BIOME_CONFIG.betaSwamplandBiome);
+        settings.putString("taiga", BIOME_CONFIG.betaTaigaBiome);
+        settings.putString("tundra", BIOME_CONFIG.betaTundraBiome);
+        
+        settings.putString("ocean", BIOME_CONFIG.betaOceanBiome);
+        settings.putString("cold_ocean", BIOME_CONFIG.betaColdOceanBiome);
+        settings.putString("frozen_ocean", BIOME_CONFIG.betaFrozenOceanBiome);
+        settings.putString("lukewarm_ocean", BIOME_CONFIG.betaLukewarmOceanBiome);
+        settings.putString("warm_ocean", BIOME_CONFIG.betaWarmOceanBiome);
         
         return settings;
     }

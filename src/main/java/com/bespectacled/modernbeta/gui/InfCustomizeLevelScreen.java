@@ -42,7 +42,7 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         
         this.generateOceans = this.chunkProviderSettings.contains("generateOceans") ? 
             this.chunkProviderSettings.getBoolean("generateOceans") : 
-            ModernBeta.BETA_CONFIG.generateOceans;
+            ModernBeta.BETA_CONFIG.generationConfig.generateOceans;
         
         /*
         this.generateDeepOceans = this.chunkProviderSettings.contains("generateDeepOceans") ? 
@@ -52,15 +52,15 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         
         this.generateNoiseCaves = this.chunkProviderSettings.contains("generateNoiseCaves") ? 
             this.chunkProviderSettings.getBoolean("generateNoiseCaves") :
-            ModernBeta.BETA_CONFIG.generateNoiseCaves;
+            ModernBeta.BETA_CONFIG.generationConfig.generateNoiseCaves;
         
         this.generateAquifers = this.chunkProviderSettings.contains("generateAquifers") ? 
             this.chunkProviderSettings.getBoolean("generateAquifers") :
-            ModernBeta.BETA_CONFIG.generateAquifers;
+            ModernBeta.BETA_CONFIG.generationConfig.generateAquifers;
         
         this.generateDeepslate = this.chunkProviderSettings.contains("generateDeepslate") ? 
             this.chunkProviderSettings.getBoolean("generateDeepslate") :
-            ModernBeta.BETA_CONFIG.generateDeepslate;
+            ModernBeta.BETA_CONFIG.generationConfig.generateDeepslate;
         
         this.showOceansOption = this.worldType.showOceansOption();
         this.showDeepOceansOption = this.worldType.showDeepOceansOption();

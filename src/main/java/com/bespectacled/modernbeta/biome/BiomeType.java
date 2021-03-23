@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.biome;
 import java.util.function.BiFunction;
 
 import com.bespectacled.modernbeta.biome.provider.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.provider.*;
 
 import net.minecraft.nbt.CompoundTag;

@@ -14,13 +14,14 @@ import org.apache.logging.log4j.Logger;
 import com.bespectacled.modernbeta.structure.OldStructures;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
 
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.GsonConfigSerializer;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
+import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.OldBiomes;
 import com.bespectacled.modernbeta.biome.vanilla.VanillaBiomeModifier;
-import com.bespectacled.modernbeta.biome.vanilla.VanillaTemperatureGroup;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
@@ -29,7 +30,7 @@ import com.bespectacled.modernbeta.gen.OldGeneratorType;
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
     public static final Logger LOGGER = LogManager.getLogger("ModernBeta");
-    public static final ModernBetaConfig BETA_CONFIG = AutoConfig.register(ModernBetaConfig.class, GsonConfigSerializer::new).getConfig();
+    public static final ModernBetaConfig BETA_CONFIG = AutoConfig.register(ModernBetaConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new)).getConfig();
 
     // Ehh...
     public static void setBlockColorsSeed(long seed, boolean useBetaColors) {

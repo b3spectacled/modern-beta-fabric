@@ -9,6 +9,7 @@ import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gen.WorldType;
 import com.google.common.base.MoreObjects;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -46,8 +47,8 @@ public class MixinGeneratorOptions {
         if (levelType.equals("beta") ||
             levelType.equals("skylands") ||
             levelType.equals("alpha") ||
-            levelType.equals("infdev") ||
-            levelType.equals("infdev_old") ||
+            levelType.equals("infdev_415") ||
+            levelType.equals("infdev_227") ||
             levelType.equals("indev")) {
             // get or generate seed
             String seedField = (String) MoreObjects.firstNonNull(properties.get("level-seed"), "");
@@ -79,13 +80,16 @@ public class MixinGeneratorOptions {
             boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
             
             WorldType worldType = WorldType.fromName(levelType);
-            BiomeType biomeType = BiomeType.fromName(ModernBeta.BETA_CONFIG.biomeType);
-            CaveBiomeType caveBiomeType = CaveBiomeType.VANILLA;
+            BiomeType biomeType = BiomeType.fromName(ModernBeta.BETA_CONFIG.biomeConfig.biomeType);
+            CaveBiomeType caveBiomeType = CaveBiomeType.fromName(ModernBeta.BETA_CONFIG.biomeConfig.caveBiomeType);
+            Identifier singleBiome = new Identifier(ModernBeta.BETA_CONFIG.biomeConfig.singleBiome);
             
-            CompoundTag biomeProviderSettings = OldGeneratorSettings.createBiomeSettings(biomeType, caveBiomeType, worldType.getDefaultBiome());
+            CompoundTag biomeProviderSettings = OldGeneratorSettings.createBiomeSettings(biomeType, caveBiomeType, singleBiome);
             CompoundTag chunkProviderSettings = levelType.equals("indev") ? 
                 OldGeneratorSettings.createIndevSettings() : 
                 OldGeneratorSettings.createInfSettings(worldType);
+            
+            biomeProviderSettings = OldGeneratorSettings.addBetaBiomeSettings(biomeProviderSettings);
             
             OldGeneratorSettings settings = new OldGeneratorSettings(() -> registryChunkGenSettings.get(ModernBeta.createId(worldType.getName())), chunkProviderSettings);
             ChunkGenerator generator = new OldChunkGenerator(new OldBiomeSource(seed, registryBiome, biomeProviderSettings), seed, settings);

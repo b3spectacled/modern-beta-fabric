@@ -24,7 +24,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Mixin(MinecraftServer.class)

@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.gui;
 
 import java.util.Arrays;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
@@ -44,27 +43,27 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         
         this.levelType = this.chunkProviderSettings.contains("levelType") ? 
             IndevType.fromName(this.chunkProviderSettings.getString("levelType")) : 
-            IndevType.fromName(ModernBeta.BETA_CONFIG.indevLevelType);
+            IndevType.fromName(ModernBeta.BETA_CONFIG.generationConfig.indevLevelType);
         
         this.levelTheme = this.chunkProviderSettings.contains("levelTheme") ? 
             IndevTheme.fromName(this.chunkProviderSettings.getString("levelTheme")) :                 
-            IndevTheme.fromName(ModernBeta.BETA_CONFIG.indevLevelTheme);
+            IndevTheme.fromName(ModernBeta.BETA_CONFIG.generationConfig.indevLevelTheme);
         
         this.levelWidth = this.chunkProviderSettings.contains("levelWidth") ?
             this.chunkProviderSettings.getInt("levelWidth") :
-            ModernBeta.BETA_CONFIG.indevLevelWidth;
+            ModernBeta.BETA_CONFIG.generationConfig.indevLevelWidth;
         
         this.levelLength = this.chunkProviderSettings.contains("levelLength") ?
             this.chunkProviderSettings.getInt("levelLength") :
-            ModernBeta.BETA_CONFIG.indevLevelLength;
+            ModernBeta.BETA_CONFIG.generationConfig.indevLevelLength;
         
         this.levelHeight = this.chunkProviderSettings.contains("levelHeight") ?
             this.chunkProviderSettings.getInt("levelHeight") :
-            ModernBeta.BETA_CONFIG.indevLevelHeight;
+            ModernBeta.BETA_CONFIG.generationConfig.indevLevelHeight;
         
         this.caveRadius = this.chunkProviderSettings.contains("caveRadius") ?
             this.chunkProviderSettings.getFloat("caveRadius") :
-            ModernBeta.BETA_CONFIG.indevCaveRadius;
+            ModernBeta.BETA_CONFIG.generationConfig.indevCaveRadius;
         
         
     }

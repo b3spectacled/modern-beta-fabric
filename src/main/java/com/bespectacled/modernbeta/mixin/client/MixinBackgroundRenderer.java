@@ -28,7 +28,7 @@ public class MixinBackgroundRenderer {
         at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/SkyProperties;getFogColorOverride(FF)[F")
     )
     private static float[] modifyFogSunsetCols(float[] skyCols) {
-        return BETA_CONFIG.renderAlphaSunset ? null : skyCols;
+        return BETA_CONFIG.renderingConfig.renderAlphaSunset ? null : skyCols;
     }
     
     @Inject(method = "render", at = @At("HEAD"))
@@ -49,7 +49,7 @@ public class MixinBackgroundRenderer {
     private static float modifyFogWeighting(float weighting) {
         // Old fog formula with old render distance: weighting = 1.0F / (float)(4 - renderDistance) 
         // where renderDistance is 0-3, 0 being 'Far' and 3 being 'Very Short'
-        if (BETA_CONFIG.renderBetaSkyColor && MutableClientWorld.inject(clientWorld).usesBetaColors()) {
+        if (BETA_CONFIG.renderingConfig.renderBetaSkyColor && MutableClientWorld.inject(clientWorld).usesBetaColors()) {
             int clampedDistance = MathHelper.clamp(capturedRenderDistance, 0, 16);
             clampedDistance = (int)((16 - clampedDistance) / (float)16 * 3);
             

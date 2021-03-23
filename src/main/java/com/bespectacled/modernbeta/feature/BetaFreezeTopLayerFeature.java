@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.feature;
 
 import com.bespectacled.modernbeta.biome.*;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
-import com.bespectacled.modernbeta.biome.provider.SingleBiomeProvider;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
@@ -11,7 +10,6 @@ import net.minecraft.block.FluidBlock;
 import net.minecraft.block.SnowyBlock;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.StructureWorldAccess;
