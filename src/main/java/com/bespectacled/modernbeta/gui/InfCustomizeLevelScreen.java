@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.gui;
 
+import java.util.Arrays;
 import java.util.function.BiConsumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
@@ -70,6 +71,9 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     protected void init() {
         super.init();
         
+        // Get biome type list, sans legacy types
+        BiomeType[] biomeTypes = Arrays.stream(BiomeType.values()).filter(type -> BiomeType.getExclusions(type)).toArray(BiomeType[]::new);
+        
         this.biomeOption = new ScreenButtonOption(
             this.biomeType == BiomeType.SINGLE ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.biomes", // Key
             this.biomeType == BiomeType.SINGLE ? GUIUtil.createTranslatableBiomeString(this.singleBiome) : null,
@@ -80,9 +84,9 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         this.buttonList.addOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.biomeType",
-                BiomeType.values(), 
+                biomeTypes, 
                 (value) -> new TranslatableText("createWorld.customize.biomeType." + value.getName()), 
-                (gameOptions) -> { return this.biomeType; }, 
+                (gameOptions) -> { return this.biomeType; },
                 (gameOptions, option, value) -> {
                     this.biomeType = value;
                     //this.biomeProviderSettings.putString("biomeType", this.biomeType.getName());

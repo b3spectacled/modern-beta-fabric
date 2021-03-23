@@ -102,9 +102,11 @@ public class MixinMinecraftServer {
         int y = gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR, null);
         Biome biome = gen.getBiomeSource().getBiomeForNoiseGen(x >> 2, 0, z >> 2);
         
+        //System.out.println("Height found at " + x + "/" + z + ": " + y);
+        
         return 
-            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y > seaLevel - 1) || 
-            (beachNoiseOctaves.sample(x * thirtysecond, z * thirtysecond, 0.0) + spawnRand.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
+            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel) || 
+            (beachNoiseOctaves.sample(x * thirtysecond, z * thirtysecond, 0.0) + spawnRand.nextDouble() * 0.2 > 0.0 && y >= seaLevel && y <= seaLevel + 2);
     }
     
     @Unique

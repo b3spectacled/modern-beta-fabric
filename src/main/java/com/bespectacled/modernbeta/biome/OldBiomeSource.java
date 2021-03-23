@@ -1,5 +1,8 @@
 package com.bespectacled.modernbeta.biome;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.provider.*;
 import com.mojang.serialization.Codec;
@@ -11,7 +14,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.biome.SpawnSettings;
+import net.minecraft.world.biome.GenerationSettings.Builder;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
 
 public class OldBiomeSource extends BiomeSource {
     
@@ -28,6 +36,7 @@ public class OldBiomeSource extends BiomeSource {
     
     private final BiomeType biomeType;
     private final AbstractBiomeProvider biomeProvider;
+    private final Biome edgeBiome; // For Indev worlds
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, CompoundTag settings) {
         super(BiomeType
@@ -44,6 +53,7 @@ public class OldBiomeSource extends BiomeSource {
         
         this.biomeType = BiomeType.getBiomeType(settings);
         this.biomeProvider = BiomeType.getBiomeType(settings).createBiomeProvider(seed, settings);
+        this.edgeBiome = this.biomeType == BiomeType.SINGLE ? this.createEdgeBiome() : null;
     }
 
     @Override
@@ -57,6 +67,10 @@ public class OldBiomeSource extends BiomeSource {
     
     public Biome getBiomeForSurfaceGen(int x, int y, int z) {
         return this.biomeProvider.getBiomeForSurfaceGen(this.biomeRegistry, x, y, z);
+    }
+    
+    public Biome getEdgeBiome() {
+        return this.edgeBiome;
     }
 
     public Registry<Biome> getBiomeRegistry() {
@@ -86,16 +100,48 @@ public class OldBiomeSource extends BiomeSource {
     public CompoundTag getProviderSettings() {
         return this.providerSettings;
     }
-    
-    @Override
-    protected Codec<? extends BiomeSource> getCodec() {
-        return OldBiomeSource.CODEC;
-    }
 
     @Environment(EnvType.CLIENT)
     @Override
     public BiomeSource withSeed(long seed) {
         return new OldBiomeSource(seed, this.biomeRegistry, this.providerSettings);
+    }
+    
+    @Override
+    protected Codec<? extends BiomeSource> getCodec() {
+        return OldBiomeSource.CODEC;
+    }
+    
+    private Biome createEdgeBiome() {
+        if (this.biomeType != BiomeType.SINGLE) return null;
+        
+        Biome mainBiome = this.biomeRegistry.get(((SingleBiomeProvider) this.biomeProvider).getBiomeId());
+        GenerationSettings genSettings = mainBiome.getGenerationSettings();
+        GenerationSettings.Builder genSettingsBuilder = new GenerationSettings.Builder().surfaceBuilder(genSettings.getSurfaceBuilder());
+        SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
+        
+        // Add features as necessary so that edge of Indev levels blend in
+        List<List<Supplier<ConfiguredFeature<?, ?>>>> featureSteps = genSettings.getFeatures();
+        for (int i = 0; i < featureSteps.size(); ++i) {
+            if (i == GenerationStep.Feature.TOP_LAYER_MODIFICATION.ordinal()) { // Add freeze top layer feature
+                List<Supplier<ConfiguredFeature<?, ?>>> configuredFeatures = featureSteps.get(i);
+                for (Supplier<ConfiguredFeature<?, ?>> supplier : configuredFeatures) {
+                    genSettingsBuilder.feature(i, supplier);
+                }
+            }
+        }
+        
+        return new Biome.Builder()
+            .precipitation(mainBiome.getPrecipitation())
+            .category(mainBiome.getCategory())
+            .depth(mainBiome.getDepth())
+            .scale(mainBiome.getScale())
+            .temperature(mainBiome.getTemperature())
+            .downfall(mainBiome.getDownfall())
+            .effects(mainBiome.getEffects())
+            .generationSettings(genSettingsBuilder.build())
+            .spawnSettings(spawnSettings.build())
+            .build();
     }
 
     public static void register() {

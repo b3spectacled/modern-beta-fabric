@@ -1,9 +1,12 @@
 package com.bespectacled.modernbeta.gui;
 
+import java.util.Arrays;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
 import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
@@ -70,6 +73,9 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
     protected void init() {
         super.init();
         
+        // Get Indev Theme list, sans legacy themes
+        IndevTheme[] indevThemes = Arrays.stream(IndevTheme.values()).filter(theme -> IndevUtil.IndevTheme.getExclusions(theme)).toArray(IndevTheme[]::new);
+        
         this.biomeOption = new ScreenButtonOption(
             "createWorld.customize.biomeType.biome",
             GUIUtil.createTranslatableBiomeString(this.singleBiome),
@@ -88,7 +94,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         this.buttonList.addOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.indev.levelTheme", 
-                IndevTheme.values(), 
+                indevThemes, 
                 (value) -> new TranslatableText("createWorld.customize.indev.theme." + value.getName()), 
                 (gameOptions) -> { return this.levelTheme; }, 
                 (gameOptions, option, value) -> {

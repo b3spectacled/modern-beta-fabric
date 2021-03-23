@@ -49,6 +49,7 @@ import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
+import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -119,10 +120,11 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int startX = chunkPos.getStartX();
         int startZ = chunkPos.getStartZ();
         
-        // Skip feature population for Indev chunks outside of level area
-        if (this.chunkProvider.skipChunk(chunkPos.x, chunkPos.z)) return;
-        
         Biome biome = OldGeneratorUtil.getOceanBiome(region.getChunk(chunkPos.x, chunkPos.z), this, biomeSource, generateOceans, this.getSeaLevel());
+        
+        // Use edge biome for feature population for Indev chunks outside of level area
+        if (this.chunkProvider.skipChunk(chunkPos.x, chunkPos.z) && this.chunkProvider instanceof IndevChunkProvider)
+            biome = this.biomeSource.getEdgeBiome();
         
         // TODO: Remove chunkRandom at some point
         ChunkRandom chunkRandom = new ChunkRandom();

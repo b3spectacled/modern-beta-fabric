@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.biome;
 import java.util.function.BiFunction;
 
 import com.bespectacled.modernbeta.biome.provider.AbstractBiomeProvider;
-
+import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.provider.*;
 
 import net.minecraft.nbt.CompoundTag;
@@ -11,7 +11,13 @@ import net.minecraft.nbt.CompoundTag;
 public enum BiomeType {
     BETA("beta", BetaBiomeProvider::new),
     SINGLE("single", SingleBiomeProvider::new),
-    VANILLA("vanilla", VanillaBiomeProvider::new);
+    VANILLA("vanilla", VanillaBiomeProvider::new),
+    
+    // Legacy biome types
+    SKY("sky", SingleBiomeProvider::new), 
+    CLASSIC("classic", SingleBiomeProvider::new),
+    WINTER("winter", SingleBiomeProvider::new),
+    PLUS("plus", SingleBiomeProvider::new);
     
     private final String name;
     private final BiFunction<Long, CompoundTag, AbstractBiomeProvider> biomeProvider;
@@ -46,5 +52,16 @@ public enum BiomeType {
             type = BiomeType.fromName(settings.getString("biomeType"));
         
         return type;
+    }
+    
+    public static boolean getExclusions(BiomeType biomeType) {
+        if (biomeType == BiomeType.SKY ||
+            biomeType == BiomeType.CLASSIC ||
+            biomeType == BiomeType.WINTER ||
+            biomeType == BiomeType.PLUS) {
+            return false;
+        }
+        
+        return true;
     }
 }

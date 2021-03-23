@@ -63,6 +63,15 @@ public class IndevUtil {
             
             return theme;
         }
+        
+        // For excluding from GUI elements without actually removing.
+        public static boolean getExclusions(IndevTheme theme) {
+            if (theme == IndevTheme.SNOWY) {
+                return false;
+            }
+            
+            return true;
+        }
     }
     
     public enum IndevType {
