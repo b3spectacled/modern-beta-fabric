@@ -12,7 +12,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.loot.LootTables;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.SimpleStructurePiece;
 import net.minecraft.structure.Structure;
@@ -56,7 +56,7 @@ public class OceanShrineGenerator {
             this.initializeStructureData(manager);
         }
         
-        public Piece(ServerWorld serverWorld, CompoundTag tag) {
+        public Piece(ServerWorld serverWorld, NbtCompound tag) {
             super(OldStructures.OCEAN_SHRINE_PIECE, tag);
             this.template = new Identifier(tag.getString("Template"));
             this.rot = BlockRotation.valueOf(tag.getString("Rot"));
@@ -73,10 +73,10 @@ public class OceanShrineGenerator {
             this.setStructureData(structure, this.pos, placementData);      
         }
         
-        protected void writeNbt(ServerWorld serverWorld, CompoundTag compoundTag) {
-            super.writeNbt(serverWorld, compoundTag);
-            compoundTag.putString("Template", this.template.toString());
-            compoundTag.putString("Rot", this.rot.name());
+        protected void writeNbt(ServerWorld serverWorld, NbtCompound NbtCompound) {
+            super.writeNbt(serverWorld, NbtCompound);
+            NbtCompound.putString("Template", this.template.toString());
+            NbtCompound.putString("Rot", this.rot.name());
         }
         
         @Override

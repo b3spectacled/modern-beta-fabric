@@ -2,16 +2,16 @@ package com.bespectacled.modernbeta.biome.provider;
 
 import java.util.List;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public abstract class AbstractBiomeProvider {
     protected final long seed;
-    protected final CompoundTag settings;
+    protected final NbtCompound settings;
     
-    public AbstractBiomeProvider(long seed, CompoundTag settings) {
+    public AbstractBiomeProvider(long seed, NbtCompound settings) {
         this.seed = seed;
         this.settings = settings;
     }

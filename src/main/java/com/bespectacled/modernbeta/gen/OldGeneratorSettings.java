@@ -26,7 +26,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
@@ -47,19 +47,19 @@ public class OldGeneratorSettings {
     
     public static final Codec<OldGeneratorSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(settings -> settings.generatorSettings),
-            CompoundTag.CODEC.fieldOf("provider_settings").forGetter(settings -> settings.providerSettings)
+            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(settings -> settings.providerSettings)
         ).apply(instance, OldGeneratorSettings::new));
 
     public final Supplier<ChunkGeneratorSettings> generatorSettings;
-    public CompoundTag providerSettings;
+    public NbtCompound providerSettings;
 
-    public OldGeneratorSettings(Supplier<ChunkGeneratorSettings> generatorSettings, CompoundTag providerSettings) {
+    public OldGeneratorSettings(Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         this.generatorSettings = generatorSettings;
         this.providerSettings = providerSettings;
     }
     
-    public static CompoundTag createBiomeSettings(BiomeType biomeType, CaveBiomeType caveBiomeType, Identifier singleBiome) {
-        CompoundTag settings = new CompoundTag();
+    public static NbtCompound createBiomeSettings(BiomeType biomeType, CaveBiomeType caveBiomeType, Identifier singleBiome) {
+        NbtCompound settings = new NbtCompound();
         
         settings.putString("biomeType", biomeType.getName());
         settings.putString("caveBiomeType", caveBiomeType.getName());
@@ -68,8 +68,8 @@ public class OldGeneratorSettings {
         return settings;
     }
     
-    public static CompoundTag createInfSettings(WorldType worldType) {
-        CompoundTag settings = new CompoundTag();
+    public static NbtCompound createInfSettings(WorldType worldType) {
+        NbtCompound settings = new NbtCompound();
         
         settings.putString("worldType", worldType.getName());
         settings.putBoolean("generateOceans", GEN_CONFIG.generateOceans);
@@ -80,8 +80,8 @@ public class OldGeneratorSettings {
         return settings;
     }
     
-    public static CompoundTag createIndevSettings() {
-        CompoundTag settings = new CompoundTag();
+    public static NbtCompound createIndevSettings() {
+        NbtCompound settings = new NbtCompound();
         
         settings.putString("worldType", WorldType.INDEV.getName());
         settings.putString("levelType", GEN_CONFIG.indevLevelType);
@@ -94,7 +94,7 @@ public class OldGeneratorSettings {
         return settings;
     }
     
-    public static CompoundTag addBetaBiomeSettings(CompoundTag settings) {
+    public static NbtCompound addBetaBiomeSettings(NbtCompound settings) {
         settings.putString("desert", BIOME_CONFIG.betaDesertBiome);
         settings.putString("forest", BIOME_CONFIG.betaForestBiome);
         settings.putString("ice_desert", BIOME_CONFIG.betaIceDesertBiome);

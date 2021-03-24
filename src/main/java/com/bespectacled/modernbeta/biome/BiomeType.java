@@ -5,24 +5,26 @@ import java.util.function.BiFunction;
 import com.bespectacled.modernbeta.biome.provider.AbstractBiomeProvider;
 import com.bespectacled.modernbeta.biome.provider.*;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public enum BiomeType {
-    BETA("beta", BetaBiomeProvider::new),
-    SINGLE("single", SingleBiomeProvider::new),
-    VANILLA("vanilla", VanillaBiomeProvider::new),
+    BETA("beta", true, BetaBiomeProvider::new),
+    SINGLE("single", true, SingleBiomeProvider::new),
+    VANILLA("vanilla", false, VanillaBiomeProvider::new),
     
     // Legacy biome types
-    SKY("sky", SingleBiomeProvider::new), 
-    CLASSIC("classic", SingleBiomeProvider::new),
-    WINTER("winter", SingleBiomeProvider::new),
-    PLUS("plus", SingleBiomeProvider::new);
+    SKY("sky", false, SingleBiomeProvider::new), 
+    CLASSIC("classic", false, SingleBiomeProvider::new),
+    WINTER("winter", false, SingleBiomeProvider::new),
+    PLUS("plus", false, SingleBiomeProvider::new);
     
     private final String name;
-    private final BiFunction<Long, CompoundTag, AbstractBiomeProvider> biomeProvider;
+    private final boolean hasOptions;
+    private final BiFunction<Long, NbtCompound, AbstractBiomeProvider> biomeProvider;
     
-    private BiomeType(String name, BiFunction<Long, CompoundTag, AbstractBiomeProvider> biomeProvider) {
+    private BiomeType(String name, boolean hasOptions, BiFunction<Long, NbtCompound, AbstractBiomeProvider> biomeProvider) {
         this.name = name;
+        this.hasOptions = hasOptions;
         this.biomeProvider = biomeProvider;
     }
     
@@ -30,7 +32,11 @@ public enum BiomeType {
         return this.name;
     }
     
-    public AbstractBiomeProvider createBiomeProvider(Long seed, CompoundTag settings) {
+    public boolean hasOptions() {
+        return this.hasOptions;
+    }
+    
+    public AbstractBiomeProvider createBiomeProvider(Long seed, NbtCompound settings) {
         return this.biomeProvider.apply(seed, settings);
     }
     
@@ -44,7 +50,7 @@ public enum BiomeType {
         throw new IllegalArgumentException("[Modern Beta] No biome type matching name: " + name);
     }
     
-    public static BiomeType getBiomeType(CompoundTag settings) {
+    public static BiomeType getBiomeType(NbtCompound settings) {
         BiomeType type = BiomeType.BETA;
         
         if (settings.contains("biomeType")) 

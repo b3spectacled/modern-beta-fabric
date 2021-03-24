@@ -18,7 +18,7 @@ import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -27,9 +27,9 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 public abstract class AbstractCustomizeLevelScreen extends Screen {
     protected final CreateWorldScreen parent;
     protected final DynamicRegistryManager registryManager;
-    protected final CompoundTag biomeProviderSettings;
-    protected final CompoundTag chunkProviderSettings;
-    protected final BiConsumer<CompoundTag, CompoundTag> consumer;
+    protected final NbtCompound biomeProviderSettings;
+    protected final NbtCompound chunkProviderSettings;
+    protected final BiConsumer<NbtCompound, NbtCompound> consumer;
     
     protected final WorldType worldType;
     protected BiomeType biomeType;
@@ -42,9 +42,9 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
     public AbstractCustomizeLevelScreen(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
-        CompoundTag biomeProviderSettings, 
-        CompoundTag chunkProviderSettings, 
-        BiConsumer<CompoundTag, CompoundTag> consumer
+        NbtCompound biomeProviderSettings, 
+        NbtCompound chunkProviderSettings, 
+        BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
         super(new TranslatableText("createWorld.customize.old.title"));
         
@@ -59,6 +59,7 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         this.biomeType = BiomeType.fromName(this.biomeProviderSettings.getString("biomeType"));
         this.caveBiomeType = CaveBiomeType.fromName(this.biomeProviderSettings.getString("caveBiomeType"));
         this.singleBiome = new Identifier(this.biomeProviderSettings.getString("singleBiome"));
+        
     }
     
     /*
@@ -92,8 +93,8 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
                 (value) -> new TranslatableText("createWorld.customize.worldType." + value.getName()), 
                 (gameOptions) -> { return this.worldType; }, // Sets default value?
                 (gameOptions, option, value) -> {
-                    CompoundTag newBiomeProviderSettings = OldGeneratorSettings.createBiomeSettings(value.getDefaultBiomeType(), value.getDefaultCaveBiomeType(), value.getDefaultBiome());
-                    CompoundTag newChunkProviderSettings = value == WorldType.INDEV ? OldGeneratorSettings.createIndevSettings() : OldGeneratorSettings.createInfSettings(value);
+                    NbtCompound newBiomeProviderSettings = OldGeneratorSettings.createBiomeSettings(value.getDefaultBiomeType(), value.getDefaultCaveBiomeType(), value.getDefaultBiome());
+                    NbtCompound newChunkProviderSettings = value == WorldType.INDEV ? OldGeneratorSettings.createIndevSettings() : OldGeneratorSettings.createInfSettings(value);
                     
                     this.client.openScreen(value.createLevelScreen(
                         this.parent, 

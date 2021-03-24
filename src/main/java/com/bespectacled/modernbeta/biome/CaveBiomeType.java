@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.biome;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public enum CaveBiomeType {
     VANILLA("vanilla"),
@@ -26,7 +26,7 @@ public enum CaveBiomeType {
         throw new IllegalArgumentException("[Modern Beta] No cave biome type matching name: " + name);
     }
     
-    public static CaveBiomeType getCaveBiomeType(CompoundTag settings) {
+    public static CaveBiomeType getCaveBiomeType(NbtCompound settings) {
         CaveBiomeType type = CaveBiomeType.VANILLA;
         
         if (settings.contains("caveBiomeType")) 

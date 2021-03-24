@@ -12,7 +12,7 @@ import com.bespectacled.modernbeta.gen.provider.*;
 import com.bespectacled.modernbeta.gui.*;
 import com.bespectacled.modernbeta.util.PentaFunction;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
@@ -33,7 +33,7 @@ public enum WorldType {
     private final CaveBiomeType defaultCaveBiomeType;
     private final Identifier defaultBiome;
     private final BiFunction<Long, OldGeneratorSettings, AbstractChunkProvider> chunkProvider;
-    private final PentaFunction<CreateWorldScreen, DynamicRegistryManager, CompoundTag, CompoundTag, BiConsumer<CompoundTag, CompoundTag>, AbstractCustomizeLevelScreen> customizeScreen;
+    private final PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractCustomizeLevelScreen> customizeScreen;
     
     private WorldType(
         String name,
@@ -44,7 +44,7 @@ public enum WorldType {
         CaveBiomeType defaultCaveBiomeType,
         Identifier defaultBiome,
         BiFunction<Long, OldGeneratorSettings, AbstractChunkProvider> chunkProvider, 
-        PentaFunction<CreateWorldScreen, DynamicRegistryManager, CompoundTag, CompoundTag, BiConsumer<CompoundTag, CompoundTag>, AbstractCustomizeLevelScreen> customizeScreen
+        PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractCustomizeLevelScreen> customizeScreen
     ) {
         this.name = name;
         this.showOceansOption = showOceansOption;
@@ -92,9 +92,9 @@ public enum WorldType {
     public AbstractCustomizeLevelScreen createLevelScreen(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
-        CompoundTag biomeProviderSettings,
-        CompoundTag chunkProviderSettings, 
-        BiConsumer<CompoundTag, CompoundTag> consumer
+        NbtCompound biomeProviderSettings,
+        NbtCompound chunkProviderSettings, 
+        BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
         return this.customizeScreen.apply(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
     }
@@ -109,7 +109,7 @@ public enum WorldType {
         throw new IllegalArgumentException("[Modern Beta] No world type matching name: " + name);
     }
     
-    public static WorldType getWorldType(CompoundTag settings) {
+    public static WorldType getWorldType(NbtCompound settings) {
         WorldType type = WorldType.BETA;
         
         if (settings.contains("worldType"))

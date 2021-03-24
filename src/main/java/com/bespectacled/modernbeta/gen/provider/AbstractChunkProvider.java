@@ -17,7 +17,7 @@ import net.minecraft.block.Block;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -61,7 +61,7 @@ public abstract class AbstractChunkProvider {
     protected static final int[][] HEIGHTMAP_CHUNK = new int[16][16];
     
     protected final Supplier<ChunkGeneratorSettings> generatorSettings;
-    protected final CompoundTag providerSettings;
+    protected final NbtCompound providerSettings;
     
     protected final long seed;
     
@@ -281,7 +281,7 @@ public abstract class AbstractChunkProvider {
         
         if (clampedDensity > 0.0) {
             blockStateToSet = this.deepslateInterpolator.sample(x, y, z, this.generatorSettings.get());
-        } else if (this.generateAquifers && y < this.minY + 9) { 
+        } else if (this.generateAquifers && y < this.minY + 9) {
             blockStateToSet = BlockStates.LAVA;
         } else {
             int localSeaLevel = (aquiferSampler == null) ? this.getSeaLevel() : aquiferSampler.getWaterLevel();

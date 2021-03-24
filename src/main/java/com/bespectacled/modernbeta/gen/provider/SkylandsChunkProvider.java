@@ -142,7 +142,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     @Override
     public int getHeight(int x, int z, Heightmap.Type type) {
         int groundHeight = sampleHeightmap(x, z);
-        groundHeight = groundHeight >= 0 ? groundHeight : 16;
+        groundHeight = groundHeight - 1 >= this.minY ? groundHeight : 16;
         
         return groundHeight;
     }

@@ -8,7 +8,7 @@ import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gen.WorldType;
 import com.google.common.base.MoreObjects;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -84,8 +84,8 @@ public class MixinGeneratorOptions {
             CaveBiomeType caveBiomeType = CaveBiomeType.fromName(ModernBeta.BETA_CONFIG.biomeConfig.caveBiomeType);
             Identifier singleBiome = new Identifier(ModernBeta.BETA_CONFIG.biomeConfig.singleBiome);
             
-            CompoundTag biomeProviderSettings = OldGeneratorSettings.createBiomeSettings(biomeType, caveBiomeType, singleBiome);
-            CompoundTag chunkProviderSettings = levelType.equals("indev") ? 
+            NbtCompound biomeProviderSettings = OldGeneratorSettings.createBiomeSettings(biomeType, caveBiomeType, singleBiome);
+            NbtCompound chunkProviderSettings = levelType.equals("indev") ? 
                 OldGeneratorSettings.createIndevSettings() : 
                 OldGeneratorSettings.createInfSettings(worldType);
             
@@ -96,7 +96,7 @@ public class MixinGeneratorOptions {
 
             // return our chunk generator
             cir.setReturnValue(new GeneratorOptions(seed, generateStructures, false,
-                    GeneratorOptions.method_28608(registryDimensionType, dimensionOptions, generator)));
+                    GeneratorOptions.getRegistryWithReplacedOverworldGenerator(registryDimensionType, dimensionOptions, generator)));
         }
     }
 }

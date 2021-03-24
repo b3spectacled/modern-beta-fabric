@@ -7,22 +7,19 @@ import java.util.Map;
 
 import com.bespectacled.modernbeta.biome.beta.BetaClimateMap.BetaBiomeType;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
 public class BetaClimateMapCustomizable {
-    private final CompoundTag biomeProviderSettings;
+    private final NbtCompound biomeProviderSettings;
     
     private final Identifier LAND_BIOME_TABLE[] = new Identifier[4096];
     private final Identifier OCEAN_BIOME_TABLE[] = new Identifier[4096];
     
-    private final List<Identifier> biomeIds;
     private final Map<String, Identifier> biomeMap;
     
-    public BetaClimateMapCustomizable(CompoundTag biomeProviderSettings) {
+    public BetaClimateMapCustomizable(NbtCompound biomeProviderSettings) {
         this.biomeProviderSettings = biomeProviderSettings;
-        
-        this.biomeIds = new ArrayList<Identifier>();
         this.biomeMap = new HashMap<String, Identifier>();
         
         this.loadBiomeId("desert", BetaBiomes.DESERT_ID);
@@ -63,7 +60,7 @@ public class BetaClimateMapCustomizable {
     }
     
     public List<Identifier> getBiomeIds() {
-        return this.biomeIds;
+        return new ArrayList<Identifier>(this.biomeMap.values());
     }
     
     private void generateBiomeLookup() {
@@ -169,7 +166,6 @@ public class BetaClimateMapCustomizable {
     
     private Identifier loadBiomeId(String key, Identifier defaultId) {
         Identifier biomeId = (this.biomeProviderSettings.contains(key)) ? new Identifier(this.biomeProviderSettings.getString(key)) : defaultId;
-        this.biomeIds.add(biomeId);
         this.biomeMap.put(key, biomeId);
         
         return biomeId;

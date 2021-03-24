@@ -7,7 +7,7 @@ import com.bespectacled.modernbeta.biome.beta.BetaClimateMap.BetaBiomeType;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateMapCustomizable;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -16,7 +16,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider {
     private static final double[] TEMP_HUMID_POINT = new double[2];
     private final BetaClimateMapCustomizable betaClimateMap;
     
-    public BetaBiomeProvider(long seed, CompoundTag settings) {
+    public BetaBiomeProvider(long seed, NbtCompound settings) {
         super(seed, settings);
         
         BetaClimateSampler.INSTANCE.setSeed(seed);

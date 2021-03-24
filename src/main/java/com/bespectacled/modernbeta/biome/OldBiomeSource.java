@@ -10,7 +10,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
@@ -26,18 +26,18 @@ public class OldBiomeSource extends BiomeSource {
         .group(
             Codec.LONG.fieldOf("seed").stable().forGetter(biomeSource -> biomeSource.seed),
             RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(biomeSource -> biomeSource.biomeRegistry),
-            CompoundTag.CODEC.fieldOf("settings").forGetter(biomeSource -> biomeSource.providerSettings)
+            NbtCompound.CODEC.fieldOf("settings").forGetter(biomeSource -> biomeSource.providerSettings)
         ).apply(instance, (instance).stable(OldBiomeSource::new)));
     
     private final long seed;
     private final Registry<Biome> biomeRegistry;
-    private final CompoundTag providerSettings;
+    private final NbtCompound providerSettings;
     
     private final BiomeType biomeType;
     private final AbstractBiomeProvider biomeProvider;
     private final Biome edgeBiome; // For Indev worlds
     
-    public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, CompoundTag settings) {
+    public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, NbtCompound settings) {
         super(BiomeType
             .getBiomeType(settings)
             .createBiomeProvider(seed, settings)
@@ -96,7 +96,7 @@ public class OldBiomeSource extends BiomeSource {
         return this.biomeProvider;
     }
     
-    public CompoundTag getProviderSettings() {
+    public NbtCompound getProviderSettings() {
         return this.providerSettings;
     }
 
@@ -122,7 +122,9 @@ public class OldBiomeSource extends BiomeSource {
         // Add features as necessary so that edge of Indev levels blend in
         List<List<Supplier<ConfiguredFeature<?, ?>>>> featureSteps = genSettings.getFeatures();
         for (int i = 0; i < featureSteps.size(); ++i) {
-            if (i == GenerationStep.Feature.TOP_LAYER_MODIFICATION.ordinal()) { // Add freeze top layer feature
+            // Add top layer modifiers, plant features
+            if (i == GenerationStep.Feature.VEGETAL_DECORATION.ordinal() || 
+                i == GenerationStep.Feature.TOP_LAYER_MODIFICATION.ordinal()) {
                 List<Supplier<ConfiguredFeature<?, ?>>> configuredFeatures = featureSteps.get(i);
                 for (Supplier<ConfiguredFeature<?, ?>> supplier : configuredFeatures) {
                     genSettingsBuilder.feature(i, supplier);

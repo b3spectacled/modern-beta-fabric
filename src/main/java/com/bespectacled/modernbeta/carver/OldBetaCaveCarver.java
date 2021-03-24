@@ -220,7 +220,10 @@ public class OldBetaCaveCarver extends CaveCarver implements IOldCaveCarver {
 
                         // Don't use canCarveBlock for accuracy, for now.
                         if (block == Blocks.STONE || block == Blocks.DIRT || block == Blocks.GRASS_BLOCK || block == Blocks.DEEPSLATE) { 
-                            if (relY < 11) { // Set lava below y = 11
+                            //if (relY < 11) { // Set lava below y = 11
+                            // Will not hit this lava check at default minY (-64), since minY is capped at 1,
+                            // however, if world minY is set to 0 (i.e. through noise settings), lava should generate, preserving accuracy.
+                            if (relY < context.getMinY() + 11) { 
                                 chunk.setBlockState(blockPos.set(relX, relY, relZ), Blocks.LAVA.getDefaultState(), false);
                             } else {
                                 chunk.setBlockState(blockPos.set(relX, relY, relZ), Blocks.CAVE_AIR.getDefaultState(), false);
@@ -288,7 +291,7 @@ public class OldBetaCaveCarver extends CaveCarver implements IOldCaveCarver {
                     Block block = chunk.getBlockState(blockPos.set(relX, relY, relZ)).getBlock();
 
                     // Second check is to avoid overlapping (and generating lava in) noise caves.
-                    if (block.equals(Blocks.WATER) || (block.equals(Blocks.AIR) && relY < 10)) {
+                    if (block.equals(Blocks.WATER) || (block.equals(Blocks.AIR) && relY < context.getMinY() + 11)) {
                         return true;
                     }
 

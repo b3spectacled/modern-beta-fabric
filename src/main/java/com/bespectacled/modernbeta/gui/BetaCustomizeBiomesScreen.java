@@ -16,7 +16,7 @@ import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -26,9 +26,9 @@ import net.minecraft.world.biome.Biome;
 public class BetaCustomizeBiomesScreen extends Screen {
     private final AbstractCustomizeLevelScreen parent;
     private final DynamicRegistryManager registryManager;
-    private final CompoundTag biomeProviderSettings;
-    private final Consumer<CompoundTag> consumer;
-    private final CompoundTag betaBiomeSettings;
+    private final NbtCompound biomeProviderSettings;
+    private final Consumer<NbtCompound> consumer;
+    private final NbtCompound betaBiomeSettings;
     
     private ButtonListWidget buttonList;
 
@@ -37,8 +37,8 @@ public class BetaCustomizeBiomesScreen extends Screen {
     protected BetaCustomizeBiomesScreen(
         AbstractCustomizeLevelScreen parent, 
         DynamicRegistryManager registryManager, 
-        CompoundTag biomeProviderSettings,
-        Consumer<CompoundTag> consumer
+        NbtCompound biomeProviderSettings,
+        Consumer<NbtCompound> consumer
     ) {
         super(new TranslatableText("createWorld.customize.beta.title"));
         
@@ -47,7 +47,7 @@ public class BetaCustomizeBiomesScreen extends Screen {
         this.biomeProviderSettings = biomeProviderSettings;
         this.consumer = consumer;
         
-        this.betaBiomeSettings = new CompoundTag();
+        this.betaBiomeSettings = new NbtCompound();
         this.biomeMap = new HashMap<String, Identifier>();
         
         this.loadBiomeId("desert", BetaBiomes.DESERT_ID);
@@ -123,7 +123,7 @@ public class BetaCustomizeBiomesScreen extends Screen {
     }
     
     private Identifier loadBiomeId(String key, Identifier defaultId) {
-        CompoundTag source = this.biomeProviderSettings;
+        NbtCompound source = this.biomeProviderSettings;
         Identifier biomeId = (source.contains(key)) ? new Identifier(source.getString(key)) : defaultId;
         this.biomeMap.put(key, biomeId);
         

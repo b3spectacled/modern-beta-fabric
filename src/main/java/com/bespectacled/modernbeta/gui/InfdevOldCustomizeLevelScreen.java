@@ -5,7 +5,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.CyclingOption;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
@@ -15,9 +15,9 @@ public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
     public InfdevOldCustomizeLevelScreen(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
-        CompoundTag biomeProviderSettings, 
-        CompoundTag chunkProviderSettings, 
-        BiConsumer<CompoundTag, CompoundTag> consumer
+        NbtCompound biomeProviderSettings, 
+        NbtCompound chunkProviderSettings, 
+        BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
         super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
         

@@ -13,7 +13,7 @@ import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.client.world.GeneratorType;
 import net.minecraft.client.world.GeneratorType.ScreenProvider;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -37,8 +37,8 @@ public class OldGeneratorType {
     private static GeneratorOptions createNewGeneratorOptions(
         DynamicRegistryManager registryManager, 
         GeneratorOptions generatorOptions,
-        CompoundTag biomeProviderSettings,
-        CompoundTag chunkProviderSettings
+        NbtCompound biomeProviderSettings,
+        NbtCompound chunkProviderSettings
     ) {
         WorldType worldType = WorldType.fromName(chunkProviderSettings.getString("worldType"));
     
@@ -54,7 +54,7 @@ public class OldGeneratorType {
             generatorOptions.getSeed(),
             generatorOptions.shouldGenerateStructures(),
             generatorOptions.hasBonusChest(),
-            GeneratorOptions.method_28608(
+            GeneratorOptions.getRegistryWithReplacedOverworldGenerator(
                 registryDimensionType, 
                 generatorOptions.getDimensions(), 
                 new OldChunkGenerator(biomeSource, generatorOptions.getSeed(), oldGeneratorSettings))
@@ -66,8 +66,8 @@ public class OldGeneratorType {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> registryChunkGenSettings, long seed) {
                 Supplier<ChunkGeneratorSettings> generatorSettings = () -> registryChunkGenSettings.get(ModernBeta.createId(WorldType.BETA.getName()));
-                CompoundTag biomeProviderSettings = OldGeneratorSettings.createBiomeSettings(BiomeType.BETA, CaveBiomeType.VANILLA, WorldType.BETA.getDefaultBiome());
-                CompoundTag chunkProviderSettings = OldGeneratorSettings.createInfSettings(WorldType.BETA);
+                NbtCompound biomeProviderSettings = OldGeneratorSettings.createBiomeSettings(BiomeType.BETA, CaveBiomeType.VANILLA, WorldType.BETA.getDefaultBiome());
+                NbtCompound chunkProviderSettings = OldGeneratorSettings.createInfSettings(WorldType.BETA);
                 
                 OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(generatorSettings, chunkProviderSettings);
                 
@@ -85,12 +85,12 @@ public class OldGeneratorType {
                         
                         // If settings already present, create new compound tag and copy from source,
                         // otherwise, not copying will modify original settings.
-                        CompoundTag biomeSettings = biomeSource instanceof OldBiomeSource ? 
-                            (new CompoundTag()).copyFrom(((OldBiomeSource)biomeSource).getProviderSettings()) : 
+                        NbtCompound biomeSettings = biomeSource instanceof OldBiomeSource ? 
+                            (new NbtCompound()).copyFrom(((OldBiomeSource)biomeSource).getProviderSettings()) : 
                             OldGeneratorSettings.createBiomeSettings(BiomeType.BETA, CaveBiomeType.VANILLA, WorldType.BETA.getDefaultBiome());
                         
-                        CompoundTag chunkSettings = chunkGenerator instanceof OldChunkGenerator ?
-                            (new CompoundTag()).copyFrom(((OldChunkGenerator)chunkGenerator).getProviderSettings()) :
+                        NbtCompound chunkSettings = chunkGenerator instanceof OldChunkGenerator ?
+                            (new NbtCompound()).copyFrom(((OldChunkGenerator)chunkGenerator).getProviderSettings()) :
                             OldGeneratorSettings.createInfSettings(WorldType.BETA);
                         
                         WorldType worldType = WorldType.fromName(chunkSettings.getString("worldType"));
