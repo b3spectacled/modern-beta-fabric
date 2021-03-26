@@ -208,7 +208,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 }
         ));
         
-        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may be changed."));
+        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
     }
 
     @Override

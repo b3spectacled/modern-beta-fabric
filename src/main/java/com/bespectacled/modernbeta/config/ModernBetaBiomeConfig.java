@@ -21,6 +21,12 @@ public class ModernBetaBiomeConfig implements ConfigData {
     public String singleBiome = ClassicBiomes.ALPHA_ID.toString();
     
     @ConfigEntry.Gui.Excluded
+    public int vanillaBiomeSize = 4;
+    
+    @ConfigEntry.Gui.Excluded
+    public int vanillaOceanBiomeSize = 6;
+    
+    @ConfigEntry.Gui.Excluded
     public String betaDesertBiome = BetaBiomes.DESERT_ID.toString();
     
     @ConfigEntry.Gui.Excluded

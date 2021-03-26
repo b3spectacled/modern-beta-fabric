@@ -76,9 +76,9 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         BiomeType[] biomeTypes = Arrays.stream(BiomeType.values()).filter(type -> BiomeType.getExclusions(type)).toArray(BiomeType[]::new);
         
         this.biomeOption = new ScreenButtonOption(
-            this.biomeType == BiomeType.SINGLE ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.biomes", // Key
+            this.biomeType == BiomeType.SINGLE ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
             this.biomeType == BiomeType.SINGLE ? GUIUtil.createTranslatableBiomeString(this.singleBiome) : null,
-            type -> type != BiomeType.VANILLA, // Active Predicate
+            type -> true, // Active Predicate
             this.getOnPress(this.biomeType) // On Press Action
         );
         
@@ -159,7 +159,7 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 this.chunkProviderSettings.putBoolean("generateDeepslate", this.generateDeepslate);
         }));
         
-        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may be changed."));
+        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
     }
     
     private ButtonWidget.PressAction getOnPress(BiomeType biomeType) {
@@ -183,6 +183,14 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                         this.biomeProviderSettings.putString("singleBiome", this.singleBiome.toString());
                     },
                     this.registryManager.<Biome>get(Registry.BIOME_KEY).get(this.singleBiome)  
+                ));
+                break;
+            case VANILLA:
+                action = buttonWidget -> this.client.openScreen(new VanillaCustomizeBiomesScreen(
+                    this,
+                    this.registryManager,
+                    this.biomeProviderSettings,
+                    vanillaBiomeSettings -> this.biomeProviderSettings.copyFrom(vanillaBiomeSettings)
                 ));
                 break;
             default:

@@ -15,7 +15,7 @@
     "createWorld.customize.biomeType.beta": "Beta",
     "createWorld.customize.biomeType.single": "Single",
     "createWorld.customize.biomeType.vanilla": "Vanilla/Modded",
-    "createWorld.customize.biomeType.biomes": "Biomes",
+    "createWorld.customize.biomeType.settings": "Settings",
     "createWorld.customize.biomeType.biome": "Biome",
     
     "createWorld.customize.caveBiomeType": "Cave Biome Type",
@@ -24,6 +24,7 @@
     
     "createWorld.customize.old.title": "Modern Beta World Configuration",
     "createWorld.customize.beta.title": "Beta Biomes Configuration",
+    "createWorld.customize.vanilla.title": "Vanilla Biomes Configuration",
     
     "createWorld.customize.inf.generateOceans": "Generate Oceans",
     "createWorld.customize.inf.generateDeepOceans": "Generate Deep Oceans",
@@ -32,6 +33,9 @@
     "createWorld.customize.inf.generateNoiseCaves": "Generate Noise Caves",
     "createWorld.customize.inf.generateAquifers": "Generate Aquifers",
     "createWorld.customize.inf.generateDeepslate": "Generate Deepslate",
+    
+    "createWorld.customize.vanilla.biomeSize": "Biome Size",
+    "createWorld.customize.vanilla.oceanBiomeSize": "Ocean Biome Size",
     
     "createWorld.customize.indev.levelType": "Level Type",
     "createWorld.customize.indev.levelTheme": "Level Theme",

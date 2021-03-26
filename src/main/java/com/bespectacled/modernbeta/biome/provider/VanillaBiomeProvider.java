@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.biome.provider;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.vanilla.VanillaBiomeLayer;
 import com.bespectacled.modernbeta.biome.vanilla.VanillaOceanLayer;
 
@@ -15,6 +16,8 @@ import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 
 public class VanillaBiomeProvider extends AbstractBiomeProvider {
+    private final int vanillaBiomeSize;
+    private final int vanillaOceanBiomeSize;
     
     private final BiomeLayerSampler biomeSampler;
     private final BiomeLayerSampler oceanSampler;
@@ -22,8 +25,16 @@ public class VanillaBiomeProvider extends AbstractBiomeProvider {
     public VanillaBiomeProvider(long seed, NbtCompound settings) {
         super(seed, settings);
         
-        this.biomeSampler = VanillaBiomeLayer.build(seed, false, 4, -1);
-        this.oceanSampler = VanillaOceanLayer.build(seed, false, 6, -1);
+        this.vanillaBiomeSize = settings.contains("vanillaBiomeSize") ? 
+            settings.getInt("vanillaBiomeSize") :
+            ModernBeta.BETA_CONFIG.biomeConfig.vanillaBiomeSize;
+        
+        this.vanillaOceanBiomeSize = settings.contains("vanillaOceanBiomeSize") ?
+            settings.getInt("vanillaOceanBiomeSize") :
+            ModernBeta.BETA_CONFIG.biomeConfig.vanillaOceanBiomeSize;
+        
+        this.biomeSampler = VanillaBiomeLayer.build(seed, false, this.vanillaBiomeSize, -1);
+        this.oceanSampler = VanillaOceanLayer.build(seed, false, this.vanillaOceanBiomeSize, -1);
     }
 
     @Override
