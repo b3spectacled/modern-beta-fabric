@@ -67,6 +67,7 @@ public abstract class AbstractChunkProvider {
     
     protected final int minY;
     protected final int worldHeight;
+    protected final int worldTopY;
     protected final int seaLevel;
     
     protected final int bedrockFloor;
@@ -173,6 +174,7 @@ public abstract class AbstractChunkProvider {
         
         this.minY = minY;
         this.worldHeight = worldHeight;
+        this.worldTopY = worldHeight + minY; // See HeightLimitView for best implementation
         this.seaLevel = seaLevel;
         
         this.bedrockFloor = bedrockFloor;
@@ -222,6 +224,16 @@ public abstract class AbstractChunkProvider {
         
         RAND.setSeed(seed);
         HEIGHTMAP_CACHE.clear();
+        
+        // Handle malformed height values
+        if (this.minY > this.worldHeight)
+            throw new IllegalStateException("[Modern Beta] Minimum height cannot be greater than world height!");
+        
+        if (this.minY % 16 != 0)
+            throw new IllegalStateException("[Modern Beta] Minimum height should be a multiple of 16!");
+        
+        if (this.worldHeight % 16 != 0) 
+            throw new IllegalStateException("[Modern Beta] World height should be a multiple of 16!");
     }
     
     public abstract Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource);

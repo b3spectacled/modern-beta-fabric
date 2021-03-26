@@ -122,12 +122,14 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
         
+        int worldTopY = this.worldHeight + this.minY;
+        
         for (int x = 0; x < 16; ++x) {
             int absX = startX + x;
             for (int z = 0; z < 16; ++z) {
                 int absZ = startZ + z;
                 
-                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
+                for (int y = worldTopY - 1; y >= this.minY; --y) {
                     Biome biome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
                     BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                     BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -219,10 +221,10 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                     
                     if (this.levelType == IndevType.FLOATING) continue;
                      
-                    if (y <= 1 && blockToSet == Blocks.AIR) {
+                    if (y <= 1 + this.bedrockFloor && blockToSet == Blocks.AIR) {
                         //chunk.setBlockState(mutable.set(x, y, z), BlockStates.LAVA, false);
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
-                    } else if (y <= 1) {
+                    } else if (y <= 1 + this.bedrockFloor) {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                     }
                     

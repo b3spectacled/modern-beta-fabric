@@ -87,11 +87,11 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
                 
-                boolean hasCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
 
                 // Generate from top to bottom of world
-                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; y--) {
-                    if (hasCustomSurface) break;
+                for (int y = this.worldTopY - 1; y >= this.minY; y--) {
+                    if (usedCustomSurface) break;
                     
                     BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
                     

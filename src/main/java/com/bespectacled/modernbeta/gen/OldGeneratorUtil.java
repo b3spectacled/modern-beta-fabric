@@ -21,7 +21,7 @@ public class OldGeneratorUtil {
     private static final BlockPos.Mutable POS = new BlockPos.Mutable();
     
     public static int getSolidHeight(Chunk chunk, int worldHeight, int minY, int x, int z) {
-        for (int y = worldHeight - Math.abs(minY) - 1; y >= minY; y--) {
+        for (int y = worldHeight + minY - 1; y >= minY; y--) {
             BlockState someBlock = chunk.getBlockState(POS.set(x, y, z));
             if (!(someBlock.equals(BlockStates.AIR) || someBlock.equals(BlockStates.WATER) || someBlock.equals(BlockStates.ICE)))
                 return y;

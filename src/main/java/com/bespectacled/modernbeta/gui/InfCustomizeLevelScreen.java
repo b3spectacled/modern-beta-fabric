@@ -7,6 +7,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
+import com.bespectacled.modernbeta.gui.option.TextOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
@@ -89,7 +90,6 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 (gameOptions) -> { return this.biomeType; },
                 (gameOptions, option, value) -> {
                     this.biomeType = value;
-                    //this.biomeProviderSettings.putString("biomeType", this.biomeType.getName());
                     
                     NbtCompound newBiomeProviderSettings = OldGeneratorSettings.createBiomeSettings(
                         this.biomeType, 
@@ -158,6 +158,8 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 this.generateDeepslate = value;
                 this.chunkProviderSettings.putBoolean("generateDeepslate", this.generateDeepslate);
         }));
+        
+        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may be changed."));
     }
     
     private ButtonWidget.PressAction getOnPress(BiomeType biomeType) {
@@ -168,8 +170,8 @@ public class InfCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                 action = buttonWidget -> this.client.openScreen(new BetaCustomizeBiomesScreen(
                     this, 
                     this.registryManager,
-                    this.biomeProviderSettings, 
-                    biomeProviderSettings -> this.consumer.accept(biomeProviderSettings, this.chunkProviderSettings)
+                    this.biomeProviderSettings,
+                    betaBiomeSettings -> this.biomeProviderSettings.copyFrom(betaBiomeSettings)
                 ));
                 break;
             case SINGLE:

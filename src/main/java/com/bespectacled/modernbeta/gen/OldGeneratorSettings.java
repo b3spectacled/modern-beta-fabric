@@ -13,11 +13,9 @@ import java.util.function.Supplier;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.BiomeType;
 import com.bespectacled.modernbeta.biome.CaveBiomeType;
-import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.config.ModernBetaBiomeConfig;
 import com.bespectacled.modernbeta.config.ModernBetaGenerationConfig;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.GUIUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -142,11 +140,11 @@ public class OldGeneratorSettings {
     
     static {
         BETA_GENERATOR_SETTINGS = register(WorldType.BETA.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true));
-        ALPHA_GENERATOR_SETTINGS = register(WorldType.ALPHA.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.ALPHA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true));
+        ALPHA_GENERATOR_SETTINGS = register(WorldType.ALPHA.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.ALPHA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, false));
         SKYLANDS_GENERATOR_SETTINGS = register(WorldType.SKYLANDS.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.SKYLANDS_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, -10, 0, false, true, false, false));
-        INFDEV_415_GENERATOR_SETTINGS = register(WorldType.INFDEV_415.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true));
-        INFDEV_227_GENERATOR_SETTINGS = register(WorldType.INFDEV_227.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true));
-        INDEV_GENERATOR_SETTINGS = register(WorldType.INDEV.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.INDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, false));
+        INFDEV_415_GENERATOR_SETTINGS = register(WorldType.INFDEV_415.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, false));
+        INFDEV_227_GENERATOR_SETTINGS = register(WorldType.INFDEV_227.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, false, false, false));
+        INDEV_GENERATOR_SETTINGS = register(WorldType.INDEV.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.INDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, false, false, false));
         //RELEASE_GENERATOR_SETTINGS = register(WorldType.RELEASE.getName(), new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true));
     }
 }

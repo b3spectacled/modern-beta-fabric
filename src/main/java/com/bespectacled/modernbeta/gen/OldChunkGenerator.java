@@ -1,15 +1,24 @@
 package com.bespectacled.modernbeta.gen;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.BitSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.biome.CaveBiomeType;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.carver.IOldCaveCarver;
 import com.bespectacled.modernbeta.feature.OldFeatures;
 import com.bespectacled.modernbeta.gen.provider.AbstractChunkProvider;
@@ -17,7 +26,12 @@ import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.mixin.MixinConfiguredCarverAccessor;
 import com.bespectacled.modernbeta.structure.OldStructures;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.entity.SpawnGroup;
@@ -29,6 +43,7 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
@@ -191,7 +206,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         StructureManager structureManager, 
         long seed
     ) {
+        ChunkPos chunkPos = chunk.getPos();
         Biome biome = OldGeneratorUtil.getOceanBiome(chunk, this, this.biomeSource, this.generateOceans, this.getSeaLevel());
+        
+        // Use edge biome for feature population for Indev chunks outside of level area
+        if (this.chunkProvider.skipChunk(chunkPos.x, chunkPos.z) && this.chunkProvider instanceof IndevChunkProvider)
+            biome = this.biomeSource.getEdgeBiome();
 
         ((MixinChunkGeneratorInvoker)this).invokeSetStructureStart(
             ConfiguredStructureFeatures.STRONGHOLD, 
@@ -279,6 +299,27 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     public NbtCompound getProviderSettings() {
         return this.settings.providerSettings;
+    }
+    
+    public static void export() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Path dir = Paths.get("..\\src\\main\\resources\\data\\modern_beta\\dimension");
+        
+        NbtCompound chunkSettings = OldGeneratorSettings.createInfSettings(WorldType.BETA);
+        NbtCompound biomeSettings = OldGeneratorSettings.createBiomeSettings(BiomeType.BETA, CaveBiomeType.VANILLA, BetaBiomes.FOREST_ID);
+        OldGeneratorSettings generatorSettings = new OldGeneratorSettings(() -> OldGeneratorSettings.BETA_GENERATOR_SETTINGS, chunkSettings);
+        
+        OldBiomeSource biomeSource = new OldBiomeSource(0, BuiltinRegistries.BIOME, biomeSettings);
+        OldChunkGenerator chunkGenerator = new OldChunkGenerator(biomeSource, 0, generatorSettings);
+        Function<OldChunkGenerator, DataResult<JsonElement>> toJson = JsonOps.INSTANCE.withEncoder(OldChunkGenerator.CODEC);
+        
+        try {
+            JsonElement json = toJson.apply(chunkGenerator).result().get();
+            Files.write(dir.resolve(ModernBeta.createId("old").getPath() + ".json"), gson.toJson(json).getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            ModernBeta.LOGGER.error("[Modern Beta] Couldn't serialize old chunk generator!");
+            e.printStackTrace();
+        }
     }
     
 }

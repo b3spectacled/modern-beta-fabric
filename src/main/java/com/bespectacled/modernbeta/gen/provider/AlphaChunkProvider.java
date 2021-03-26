@@ -69,6 +69,8 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
+        int bedrockFloor = this.minY + this.bedrockFloor;
+        
         // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         ChunkRandom sandstoneRand = this.createChunkRand(chunkX, chunkZ);
@@ -104,13 +106,13 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
 
-                boolean hasCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
                 
                 // Generate from top to bottom of world
-                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; y--) {
+                for (int y = this.worldTopY - 1; y >= this.minY; y--) {
 
                     // Randomly place bedrock from y=0 to y=5
-                    if (y <= (this.minY + rand.nextInt(6)) - 1) {
+                    if (y <= bedrockFloor + rand.nextInt(6) - 1) {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                         continue;
                     }
@@ -126,7 +128,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                     }
                     
                     // Don't surface build below 50, per 1.17 default surface builder
-                    if (hasCustomSurface || (this.generateAquifers || this.generateNoiseCaves) && y < 50) {
+                    if (usedCustomSurface || (this.generateAquifers || this.generateNoiseCaves) && y < 50) {
                         continue;
                     }
 

@@ -1,7 +1,6 @@
 package com.bespectacled.modernbeta.biome.provider;
 
 import java.util.List;
-
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -27,4 +26,6 @@ public abstract class AbstractBiomeProvider {
     }
     
     public abstract List<RegistryKey<Biome>> getBiomesForRegistry();
+    
+    
 }

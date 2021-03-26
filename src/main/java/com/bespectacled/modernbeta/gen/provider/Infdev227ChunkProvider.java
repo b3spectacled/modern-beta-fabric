@@ -120,6 +120,8 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
         
+        int bedrockFloor = this.minY + this.bedrockFloor;
+        
         Block defaultBlock = this.defaultBlock.getBlock();
         Block defaultFluid = this.defaultFluid.getBlock();
       
@@ -149,7 +151,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
                     }
                 }
                 
-                for (int y = this.minY; y < this.worldHeight - Math.abs(this.minY); ++y) {
+                for (int y = this.minY; y < this.worldTopY; ++y) {
                     Block blockToSet = Blocks.AIR;
                     
                     if (this.generateInfdevWall && (absX == 0 || absZ == 0) && y <= heightVal + 2) {
@@ -190,7 +192,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
                             blockToSet = Blocks.BRICKS;     
                     }
                     
-                    if (y <= this.minY + chunkRand.nextInt(5)) {
+                    if (y <= bedrockFloor + chunkRand.nextInt(5)) {
                         blockToSet = Blocks.BEDROCK;
                     }
                     

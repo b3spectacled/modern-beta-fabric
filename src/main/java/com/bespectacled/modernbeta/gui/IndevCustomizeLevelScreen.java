@@ -9,6 +9,7 @@ import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
 import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
+import com.bespectacled.modernbeta.gui.option.TextOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
@@ -206,6 +207,8 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     });
                 }
         ));
+        
+        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may be changed."));
     }
 
     @Override

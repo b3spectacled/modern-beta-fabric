@@ -25,6 +25,7 @@ import com.bespectacled.modernbeta.biome.vanilla.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gen.OldGeneratorType;
 
 public class ModernBeta implements ModInitializer {
@@ -65,6 +66,7 @@ public class ModernBeta implements ModInitializer {
         //OldConfiguredFeatures.export();
         //OldBiomes.export();
         //OldGeneratorSettings.export();
+        //OldChunkGenerator.export();
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");
 

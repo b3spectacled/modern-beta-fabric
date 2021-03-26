@@ -18,7 +18,7 @@ public class MixinSkyProperties {
     )
     public void injectCloudsHeight(CallbackInfoReturnable<Float> info) {
         if (this.skyType == SkyProperties.SkyType.NORMAL) {
-            //info.setReturnValue(108F);
+            info.setReturnValue(108F);
         }
     }
 }
