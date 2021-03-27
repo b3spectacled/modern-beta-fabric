@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.gen.provider;
 
+import java.util.stream.IntStream;
+
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gen.OldGeneratorUtil;
@@ -9,7 +11,6 @@ import com.bespectacled.modernbeta.util.DoubleArrayPool;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
@@ -30,7 +31,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     
     public SkylandsChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
-        super(seed, 0, 128, 0, 0, -10, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, 0, 128, 0, 0, -10, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0, false, false, false, BlockStates.STONE, BlockStates.AIR, settings);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -141,9 +142,13 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
 
     @Override
     public int getHeight(int x, int z, Heightmap.Type type) {
-        int groundHeight = sampleHeightmap(x, z);
-        groundHeight = groundHeight - 1 >= this.minY ? groundHeight : 16;
+        Integer groundHeight = HEIGHTMAP_CACHE.get(new BlockPos(x, 0, z));
         
+        if (groundHeight == null) {
+            IntStream.range(0, HEIGHTMAP_CHUNK.length).forEach(i -> HEIGHTMAP_CHUNK[i] = 16);
+            groundHeight = this.sampleHeightmap(x, z);
+        }
+
         return groundHeight;
     }
     
@@ -205,7 +210,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                                 int z = (subChunkZ * this.horizontalNoiseResolution + subZ);
                                 int absZ = (chunk.getPos().z << 4) + z;
 
-                                BlockState blockToSet = getBlockStateSky(structureWeightSampler, absX, y, absZ, density);
+                                BlockState blockToSet = this.getBlockState(structureWeightSampler, null, absX, y, absZ, density);
                                 chunk.setBlockState(mutable.set(x, y, z), blockToSet, false);
 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
@@ -297,52 +302,79 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     }
     
     private int sampleHeightmap(int sampleX, int sampleZ) {
-        int noiseX = MathHelper.floorDiv(sampleX, this.horizontalNoiseResolution);
-        int noiseZ = MathHelper.floorDiv(sampleZ, this.horizontalNoiseResolution);
+        int noiseResolutionY = this.noiseSizeY + 1;
+        int noiseResolutionXZ = this.noiseSizeX + 1;
+
+        int chunkX = sampleX >> 4;
+        int chunkZ = sampleZ >> 4;
         
-        int modX = MathHelper.floorMod(sampleX, this.horizontalNoiseResolution);
-        int modZ = MathHelper.floorMod(sampleZ, this.horizontalNoiseResolution);
+        int startX = chunkX << 4;
+        int startZ = chunkZ << 4;
         
-        double lerpX = modX / (double)this.horizontalNoiseResolution;
-        double lerpZ = modZ / (double)this.horizontalNoiseResolution;
-        
+        double lerpY = 1.0D / this.verticalNoiseResolution;
+        double lerpXZ = 1.0D / this.horizontalNoiseResolution;
+
         double[] heightNoise = this.heightNoisePool.borrowArr();
+        this.generateHeightNoiseArr(chunkX * this.noiseSizeX, 0, chunkZ * this.noiseSizeZ, heightNoise);
 
-        for (int subChunkY = 0; subChunkY < this.noiseSizeY + 1; subChunkY++) {
-            int offsetY = subChunkY + this.noiseMinY;
-            
-            heightNoise[subChunkY * this.noiseSizeX + 0] = this.generateHeightNoise(noiseX, offsetY, noiseZ);
-            heightNoise[subChunkY * this.noiseSizeX + 1] = this.generateHeightNoise(noiseX, offsetY, noiseZ + 1);
-            heightNoise[subChunkY * this.noiseSizeX + 2] = this.generateHeightNoise(noiseX + 1, offsetY, noiseZ);
-            heightNoise[subChunkY * this.noiseSizeX + 3] = this.generateHeightNoise(noiseX + 1, offsetY, noiseZ + 1);    
-        }
-        
-        for (int subChunkY = this.noiseSizeY - 1; subChunkY >= 0; --subChunkY) {
-            double lowerNW = heightNoise[(subChunkY) * this.noiseSizeX + 0];
-            double lowerSW = heightNoise[(subChunkY) * this.noiseSizeX + 1];
-            double lowerNE = heightNoise[(subChunkY) * this.noiseSizeX + 2];
-            double lowerSE = heightNoise[(subChunkY) * this.noiseSizeX + 3];
-            
-            double upperNW = heightNoise[(subChunkY + 1) * this.noiseSizeX + 0];
-            double upperSW = heightNoise[(subChunkY + 1) * this.noiseSizeX + 1];
-            double upperNE = heightNoise[(subChunkY + 1) * this.noiseSizeX + 2];
-            double upperSE = heightNoise[(subChunkY + 1) * this.noiseSizeX + 3];
-            
-            for (int subY = this.verticalNoiseResolution - 1; subY >= 0; --subY) {
-                int y = subChunkY * this.verticalNoiseResolution + subY;
-                y += this.minY;
+        for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
+            for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
+                for (int subChunkY = 0; subChunkY < this.noiseSizeY; subChunkY++) {
+                    double lowerNW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
+                    double lowerSW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
+                    double lowerNE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
+                    double lowerSE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
 
-                double lerpY = subY / (double)this.verticalNoiseResolution;
-                double density = MathHelper.lerp3(lerpY, lerpX, lerpZ, lowerNW, upperNW, lowerNE, upperNE, lowerSW, upperSW, lowerSE, upperSE);
-                
-                if (density > 0.0) {
-                    this.heightNoisePool.returnArr(heightNoise);
-                    return y + 1;
+                    double upperNW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNW) * lerpY; 
+                    double upperSW = (heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSW) * lerpY;
+                    double upperNE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 1)] - lowerNE) * lerpY;
+                    double upperSE = (heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 1)] - lowerSE) * lerpY;
+
+                    for (int subY = 0; subY < this.verticalNoiseResolution; subY++) {
+                        int y = subChunkY * this.verticalNoiseResolution + subY;
+                        y += this.minY;
+                        
+                        double curNW = lowerNW;
+                        double curSW = lowerSW;
+                        double avgN = (lowerNE - lowerNW) * lerpXZ;
+                        double avgS = (lowerSE - lowerSW) * lerpXZ;
+                        
+                        for (int subX = 0; subX < this.horizontalNoiseResolution; subX++) {
+                            int x = (subX + subChunkX * this.horizontalNoiseResolution);
+                            
+                            double density = curNW;
+                            double progress = (curSW - curNW) * lerpXZ; 
+
+                            for (int subZ = 0; subZ < this.horizontalNoiseResolution; subZ++) {
+                                int z = (subChunkZ * this.horizontalNoiseResolution + subZ);
+                                
+                                if (density > 0.0) {
+                                    HEIGHTMAP_CHUNK[z + x * 16] = y;
+                                }
+
+                                density += progress;
+                            }
+
+                            curNW += avgN;
+                            curSW += avgS;
+                        }
+
+                        lowerNW += upperNW;
+                        lowerSW += upperSW;
+                        lowerNE += upperNE;
+                        lowerSE += upperSE;
+                    }
                 }
+            }
+        }
+
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                HEIGHTMAP_CACHE.put(new BlockPos(startX + x, 0, startZ + z), HEIGHTMAP_CHUNK[z + x * 16] + 1);
             }
         }
         
         this.heightNoisePool.returnArr(heightNoise);
-        return this.minY;
+        return HEIGHTMAP_CACHE.get(new BlockPos(sampleX, 0, sampleZ));
     }
 }

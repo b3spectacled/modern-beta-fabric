@@ -58,7 +58,7 @@ public abstract class AbstractChunkProvider {
     protected static final Random RAND = new Random();
     
     protected static final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> HEIGHTMAP_CACHE = new Object2ObjectLinkedOpenHashMap<>(512);
-    protected static final int[][] HEIGHTMAP_CHUNK = new int[16][16];
+    protected static final int[] HEIGHTMAP_CHUNK = new int[256];
     
     protected final Supplier<ChunkGeneratorSettings> generatorSettings;
     protected final NbtCompound providerSettings;
@@ -410,5 +410,10 @@ public abstract class AbstractChunkProvider {
         OldDecorators.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestOctaves);
         OldDecorators.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestOctaves);
         OldDecorators.COUNT_INFDEV_NOISE_DECORATOR.setOctaves(forestOctaves);
+    }
+    
+    protected void testHeightmap(int sampleX, int sampleZ) {
+        int height = this.getHeight(sampleX, sampleZ, Heightmap.Type.OCEAN_FLOOR);
+        System.out.println("Height at " + sampleX + "/" + sampleZ + ": " + height);
     }
 }

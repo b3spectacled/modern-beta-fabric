@@ -66,7 +66,7 @@ public class ModernBeta implements ModInitializer {
         //OldConfiguredFeatures.export();
         //OldBiomes.export();
         //OldGeneratorSettings.export();
-        //OldChunkGenerator.export();
+        OldChunkGenerator.export();
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");
 

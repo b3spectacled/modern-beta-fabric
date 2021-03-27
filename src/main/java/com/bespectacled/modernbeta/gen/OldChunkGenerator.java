@@ -26,6 +26,7 @@ import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.mixin.MixinConfiguredCarverAccessor;
 import com.bespectacled.modernbeta.structure.OldStructures;
+import com.bespectacled.modernbeta.util.BlockStates;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -34,6 +35,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
@@ -43,6 +45,7 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -64,6 +67,7 @@ import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
+import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -238,9 +242,39 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
-    public int getHeight(int x, int z, Heightmap.Type type, HeightLimitView heightLimitView) {
+    public int getHeight(int x, int z, Heightmap.Type type, HeightLimitView world) {
         return this.chunkProvider.getHeight(x, z, type);
     }
+    
+    /*
+    @Override
+    public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
+        int bottomY = Math.max(this.settings.generatorSettings.get().getGenerationShapeConfig().getMinimumY(), world.getBottomY());
+        int topY = Math.min(this.settings.generatorSettings.get().getGenerationShapeConfig().getMinimumY() + this.settings.generatorSettings.get().getGenerationShapeConfig().getHeight(), world.getTopY());
+        
+        //int noiseBottomY = MathHelper.floorDiv(bottomY, this.chunkProvider.getVerticalNoiseResolution());
+        int noiseTopY = MathHelper.floorDiv(topY - bottomY, this.chunkProvider.getVerticalNoiseResolution());
+        
+        if (noiseTopY <= 0) {
+            return new VerticalBlockSample(bottomY, new BlockState[0]);
+        }
+        
+        BlockState[] states = new BlockState[noiseTopY * this.chunkProvider.getVerticalNoiseResolution()];
+        int sampledHeight = this.chunkProvider.getHeight(x, z, null);
+        
+        for (int y = 0; y < noiseTopY * this.chunkProvider.getVerticalNoiseResolution(); ++y) {
+            y += bottomY;
+            
+            BlockState state = BlockStates.AIR;
+            if (y < sampledHeight) {
+                state = BlockStates.STONE;
+            }
+            
+            states[y] = state;
+        }
+        
+        return new VerticalBlockSample(bottomY, states);
+    }*/
     
     @Override
     public BlockPos locateStructure(ServerWorld world, StructureFeature<?> feature, BlockPos center, int radius, boolean skipExistingChunks) {
