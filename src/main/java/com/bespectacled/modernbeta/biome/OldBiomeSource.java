@@ -123,8 +123,7 @@ public class OldBiomeSource extends BiomeSource {
         List<List<Supplier<ConfiguredFeature<?, ?>>>> featureSteps = genSettings.getFeatures();
         for (int i = 0; i < featureSteps.size(); ++i) {
             // Add top layer modifiers, plant features
-            if (i == GenerationStep.Feature.VEGETAL_DECORATION.ordinal() || 
-                i == GenerationStep.Feature.TOP_LAYER_MODIFICATION.ordinal()) {
+            if (i == GenerationStep.Feature.TOP_LAYER_MODIFICATION.ordinal()) {
                 List<Supplier<ConfiguredFeature<?, ?>>> configuredFeatures = featureSteps.get(i);
                 for (Supplier<ConfiguredFeature<?, ?>> supplier : configuredFeatures) {
                     genSettingsBuilder.feature(i, supplier);

@@ -1,6 +1,9 @@
 package com.bespectacled.modernbeta.gen.provider;
 
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
@@ -67,7 +70,9 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     private int waterLevel;
     //private int groundLevel;
     
-    private boolean pregenerated;
+    private final AtomicBoolean generated;
+    private final CountDownLatch generatedLatch;
+    //private boolean pregenerated;
     
     public IndevChunkProvider(long seed, OldGeneratorSettings settings) {
         //super(seed, settings);
@@ -86,29 +91,26 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         this.waterLevel = this.height / 2;
         this.layers = (this.levelType == IndevType.FLOATING) ? (this.height - 64) / 48 + 1 : 1;
         
-        this.pregenerated = false;  
+        this.generated = new AtomicBoolean(false);
+        this.generatedLatch = new CountDownLatch(1);
     }
 
     /**
-     * 1.17: Added synchronized to ensure that only one thread runs chunk generation
+     * 1.17: Added AtomicBoolean + CountDownLatch
      */
     @Override
-    public synchronized Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
         ChunkPos pos = chunk.getPos();
 
         if (IndevUtil.inIndevRegion(pos.getStartX(), pos.getStartZ(), this.width, this.length)) {
-
-            if (!this.pregenerated) {
-                blockArr = pregenerateTerrain();
-            }
-            
-            setTerrain(structureAccessor, chunk, blockArr);
+            this.pregenerateTerrainOrWait();
+            this.setTerrain(structureAccessor, chunk, blockArr);
      
         } else if (this.levelType != IndevType.FLOATING) {
             if (this.levelType == IndevType.ISLAND)
-                generateWaterBorder(chunk);
+                this.generateWaterBorder(chunk);
             else {
-                generateWorldBorder(chunk);
+                this.generateWorldBorder(chunk);
             }
         }
 
@@ -154,7 +156,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     @Override
-    public synchronized int getHeight(int x, int z, Type type) {
+    public int getHeight(int x, int z, Type type) {
         int height = this.height - 1;
         
         x = x + this.width / 2;
@@ -162,9 +164,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         
         if (x < 0 || x >= this.width || z < 0 || z >= this.length) return waterLevel;
         
-        if (!this.pregenerated) {
-            this.blockArr = pregenerateTerrain();
-        }
+        this.pregenerateTerrainOrWait();
         
         for (int y = this.height - 1; y >= 0; --y) {
             Block someBlock = this.blockArr[x][y][z];
@@ -189,6 +189,53 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     @Override
     public boolean skipChunk(int chunkX, int chunkZ) {
         return !IndevUtil.inIndevRegion(chunkX << 4, chunkZ << 4, this.width, this.length);
+    }
+    
+    public boolean inWorldBounds(int x, int z) {
+        return IndevUtil.inIndevRegion(x, z, this.width, this.length);
+    }
+    
+    public void generateIndevHouse(ServerWorld world, BlockPos spawnPos) {
+        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Building..");
+        
+        int spawnX = spawnPos.getX();
+        int spawnY = spawnPos.getY() + 1;
+        int spawnZ = spawnPos.getZ();
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        
+        Block floorBlock = this.levelTheme == IndevTheme.HELL ? Blocks.MOSSY_COBBLESTONE : Blocks.STONE;
+        Block wallBlock = this.levelTheme == IndevTheme.HELL ? Blocks.MOSSY_COBBLESTONE : Blocks.OAK_PLANKS;
+        
+        for (int x = spawnX - 3; x <= spawnX + 3; ++x) {
+            for (int y = spawnY - 2; y <= spawnY + 2; ++y) {
+                for (int z = spawnZ - 3; z <= spawnZ + 3; ++z) {
+                    Block blockToSet = (y < spawnY - 1) ? Blocks.OBSIDIAN : Blocks.AIR;
+                    
+                    if (x == spawnX - 3 || z == spawnZ - 3 || x == spawnX + 3 || z == spawnZ + 3 || y == spawnY - 2 || y == spawnY + 2) {
+                        blockToSet = floorBlock;
+                        if (y >= spawnY - 1) {
+                            blockToSet = wallBlock;
+                        }
+                    }
+                    if (z == spawnZ + 3 && x == spawnX && y >= spawnY - 1 && y <= spawnY) {
+                        blockToSet = Blocks.AIR;
+                    }
+                    
+                    world.setBlockState(mutable.set(x, y, z), BlockStates.getBlockState(blockToSet));
+                }
+            }
+        }
+        
+        world.setBlockState(mutable.set(spawnX - 3 + 1, spawnY, spawnZ), Blocks.WALL_TORCH.getDefaultState().rotate(BlockRotation.CLOCKWISE_90));
+        world.setBlockState(mutable.set(spawnX + 3 - 1, spawnY, spawnZ), Blocks.WALL_TORCH.getDefaultState().rotate(BlockRotation.COUNTERCLOCKWISE_90));
+    }
+    
+    public IndevType getType() {
+        return this.levelType;
+    }
+    
+    public IndevTheme getTheme() {
+        return this.levelTheme;
     }
     
     private void setTerrain(StructureAccessor structureAccessor, Chunk chunk, Block[][][] blockArr) {
@@ -232,6 +279,22 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                     heightmapSURFACE.trackUpdate(x, y, z, BlockStates.getBlockState(blockToSet));
                         
                 }
+            }
+        }
+    }
+    
+    private void pregenerateTerrainOrWait() {
+        // Only one thread should enter pregeneration method,
+        // others should funnel into awaiting for latch to count down.
+        if (!this.generated.getAndSet(true)) {
+            blockArr = pregenerateTerrain();
+            this.generatedLatch.countDown();
+        } else {
+            try {
+                this.generatedLatch.await();
+            } catch (InterruptedException e) {
+                ModernBeta.LOGGER.log(Level.ERROR, "[Modern Beta] Indev chunk provider failed to pregenerate terrain!");
+                e.printStackTrace();
             }
         }
     }
@@ -324,8 +387,6 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             floodLava(blockArr);
             plantSurface(blockArr);
         }
-        
-        this.pregenerated = true;
         
         return blockArr;
     }
@@ -672,52 +733,5 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         }
             
         return true;
-    }
-    
-    public boolean inWorldBounds(int x, int z) {
-        return IndevUtil.inIndevRegion(x, z, this.width, this.length);
-    }
-    
-    public void generateIndevHouse(ServerWorld world, BlockPos spawnPos) {
-        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Building..");
-        
-        int spawnX = spawnPos.getX();
-        int spawnY = spawnPos.getY() + 1;
-        int spawnZ = spawnPos.getZ();
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        
-        Block floorBlock = this.levelTheme == IndevTheme.HELL ? Blocks.MOSSY_COBBLESTONE : Blocks.STONE;
-        Block wallBlock = this.levelTheme == IndevTheme.HELL ? Blocks.MOSSY_COBBLESTONE : Blocks.OAK_PLANKS;
-        
-        for (int x = spawnX - 3; x <= spawnX + 3; ++x) {
-            for (int y = spawnY - 2; y <= spawnY + 2; ++y) {
-                for (int z = spawnZ - 3; z <= spawnZ + 3; ++z) {
-                    Block blockToSet = (y < spawnY - 1) ? Blocks.OBSIDIAN : Blocks.AIR;
-                    
-                    if (x == spawnX - 3 || z == spawnZ - 3 || x == spawnX + 3 || z == spawnZ + 3 || y == spawnY - 2 || y == spawnY + 2) {
-                        blockToSet = floorBlock;
-                        if (y >= spawnY - 1) {
-                            blockToSet = wallBlock;
-                        }
-                    }
-                    if (z == spawnZ + 3 && x == spawnX && y >= spawnY - 1 && y <= spawnY) {
-                        blockToSet = Blocks.AIR;
-                    }
-                    
-                    world.setBlockState(mutable.set(x, y, z), BlockStates.getBlockState(blockToSet));
-                }
-            }
-        }
-        
-        world.setBlockState(mutable.set(spawnX - 3 + 1, spawnY, spawnZ), Blocks.WALL_TORCH.getDefaultState().rotate(BlockRotation.CLOCKWISE_90));
-        world.setBlockState(mutable.set(spawnX + 3 - 1, spawnY, spawnZ), Blocks.WALL_TORCH.getDefaultState().rotate(BlockRotation.COUNTERCLOCKWISE_90));
-    }
-    
-    public IndevType getType() {
-        return this.levelType;
-    }
-    
-    public IndevTheme getTheme() {
-        return this.levelTheme;
     }
 }
