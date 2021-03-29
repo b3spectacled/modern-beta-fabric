@@ -86,7 +86,7 @@ public abstract class AbstractScreenProvider extends Screen {
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.worldType", 
-                WorldProviderType.getWorldProviders().toArray(WorldProvider[]::new),
+                WorldProviderType.getWorldProviders().stream().toArray(WorldProvider[]::new),
                 (value) -> new TranslatableText("createWorld.customize.worldType." + value.getName()), 
                 (gameOptions) -> { return this.worldProvider; }, 
                 (gameOptions, option, value) -> {
