@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.gui;
+package com.bespectacled.modernbeta.gui.provider;
 
 import java.util.function.BiConsumer;
 import com.bespectacled.modernbeta.ModernBeta;

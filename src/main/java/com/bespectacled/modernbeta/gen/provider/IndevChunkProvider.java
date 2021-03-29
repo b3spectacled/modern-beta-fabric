@@ -1,18 +1,19 @@
 package com.bespectacled.modernbeta.gen.provider;
 
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.AbstractChunkProvider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
 import com.bespectacled.modernbeta.gen.BlockStructureWeightSampler;
-import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -20,6 +21,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -31,7 +33,9 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class IndevChunkProvider extends AbstractChunkProvider {
     private PerlinOctaveNoiseCombined heightNoise1;
@@ -74,9 +78,9 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     private final CountDownLatch generatedLatch;
     //private boolean pregenerated;
     
-    public IndevChunkProvider(long seed, OldGeneratorSettings settings) {
+    public IndevChunkProvider(long seed, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, 0, 320, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, settings);
+        super(seed, 0, 320, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, generatorSettings, providerSettings);
         
         this.levelTheme = this.providerSettings.contains("levelTheme") ? IndevTheme.fromName(this.providerSettings.getString("levelTheme")) : IndevTheme.NORMAL;
         this.levelType = this.providerSettings.contains("levelType") ? IndevType.fromName(this.providerSettings.getString("levelType")) : IndevType.ISLAND;
@@ -187,8 +191,20 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     @Override
-    public boolean skipChunk(int chunkX, int chunkZ) {
-        return !IndevUtil.inIndevRegion(chunkX << 4, chunkZ << 4, this.width, this.length);
+    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
+        boolean inIndevRegion = IndevUtil.inIndevRegion(chunkX << 4, chunkZ << 4, this.width, this.length);
+        
+        if (chunkStatus == ChunkStatus.FEATURES) {
+            return !inIndevRegion;
+        } else if (chunkStatus == ChunkStatus.STRUCTURE_STARTS) {
+            return !inIndevRegion;
+        }  else if (chunkStatus == ChunkStatus.CARVERS && chunkStatus == ChunkStatus.LIQUID_CARVERS) {
+            return !inIndevRegion;
+        } else if (chunkStatus == ChunkStatus.SURFACE) { 
+            return true;
+        }
+        
+        return false;
     }
     
     public boolean inWorldBounds(int x, int z) {
@@ -598,7 +614,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             flood(blockArr, 0, this.waterLevel - 1, z, toFill);
         }
         
-        int waterSourceCount = this.width * this.length / 800; 
+        int waterSourceCount = this.width * this.length / 800;
         
         for (int i = 0; i < waterSourceCount; ++i) {
             int randX = RAND.nextInt(this.width);
@@ -607,6 +623,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             
             flood(blockArr, randX, randY, randZ, toFill);
         }
+       
     }
     
     // Using Classic generation algorithm
@@ -617,19 +634,12 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             return;
         }
 
-        //int lavaSourceCount = this.width * this.length * this.height / 2000;
-        int lavaSourceCount = this.width * this.length * this.height / 20000;
-        //int lavaHeight = this.groundLevel;
-        
+        int lavaSourceCount = this.width * this.length / 20000;
+         
         for (int i = 0; i < lavaSourceCount; ++i) {
             int randX = RAND.nextInt(this.width);
             int randZ = RAND.nextInt(this.length);
             int randY = (int)((this.waterLevel - 3) * RAND.nextFloat() * RAND.nextFloat());
-            /*
-            int randY = Math.min(
-                Math.min(RAND.nextInt(lavaHeight), RAND.nextInt(lavaHeight)),
-                Math.min(RAND.nextInt(lavaHeight), RAND.nextInt(lavaHeight)));
-            */
             
             flood(blockArr, randX, randY, randZ, Blocks.LAVA);
         }
@@ -637,11 +647,12 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     private void flood(Block[][][] blockArr, int x, int y, int z, Block toFill) {
-        ArrayList<Vec3d> posToFill = new ArrayList<Vec3d>();
-        posToFill.add(new Vec3d(x, y, z));
+        ArrayDeque<Vec3d> positions = new ArrayDeque<Vec3d>();
         
-        while (posToFill.size() > 0) {
-            Vec3d curPos = posToFill.get(0);
+        positions.add(new Vec3d(x, y, z));
+        
+        while (!positions.isEmpty()) {
+            Vec3d curPos = positions.poll();
             x = (int)curPos.x;
             y = (int)curPos.y;
             z = (int)curPos.z;
@@ -651,14 +662,12 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             if (someBlock == Blocks.AIR) {
                 blockArr[x][y][z] = toFill;
                 
-                if (y - 1 >= 0)          posToFill.add(new Vec3d(x, y - 1, z));
-                if (x - 1 >= 0)          posToFill.add(new Vec3d(x - 1, y, z));
-                if (x + 1 < this.width)  posToFill.add(new Vec3d(x + 1, y, z));
-                if (z - 1 >= 0)          posToFill.add(new Vec3d(x, y, z - 1));
-                if (z + 1 < this.length) posToFill.add(new Vec3d(x, y, z + 1));
+                if (y - 1 >= 0)          positions.add(new Vec3d(x, y - 1, z));
+                if (x - 1 >= 0)          positions.add(new Vec3d(x - 1, y, z));
+                if (x + 1 < this.width)  positions.add(new Vec3d(x + 1, y, z));
+                if (z - 1 >= 0)          positions.add(new Vec3d(x, y, z - 1));
+                if (z + 1 < this.length) positions.add(new Vec3d(x, y, z + 1));
             }
-            
-            posToFill.remove(0);
         }
         
     }

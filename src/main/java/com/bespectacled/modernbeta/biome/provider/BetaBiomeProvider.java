@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.biome.provider;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateMap.BetaBiomeType;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateMapCustomizable;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;

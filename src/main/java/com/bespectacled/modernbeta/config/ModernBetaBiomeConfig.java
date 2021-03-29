@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.config;
 
-import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.api.BiomeProviderType;
 import com.bespectacled.modernbeta.biome.CaveBiomeType;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
@@ -12,7 +12,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 @Config(name = "biome_config")
 public class ModernBetaBiomeConfig implements ConfigData {
     @ConfigEntry.Gui.Excluded
-    public String biomeType = BiomeType.BETA.getName();
+    public String biomeType = BiomeProviderType.BETA;
     
     @ConfigEntry.Gui.Excluded
     public String caveBiomeType = CaveBiomeType.VANILLA.getName();

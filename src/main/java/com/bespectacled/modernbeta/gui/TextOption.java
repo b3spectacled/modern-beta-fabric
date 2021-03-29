@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.gui.option;
+package com.bespectacled.modernbeta.gui;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;

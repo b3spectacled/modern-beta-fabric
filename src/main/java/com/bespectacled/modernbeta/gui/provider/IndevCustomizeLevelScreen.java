@@ -1,15 +1,16 @@
-package com.bespectacled.modernbeta.gui;
+package com.bespectacled.modernbeta.gui.provider;
 
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.api.AbstractScreenProvider;
+import com.bespectacled.modernbeta.api.BiomeProviderType;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
-import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
-import com.bespectacled.modernbeta.gui.option.TextOption;
+import com.bespectacled.modernbeta.gui.ScreenButtonOption;
+import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
@@ -19,11 +20,12 @@ import net.minecraft.client.option.DoubleOption;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
+public class IndevCustomizeLevelScreen extends AbstractScreenProvider {
     private IndevType levelType;
     private IndevTheme levelTheme;
 
@@ -78,16 +80,16 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
         
         this.biomeOption = new ScreenButtonOption(
             "createWorld.customize.biomeType.biome",
-            GUIUtil.createTranslatableBiomeString(this.singleBiome),
-            biomeType -> ((BiomeType)biomeType) == BiomeType.SINGLE,
+            GUIUtil.createTranslatableBiomeStringFromId(this.singleBiome),
+            biomeType -> this.biomeType == BiomeProviderType.SINGLE,
             buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
               this, 
               this.registryManager,
               (biome) -> {
-                  this.singleBiome = this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome);
+                  this.singleBiome = this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString();
                   this.biomeProviderSettings.putString("singleBiome", this.singleBiome.toString());
               },
-              this.registryManager.<Biome>get(Registry.BIOME_KEY).get(this.singleBiome)  
+              this.registryManager.<Biome>get(Registry.BIOME_KEY).get(new Identifier(this.singleBiome))  
             ))
         );
         
@@ -103,7 +105,7 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
                     this.biomeProviderSettings.putString("singleBiome", this.levelTheme.getDefaultBiome().toString());
                     
                     this.client.openScreen(
-                        this.worldType.createLevelScreen(
+                        this.worldProvider.createLevelScreen(
                             this.parent, 
                             this.registryManager, 
                             this.biomeProviderSettings, 
@@ -213,6 +215,6 @@ public class IndevCustomizeLevelScreen extends AbstractCustomizeLevelScreen {
 
     @Override
     protected void updateButtonActive(ScreenButtonOption option) {
-        option.setButtonActive(BiomeType.SINGLE);
+        option.setButtonActive(BiomeProviderType.SINGLE);
     }
 }

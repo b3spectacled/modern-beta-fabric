@@ -16,7 +16,6 @@ import com.bespectacled.modernbeta.util.MutableBlockColors;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
@@ -48,11 +47,19 @@ public class ModernBeta implements ModInitializer {
     @Override
     public void onInitialize() {
         LOGGER.log(Level.INFO, "Initializing Modern Beta...");
+        
+        // Register default providers
+        ModernBetaDefaultProviders.registerChunkProviders();
+        ModernBetaDefaultProviders.registerBiomeProviders();
+        ModernBetaDefaultProviders.registerWorldProviders();
+        ModernBetaDefaultProviders.registerScreenProviders();
 
+        // Register mod stuff
         OldStructures.register();
         OldBiomes.register();
         OldBiomeSource.register();
         OldChunkGenerator.register();
+        OldGeneratorSettings.register();
         VanillaBiomeModifier.addShrineToOceans();
         
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -66,7 +73,7 @@ public class ModernBeta implements ModInitializer {
         //OldConfiguredFeatures.export();
         //OldBiomes.export();
         //OldGeneratorSettings.export();
-        OldChunkGenerator.export();
+        //OldChunkGenerator.export();
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");
 

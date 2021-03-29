@@ -1,8 +1,9 @@
-package com.bespectacled.modernbeta.gui;
+package com.bespectacled.modernbeta.gui.provider;
 
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.AbstractScreenProvider;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -17,8 +18,8 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class VanillaCustomizeBiomesScreen extends Screen {
-    private final AbstractCustomizeLevelScreen parent;
-    private final DynamicRegistryManager registryManager;
+    private final AbstractScreenProvider parent;
+    //private final DynamicRegistryManager registryManager;
     private final NbtCompound biomeProviderSettings;
     private final Consumer<NbtCompound> consumer;
     private final NbtCompound vanillaBiomeSettings;
@@ -29,7 +30,7 @@ public class VanillaCustomizeBiomesScreen extends Screen {
     private ButtonListWidget buttonList;
     
     protected VanillaCustomizeBiomesScreen(
-            AbstractCustomizeLevelScreen parent, 
+            AbstractScreenProvider parent, 
             DynamicRegistryManager registryManager, 
             NbtCompound biomeProviderSettings,
             Consumer<NbtCompound> consumer
@@ -37,7 +38,7 @@ public class VanillaCustomizeBiomesScreen extends Screen {
             super(new TranslatableText("createWorld.customize.vanilla.title"));
             
             this.parent = parent;
-            this.registryManager = registryManager;
+            //this.registryManager = registryManager;
             this.biomeProviderSettings = biomeProviderSettings;
             this.consumer = consumer;
             this.vanillaBiomeSettings = new NbtCompound();

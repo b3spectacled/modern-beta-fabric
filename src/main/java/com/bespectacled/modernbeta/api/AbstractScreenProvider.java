@@ -1,13 +1,10 @@
-package com.bespectacled.modernbeta.gui;
+package com.bespectacled.modernbeta.api;
 
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import com.bespectacled.modernbeta.biome.BiomeType;
-import com.bespectacled.modernbeta.biome.CaveBiomeType;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
-import com.bespectacled.modernbeta.gen.WorldType;
-import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
+import com.bespectacled.modernbeta.gui.ScreenButtonOption;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -21,25 +18,25 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public abstract class AbstractCustomizeLevelScreen extends Screen {
+public abstract class AbstractScreenProvider extends Screen {
     protected final CreateWorldScreen parent;
     protected final DynamicRegistryManager registryManager;
     protected final NbtCompound biomeProviderSettings;
     protected final NbtCompound chunkProviderSettings;
     protected final BiConsumer<NbtCompound, NbtCompound> consumer;
     
-    protected final WorldType worldType;
-    protected BiomeType biomeType;
-    protected CaveBiomeType caveBiomeType;
-    protected Identifier singleBiome;
+    protected final WorldProvider worldProvider;
+    
+    protected String biomeType;
+    protected String caveBiomeType;
+    protected String singleBiome;
     
     protected ButtonListWidget buttonList;
     protected ScreenButtonOption biomeOption;
     
-    public AbstractCustomizeLevelScreen(
+    public AbstractScreenProvider(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings, 
@@ -54,11 +51,11 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         this.chunkProviderSettings = chunkProviderSettings;
         this.consumer = consumer;
         
-        this.worldType = WorldType.fromName(this.chunkProviderSettings.getString("worldType"));
+        this.worldProvider = WorldProviderType.getWorldProvider(this.chunkProviderSettings.getString("worldType"));
         
-        this.biomeType = BiomeType.fromName(this.biomeProviderSettings.getString("biomeType"));
-        this.caveBiomeType = CaveBiomeType.fromName(this.biomeProviderSettings.getString("caveBiomeType"));
-        this.singleBiome = new Identifier(this.biomeProviderSettings.getString("singleBiome"));
+        this.biomeType = this.biomeProviderSettings.getString("biomeType");
+        this.caveBiomeType = this.biomeProviderSettings.getString("caveBiomeType");
+        this.singleBiome = this.biomeProviderSettings.getString("singleBiome");
         
     }
     
@@ -89,12 +86,12 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.worldType", 
-                WorldType.values(),
+                WorldProviderType.getWorldProviders().toArray(WorldProvider[]::new),
                 (value) -> new TranslatableText("createWorld.customize.worldType." + value.getName()), 
-                (gameOptions) -> { return this.worldType; }, // Sets default value?
+                (gameOptions) -> { return this.worldProvider; }, 
                 (gameOptions, option, value) -> {
-                    NbtCompound newBiomeProviderSettings = OldGeneratorSettings.createBiomeSettings(value.getDefaultBiomeType(), value.getDefaultCaveBiomeType(), value.getDefaultBiome());
-                    NbtCompound newChunkProviderSettings = value == WorldType.INDEV ? OldGeneratorSettings.createIndevSettings() : OldGeneratorSettings.createInfSettings(value);
+                    NbtCompound newBiomeProviderSettings = OldGeneratorSettings.createBiomeSettings(value.getDefaultBiomeProvider(), value.getDefaultCaveBiomeProvider(), value.getDefaultBiome());
+                    NbtCompound newChunkProviderSettings = value.getName() == ChunkProviderType.INDEV ? OldGeneratorSettings.createIndevSettings() : OldGeneratorSettings.createInfSettings(value.getName());
                     
                     this.client.openScreen(value.createLevelScreen(
                         this.parent, 
@@ -103,8 +100,9 @@ public abstract class AbstractCustomizeLevelScreen extends Screen {
                         newChunkProviderSettings,
                         this.consumer
                     ));
-                })
+            })
         );
+       
         
         this.children.add(this.buttonList);
     }

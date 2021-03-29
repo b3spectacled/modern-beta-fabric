@@ -1,13 +1,14 @@
-package com.bespectacled.modernbeta.gui;
+package com.bespectacled.modernbeta.gui.provider;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import com.bespectacled.modernbeta.api.AbstractScreenProvider;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
-import com.bespectacled.modernbeta.gui.option.TextOption;
+import com.bespectacled.modernbeta.gui.ScreenButtonOption;
+import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
-import com.bespectacled.modernbeta.gui.option.ScreenButtonOption;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
@@ -24,7 +25,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 public class BetaCustomizeBiomesScreen extends Screen {
-    private final AbstractCustomizeLevelScreen parent;
+    private final AbstractScreenProvider parent;
     private final DynamicRegistryManager registryManager;
     private final NbtCompound biomeProviderSettings;
     private final Consumer<NbtCompound> consumer;
@@ -35,7 +36,7 @@ public class BetaCustomizeBiomesScreen extends Screen {
     private final Map<String, Identifier> biomeMap;
     
     protected BetaCustomizeBiomesScreen(
-        AbstractCustomizeLevelScreen parent, 
+        AbstractScreenProvider parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings,
         Consumer<NbtCompound> consumer
@@ -91,23 +92,23 @@ public class BetaCustomizeBiomesScreen extends Screen {
             
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         
-        this.addBiomeButtonEntry("desert", GUIUtil.createTranslatableBiomeString(BetaBiomes.DESERT_ID));
-        this.addBiomeButtonEntry("forest", GUIUtil.createTranslatableBiomeString(BetaBiomes.FOREST_ID));
-        this.addBiomeButtonEntry("ice_desert", GUIUtil.createTranslatableBiomeString(BetaBiomes.ICE_DESERT_ID));
-        this.addBiomeButtonEntry("plains", GUIUtil.createTranslatableBiomeString(BetaBiomes.PLAINS_ID));
-        this.addBiomeButtonEntry("rainforest", GUIUtil.createTranslatableBiomeString(BetaBiomes.RAINFOREST_ID));
-        this.addBiomeButtonEntry("savanna", GUIUtil.createTranslatableBiomeString(BetaBiomes.SAVANNA_ID));
-        this.addBiomeButtonEntry("shrubland", GUIUtil.createTranslatableBiomeString(BetaBiomes.SHRUBLAND_ID));
-        this.addBiomeButtonEntry("seasonal_forest", GUIUtil.createTranslatableBiomeString(BetaBiomes.SEASONAL_FOREST_ID));
-        this.addBiomeButtonEntry("swampland", GUIUtil.createTranslatableBiomeString(BetaBiomes.SWAMPLAND_ID));
-        this.addBiomeButtonEntry("taiga", GUIUtil.createTranslatableBiomeString(BetaBiomes.TAIGA_ID));
-        this.addBiomeButtonEntry("tundra", GUIUtil.createTranslatableBiomeString(BetaBiomes.TUNDRA_ID));
+        this.addBiomeButtonEntry("desert", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.DESERT_ID));
+        this.addBiomeButtonEntry("forest", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.FOREST_ID));
+        this.addBiomeButtonEntry("ice_desert", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.ICE_DESERT_ID));
+        this.addBiomeButtonEntry("plains", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.PLAINS_ID));
+        this.addBiomeButtonEntry("rainforest", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.RAINFOREST_ID));
+        this.addBiomeButtonEntry("savanna", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.SAVANNA_ID));
+        this.addBiomeButtonEntry("shrubland", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.SHRUBLAND_ID));
+        this.addBiomeButtonEntry("seasonal_forest", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.SEASONAL_FOREST_ID));
+        this.addBiomeButtonEntry("swampland", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.SWAMPLAND_ID));
+        this.addBiomeButtonEntry("taiga", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.TAIGA_ID));
+        this.addBiomeButtonEntry("tundra", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.TUNDRA_ID));
         
-        this.addBiomeButtonEntry("ocean", GUIUtil.createTranslatableBiomeString(BetaBiomes.OCEAN_ID));
-        this.addBiomeButtonEntry("cold_ocean", GUIUtil.createTranslatableBiomeString(BetaBiomes.COLD_OCEAN_ID));
-        this.addBiomeButtonEntry("frozen_ocean", GUIUtil.createTranslatableBiomeString(BetaBiomes.FROZEN_OCEAN_ID));
-        this.addBiomeButtonEntry("lukewarm_ocean", GUIUtil.createTranslatableBiomeString(BetaBiomes.LUKEWARM_OCEAN_ID));
-        this.addBiomeButtonEntry("warm_ocean", GUIUtil.createTranslatableBiomeString(BetaBiomes.WARM_OCEAN_ID));
+        this.addBiomeButtonEntry("ocean", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.OCEAN_ID));
+        this.addBiomeButtonEntry("cold_ocean", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.COLD_OCEAN_ID));
+        this.addBiomeButtonEntry("frozen_ocean", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.FROZEN_OCEAN_ID));
+        this.addBiomeButtonEntry("lukewarm_ocean", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.LUKEWARM_OCEAN_ID));
+        this.addBiomeButtonEntry("warm_ocean", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.WARM_OCEAN_ID));
         
         this.children.add(this.buttonList);
     }
@@ -134,7 +135,7 @@ public class BetaCustomizeBiomesScreen extends Screen {
         this.buttonList.addOptionEntry(
             new TextOption(biomeText),
             new ScreenButtonOption(
-                GUIUtil.createTranslatableBiomeString(this.biomeMap.get(key)),
+                GUIUtil.createTranslatableBiomeStringFromId(this.biomeMap.get(key)),
                 null,
                 (b) -> true,
                 buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(

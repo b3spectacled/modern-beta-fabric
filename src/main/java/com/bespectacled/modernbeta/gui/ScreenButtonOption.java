@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.gui.option;
+package com.bespectacled.modernbeta.gui;
 
 import com.bespectacled.modernbeta.mixin.client.*;
 

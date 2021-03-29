@@ -4,7 +4,10 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.BiomeType;
+import com.bespectacled.modernbeta.api.BiomeProviderType;
+import com.bespectacled.modernbeta.api.ChunkProviderType;
+import com.bespectacled.modernbeta.api.WorldProvider;
+import com.bespectacled.modernbeta.api.WorldProviderType;
 import com.bespectacled.modernbeta.biome.CaveBiomeType;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
@@ -40,15 +43,15 @@ public class OldGeneratorType {
         NbtCompound biomeProviderSettings,
         NbtCompound chunkProviderSettings
     ) {
-        WorldType worldType = WorldType.fromName(chunkProviderSettings.getString("worldType"));
+        String chunkProviderType = chunkProviderSettings.getString("worldType");
     
         Registry<DimensionType> registryDimensionType = registryManager.<DimensionType>get(Registry.DIMENSION_TYPE_KEY);
         Registry<ChunkGeneratorSettings> registryChunkGenSettings = registryManager.<ChunkGeneratorSettings>get(Registry.NOISE_SETTINGS_WORLDGEN);
         Registry<Biome> registryBiome = registryManager.<Biome>get(Registry.BIOME_KEY); 
-        Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = () -> registryChunkGenSettings.get(ModernBeta.createId(worldType.getName()));
+        Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = () -> registryChunkGenSettings.get(ModernBeta.createId(chunkProviderType));
        
-        OldBiomeSource biomeSource = new OldBiomeSource(generatorOptions.getSeed(), registryBiome, biomeProviderSettings);
-        OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(chunkGenSettingsSupplier, chunkProviderSettings); 
+        //System.out.println(biomeProviderSettings.asString());
+        System.out.println(chunkProviderSettings.asString());
         
         return new GeneratorOptions(
             generatorOptions.getSeed(),
@@ -57,7 +60,13 @@ public class OldGeneratorType {
             GeneratorOptions.getRegistryWithReplacedOverworldGenerator(
                 registryDimensionType, 
                 generatorOptions.getDimensions(), 
-                new OldChunkGenerator(biomeSource, generatorOptions.getSeed(), oldGeneratorSettings))
+                new OldChunkGenerator(
+                    new OldBiomeSource(generatorOptions.getSeed(), registryBiome, biomeProviderSettings), 
+                    generatorOptions.getSeed(), 
+                    chunkGenSettingsSupplier, 
+                    chunkProviderSettings
+                )
+            )
         );
     }
 
@@ -65,13 +74,16 @@ public class OldGeneratorType {
         OLD = new GeneratorType("old") {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> registryChunkGenSettings, long seed) {
-                Supplier<ChunkGeneratorSettings> generatorSettings = () -> registryChunkGenSettings.get(ModernBeta.createId(WorldType.BETA.getName()));
-                NbtCompound biomeProviderSettings = OldGeneratorSettings.createBiomeSettings(BiomeType.BETA, CaveBiomeType.VANILLA, WorldType.BETA.getDefaultBiome());
-                NbtCompound chunkProviderSettings = OldGeneratorSettings.createInfSettings(WorldType.BETA);
+                Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = () -> registryChunkGenSettings.get(ModernBeta.createId(ChunkProviderType.BETA));
+                NbtCompound biomeProviderSettings = OldGeneratorSettings.createBiomeSettings(BiomeProviderType.BETA, "vanilla", WorldProviderType.getWorldProvider(ChunkProviderType.BETA).getDefaultBiome());
+                NbtCompound chunkProviderSettings = OldGeneratorSettings.createInfSettings(ChunkProviderType.BETA);
                 
-                OldGeneratorSettings oldGeneratorSettings = new OldGeneratorSettings(generatorSettings, chunkProviderSettings);
-                
-                return new OldChunkGenerator(new OldBiomeSource(seed, biomes, biomeProviderSettings), seed, oldGeneratorSettings);
+                return new OldChunkGenerator(
+                    new OldBiomeSource(seed, biomes, biomeProviderSettings), 
+                    seed, 
+                    chunkGenSettingsSupplier, 
+                    chunkProviderSettings
+                );
             }
         };
         
@@ -87,15 +99,16 @@ public class OldGeneratorType {
                         // otherwise, not copying will modify original settings.
                         NbtCompound biomeSettings = biomeSource instanceof OldBiomeSource ? 
                             (new NbtCompound()).copyFrom(((OldBiomeSource)biomeSource).getProviderSettings()) : 
-                            OldGeneratorSettings.createBiomeSettings(BiomeType.BETA, CaveBiomeType.VANILLA, WorldType.BETA.getDefaultBiome());
+                            OldGeneratorSettings.createBiomeSettings(BiomeProviderType.BETA, "vanilla", WorldProviderType.getWorldProvider(ChunkProviderType.BETA).getDefaultBiome());
                         
                         NbtCompound chunkSettings = chunkGenerator instanceof OldChunkGenerator ?
                             (new NbtCompound()).copyFrom(((OldChunkGenerator)chunkGenerator).getProviderSettings()) :
-                            OldGeneratorSettings.createInfSettings(WorldType.BETA);
+                            OldGeneratorSettings.createInfSettings(BiomeProviderType.BETA);
                         
-                        WorldType worldType = WorldType.fromName(chunkSettings.getString("worldType"));
+                        String chunkProviderType = chunkSettings.getString("worldType");
+                        WorldProvider worldProvider = WorldProviderType.getWorldProvider(chunkProviderType);
                         
-                        return worldType.createLevelScreen(
+                        return worldProvider.createLevelScreen(
                             screen,
                             screen.moreOptionsDialog.getRegistryManager(),
                             biomeSettings,
