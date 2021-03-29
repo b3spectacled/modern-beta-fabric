@@ -10,6 +10,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class ScreenProviderType {
+    public static final String INF = "inf";
+    
     private static final Map<String, PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractScreenProvider>> REGISTRY = 
         new HashMap<String, PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractScreenProvider>>(); 
         

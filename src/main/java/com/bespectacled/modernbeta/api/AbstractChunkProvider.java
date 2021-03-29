@@ -4,8 +4,6 @@ import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import javax.annotation.Nullable;
-
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.decorator.OldDecorators;
@@ -313,7 +311,7 @@ public abstract class AbstractChunkProvider {
      * 
      * @return PerlinOctaveNoise object used for beach surface generation.
      */
-    public abstract @Nullable PerlinOctaveNoise getBeachNoiseOctaves();
+    public abstract PerlinOctaveNoise getBeachNoiseOctaves();
     
     /**
      * Determines whether to skip the chunk for some chunk generation step, depending on the x/z chunk coordinates.
