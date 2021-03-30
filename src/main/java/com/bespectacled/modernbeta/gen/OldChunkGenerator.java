@@ -9,8 +9,8 @@ import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractChunkProvider;
-import com.bespectacled.modernbeta.api.ChunkProviderType;
+import com.bespectacled.modernbeta.api.chunk.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.chunk.ChunkProviderType;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.carver.IOldCaveCarver;
 import com.bespectacled.modernbeta.feature.OldFeatures;

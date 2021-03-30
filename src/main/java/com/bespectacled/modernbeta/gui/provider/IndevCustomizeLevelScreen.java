@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.function.BiConsumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractScreenProvider;
-import com.bespectacled.modernbeta.api.BiomeProviderType;
+import com.bespectacled.modernbeta.api.biome.BiomeProviderType.BuiltInBiomeType;
+import com.bespectacled.modernbeta.api.screen.AbstractScreenProvider;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
@@ -81,7 +81,7 @@ public class IndevCustomizeLevelScreen extends AbstractScreenProvider {
         this.biomeOption = new ScreenButtonOption(
             "createWorld.customize.biomeType.biome",
             GUIUtil.createTranslatableBiomeStringFromId(this.singleBiome),
-            biomeType -> this.biomeType == BiomeProviderType.SINGLE,
+            biomeType -> this.biomeType.equals(BuiltInBiomeType.SINGLE.id),
             buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
               this, 
               this.registryManager,
@@ -215,6 +215,6 @@ public class IndevCustomizeLevelScreen extends AbstractScreenProvider {
 
     @Override
     protected void updateButtonActive(ScreenButtonOption option) {
-        option.setButtonActive(BiomeProviderType.SINGLE);
+        option.setButtonActive(BuiltInBiomeType.SINGLE.id);
     }
 }

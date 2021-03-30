@@ -3,6 +3,11 @@ package com.bespectacled.modernbeta.api;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import com.bespectacled.modernbeta.api.chunk.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.chunk.ChunkProviderType;
+import com.bespectacled.modernbeta.api.screen.AbstractScreenProvider;
+import com.bespectacled.modernbeta.api.screen.ScreenProviderType;
+
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -11,6 +16,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class WorldProvider {
     private final String chunkProvider;
+    private final String chunkSettings;
     private final String guiProvider;
     
     private final String defaultBiomeProvider;
@@ -22,6 +28,7 @@ public class WorldProvider {
 
     public WorldProvider(
         String chunkProvider,
+        String chunkSettings,
         String guiProvider,
         String defaultBiomeProvider,
         String defaultCaveBiomeProvider,
@@ -30,6 +37,7 @@ public class WorldProvider {
         boolean showNoiseOptions
     ) {
         this.chunkProvider = chunkProvider;
+        this.chunkSettings = chunkSettings;
         this.guiProvider = guiProvider;
         
         this.defaultBiomeProvider = defaultBiomeProvider;
@@ -42,6 +50,10 @@ public class WorldProvider {
     
     public String getName() {
         return this.chunkProvider;
+    }
+    
+    public String getChunkSettingsId() {
+        return this.chunkSettings;
     }
     
     public boolean showOceansOption() {

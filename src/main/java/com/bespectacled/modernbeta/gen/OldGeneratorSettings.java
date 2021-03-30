@@ -11,7 +11,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.ChunkProviderType;
+import com.bespectacled.modernbeta.api.chunk.ChunkProviderType.BuiltInChunkType;
 import com.bespectacled.modernbeta.config.ModernBetaBiomeConfig;
 import com.bespectacled.modernbeta.config.ModernBetaGenerationConfig;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -35,7 +35,7 @@ public class OldGeneratorSettings {
     public static final ChunkGeneratorSettings INFDEV_415_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings INFDEV_227_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings INDEV_GENERATOR_SETTINGS;
-    //public static final ChunkGeneratorSettings RELEASE_GENERATOR_SETTINGS;
+    public static final ChunkGeneratorSettings RELEASE_GENERATOR_SETTINGS;
     
     public static final Map<Identifier, ChunkGeneratorSettings> SETTINGS_MAP = new HashMap<Identifier, ChunkGeneratorSettings>();
 
@@ -64,7 +64,7 @@ public class OldGeneratorSettings {
     public static NbtCompound createIndevSettings() {
         NbtCompound settings = new NbtCompound();
         
-        settings.putString("worldType", ChunkProviderType.INDEV);
+        settings.putString("worldType", BuiltInChunkType.INDEV.id);
         settings.putString("levelType", GEN_CONFIG.indevLevelType);
         settings.putString("levelTheme", GEN_CONFIG.indevLevelTheme);
         settings.putInt("levelWidth", GEN_CONFIG.indevLevelWidth);
@@ -98,12 +98,13 @@ public class OldGeneratorSettings {
     }
     
     public static void register() {
-        register(ChunkProviderType.BETA, BETA_GENERATOR_SETTINGS);
-        register(ChunkProviderType.SKYLANDS, SKYLANDS_GENERATOR_SETTINGS);
-        register(ChunkProviderType.ALPHA, ALPHA_GENERATOR_SETTINGS);
-        register(ChunkProviderType.INFDEV_415, INFDEV_415_GENERATOR_SETTINGS);
-        register(ChunkProviderType.INFDEV_227, INFDEV_227_GENERATOR_SETTINGS);
-        register(ChunkProviderType.INDEV, INDEV_GENERATOR_SETTINGS);
+        register(BuiltInChunkType.BETA.id, BETA_GENERATOR_SETTINGS);
+        register(BuiltInChunkType.SKYLANDS.id, SKYLANDS_GENERATOR_SETTINGS);
+        register(BuiltInChunkType.ALPHA.id, ALPHA_GENERATOR_SETTINGS);
+        register(BuiltInChunkType.INFDEV_415.id, INFDEV_415_GENERATOR_SETTINGS);
+        register(BuiltInChunkType.INFDEV_227.id, INFDEV_227_GENERATOR_SETTINGS);
+        register(BuiltInChunkType.INDEV.id, INDEV_GENERATOR_SETTINGS);
+        register("release", RELEASE_GENERATOR_SETTINGS);
     }
     
     private static ChunkGeneratorSettings register(String id, ChunkGeneratorSettings settings) {
@@ -137,5 +138,6 @@ public class OldGeneratorSettings {
         INFDEV_415_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, false);
         INFDEV_227_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, false, false, false);
         INDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.INDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, false, false, false);
+        RELEASE_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true);
     }
 }

@@ -47,12 +47,6 @@ public class ModernBeta implements ModInitializer {
     @Override
     public void onInitialize() {
         LOGGER.log(Level.INFO, "Initializing Modern Beta...");
-        
-        // Register default providers
-        ModernBetaDefaultProviders.registerChunkProviders();
-        ModernBetaDefaultProviders.registerBiomeProviders();
-        ModernBetaDefaultProviders.registerWorldProviders();
-        ModernBetaDefaultProviders.registerScreenProviders();
 
         // Register mod stuff
         OldStructures.register();
@@ -60,6 +54,7 @@ public class ModernBeta implements ModInitializer {
         OldBiomeSource.register();
         OldChunkGenerator.register();
         OldGeneratorSettings.register();
+        
         VanillaBiomeModifier.addShrineToOceans();
         
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -69,6 +64,12 @@ public class ModernBeta implements ModInitializer {
         // Set up mod compatibility
         Compat.setupCompat();
         
+        // Register default providers
+        ModernBetaDefaultProviders.registerChunkProviders();
+        ModernBetaDefaultProviders.registerBiomeProviders();
+        ModernBetaDefaultProviders.registerWorldProviders();
+        ModernBetaDefaultProviders.registerScreenProviders();
+        
         // Serialize various world gen stuff to JSON
         //OldConfiguredFeatures.export();
         //OldBiomes.export();
@@ -77,7 +78,7 @@ public class ModernBeta implements ModInitializer {
 
         LOGGER.log(Level.INFO, "Initialized Modern Beta!");
 
-        // I am not a programmer, I am an ape smashing rocks together.....
+        // Man, I am not good at this...
     }
 
 }

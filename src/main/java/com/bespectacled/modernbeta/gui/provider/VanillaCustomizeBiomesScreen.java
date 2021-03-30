@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.gui.provider;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractScreenProvider;
+import com.bespectacled.modernbeta.api.screen.AbstractScreenProvider;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;

@@ -7,7 +7,7 @@ public class GUIUtil {
         String[] strArr = biomeId.split(":");
         
         if (strArr.length != 2)
-            throw new IllegalArgumentException("[Modern Beta] Biome Id string is malformed!");
+            throw new IllegalArgumentException("[Modern Beta] Biome identifier is malformed, it should be fully-qualified: " + biomeId);
         
         return "biome." + strArr[0] + "." + strArr[1];
     }

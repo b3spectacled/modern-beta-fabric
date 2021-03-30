@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.ChunkProviderType;
+import com.bespectacled.modernbeta.api.chunk.ChunkProviderType.BuiltInChunkType;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
@@ -52,7 +52,7 @@ public class MixinMinecraftServer {
                 spawnPos = getInitialOldSpawn(oldGen, beachNoiseOctaves, oldGen.getSeaLevel());
             }
             
-            if (spawnPos != null && oldGen.getChunkProviderType() == ChunkProviderType.INDEV) {
+            if (spawnPos != null && oldGen.getChunkProviderType().equals(BuiltInChunkType.INDEV.id)) {
                 ModernBeta.LOGGER.log(Level.INFO, "[Indev] Spawning..");
                 IndevChunkProvider indevChunkProvider = (IndevChunkProvider)oldGen.getChunkProvider();
                 

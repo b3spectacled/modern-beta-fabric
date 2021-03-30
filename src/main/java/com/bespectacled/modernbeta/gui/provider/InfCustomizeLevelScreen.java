@@ -3,8 +3,9 @@ package com.bespectacled.modernbeta.gui.provider;
 import java.util.function.BiConsumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractScreenProvider;
-import com.bespectacled.modernbeta.api.BiomeProviderType;
+import com.bespectacled.modernbeta.api.biome.BiomeProviderType;
+import com.bespectacled.modernbeta.api.biome.BiomeProviderType.BuiltInBiomeType;
+import com.bespectacled.modernbeta.api.screen.AbstractScreenProvider;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
 import com.bespectacled.modernbeta.gui.TextOption;
@@ -72,8 +73,8 @@ public class InfCustomizeLevelScreen extends AbstractScreenProvider {
             .toArray(String[]::new);
         
         this.biomeOption = new ScreenButtonOption(
-            this.biomeType == BiomeProviderType.SINGLE ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
-            this.biomeType == BiomeProviderType.SINGLE ? GUIUtil.createTranslatableBiomeStringFromId(this.singleBiome) : null,
+            this.biomeType.equals(BuiltInBiomeType.SINGLE.id) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
+            this.biomeType.equals(BuiltInBiomeType.SINGLE.id) ? GUIUtil.createTranslatableBiomeStringFromId(this.singleBiome) : null,
             type -> true, // Active Predicate
             this.getOnPress(this.biomeType) // On Press Action
         );
@@ -107,7 +108,7 @@ public class InfCustomizeLevelScreen extends AbstractScreenProvider {
         );
         this.updateButtonActive(this.biomeOption);
         
-        if (this.showOceansOption && this.biomeType != BiomeProviderType.SINGLE) {
+        if (this.showOceansOption && !this.biomeType.equals(BuiltInBiomeType.SINGLE.id)) {
             buttonList.addSingleOptionEntry(
                 CyclingOption.create("createWorld.customize.inf.generateOceans",
                 (gameOptions) -> { return this.generateOceans; }, 
@@ -151,36 +152,32 @@ public class InfCustomizeLevelScreen extends AbstractScreenProvider {
     private ButtonWidget.PressAction getOnPress(String biomeType) {
         ButtonWidget.PressAction action;
         
-        switch(biomeType) {
-            case BiomeProviderType.BETA:
-                action = buttonWidget -> this.client.openScreen(new BetaCustomizeBiomesScreen(
-                    this, 
-                    this.registryManager,
-                    this.biomeProviderSettings,
-                    betaBiomeSettings -> this.biomeProviderSettings.copyFrom(betaBiomeSettings)
-                ));
-                break;
-            case BiomeProviderType.SINGLE:
-                action = buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
-                    this, 
-                    this.registryManager,
-                    (biome) -> {
-                        this.singleBiome = this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString();
-                        this.biomeProviderSettings.putString("singleBiome", this.singleBiome);
-                    },
-                    this.registryManager.<Biome>get(Registry.BIOME_KEY).get(new Identifier(this.singleBiome))  
-                ));
-                break;
-            case BiomeProviderType.VANILLA:
-                action = buttonWidget -> this.client.openScreen(new VanillaCustomizeBiomesScreen(
-                    this,
-                    this.registryManager,
-                    this.biomeProviderSettings,
-                    vanillaBiomeSettings -> this.biomeProviderSettings.copyFrom(vanillaBiomeSettings)
-                ));
-                break;
-            default:
-                action = buttonWidget -> {};
+        if (biomeType.equals(BuiltInBiomeType.BETA.id)) {
+            action = buttonWidget -> this.client.openScreen(new BetaCustomizeBiomesScreen(
+                this, 
+                this.registryManager,
+                this.biomeProviderSettings,
+                betaBiomeSettings -> this.biomeProviderSettings.copyFrom(betaBiomeSettings)
+            ));
+        } else if (biomeType.equals(BuiltInBiomeType.SINGLE.id)) {
+            action = buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
+                this, 
+                this.registryManager,
+                (biome) -> {
+                    this.singleBiome = this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString();
+                    this.biomeProviderSettings.putString("singleBiome", this.singleBiome);
+                },
+                this.registryManager.<Biome>get(Registry.BIOME_KEY).get(new Identifier(this.singleBiome))  
+            ));
+        } else if (biomeType.equals(BuiltInBiomeType.VANILLA.id)) {
+            action = buttonWidget -> this.client.openScreen(new VanillaCustomizeBiomesScreen(
+                this,
+                this.registryManager,
+                this.biomeProviderSettings,
+                vanillaBiomeSettings -> this.biomeProviderSettings.copyFrom(vanillaBiomeSettings)
+            ));
+        } else {
+            action = buttonWidget -> {};
         }
         
         return action;

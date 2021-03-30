@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.gen.provider;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.chunk.AbstractChunkProvider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.BlockStructureWeightSampler;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -77,7 +77,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
                 int absZ = startZ + z;
                 
                 for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
-                    Biome biome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
+                    Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, 0, absZ));
                     BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                     BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
                     

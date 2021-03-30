@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.gen.provider;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import com.bespectacled.modernbeta.api.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.chunk.AbstractChunkProvider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldGeneratorUtil;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -83,7 +83,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                 int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
 
-                Biome biome = getBiomeForSurfaceGen(mutable.set(absX, topY, absZ), region, biomeSource);
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, topY, absZ));
                 
                 BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();

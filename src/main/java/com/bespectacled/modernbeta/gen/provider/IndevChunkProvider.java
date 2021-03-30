@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.chunk.AbstractChunkProvider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
@@ -136,7 +136,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                 int absZ = startZ + z;
                 
                 for (int y = worldTopY - 1; y >= this.minY; --y) {
-                    Biome biome = getBiomeForSurfaceGen(mutable.set(absX, 0, absZ), region, biomeSource);
+                    Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, 0, absZ));
                     BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                     BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
                     

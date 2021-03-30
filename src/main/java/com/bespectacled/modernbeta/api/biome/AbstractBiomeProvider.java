@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api;
+package com.bespectacled.modernbeta.api.biome;
 
 import java.util.List;
 
@@ -49,21 +49,6 @@ public abstract class AbstractBiomeProvider {
     public Biome getOceanBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
         return this.getBiomeForNoiseGen(biomeRegistry, biomeX, biomeY, biomeZ);
     }
-    
-    /**
-     * Gets a biome at given block coordinates, for purpose of surface generation.
-     * 
-     * @param biomeRegistry
-     * @param x x-coordinate in block coordinates.
-     * @param y y-coordinate in block coordinates.
-     * @param z z-coordinate in block coordinates.
-     * 
-     * @return A biome at given block coordinates.
-     */
-    public Biome getBiomeForSurfaceGen(Registry<Biome> biomeRegistry, int x, int y, int z) {
-        return this.getBiomeForNoiseGen(biomeRegistry, x >> 2, y >> 2, z >> 2);
-    }
-    
     
     /**
      * Gets a list of biome registry keys for biome source, for the purpose of locating structures, etc.

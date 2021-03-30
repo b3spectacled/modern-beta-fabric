@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.BiomeProviderType;
+import com.bespectacled.modernbeta.api.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.biome.BiomeProviderType;
+import com.bespectacled.modernbeta.api.biome.IBiomeResolver;
+import com.bespectacled.modernbeta.api.biome.BiomeProviderType.BuiltInBiomeType;
 import com.bespectacled.modernbeta.biome.provider.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -15,6 +17,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.dynamic.RegistryLookupCodec;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
@@ -55,7 +59,7 @@ public class OldBiomeSource extends BiomeSource {
         
         this.biomeProviderType = BiomeProviderType.getBiomeProviderType(settings);
         this.biomeProvider = BiomeProviderType.getBiomeProvider(this.biomeProviderType).apply(seed, settings);
-        this.edgeBiome = this.biomeProviderType == BiomeProviderType.SINGLE ? this.createEdgeBiome() : null;
+        this.edgeBiome = this.isSingle() ? this.createEdgeBiome() : null;
     }
 
     @Override
@@ -67,8 +71,11 @@ public class OldBiomeSource extends BiomeSource {
         return this.biomeProvider.getOceanBiomeForNoiseGen(this.biomeRegistry, biomeX, biomeY, biomeZ);
     }
     
-    public Biome getBiomeForSurfaceGen(int x, int y, int z) {
-        return this.biomeProvider.getBiomeForSurfaceGen(this.biomeRegistry, x, y, z);
+    public Biome getBiomeForSurfaceGen(ChunkRegion region, BlockPos pos) {
+        if (this.biomeProvider instanceof IBiomeResolver)
+            return ((IBiomeResolver)this.biomeProvider).getBiomeForSurfaceGen(this.biomeRegistry, pos.getX(), 0, pos.getZ());
+        
+        return region.getBiome(pos);
     }
     
     public Biome getEdgeBiome() {
@@ -80,15 +87,15 @@ public class OldBiomeSource extends BiomeSource {
     }
 
     public boolean isVanilla() {
-        return this.biomeProviderType == BiomeProviderType.VANILLA;
+        return this.biomeProviderType.equals(BuiltInBiomeType.VANILLA.id);
     }
     
     public boolean isBeta() {
-        return this.biomeProviderType == BiomeProviderType.BETA;
+        return this.biomeProviderType.equals(BuiltInBiomeType.BETA.id);
     }
     
     public boolean isSingle() {
-        return this.biomeProviderType == BiomeProviderType.SINGLE;
+        return this.biomeProviderType.equals(BuiltInBiomeType.SINGLE.id);
     }
     
     public String getBiomeType() {
@@ -115,7 +122,7 @@ public class OldBiomeSource extends BiomeSource {
     }
     
     private Biome createEdgeBiome() {
-        if (this.biomeProviderType != BiomeProviderType.SINGLE) return null;
+        if (!this.isSingle()) return null;
         
         Biome mainBiome = this.biomeRegistry.get(((SingleBiomeProvider) this.biomeProvider).getBiomeId());
         GenerationSettings genSettings = mainBiome.getGenerationSettings();

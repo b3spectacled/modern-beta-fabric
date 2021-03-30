@@ -1,8 +1,11 @@
-package com.bespectacled.modernbeta.api;
+package com.bespectacled.modernbeta.api.screen;
 
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import com.bespectacled.modernbeta.api.WorldProvider;
+import com.bespectacled.modernbeta.api.WorldProviderType;
+import com.bespectacled.modernbeta.api.chunk.ChunkProviderType.BuiltInChunkType;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
 
@@ -91,7 +94,7 @@ public abstract class AbstractScreenProvider extends Screen {
                 (gameOptions) -> { return this.worldProvider; }, 
                 (gameOptions, option, value) -> {
                     NbtCompound newBiomeProviderSettings = OldGeneratorSettings.createBiomeSettings(value.getDefaultBiomeProvider(), value.getDefaultCaveBiomeProvider(), value.getDefaultBiome());
-                    NbtCompound newChunkProviderSettings = value.getName() == ChunkProviderType.INDEV ? OldGeneratorSettings.createIndevSettings() : OldGeneratorSettings.createInfSettings(value.getName());
+                    NbtCompound newChunkProviderSettings = value.getName().equals(BuiltInChunkType.INDEV.id) ? OldGeneratorSettings.createIndevSettings() : OldGeneratorSettings.createInfSettings(value.getName());
                     
                     this.client.openScreen(value.createLevelScreen(
                         this.parent, 

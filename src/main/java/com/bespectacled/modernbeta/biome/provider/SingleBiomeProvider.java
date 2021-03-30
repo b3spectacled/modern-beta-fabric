@@ -3,8 +3,8 @@ package com.bespectacled.modernbeta.biome.provider;
 import java.util.Arrays;
 import java.util.List;
 
-import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.BiomeProviderType;
+import com.bespectacled.modernbeta.api.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.biome.BiomeProviderType.BuiltInBiomeType;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
 import net.minecraft.nbt.NbtCompound;
@@ -45,23 +45,23 @@ public class SingleBiomeProvider extends AbstractBiomeProvider {
         String oldBiomeType = settings.getString("biomeType");
         
         if (oldWorldType.equals("alpha")) {
-            if (oldBiomeType == BiomeProviderType.CLASSIC || oldBiomeType == BiomeProviderType.PLUS) 
+            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.id) || oldBiomeType.equals(BuiltInBiomeType.PLUS.id)) 
                 biomeId = ClassicBiomes.ALPHA_ID;
-            if (oldBiomeType == BiomeProviderType.WINTER) 
+            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.id)) 
                 biomeId = ClassicBiomes.ALPHA_WINTER_ID;
         } else if (oldWorldType.equals("infdev")) {
-            if (oldBiomeType == BiomeProviderType.CLASSIC || oldBiomeType == BiomeProviderType.PLUS) 
+            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.id) || oldBiomeType.equals(BuiltInBiomeType.PLUS.id)) 
                 biomeId = ClassicBiomes.INFDEV_415_ID;
-            if (oldBiomeType == BiomeProviderType.WINTER) 
+            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.id)) 
                 biomeId = ClassicBiomes.INFDEV_415_WINTER_ID;
         } else if (oldWorldType.equals("alpha")) {
-            if (oldBiomeType == BiomeProviderType.CLASSIC || oldBiomeType == BiomeProviderType.PLUS) 
+            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.id) || oldBiomeType.equals(BuiltInBiomeType.PLUS.id)) 
                 biomeId = ClassicBiomes.INFDEV_227_ID;
-            if (oldBiomeType == BiomeProviderType.WINTER) 
+            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.id)) 
                 biomeId = ClassicBiomes.INFDEV_227_WINTER_ID;
         }
         
-        if (oldBiomeType == BiomeProviderType.SKY)
+        if (oldBiomeType.equals(BuiltInBiomeType.SKY.id)) 
             biomeId = BetaBiomes.SKY_ID;
         
         return biomeId;

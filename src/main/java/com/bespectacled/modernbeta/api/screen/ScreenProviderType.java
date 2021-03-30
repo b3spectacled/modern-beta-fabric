@@ -1,16 +1,26 @@
-package com.bespectacled.modernbeta.api;
+package com.bespectacled.modernbeta.api.screen;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.BiConsumer;
+
 import com.bespectacled.modernbeta.util.PentaFunction;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class ScreenProviderType {
-    public static final String INF = "inf";
+    public enum BuiltInScreenType {
+        INF("inf"),
+        INFDEV_OLD("infdev_old"),
+        INDEV("indev")
+        ;
+        
+        public final String id;
+        
+        private BuiltInScreenType(String id) { this.id = id; }
+    }
     
     private static final Map<String, PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractScreenProvider>> REGISTRY = 
         new HashMap<String, PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractScreenProvider>>(); 

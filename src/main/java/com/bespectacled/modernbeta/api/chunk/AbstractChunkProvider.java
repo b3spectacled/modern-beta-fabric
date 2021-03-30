@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api;
+package com.bespectacled.modernbeta.api.chunk;
 
 import java.util.Random;
 import java.util.function.Supplier;
@@ -578,22 +578,6 @@ public abstract class AbstractChunkProvider {
         }
         
         return false;
-    }
-    
-    /**
-     * Gets biome at block coordinates for surface generation, if using custom biome provider.
-     * 
-     * @param pos BlockPos at block coordinates position.
-     * @param region
-     * @param biomeSource OldBiomeSource biome source.
-     * @return
-     */
-    protected Biome getBiomeForSurfaceGen(BlockPos pos, ChunkRegion region, OldBiomeSource biomeSource) {
-        if (biomeSource.isBeta()) {
-            return biomeSource.getBiomeForSurfaceGen(pos.getX(), 0, pos.getZ());
-        }
-        
-        return region.getBiome(pos);
     }
     
     /**

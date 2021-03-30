@@ -1,21 +1,28 @@
-package com.bespectacled.modernbeta.api;
+package com.bespectacled.modernbeta.api.chunk;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
+
 import com.bespectacled.modernbeta.util.TriFunction;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class ChunkProviderType {
-    public static final String BETA = "beta";
-    public static final String SKYLANDS = "skylands";
-    public static final String ALPHA = "alpha";
-    public static final String INFDEV_415 = "infdev_415";
-    public static final String INFDEV_227 = "infdev_227";
-    public static final String INDEV = "indev";
+    public enum BuiltInChunkType {
+        BETA("beta"),
+        SKYLANDS("skylands"),
+        ALPHA("alpha"),
+        INFDEV_415("infdev_415"),
+        INFDEV_227("infdev_227"),
+        INDEV("indev");
+        
+        public final String id;
+        
+        private BuiltInChunkType(String id) { this.id = id; }
+    }
     
     private static final Map<String, TriFunction<Long, Supplier<ChunkGeneratorSettings>, NbtCompound, AbstractChunkProvider>> REGISTRY = 
         new HashMap<String, TriFunction<Long, Supplier<ChunkGeneratorSettings>, NbtCompound, AbstractChunkProvider>>(); 
