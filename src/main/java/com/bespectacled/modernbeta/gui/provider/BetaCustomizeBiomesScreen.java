@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.api.screen.AbstractScreenProvider;
+import com.bespectacled.modernbeta.api.gui.AbstractScreenProvider;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
 import com.bespectacled.modernbeta.gui.TextOption;
@@ -35,7 +35,7 @@ public class BetaCustomizeBiomesScreen extends Screen {
 
     private final Map<String, Identifier> biomeMap;
     
-    protected BetaCustomizeBiomesScreen(
+    public BetaCustomizeBiomesScreen(
         AbstractScreenProvider parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings,
@@ -136,8 +136,7 @@ public class BetaCustomizeBiomesScreen extends Screen {
             new TextOption(biomeText),
             new ScreenButtonOption(
                 GUIUtil.createTranslatableBiomeStringFromId(this.biomeMap.get(key)),
-                null,
-                (b) -> true,
+                "",
                 buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
                   this,
                   this.registryManager,

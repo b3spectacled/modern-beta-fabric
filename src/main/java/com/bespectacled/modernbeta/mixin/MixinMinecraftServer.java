@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.chunk.ChunkProviderType.BuiltInChunkType;
+import com.bespectacled.modernbeta.api.gen.ChunkProviderType.BuiltInChunkType;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;

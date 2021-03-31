@@ -2,7 +2,8 @@ package com.bespectacled.modernbeta.gen.provider;
 
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.chunk.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.gen.AbstractChunkProvider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldGeneratorUtil;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -41,9 +42,9 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
     
     private final DoubleArrayPool heightNoisePool;
     
-    public Infdev415ChunkProvider(long seed, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+    public Infdev415ChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, -64, 192, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 400, -10, 3, 0, 15, 3, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, generatorSettings, providerSettings);
+        super(seed, -64, 192, 64, 0, -10, 1, 1, 1.0, 1.0, 80, 400, -10, 3, 0, 15, 3, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
         
         // Noise Generators
         minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -61,8 +62,8 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
     }
 
     @Override
-    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
-        generateTerrain(chunk, structureAccessor);
+    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk) {
+        this.generateTerrain(chunk, structureAccessor);
         return chunk;
     }
 

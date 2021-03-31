@@ -1,9 +1,10 @@
-package com.bespectacled.modernbeta.api.chunk;
+package com.bespectacled.modernbeta.api.gen;
 
 import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import com.bespectacled.modernbeta.api.biome.AbstractBiomeProvider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.decorator.OldDecorators;
@@ -119,7 +120,7 @@ public abstract class AbstractChunkProvider {
      * @param generatorSettings Vanilla settings used to control various terrain and noise settings.
      * @param providerSettings NbtCompound for additional settings not part of vanilla generator settings.
      */
-    public AbstractChunkProvider(long seed, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+    public AbstractChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         this(
             seed,
             generatorSettings.get().getGenerationShapeConfig().getMinimumY(),
@@ -144,6 +145,7 @@ public abstract class AbstractChunkProvider {
             ((MixinChunkGeneratorSettingsInvoker)(Object)generatorSettings.get()).invokeHasDeepslate(),
             generatorSettings.get().getDefaultBlock(),
             generatorSettings.get().getDefaultFluid(),
+            biomeProvider,
             generatorSettings,
             providerSettings
         );
@@ -203,6 +205,7 @@ public abstract class AbstractChunkProvider {
         boolean generateDeepslate,
         BlockState defaultBlock,
         BlockState defaultFluid,
+        AbstractBiomeProvider biomeProvider,
         Supplier<ChunkGeneratorSettings> generatorSettings,
         NbtCompound providerSettings
     ) {
@@ -284,7 +287,7 @@ public abstract class AbstractChunkProvider {
      * 
      * @return A completed chunk.
      */
-    public abstract Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource);
+    public abstract Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk);
     
     /**
      * Generates biome-specific surface for given chunk.

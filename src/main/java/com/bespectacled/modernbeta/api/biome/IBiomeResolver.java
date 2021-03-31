@@ -14,5 +14,5 @@ public interface IBiomeResolver {
      * 
      * @return A biome at given block coordinates.
      */
-    public Biome getBiomeForSurfaceGen(Registry<Biome> biomeRegistry, int x, int y, int z);
+    public Biome getBiome(Registry<Biome> biomeRegistry, int x, int y, int z);
 }

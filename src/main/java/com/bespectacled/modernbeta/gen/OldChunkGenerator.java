@@ -9,8 +9,8 @@ import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.chunk.AbstractChunkProvider;
-import com.bespectacled.modernbeta.api.chunk.ChunkProviderType;
+import com.bespectacled.modernbeta.api.gen.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.gen.ChunkProviderType;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.carver.IOldCaveCarver;
 import com.bespectacled.modernbeta.feature.OldFeatures;
@@ -82,10 +82,15 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.random = new Random(seed);
         
         this.biomeSource = (OldBiomeSource)biomeSource;
+
         this.providerSettings = providerSettings;
-        
         this.chunkProviderType = ChunkProviderType.getChunkProviderType(providerSettings);
-        this.chunkProvider = ChunkProviderType.getChunkProvider(this.chunkProviderType).apply(seed, settings, providerSettings);
+        this.chunkProvider = ChunkProviderType.getProvider(this.chunkProviderType).apply(
+            seed, 
+            this.biomeSource.getBiomeProvider(), 
+            settings, 
+            providerSettings
+        );
         
         this.generateOceans = providerSettings.contains("generateOceans") ? providerSettings.getBoolean("generateOceans") : false;
     }
@@ -102,7 +107,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {   
         return CompletableFuture.<Chunk>supplyAsync(
-            () -> this.chunkProvider.provideChunk(accessor, chunk, this.biomeSource), Util.getMainWorkerExecutor()
+            () -> this.chunkProvider.provideChunk(accessor, chunk), Util.getMainWorkerExecutor()
         );
     }
         
@@ -119,18 +124,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public void generateFeatures(ChunkRegion region, StructureAccessor accessor) {
         OldFeatures.OLD_FANCY_OAK.chunkReset();
+        if (this.chunkProvider.skipChunk(region.getCenterPos().x, region.getCenterPos().z, ChunkStatus.FEATURES)) return;
         
         ChunkPos chunkPos = region.getCenterPos();
         int startX = chunkPos.getStartX();
         int startZ = chunkPos.getStartZ();
         
-        //if (this.chunkProvider.skipChunk(chunkPos.x, c, null))
-        
         Biome biome = OldGeneratorUtil.getOceanBiome(region.getChunk(chunkPos.x, chunkPos.z), this, biomeSource, generateOceans, this.getSeaLevel());
         
-        // Use edge biome for feature population for Indev chunks outside of level area
-        if (this.chunkProvider.skipChunk(chunkPos.x, chunkPos.z, ChunkStatus.FEATURES))
-            biome = this.biomeSource.getEdgeBiome();
         
         // TODO: Remove chunkRandom at some point
         ChunkRandom chunkRandom = new ChunkRandom();
@@ -147,15 +148,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver genCarver) {
+        if (this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.CARVERS) || 
+            this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.LIQUID_CARVERS)) return;
+        
         BiomeAccess biomeAcc = access.withSource(this.biomeSource);
         ChunkPos chunkPos = chunk.getPos();
 
         int mainChunkX = chunkPos.x;
         int mainChunkZ = chunkPos.z;
-        
-        if (this.chunkProvider.skipChunk(mainChunkX, mainChunkZ, ChunkStatus.CARVERS) || 
-            this.chunkProvider.skipChunk(mainChunkX, mainChunkZ, ChunkStatus.LIQUID_CARVERS))
-            return;
 
         Biome biome = OldGeneratorUtil.getOceanBiome(chunk, this, this.biomeSource, this.generateOceans, this.getSeaLevel());
         GenerationSettings genSettings = biome.getGenerationSettings();
@@ -200,12 +200,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         StructureManager structureManager, 
         long seed
     ) {
-        ChunkPos chunkPos = chunk.getPos();
-        Biome biome = OldGeneratorUtil.getOceanBiome(chunk, this, this.biomeSource, this.generateOceans, this.getSeaLevel());
+        if (this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.STRUCTURE_STARTS)) return;
         
-        // Use edge biome for feature population for Indev chunks outside of level area
-        if (this.chunkProvider.skipChunk(chunkPos.x, chunkPos.z, ChunkStatus.STRUCTURE_STARTS))
-            biome = this.biomeSource.getEdgeBiome();
+        Biome biome = OldGeneratorUtil.getOceanBiome(chunk, this, this.biomeSource, this.generateOceans, this.getSeaLevel());
 
         ((MixinChunkGeneratorInvoker)this).invokeSetStructureStart(
             ConfiguredStructureFeatures.STRONGHOLD, 

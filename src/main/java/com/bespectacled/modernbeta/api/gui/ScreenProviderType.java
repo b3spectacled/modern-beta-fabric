@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api.screen;
+package com.bespectacled.modernbeta.api.gui;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,25 +14,23 @@ public class ScreenProviderType {
     public enum BuiltInScreenType {
         INF("inf"),
         INFDEV_OLD("infdev_old"),
-        INDEV("indev")
-        ;
+        INDEV("indev");
         
         public final String id;
         
         private BuiltInScreenType(String id) { this.id = id; }
     }
     
-    private static final Map<String, PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractScreenProvider>> REGISTRY = 
-        new HashMap<String, PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractScreenProvider>>(); 
+    private static final Map<String, PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractScreenProvider>> REGISTRY = new HashMap<>();
         
-    public static void registerScreenProvider(String name, PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractScreenProvider> screenProvider) {
+    public static void registerProvider(String name, PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractScreenProvider> screenProvider) {
         if (REGISTRY.containsKey(name)) 
             throw new IllegalArgumentException("[Modern Beta] Registry already contains screen provider named " + name);
         
         REGISTRY.put(name, screenProvider);
     }
     
-    public static PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractScreenProvider> getScreenProvider(String name) {
+    public static PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractScreenProvider> getProvider(String name) {
         if (!REGISTRY.containsKey(name))
             throw new NoSuchElementException("[Modern Beta] Registry does not contain screen provider named " + name);
         

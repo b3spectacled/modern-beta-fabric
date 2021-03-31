@@ -8,11 +8,14 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.chunk.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.gen.AbstractChunkProvider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
+import com.bespectacled.modernbeta.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.gen.BlockStructureWeightSampler;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
@@ -21,6 +24,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SnowyBlock;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
@@ -78,14 +82,14 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     private final CountDownLatch generatedLatch;
     //private boolean pregenerated;
     
-    public IndevChunkProvider(long seed, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+    public IndevChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, 0, 320, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, generatorSettings, providerSettings);
+        super(seed, 0, 320, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
         
         this.levelTheme = this.providerSettings.contains("levelTheme") ? IndevTheme.fromName(this.providerSettings.getString("levelTheme")) : IndevTheme.NORMAL;
         this.levelType = this.providerSettings.contains("levelType") ? IndevType.fromName(this.providerSettings.getString("levelType")) : IndevType.ISLAND;
-        this.fluidBlock = (this.levelTheme == IndevTheme.HELL) ? BlockStates.LAVA : BlockStates.WATER;
-        this.topsoilBlock = (this.levelTheme == IndevTheme.HELL) ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;
+        this.fluidBlock = this.inHell() ? BlockStates.LAVA : BlockStates.WATER;
+        this.topsoilBlock = this.inHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;
         
         this.width = this.providerSettings.contains("levelWidth") ? this.providerSettings.getInt("levelWidth") : 256;
         this.length = this.providerSettings.contains("levelLength") ? this.providerSettings.getInt("levelLength") : 256;
@@ -103,10 +107,10 @@ public class IndevChunkProvider extends AbstractChunkProvider {
      * 1.17: Added AtomicBoolean + CountDownLatch
      */
     @Override
-    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
+    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk) {
         ChunkPos pos = chunk.getPos();
 
-        if (IndevUtil.inIndevRegion(pos.getStartX(), pos.getStartZ(), this.width, this.length)) {
+        if (this.inWorldBounds(pos.getStartX(), pos.getStartZ())) {
             this.pregenerateTerrainOrWait();
             this.setTerrain(structureAccessor, chunk, blockArr);
      
@@ -124,6 +128,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos.Mutable mutableUp = new BlockPos.Mutable();
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
@@ -134,25 +139,50 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             int absX = startX + x;
             for (int z = 0; z < 16; ++z) {
                 int absZ = startZ + z;
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, 0, absZ));
+                
+                double temp;
+                boolean isCold;
+                if (biomeSource.getBiomeProvider() instanceof BetaBiomeProvider) {
+                    temp = BetaClimateSampler.INSTANCE.sampleTemp(absX, absZ);
+                    isCold = temp < 0.5D ? true : false;
+                } else {
+                    isCold = biome.isCold(mutable);
+                }
                 
                 for (int y = worldTopY - 1; y >= this.minY; --y) {
-                    Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, 0, absZ));
+                    
                     BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                     BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
                     
-                    BlockState blockstateToSet = chunk.getBlockState(mutable.set(x, y, z));
-                    
+                    BlockState state = chunk.getBlockState(mutable.set(x, y, z));
+
                     // Skip replacing surface blocks if this is a Hell level and biome surface is standard grass/dirt.
-                    if (this.levelTheme == IndevTheme.HELL && topBlock.equals(BlockStates.GRASS_BLOCK) && fillerBlock.equals(BlockStates.DIRT))
+                    if (this.inHell() && topBlock.equals(BlockStates.GRASS_BLOCK) && fillerBlock.equals(BlockStates.DIRT))
                         continue;
                     
-                    if (blockstateToSet.equals(this.topsoilBlock)) {
-                        blockstateToSet = topBlock;
-                    } else if (blockstateToSet.equals(BlockStates.DIRT)) {
-                        blockstateToSet = fillerBlock;
+                    if (state.equals(this.topsoilBlock)) {
+                        state = topBlock;
+                    } else if (state.equals(BlockStates.DIRT)) {
+                        state = fillerBlock;
+                    } 
+                    
+                    // Set snow/ice
+                    if (!this.inWorldBounds(absX, absZ)) {
+                        if (y == this.seaLevel) {
+                            if (isCold && state.equals(topBlock)) {
+                                state = topBlock.with(SnowyBlock.SNOWY, true);
+                                chunk.setBlockState(mutableUp.set(x, y + 1, z), BlockStates.SNOW, false);
+                            }
+                            
+                        } else if (y == this.seaLevel - 1 && this.levelTheme != IndevTheme.HELL) {
+                            if (isCold && state.equals(BlockStates.WATER)) {
+                                state = BlockStates.ICE;
+                            }
+                        }
                     }
 
-                    chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
+                    chunk.setBlockState(mutable.set(x, y, z), state, false);
                 }
             }
         }
@@ -198,10 +228,10 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             return !inIndevRegion;
         } else if (chunkStatus == ChunkStatus.STRUCTURE_STARTS) {
             return !inIndevRegion;
-        }  else if (chunkStatus == ChunkStatus.CARVERS && chunkStatus == ChunkStatus.LIQUID_CARVERS) {
-            return !inIndevRegion;
-        } else if (chunkStatus == ChunkStatus.SURFACE) { 
+        }  else if (chunkStatus == ChunkStatus.CARVERS || chunkStatus == ChunkStatus.LIQUID_CARVERS) {
             return true;
+        } else if (chunkStatus == ChunkStatus.SURFACE) { 
+            return false;
         }
         
         return false;
@@ -219,8 +249,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         int spawnZ = spawnPos.getZ();
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        Block floorBlock = this.levelTheme == IndevTheme.HELL ? Blocks.MOSSY_COBBLESTONE : Blocks.STONE;
-        Block wallBlock = this.levelTheme == IndevTheme.HELL ? Blocks.MOSSY_COBBLESTONE : Blocks.OAK_PLANKS;
+        Block floorBlock = this.inHell() ? Blocks.MOSSY_COBBLESTONE : Blocks.STONE;
+        Block wallBlock = this.inHell() ? Blocks.MOSSY_COBBLESTONE : Blocks.OAK_PLANKS;
         
         for (int x = spawnX - 3; x <= spawnX + 3; ++x) {
             for (int y = spawnY - 2; y <= spawnY + 2; ++y) {
@@ -742,5 +772,9 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         }
             
         return true;
+    }
+    
+    private boolean inHell() {
+        return this.levelTheme == IndevTheme.HELL;
     }
 }

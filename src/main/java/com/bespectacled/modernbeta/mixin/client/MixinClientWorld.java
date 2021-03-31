@@ -8,15 +8,12 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.bespectacled.modernbeta.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.util.MutableClientWorld;
 
 import java.util.function.Supplier;
@@ -29,9 +26,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
-/*
- * Based on Colormatic ClientWorldMixin
- */
 @Mixin(value = ClientWorld.class, priority = 1)
 public abstract class MixinClientWorld extends World implements MutableClientWorld {
     
@@ -57,15 +51,11 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
         long worldSeed = BETA_CONFIG.renderingConfig.fixedSeed;
         
         if (client.getServer() != null) { // Server check
-           ChunkGenerator gen = client.getServer().getOverworld().getChunkManager().getChunkGenerator();
+           BiomeSource biomeSource = client.getServer().getOverworld().getChunkManager().getChunkGenerator().getBiomeSource();
            
-           if (!BETA_CONFIG.renderingConfig.useFixedSeed && 
-               gen instanceof OldChunkGenerator && 
-               !(((OldChunkGenerator)gen).getChunkProvider() instanceof IndevChunkProvider) &&
-               ((OldBiomeSource)gen.getBiomeSource()).isBeta()
-           ) {
+           if (!BETA_CONFIG.renderingConfig.useFixedSeed && biomeSource instanceof OldBiomeSource && ((OldBiomeSource)biomeSource).isBeta()) {
                useBetaColors = true;
-               worldSeed = gen.worldSeed;
+               worldSeed = client.getServer().getOverworld().getSeed();
            }
         }
         
@@ -94,7 +84,6 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
     private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
         if (useBetaColors && BETA_CONFIG.renderingConfig.renderBetaSkyColor && this.isOverworld) {
             skyColorVec = Vec3d.unpackRgb(BetaClimateSampler.INSTANCE.getSkyColor((int)curPos.getX(), (int)curPos.getZ()));
-
         }
         
         return skyColorVec;

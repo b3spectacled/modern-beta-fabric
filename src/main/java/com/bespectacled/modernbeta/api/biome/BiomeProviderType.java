@@ -32,17 +32,16 @@ public class BiomeProviderType {
         private BuiltInBiomeType(String id) { this.id = id; }
     }
     
-    private static final Map<String, BiFunction<Long, NbtCompound, AbstractBiomeProvider>> REGISTRY = 
-        new HashMap<String, BiFunction<Long, NbtCompound, AbstractBiomeProvider>>(); 
+    private static final Map<String, BiFunction<Long, NbtCompound, AbstractBiomeProvider>> REGISTRY = new HashMap<>(); 
     
-    public static void registerBiomeProvider(String name, BiFunction<Long, NbtCompound, AbstractBiomeProvider> biomeProvider) {
+    public static void registerProvider(String name, BiFunction<Long, NbtCompound, AbstractBiomeProvider> biomeProvider) {
         if (REGISTRY.containsKey(name)) 
             throw new IllegalArgumentException("[Modern Beta] Registry already contains biome provider named " + name);
         
         REGISTRY.put(name, biomeProvider);
     }
     
-    public static BiFunction<Long, NbtCompound, AbstractBiomeProvider> getBiomeProvider(String name) {
+    public static BiFunction<Long, NbtCompound, AbstractBiomeProvider> getProvider(String name) {
         if (!REGISTRY.containsKey(name))
             throw new NoSuchElementException("[Modern Beta] Registry does not contain biome provider named " + name);
         

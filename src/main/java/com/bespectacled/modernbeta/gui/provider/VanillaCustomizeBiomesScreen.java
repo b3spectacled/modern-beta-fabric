@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.gui.provider;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.screen.AbstractScreenProvider;
+import com.bespectacled.modernbeta.api.gui.AbstractScreenProvider;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -29,7 +29,7 @@ public class VanillaCustomizeBiomesScreen extends Screen {
     
     private ButtonListWidget buttonList;
     
-    protected VanillaCustomizeBiomesScreen(
+    public VanillaCustomizeBiomesScreen(
             AbstractScreenProvider parent, 
             DynamicRegistryManager registryManager, 
             NbtCompound biomeProviderSettings,

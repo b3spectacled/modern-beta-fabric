@@ -1,13 +1,17 @@
-package com.bespectacled.modernbeta.api.screen;
+package com.bespectacled.modernbeta.api.gui;
 
 import java.util.List;
 import java.util.function.BiConsumer;
 
 import com.bespectacled.modernbeta.api.WorldProvider;
 import com.bespectacled.modernbeta.api.WorldProviderType;
-import com.bespectacled.modernbeta.api.chunk.ChunkProviderType.BuiltInChunkType;
+import com.bespectacled.modernbeta.api.biome.BiomeProviderType;
+import com.bespectacled.modernbeta.api.biome.BiomeProviderType.BuiltInBiomeType;
+import com.bespectacled.modernbeta.api.gen.ChunkProviderType.BuiltInChunkType;
 import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
+import com.bespectacled.modernbeta.gui.provider.IndevCustomizeLevelScreen;
+import com.bespectacled.modernbeta.util.GUIUtil;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -19,6 +23,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -105,6 +110,54 @@ public abstract class AbstractScreenProvider extends Screen {
                     ));
             })
         );
+        
+     // Get biome type list, sans legacy types
+        String[] biomeProviderTypes = BiomeProviderType
+            .getBiomeProviderKeys()
+            .stream()
+            .filter(str -> !BiomeProviderType.getLegacyTypes().contains(str))
+            .toArray(String[]::new);
+        
+        this.biomeOption = new ScreenButtonOption(
+            this.biomeType.equals(BuiltInBiomeType.SINGLE.id) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
+            this.biomeType.equals(BuiltInBiomeType.SINGLE.id) ? GUIUtil.createTranslatableBiomeStringFromId(this.singleBiome) : "",
+            ScreenPressActionType.getAction(this.biomeType).apply(this)
+        );
+        
+        this.buttonList.addOptionEntry(
+            CyclingOption.create(
+                "createWorld.customize.biomeType",
+                biomeProviderTypes, 
+                (value) -> new TranslatableText("createWorld.customize.biomeType." + value), 
+                (gameOptions) -> { return this.biomeType; },
+                (gameOptions, option, value) -> {
+                    this.biomeType = value;
+                    
+                    String defaultBiome = this.worldProvider.getDefaultBiome();
+                    
+                    // Change default biome if on Indev world type
+                    if (this instanceof IndevCustomizeLevelScreen) {
+                        defaultBiome = ((IndevCustomizeLevelScreen)this).getTheme().getDefaultBiome().toString();
+                    }
+
+                    NbtCompound newBiomeProviderSettings = OldGeneratorSettings.createBiomeSettings(
+                        this.biomeType, 
+                        this.caveBiomeType, 
+                        defaultBiome
+                    );
+                    
+                    this.client.openScreen(
+                        this.worldProvider.createLevelScreen(
+                            this.parent, 
+                            this.registryManager, 
+                            newBiomeProviderSettings, 
+                            this.chunkProviderSettings, 
+                            this.consumer
+                    ));
+                }
+            ),
+            this.biomeOption
+        );
        
         
         this.children.add(this.buttonList);
@@ -126,5 +179,39 @@ public abstract class AbstractScreenProvider extends Screen {
         }
     }
     
-    protected abstract void updateButtonActive(ScreenButtonOption option);
+    public DynamicRegistryManager getRegistryManager() {
+        return this.registryManager;
+    }
+    
+    public NbtCompound getBiomeProviderSettings() {
+        return (new NbtCompound()).copyFrom(this.biomeProviderSettings);
+    }
+    
+    public void setBiomeProviderSettings(String name, NbtElement element) {
+        this.biomeProviderSettings.put(name, element);
+    }
+    
+    public void setBiomeProviderSettings(NbtCompound settings) {
+        this.biomeProviderSettings.copyFrom(settings);
+    }
+    
+    public NbtCompound getChunkProviderSettings() {
+        return (new NbtCompound()).copyFrom(this.chunkProviderSettings);
+    }
+    
+    public void setChunkProviderSettings(String name, NbtElement element) {
+        this.chunkProviderSettings.put(name, element);
+    }
+    
+    public void setChunkProviderSettings(NbtCompound settings) {
+        this.chunkProviderSettings.copyFrom(settings);
+    }
+    
+    public String getSingleBiome() {
+        return this.singleBiome;
+    }
+    
+    public void setSingleBiome(String singleBiome) {
+        this.singleBiome = singleBiome;
+    }
 }

@@ -163,7 +163,7 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
         boolean canGenerate;
 
         Block block = world.getBlockState(B_POS.set(POS[0], POS[1] - 1, POS[2])).getBlock();
-        if (block != Blocks.DIRT && block != Blocks.GRASS_BLOCK)
+        if (block != Blocks.DIRT && block != Blocks.GRASS_BLOCK && block != Blocks.PODZOL)
         {
             canGenerate = false;
         }

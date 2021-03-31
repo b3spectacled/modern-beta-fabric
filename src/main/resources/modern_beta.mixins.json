@@ -23,7 +23,7 @@
     "client.MixinInGameHud",
     "client.MixinMoreOptionsDialogInvoker",
     "client.MixinSkyProperties",
-    "client.MixinButtonWidgetAccessor"
+    "client.MixinScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

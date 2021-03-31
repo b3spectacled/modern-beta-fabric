@@ -1,9 +1,5 @@
 package com.bespectacled.modernbeta.gui;
 
-import com.bespectacled.modernbeta.mixin.client.*;
-
-import java.util.function.Predicate;
-
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.GameOptions;
@@ -17,17 +13,15 @@ import net.minecraft.text.TranslatableText;
 public class ScreenButtonOption extends Option {
     private final String key;
     private final String suffix;
-    private ButtonWidget.PressAction onPress;
-    private Predicate<Object> activePredicate;
+    private final ButtonWidget.PressAction onPress;
     
     private AbstractButtonWidget button;
     
-    public ScreenButtonOption(String key, String suffix, Predicate<Object> activePredicate, ButtonWidget.PressAction onPress) {
+    public ScreenButtonOption(String key, String suffix, ButtonWidget.PressAction onPress) {
         super(key);
         
         this.key = key;
         this.suffix = suffix;
-        this.activePredicate = activePredicate;
         this.onPress = onPress;
     }
 
@@ -36,7 +30,7 @@ public class ScreenButtonOption extends Option {
         MutableText buttonText = new TranslatableText(this.key);
         MutableText suffixText = new TranslatableText(this.suffix);
         
-        if (this.suffix != null) {
+        if (!this.suffix.isBlank() || this.suffix == null) {
             buttonText.append(": ");
             
             // Truncate suffix string if too long
@@ -54,25 +48,9 @@ public class ScreenButtonOption extends Option {
             this.onPress
         );
         
-        return this.button;
-    }
-    
-    public void setButtonActive(Object obj) {
-        if (this.button == null) return;
-        
-        if (this.activePredicate.test(obj)) {
-            this.button.active = true;
-        } else {
+        if (this.onPress == null)
             this.button.active = false;
-        }
-    }
-    
-    public void updateOnPressAction(ButtonWidget.PressAction onPress) {
-        ((MixinButtonWidgetAccessor)this.button).setOnPress(onPress);
-        this.onPress = onPress;
-    }
-    
-    public void updateActivePredicate(Predicate<Object> activePredicate) {
-        this.activePredicate = activePredicate;
+        
+        return this.button;
     }
 }

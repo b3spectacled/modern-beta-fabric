@@ -3,7 +3,8 @@ package com.bespectacled.modernbeta.gen.provider;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.chunk.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.gen.AbstractChunkProvider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.BlockStructureWeightSampler;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -34,9 +35,9 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise noiseOctavesF;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    public Infdev227ChunkProvider(long seed, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+    public Infdev227ChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, generatorSettings, providerSettings);
+        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
         
         // Noise Generators
         noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true); 
@@ -59,8 +60,8 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
     }
 
     @Override
-    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk, OldBiomeSource biomeSource) {
-        generateTerrain(chunk, structureAccessor, biomeSource);  
+    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk) {
+        this.generateTerrain(chunk, structureAccessor);  
         return chunk;
     }
 
@@ -110,7 +111,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
         return null;
     }
   
-    private void generateTerrain(Chunk chunk, StructureAccessor structureAccessor, OldBiomeSource biomeSource) {
+    private void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         Random rand = new Random();
         Random chunkRand = this.createChunkRand(chunk.getPos().x, chunk.getPos().z);
         
@@ -160,7 +161,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
                     if (this.generateInfdevWall && (absX == 0 || absZ == 0) && y <= heightVal + 2) {
                         blockToSet = Blocks.OBSIDIAN;
                     }
-                    else if (!biomeSource.isVanilla() && !biomeSource.isBeta() && y == heightVal + 1 && heightVal >= this.seaLevel && Math.random() < 0.02) {
+                    else if (y == heightVal + 1 && heightVal >= this.seaLevel && Math.random() < 0.02) {
                         blockToSet = Blocks.DANDELION;
                     }
                     else if (y == heightVal && heightVal >= this.seaLevel) {

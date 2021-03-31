@@ -46,7 +46,7 @@ public class BetaBiomeProvider extends AbstractBiomeProvider implements IBiomeRe
     }
     
     @Override
-    public Biome getBiomeForSurfaceGen(Registry<Biome> registry, int x, int y, int z) {
+    public Biome getBiome(Registry<Biome> registry, int x, int y, int z) {
         BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID_POINT, x, z);
         return registry.get(betaClimateMap.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.LAND));
     }

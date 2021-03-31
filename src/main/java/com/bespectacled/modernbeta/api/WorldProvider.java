@@ -3,10 +3,11 @@ package com.bespectacled.modernbeta.api;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.chunk.AbstractChunkProvider;
-import com.bespectacled.modernbeta.api.chunk.ChunkProviderType;
-import com.bespectacled.modernbeta.api.screen.AbstractScreenProvider;
-import com.bespectacled.modernbeta.api.screen.ScreenProviderType;
+import com.bespectacled.modernbeta.api.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.gen.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.gen.ChunkProviderType;
+import com.bespectacled.modernbeta.api.gui.AbstractScreenProvider;
+import com.bespectacled.modernbeta.api.gui.ScreenProviderType;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtCompound;
@@ -16,7 +17,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class WorldProvider {
     private final String chunkProvider;
-    private final String chunkSettings;
+    private final String chunkGenSettings;
     private final String guiProvider;
     
     private final String defaultBiomeProvider;
@@ -28,7 +29,7 @@ public class WorldProvider {
 
     public WorldProvider(
         String chunkProvider,
-        String chunkSettings,
+        String chunkGenSettings,
         String guiProvider,
         String defaultBiomeProvider,
         String defaultCaveBiomeProvider,
@@ -37,7 +38,7 @@ public class WorldProvider {
         boolean showNoiseOptions
     ) {
         this.chunkProvider = chunkProvider;
-        this.chunkSettings = chunkSettings;
+        this.chunkGenSettings = chunkGenSettings;
         this.guiProvider = guiProvider;
         
         this.defaultBiomeProvider = defaultBiomeProvider;
@@ -52,8 +53,8 @@ public class WorldProvider {
         return this.chunkProvider;
     }
     
-    public String getChunkSettingsId() {
-        return this.chunkSettings;
+    public String getChunkGenSettings() {
+        return this.chunkGenSettings;
     }
     
     public boolean showOceansOption() {
@@ -80,8 +81,8 @@ public class WorldProvider {
         return new Identifier(this.defaultBiome);
     }
     
-    public AbstractChunkProvider createChunkProvider(long seed, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
-        return ChunkProviderType.getChunkProvider(this.chunkProvider).apply(seed, generatorSettings, providerSettings);
+    public AbstractChunkProvider createChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+        return ChunkProviderType.getProvider(this.chunkProvider).apply(seed, biomeProvider, generatorSettings, providerSettings);
     }
     
     public AbstractScreenProvider createLevelScreen(
@@ -91,6 +92,6 @@ public class WorldProvider {
         NbtCompound chunkProviderSettings, 
         BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
-        return ScreenProviderType.getScreenProvider(this.guiProvider).apply(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
+        return ScreenProviderType.getProvider(this.guiProvider).apply(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
     }
 }

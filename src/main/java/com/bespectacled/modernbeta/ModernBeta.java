@@ -67,8 +67,10 @@ public class ModernBeta implements ModInitializer {
         // Register default providers
         ModernBetaDefaultProviders.registerChunkProviders();
         ModernBetaDefaultProviders.registerBiomeProviders();
+        ModernBetaDefaultProviders.registerCaveBiomeProvider();
         ModernBetaDefaultProviders.registerWorldProviders();
         ModernBetaDefaultProviders.registerScreenProviders();
+        ModernBetaDefaultProviders.registerScreenPressActions();
         
         // Serialize various world gen stuff to JSON
         //OldConfiguredFeatures.export();

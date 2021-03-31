@@ -1,14 +1,10 @@
 package com.bespectacled.modernbeta.biome;
 
-import java.util.List;
-import java.util.function.Supplier;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.biome.AbstractBiomeProvider;
 import com.bespectacled.modernbeta.api.biome.BiomeProviderType;
 import com.bespectacled.modernbeta.api.biome.IBiomeResolver;
 import com.bespectacled.modernbeta.api.biome.BiomeProviderType.BuiltInBiomeType;
-import com.bespectacled.modernbeta.biome.provider.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -20,11 +16,7 @@ import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.GenerationSettings;
-import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
 
 public class OldBiomeSource extends BiomeSource {
     
@@ -39,14 +31,12 @@ public class OldBiomeSource extends BiomeSource {
     private final Registry<Biome> biomeRegistry;
     private final NbtCompound providerSettings;
     
-    //private final OldBiomeProviderType biomeType;
     private final String biomeProviderType;
     private final AbstractBiomeProvider biomeProvider;
-    private final Biome edgeBiome; // For Indev worlds
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, NbtCompound settings) {
         super(
-            BiomeProviderType.getBiomeProvider(BiomeProviderType.getBiomeProviderType(settings))
+            BiomeProviderType.getProvider(BiomeProviderType.getBiomeProviderType(settings))
             .apply(seed, settings)
             .getBiomesForRegistry()
             .stream()
@@ -58,8 +48,7 @@ public class OldBiomeSource extends BiomeSource {
         this.providerSettings = settings;
         
         this.biomeProviderType = BiomeProviderType.getBiomeProviderType(settings);
-        this.biomeProvider = BiomeProviderType.getBiomeProvider(this.biomeProviderType).apply(seed, settings);
-        this.edgeBiome = this.isSingle() ? this.createEdgeBiome() : null;
+        this.biomeProvider = BiomeProviderType.getProvider(this.biomeProviderType).apply(seed, settings);
     }
 
     @Override
@@ -73,15 +62,11 @@ public class OldBiomeSource extends BiomeSource {
     
     public Biome getBiomeForSurfaceGen(ChunkRegion region, BlockPos pos) {
         if (this.biomeProvider instanceof IBiomeResolver)
-            return ((IBiomeResolver)this.biomeProvider).getBiomeForSurfaceGen(this.biomeRegistry, pos.getX(), 0, pos.getZ());
+            return ((IBiomeResolver)this.biomeProvider).getBiome(this.biomeRegistry, pos.getX(), 0, pos.getZ());
         
         return region.getBiome(pos);
     }
     
-    public Biome getEdgeBiome() {
-        return this.edgeBiome;
-    }
-
     public Registry<Biome> getBiomeRegistry() {
         return this.biomeRegistry;
     }
@@ -119,39 +104,6 @@ public class OldBiomeSource extends BiomeSource {
     @Override
     protected Codec<? extends BiomeSource> getCodec() {
         return OldBiomeSource.CODEC;
-    }
-    
-    private Biome createEdgeBiome() {
-        if (!this.isSingle()) return null;
-        
-        Biome mainBiome = this.biomeRegistry.get(((SingleBiomeProvider) this.biomeProvider).getBiomeId());
-        GenerationSettings genSettings = mainBiome.getGenerationSettings();
-        GenerationSettings.Builder genSettingsBuilder = new GenerationSettings.Builder().surfaceBuilder(genSettings.getSurfaceBuilder());
-        SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
-        
-        // Add features as necessary so that edge of Indev levels blend in
-        List<List<Supplier<ConfiguredFeature<?, ?>>>> featureSteps = genSettings.getFeatures();
-        for (int i = 0; i < featureSteps.size(); ++i) {
-            // Add top layer modifiers, plant features
-            if (i == GenerationStep.Feature.TOP_LAYER_MODIFICATION.ordinal()) {
-                List<Supplier<ConfiguredFeature<?, ?>>> configuredFeatures = featureSteps.get(i);
-                for (Supplier<ConfiguredFeature<?, ?>> supplier : configuredFeatures) {
-                    genSettingsBuilder.feature(i, supplier);
-                }
-            }
-        }
-        
-        return new Biome.Builder()
-            .precipitation(mainBiome.getPrecipitation())
-            .category(mainBiome.getCategory())
-            .depth(mainBiome.getDepth())
-            .scale(mainBiome.getScale())
-            .temperature(mainBiome.getTemperature())
-            .downfall(mainBiome.getDownfall())
-            .effects(mainBiome.getEffects())
-            .generationSettings(genSettingsBuilder.build())
-            .spawnSettings(spawnSettings.build())
-            .build();
     }
 
     public static void register() {

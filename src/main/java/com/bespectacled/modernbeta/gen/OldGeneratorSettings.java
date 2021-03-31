@@ -11,7 +11,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.chunk.ChunkProviderType.BuiltInChunkType;
+import com.bespectacled.modernbeta.api.gen.ChunkProviderType.BuiltInChunkType;
 import com.bespectacled.modernbeta.config.ModernBetaBiomeConfig;
 import com.bespectacled.modernbeta.config.ModernBetaGenerationConfig;
 import com.bespectacled.modernbeta.util.BlockStates;

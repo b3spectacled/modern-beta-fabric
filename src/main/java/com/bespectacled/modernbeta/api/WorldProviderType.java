@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 public class WorldProviderType {
     private static final List<WorldProvider> WORLD_PROVIDERS = new ArrayList<WorldProvider>();
     
-    public static void addWorldProvider(WorldProvider worldProvider) {
+    public static void addProvider(WorldProvider worldProvider) {
         for (WorldProvider w : WORLD_PROVIDERS) {
             if (w.getName().equalsIgnoreCase(worldProvider.getName()))
                 throw new IllegalArgumentException("[Modern Beta] Registry already contains world provider named " + w.getName());

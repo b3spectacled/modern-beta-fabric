@@ -4,26 +4,18 @@ import java.util.Arrays;
 import java.util.function.BiConsumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.biome.BiomeProviderType.BuiltInBiomeType;
-import com.bespectacled.modernbeta.api.screen.AbstractScreenProvider;
+import com.bespectacled.modernbeta.api.gui.AbstractScreenProvider;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
-import com.bespectacled.modernbeta.gui.ScreenButtonOption;
 import com.bespectacled.modernbeta.gui.TextOption;
-import com.bespectacled.modernbeta.util.GUIUtil;
-
-import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.client.option.DoubleOption;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
 
 public class IndevCustomizeLevelScreen extends AbstractScreenProvider {
     private IndevType levelType;
@@ -78,22 +70,7 @@ public class IndevCustomizeLevelScreen extends AbstractScreenProvider {
         // Get Indev Theme list, sans legacy themes
         IndevTheme[] indevThemes = Arrays.stream(IndevTheme.values()).filter(theme -> IndevUtil.IndevTheme.getExclusions(theme)).toArray(IndevTheme[]::new);
         
-        this.biomeOption = new ScreenButtonOption(
-            "createWorld.customize.biomeType.biome",
-            GUIUtil.createTranslatableBiomeStringFromId(this.singleBiome),
-            biomeType -> this.biomeType.equals(BuiltInBiomeType.SINGLE.id),
-            buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
-              this, 
-              this.registryManager,
-              (biome) -> {
-                  this.singleBiome = this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString();
-                  this.biomeProviderSettings.putString("singleBiome", this.singleBiome.toString());
-              },
-              this.registryManager.<Biome>get(Registry.BIOME_KEY).get(new Identifier(this.singleBiome))  
-            ))
-        );
-        
-        this.buttonList.addOptionEntry(
+        this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.indev.levelTheme", 
                 indevThemes, 
@@ -113,11 +90,8 @@ public class IndevCustomizeLevelScreen extends AbstractScreenProvider {
                             this.consumer
                     ));
                 }
-            ),
-            this.biomeOption
+            )
         );
-        
-        this.updateButtonActive(this.biomeOption);
         
         this.buttonList.addSingleOptionEntry(
                 CyclingOption.create(
@@ -212,9 +186,8 @@ public class IndevCustomizeLevelScreen extends AbstractScreenProvider {
         
         this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
     }
-
-    @Override
-    protected void updateButtonActive(ScreenButtonOption option) {
-        option.setButtonActive(BuiltInBiomeType.SINGLE.id);
+    
+    public IndevTheme getTheme() {
+        return this.levelTheme;
     }
 }
