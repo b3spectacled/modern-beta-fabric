@@ -30,7 +30,7 @@ public class ScreenButtonOption extends Option {
         MutableText buttonText = new TranslatableText(this.key);
         MutableText suffixText = new TranslatableText(this.suffix);
         
-        if (!this.suffix.isBlank() || this.suffix == null) {
+        if (!this.suffix.isEmpty() || this.suffix == null) {
             buttonText.append(": ");
             
             // Truncate suffix string if too long
