@@ -24,12 +24,12 @@ public class OldBiomeSource extends BiomeSource {
         .group(
             Codec.LONG.fieldOf("seed").stable().forGetter(biomeSource -> biomeSource.seed),
             RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(biomeSource -> biomeSource.biomeRegistry),
-            NbtCompound.CODEC.fieldOf("settings").forGetter(biomeSource -> biomeSource.providerSettings)
+            NbtCompound.CODEC.fieldOf("settings").forGetter(biomeSource -> biomeSource.biomeProviderSettings)
         ).apply(instance, (instance).stable(OldBiomeSource::new)));
     
     private final long seed;
     private final Registry<Biome> biomeRegistry;
-    private final NbtCompound providerSettings;
+    private final NbtCompound biomeProviderSettings;
     
     private final String biomeProviderType;
     private final AbstractBiomeProvider biomeProvider;
@@ -45,7 +45,7 @@ public class OldBiomeSource extends BiomeSource {
         
         this.seed = seed;
         this.biomeRegistry = biomeRegistry;
-        this.providerSettings = settings;
+        this.biomeProviderSettings = settings;
         
         this.biomeProviderType = BiomeProviderRegistry.getBiomeProviderType(settings);
         this.biomeProvider = BiomeProviderRegistry.get(this.biomeProviderType).apply(seed, settings);
@@ -83,7 +83,7 @@ public class OldBiomeSource extends BiomeSource {
         return this.biomeProviderType.equals(BuiltInBiomeType.SINGLE.id);
     }
     
-    public String getBiomeType() {
+    public String getBiomeProviderType() {
         return this.biomeProviderType;
     }
     
@@ -92,13 +92,13 @@ public class OldBiomeSource extends BiomeSource {
     }
     
     public NbtCompound getProviderSettings() {
-        return this.providerSettings;
+        return this.biomeProviderSettings;
     }
 
     @Environment(EnvType.CLIENT)
     @Override
     public BiomeSource withSeed(long seed) {
-        return new OldBiomeSource(seed, this.biomeRegistry, this.providerSettings);
+        return new OldBiomeSource(seed, this.biomeRegistry, this.biomeProviderSettings);
     }
     
     @Override

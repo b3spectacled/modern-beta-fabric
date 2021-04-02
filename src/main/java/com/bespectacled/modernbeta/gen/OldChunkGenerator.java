@@ -62,14 +62,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
             Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
             ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(generator -> generator.settings),
-            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.providerSettings))
+            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings))
         .apply(instance, instance.stable(OldChunkGenerator::new)));
     
     private static final int OCEAN_Y_CUT_OFF = 40;
     
     
     private final OldBiomeSource biomeSource;
-    private final NbtCompound providerSettings;
+    private final NbtCompound chunkProviderSettings;
     
     private final String chunkProviderType;
     private final boolean generateOceans;
@@ -84,7 +84,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         this.biomeSource = (OldBiomeSource)biomeSource;
 
-        this.providerSettings = providerSettings;
+        this.chunkProviderSettings = providerSettings;
         this.chunkProviderType = ChunkProviderRegistry.getChunkProviderType(providerSettings);
         this.chunkProvider = ChunkProviderRegistry.get(this.chunkProviderType).apply(
             seed, 
@@ -308,7 +308,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public ChunkGenerator withSeed(long seed) {
-        return new OldChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings, this.providerSettings);
+        return new OldChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings, this.chunkProviderSettings);
     }
     
     public String getChunkProviderType() {
@@ -320,7 +320,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     public NbtCompound getProviderSettings() {
-        return this.providerSettings;
+        return this.chunkProviderSettings;
     }
     
     /*

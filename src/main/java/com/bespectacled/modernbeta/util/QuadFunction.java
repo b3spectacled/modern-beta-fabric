@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.util;
 import java.util.Objects;
 import java.util.function.Function;
 
+@FunctionalInterface
 public interface QuadFunction<A,B,C,D,R> {
     R apply(A a, B b, C c, D d);
     

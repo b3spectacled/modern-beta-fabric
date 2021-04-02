@@ -72,7 +72,6 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
     )
     private Vec3d captureBlockPos(Vec3d pos) {
         curPos = pos;
-        
         return pos;
     }
     

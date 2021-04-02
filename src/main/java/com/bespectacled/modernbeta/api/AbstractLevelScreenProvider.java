@@ -111,7 +111,7 @@ public abstract class AbstractLevelScreenProvider extends Screen {
             })
         );
         
-     // Get biome type list, sans legacy types
+        // Get biome type list, sans legacy types
         String[] biomeProviderTypes = BiomeProviderRegistry
             .getBiomeProviderKeys()
             .stream()

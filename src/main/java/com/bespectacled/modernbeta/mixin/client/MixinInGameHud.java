@@ -28,6 +28,7 @@ public class MixinInGameHud {
         }
     }
     
+    @Unique
     private void renderDebugVersion(MatrixStack matrices) {
         this.client.textRenderer.drawWithShadow(matrices, VERSION, 2f, 2f, 0xFFFFFF);
     }

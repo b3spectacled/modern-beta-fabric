@@ -62,7 +62,6 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     // but apparently 1D array is significantly slower,
     // tested on 1024*1024*256 world
     private Block blockArr[][][];
-    private int heightmap[]; 
     
     private final IndevTheme levelTheme;
     private final IndevType levelType;
@@ -98,6 +97,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         this.waterLevel = this.height / 2;
         this.layers = (this.levelType == IndevType.FLOATING) ? (this.height - 64) / 48 + 1 : 1;
         
+        this.blockArr = null;
         this.generated = new AtomicBoolean(false);
         this.generatedLatch = new CountDownLatch(1);
     }
@@ -111,7 +111,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
 
         if (this.inWorldBounds(pos.getStartX(), pos.getStartZ())) {
             this.pregenerateTerrainOrWait();
-            this.setTerrain(structureAccessor, chunk, blockArr);
+            this.setTerrain(structureAccessor, chunk);
      
         } else if (this.levelType != IndevType.FLOATING) {
             if (this.levelType == IndevType.ISLAND)
@@ -185,7 +185,6 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                 }
             }
         }
-        
     }
     
     @Override
@@ -283,7 +282,10 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         return this.levelTheme;
     }
     
-    private void setTerrain(StructureAccessor structureAccessor, Chunk chunk, Block[][][] blockArr) {
+    private void setTerrain(StructureAccessor structureAccessor, Chunk chunk) {
+        if (this.blockArr == null)
+            throw new IllegalStateException("[Modern Beta] Indev chunk provider is trying to set terrain before level has been generated!");
+        
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
@@ -303,7 +305,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                 int absZ = z + (chunkZ << 4);
                 
                 for (int y = 0; y < this.height; ++y) {
-                    Block blockToSet = blockArr[offsetX + x][y][offsetZ + z];
+                    Block blockToSet = this.blockArr[offsetX + x][y][offsetZ + z];
                     
                     blockToSet = structureWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
 
@@ -332,7 +334,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         // Only one thread should enter pregeneration method,
         // others should funnel into awaiting for latch to count down.
         if (!this.generated.getAndSet(true)) {
-            blockArr = pregenerateTerrain();
+            this.blockArr = pregenerateTerrain();
             this.generatedLatch.countDown();
         } else {
             try {
@@ -345,6 +347,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     private Block[][][] pregenerateTerrain() {
+        int[] heightmap = new int[this.width * this.length];
         Block[][][] blockArr = new Block[this.width][this.height][this.length];
         fillBlockArr(blockArr);
         
@@ -369,7 +372,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             sandNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
             gravelNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
             
-            heightmap = generateHeightmap(heightmap);
+            generateHeightmap(heightmap);
             erodeTerrain(heightmap);
              
             ModernBeta.LOGGER.log(Level.INFO, "[Indev] Soiling..");
@@ -437,12 +440,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     
-    private int[] generateHeightmap(int heightmap[]) {
+    private void generateHeightmap(int heightmap[]) {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Raising..");
-        
-        if (heightmap == null) {
-            heightmap = new int[this.width * this.length]; // For entire indev world
-        }
         
         for (int x = 0; x < this.width; ++x) {
             double islandVar1 = Math.abs((x / (this.width - 1.0) - 0.5) * 2.0);
@@ -486,11 +485,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                 
                 heightmap[x + z * this.width] = (int)heightResult;
             }
-            
         }
-       
-        return heightmap;
-        
     }
     
     private void erodeTerrain(int[] heightmap) {
