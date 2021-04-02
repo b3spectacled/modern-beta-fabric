@@ -2,9 +2,11 @@ package com.bespectacled.modernbeta.gui.provider;
 
 import java.util.Arrays;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gui.AbstractScreenProvider;
+import com.bespectacled.modernbeta.api.AbstractLevelScreenProvider;
+import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
@@ -16,8 +18,10 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class IndevCustomizeLevelScreen extends AbstractScreenProvider {
+public class IndevLevelScreenProvider extends AbstractLevelScreenProvider {
     private IndevType levelType;
     private IndevTheme levelTheme;
 
@@ -27,7 +31,9 @@ public class IndevCustomizeLevelScreen extends AbstractScreenProvider {
     
     private float caveRadius;
     
-    public IndevCustomizeLevelScreen(
+    private final Supplier<ChunkGeneratorSettings> chunkGenSettings;
+    
+    public IndevLevelScreenProvider(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings, 
@@ -60,7 +66,8 @@ public class IndevCustomizeLevelScreen extends AbstractScreenProvider {
             this.chunkProviderSettings.getFloat("caveRadius") :
             ModernBeta.BETA_CONFIG.generationConfig.indevCaveRadius;
         
-        
+        this.chunkGenSettings = () -> 
+            this.registryManager.<ChunkGeneratorSettings>get(Registry.NOISE_SETTINGS_WORLDGEN).get(ModernBeta.createId(BuiltInChunkType.INDEV.id));
     }
     
     @Override
@@ -69,6 +76,11 @@ public class IndevCustomizeLevelScreen extends AbstractScreenProvider {
         
         // Get Indev Theme list, sans legacy themes
         IndevTheme[] indevThemes = Arrays.stream(IndevTheme.values()).filter(theme -> IndevUtil.IndevTheme.getExclusions(theme)).toArray(IndevTheme[]::new);
+        
+        int worldHeight = this.chunkGenSettings.get().getGenerationShapeConfig().getHeight();
+        int minimumY = this.chunkGenSettings.get().getGenerationShapeConfig().getMinimumY();
+        
+        int topY = worldHeight + minimumY;
         
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
@@ -146,7 +158,7 @@ public class IndevCustomizeLevelScreen extends AbstractScreenProvider {
         this.buttonList.addSingleOptionEntry(
             new DoubleOption(
                 "createWorld.customize.indev.heightSlider", 
-                64D, 320D, 64F,
+                64D, (double)topY, 64F,
                 (gameOptions) -> { return (double) this.levelHeight; }, // Getter
                 (gameOptions, value) -> { // Setter
                     this.levelHeight = value.intValue();

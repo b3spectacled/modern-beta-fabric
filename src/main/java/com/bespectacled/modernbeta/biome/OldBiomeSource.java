@@ -1,10 +1,10 @@
 package com.bespectacled.modernbeta.biome;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.biome.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.biome.BiomeProviderType;
-import com.bespectacled.modernbeta.api.biome.IBiomeResolver;
-import com.bespectacled.modernbeta.api.biome.BiomeProviderType.BuiltInBiomeType;
+import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.IBiomeResolver;
+import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry;
+import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -36,7 +36,7 @@ public class OldBiomeSource extends BiomeSource {
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, NbtCompound settings) {
         super(
-            BiomeProviderType.getProvider(BiomeProviderType.getBiomeProviderType(settings))
+            BiomeProviderRegistry.get(BiomeProviderRegistry.getBiomeProviderType(settings))
             .apply(seed, settings)
             .getBiomesForRegistry()
             .stream()
@@ -47,8 +47,8 @@ public class OldBiomeSource extends BiomeSource {
         this.biomeRegistry = biomeRegistry;
         this.providerSettings = settings;
         
-        this.biomeProviderType = BiomeProviderType.getBiomeProviderType(settings);
-        this.biomeProvider = BiomeProviderType.getProvider(this.biomeProviderType).apply(seed, settings);
+        this.biomeProviderType = BiomeProviderRegistry.getBiomeProviderType(settings);
+        this.biomeProvider = BiomeProviderRegistry.get(this.biomeProviderType).apply(seed, settings);
     }
 
     @Override

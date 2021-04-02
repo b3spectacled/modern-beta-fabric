@@ -1,16 +1,16 @@
-package com.bespectacled.modernbeta.api.gui;
+package com.bespectacled.modernbeta.api;
 
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import com.bespectacled.modernbeta.api.WorldProvider;
-import com.bespectacled.modernbeta.api.WorldProviderType;
-import com.bespectacled.modernbeta.api.biome.BiomeProviderType;
-import com.bespectacled.modernbeta.api.biome.BiomeProviderType.BuiltInBiomeType;
-import com.bespectacled.modernbeta.api.gen.ChunkProviderType.BuiltInChunkType;
-import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
+import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry;
+import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry;
+import com.bespectacled.modernbeta.api.registry.ScreenPressActionRegistry;
+import com.bespectacled.modernbeta.api.registry.WorldProviderRegistry;
+import com.bespectacled.modernbeta.biome.provider.settings.BiomeProviderSettings;
+import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
-import com.bespectacled.modernbeta.gui.provider.IndevCustomizeLevelScreen;
+import com.bespectacled.modernbeta.gui.provider.IndevLevelScreenProvider;
 import com.bespectacled.modernbeta.util.GUIUtil;
 
 import net.minecraft.client.gui.DrawableHelper;
@@ -28,7 +28,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public abstract class AbstractScreenProvider extends Screen {
+public abstract class AbstractLevelScreenProvider extends Screen {
     protected final CreateWorldScreen parent;
     protected final DynamicRegistryManager registryManager;
     protected final NbtCompound biomeProviderSettings;
@@ -44,7 +44,7 @@ public abstract class AbstractScreenProvider extends Screen {
     protected ButtonListWidget buttonList;
     protected ScreenButtonOption biomeOption;
     
-    public AbstractScreenProvider(
+    public AbstractLevelScreenProvider(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings, 
@@ -59,7 +59,7 @@ public abstract class AbstractScreenProvider extends Screen {
         this.chunkProviderSettings = chunkProviderSettings;
         this.consumer = consumer;
         
-        this.worldProvider = WorldProviderType.getWorldProvider(this.chunkProviderSettings.getString("worldType"));
+        this.worldProvider = WorldProviderRegistry.get(this.chunkProviderSettings.getString("worldType"));
         
         this.biomeType = this.biomeProviderSettings.getString("biomeType");
         this.caveBiomeType = this.biomeProviderSettings.getString("caveBiomeType");
@@ -94,12 +94,12 @@ public abstract class AbstractScreenProvider extends Screen {
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.worldType", 
-                WorldProviderType.getWorldProviders().stream().toArray(WorldProvider[]::new),
+                WorldProviderRegistry.getWorldProviders().stream().toArray(WorldProvider[]::new),
                 (value) -> new TranslatableText("createWorld.customize.worldType." + value.getName()), 
                 (gameOptions) -> { return this.worldProvider; }, 
                 (gameOptions, option, value) -> {
-                    NbtCompound newBiomeProviderSettings = OldGeneratorSettings.createBiomeSettings(value.getDefaultBiomeProvider(), value.getDefaultCaveBiomeProvider(), value.getDefaultBiome());
-                    NbtCompound newChunkProviderSettings = value.getName().equals(BuiltInChunkType.INDEV.id) ? OldGeneratorSettings.createIndevSettings() : OldGeneratorSettings.createInfSettings(value.getName());
+                    NbtCompound newBiomeProviderSettings = BiomeProviderSettings.createBiomeSettings(value.getDefaultBiomeProvider(), value.getDefaultCaveBiomeProvider(), value.getDefaultBiome());
+                    NbtCompound newChunkProviderSettings = ChunkProviderSettingsRegistry.get(value.getChunkProviderSettings()).get();
                     
                     this.client.openScreen(value.createLevelScreen(
                         this.parent, 
@@ -112,16 +112,16 @@ public abstract class AbstractScreenProvider extends Screen {
         );
         
      // Get biome type list, sans legacy types
-        String[] biomeProviderTypes = BiomeProviderType
+        String[] biomeProviderTypes = BiomeProviderRegistry
             .getBiomeProviderKeys()
             .stream()
-            .filter(str -> !BiomeProviderType.getLegacyTypes().contains(str))
+            .filter(str -> !BiomeProviderRegistry.getLegacyTypes().contains(str))
             .toArray(String[]::new);
         
         this.biomeOption = new ScreenButtonOption(
             this.biomeType.equals(BuiltInBiomeType.SINGLE.id) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
             this.biomeType.equals(BuiltInBiomeType.SINGLE.id) ? GUIUtil.createTranslatableBiomeStringFromId(this.singleBiome) : "",
-            ScreenPressActionType.getAction(this.biomeType).apply(this)
+            ScreenPressActionRegistry.get(this.biomeType).apply(this)
         );
         
         this.buttonList.addOptionEntry(
@@ -136,11 +136,11 @@ public abstract class AbstractScreenProvider extends Screen {
                     String defaultBiome = this.worldProvider.getDefaultBiome();
                     
                     // Change default biome if on Indev world type
-                    if (this instanceof IndevCustomizeLevelScreen) {
-                        defaultBiome = ((IndevCustomizeLevelScreen)this).getTheme().getDefaultBiome().toString();
+                    if (this instanceof IndevLevelScreenProvider) {
+                        defaultBiome = ((IndevLevelScreenProvider)this).getTheme().getDefaultBiome().toString();
                     }
 
-                    NbtCompound newBiomeProviderSettings = OldGeneratorSettings.createBiomeSettings(
+                    NbtCompound newBiomeProviderSettings = BiomeProviderSettings.createBiomeSettings(
                         this.biomeType, 
                         this.caveBiomeType, 
                         defaultBiome

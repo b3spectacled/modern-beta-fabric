@@ -24,7 +24,7 @@ import com.bespectacled.modernbeta.biome.vanilla.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
+import com.bespectacled.modernbeta.gen.OldChunkGeneratorSettings;
 import com.bespectacled.modernbeta.gen.OldGeneratorType;
 
 public class ModernBeta implements ModInitializer {
@@ -53,7 +53,7 @@ public class ModernBeta implements ModInitializer {
         OldBiomes.register();
         OldBiomeSource.register();
         OldChunkGenerator.register();
-        OldGeneratorSettings.register();
+        OldChunkGeneratorSettings.register();
         
         VanillaBiomeModifier.addShrineToOceans();
         
@@ -66,6 +66,7 @@ public class ModernBeta implements ModInitializer {
         
         // Register default providers
         ModernBetaDefaultProviders.registerChunkProviders();
+        ModernBetaDefaultProviders.registerChunkProviderSettings();
         ModernBetaDefaultProviders.registerBiomeProviders();
         ModernBetaDefaultProviders.registerCaveBiomeProvider();
         ModernBetaDefaultProviders.registerWorldProviders();

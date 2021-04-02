@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.cavebiome.provider;
 
-import com.bespectacled.modernbeta.api.biome.AbstractCaveBiomeProvider;
+import com.bespectacled.modernbeta.api.AbstractCaveBiomeProvider;
 
 import net.minecraft.nbt.NbtCompound;
 

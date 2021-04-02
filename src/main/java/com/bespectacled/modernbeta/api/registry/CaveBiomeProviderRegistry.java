@@ -1,13 +1,15 @@
-package com.bespectacled.modernbeta.api.biome;
+package com.bespectacled.modernbeta.api.registry;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 
+import com.bespectacled.modernbeta.api.AbstractCaveBiomeProvider;
+
 import net.minecraft.nbt.NbtCompound;
 
-public class CaveBiomeProviderType {
+public class CaveBiomeProviderRegistry {
     public enum BuiltInCaveBiomeType {
         NONE("none"),
         VANILLA("vanilla");
@@ -19,14 +21,14 @@ public class CaveBiomeProviderType {
     
     private static final Map<String, BiFunction<Long, NbtCompound, AbstractCaveBiomeProvider>> REGISTRY = new HashMap<>(); 
     
-    public static void registerProvider(String name, BiFunction<Long, NbtCompound, AbstractCaveBiomeProvider> biomeProvider) {
+    public static void register(String name, BiFunction<Long, NbtCompound, AbstractCaveBiomeProvider> biomeProvider) {
         if (REGISTRY.containsKey(name)) 
             throw new IllegalArgumentException("[Modern Beta] Registry already contains cave biome provider named " + name);
         
         REGISTRY.put(name, biomeProvider);
     }
     
-    public static BiFunction<Long, NbtCompound, AbstractCaveBiomeProvider> getProvider(String name) {
+    public static BiFunction<Long, NbtCompound, AbstractCaveBiomeProvider> get(String name) {
         if (!REGISTRY.containsKey(name))
             throw new NoSuchElementException("[Modern Beta] Registry does not contain cave biome provider named " + name);
         

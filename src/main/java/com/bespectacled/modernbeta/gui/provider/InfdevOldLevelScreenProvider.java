@@ -8,11 +8,11 @@ import net.minecraft.client.option.CyclingOption;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
+public class InfdevOldLevelScreenProvider extends InfLevelScreenProvider {
     private boolean generateInfdevPyramid;
     private boolean generateInfdevWall;
     
-    public InfdevOldCustomizeLevelScreen(
+    public InfdevOldLevelScreenProvider(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings, 
@@ -28,9 +28,6 @@ public class InfdevOldCustomizeLevelScreen extends InfCustomizeLevelScreen {
         this.generateInfdevWall = this.chunkProviderSettings.contains("generateInfdevWall") ? 
             this.chunkProviderSettings.getBoolean("generateInfdevWall") :
             ModernBeta.BETA_CONFIG.generationConfig.generateInfdevWall;
-        
-        this.chunkProviderSettings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
-        this.chunkProviderSettings.putBoolean("generateInfdevWall", this.generateInfdevWall);
     }
     
     @Override

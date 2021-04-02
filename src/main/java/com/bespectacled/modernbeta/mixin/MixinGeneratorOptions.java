@@ -1,9 +1,13 @@
 package com.bespectacled.modernbeta.mixin;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.WorldProvider;
+import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry;
+import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry;
+import com.bespectacled.modernbeta.api.registry.WorldProviderRegistry;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.gen.OldGeneratorSettings;
 import com.google.common.base.MoreObjects;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -41,12 +45,7 @@ public class MixinGeneratorOptions {
         String levelType = properties.get("level-type").toString().trim().toLowerCase();
         
         // Check for Modern Beta world type
-        if (levelType.equals("beta") ||
-            levelType.equals("skylands") ||
-            levelType.equals("alpha") ||
-            levelType.equals("infdev_415") ||
-            levelType.equals("infdev_227") ||
-            levelType.equals("indev")) {
+        if (ChunkProviderRegistry.getChunkProviders().contains(levelType)) {
             // get or generate seed
             String seedField = (String) MoreObjects.firstNonNull(properties.get("level-seed"), "");
             long seed = new Random().nextLong();
@@ -76,24 +75,31 @@ public class MixinGeneratorOptions {
             String generate_structures = (String) properties.get("generate-structures");
             boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
             
-            /*
-            OldChunkProviderType worldType = OldChunkProviderType.fromName(levelType);
-            OldBiomeProviderType biomeType = OldBiomeProviderType.fromName(ModernBeta.BETA_CONFIG.biomeConfig.biomeType);
-            CaveBiomeType caveBiomeType = CaveBiomeType.fromName(ModernBeta.BETA_CONFIG.biomeConfig.caveBiomeType);
-            Identifier singleBiome = new Identifier(ModernBeta.BETA_CONFIG.biomeConfig.singleBiome);
+            WorldProvider worldProvider = WorldProviderRegistry.get(levelType);
             
-            NbtCompound biomeProviderSettings = OldGeneratorSettings.createBiomeSettings(biomeType, caveBiomeType, singleBiome);
-            NbtCompound chunkProviderSettings = levelType.equals("indev") ? 
-                OldGeneratorSettings.createIndevSettings() : 
-                OldGeneratorSettings.createInfSettings(worldType);
+            NbtCompound biomeProviderSettings = BiomeProviderSettings.createBiomeSettings(
+                ModernBeta.BETA_CONFIG.biomeConfig.biomeType, 
+                ModernBeta.BETA_CONFIG.biomeConfig.caveBiomeType, 
+                ModernBeta.BETA_CONFIG.biomeConfig.singleBiome
+            );
+            biomeProviderSettings = BiomeProviderSettings.addBetaBiomeSettings(biomeProviderSettings);
+            biomeProviderSettings = BiomeProviderSettings.addVanillaBiomeSettings(biomeProviderSettings);
             
-            biomeProviderSettings = OldGeneratorSettings.addBetaBiomeSettings(biomeProviderSettings);
+            NbtCompound chunkProviderSettings = ChunkProviderSettingsRegistry.get(worldProvider.getChunkProviderSettings()).get();
             
-            ChunkGenerator generator = new OldChunkGenerator(new OldBiomeSource(seed, registryBiome, biomeProviderSettings), seed, () -> registryChunkGenSettings.get(ModernBeta.createId(worldType.getName())), chunkProviderSettings);
-
+            ChunkGenerator chunkGenerator = new OldChunkGenerator(
+                new OldBiomeSource(seed, registryBiome, biomeProviderSettings), 
+                seed,
+                () -> registryChunkGenSettings.get(new Identifier(worldProvider.getChunkGenSettings())), 
+                chunkProviderSettings
+            );
+            
             // return our chunk generator
-            cir.setReturnValue(new GeneratorOptions(seed, generateStructures, false,
-                    GeneratorOptions.getRegistryWithReplacedOverworldGenerator(registryDimensionType, dimensionOptions, generator)));*/
+            cir.setReturnValue(new GeneratorOptions(
+                seed, 
+                generateStructures, 
+                false,
+                GeneratorOptions.getRegistryWithReplacedOverworldGenerator(registryDimensionType, dimensionOptions, chunkGenerator)));
         }
     }
 }

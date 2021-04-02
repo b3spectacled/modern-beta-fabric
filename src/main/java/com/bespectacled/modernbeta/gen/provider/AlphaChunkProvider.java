@@ -2,8 +2,8 @@ package com.bespectacled.modernbeta.gen.provider;
 
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.biome.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.gen.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.AbstractChunkProvider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.gen.OldGeneratorUtil;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;

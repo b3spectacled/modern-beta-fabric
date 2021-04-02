@@ -8,8 +8,8 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.biome.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.gen.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.AbstractChunkProvider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil;
@@ -80,7 +80,6 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     
     private final AtomicBoolean generated;
     private final CountDownLatch generatedLatch;
-    //private boolean pregenerated;
     
     public IndevChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);

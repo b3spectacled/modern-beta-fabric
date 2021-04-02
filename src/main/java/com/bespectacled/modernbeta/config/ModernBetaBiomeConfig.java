@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.config;
 
-import com.bespectacled.modernbeta.api.biome.BiomeProviderType.BuiltInBiomeType;
-import com.bespectacled.modernbeta.api.biome.CaveBiomeProviderType.BuiltInCaveBiomeType;
+import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
+import com.bespectacled.modernbeta.api.registry.CaveBiomeProviderRegistry.BuiltInCaveBiomeType;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
 

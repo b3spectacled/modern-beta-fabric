@@ -1,9 +1,9 @@
-package com.bespectacled.modernbeta.gui.provider;
+package com.bespectacled.modernbeta.gui.biome;
 
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gui.AbstractScreenProvider;
+import com.bespectacled.modernbeta.api.AbstractLevelScreenProvider;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -18,7 +18,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class VanillaCustomizeBiomesScreen extends Screen {
-    private final AbstractScreenProvider parent;
+    private final AbstractLevelScreenProvider parent;
     //private final DynamicRegistryManager registryManager;
     private final NbtCompound biomeProviderSettings;
     private final Consumer<NbtCompound> consumer;
@@ -30,7 +30,7 @@ public class VanillaCustomizeBiomesScreen extends Screen {
     private ButtonListWidget buttonList;
     
     public VanillaCustomizeBiomesScreen(
-            AbstractScreenProvider parent, 
+            AbstractLevelScreenProvider parent, 
             DynamicRegistryManager registryManager, 
             NbtCompound biomeProviderSettings,
             Consumer<NbtCompound> consumer

@@ -5,6 +5,7 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.ModernBeta;
 
+import net.minecraft.class_6130;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
@@ -29,6 +30,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.StructureAccessor;
@@ -39,31 +41,25 @@ import net.minecraft.world.Heightmap;
 public class OceanShrineGenerator {
     private static final Identifier SHRINE_BASE = ModernBeta.createId("ocean_shrine/base");
     
-    public static void addPieces(StructureManager manager, BlockPos pos, BlockRotation rot, List<StructurePiece> pieces) {
-        pieces.add(new Piece(manager, pos, SHRINE_BASE, rot));
+    public static void addPieces(StructureManager manager, BlockPos pos, BlockRotation rot, class_6130 class_6130, List<StructurePiece> pieces) {
+        pieces.add(new Piece(manager, pos, class_6130, SHRINE_BASE, rot));
     }
     
     public static class Piece extends SimpleStructurePiece {
-        private final BlockRotation rot;
-        private final Identifier template;
         
-        public Piece(StructureManager manager, BlockPos pos, Identifier template, BlockRotation rot) {
-            super(OldStructures.OCEAN_SHRINE_PIECE, 0);
-            this.pos = pos;
-            this.rot = rot;
-            this.template = template;
-            
-            this.initializeStructureData(manager);
+        public Piece(StructureManager manager, BlockPos pos, class_6130 class_6130, Identifier template, BlockRotation rot) {
+            super(OldStructures.OCEAN_SHRINE_PIECE, 0, manager, template, template.toString(), getPlacementData(rot), pos);
         }
         
         public Piece(ServerWorld serverWorld, NbtCompound tag) {
-            super(OldStructures.OCEAN_SHRINE_PIECE, tag);
-            this.template = new Identifier(tag.getString("Template"));
-            this.rot = BlockRotation.valueOf(tag.getString("Rot"));
-            
-            this.initializeStructureData(serverWorld.getStructureManager());
+            super(OldStructures.OCEAN_SHRINE_PIECE, tag, serverWorld, identifier -> getPlacementData(BlockRotation.valueOf(tag.getString("Rot"))));
+        }
+        
+        private static StructurePlacementData getPlacementData(BlockRotation blockRotation) {
+            return new StructurePlacementData().setRotation(blockRotation).setMirror(BlockMirror.NONE).addProcessor(BlockIgnoreStructureProcessor.IGNORE_AIR_AND_STRUCTURE_BLOCKS);
         }
       
+        /*
         private void initializeStructureData(StructureManager manager) {
             Structure structure = manager.getStructureOrBlank(this.template);
             StructurePlacementData placementData = (new StructurePlacementData())
@@ -71,12 +67,11 @@ public class OceanShrineGenerator {
                 .setMirror(BlockMirror.NONE)
                 .addProcessor(BlockIgnoreStructureProcessor.IGNORE_STRUCTURE_BLOCKS);
             this.setStructureData(structure, this.pos, placementData);      
-        }
+        }*/
         
         protected void writeNbt(ServerWorld serverWorld, NbtCompound NbtCompound) {
             super.writeNbt(serverWorld, NbtCompound);
-            NbtCompound.putString("Template", this.template.toString());
-            NbtCompound.putString("Rot", this.rot.name());
+            NbtCompound.putString("Rot", this.placementData.getRotation().name());
         }
         
         @Override
@@ -110,8 +105,8 @@ public class OceanShrineGenerator {
             
             int y = world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, this.pos.getX(), this.pos.getZ());
             this.pos = new BlockPos(this.pos.getX(), y, this.pos.getZ());
-            
-            BlockPos structPos = Structure.transformAround(new BlockPos(this.structure.getSize().getX() - 1, 0, this.structure.getSize().getZ() - 1), BlockMirror.NONE, this.rot, BlockPos.ORIGIN).add(this.pos);
+            ;
+            BlockPos structPos = Structure.transformAround(new BlockPos(this.structure.getSize().getX() - 1, 0, this.structure.getSize().getZ() - 1), BlockMirror.NONE, this.placementData.getRotation(), BlockPos.ORIGIN).add(blockPos);
             this.pos = new BlockPos(this.pos.getX(), this.method_14829(this.pos, world, structPos), this.pos.getZ());
             return super.generate(world, accessor, chunkGenerator, random, blockBox, chunkPos, blockPos);
         }

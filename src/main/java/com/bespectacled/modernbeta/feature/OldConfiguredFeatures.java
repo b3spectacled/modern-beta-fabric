@@ -20,6 +20,8 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 
+import net.minecraft.class_6005;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.rule.BlockMatchRuleTest;
 import net.minecraft.util.Identifier;
@@ -55,7 +57,7 @@ public class OldConfiguredFeatures {
     
     // Shrubs
     public static final ConfiguredFeature<?, ?> PATCH_CACTUS_ALPHA = register("patch_cactus", ConfiguredFeatures.PATCH_CACTUS.decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP_SPREAD_DOUBLE).repeat(1));
-    public static final ConfiguredFeature<?, ?> MUSHROOM_HELL = register("mushroom_hell", Feature.FLOWER.configure((new RandomPatchFeatureConfig.Builder((new WeightedBlockStateProvider()).addState(Blocks.BROWN_MUSHROOM.getDefaultState(), 2).addState(Blocks.RED_MUSHROOM.getDefaultState(), 1), SimpleBlockPlacer.INSTANCE)).tries(64).build()).decorate(ConfiguredFeatures.Decorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(2));
+    public static final ConfiguredFeature<?, ?> MUSHROOM_HELL = register("mushroom_hell", Feature.FLOWER.configure(new RandomPatchFeatureConfig.Builder(new WeightedBlockStateProvider(method_35926().method_34975(Blocks.BROWN_MUSHROOM.getDefaultState(), 2).method_34975(Blocks.RED_MUSHROOM.getDefaultState(), 1)), SimpleBlockPlacer.INSTANCE).tries(64).build()).decorate(ConfiguredFeatures.Decorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(2));
 
     // Flowers
     public static final ConfiguredFeature<?, ?> PATCH_DANDELION_2 = register("patch_dandelion_2", Feature.FLOWER.configure(new RandomPatchFeatureConfig.Builder(new SimpleBlockStateProvider(Blocks.DANDELION.getDefaultState()), SimpleBlockPlacer.INSTANCE).tries(64).build()).decorate(ConfiguredFeatures.Decorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(2));
@@ -88,6 +90,10 @@ public class OldConfiguredFeatures {
     private static <F extends FeatureConfig> ConfiguredFeature<F, ?> register(String id, ConfiguredFeature<F, ?> feature) {
         CONFIGURED_FEATURES.put(ModernBeta.createId(id), feature);
         return Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, ModernBeta.createId(id), feature);
+    }
+    
+    private static class_6005.class_6006<BlockState> method_35926() {
+        return class_6005.<BlockState>method_34971();
     }
     
     public static void export() {

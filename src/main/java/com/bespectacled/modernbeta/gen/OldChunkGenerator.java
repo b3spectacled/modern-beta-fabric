@@ -9,8 +9,8 @@ import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gen.AbstractChunkProvider;
-import com.bespectacled.modernbeta.api.gen.ChunkProviderType;
+import com.bespectacled.modernbeta.api.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.carver.IOldCaveCarver;
 import com.bespectacled.modernbeta.feature.OldFeatures;
@@ -54,6 +54,7 @@ import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.class_6012;
 
 public class OldChunkGenerator extends NoiseChunkGenerator {
     public static final Codec<OldChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
@@ -84,8 +85,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.biomeSource = (OldBiomeSource)biomeSource;
 
         this.providerSettings = providerSettings;
-        this.chunkProviderType = ChunkProviderType.getChunkProviderType(providerSettings);
-        this.chunkProvider = ChunkProviderType.getProvider(this.chunkProviderType).apply(
+        this.chunkProviderType = ChunkProviderRegistry.getChunkProviderType(providerSettings);
+        this.chunkProvider = ChunkProviderRegistry.get(this.chunkProviderType).apply(
             seed, 
             this.biomeSource.getBiomeProvider(), 
             settings, 
@@ -277,7 +278,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
-    public List<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {
+    public class_6012<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {
         if (spawnGroup == SpawnGroup.MONSTER) {
             if (structureAccessor.getStructureAt(blockPos, false, OldStructures.OCEAN_SHRINE_STRUCTURE).hasChildren()) {
                 return OldStructures.OCEAN_SHRINE_STRUCTURE.getMonsterSpawns();

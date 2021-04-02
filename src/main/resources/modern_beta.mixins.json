@@ -22,7 +22,6 @@
     "client.MixinGeneratorTypeAccessor",
     "client.MixinInGameHud",
     "client.MixinMoreOptionsDialogInvoker",
-    "client.MixinSkyProperties",
     "client.MixinScreenAccessor"
   ],
   "injectors": {

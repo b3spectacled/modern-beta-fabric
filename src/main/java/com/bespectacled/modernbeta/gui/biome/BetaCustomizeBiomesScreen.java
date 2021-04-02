@@ -1,10 +1,10 @@
-package com.bespectacled.modernbeta.gui.provider;
+package com.bespectacled.modernbeta.gui.biome;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.api.gui.AbstractScreenProvider;
+import com.bespectacled.modernbeta.api.AbstractLevelScreenProvider;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
 import com.bespectacled.modernbeta.gui.TextOption;
@@ -25,7 +25,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 public class BetaCustomizeBiomesScreen extends Screen {
-    private final AbstractScreenProvider parent;
+    private final AbstractLevelScreenProvider parent;
     private final DynamicRegistryManager registryManager;
     private final NbtCompound biomeProviderSettings;
     private final Consumer<NbtCompound> consumer;
@@ -36,7 +36,7 @@ public class BetaCustomizeBiomesScreen extends Screen {
     private final Map<String, Identifier> biomeMap;
     
     public BetaCustomizeBiomesScreen(
-        AbstractScreenProvider parent, 
+        AbstractLevelScreenProvider parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings,
         Consumer<NbtCompound> consumer

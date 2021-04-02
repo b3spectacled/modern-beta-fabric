@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gen.ChunkProviderType.BuiltInChunkType;
+import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
 import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
@@ -92,7 +92,7 @@ public class MixinMinecraftServer {
         
         int y = gen.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG, null);
         
-        return new BlockPos(x, y, z);
+        return new BlockPos(x, y - 1, z);
     }
     
     @Unique

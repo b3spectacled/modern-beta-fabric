@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.mojang.serialization.Codec;
 
+import net.minecraft.class_6108;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -15,7 +16,7 @@ import net.minecraft.world.gen.carver.CaveCarver;
 
 public class OldBetaCaveCarver extends CaveCarver implements IOldCaveCarver {
 
-    public OldBetaCaveCarver(Codec<CarverConfig> codec) {
+    public OldBetaCaveCarver(Codec<class_6108> codec) {
         super(codec);
     }
 

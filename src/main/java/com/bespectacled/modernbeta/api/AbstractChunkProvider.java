@@ -1,10 +1,9 @@
-package com.bespectacled.modernbeta.api.gen;
+package com.bespectacled.modernbeta.api;
 
 import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import com.bespectacled.modernbeta.api.biome.AbstractBiomeProvider;
 import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.decorator.OldDecorators;

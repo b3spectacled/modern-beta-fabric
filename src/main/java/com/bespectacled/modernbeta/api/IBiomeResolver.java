@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api.biome;
+package com.bespectacled.modernbeta.api;
 
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;

@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api.biome;
+package com.bespectacled.modernbeta.api.registry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,13 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+
+import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
+
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Map.Entry;
 
 import net.minecraft.nbt.NbtCompound;
 
-public class BiomeProviderType {
+public class BiomeProviderRegistry {
     private static final Set<String> LEGACY_TYPES;
     
     public enum BuiltInBiomeType {
@@ -34,14 +37,14 @@ public class BiomeProviderType {
     
     private static final Map<String, BiFunction<Long, NbtCompound, AbstractBiomeProvider>> REGISTRY = new HashMap<>(); 
     
-    public static void registerProvider(String name, BiFunction<Long, NbtCompound, AbstractBiomeProvider> biomeProvider) {
+    public static void register(String name, BiFunction<Long, NbtCompound, AbstractBiomeProvider> biomeProvider) {
         if (REGISTRY.containsKey(name)) 
             throw new IllegalArgumentException("[Modern Beta] Registry already contains biome provider named " + name);
         
         REGISTRY.put(name, biomeProvider);
     }
     
-    public static BiFunction<Long, NbtCompound, AbstractBiomeProvider> getProvider(String name) {
+    public static BiFunction<Long, NbtCompound, AbstractBiomeProvider> get(String name) {
         if (!REGISTRY.containsKey(name))
             throw new NoSuchElementException("[Modern Beta] Registry does not contain biome provider named " + name);
         

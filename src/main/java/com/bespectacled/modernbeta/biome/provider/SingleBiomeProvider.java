@@ -3,8 +3,8 @@ package com.bespectacled.modernbeta.biome.provider;
 import java.util.Arrays;
 import java.util.List;
 
-import com.bespectacled.modernbeta.api.biome.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.biome.BiomeProviderType.BuiltInBiomeType;
+import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
 import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
 import net.minecraft.nbt.NbtCompound;
