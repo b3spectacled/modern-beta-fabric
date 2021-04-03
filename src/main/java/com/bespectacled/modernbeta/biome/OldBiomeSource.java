@@ -2,9 +2,11 @@ package com.bespectacled.modernbeta.biome;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.AbstractCaveBiomeProvider;
 import com.bespectacled.modernbeta.api.IBiomeResolver;
 import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry;
 import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
+import com.bespectacled.modernbeta.api.registry.CaveBiomeProviderRegistry;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -34,6 +36,9 @@ public class OldBiomeSource extends BiomeSource {
     private final String biomeProviderType;
     private final AbstractBiomeProvider biomeProvider;
     
+    private final String caveBiomeProviderType;
+    private final AbstractCaveBiomeProvider caveBiomeProvider;
+    
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, NbtCompound settings) {
         super(
             BiomeProviderRegistry.get(BiomeProviderRegistry.getBiomeProviderType(settings))
@@ -49,6 +54,9 @@ public class OldBiomeSource extends BiomeSource {
         
         this.biomeProviderType = BiomeProviderRegistry.getBiomeProviderType(settings);
         this.biomeProvider = BiomeProviderRegistry.get(this.biomeProviderType).apply(seed, settings);
+        
+        this.caveBiomeProviderType = CaveBiomeProviderRegistry.getCaveBiomeProviderType(settings);
+        this.caveBiomeProvider = CaveBiomeProviderRegistry.get(this.caveBiomeProviderType).apply(seed, settings);
     }
 
     @Override

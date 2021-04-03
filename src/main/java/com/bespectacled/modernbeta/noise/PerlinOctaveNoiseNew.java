@@ -10,7 +10,7 @@ public class PerlinOctaveNoiseNew extends Noise {
     public PerlinOctaveNoiseNew(WorldGenRandom random, int octaves) {
         this.octaves = octaves;
         this.generatorCollection = new PerlinNoiseSampler[octaves];
-        
+
         for (int j = 0; j < octaves; j++) {
             this.generatorCollection[j] = new PerlinNoiseSampler(random);
         }
