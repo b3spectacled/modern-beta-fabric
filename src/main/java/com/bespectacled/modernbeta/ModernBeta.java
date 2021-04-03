@@ -11,21 +11,21 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.bespectacled.modernbeta.structure.OldStructures;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.OldBiomes;
+import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeModifier;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.OldChunkGeneratorSettings;
+import com.bespectacled.modernbeta.world.gen.OldGeneratorType;
+import com.bespectacled.modernbeta.world.structure.OldStructures;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 
-import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.biome.OldBiomes;
-import com.bespectacled.modernbeta.biome.vanilla.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.bespectacled.modernbeta.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.gen.OldChunkGeneratorSettings;
-import com.bespectacled.modernbeta.gen.OldGeneratorType;
 
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";

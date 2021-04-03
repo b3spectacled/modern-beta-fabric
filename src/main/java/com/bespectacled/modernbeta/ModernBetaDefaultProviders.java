@@ -1,27 +1,18 @@
 package com.bespectacled.modernbeta;
 
-import com.bespectacled.modernbeta.api.WorldProvider;
-import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry;
-import com.bespectacled.modernbeta.api.registry.CaveBiomeProviderRegistry;
-import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry;
-import com.bespectacled.modernbeta.api.registry.ScreenPressActionRegistry;
-import com.bespectacled.modernbeta.api.registry.ScreenProviderRegistry;
-import com.bespectacled.modernbeta.api.registry.WorldProviderRegistry;
+import com.bespectacled.modernbeta.api.registry.*;
 import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
 import com.bespectacled.modernbeta.api.registry.CaveBiomeProviderRegistry.BuiltInCaveBiomeType;
 import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
 import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry.BuiltInChunkSettingsType;
-import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry;
 import com.bespectacled.modernbeta.api.registry.ScreenProviderRegistry.BuiltInScreenType;
-import com.bespectacled.modernbeta.gen.provider.*;
-import com.bespectacled.modernbeta.gen.provider.settings.*;
 import com.bespectacled.modernbeta.gui.ScreenPressActions;
 import com.bespectacled.modernbeta.gui.provider.*;
-import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
-import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
-import com.bespectacled.modernbeta.biome.indev.IndevBiomes;
-import com.bespectacled.modernbeta.biome.provider.*;
-import com.bespectacled.modernbeta.cavebiome.provider.*;
+import com.bespectacled.modernbeta.world.BuiltInWorldProviders;
+import com.bespectacled.modernbeta.world.biome.provider.*;
+import com.bespectacled.modernbeta.world.cavebiome.provider.*;
+import com.bespectacled.modernbeta.world.gen.provider.*;
+import com.bespectacled.modernbeta.world.gen.provider.settings.*;
 
 public class ModernBetaDefaultProviders {
     // Register default chunk providers
@@ -80,77 +71,11 @@ public class ModernBetaDefaultProviders {
     
     // Register default world providers
     public static void registerWorldProviders() {
-        String betaSettings = ModernBeta.createId(BuiltInChunkType.BETA.id).toString();
-        String skylandsSettings = ModernBeta.createId(BuiltInChunkType.SKYLANDS.id).toString();
-        String alphaSettings = ModernBeta.createId(BuiltInChunkType.ALPHA.id).toString();
-        String infdev415Settings = ModernBeta.createId(BuiltInChunkType.INFDEV_415.id).toString();
-        String infdev227Settings = ModernBeta.createId(BuiltInChunkType.INFDEV_227.id).toString();
-        String indevSettings = ModernBeta.createId(BuiltInChunkType.INDEV.id).toString();
-        
-        WorldProviderRegistry.add(new WorldProvider(
-            BuiltInChunkType.BETA.id, 
-            BuiltInChunkSettingsType.BETA.id,
-            betaSettings, 
-            BuiltInScreenType.INF.id,
-            BuiltInBiomeType.BETA.id, 
-            BuiltInCaveBiomeType.VANILLA.id, 
-            BetaBiomes.FOREST_ID.toString(),
-            true
-        ));
-        
-        WorldProviderRegistry.add(new WorldProvider(
-            BuiltInChunkType.SKYLANDS.id, 
-            BuiltInChunkSettingsType.SKYLANDS.id,
-            skylandsSettings, 
-            BuiltInScreenType.SKYLANDS.id, 
-            BuiltInBiomeType.SINGLE.id, 
-            BuiltInCaveBiomeType.NONE.id, 
-            BetaBiomes.SKY_ID.toString(),
-            true
-        ));
-        
-        WorldProviderRegistry.add(new WorldProvider(
-            BuiltInChunkType.ALPHA.id,
-            BuiltInChunkSettingsType.ALPHA.id,
-            alphaSettings, 
-            BuiltInScreenType.INF.id, 
-            BuiltInBiomeType.SINGLE.id, 
-            BuiltInCaveBiomeType.NONE.id, 
-            ClassicBiomes.ALPHA_ID.toString(),
-            true
-        ));
-        
-        WorldProviderRegistry.add(new WorldProvider(
-            BuiltInChunkType.INFDEV_415.id,
-            BuiltInChunkSettingsType.INFDEV_415.id,
-            infdev415Settings, 
-            BuiltInScreenType.INF.id, 
-            BuiltInBiomeType.SINGLE.id, 
-            BuiltInCaveBiomeType.NONE.id, 
-            ClassicBiomes.INFDEV_415_ID.toString(),
-            true
-        ));
-        
-        WorldProviderRegistry.add(new WorldProvider(
-            BuiltInChunkType.INFDEV_227.id,
-            BuiltInChunkSettingsType.INFDEV_227.id,
-            infdev227Settings, 
-            BuiltInScreenType.INFDEV_OLD.id, 
-            BuiltInBiomeType.SINGLE.id, 
-            BuiltInCaveBiomeType.NONE.id, 
-            ClassicBiomes.INFDEV_227_ID.toString(),
-            false
-        ));
-        
-        WorldProviderRegistry.add(new WorldProvider(
-            BuiltInChunkType.INDEV.id,
-            BuiltInChunkSettingsType.INDEV.id,
-            indevSettings, 
-            BuiltInScreenType.INDEV.id, 
-            BuiltInBiomeType.SINGLE.id, 
-            BuiltInCaveBiomeType.NONE.id, 
-            IndevBiomes.INDEV_NORMAL_ID.toString(),
-            false
-        ));
+        WorldProviderRegistry.add(BuiltInWorldProviders.BETA);
+        WorldProviderRegistry.add(BuiltInWorldProviders.SKYLANDS);
+        WorldProviderRegistry.add(BuiltInWorldProviders.ALPHA);
+        WorldProviderRegistry.add(BuiltInWorldProviders.INFDEV_415);
+        WorldProviderRegistry.add(BuiltInWorldProviders.INFDEV_227);
+        WorldProviderRegistry.add(BuiltInWorldProviders.INDEV);
     }
 }

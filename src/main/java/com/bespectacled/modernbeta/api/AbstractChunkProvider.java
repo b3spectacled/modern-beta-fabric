@@ -4,13 +4,13 @@ import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import com.bespectacled.modernbeta.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.compat.Compat;
-import com.bespectacled.modernbeta.decorator.OldDecorators;
 import com.bespectacled.modernbeta.mixin.MixinAquiferSamplerInvoker;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.decorator.OldDecorators;
 
 import net.minecraft.block.Block;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;

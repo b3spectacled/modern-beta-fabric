@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.config;
 
-import com.bespectacled.modernbeta.biome.indev.IndevUtil;
+import com.bespectacled.modernbeta.world.biome.indev.IndevUtil;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;

@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.api.AbstractLevelScreenProvider;
-import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
 import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
+import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;

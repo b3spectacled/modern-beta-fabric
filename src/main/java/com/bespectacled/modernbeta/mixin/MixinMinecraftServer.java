@@ -8,11 +8,11 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
-import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
-import com.bespectacled.modernbeta.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevTheme;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.provider.IndevChunkProvider;
 
 import org.spongepowered.asm.mixin.injection.At;
 import net.fabricmc.fabric.mixin.gamerule.IntRuleAccessor;

@@ -7,11 +7,11 @@ import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry;
 import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry;
 import com.bespectacled.modernbeta.api.registry.ScreenPressActionRegistry;
 import com.bespectacled.modernbeta.api.registry.WorldProviderRegistry;
-import com.bespectacled.modernbeta.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
 import com.bespectacled.modernbeta.gui.provider.IndevLevelScreenProvider;
 import com.bespectacled.modernbeta.util.GUIUtil;
+import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;

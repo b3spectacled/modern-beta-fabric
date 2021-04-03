@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.compat;
 
 import java.util.stream.Collectors;
 
-import com.bespectacled.modernbeta.biome.OldBiomes;
+import com.bespectacled.modernbeta.world.biome.OldBiomes;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;

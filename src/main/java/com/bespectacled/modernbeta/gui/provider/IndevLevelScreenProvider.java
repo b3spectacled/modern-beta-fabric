@@ -7,10 +7,11 @@ import java.util.function.Supplier;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.AbstractLevelScreenProvider;
 import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
-import com.bespectacled.modernbeta.biome.indev.IndevUtil;
-import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevTheme;
-import com.bespectacled.modernbeta.biome.indev.IndevUtil.IndevType;
 import com.bespectacled.modernbeta.gui.TextOption;
+import com.bespectacled.modernbeta.world.biome.indev.IndevUtil;
+import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevTheme;
+import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevType;
+
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.client.option.DoubleOption;

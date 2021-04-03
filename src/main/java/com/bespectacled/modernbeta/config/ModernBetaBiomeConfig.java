@@ -2,8 +2,8 @@ package com.bespectacled.modernbeta.config;
 
 import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
 import com.bespectacled.modernbeta.api.registry.CaveBiomeProviderRegistry.BuiltInCaveBiomeType;
-import com.bespectacled.modernbeta.biome.beta.BetaBiomes;
-import com.bespectacled.modernbeta.biome.classic.ClassicBiomes;
+import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
+import com.bespectacled.modernbeta.world.biome.classic.ClassicBiomes;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
