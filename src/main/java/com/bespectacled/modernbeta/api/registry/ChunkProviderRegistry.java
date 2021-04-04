@@ -21,7 +21,9 @@ public class ChunkProviderRegistry {
         ALPHA("alpha"),
         INFDEV_415("infdev_415"),
         INFDEV_227("infdev_227"),
-        INDEV("indev");
+        INDEV("indev"),
+        BETA_ISLANDS("beta_islands")
+        ;
         
         public final String id;
         

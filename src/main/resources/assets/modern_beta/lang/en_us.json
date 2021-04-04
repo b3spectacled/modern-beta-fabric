@@ -10,6 +10,7 @@
     "createWorld.customize.worldType.indev": "Indev 20100223",
     "createWorld.customize.worldType.infdev_415": "Infdev 20100415",
     "createWorld.customize.worldType.infdev_227": "Infdev 20100227",
+    "createWorld.customize.worldType.beta_islands": "Beta Islands",
     
     "createWorld.customize.biomeType": "Biome Type",
     "createWorld.customize.biomeType.beta": "Beta",

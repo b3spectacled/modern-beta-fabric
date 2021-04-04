@@ -9,6 +9,7 @@ import com.bespectacled.modernbeta.mixin.MixinAquiferSamplerInvoker;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.IntArrayPool;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
 
@@ -57,8 +58,8 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 public abstract class AbstractChunkProvider {
     protected static final Random RAND = new Random();
     
-    protected static final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> HEIGHTMAP_CACHE = new Object2ObjectLinkedOpenHashMap<>(512);
-    protected static final int[] HEIGHTMAP_CHUNK = new int[256];
+    protected final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> heightmapCache;
+    protected final IntArrayPool heightmapPool;
     
     protected final Supplier<ChunkGeneratorSettings> generatorSettings;
     protected final NbtCompound providerSettings;
@@ -263,18 +264,21 @@ public abstract class AbstractChunkProvider {
             new OctaveSimplexNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0)) : 
             new OctavePerlinNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
         
+        this.heightmapCache = new Object2ObjectLinkedOpenHashMap<>(512);
+        this.heightmapPool = new IntArrayPool(64, 16 * 16);
         RAND.setSeed(seed);
-        HEIGHTMAP_CACHE.clear();
         
         // Handle malformed height values
         if (this.minY > this.worldHeight)
             throw new IllegalStateException("[Modern Beta] Minimum height cannot be greater than world height!");
         
+        /*
         if (this.minY % 16 != 0)
             throw new IllegalStateException("[Modern Beta] Minimum height should be a multiple of 16!");
         
         if (this.worldHeight % 16 != 0) 
             throw new IllegalStateException("[Modern Beta] World height should be a multiple of 16!");
+        */
     }
     
     /**

@@ -207,7 +207,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
     @Override
     public int getHeight(int x, int z, Type type) {
-        Integer groundHeight = HEIGHTMAP_CACHE.get(new BlockPos(x, 0, z));
+        Integer groundHeight = heightmapCache.get(new BlockPos(x, 0, z));
         
         if (groundHeight == null) {
             groundHeight = this.sampleHeightmap(x, z);
@@ -473,6 +473,8 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
         double[] heightNoise = this.heightNoisePool.borrowArr();
         this.generateHeightNoiseArr(chunkX * this.noiseSizeX, 0, chunkZ * this.noiseSizeZ, heightNoise);
+        
+        int[] heightmap = this.heightmapPool.borrowArr();
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
@@ -506,7 +508,7 @@ public class BetaChunkProvider extends AbstractChunkProvider {
                                 int z = (subChunkZ * this.horizontalNoiseResolution + subZ);
                                 
                                 if (density > 0.0) {
-                                    HEIGHTMAP_CHUNK[z + x * 16] = y;
+                                    heightmap[z + x * 16] = y;
                                 }
 
                                 density += progress;
@@ -527,11 +529,12 @@ public class BetaChunkProvider extends AbstractChunkProvider {
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                HEIGHTMAP_CACHE.put(new BlockPos(startX + x, 0, startZ + z), HEIGHTMAP_CHUNK[z + x * 16] + 1);
+                heightmapCache.put(new BlockPos(startX + x, 0, startZ + z), heightmap[z + x * 16] + 1);
             }
         }
         
+        this.heightmapPool.returnArr(heightmap);
         this.heightNoisePool.returnArr(heightNoise);
-        return HEIGHTMAP_CACHE.get(new BlockPos(sampleX, 0, sampleZ));
+        return heightmapCache.get(new BlockPos(sampleX, 0, sampleZ));
     }
 }

@@ -80,4 +80,16 @@ public class ChunkProviderSettings {
         
         return settings;
     }
+    
+    public static NbtCompound createSettingsBetaIslands() {
+        NbtCompound settings = new NbtCompound();
+        
+        settings.putString("worldType", BuiltInChunkType.BETA_ISLANDS.id);
+        settings.putBoolean("generateOceans", CONFIG.generateOceans);
+        settings.putBoolean("generateNoiseCaves", CONFIG.generateNoiseCaves);
+        settings.putBoolean("generateAquifers", CONFIG.generateAquifers);
+        settings.putBoolean("generateDeepslate", CONFIG.generateDeepslate);
+        
+        return settings;
+    }
 }

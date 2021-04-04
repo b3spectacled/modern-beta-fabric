@@ -48,8 +48,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     private PerlinOctaveNoise heightNoise3;
     private PerlinOctaveNoise islandNoise;
     
-    private PerlinOctaveNoise noise5;
-    private PerlinOctaveNoise noise6;
+    private PerlinOctaveNoise dirtNoise;
+    private PerlinOctaveNoise floatingNoise;
     
     private PerlinOctaveNoiseCombined erodeNoise1;
     private PerlinOctaveNoiseCombined erodeNoise2;
@@ -363,8 +363,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             heightNoise3 = new PerlinOctaveNoise(RAND, 6, false);
             islandNoise = new PerlinOctaveNoise(RAND, 2, false);
             
-            noise5 = new PerlinOctaveNoise(RAND, 8, false);
-            noise6 = new PerlinOctaveNoise(RAND, 8, false);
+            dirtNoise = new PerlinOctaveNoise(RAND, 8, false);
+            floatingNoise = new PerlinOctaveNoise(RAND, 8, false);
             
             erodeNoise1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
             erodeNoise2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
@@ -372,68 +372,14 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             sandNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
             gravelNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
             
-            generateHeightmap(heightmap);
-            erodeTerrain(heightmap);
-             
-            ModernBeta.LOGGER.log(Level.INFO, "[Indev] Soiling..");
-            for (int x = 0; x < this.width; ++x) {
-                 
-                double var1 = Math.abs((x / (this.width - 1.0) - 0.5) * 2.0);
-                 
-                 //relZ = 0;
-                 for (int z = 0; z < this.length; ++z) {
-                     
-                     double var2 = Math.max(var1, Math.abs(z / (this.length - 1.0) - 0.5) * 2.0);
-                     var2 = var2 * var2 * var2;
-                     
-                     int dirtTransition = heightmap[x + z * this.width] + this.waterLevel;
-                     int dirtThickness = (int)(noise5.sample(x, z) / 24.0) - 4;
-                 
-                     int stoneTransition = dirtTransition + dirtThickness;
-                     heightmap[x + z * this.width] = Math.max(dirtTransition, stoneTransition);
-                     
-                     if (heightmap[x + z * this.width] > this.height - 2) {
-                         heightmap[x + z * this.width] = this.height - 2;
-                     }
-                     
-                     if (heightmap[x + z * this.width] <= 0) {
-                         heightmap[x + z * this.width] = 1;
-                     }
-                     
-                     double var4 = noise6.sample(x * 2.3, z * 2.3) / 24.0;
-                     int var5 = (int)(Math.sqrt(Math.abs(var4)) * Math.signum(var4) * 20.0) + this.waterLevel;
-                     var5 = (int)(var5 * (1.0 - var2) + var2 * this.height);
-                     
-                     if (var5 > this.waterLevel) {
-                         var5 = this.height;
-                     }
-                     
-                     for (int y = 0; y < this.height; ++y) {
-                         Block blockToSet = Blocks.AIR;
-                         
-                         if (y <= dirtTransition)
-                             blockToSet = Blocks.DIRT;
-                         
-                         if (y <= stoneTransition)
-                             blockToSet = Blocks.STONE;
-                         
-                         if (this.levelType == IndevType.FLOATING && y < var5)
-                             blockToSet = Blocks.AIR;
-
-                         Block someBlock = blockArr[x][y][z];
-                         
-                         if (someBlock.equals(Blocks.AIR)) {
-                             blockArr[x][y][z] = blockToSet;
-                         }
-                     }
-                 }
-            }
-            
-            buildSurface(blockArr, heightmap);
-            carveTerrain(blockArr);
-            floodFluid(blockArr);   
-            floodLava(blockArr);
-            plantSurface(blockArr);
+            this.generateHeightmap(heightmap);
+            this.erodeTerrain(heightmap);
+            this.soilSurface(blockArr, heightmap);
+            this.growSurface(blockArr, heightmap);
+            this.carveTerrain(blockArr);
+            this.floodFluid(blockArr);   
+            this.floodLava(blockArr);
+            this.plantSurface(blockArr);
         }
         
         return blockArr;
@@ -452,9 +398,9 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                 double heightLow = heightNoise1.sample(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
                 double heightHigh = heightNoise2.sample(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
                 
-                double heightCheck = heightNoise3.sample(x, z) / 8.0;
+                double heightSelector = heightNoise3.sample(x, z) / 8.0;
                 
-                if (heightCheck > 0.0) {
+                if (heightSelector > 0.0) {
                     heightHigh = heightLow;
                 }
                 
@@ -506,7 +452,65 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         }
     }
     
-    private void buildSurface(Block[][][] blockArr, int[] heightmap) {
+    private void soilSurface(Block[][][] blockArr, int[] heightmap) {
+        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Soiling..");
+        for (int x = 0; x < this.width; ++x) {
+             
+            double var1 = Math.abs((x / (this.width - 1.0) - 0.5) * 2.0);
+             
+             //relZ = 0;
+             for (int z = 0; z < this.length; ++z) {
+                 
+                 double var2 = Math.max(var1, Math.abs(z / (this.length - 1.0) - 0.5) * 2.0);
+                 var2 = var2 * var2 * var2;
+                 
+                 int dirtTransition = heightmap[x + z * this.width] + this.waterLevel;
+                 int dirtThickness = (int)(dirtNoise.sample(x, z) / 24.0) - 4;
+             
+                 int stoneTransition = dirtTransition + dirtThickness;
+                 heightmap[x + z * this.width] = Math.max(dirtTransition, stoneTransition);
+                 
+                 if (heightmap[x + z * this.width] > this.height - 2) {
+                     heightmap[x + z * this.width] = this.height - 2;
+                 }
+                 
+                 if (heightmap[x + z * this.width] <= 0) {
+                     heightmap[x + z * this.width] = 1;
+                 }
+                 
+                 double var4 = floatingNoise.sample(x * 2.3, z * 2.3) / 24.0;
+                 
+                 // Rounds out the bottom of terrain to form floating islands
+                 int var5 = (int)(Math.sqrt(Math.abs(var4)) * Math.signum(var4) * 20.0) + this.waterLevel;
+                 var5 = (int)(var5 * (1.0 - var2) + var2 * this.height);
+                 
+                 if (var5 > this.waterLevel) {
+                     var5 = this.height;
+                 }
+                 
+                 for (int y = 0; y < this.height; ++y) {
+                     Block blockToSet = Blocks.AIR;
+                     
+                     if (y <= dirtTransition)
+                         blockToSet = Blocks.DIRT;
+                     
+                     if (y <= stoneTransition)
+                         blockToSet = Blocks.STONE;
+                     
+                     if (this.levelType == IndevType.FLOATING && y < var5)
+                         blockToSet = Blocks.AIR;
+
+                     Block someBlock = blockArr[x][y][z];
+                     
+                     if (someBlock.equals(Blocks.AIR)) {
+                         blockArr[x][y][z] = blockToSet;
+                     }
+                 }
+             }
+        }
+    }
+    
+    private void growSurface(Block[][][] blockArr, int[] heightmap) {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Growing..");
         
         int seaLevel = this.waterLevel - 1;

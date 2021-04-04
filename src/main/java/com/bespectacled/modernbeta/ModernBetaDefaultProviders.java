@@ -23,6 +23,7 @@ public class ModernBetaDefaultProviders {
         ChunkProviderRegistry.register(BuiltInChunkType.INFDEV_415.id, Infdev415ChunkProvider::new);
         ChunkProviderRegistry.register(BuiltInChunkType.INFDEV_227.id, Infdev227ChunkProvider::new);
         ChunkProviderRegistry.register(BuiltInChunkType.INDEV.id, IndevChunkProvider::new);
+        ChunkProviderRegistry.register(BuiltInChunkType.BETA_ISLANDS.id, BetaIslandsChunkProvider::new);
     }
     
     // Register default chunk settings
@@ -33,6 +34,7 @@ public class ModernBetaDefaultProviders {
         ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.INFDEV_415.id, ChunkProviderSettings::createSettingsInfdev415);
         ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.INFDEV_227.id, ChunkProviderSettings::createSettingsInfdev227);
         ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.INDEV.id, ChunkProviderSettings::createSettingsIndev);
+        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.BETA_ISLANDS.id, ChunkProviderSettings::createSettingsBetaIslands);
     }
     
     // Register default biome providers
@@ -77,5 +79,6 @@ public class ModernBetaDefaultProviders {
         WorldProviderRegistry.add(BuiltInWorldProviders.INFDEV_415);
         WorldProviderRegistry.add(BuiltInWorldProviders.INFDEV_227);
         WorldProviderRegistry.add(BuiltInWorldProviders.INDEV);
+        WorldProviderRegistry.add(BuiltInWorldProviders.BETA_ISLANDS);
     }
 }
