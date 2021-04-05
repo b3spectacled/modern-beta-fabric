@@ -6,7 +6,6 @@ import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
 import com.bespectacled.modernbeta.api.AbstractChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.SimplexNoise;
-import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.DoubleArrayPool;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
@@ -43,6 +42,9 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
     private final DoubleArrayPool heightNoisePool;
     private final DoubleArrayPool beachNoisePool;
     
+    float islandNoiseScale;
+    float islandNoiseOffset;
+    
     public BetaIslandsChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
         super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
@@ -62,6 +64,10 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
         // Noise array pools
         this.heightNoisePool = new DoubleArrayPool(64, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1));
         this.beachNoisePool = new DoubleArrayPool(64, 16 * 16);
+        
+        // Beta Islands settings
+        this.islandNoiseScale = this.providerSettings.contains("islandNoiseScale") ? this.providerSettings.getInt("islandNoiseScale") : 300F;
+        this.islandNoiseOffset = this.providerSettings.contains("islandNoiseOffset") ? this.providerSettings.getInt("islandNoiseOffset") : 0.25F;
         
         BetaClimateSampler.INSTANCE.setSeed(seed);
         setForestOctaves(forestNoiseOctaves);
@@ -387,6 +393,9 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
         float noiseX = x + noiseStartX;
         float noiseZ = z + noiseStartZ;
         
+        float islandNoiseScale = this.islandNoiseScale;
+        float islandNoiseOffset = this.islandNoiseOffset;
+        
         int chunkStart = 64;
         float dist = noiseX * noiseX + noiseZ * noiseZ;
         int distStart = (int)Math.pow(chunkStart * this.noiseSizeX, 2) * 2;
@@ -397,7 +406,7 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
         islandOffset = MathHelper.clamp(islandOffset, -200.0F, 0.0F);
             
         if (dist > distStart) {
-            float islandAddition = (float)this.islandNoise.sample(noiseX / 200D, noiseZ / 200D, 1.0, 1.0) + 0.25F;
+            float islandAddition = (float)this.islandNoise.sample(noiseX / islandNoiseScale, noiseZ / islandNoiseScale, 1.0, 1.0) + islandNoiseOffset;
             islandAddition = MathHelper.clamp(islandAddition, 0.0F, 1.0F);
             islandAddition = (float)MathHelper.clampedLerp(0.0F, islandAddition, (dist - distStart) / lerpSize);
             

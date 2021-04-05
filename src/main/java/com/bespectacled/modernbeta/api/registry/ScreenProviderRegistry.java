@@ -16,7 +16,9 @@ public class ScreenProviderRegistry {
         INF("inf"),
         SKYLANDS("skylands"),
         INFDEV_OLD("infdev_old"),
-        INDEV("indev");
+        INDEV("indev"),
+        ISLAND("island")
+        ;
         
         public final String id;
         

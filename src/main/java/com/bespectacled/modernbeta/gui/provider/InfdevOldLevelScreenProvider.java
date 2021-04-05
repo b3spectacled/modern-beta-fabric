@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.gui.provider;
 
 import java.util.function.BiConsumer;
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.gui.TextOption;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.CyclingOption;
@@ -49,5 +50,7 @@ public class InfdevOldLevelScreenProvider extends InfLevelScreenProvider {
                    this.generateInfdevWall = value;
                    this.chunkProviderSettings.putBoolean("generateInfdevWall", this.generateInfdevWall);
        }));
+       
+       this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
     }
 }

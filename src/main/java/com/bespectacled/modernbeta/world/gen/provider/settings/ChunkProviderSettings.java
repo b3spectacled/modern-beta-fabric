@@ -90,6 +90,9 @@ public class ChunkProviderSettings {
         settings.putBoolean("generateAquifers", CONFIG.generateAquifers);
         settings.putBoolean("generateDeepslate", CONFIG.generateDeepslate);
         
+        settings.putFloat("islandNoiseScale", CONFIG.islandNoiseScale);
+        settings.putFloat("islandNoiseOffset", CONFIG.islandNoiseOffset);
+        
         return settings;
     }
 }

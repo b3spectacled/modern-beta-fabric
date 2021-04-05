@@ -38,6 +38,9 @@
     "createWorld.customize.vanilla.biomeSize": "Biome Size",
     "createWorld.customize.vanilla.oceanBiomeSize": "Ocean Biome Size",
     
+    "createWorld.customize.island.islandNoiseScale": "Island Noise Scale",
+    "createWorld.customize.island.islandNoiseOffset": "Island Noise Offset",
+    
     "createWorld.customize.indev.levelType": "Level Type",
     "createWorld.customize.indev.levelTheme": "Level Theme",
     "createWorld.customize.indev.levelWidth": "Level Width",

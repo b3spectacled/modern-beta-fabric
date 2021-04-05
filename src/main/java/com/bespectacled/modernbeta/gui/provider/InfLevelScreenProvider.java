@@ -90,6 +90,7 @@ public class InfLevelScreenProvider extends AbstractLevelScreenProvider {
                 this.chunkProviderSettings.putBoolean("generateDeepslate", this.generateDeepslate);
         }));
         
-        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
+        if (!(this instanceof InfdevOldLevelScreenProvider) && !(this instanceof IslandLevelScreenProvider))
+            this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
     }
 }

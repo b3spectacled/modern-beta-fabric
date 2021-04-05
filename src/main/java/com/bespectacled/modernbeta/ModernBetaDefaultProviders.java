@@ -62,6 +62,7 @@ public class ModernBetaDefaultProviders {
         ScreenProviderRegistry.register(BuiltInScreenType.INFDEV_OLD.id, InfdevOldLevelScreenProvider::new);
         ScreenProviderRegistry.register(BuiltInScreenType.INDEV.id, IndevLevelScreenProvider::new);
         ScreenProviderRegistry.register(BuiltInScreenType.SKYLANDS.id, SkylandsLevelScreenProvider::new);
+        ScreenProviderRegistry.register(BuiltInScreenType.ISLAND.id, IslandLevelScreenProvider::new);
     }
     
     // Register default settings screen actions (Note: Match identifiers with biome ids!)

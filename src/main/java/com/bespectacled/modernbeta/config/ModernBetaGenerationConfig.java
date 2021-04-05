@@ -53,4 +53,12 @@ public class ModernBetaGenerationConfig implements ConfigData {
     @ConfigEntry.Gui.Excluded
     public float indevCaveRadius = 1.0f;
     
+    /* Beta Islands Generation */
+    
+    @ConfigEntry.Gui.Excluded
+    public float islandNoiseScale = 300F;
+    
+    @ConfigEntry.Gui.Excluded
+    public float islandNoiseOffset = 0.25F;
+    
 }

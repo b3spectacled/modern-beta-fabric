@@ -91,7 +91,7 @@ public class BuiltInWorldProviders {
             BuiltInChunkType.BETA_ISLANDS.id,
             BuiltInChunkSettingsType.BETA_ISLANDS.id,
             OldChunkGeneratorSettings.BETA_ISLANDS.toString(),
-            BuiltInScreenType.INF.id,
+            BuiltInScreenType.ISLAND.id,
             BuiltInBiomeType.BETA.id,
             BuiltInCaveBiomeType.VANILLA.id,
             BetaBiomes.FOREST_ID.toString(),
