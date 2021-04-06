@@ -4,6 +4,8 @@ import java.util.Random;
 
 /*
  * Reference: http://weber.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
+ * 
+ * Tested output range, on 100000 * 100000 sample: -0.885539/0.885539
  */
 public class SimplexNoise extends Noise {
     private static int[][] gradients;

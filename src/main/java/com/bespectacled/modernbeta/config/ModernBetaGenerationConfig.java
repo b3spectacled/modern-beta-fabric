@@ -56,9 +56,18 @@ public class ModernBetaGenerationConfig implements ConfigData {
     /* Beta Islands Generation */
     
     @ConfigEntry.Gui.Excluded
-    public float islandNoiseScale = 300F;
+    public int centerOceanLerpDistance = 16;
     
     @ConfigEntry.Gui.Excluded
-    public float islandNoiseOffset = 0.25F;
+    public int centerOceanRadius = 64;
+    
+    @ConfigEntry.Gui.Excluded
+    public float centerIslandFalloff = 4.0F;
+    
+    @ConfigEntry.Gui.Excluded
+    public float outerIslandNoiseScale = 300F;
+    
+    @ConfigEntry.Gui.Excluded
+    public float outerIslandNoiseOffset = 0.25F;
     
 }

@@ -14,6 +14,18 @@ import com.bespectacled.modernbeta.world.cavebiome.provider.*;
 import com.bespectacled.modernbeta.world.gen.provider.*;
 import com.bespectacled.modernbeta.world.gen.provider.settings.*;
 
+/*
+ * Registration of built-in providers for various things.
+ * 
+ * For new chunk generators, generally the following should be registered:
+ *  - Chunk Provider, Chunk Provider Settings, Chunk Generator Settings (register with MC registry, technically optional), and World Provider.
+ *  
+ * For new biome providers, generally the following should be registered:
+ *  - Biome Provider or Cave Biome Provider, Biome Screen Press Action (optional, for customizing biome provider).
+ *  
+ * A screen provider should be registered if you want to add additional buttons for new settings for a world type.
+ *  
+ */
 public class ModernBetaDefaultProviders {
     // Register default chunk providers
     public static void registerChunkProviders() {

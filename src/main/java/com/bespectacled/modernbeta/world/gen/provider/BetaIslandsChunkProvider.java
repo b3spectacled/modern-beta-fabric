@@ -42,8 +42,11 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
     private final DoubleArrayPool heightNoisePool;
     private final DoubleArrayPool beachNoisePool;
     
-    float islandNoiseScale;
-    float islandNoiseOffset;
+    private final int centerOceanLerpDistance;
+    private final int centerOceanRadius;
+    private final float centerIslandFalloff;
+    private final float outerIslandNoiseScale;
+    private final float outerIslandNoiseOffset;
     
     public BetaIslandsChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
@@ -66,8 +69,11 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
         this.beachNoisePool = new DoubleArrayPool(64, 16 * 16);
         
         // Beta Islands settings
-        this.islandNoiseScale = this.providerSettings.contains("islandNoiseScale") ? this.providerSettings.getInt("islandNoiseScale") : 300F;
-        this.islandNoiseOffset = this.providerSettings.contains("islandNoiseOffset") ? this.providerSettings.getInt("islandNoiseOffset") : 0.25F;
+        this.centerOceanLerpDistance = this.providerSettings.contains("centerOceanLerpDistance") ? this.providerSettings.getInt("centerOceanLerpDistance") : 16;
+        this.centerOceanRadius = this.providerSettings.contains("centerOceanRadius") ? this.providerSettings.getInt("centerOceanRadius") : 64;
+        this.centerIslandFalloff = this.providerSettings.contains("centerIslandFalloff") ? this.providerSettings.getFloat("centerIslandFalloff") : 4F;
+        this.outerIslandNoiseScale = this.providerSettings.contains("outerIslandNoiseScale") ? this.providerSettings.getFloat("outerIslandNoiseScale") : 300F;
+        this.outerIslandNoiseOffset = this.providerSettings.contains("outerIslandNoiseOffset") ? this.providerSettings.getFloat("outerIslandNoiseOffset") : 0.25F;
         
         BetaClimateSampler.INSTANCE.setSeed(seed);
         setForestOctaves(forestNoiseOctaves);
@@ -393,26 +399,30 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
         float noiseX = x + noiseStartX;
         float noiseZ = z + noiseStartZ;
         
-        float islandNoiseScale = this.islandNoiseScale;
-        float islandNoiseOffset = this.islandNoiseOffset;
+        float oceanDepth = 200.0F;
         
-        int chunkStart = 64;
+        int centerOceanLerpDistance = this.centerOceanLerpDistance * this.noiseSizeX;
+        int centerOceanRadius = this.centerOceanRadius * this.noiseSizeX;
+        float centerIslandFalloff = this.centerIslandFalloff;
+        float outerIslandNoiseScale = this.outerIslandNoiseScale;
+        float outerIslandNoiseOffset = this.outerIslandNoiseOffset;
+        
         float dist = noiseX * noiseX + noiseZ * noiseZ;
-        int distStart = (int)Math.pow(chunkStart * this.noiseSizeX, 2) * 2;
+        float radius = (float)MathHelper.sqrt(dist);
         
-        float lerpSize = 4096F * 8F;
-        
-        float islandOffset = 100.0F - MathHelper.sqrt(dist);
-        islandOffset = MathHelper.clamp(islandOffset, -200.0F, 0.0F);
+        float islandOffset = 100.0F - radius * centerIslandFalloff;
+        islandOffset = MathHelper.clamp(islandOffset, -oceanDepth, 0.0F);
             
-        if (dist > distStart) {
-            float islandAddition = (float)this.islandNoise.sample(noiseX / islandNoiseScale, noiseZ / islandNoiseScale, 1.0, 1.0) + islandNoiseOffset;
+        if (radius > centerOceanRadius) {
+            float islandAddition = (float)this.islandNoise.sample(noiseX / outerIslandNoiseScale, noiseZ / outerIslandNoiseScale, 1.0, 1.0) + outerIslandNoiseOffset;
             islandAddition = MathHelper.clamp(islandAddition, 0.0F, 1.0F);
-            islandAddition = (float)MathHelper.clampedLerp(0.0F, islandAddition, (dist - distStart) / lerpSize);
             
-            islandAddition *= 250F;
-            islandOffset += islandAddition;
-            islandOffset = MathHelper.clamp(islandOffset, -200.0F, 0.0F);
+            // Interpolate noise addition so there isn't a sharp cutoff at start of ocean ring edge.
+            islandAddition = (float)MathHelper.clampedLerp(0.0F, islandAddition, (radius - centerOceanRadius) / centerOceanLerpDistance);
+            
+            islandAddition *= oceanDepth / 0.885539; // 0.885539 = Simplex upper range
+            islandOffset += islandAddition + 20F;
+            islandOffset = MathHelper.clamp(islandOffset, -oceanDepth, 0.0F);
         }
         
         return islandOffset;
@@ -490,6 +500,8 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
         
         // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
         double densityWithOffset = density - densityOffset;
+        
+        // Add island offset
         densityWithOffset += islandOffset;
         
         // Sample for noise caves

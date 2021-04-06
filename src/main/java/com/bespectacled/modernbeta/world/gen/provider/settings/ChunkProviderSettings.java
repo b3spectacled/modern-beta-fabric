@@ -90,8 +90,11 @@ public class ChunkProviderSettings {
         settings.putBoolean("generateAquifers", CONFIG.generateAquifers);
         settings.putBoolean("generateDeepslate", CONFIG.generateDeepslate);
         
-        settings.putFloat("islandNoiseScale", CONFIG.islandNoiseScale);
-        settings.putFloat("islandNoiseOffset", CONFIG.islandNoiseOffset);
+        settings.putInt("centerOceanLerpDistance", CONFIG.centerOceanLerpDistance);
+        settings.putInt("centerOceanRadius", CONFIG.centerOceanRadius);
+        settings.putFloat("centerIslandFalloff", CONFIG.centerIslandFalloff);
+        settings.putFloat("outerIslandNoiseScale", CONFIG.outerIslandNoiseScale);
+        settings.putFloat("outerIslandNoiseOffset", CONFIG.outerIslandNoiseOffset);
         
         return settings;
     }
