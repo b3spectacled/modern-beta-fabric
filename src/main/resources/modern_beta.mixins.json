@@ -21,8 +21,7 @@
     "client.MixinBackgroundRenderer",
     "client.MixinGeneratorTypeAccessor",
     "client.MixinInGameHud",
-    "client.MixinMoreOptionsDialogInvoker",
-    "client.MixinScreenAccessor"
+    "client.MixinMoreOptionsDialogInvoker"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -4,7 +4,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry;
-import com.bespectacled.modernbeta.api.registry.ScreenProviderRegistry;
+import com.bespectacled.modernbeta.api.registry.WorldScreenProviderRegistry;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtCompound;
@@ -82,13 +82,13 @@ public class WorldProvider {
         return ChunkProviderRegistry.get(this.chunkProvider).apply(seed, biomeProvider, generatorSettings, providerSettings);
     }
     
-    public AbstractLevelScreenProvider createLevelScreen(
+    public AbstractWorldScreenProvider createLevelScreen(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings,
         NbtCompound chunkProviderSettings, 
         BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
-        return ScreenProviderRegistry.get(this.guiProvider).apply(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
+        return WorldScreenProviderRegistry.get(this.guiProvider).apply(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
     }
 }

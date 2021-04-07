@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.gui.biome;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractLevelScreenProvider;
+import com.bespectacled.modernbeta.api.AbstractWorldScreenProvider;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -17,8 +17,8 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class VanillaCustomizeBiomesScreen extends Screen {
-    private final AbstractLevelScreenProvider parent;
+public class VanillaBiomeScreenProvider extends Screen {
+    private final AbstractWorldScreenProvider parent;
     //private final DynamicRegistryManager registryManager;
     private final NbtCompound biomeProviderSettings;
     private final Consumer<NbtCompound> consumer;
@@ -29,27 +29,36 @@ public class VanillaCustomizeBiomesScreen extends Screen {
     
     private ButtonListWidget buttonList;
     
-    public VanillaCustomizeBiomesScreen(
-            AbstractLevelScreenProvider parent, 
-            DynamicRegistryManager registryManager, 
-            NbtCompound biomeProviderSettings,
-            Consumer<NbtCompound> consumer
-        ) {
-            super(new TranslatableText("createWorld.customize.vanilla.title"));
-            
-            this.parent = parent;
-            //this.registryManager = registryManager;
-            this.biomeProviderSettings = biomeProviderSettings;
-            this.consumer = consumer;
-            this.vanillaBiomeSettings = new NbtCompound();
-            
-            this.vanillaBiomeSize = this.biomeProviderSettings.contains("vanillaBiomeSize") ? 
-                this.biomeProviderSettings.getInt("vanillaBiomeSize") :
-                ModernBeta.BETA_CONFIG.biomeConfig.vanillaBiomeSize;
-            
-            this.vanillaOceanBiomeSize = this.biomeProviderSettings.contains("vanillaOceanBiomeSize") ?
-                this.biomeProviderSettings.getInt("vanillaOceanBiomeSize") :
-                ModernBeta.BETA_CONFIG.biomeConfig.vanillaOceanBiomeSize;
+    private VanillaBiomeScreenProvider(
+        AbstractWorldScreenProvider parent, 
+        DynamicRegistryManager registryManager, 
+        NbtCompound biomeProviderSettings,
+        Consumer<NbtCompound> consumer
+    ) {
+        super(new TranslatableText("createWorld.customize.vanilla.title"));
+        
+        this.parent = parent;
+        //this.registryManager = registryManager;
+        this.biomeProviderSettings = biomeProviderSettings;
+        this.consumer = consumer;
+        this.vanillaBiomeSettings = new NbtCompound();
+        
+        this.vanillaBiomeSize = this.biomeProviderSettings.contains("vanillaBiomeSize") ? 
+            this.biomeProviderSettings.getInt("vanillaBiomeSize") :
+            ModernBeta.BETA_CONFIG.biomeConfig.vanillaBiomeSize;
+        
+        this.vanillaOceanBiomeSize = this.biomeProviderSettings.contains("vanillaOceanBiomeSize") ?
+            this.biomeProviderSettings.getInt("vanillaOceanBiomeSize") :
+            ModernBeta.BETA_CONFIG.biomeConfig.vanillaOceanBiomeSize;
+    }
+    
+    public static VanillaBiomeScreenProvider create(AbstractWorldScreenProvider screenProvider) {
+        return new VanillaBiomeScreenProvider(
+            screenProvider, 
+            screenProvider.getRegistryManager(), 
+            screenProvider.getBiomeProviderSettings(),
+            vanillaBiomeSettings -> screenProvider.setBiomeProviderSettings(vanillaBiomeSettings)
+        );
     }
     
     @Override

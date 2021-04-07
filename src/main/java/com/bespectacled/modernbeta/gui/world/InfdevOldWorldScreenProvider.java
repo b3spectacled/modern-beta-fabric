@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.gui.provider;
+package com.bespectacled.modernbeta.gui.world;
 
 import java.util.function.BiConsumer;
 import com.bespectacled.modernbeta.ModernBeta;
@@ -9,11 +9,11 @@ import net.minecraft.client.option.CyclingOption;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class InfdevOldLevelScreenProvider extends InfLevelScreenProvider {
+public class InfdevOldWorldScreenProvider extends InfWorldScreenProvider {
     private boolean generateInfdevPyramid;
     private boolean generateInfdevWall;
     
-    public InfdevOldLevelScreenProvider(
+    public InfdevOldWorldScreenProvider(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings, 

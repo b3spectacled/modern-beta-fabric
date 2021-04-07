@@ -2,14 +2,15 @@ package com.bespectacled.modernbeta.api;
 
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry;
+import com.bespectacled.modernbeta.api.registry.BiomeScreenProviderRegistry;
 import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry;
-import com.bespectacled.modernbeta.api.registry.ScreenPressActionRegistry;
 import com.bespectacled.modernbeta.api.registry.WorldProviderRegistry;
 import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
-import com.bespectacled.modernbeta.gui.provider.IndevLevelScreenProvider;
+import com.bespectacled.modernbeta.gui.world.IndevWorldScreenProvider;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 
@@ -28,7 +29,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public abstract class AbstractLevelScreenProvider extends Screen {
+public abstract class AbstractWorldScreenProvider extends Screen {
     protected final CreateWorldScreen parent;
     protected final DynamicRegistryManager registryManager;
     protected final NbtCompound biomeProviderSettings;
@@ -44,7 +45,7 @@ public abstract class AbstractLevelScreenProvider extends Screen {
     protected ButtonListWidget buttonList;
     protected ScreenButtonOption biomeOption;
     
-    public AbstractLevelScreenProvider(
+    public AbstractWorldScreenProvider(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings, 
@@ -118,10 +119,13 @@ public abstract class AbstractLevelScreenProvider extends Screen {
             .filter(str -> !BiomeProviderRegistry.getLegacyTypes().contains(str))
             .toArray(String[]::new);
         
+        Function<AbstractWorldScreenProvider, Screen> biomeScreenFunction = BiomeScreenProviderRegistry.get(this.biomeType);
+        Screen biomeScreen = biomeScreenFunction != null ? biomeScreenFunction.apply(this) : null;
+        
         this.biomeOption = new ScreenButtonOption(
             this.biomeType.equals(BuiltInBiomeType.SINGLE.id) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
             this.biomeType.equals(BuiltInBiomeType.SINGLE.id) ? GUIUtil.createTranslatableBiomeStringFromId(this.singleBiome) : "",
-            ScreenPressActionRegistry.get(this.biomeType).apply(this)
+            buttonWidget -> this.client.openScreen(biomeScreen)
         );
         
         this.buttonList.addOptionEntry(
@@ -136,8 +140,8 @@ public abstract class AbstractLevelScreenProvider extends Screen {
                     String defaultBiome = this.worldProvider.getDefaultBiome();
                     
                     // Change default biome if on Indev world type
-                    if (this instanceof IndevLevelScreenProvider) {
-                        defaultBiome = ((IndevLevelScreenProvider)this).getTheme().getDefaultBiome().toString();
+                    if (this instanceof IndevWorldScreenProvider) {
+                        defaultBiome = ((IndevWorldScreenProvider)this).getTheme().getDefaultBiome().toString();
                     }
 
                     NbtCompound newBiomeProviderSettings = BiomeProviderSettings.createBiomeSettings(

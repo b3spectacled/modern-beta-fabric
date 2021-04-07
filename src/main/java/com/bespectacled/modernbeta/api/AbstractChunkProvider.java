@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import com.bespectacled.modernbeta.compat.Compat;
+import com.bespectacled.modernbeta.compat.CompatBiomes;
 import com.bespectacled.modernbeta.mixin.MixinAquiferSamplerInvoker;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -567,7 +567,7 @@ public abstract class AbstractChunkProvider {
         int y = mutable.getY();
         int z = mutable.getZ();
         
-        if (Compat.BIOMES_WITH_CUSTOM_SURFACES.contains(biomeId)) {
+        if (CompatBiomes.hasCustomSurface(biomeId)) {
             double surfaceNoise = this.surfaceDepthNoise.sample(x * 0.0625, z * 0.0625, 0.0625, (x & 0xF) * 0.0625) * 15.0;
             biome.buildSurface(
                 random, 

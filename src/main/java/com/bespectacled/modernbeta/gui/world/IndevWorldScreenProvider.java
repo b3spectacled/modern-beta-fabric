@@ -1,11 +1,11 @@
-package com.bespectacled.modernbeta.gui.provider;
+package com.bespectacled.modernbeta.gui.world;
 
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractLevelScreenProvider;
+import com.bespectacled.modernbeta.api.AbstractWorldScreenProvider;
 import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
 import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.world.biome.indev.IndevUtil;
@@ -22,7 +22,7 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class IndevLevelScreenProvider extends AbstractLevelScreenProvider {
+public class IndevWorldScreenProvider extends AbstractWorldScreenProvider {
     private IndevType levelType;
     private IndevTheme levelTheme;
 
@@ -34,7 +34,7 @@ public class IndevLevelScreenProvider extends AbstractLevelScreenProvider {
     
     private final Supplier<ChunkGeneratorSettings> chunkGenSettings;
     
-    public IndevLevelScreenProvider(
+    public IndevWorldScreenProvider(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings, 

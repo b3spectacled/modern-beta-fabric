@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.gui.provider;
+package com.bespectacled.modernbeta.gui.world;
 
 import java.util.function.BiConsumer;
 
@@ -12,7 +12,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class IslandLevelScreenProvider extends InfLevelScreenProvider {
+public class IslandWorldScreenProvider extends InfWorldScreenProvider {
 
     private int centerOceanLerpDistance;
     private int centerOceanRadius;
@@ -21,7 +21,7 @@ public class IslandLevelScreenProvider extends InfLevelScreenProvider {
     private float outerIslandNoiseScale;
     private float outerIslandNoiseOffset;
     
-    public IslandLevelScreenProvider(
+    public IslandWorldScreenProvider(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings, 

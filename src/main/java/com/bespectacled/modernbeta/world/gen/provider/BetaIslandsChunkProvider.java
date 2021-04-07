@@ -408,7 +408,7 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
         float outerIslandNoiseOffset = this.outerIslandNoiseOffset;
         
         float dist = noiseX * noiseX + noiseZ * noiseZ;
-        float radius = (float)MathHelper.sqrt(dist);
+        float radius = MathHelper.sqrt(dist);
         
         float islandOffset = 100.0F - radius * centerIslandFalloff;
         islandOffset = MathHelper.clamp(islandOffset, -oceanDepth, 0.0F);

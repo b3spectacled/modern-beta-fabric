@@ -5,7 +5,7 @@ import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBio
 import com.bespectacled.modernbeta.api.registry.CaveBiomeProviderRegistry.BuiltInCaveBiomeType;
 import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
 import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry.BuiltInChunkSettingsType;
-import com.bespectacled.modernbeta.api.registry.ScreenProviderRegistry.BuiltInScreenType;
+import com.bespectacled.modernbeta.api.registry.WorldScreenProviderRegistry.BuiltInWorldScreenType;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.world.biome.classic.ClassicBiomes;
 import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
@@ -25,7 +25,7 @@ public class BuiltInWorldProviders {
             BuiltInChunkType.BETA.id, 
             BuiltInChunkSettingsType.BETA.id,
             OldChunkGeneratorSettings.BETA.toString(), 
-            BuiltInScreenType.INF.id,
+            BuiltInWorldScreenType.INF.id,
             BuiltInBiomeType.BETA.id, 
             BuiltInCaveBiomeType.VANILLA.id, 
             BetaBiomes.FOREST_ID.toString(),
@@ -36,7 +36,7 @@ public class BuiltInWorldProviders {
             BuiltInChunkType.SKYLANDS.id, 
             BuiltInChunkSettingsType.SKYLANDS.id,
             OldChunkGeneratorSettings.SKYLANDS.toString(), 
-            BuiltInScreenType.SKYLANDS.id, 
+            BuiltInWorldScreenType.SKYLANDS.id, 
             BuiltInBiomeType.SINGLE.id, 
             BuiltInCaveBiomeType.NONE.id, 
             BetaBiomes.SKY_ID.toString(),
@@ -47,7 +47,7 @@ public class BuiltInWorldProviders {
             BuiltInChunkType.ALPHA.id,
             BuiltInChunkSettingsType.ALPHA.id,
             OldChunkGeneratorSettings.ALPHA.toString(), 
-            BuiltInScreenType.INF.id, 
+            BuiltInWorldScreenType.INF.id, 
             BuiltInBiomeType.SINGLE.id, 
             BuiltInCaveBiomeType.NONE.id, 
             ClassicBiomes.ALPHA_ID.toString(),
@@ -58,7 +58,7 @@ public class BuiltInWorldProviders {
             BuiltInChunkType.INFDEV_415.id,
             BuiltInChunkSettingsType.INFDEV_415.id,
             OldChunkGeneratorSettings.INFDEV_415.toString(), 
-            BuiltInScreenType.INF.id, 
+            BuiltInWorldScreenType.INF.id, 
             BuiltInBiomeType.SINGLE.id, 
             BuiltInCaveBiomeType.NONE.id, 
             ClassicBiomes.INFDEV_415_ID.toString(),
@@ -69,7 +69,7 @@ public class BuiltInWorldProviders {
             BuiltInChunkType.INFDEV_227.id,
             BuiltInChunkSettingsType.INFDEV_227.id,
             OldChunkGeneratorSettings.INFDEV_227.toString(), 
-            BuiltInScreenType.INFDEV_OLD.id, 
+            BuiltInWorldScreenType.INFDEV_OLD.id, 
             BuiltInBiomeType.SINGLE.id, 
             BuiltInCaveBiomeType.NONE.id, 
             ClassicBiomes.INFDEV_227_ID.toString(),
@@ -80,7 +80,7 @@ public class BuiltInWorldProviders {
             BuiltInChunkType.INDEV.id,
             BuiltInChunkSettingsType.INDEV.id,
             OldChunkGeneratorSettings.INDEV.toString(), 
-            BuiltInScreenType.INDEV.id, 
+            BuiltInWorldScreenType.INDEV.id, 
             BuiltInBiomeType.SINGLE.id, 
             BuiltInCaveBiomeType.NONE.id, 
             IndevBiomes.INDEV_NORMAL_ID.toString(),
@@ -91,7 +91,7 @@ public class BuiltInWorldProviders {
             BuiltInChunkType.BETA_ISLANDS.id,
             BuiltInChunkSettingsType.BETA_ISLANDS.id,
             OldChunkGeneratorSettings.BETA_ISLANDS.toString(),
-            BuiltInScreenType.ISLAND.id,
+            BuiltInWorldScreenType.ISLAND.id,
             BuiltInBiomeType.BETA.id,
             BuiltInCaveBiomeType.VANILLA.id,
             BetaBiomes.FOREST_ID.toString(),

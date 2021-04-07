@@ -70,7 +70,7 @@ public class OldBiomeSource extends BiomeSource {
     
     public Biome getBiomeForSurfaceGen(ChunkRegion region, BlockPos pos) {
         if (this.biomeProvider instanceof IBiomeResolver)
-            return ((IBiomeResolver)this.biomeProvider).getBiome(this.biomeRegistry, pos.getX(), 0, pos.getZ());
+            return ((IBiomeResolver)this.biomeProvider).getBiome(this.biomeRegistry, pos.getX(), pos.getY(), pos.getZ());
         
         return region.getBiome(pos);
     }

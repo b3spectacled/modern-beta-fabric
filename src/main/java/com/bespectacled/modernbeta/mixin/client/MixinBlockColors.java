@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.noise.PerlinNoise;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateSampler;
 
@@ -35,7 +35,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Unique private static final BlockState TALL_FERN = Blocks.LARGE_FERN.getDefaultState();
     
     @Unique private static final double[] TEMP_HUMID = new double[2];
-    @Unique private static final PerlinOctaveNoise COLOR_NOISE = new PerlinOctaveNoise(new Random(), 1, true);
+    @Unique private static final PerlinNoise COLOR_NOISE = new PerlinNoise(new Random(), true);
 
     @Unique
     public void setSeed(long seed) {
@@ -92,10 +92,10 @@ public class MixinBlockColors implements MutableBlockColors {
         int y = pos.getY();
         int z = pos.getZ();
         
-        double tempModifier = MathHelper.clamp(1.0 - (256D - y) / 128D, 0.0, 0.5);
-        //double tempModifier = 0.0;
+        //double tempModifier = MathHelper.clamp(1.0 - (256D - y) / 128D, 0.0, 0.5);
+        double tempModifier = 0.0;
         
-        //double modifier = COLOR_NOISE.sample(x >> 2, z >> 2) * 0.1;
+        //double noiseModifier = COLOR_NOISE.sample(x / 10D, z / 10D) * 0.1D;
 
         if (state.equals(GRASS) || state.equals(FERN) || state.equals(TALL_GRASS) || state.equals(TALL_FERN)) {
             long shift = x * 0x2fc20f + z * 0x5d8875 + y;

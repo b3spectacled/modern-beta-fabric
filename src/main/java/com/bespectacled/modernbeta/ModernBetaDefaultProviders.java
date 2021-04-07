@@ -5,9 +5,9 @@ import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBio
 import com.bespectacled.modernbeta.api.registry.CaveBiomeProviderRegistry.BuiltInCaveBiomeType;
 import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
 import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry.BuiltInChunkSettingsType;
-import com.bespectacled.modernbeta.api.registry.ScreenProviderRegistry.BuiltInScreenType;
-import com.bespectacled.modernbeta.gui.ScreenPressActions;
-import com.bespectacled.modernbeta.gui.provider.*;
+import com.bespectacled.modernbeta.api.registry.WorldScreenProviderRegistry.BuiltInWorldScreenType;
+import com.bespectacled.modernbeta.gui.biome.*;
+import com.bespectacled.modernbeta.gui.world.*;
 import com.bespectacled.modernbeta.world.BuiltInWorldProviders;
 import com.bespectacled.modernbeta.world.biome.provider.*;
 import com.bespectacled.modernbeta.world.cavebiome.provider.*;
@@ -69,19 +69,19 @@ public class ModernBetaDefaultProviders {
     }
     
     // Register default screen providers
-    public static void registerScreenProviders() {
-        ScreenProviderRegistry.register(BuiltInScreenType.INF.id, InfLevelScreenProvider::new);
-        ScreenProviderRegistry.register(BuiltInScreenType.INFDEV_OLD.id, InfdevOldLevelScreenProvider::new);
-        ScreenProviderRegistry.register(BuiltInScreenType.INDEV.id, IndevLevelScreenProvider::new);
-        ScreenProviderRegistry.register(BuiltInScreenType.SKYLANDS.id, SkylandsLevelScreenProvider::new);
-        ScreenProviderRegistry.register(BuiltInScreenType.ISLAND.id, IslandLevelScreenProvider::new);
+    public static void registerWorldScreenProviders() {
+        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.INF.id, InfWorldScreenProvider::new);
+        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.INFDEV_OLD.id, InfdevOldWorldScreenProvider::new);
+        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.INDEV.id, IndevWorldScreenProvider::new);
+        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.SKYLANDS.id, SkylandsWorldScreenProvider::new);
+        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.ISLAND.id, IslandWorldScreenProvider::new);
     }
     
     // Register default settings screen actions (Note: Match identifiers with biome ids!)
-    public static void registerScreenPressActions() {
-        ScreenPressActionRegistry.register(BuiltInBiomeType.BETA.id, ScreenPressActions.BETA);
-        ScreenPressActionRegistry.register(BuiltInBiomeType.SINGLE.id, ScreenPressActions.SINGLE);
-        ScreenPressActionRegistry.register(BuiltInBiomeType.VANILLA.id, ScreenPressActions.VANILLA);
+    public static void registerBiomeScreenProviders() {
+        BiomeScreenProviderRegistry.register(BuiltInBiomeType.BETA.id, BetaBiomeScreenProvider::create);
+        BiomeScreenProviderRegistry.register(BuiltInBiomeType.SINGLE.id, SingleBiomeScreenProvider::create);
+        BiomeScreenProviderRegistry.register(BuiltInBiomeType.VANILLA.id, VanillaBiomeScreenProvider::create);
     }
     
     // Register default world providers
