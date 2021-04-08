@@ -3,11 +3,11 @@ package com.bespectacled.modernbeta.world.structure;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.class_6012;
 import net.minecraft.entity.EntityType;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.util.BlockRotation;
+import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -20,7 +20,7 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig> {
-    private static final class_6012<SpawnSettings.SpawnEntry> MONSTER_SPAWNS;
+    private static final Pool<SpawnSettings.SpawnEntry> MONSTER_SPAWNS;
     
     public OceanShrineStructure(Codec<DefaultFeatureConfig> codec) {
         super(codec);
@@ -32,7 +32,7 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
     }
     
     @Override
-    public class_6012<SpawnSettings.SpawnEntry> getMonsterSpawns() {
+    public Pool<SpawnSettings.SpawnEntry> getMonsterSpawns() {
         return OceanShrineStructure.MONSTER_SPAWNS;
     }
     
@@ -67,6 +67,6 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
     }
     
     static {
-        MONSTER_SPAWNS = class_6012.<SpawnSettings.SpawnEntry>method_34989(new SpawnSettings.SpawnEntry(EntityType.GUARDIAN, 1, 1, 2));
+        MONSTER_SPAWNS = Pool.<SpawnSettings.SpawnEntry>of(new SpawnSettings.SpawnEntry(EntityType.GUARDIAN, 1, 1, 2));
     }
 }

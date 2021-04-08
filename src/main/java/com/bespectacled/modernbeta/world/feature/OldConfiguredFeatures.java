@@ -21,11 +21,11 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 
-import net.minecraft.class_6005;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.rule.BlockMatchRuleTest;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DataPool;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.YOffset;
@@ -56,7 +56,7 @@ public class OldConfiguredFeatures {
             // # of tries in Beta equivalent is 128, but here it seems to generate too much grass,
             // so keep # of tries at 64 for now.
             GRASS_CONFIG = new RandomPatchFeatureConfig.Builder(new SimpleBlockStateProvider(BlockStates.GRASS), SimpleBlockPlacer.INSTANCE).tries(TRIES).build();
-            LUSH_GRASS_CONFIG = new RandomPatchFeatureConfig.Builder(new WeightedBlockStateProvider(method_35926().method_34975(BlockStates.GRASS, 1).method_34975(BlockStates.FERN, 3)), SimpleBlockPlacer.INSTANCE).tries(TRIES).build();
+            LUSH_GRASS_CONFIG = new RandomPatchFeatureConfig.Builder(new WeightedBlockStateProvider(method_35926().add(BlockStates.GRASS, 1).add(BlockStates.FERN, 3)), SimpleBlockPlacer.INSTANCE).tries(TRIES).build();
         }
     }
     
@@ -77,7 +77,7 @@ public class OldConfiguredFeatures {
     
     // Shrubs
     public static final ConfiguredFeature<?, ?> PATCH_CACTUS_ALPHA = register("patch_cactus", ConfiguredFeatures.PATCH_CACTUS.decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP_SPREAD_DOUBLE).repeat(1));
-    public static final ConfiguredFeature<?, ?> MUSHROOM_HELL = register("mushroom_hell", Feature.FLOWER.configure(new RandomPatchFeatureConfig.Builder(new WeightedBlockStateProvider(method_35926().method_34975(Blocks.BROWN_MUSHROOM.getDefaultState(), 2).method_34975(Blocks.RED_MUSHROOM.getDefaultState(), 1)), SimpleBlockPlacer.INSTANCE).tries(64).build()).decorate(ConfiguredFeatures.Decorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(2));
+    public static final ConfiguredFeature<?, ?> MUSHROOM_HELL = register("mushroom_hell", Feature.FLOWER.configure(new RandomPatchFeatureConfig.Builder(new WeightedBlockStateProvider(method_35926().add(Blocks.BROWN_MUSHROOM.getDefaultState(), 2).add(Blocks.RED_MUSHROOM.getDefaultState(), 1)), SimpleBlockPlacer.INSTANCE).tries(64).build()).decorate(ConfiguredFeatures.Decorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(2));
 
     // Flowers
     public static final ConfiguredFeature<?, ?> PATCH_DANDELION_2 = register("patch_dandelion_2", Feature.FLOWER.configure(new RandomPatchFeatureConfig.Builder(new SimpleBlockStateProvider(Blocks.DANDELION.getDefaultState()), SimpleBlockPlacer.INSTANCE).tries(64).build()).decorate(ConfiguredFeatures.Decorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(2));
@@ -112,8 +112,8 @@ public class OldConfiguredFeatures {
         return Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, ModernBeta.createId(id), feature);
     }
     
-    private static class_6005.class_6006<BlockState> method_35926() {
-        return class_6005.<BlockState>method_34971();
+    private static DataPool.Builder<BlockState> method_35926() {
+        return DataPool.<BlockState>builder();
     }
     
     public static void export() {

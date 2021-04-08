@@ -35,7 +35,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     
     public SkylandsChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, 0, 128, 0, 0, -10, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0, false, false, false, BlockStates.STONE, BlockStates.AIR, biomeProvider, generatorSettings, providerSettings);
+        super(seed, 0, 128, 0, 0, 0, -10, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0, false, false, false, BlockStates.STONE, BlockStates.AIR, biomeProvider, generatorSettings, providerSettings);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);

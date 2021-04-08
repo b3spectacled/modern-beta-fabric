@@ -50,7 +50,7 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
     
     public BetaIslandsChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
+        super(seed, -64, 192, 64, 50, 0, -10, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -154,7 +154,7 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
                     }
                     
                     // Don't surface build below 50, per 1.17 default surface builder
-                    if (usedCustomSurface || (this.generateAquifers || this.generateNoiseCaves) && y < 50) {
+                    if (usedCustomSurface || (this.generateAquifers || this.generateNoiseCaves) && y < this.minSurfaceY) {
                         continue;
                     }
 
@@ -415,13 +415,15 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
             
         if (radius > centerOceanRadius) {
             float islandAddition = (float)this.islandNoise.sample(noiseX / outerIslandNoiseScale, noiseZ / outerIslandNoiseScale, 1.0, 1.0) + outerIslandNoiseOffset;
+            
+            // 0.885539 = Simplex upper range, but scale a little higher to ensure island centers have untouched terrain.
+            islandAddition /= 0.8F;
             islandAddition = MathHelper.clamp(islandAddition, 0.0F, 1.0F);
             
             // Interpolate noise addition so there isn't a sharp cutoff at start of ocean ring edge.
             islandAddition = (float)MathHelper.clampedLerp(0.0F, islandAddition, (radius - centerOceanRadius) / centerOceanLerpDistance);
             
-            islandAddition *= oceanDepth / 0.885539; // 0.885539 = Simplex upper range
-            islandOffset += islandAddition + 20F;
+            islandOffset += islandAddition * oceanDepth;
             islandOffset = MathHelper.clamp(islandOffset, -oceanDepth, 0.0F);
         }
         

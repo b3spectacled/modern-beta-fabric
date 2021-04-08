@@ -49,7 +49,7 @@ public class OldGeneratorType {
         String chunkProviderType = chunkProviderSettings.getString("worldType");
     
         Registry<DimensionType> registryDimensionType = registryManager.<DimensionType>get(Registry.DIMENSION_TYPE_KEY);
-        Registry<ChunkGeneratorSettings> registryChunkGenSettings = registryManager.<ChunkGeneratorSettings>get(Registry.NOISE_SETTINGS_WORLDGEN);
+        Registry<ChunkGeneratorSettings> registryChunkGenSettings = registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
         Registry<Biome> registryBiome = registryManager.<Biome>get(Registry.BIOME_KEY);
         
         Optional<ChunkGeneratorSettings> chunkGenSettings = registryChunkGenSettings.getOrEmpty(new Identifier(WorldProviderRegistry.get(chunkProviderType).getChunkGenSettings()));

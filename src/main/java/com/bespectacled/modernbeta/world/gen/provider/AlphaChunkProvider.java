@@ -39,7 +39,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     
     public AlphaChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, -64, 192, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
+        super(seed, -64, 192, 64, 50, 0, -10, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);

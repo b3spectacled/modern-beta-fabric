@@ -41,7 +41,7 @@ public class CompatTechReborn {
                 ), 
                 GenerationStep.Feature.UNDERGROUND_ORES,  
                 RegistryKey.of(
-                    Registry.CONFIGURED_FEATURE_WORLDGEN, 
+                    Registry.CONFIGURED_FEATURE_KEY, 
                     new Identifier(MOD_ID, FEATURE_PREFIX + o + FEATURE_SUFFIX)
                 )
             );

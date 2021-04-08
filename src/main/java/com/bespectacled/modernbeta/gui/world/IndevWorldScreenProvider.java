@@ -68,7 +68,7 @@ public class IndevWorldScreenProvider extends AbstractWorldScreenProvider {
             ModernBeta.BETA_CONFIG.generationConfig.indevCaveRadius;
         
         this.chunkGenSettings = () -> 
-            this.registryManager.<ChunkGeneratorSettings>get(Registry.NOISE_SETTINGS_WORLDGEN).get(ModernBeta.createId(BuiltInChunkType.INDEV.id));
+            this.registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).get(ModernBeta.createId(BuiltInChunkType.INDEV.id));
     }
     
     @Override

@@ -25,6 +25,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.util.Util;
+import net.minecraft.util.collection.Pool;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
@@ -54,7 +55,6 @@ import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.class_6012;
 
 public class OldChunkGenerator extends NoiseChunkGenerator {
     public static final Codec<OldChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
@@ -278,7 +278,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
-    public class_6012<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {
+    public Pool<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {
         if (spawnGroup == SpawnGroup.MONSTER) {
             if (structureAccessor.getStructureAt(blockPos, false, OldStructures.OCEAN_SHRINE_STRUCTURE).hasChildren()) {
                 return OldStructures.OCEAN_SHRINE_STRUCTURE.getMonsterSpawns();

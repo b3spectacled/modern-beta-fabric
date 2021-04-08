@@ -62,7 +62,7 @@ public class MixinGeneratorOptions {
 
             // get other misc data
             Registry<DimensionType> registryDimensionType = dynamicRegistryManager.get(Registry.DIMENSION_TYPE_KEY);
-            Registry<ChunkGeneratorSettings> registryChunkGenSettings = dynamicRegistryManager.get(Registry.NOISE_SETTINGS_WORLDGEN);
+            Registry<ChunkGeneratorSettings> registryChunkGenSettings = dynamicRegistryManager.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
             Registry<Biome> registryBiome = dynamicRegistryManager.get(Registry.BIOME_KEY);
             
             SimpleRegistry<DimensionOptions> dimensionOptions = DimensionType.createDefaultDimensionOptions(

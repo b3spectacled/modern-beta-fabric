@@ -70,6 +70,7 @@ public abstract class AbstractChunkProvider {
     protected final int worldHeight;
     protected final int worldTopY;
     protected final int seaLevel;
+    protected final int minSurfaceY;
     
     protected final int bedrockFloor;
     protected final int bedrockCeiling;
@@ -126,6 +127,7 @@ public abstract class AbstractChunkProvider {
             generatorSettings.get().getGenerationShapeConfig().getMinimumY(),
             generatorSettings.get().getGenerationShapeConfig().getHeight(),
             generatorSettings.get().getSeaLevel(),
+            generatorSettings.get().method_36212(),
             generatorSettings.get().getBedrockFloorY(),
             generatorSettings.get().getBedrockCeilingY(),
             generatorSettings.get().getGenerationShapeConfig().getSizeVertical(),
@@ -158,6 +160,7 @@ public abstract class AbstractChunkProvider {
      * @param minY Minimum Y coordinate.
      * @param worldHeight Total world height including minimum y coordinate.
      * @param seaLevel World sea level.
+     * @param minSurfaceY Minimum Y coordinate for surface generation.
      * @param bedrockFloor Y offset of the bedrock floor above the bottom of the world.
      * @param bedrockCeiling Y offset of the bedrock roof below the top of the world.
      * @param sizeVertical Number of blocks in a vertical subchunk.
@@ -186,6 +189,7 @@ public abstract class AbstractChunkProvider {
         int minY, 
         int worldHeight, 
         int seaLevel,
+        int minSurfaceY,
         int bedrockFloor,
         int bedrockCeiling,
         int sizeVertical, 
@@ -218,6 +222,7 @@ public abstract class AbstractChunkProvider {
         this.worldHeight = worldHeight;
         this.worldTopY = worldHeight + minY; // See HeightLimitView for best implementation
         this.seaLevel = seaLevel;
+        this.minSurfaceY = minSurfaceY;
         
         this.bedrockFloor = bedrockFloor;
         this.bedrockCeiling = bedrockCeiling;
@@ -477,6 +482,7 @@ public abstract class AbstractChunkProvider {
                 this.waterLevelNoise, 
                 this.generatorSettings.get(), 
                 null, // NoiseColumnSampler, unused?
+                this.minY,
                 this.noiseSizeY * this.verticalNoiseResolution
             ) : 
             null;     
@@ -575,8 +581,9 @@ public abstract class AbstractChunkProvider {
                 x, z, y, 
                 surfaceNoise, 
                 this.defaultBlock, 
-                this.defaultFluid, 
+                this.defaultFluid,
                 this.seaLevel, 
+                this.minSurfaceY,
                 region.getSeed()
             );
             
