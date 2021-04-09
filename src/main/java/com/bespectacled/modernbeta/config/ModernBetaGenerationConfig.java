@@ -8,22 +8,11 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
 @Config(name = "generation_config")
 public class ModernBetaGenerationConfig implements ConfigData {
+    
     /* Inf Generation */
     
     @ConfigEntry.Gui.Excluded
     public boolean generateOceans = true;
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean generateDeepOceans = false;
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean generateNoiseCaves = true;
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean generateAquifers = true;
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean generateDeepslate = true;
     
     /* Old Infdev Generation */
     
