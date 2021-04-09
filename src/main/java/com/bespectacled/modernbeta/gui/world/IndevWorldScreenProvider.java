@@ -45,30 +45,30 @@ public class IndevWorldScreenProvider extends AbstractWorldScreenProvider {
         
         this.levelType = this.chunkProviderSettings.contains("levelType") ? 
             IndevType.fromName(this.chunkProviderSettings.getString("levelType")) : 
-            IndevType.fromName(ModernBeta.BETA_CONFIG.generationConfig.indevLevelType);
+            IndevType.fromName(ModernBeta.BETA_CONFIG.generation_config.indevLevelType);
         
         this.levelTheme = this.chunkProviderSettings.contains("levelTheme") ? 
             IndevTheme.fromName(this.chunkProviderSettings.getString("levelTheme")) :                 
-            IndevTheme.fromName(ModernBeta.BETA_CONFIG.generationConfig.indevLevelTheme);
+            IndevTheme.fromName(ModernBeta.BETA_CONFIG.generation_config.indevLevelTheme);
         
         this.levelWidth = this.chunkProviderSettings.contains("levelWidth") ?
             this.chunkProviderSettings.getInt("levelWidth") :
-            ModernBeta.BETA_CONFIG.generationConfig.indevLevelWidth;
+            ModernBeta.BETA_CONFIG.generation_config.indevLevelWidth;
         
         this.levelLength = this.chunkProviderSettings.contains("levelLength") ?
             this.chunkProviderSettings.getInt("levelLength") :
-            ModernBeta.BETA_CONFIG.generationConfig.indevLevelLength;
+            ModernBeta.BETA_CONFIG.generation_config.indevLevelLength;
         
         this.levelHeight = this.chunkProviderSettings.contains("levelHeight") ?
             this.chunkProviderSettings.getInt("levelHeight") :
-            ModernBeta.BETA_CONFIG.generationConfig.indevLevelHeight;
+            ModernBeta.BETA_CONFIG.generation_config.indevLevelHeight;
         
         this.caveRadius = this.chunkProviderSettings.contains("caveRadius") ?
             this.chunkProviderSettings.getFloat("caveRadius") :
-            ModernBeta.BETA_CONFIG.generationConfig.indevCaveRadius;
+            ModernBeta.BETA_CONFIG.generation_config.indevCaveRadius;
         
         this.chunkGenSettings = () -> 
-            this.registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).get(ModernBeta.createId(BuiltInChunkType.INDEV.id));
+            this.registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).get(ModernBeta.createId(BuiltInChunkType.INDEV.name));
     }
     
     @Override

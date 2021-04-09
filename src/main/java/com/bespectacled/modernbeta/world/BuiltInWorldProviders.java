@@ -22,78 +22,78 @@ public class BuiltInWorldProviders {
     
     static {
         BETA = new WorldProvider(
-            BuiltInChunkType.BETA.id, 
-            BuiltInChunkSettingsType.BETA.id,
+            BuiltInChunkType.BETA.name, 
+            BuiltInChunkSettingsType.BETA.name,
             OldChunkGeneratorSettings.BETA.toString(), 
-            BuiltInWorldScreenType.INF.id,
-            BuiltInBiomeType.BETA.id, 
-            BuiltInCaveBiomeType.VANILLA.id, 
+            BuiltInWorldScreenType.INF.name,
+            BuiltInBiomeType.BETA.name, 
+            BuiltInCaveBiomeType.VANILLA.name, 
             BetaBiomes.FOREST_ID.toString(),
             true
         );
         
         SKYLANDS = new WorldProvider(
-            BuiltInChunkType.SKYLANDS.id, 
-            BuiltInChunkSettingsType.SKYLANDS.id,
+            BuiltInChunkType.SKYLANDS.name, 
+            BuiltInChunkSettingsType.SKYLANDS.name,
             OldChunkGeneratorSettings.SKYLANDS.toString(), 
-            BuiltInWorldScreenType.SKYLANDS.id, 
-            BuiltInBiomeType.SINGLE.id, 
-            BuiltInCaveBiomeType.NONE.id, 
+            BuiltInWorldScreenType.SKYLANDS.name, 
+            BuiltInBiomeType.SINGLE.name, 
+            BuiltInCaveBiomeType.NONE.name, 
             BetaBiomes.SKY_ID.toString(),
             true
         );
         
         ALPHA = new WorldProvider(
-            BuiltInChunkType.ALPHA.id,
-            BuiltInChunkSettingsType.ALPHA.id,
+            BuiltInChunkType.ALPHA.name,
+            BuiltInChunkSettingsType.ALPHA.name,
             OldChunkGeneratorSettings.ALPHA.toString(), 
-            BuiltInWorldScreenType.INF.id, 
-            BuiltInBiomeType.SINGLE.id, 
-            BuiltInCaveBiomeType.NONE.id, 
+            BuiltInWorldScreenType.INF.name, 
+            BuiltInBiomeType.SINGLE.name, 
+            BuiltInCaveBiomeType.NONE.name, 
             ClassicBiomes.ALPHA_ID.toString(),
             true
         );
         
         INFDEV_415 = new WorldProvider(
-            BuiltInChunkType.INFDEV_415.id,
-            BuiltInChunkSettingsType.INFDEV_415.id,
+            BuiltInChunkType.INFDEV_415.name,
+            BuiltInChunkSettingsType.INFDEV_415.name,
             OldChunkGeneratorSettings.INFDEV_415.toString(), 
-            BuiltInWorldScreenType.INF.id, 
-            BuiltInBiomeType.SINGLE.id, 
-            BuiltInCaveBiomeType.NONE.id, 
+            BuiltInWorldScreenType.INF.name, 
+            BuiltInBiomeType.SINGLE.name, 
+            BuiltInCaveBiomeType.NONE.name, 
             ClassicBiomes.INFDEV_415_ID.toString(),
             true
         );
         
         INFDEV_227 = new WorldProvider(
-            BuiltInChunkType.INFDEV_227.id,
-            BuiltInChunkSettingsType.INFDEV_227.id,
+            BuiltInChunkType.INFDEV_227.name,
+            BuiltInChunkSettingsType.INFDEV_227.name,
             OldChunkGeneratorSettings.INFDEV_227.toString(), 
-            BuiltInWorldScreenType.INFDEV_OLD.id, 
-            BuiltInBiomeType.SINGLE.id, 
-            BuiltInCaveBiomeType.NONE.id, 
+            BuiltInWorldScreenType.INFDEV_OLD.name, 
+            BuiltInBiomeType.SINGLE.name, 
+            BuiltInCaveBiomeType.NONE.name, 
             ClassicBiomes.INFDEV_227_ID.toString(),
             false
         );
         
         INDEV = new WorldProvider(
-            BuiltInChunkType.INDEV.id,
-            BuiltInChunkSettingsType.INDEV.id,
+            BuiltInChunkType.INDEV.name,
+            BuiltInChunkSettingsType.INDEV.name,
             OldChunkGeneratorSettings.INDEV.toString(), 
-            BuiltInWorldScreenType.INDEV.id, 
-            BuiltInBiomeType.SINGLE.id, 
-            BuiltInCaveBiomeType.NONE.id, 
+            BuiltInWorldScreenType.INDEV.name, 
+            BuiltInBiomeType.SINGLE.name, 
+            BuiltInCaveBiomeType.NONE.name, 
             IndevBiomes.INDEV_NORMAL_ID.toString(),
             false
         );
         
         BETA_ISLANDS = new WorldProvider(
-            BuiltInChunkType.BETA_ISLANDS.id,
-            BuiltInChunkSettingsType.BETA_ISLANDS.id,
+            BuiltInChunkType.BETA_ISLANDS.name,
+            BuiltInChunkSettingsType.BETA_ISLANDS.name,
             OldChunkGeneratorSettings.BETA_ISLANDS.toString(),
-            BuiltInWorldScreenType.ISLAND.id,
-            BuiltInBiomeType.BETA.id,
-            BuiltInCaveBiomeType.VANILLA.id,
+            BuiltInWorldScreenType.ISLAND.name,
+            BuiltInBiomeType.BETA.name,
+            BuiltInCaveBiomeType.VANILLA.name,
             BetaBiomes.FOREST_ID.toString(),
             true
         );

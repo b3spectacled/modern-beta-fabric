@@ -29,11 +29,11 @@ public class SkylandsWorldScreenProvider extends AbstractWorldScreenProvider {
         
         this.generateNoiseCaves = this.chunkProviderSettings.contains("generateNoiseCaves") ? 
             this.chunkProviderSettings.getBoolean("generateNoiseCaves") :
-            ModernBeta.BETA_CONFIG.generationConfig.generateNoiseCaves;
+            ModernBeta.BETA_CONFIG.generation_config.generateNoiseCaves;
             
         this.generateDeepslate = this.chunkProviderSettings.contains("generateDeepslate") ? 
             this.chunkProviderSettings.getBoolean("generateDeepslate") :
-            ModernBeta.BETA_CONFIG.generationConfig.generateDeepslate;
+            ModernBeta.BETA_CONFIG.generation_config.generateDeepslate;
         
         this.showNoiseOptions = this.worldProvider.showNoiseOptions();
     }

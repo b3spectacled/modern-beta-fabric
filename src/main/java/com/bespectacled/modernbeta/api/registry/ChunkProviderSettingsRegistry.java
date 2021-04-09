@@ -18,9 +18,9 @@ public class ChunkProviderSettingsRegistry {
         BETA_ISLANDS("beta_islands")
         ;
         
-        public final String id;
+        public final String name;
         
-        private BuiltInChunkSettingsType(String id) { this.id = id; }
+        private BuiltInChunkSettingsType(String name) { this.name = name; }
     }
     
     private static final Map<String, Supplier<NbtCompound>> REGISTRY = new HashMap<>(); 

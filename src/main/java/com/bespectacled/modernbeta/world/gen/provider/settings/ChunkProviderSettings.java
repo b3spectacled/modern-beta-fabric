@@ -7,12 +7,12 @@ import com.bespectacled.modernbeta.config.ModernBetaGenerationConfig;
 import net.minecraft.nbt.NbtCompound;
 
 public class ChunkProviderSettings {
-    protected static final ModernBetaGenerationConfig CONFIG = ModernBeta.BETA_CONFIG.generationConfig;
+    protected static final ModernBetaGenerationConfig CONFIG = ModernBeta.BETA_CONFIG.generation_config;
     
     public static NbtCompound createSettingsBeta() {
         NbtCompound settings = new NbtCompound();
         
-        settings.putString("worldType", BuiltInChunkType.BETA.id);
+        settings.putString("worldType", BuiltInChunkType.BETA.name);
         settings.putBoolean("generateOceans", CONFIG.generateOceans);
         settings.putBoolean("generateNoiseCaves", CONFIG.generateNoiseCaves);
         settings.putBoolean("generateAquifers", CONFIG.generateAquifers);
@@ -24,7 +24,7 @@ public class ChunkProviderSettings {
     public static NbtCompound createSettingsAlpha() {
         NbtCompound settings = new NbtCompound();
         
-        settings.putString("worldType", BuiltInChunkType.ALPHA.id);
+        settings.putString("worldType", BuiltInChunkType.ALPHA.name);
         settings.putBoolean("generateOceans", CONFIG.generateOceans);
         settings.putBoolean("generateNoiseCaves", CONFIG.generateNoiseCaves);
         settings.putBoolean("generateAquifers", CONFIG.generateAquifers);
@@ -36,7 +36,7 @@ public class ChunkProviderSettings {
     public static NbtCompound createSettingsSkylands() {
         NbtCompound settings = new NbtCompound();
         
-        settings.putString("worldType", BuiltInChunkType.SKYLANDS.id);
+        settings.putString("worldType", BuiltInChunkType.SKYLANDS.name);
         settings.putBoolean("generateNoiseCaves", CONFIG.generateNoiseCaves);
         settings.putBoolean("generateDeepslate", CONFIG.generateDeepslate);
         
@@ -46,7 +46,7 @@ public class ChunkProviderSettings {
     public static NbtCompound createSettingsInfdev415() {
         NbtCompound settings = new NbtCompound();
         
-        settings.putString("worldType", BuiltInChunkType.INFDEV_415.id);
+        settings.putString("worldType", BuiltInChunkType.INFDEV_415.name);
         settings.putBoolean("generateOceans", CONFIG.generateOceans);
         settings.putBoolean("generateNoiseCaves", CONFIG.generateNoiseCaves);
         settings.putBoolean("generateAquifers", CONFIG.generateAquifers);
@@ -58,7 +58,7 @@ public class ChunkProviderSettings {
     public static NbtCompound createSettingsInfdev227() {
         NbtCompound settings = new NbtCompound();
         
-        settings.putString("worldType", BuiltInChunkType.INFDEV_227.id);
+        settings.putString("worldType", BuiltInChunkType.INFDEV_227.name);
         settings.putBoolean("generateOceans", CONFIG.generateOceans);
         settings.putBoolean("generateDeepslate", CONFIG.generateDeepslate);
         settings.putBoolean("generateInfdevPyramid", CONFIG.generateInfdevPyramid);
@@ -70,7 +70,7 @@ public class ChunkProviderSettings {
     public static NbtCompound createSettingsIndev() {
         NbtCompound settings = new NbtCompound();
         
-        settings.putString("worldType", BuiltInChunkType.INDEV.id);
+        settings.putString("worldType", BuiltInChunkType.INDEV.name);
         settings.putString("levelType", CONFIG.indevLevelType);
         settings.putString("levelTheme", CONFIG.indevLevelTheme);
         settings.putInt("levelWidth", CONFIG.indevLevelWidth);
@@ -84,7 +84,7 @@ public class ChunkProviderSettings {
     public static NbtCompound createSettingsBetaIslands() {
         NbtCompound settings = new NbtCompound();
         
-        settings.putString("worldType", BuiltInChunkType.BETA_ISLANDS.id);
+        settings.putString("worldType", BuiltInChunkType.BETA_ISLANDS.name);
         settings.putBoolean("generateOceans", CONFIG.generateOceans);
         settings.putBoolean("generateNoiseCaves", CONFIG.generateNoiseCaves);
         settings.putBoolean("generateAquifers", CONFIG.generateAquifers);

@@ -47,13 +47,13 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
             RegistryKey<World> worldKey, DimensionType dimensionType, int loadDistance, Supplier<Profiler> profiler,
             WorldRenderer renderer, boolean debugWorld, long seed, CallbackInfo ci) {
         
-        boolean useBetaColors = BETA_CONFIG.renderingConfig.useFixedSeed;
-        long worldSeed = BETA_CONFIG.renderingConfig.fixedSeed;
+        boolean useBetaColors = BETA_CONFIG.rendering_config.useFixedSeed;
+        long worldSeed = BETA_CONFIG.rendering_config.fixedSeed;
         
         if (client.getServer() != null) { // Server check
            BiomeSource biomeSource = client.getServer().getOverworld().getChunkManager().getChunkGenerator().getBiomeSource();
            
-           if (!BETA_CONFIG.renderingConfig.useFixedSeed && biomeSource instanceof OldBiomeSource && ((OldBiomeSource)biomeSource).isBeta()) {
+           if (!BETA_CONFIG.rendering_config.useFixedSeed && biomeSource instanceof OldBiomeSource && ((OldBiomeSource)biomeSource).isBeta()) {
                useBetaColors = true;
                worldSeed = client.getServer().getOverworld().getSeed();
            }
@@ -81,7 +81,7 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
         index = 6  
     )
     private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
-        if (useBetaColors && BETA_CONFIG.renderingConfig.renderBetaSkyColor && this.isOverworld) {
+        if (useBetaColors && BETA_CONFIG.rendering_config.renderBetaSkyColor && this.isOverworld) {
             skyColorVec = Vec3d.unpackRgb(BetaClimateSampler.INSTANCE.getSkyColor((int)curPos.getX(), (int)curPos.getZ()));
         }
         

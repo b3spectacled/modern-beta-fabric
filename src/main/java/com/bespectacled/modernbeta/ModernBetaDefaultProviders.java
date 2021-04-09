@@ -29,59 +29,59 @@ import com.bespectacled.modernbeta.world.gen.provider.settings.*;
 public class ModernBetaDefaultProviders {
     // Register default chunk providers
     public static void registerChunkProviders() {
-        ChunkProviderRegistry.register(BuiltInChunkType.BETA.id, BetaChunkProvider::new);
-        ChunkProviderRegistry.register(BuiltInChunkType.SKYLANDS.id, SkylandsChunkProvider::new);
-        ChunkProviderRegistry.register(BuiltInChunkType.ALPHA.id, AlphaChunkProvider::new);
-        ChunkProviderRegistry.register(BuiltInChunkType.INFDEV_415.id, Infdev415ChunkProvider::new);
-        ChunkProviderRegistry.register(BuiltInChunkType.INFDEV_227.id, Infdev227ChunkProvider::new);
-        ChunkProviderRegistry.register(BuiltInChunkType.INDEV.id, IndevChunkProvider::new);
-        ChunkProviderRegistry.register(BuiltInChunkType.BETA_ISLANDS.id, BetaIslandsChunkProvider::new);
+        ChunkProviderRegistry.register(BuiltInChunkType.BETA.name, BetaChunkProvider::new);
+        ChunkProviderRegistry.register(BuiltInChunkType.SKYLANDS.name, SkylandsChunkProvider::new);
+        ChunkProviderRegistry.register(BuiltInChunkType.ALPHA.name, AlphaChunkProvider::new);
+        ChunkProviderRegistry.register(BuiltInChunkType.INFDEV_415.name, Infdev415ChunkProvider::new);
+        ChunkProviderRegistry.register(BuiltInChunkType.INFDEV_227.name, Infdev227ChunkProvider::new);
+        ChunkProviderRegistry.register(BuiltInChunkType.INDEV.name, IndevChunkProvider::new);
+        ChunkProviderRegistry.register(BuiltInChunkType.BETA_ISLANDS.name, BetaIslandsChunkProvider::new);
     }
     
     // Register default chunk settings
     public static void registerChunkProviderSettings() {
-        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.BETA.id, ChunkProviderSettings::createSettingsBeta);
-        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.SKYLANDS.id, ChunkProviderSettings::createSettingsSkylands);
-        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.ALPHA.id, ChunkProviderSettings::createSettingsAlpha);
-        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.INFDEV_415.id, ChunkProviderSettings::createSettingsInfdev415);
-        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.INFDEV_227.id, ChunkProviderSettings::createSettingsInfdev227);
-        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.INDEV.id, ChunkProviderSettings::createSettingsIndev);
-        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.BETA_ISLANDS.id, ChunkProviderSettings::createSettingsBetaIslands);
+        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.BETA.name, ChunkProviderSettings::createSettingsBeta);
+        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.SKYLANDS.name, ChunkProviderSettings::createSettingsSkylands);
+        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.ALPHA.name, ChunkProviderSettings::createSettingsAlpha);
+        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.INFDEV_415.name, ChunkProviderSettings::createSettingsInfdev415);
+        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.INFDEV_227.name, ChunkProviderSettings::createSettingsInfdev227);
+        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.INDEV.name, ChunkProviderSettings::createSettingsIndev);
+        ChunkProviderSettingsRegistry.register(BuiltInChunkSettingsType.BETA_ISLANDS.name, ChunkProviderSettings::createSettingsBetaIslands);
     }
     
     // Register default biome providers
     public static void registerBiomeProviders() {
-        BiomeProviderRegistry.register(BuiltInBiomeType.BETA.id, BetaBiomeProvider::new);
-        BiomeProviderRegistry.register(BuiltInBiomeType.SINGLE.id, SingleBiomeProvider::new);
-        BiomeProviderRegistry.register(BuiltInBiomeType.VANILLA.id, VanillaBiomeProvider::new);
+        BiomeProviderRegistry.register(BuiltInBiomeType.BETA.name, BetaBiomeProvider::new);
+        BiomeProviderRegistry.register(BuiltInBiomeType.SINGLE.name, SingleBiomeProvider::new);
+        BiomeProviderRegistry.register(BuiltInBiomeType.VANILLA.name, VanillaBiomeProvider::new);
         
         // Register legacy biome providers
-        BiomeProviderRegistry.register(BuiltInBiomeType.CLASSIC.id, SingleBiomeProvider::new);
-        BiomeProviderRegistry.register(BuiltInBiomeType.WINTER.id, SingleBiomeProvider::new);
-        BiomeProviderRegistry.register(BuiltInBiomeType.SKY.id, SingleBiomeProvider::new);
-        BiomeProviderRegistry.register(BuiltInBiomeType.PLUS.id, SingleBiomeProvider::new);
+        BiomeProviderRegistry.register(BuiltInBiomeType.CLASSIC.name, SingleBiomeProvider::new);
+        BiomeProviderRegistry.register(BuiltInBiomeType.WINTER.name, SingleBiomeProvider::new);
+        BiomeProviderRegistry.register(BuiltInBiomeType.SKY.name, SingleBiomeProvider::new);
+        BiomeProviderRegistry.register(BuiltInBiomeType.PLUS.name, SingleBiomeProvider::new);
     }
     
     // Register default cave biome providers
     public static void registerCaveBiomeProvider() {
-        CaveBiomeProviderRegistry.register(BuiltInCaveBiomeType.VANILLA.id, VanillaCaveBiomeProvider::new);
-        CaveBiomeProviderRegistry.register(BuiltInCaveBiomeType.NONE.id, NoCaveBiomeProvider::new);
+        CaveBiomeProviderRegistry.register(BuiltInCaveBiomeType.VANILLA.name, VanillaCaveBiomeProvider::new);
+        CaveBiomeProviderRegistry.register(BuiltInCaveBiomeType.NONE.name, NoCaveBiomeProvider::new);
     }
     
     // Register default screen providers
     public static void registerWorldScreenProviders() {
-        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.INF.id, InfWorldScreenProvider::new);
-        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.INFDEV_OLD.id, InfdevOldWorldScreenProvider::new);
-        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.INDEV.id, IndevWorldScreenProvider::new);
-        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.SKYLANDS.id, SkylandsWorldScreenProvider::new);
-        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.ISLAND.id, IslandWorldScreenProvider::new);
+        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.INF.name, InfWorldScreenProvider::new);
+        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.INFDEV_OLD.name, InfdevOldWorldScreenProvider::new);
+        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.INDEV.name, IndevWorldScreenProvider::new);
+        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.SKYLANDS.name, SkylandsWorldScreenProvider::new);
+        WorldScreenProviderRegistry.register(BuiltInWorldScreenType.ISLAND.name, IslandWorldScreenProvider::new);
     }
     
     // Register default settings screen actions (Note: Match identifiers with biome ids!)
     public static void registerBiomeScreenProviders() {
-        BiomeScreenProviderRegistry.register(BuiltInBiomeType.BETA.id, BetaBiomeScreenProvider::create);
-        BiomeScreenProviderRegistry.register(BuiltInBiomeType.SINGLE.id, SingleBiomeScreenProvider::create);
-        BiomeScreenProviderRegistry.register(BuiltInBiomeType.VANILLA.id, VanillaBiomeScreenProvider::create);
+        BiomeScreenProviderRegistry.register(BuiltInBiomeType.BETA.name, BetaBiomeScreenProvider::create);
+        BiomeScreenProviderRegistry.register(BuiltInBiomeType.SINGLE.name, SingleBiomeScreenProvider::create);
+        BiomeScreenProviderRegistry.register(BuiltInBiomeType.VANILLA.name, VanillaBiomeScreenProvider::create);
     }
     
     // Register default world providers

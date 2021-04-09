@@ -12,10 +12,10 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 @Config(name = "biome_config")
 public class ModernBetaBiomeConfig implements ConfigData {
     @ConfigEntry.Gui.Excluded
-    public String biomeType = BuiltInBiomeType.BETA.id;
+    public String biomeType = BuiltInBiomeType.BETA.name;
     
     @ConfigEntry.Gui.Excluded
-    public String caveBiomeType = BuiltInCaveBiomeType.VANILLA.id;
+    public String caveBiomeType = BuiltInCaveBiomeType.VANILLA.name;
     
     @ConfigEntry.Gui.Excluded
     public String singleBiome = ClassicBiomes.ALPHA_ID.toString();

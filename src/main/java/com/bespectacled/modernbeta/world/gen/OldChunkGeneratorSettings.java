@@ -82,13 +82,13 @@ public class OldChunkGeneratorSettings {
     }
     
     static {
-        BETA = ModernBeta.createId(BuiltInChunkType.BETA.id);
-        ALPHA = ModernBeta.createId(BuiltInChunkType.ALPHA.id);
-        SKYLANDS = ModernBeta.createId(BuiltInChunkType.SKYLANDS.id);
-        INFDEV_415 = ModernBeta.createId(BuiltInChunkType.INFDEV_415.id);
-        INFDEV_227 = ModernBeta.createId(BuiltInChunkType.INFDEV_227.id);
-        INDEV = ModernBeta.createId(BuiltInChunkType.INDEV.id);
-        BETA_ISLANDS = ModernBeta.createId(BuiltInChunkType.BETA_ISLANDS.id);
+        BETA = ModernBeta.createId(BuiltInChunkType.BETA.name);
+        ALPHA = ModernBeta.createId(BuiltInChunkType.ALPHA.name);
+        SKYLANDS = ModernBeta.createId(BuiltInChunkType.SKYLANDS.name);
+        INFDEV_415 = ModernBeta.createId(BuiltInChunkType.INFDEV_415.name);
+        INFDEV_227 = ModernBeta.createId(BuiltInChunkType.INFDEV_227.name);
+        INDEV = ModernBeta.createId(BuiltInChunkType.INDEV.name);
+        BETA_ISLANDS = ModernBeta.createId(BuiltInChunkType.BETA_ISLANDS.name);
         
         RELEASE = ModernBeta.createId("release");
         

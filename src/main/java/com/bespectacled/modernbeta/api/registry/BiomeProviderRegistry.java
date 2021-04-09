@@ -30,9 +30,9 @@ public class BiomeProviderRegistry {
         WINTER("winter"),
         PLUS("plus");
         
-        public final String id;
+        public final String name;
         
-        private BuiltInBiomeType(String id) { this.id = id; }
+        private BuiltInBiomeType(String name) { this.name = name; }
     }
     
     private static final Map<String, BiFunction<Long, NbtCompound, AbstractBiomeProvider>> REGISTRY = new HashMap<>(); 
@@ -72,9 +72,9 @@ public class BiomeProviderRegistry {
     static {
         LEGACY_TYPES = new HashSet<String>();
         
-        LEGACY_TYPES.add(BuiltInBiomeType.SKY.id);
-        LEGACY_TYPES.add(BuiltInBiomeType.CLASSIC.id);
-        LEGACY_TYPES.add(BuiltInBiomeType.WINTER.id);
-        LEGACY_TYPES.add(BuiltInBiomeType.PLUS.id);
+        LEGACY_TYPES.add(BuiltInBiomeType.SKY.name);
+        LEGACY_TYPES.add(BuiltInBiomeType.CLASSIC.name);
+        LEGACY_TYPES.add(BuiltInBiomeType.WINTER.name);
+        LEGACY_TYPES.add(BuiltInBiomeType.PLUS.name);
     }
 }

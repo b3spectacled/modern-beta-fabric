@@ -20,9 +20,9 @@ public class WorldScreenProviderRegistry {
         ISLAND("island")
         ;
         
-        public final String id;
+        public final String name;
         
-        private BuiltInWorldScreenType(String id) { this.id = id; }
+        private BuiltInWorldScreenType(String id) { this.name = id; }
     }
     
     private static final Map<String, PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractWorldScreenProvider>> REGISTRY = new HashMap<>();

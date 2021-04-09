@@ -25,9 +25,9 @@ public class ChunkProviderRegistry {
         BETA_ISLANDS("beta_islands")
         ;
         
-        public final String id;
+        public final String name;
         
-        private BuiltInChunkType(String id) { this.id = id; }
+        private BuiltInChunkType(String name) { this.name = name; }
     }
     
     private static final Map<String, QuadFunction<Long, AbstractBiomeProvider, Supplier<ChunkGeneratorSettings>, NbtCompound, AbstractChunkProvider>> REGISTRY = new HashMap<>(); 

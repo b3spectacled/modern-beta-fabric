@@ -28,11 +28,11 @@ public class VanillaBiomeProvider extends AbstractBiomeProvider {
         
         this.vanillaBiomeSize = settings.contains("vanillaBiomeSize") ? 
             settings.getInt("vanillaBiomeSize") :
-            ModernBeta.BETA_CONFIG.biomeConfig.vanillaBiomeSize;
+            ModernBeta.BETA_CONFIG.biome_config.vanillaBiomeSize;
         
         this.vanillaOceanBiomeSize = settings.contains("vanillaOceanBiomeSize") ?
             settings.getInt("vanillaOceanBiomeSize") :
-            ModernBeta.BETA_CONFIG.biomeConfig.vanillaOceanBiomeSize;
+            ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize;
         
         this.biomeSampler = VanillaBiomeLayer.build(seed, false, this.vanillaBiomeSize, -1);
         this.oceanSampler = VanillaOceanLayer.build(seed, false, this.vanillaOceanBiomeSize, -1);

@@ -52,7 +52,7 @@ public class MixinMinecraftServer {
                 spawnPos = getInitialOldSpawn(oldGen, beachNoiseOctaves, oldGen.getSeaLevel());
             }
             
-            if (spawnPos != null && oldGen.getChunkProviderType().equals(BuiltInChunkType.INDEV.id)) {
+            if (spawnPos != null && oldGen.getChunkProviderType().equals(BuiltInChunkType.INDEV.name)) {
                 ModernBeta.LOGGER.log(Level.INFO, "[Indev] Spawning..");
                 IndevChunkProvider indevChunkProvider = (IndevChunkProvider)oldGen.getChunkProvider();
                 

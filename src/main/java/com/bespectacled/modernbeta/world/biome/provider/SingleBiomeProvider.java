@@ -46,23 +46,23 @@ public class SingleBiomeProvider extends AbstractBiomeProvider {
         String oldBiomeType = settings.getString("biomeType");
         
         if (oldWorldType.equals("alpha")) {
-            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.id) || oldBiomeType.equals(BuiltInBiomeType.PLUS.id)) 
+            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.name) || oldBiomeType.equals(BuiltInBiomeType.PLUS.name)) 
                 biomeId = ClassicBiomes.ALPHA_ID;
-            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.id)) 
+            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.name)) 
                 biomeId = ClassicBiomes.ALPHA_WINTER_ID;
         } else if (oldWorldType.equals("infdev")) {
-            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.id) || oldBiomeType.equals(BuiltInBiomeType.PLUS.id)) 
+            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.name) || oldBiomeType.equals(BuiltInBiomeType.PLUS.name)) 
                 biomeId = ClassicBiomes.INFDEV_415_ID;
-            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.id)) 
+            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.name)) 
                 biomeId = ClassicBiomes.INFDEV_415_WINTER_ID;
         } else if (oldWorldType.equals("alpha")) {
-            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.id) || oldBiomeType.equals(BuiltInBiomeType.PLUS.id)) 
+            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.name) || oldBiomeType.equals(BuiltInBiomeType.PLUS.name)) 
                 biomeId = ClassicBiomes.INFDEV_227_ID;
-            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.id)) 
+            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.name)) 
                 biomeId = ClassicBiomes.INFDEV_227_WINTER_ID;
         }
         
-        if (oldBiomeType.equals(BuiltInBiomeType.SKY.id)) 
+        if (oldBiomeType.equals(BuiltInBiomeType.SKY.name)) 
             biomeId = BetaBiomes.SKY_ID;
         
         return biomeId;

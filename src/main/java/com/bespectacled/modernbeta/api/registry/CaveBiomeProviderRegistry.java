@@ -14,9 +14,9 @@ public class CaveBiomeProviderRegistry {
         NONE("none"),
         VANILLA("vanilla");
         
-        public final String id;
+        public final String name;
         
-        private BuiltInCaveBiomeType(String id) { this.id = id; }
+        private BuiltInCaveBiomeType(String name) { this.name = name; }
     }
     
     private static final Map<String, BiFunction<Long, NbtCompound, AbstractCaveBiomeProvider>> REGISTRY = new HashMap<>(); 

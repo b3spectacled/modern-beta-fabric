@@ -31,19 +31,19 @@ public class InfWorldScreenProvider extends AbstractWorldScreenProvider {
         
         this.generateOceans = this.chunkProviderSettings.contains("generateOceans") ? 
             this.chunkProviderSettings.getBoolean("generateOceans") : 
-            ModernBeta.BETA_CONFIG.generationConfig.generateOceans;
+            ModernBeta.BETA_CONFIG.generation_config.generateOceans;
         
         this.generateNoiseCaves = this.chunkProviderSettings.contains("generateNoiseCaves") ? 
             this.chunkProviderSettings.getBoolean("generateNoiseCaves") :
-            ModernBeta.BETA_CONFIG.generationConfig.generateNoiseCaves;
+            ModernBeta.BETA_CONFIG.generation_config.generateNoiseCaves;
         
         this.generateAquifers = this.chunkProviderSettings.contains("generateAquifers") ? 
             this.chunkProviderSettings.getBoolean("generateAquifers") :
-            ModernBeta.BETA_CONFIG.generationConfig.generateAquifers;
+            ModernBeta.BETA_CONFIG.generation_config.generateAquifers;
         
         this.generateDeepslate = this.chunkProviderSettings.contains("generateDeepslate") ? 
             this.chunkProviderSettings.getBoolean("generateDeepslate") :
-            ModernBeta.BETA_CONFIG.generationConfig.generateDeepslate;
+            ModernBeta.BETA_CONFIG.generation_config.generateDeepslate;
         
         this.showNoiseOptions = this.worldProvider.showNoiseOptions();
     }
@@ -52,7 +52,7 @@ public class InfWorldScreenProvider extends AbstractWorldScreenProvider {
     protected void init() {
         super.init();
         
-        if (!this.biomeType.equals(BuiltInBiomeType.SINGLE.id)) {
+        if (!this.biomeType.equals(BuiltInBiomeType.SINGLE.name)) {
             buttonList.addSingleOptionEntry(
                 CyclingOption.create("createWorld.customize.inf.generateOceans",
                 (gameOptions) -> { return this.generateOceans; }, 

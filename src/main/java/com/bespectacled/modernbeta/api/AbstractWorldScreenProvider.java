@@ -123,8 +123,8 @@ public abstract class AbstractWorldScreenProvider extends Screen {
         Screen biomeScreen = biomeScreenFunction != null ? biomeScreenFunction.apply(this) : null;
         
         this.biomeOption = new ScreenButtonOption(
-            this.biomeType.equals(BuiltInBiomeType.SINGLE.id) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
-            this.biomeType.equals(BuiltInBiomeType.SINGLE.id) ? GUIUtil.createTranslatableBiomeStringFromId(this.singleBiome) : "",
+            this.biomeType.equals(BuiltInBiomeType.SINGLE.name) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
+            this.biomeType.equals(BuiltInBiomeType.SINGLE.name) ? GUIUtil.createTranslatableBiomeStringFromId(this.singleBiome) : "",
             buttonWidget -> this.client.openScreen(biomeScreen)
         );
         
