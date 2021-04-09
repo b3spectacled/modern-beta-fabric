@@ -9,7 +9,8 @@ import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.world.biome.classic.ClassicBiomes;
 import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
 import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevTheme;
-import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
+import com.bespectacled.modernbeta.world.biome.provider.*;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.registry.RegistryLookupCodec;
@@ -37,7 +38,6 @@ public class OldBiomeSource extends BiomeSource {
     private final Registry<Biome> biomeRegistry;
     private final CompoundTag biomeProviderSettings;
     
-    private final String biomeProviderType;
     private final AbstractBiomeProvider biomeProvider;
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, CompoundTag settings) {
@@ -52,9 +52,7 @@ public class OldBiomeSource extends BiomeSource {
         this.biomeRegistry = biomeRegistry;
         this.biomeProviderSettings = settings;
         
-        this.biomeProviderType = BiomeProviderRegistry.getBiomeProviderType(settings);
         this.biomeProvider = loadBiomeProvider(seed, settings);
-        
     }
 
     @Override
@@ -78,19 +76,15 @@ public class OldBiomeSource extends BiomeSource {
     }
 
     public boolean isVanilla() {
-        return this.biomeProviderType.equals(BuiltInBiomeType.VANILLA.name);
+        return this.biomeProvider instanceof VanillaBiomeProvider;
     }
     
     public boolean isBeta() {
-        return this.biomeProviderType.equals(BuiltInBiomeType.BETA.name);
+        return this.biomeProvider instanceof BetaBiomeProvider;
     }
     
     public boolean isSingle() {
-        return this.biomeProviderType.equals(BuiltInBiomeType.SINGLE.name);
-    }
-    
-    public String getBiomeProviderType() {
-        return this.biomeProviderType;
+        return this.biomeProvider instanceof SingleBiomeProvider;
     }
     
     public AbstractBiomeProvider getBiomeProvider() {
@@ -131,7 +125,7 @@ public class OldBiomeSource extends BiomeSource {
                 biomeId = IndevBiomes.INDEV_PARADISE_ID;
             else if (oldIndevTheme.equals(IndevTheme.WOODS.getName()))
                 biomeId = IndevBiomes.INDEV_WOODS_ID;
-            else if (oldIndevTheme.equals(IndevTheme.NORMAL.getName()))
+            else if (oldIndevTheme.equals(IndevTheme.SNOWY.getName()))
                 biomeId = IndevBiomes.INDEV_SNOWY_ID;
             else 
                 biomeId = IndevBiomes.INDEV_NORMAL_ID;
@@ -148,7 +142,7 @@ public class OldBiomeSource extends BiomeSource {
                 biomeId = ClassicBiomes.INFDEV_415_ID;
             if (oldBiomeType.equals(BuiltInBiomeType.WINTER.name)) 
                 biomeId = ClassicBiomes.INFDEV_415_WINTER_ID;
-        } else if (oldWorldType.equals("alpha")) {
+        } else if (oldWorldType.equals("infdev_old")) {
             if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.name) || oldBiomeType.equals(BuiltInBiomeType.PLUS.name)) 
                 biomeId = ClassicBiomes.INFDEV_227_ID;
             if (oldBiomeType.equals(BuiltInBiomeType.WINTER.name)) 

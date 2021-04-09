@@ -378,7 +378,7 @@ public abstract class AbstractChunkProvider {
      * @return Modified noise density.
      */
     protected double applyBottomSlide(double density, int noiseY, int initialOffset) {
-        int bottomSlideStart = initialOffset - this.bottomSlideOffset;
+        int bottomSlideStart = 0 - initialOffset - this.bottomSlideOffset;
         if (noiseY < bottomSlideStart) {
             double bottomSlideDelta = (float) (bottomSlideStart - noiseY) / ((float) this.bottomSlideSize);
             density = density * (1.0D - bottomSlideDelta) + this.bottomSlideTarget * bottomSlideDelta;
