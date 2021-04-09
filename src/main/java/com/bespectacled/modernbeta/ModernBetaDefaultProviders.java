@@ -60,7 +60,18 @@ public class ModernBetaDefaultProviders {
         BiomeProviderRegistry.register(BuiltInBiomeType.PLUS.name, SingleBiomeProvider::new);
     }
     
-    // Register default screen providers
+    // Register default world providers
+    public static void registerWorldProviders() {
+        WorldProviderRegistry.add(BuiltInWorldProviders.BETA);
+        WorldProviderRegistry.add(BuiltInWorldProviders.SKYLANDS);
+        WorldProviderRegistry.add(BuiltInWorldProviders.ALPHA);
+        WorldProviderRegistry.add(BuiltInWorldProviders.INFDEV_415);
+        WorldProviderRegistry.add(BuiltInWorldProviders.INFDEV_227);
+        WorldProviderRegistry.add(BuiltInWorldProviders.INDEV);
+        WorldProviderRegistry.add(BuiltInWorldProviders.BETA_ISLANDS);
+    }
+    
+ // Register default screen providers
     public static void registerWorldScreenProviders() {
         WorldScreenProviderRegistry.register(BuiltInWorldScreenType.INF.name, InfWorldScreenProvider::new);
         WorldScreenProviderRegistry.register(BuiltInWorldScreenType.INFDEV_OLD.name, InfdevOldWorldScreenProvider::new);
@@ -74,16 +85,5 @@ public class ModernBetaDefaultProviders {
         BiomeScreenProviderRegistry.register(BuiltInBiomeType.BETA.name, BetaBiomeScreenProvider::create);
         BiomeScreenProviderRegistry.register(BuiltInBiomeType.SINGLE.name, SingleBiomeScreenProvider::create);
         BiomeScreenProviderRegistry.register(BuiltInBiomeType.VANILLA.name, VanillaBiomeScreenProvider::create);
-    }
-    
-    // Register default world providers
-    public static void registerWorldProviders() {
-        WorldProviderRegistry.add(BuiltInWorldProviders.BETA);
-        WorldProviderRegistry.add(BuiltInWorldProviders.SKYLANDS);
-        WorldProviderRegistry.add(BuiltInWorldProviders.ALPHA);
-        WorldProviderRegistry.add(BuiltInWorldProviders.INFDEV_415);
-        WorldProviderRegistry.add(BuiltInWorldProviders.INFDEV_227);
-        WorldProviderRegistry.add(BuiltInWorldProviders.INDEV);
-        WorldProviderRegistry.add(BuiltInWorldProviders.BETA_ISLANDS);
     }
 }

@@ -56,10 +56,6 @@ public class ModernBeta implements ModInitializer {
         OldChunkGeneratorSettings.register();
         
         VanillaBiomeModifier.addShrineToOceans();
-        
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            OldGeneratorType.register();
-        }
 
         // Set up mod compatibility
         Compat.setupCompat();
@@ -69,8 +65,14 @@ public class ModernBeta implements ModInitializer {
         ModernBetaDefaultProviders.registerChunkProviderSettings();
         ModernBetaDefaultProviders.registerBiomeProviders();
         ModernBetaDefaultProviders.registerWorldProviders();
-        ModernBetaDefaultProviders.registerWorldScreenProviders();
-        ModernBetaDefaultProviders.registerBiomeScreenProviders();
+        
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            OldGeneratorType.register();
+            
+            // Register default screen providers
+            ModernBetaDefaultProviders.registerWorldScreenProviders();
+            ModernBetaDefaultProviders.registerBiomeScreenProviders();
+        }
         
         // Serialize various world gen stuff to JSON
         //OldConfiguredFeatures.export();
