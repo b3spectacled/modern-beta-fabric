@@ -79,8 +79,8 @@ public class MixinGeneratorOptions {
             WorldProvider worldProvider = WorldProviderRegistry.get(levelType);
             
             CompoundTag biomeProviderSettings = BiomeProviderSettings.createBiomeSettings(
-                ModernBeta.BETA_CONFIG.biomeConfig.biomeType,
-                ModernBeta.BETA_CONFIG.biomeConfig.singleBiome
+                ModernBeta.BETA_CONFIG.biome_config.biomeType,
+                ModernBeta.BETA_CONFIG.biome_config.singleBiome
             );
             biomeProviderSettings = BiomeProviderSettings.addBetaBiomeSettings(biomeProviderSettings);
             biomeProviderSettings = BiomeProviderSettings.addVanillaBiomeSettings(biomeProviderSettings);

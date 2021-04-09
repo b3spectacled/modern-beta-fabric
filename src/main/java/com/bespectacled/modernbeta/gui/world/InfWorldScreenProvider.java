@@ -25,7 +25,7 @@ public class InfWorldScreenProvider extends AbstractWorldScreenProvider {
         
         this.generateOceans = this.chunkProviderSettings.contains("generateOceans") ? 
             this.chunkProviderSettings.getBoolean("generateOceans") : 
-            ModernBeta.BETA_CONFIG.generationConfig.generateOceans;
+            ModernBeta.BETA_CONFIG.generation_config.generateOceans;
     }
     
     @Override

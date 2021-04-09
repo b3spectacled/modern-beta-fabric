@@ -23,11 +23,11 @@ public class InfdevOldWorldScreenProvider extends InfWorldScreenProvider {
         
         this.generateInfdevPyramid = this.chunkProviderSettings.contains("generateInfdevPyramid") ? 
             this.chunkProviderSettings.getBoolean("generateInfdevPyramid") :    
-            ModernBeta.BETA_CONFIG.generationConfig.generateInfdevPyramid;
+            ModernBeta.BETA_CONFIG.generation_config.generateInfdevPyramid;
         
         this.generateInfdevWall = this.chunkProviderSettings.contains("generateInfdevWall") ? 
             this.chunkProviderSettings.getBoolean("generateInfdevWall") :
-            ModernBeta.BETA_CONFIG.generationConfig.generateInfdevWall;
+            ModernBeta.BETA_CONFIG.generation_config.generateInfdevWall;
     }
     
     @Override

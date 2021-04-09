@@ -31,23 +31,23 @@ public class IslandWorldScreenProvider extends InfWorldScreenProvider {
         
         this.centerOceanLerpDistance = this.chunkProviderSettings.contains("centerOceanLerpDistance") ?
             this.chunkProviderSettings.getInt("centerOceanLerpDistance") :
-            ModernBeta.BETA_CONFIG.generationConfig.centerOceanLerpDistance;
+            ModernBeta.BETA_CONFIG.generation_config.centerOceanLerpDistance;
         
         this.centerOceanRadius = this.chunkProviderSettings.contains("centerOceanRadius") ?
             this.chunkProviderSettings.getInt("centerOceanRadius") :
-            ModernBeta.BETA_CONFIG.generationConfig.centerOceanRadius;
+            ModernBeta.BETA_CONFIG.generation_config.centerOceanRadius;
         
         this.centerIslandFalloff = this.chunkProviderSettings.contains("centerIslandFalloff") ?
             this.chunkProviderSettings.getFloat("centerIslandFalloff") :
-            ModernBeta.BETA_CONFIG.generationConfig.centerIslandFalloff;
+            ModernBeta.BETA_CONFIG.generation_config.centerIslandFalloff;
         
         this.outerIslandNoiseScale = this.chunkProviderSettings.contains("outerIslandNoiseScale") ?
             this.chunkProviderSettings.getFloat("outerIslandNoiseScale") :
-            ModernBeta.BETA_CONFIG.generationConfig.outerIslandNoiseScale;
+            ModernBeta.BETA_CONFIG.generation_config.outerIslandNoiseScale;
         
         this.outerIslandNoiseOffset = this.chunkProviderSettings.contains("outerIslandNoiseOffset") ?
             this.chunkProviderSettings.getFloat("outerIslandNoiseOffset") :
-            ModernBeta.BETA_CONFIG.generationConfig.outerIslandNoiseOffset;
+            ModernBeta.BETA_CONFIG.generation_config.outerIslandNoiseOffset;
     }
 
     @Override

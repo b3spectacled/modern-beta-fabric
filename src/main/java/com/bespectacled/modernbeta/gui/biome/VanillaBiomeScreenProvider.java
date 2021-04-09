@@ -45,11 +45,11 @@ public class VanillaBiomeScreenProvider extends Screen {
         
         this.vanillaBiomeSize = this.biomeProviderSettings.contains("vanillaBiomeSize") ? 
             this.biomeProviderSettings.getInt("vanillaBiomeSize") :
-            ModernBeta.BETA_CONFIG.biomeConfig.vanillaBiomeSize;
+            ModernBeta.BETA_CONFIG.biome_config.vanillaBiomeSize;
         
         this.vanillaOceanBiomeSize = this.biomeProviderSettings.contains("vanillaOceanBiomeSize") ?
             this.biomeProviderSettings.getInt("vanillaOceanBiomeSize") :
-            ModernBeta.BETA_CONFIG.biomeConfig.vanillaOceanBiomeSize;
+            ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize;
     }
     
     public static VanillaBiomeScreenProvider create(AbstractWorldScreenProvider screenProvider) {

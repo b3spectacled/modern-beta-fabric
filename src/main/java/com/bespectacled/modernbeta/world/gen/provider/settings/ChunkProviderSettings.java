@@ -7,7 +7,7 @@ import com.bespectacled.modernbeta.config.ModernBetaGenerationConfig;
 import net.minecraft.nbt.CompoundTag;
 
 public class ChunkProviderSettings {
-    protected static final ModernBetaGenerationConfig CONFIG = ModernBeta.BETA_CONFIG.generationConfig;
+    protected static final ModernBetaGenerationConfig CONFIG = ModernBeta.BETA_CONFIG.generation_config;
     
     public static CompoundTag createSettingsBeta() {
         CompoundTag settings = new CompoundTag();

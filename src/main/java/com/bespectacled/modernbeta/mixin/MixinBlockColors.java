@@ -50,7 +50,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1685", at = @At("HEAD"), cancellable = true)
     private static void onReedColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (BETA_CONFIG.renderingConfig.renderBetaBiomeColor)
+        if (BETA_CONFIG.rendering_config.renderBetaBiomeColor)
             info.setReturnValue(0xFFFFFF);
     }
 
@@ -58,7 +58,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1686", at = @At("HEAD"), cancellable = true)
     private static void onDoubleTallGrassColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (BETA_CONFIG.renderingConfig.renderBetaBiomeColor && useBetaColors)
+        if (BETA_CONFIG.rendering_config.renderBetaBiomeColor && useBetaColors)
             info.setReturnValue(getGrassColor(state, world, pos));
     }
 
@@ -66,7 +66,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1693", at = @At("HEAD"), cancellable = true)
     private static void onGrassColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (BETA_CONFIG.renderingConfig.renderBetaBiomeColor && useBetaColors)
+        if (BETA_CONFIG.rendering_config.renderBetaBiomeColor && useBetaColors)
             info.setReturnValue(getGrassColor(state, world, pos));
     }
 
@@ -74,7 +74,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1692", at = @At("HEAD"), cancellable = true)
     private static void onFoliageColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (BETA_CONFIG.renderingConfig.renderBetaBiomeColor && useBetaColors)
+        if (BETA_CONFIG.rendering_config.renderBetaBiomeColor && useBetaColors)
             info.setReturnValue(getFoliageColor(world, pos));
     }
 
