@@ -22,7 +22,7 @@ public class SingleBiomeProvider extends AbstractBiomeProvider {
         
         this.biomeId = (settings.contains("singleBiome")) ?
             new Identifier(settings.getString("singleBiome")) :
-            this.loadLegacySettings(settings);
+            new Identifier("plains");
     }
 
     @Override
@@ -37,34 +37,5 @@ public class SingleBiomeProvider extends AbstractBiomeProvider {
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
         return Arrays.asList(RegistryKey.of(Registry.BIOME_KEY, this.biomeId));
-    }
-    
-    private Identifier loadLegacySettings(NbtCompound settings) {
-        Identifier biomeId = ClassicBiomes.ALPHA_ID;
-        
-        String oldWorldType = settings.getString("worldType");
-        String oldBiomeType = settings.getString("biomeType");
-        
-        if (oldWorldType.equals("alpha")) {
-            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.name) || oldBiomeType.equals(BuiltInBiomeType.PLUS.name)) 
-                biomeId = ClassicBiomes.ALPHA_ID;
-            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.name)) 
-                biomeId = ClassicBiomes.ALPHA_WINTER_ID;
-        } else if (oldWorldType.equals("infdev")) {
-            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.name) || oldBiomeType.equals(BuiltInBiomeType.PLUS.name)) 
-                biomeId = ClassicBiomes.INFDEV_415_ID;
-            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.name)) 
-                biomeId = ClassicBiomes.INFDEV_415_WINTER_ID;
-        } else if (oldWorldType.equals("alpha")) {
-            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.name) || oldBiomeType.equals(BuiltInBiomeType.PLUS.name)) 
-                biomeId = ClassicBiomes.INFDEV_227_ID;
-            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.name)) 
-                biomeId = ClassicBiomes.INFDEV_227_WINTER_ID;
-        }
-        
-        if (oldBiomeType.equals(BuiltInBiomeType.SKY.name)) 
-            biomeId = BetaBiomes.SKY_ID;
-        
-        return biomeId;
     }
 }
