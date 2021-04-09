@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.mixin;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,6 +14,11 @@ import net.minecraft.client.world.GeneratorType.ScreenProvider;
 @Environment(EnvType.CLIENT)
 @Mixin(GeneratorType.class)
 public interface MixinGeneratorTypeAccessor {
+    @Accessor("VALUES")
+    public static List<GeneratorType> getValues() {
+      throw new AssertionError();
+    }
+    
     @Accessor("SCREEN_PROVIDERS")
     public static Map<Optional<GeneratorType>, ScreenProvider> getScreenProviders() {
         throw new AssertionError();

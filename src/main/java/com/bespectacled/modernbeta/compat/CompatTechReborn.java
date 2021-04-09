@@ -1,5 +1,9 @@
 package com.bespectacled.modernbeta.compat;
 
+import java.util.stream.Collectors;
+
+import com.bespectacled.modernbeta.world.biome.OldBiomes;
+
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.util.Identifier;
@@ -28,7 +32,13 @@ public class CompatTechReborn {
     public static void addCompat() {
         for (String o : ORES) {
             BiomeModifications.addFeature(
-                BiomeSelectors.includeByKey(Compat.MODERN_BETA_BIOMES), 
+                BiomeSelectors.includeByKey(
+                    OldBiomes.MODERN_BETA_BIOME_MAP
+                    .keySet()
+                    .stream()
+                    .map(i -> RegistryKey.of(Registry.BIOME_KEY, i))
+                    .collect(Collectors.toList())
+                ), 
                 GenerationStep.Feature.UNDERGROUND_ORES,  
                 RegistryKey.of(
                     Registry.CONFIGURED_FEATURE_WORLDGEN, 
@@ -37,5 +47,4 @@ public class CompatTechReborn {
             );
         }
     }
-    
 }

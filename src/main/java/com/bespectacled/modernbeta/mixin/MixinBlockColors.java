@@ -14,9 +14,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
+import com.bespectacled.modernbeta.world.biome.beta.BetaClimateSampler;
 
 @Mixin(value = BlockColors.class, priority = 1)
 public class MixinBlockColors implements MutableBlockColors {
@@ -33,6 +33,11 @@ public class MixinBlockColors implements MutableBlockColors {
     
     private static final double[] TEMP_HUMID = new double[2];
 
+    @Override
+    public void setSeed(long seed) {
+        BetaClimateSampler.INSTANCE.setSeed(seed);
+    }
+    
     @Unique
     public void setSeed(long seed, boolean isBetaWorld) {
         if (isBetaWorld)
@@ -45,7 +50,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1685", at = @At("HEAD"), cancellable = true)
     private static void onReedColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (BETA_CONFIG.renderBetaBiomeColor)
+        if (BETA_CONFIG.renderingConfig.renderBetaBiomeColor)
             info.setReturnValue(0xFFFFFF);
     }
 
@@ -53,7 +58,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1686", at = @At("HEAD"), cancellable = true)
     private static void onDoubleTallGrassColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (BETA_CONFIG.renderBetaBiomeColor && useBetaColors)
+        if (BETA_CONFIG.renderingConfig.renderBetaBiomeColor && useBetaColors)
             info.setReturnValue(getGrassColor(state, world, pos));
     }
 
@@ -61,7 +66,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1693", at = @At("HEAD"), cancellable = true)
     private static void onGrassColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (BETA_CONFIG.renderBetaBiomeColor && useBetaColors)
+        if (BETA_CONFIG.renderingConfig.renderBetaBiomeColor && useBetaColors)
             info.setReturnValue(getGrassColor(state, world, pos));
     }
 
@@ -69,7 +74,7 @@ public class MixinBlockColors implements MutableBlockColors {
     @Inject(method = "method_1692", at = @At("HEAD"), cancellable = true)
     private static void onFoliageColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIdx,
             CallbackInfoReturnable<Integer> info) {
-        if (BETA_CONFIG.renderBetaBiomeColor && useBetaColors)
+        if (BETA_CONFIG.renderingConfig.renderBetaBiomeColor && useBetaColors)
             info.setReturnValue(getFoliageColor(world, pos));
     }
 
@@ -107,4 +112,6 @@ public class MixinBlockColors implements MutableBlockColors {
         BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID, x, z);
         return FoliageColors.getColor(TEMP_HUMID[0], TEMP_HUMID[1]);
     }
+
+    
 }

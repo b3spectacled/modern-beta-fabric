@@ -20,6 +20,6 @@ public class MixinWorldRenderer {
         at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/SkyProperties;getFogColorOverride(FF)[F")
     )
     private float[] modifySkySunsetCols(float[] skyCols) {
-	    return BETA_CONFIG.renderAlphaSunset ? null : skyCols;
+	    return BETA_CONFIG.renderingConfig.renderAlphaSunset ? null : skyCols;
     }
 }

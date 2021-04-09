@@ -17,8 +17,12 @@ public class BlockStates {
     public static BlockState AIR = Blocks.AIR.getDefaultState();
     public static BlockState WATER = Blocks.WATER.getDefaultState();
     public static BlockState ICE = Blocks.ICE.getDefaultState();
+    public static BlockState SNOW = Blocks.SNOW.getDefaultState();
     public static BlockState LAVA = Blocks.LAVA.getDefaultState();
     public static BlockState BEDROCK = Blocks.BEDROCK.getDefaultState();
+    
+    public static BlockState GRASS = Blocks.GRASS.getDefaultState();
+    public static BlockState FERN = Blocks.FERN.getDefaultState();
     
     public static BlockState getBlockState(Block b) {
         BlockState state;

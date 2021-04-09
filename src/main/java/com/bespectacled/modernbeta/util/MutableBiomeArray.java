@@ -21,7 +21,10 @@ public interface MutableBiomeArray {
     }
 
     void setBiome(int x, int y, int z, Biome biome);
-
     Biome getBiome(int x, int y, int z);
-
+    
+    void setBiome(int i, Biome biome);
+    Biome getBiome(int i);
+    
+    int getBiomeArrLen();
 }

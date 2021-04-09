@@ -7,13 +7,22 @@ import java.util.Random;
  * 
  * */
 public class SimplexOctaveNoise extends Noise {
-    private SimplexNoise[] generators;
-    private int octaves;
+    private final SimplexNoise[] generators;
+    private final int octaves;
+    private final double scaleDivisor;
     
-    public SimplexOctaveNoise(Random random, int integer) {
-        this.octaves = integer;
-        this.generators = new SimplexNoise[integer];
-        for (int i = 0; i < integer; ++i) {
+    public SimplexOctaveNoise(Random random, int octaves) {
+        this.octaves = octaves;
+        this.generators = new SimplexNoise[octaves];
+        this.scaleDivisor = 1.5D;
+        
+        for (int i = 0; i < octaves; ++i) {
+            this.generators[i] = new SimplexNoise(random);
+        }
+    }
+    
+    public void setOctaves(Random random) {
+        for (int i = 0; i < this.octaves; ++i) {
             this.generators[i] = new SimplexNoise(random);
         }
     }
@@ -27,8 +36,9 @@ public class SimplexOctaveNoise extends Noise {
     }
     
     public double[] sample(double[] arr, double x, double z, int sizeX, int sizeZ, double scaleX, double scaleZ, double lacunarity, double persistence) {
-        scaleX /= 1.5;
-        scaleZ /= 1.5;
+        scaleX /= this.scaleDivisor;
+        scaleZ /= this.scaleDivisor;
+        
         if (arr == null || arr.length < sizeX * sizeZ) {
             arr = new double[sizeX * sizeZ];
         }
@@ -51,8 +61,8 @@ public class SimplexOctaveNoise extends Noise {
     
     
     public double sample(double x, double z, double scaleX, double scaleZ, double lacunarity, double persistence) {
-        scaleX /= 1.5;
-        scaleZ /= 1.5;
+        scaleX /= this.scaleDivisor;
+        scaleZ /= this.scaleDivisor;
         
         double total = 0.0;
         double amplitude = 1.0;

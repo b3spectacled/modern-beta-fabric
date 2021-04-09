@@ -8,16 +8,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.bespectacled.modernbeta.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.util.MutableClientWorld;
-
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.beta.BetaClimateSampler;
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,20 +31,14 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(value = ClientWorld.class, priority = 1)
 public abstract class MixinClientWorld extends World implements MutableClientWorld {
     
-    @Unique
-    private BlockPos curBlockPos = new BlockPos(0, 0, 0);
+    @Unique private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
     
-    @Unique
-    private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
+    @Unique private BlockPos curBlockPos = new BlockPos(0, 0, 0);
     
-    @Unique
-    private boolean useBetaColors = false;
+    @Unique private boolean useBetaColors = false;
+    @Unique private boolean isOverworld = false;
     
-    @Unique
-    private boolean isOverworld = false;
-    
-    @Shadow
-    private MinecraftClient client;
+    @Shadow private MinecraftClient client;
 
     private MixinClientWorld() {
         super(null, null, null, null, false, false, 0L);
@@ -58,17 +49,17 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
             RegistryKey<World> worldKey, DimensionType dimensionType, int loadDistance, Supplier<Profiler> profiler,
             WorldRenderer renderer, boolean debugWorld, long seed, CallbackInfo ci) {
         
-        boolean useBetaColors = BETA_CONFIG.useFixedSeed;
-        long worldSeed = BETA_CONFIG.fixedSeed;
+        boolean useBetaColors = BETA_CONFIG.renderingConfig.useFixedSeed;
+        long worldSeed = BETA_CONFIG.renderingConfig.fixedSeed;
         
         if (client.getServer() != null) { // Server check
-           ChunkGenerator gen = client.getServer().getOverworld().getChunkManager().getChunkGenerator();
-           
-           if (!BETA_CONFIG.useFixedSeed && gen instanceof OldChunkGenerator && ((OldBiomeSource)gen.getBiomeSource()).isBeta()) {
-               useBetaColors = true;
-               worldSeed = gen.worldSeed;
-           }
-        }
+            BiomeSource biomeSource = client.getServer().getOverworld().getChunkManager().getChunkGenerator().getBiomeSource();
+            
+            if (!BETA_CONFIG.renderingConfig.useFixedSeed && biomeSource instanceof OldBiomeSource && ((OldBiomeSource)biomeSource).isBeta()) {
+                useBetaColors = true;
+                worldSeed = client.getServer().getOverworld().getSeed();
+            }
+         }
         
         this.isOverworld = worldKey.getValue().equals(DimensionType.OVERWORLD_REGISTRY_KEY.getValue());
         this.useBetaColors = useBetaColors;
@@ -93,7 +84,7 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
         index = 6  
     )
     private int injectBetaSkyColor(int skyColor) {
-        if (this.useBetaColors && BETA_CONFIG.renderBetaSkyColor && this.isOverworld) {
+        if (this.useBetaColors && BETA_CONFIG.renderingConfig.renderBetaSkyColor && this.isOverworld) {
             skyColor = BetaClimateSampler.INSTANCE.getSkyColor(curBlockPos.getX(), curBlockPos.getZ());
         }
         
