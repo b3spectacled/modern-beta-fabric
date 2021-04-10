@@ -75,8 +75,6 @@ public class ModernBeta implements ModInitializer {
         }
         
         // Serialize various world gen stuff to JSON
-        //OldConfiguredFeatures.export();
-        //OldBiomes.export();
         //OldGeneratorSettings.export();
         //OldChunkGenerator.export();
 

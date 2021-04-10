@@ -1,26 +1,12 @@
 package com.bespectacled.modernbeta.world.feature;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.decorator.CountNoiseDecoratorConfig;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.structure.rule.BlockMatchRuleTest;
 import net.minecraft.util.Identifier;
@@ -107,23 +93,5 @@ public class OldConfiguredFeatures {
     private static <F extends FeatureConfig> ConfiguredFeature<F, ?> register(String id, ConfiguredFeature<F, ?> feature) {
         CONFIGURED_FEATURES.put(ModernBeta.createId(id), feature);
         return Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, ModernBeta.createId(id), feature);
-    }
-    
-    public static void export() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Path dir = Paths.get("..\\src\\main\\resources\\data\\modern_beta\\configured_features");
-        
-        for (Identifier i : CONFIGURED_FEATURES.keySet()) {
-            ConfiguredFeature<?, ?> f = CONFIGURED_FEATURES.get(i);
-            Function<Supplier<ConfiguredFeature<?, ?>>, DataResult<JsonElement>> toJson = JsonOps.INSTANCE.withEncoder(ConfiguredFeature.REGISTRY_CODEC);
-            
-            try {
-                JsonElement json = toJson.apply(() -> f).result().get();
-                Files.write(dir.resolve(i.getPath() + ".json"), gson.toJson(json).getBytes(StandardCharsets.UTF_8));
-            } catch (IOException e) {
-                ModernBeta.LOGGER.error("[Modern Beta] Couldn't serialize configured features!");
-                e.printStackTrace();
-            }
-        }
     }
 }

@@ -43,7 +43,6 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
