@@ -10,13 +10,13 @@
     "MixinChunkGeneratorInvoker"
   ],
   "client": [
-    "MixinBlockColors",
-    "MixinClientWorld",
-    "MixinWorldRenderer",
-    "MixinBackgroundRenderer",
-    "MixinGeneratorTypeAccessor",
-    "MixinInGameHud",
-    "MixinMoreOptionsDialogInvoker"
+    "client.MixinBlockColors",
+    "client.MixinClientWorld",
+    "client.MixinWorldRenderer",
+    "client.MixinBackgroundRenderer",
+    "client.MixinGeneratorTypeAccessor",
+    "client.MixinInGameHud",
+    "client.MixinMoreOptionsDialogInvoker"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -65,7 +65,7 @@ public class IndevHell {
                 .foliageColor(5242667)
                 .skyColor(1049600)
                 .fogColor(2164736)
-                .waterColor(2835199)
+                .waterColor(2838783)
                 .waterFogColor(329011)
                 .build())
             .spawnSettings(spawnSettings.build())
