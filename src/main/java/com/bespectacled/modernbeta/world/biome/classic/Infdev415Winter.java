@@ -71,7 +71,7 @@ public class Infdev415Winter {
                 .foliageColor(5242667)
                 .skyColor(10079487)
                 .fogColor(11587839)
-                .waterColor(2835199)
+                .waterColor(2838783)
                 .waterFogColor(329011)
                 .build())
             .spawnSettings(spawnSettings.build())

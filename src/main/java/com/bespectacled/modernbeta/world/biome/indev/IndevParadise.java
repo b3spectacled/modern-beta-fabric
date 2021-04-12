@@ -67,7 +67,7 @@ public class IndevParadise {
                 .foliageColor(5242667)
                 .skyColor(13033215)
                 .fogColor(13033215)
-                .waterColor(2835199)
+                .waterColor(2838783)
                 .waterFogColor(329011)
                 .build())
             .spawnSettings(spawnSettings.build())

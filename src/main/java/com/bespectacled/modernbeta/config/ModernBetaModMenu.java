@@ -5,6 +5,7 @@ import io.github.prospector.modmenu.api.ModMenuApi;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.gui.screen.Screen;
 
+@SuppressWarnings("deprecation")
 public class ModernBetaModMenu implements ModMenuApi {
     @Override
     public ConfigScreenFactory<Screen> getModConfigScreenFactory() {

@@ -71,7 +71,7 @@ public class Alpha {
                 .foliageColor(5242667)
                 .skyColor(8961023)
                 .fogColor(12638463)
-                .waterColor(2835199)
+                .waterColor(2838783)
                 .waterFogColor(329011)
                 .build())
             .spawnSettings(spawnSettings.build())
