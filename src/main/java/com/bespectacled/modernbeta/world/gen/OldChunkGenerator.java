@@ -1,20 +1,37 @@
 package com.bespectacled.modernbeta.world.gen;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.BitSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.AbstractChunkProvider;
 import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry;
+import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry;
+import com.bespectacled.modernbeta.api.registry.WorldProviderRegistry;
+import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
+import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
+import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry.BuiltInChunkSettingsType;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.feature.OldFeatures;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.entity.SpawnGroup;
@@ -25,6 +42,7 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
@@ -322,16 +340,16 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.chunkProviderSettings;
     }
     
-    /*
+    
     public static void export() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Path dir = Paths.get("..\\src\\main\\resources\\data\\modern_beta\\dimension");
         
-        CompoundTag chunkSettings = OldGeneratorSettings.createInfSettings(OldChunkProviderType.BETA);
-        CompoundTag biomeSettings = OldGeneratorSettings.createBiomeSettings(OldBiomeProviderType.BETA, CaveBiomeType.VANILLA, BetaBiomes.FOREST_ID);
+        CompoundTag biomeProviderSettings = BiomeProviderSettings.createBiomeSettings(BuiltInBiomeType.BETA.name, WorldProviderRegistry.get(BuiltInChunkType.BETA.name).getDefaultBiome());
+        CompoundTag chunkProviderSettings = ChunkProviderSettingsRegistry.get(BuiltInChunkSettingsType.BETA.name).get();
+        OldChunkGeneratorSettings settings = new OldChunkGeneratorSettings(OldChunkGeneratorSettings.BETA_GENERATOR_SETTINGS, chunkProviderSettings);
         
-        OldBiomeSource biomeSource = new OldBiomeSource(0, BuiltinRegistries.BIOME, biomeSettings);
-        OldChunkGenerator chunkGenerator = new OldChunkGenerator(biomeSource, 0, () -> OldGeneratorSettings.BETA_GENERATOR_SETTINGS, chunkSettings);
+        OldChunkGenerator chunkGenerator = new OldChunkGenerator(new OldBiomeSource(0, BuiltinRegistries.BIOME, biomeProviderSettings), 0, settings);
         Function<OldChunkGenerator, DataResult<JsonElement>> toJson = JsonOps.INSTANCE.withEncoder(OldChunkGenerator.CODEC);
         
         try {
@@ -342,5 +360,4 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             e.printStackTrace();
         }
     }
-    */
 }

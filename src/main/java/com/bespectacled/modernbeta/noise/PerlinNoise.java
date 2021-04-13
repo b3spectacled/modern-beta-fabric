@@ -339,6 +339,9 @@ public class PerlinNoise extends Noise {
     
     /*
      * From vanilla PerlinNoiseSampler.
+     * 
+     * yScale = scaleY * frequency
+     * yMax = y * scaleY * frequency = y
      */
     public double sample3D(double x, double y, double z, double yScale, double yMax) {
         x += this.xOrigin;
