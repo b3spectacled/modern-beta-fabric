@@ -37,8 +37,8 @@ public class OldGeneratorConfig {
         INFDEV_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 400.0);
         
         BETA_SHAPE_CONFIG = GenerationShapeConfig.create(
-            -64, 
-            192, 
+            0,
+            128,
             BETA_SAMPLING_CONFIG, 
             new SlideConfig(-10, 3, 0), 
             new SlideConfig(15, 3, 0),
@@ -53,8 +53,8 @@ public class OldGeneratorConfig {
         );
         
         ALPHA_SHAPE_CONFIG = GenerationShapeConfig.create(
-            -64, 
-            192,  
+            0,
+            128,  
             ALPHA_SAMPLING_CONFIG, 
             new SlideConfig(-10, 3, 0), 
             new SlideConfig(15, 3, 0),
@@ -85,8 +85,8 @@ public class OldGeneratorConfig {
         );
         
         INFDEV_SHAPE_CONFIG = GenerationShapeConfig.create(
-            -64, 
-            192, 
+            0,
+            128,
             INFDEV_SAMPLING_CONFIG, 
             new SlideConfig(0, 0, 0), 
             new SlideConfig(15, 3, 0),
@@ -102,7 +102,7 @@ public class OldGeneratorConfig {
         
         INDEV_SHAPE_CONFIG = GenerationShapeConfig.create(
             0, 
-            320, 
+            256, 
             INFDEV_SAMPLING_CONFIG, 
             new SlideConfig(0, 0, 0), 
             new SlideConfig(0, 0, 0),

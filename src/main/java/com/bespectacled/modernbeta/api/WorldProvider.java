@@ -22,8 +22,6 @@ public class WorldProvider {
     private final String defaultCaveBiomeProvider;
     private final String defaultBiome;
 
-    private final boolean showNoiseOptions; // TODO: Temporary probably, should remove in favor of data pack noise settings.
-
     public WorldProvider(
         String chunkProvider,
         String chunkProviderSettings,
@@ -31,8 +29,7 @@ public class WorldProvider {
         String guiProvider,
         String defaultBiomeProvider,
         String defaultCaveBiomeProvider,
-        String defaultBiome,
-        boolean showNoiseOptions
+        String defaultBiome
     ) {
         this.chunkProvider = chunkProvider;
         this.chunkProviderSettings = chunkProviderSettings;
@@ -42,8 +39,6 @@ public class WorldProvider {
         this.defaultBiomeProvider = defaultBiomeProvider;
         this.defaultCaveBiomeProvider = defaultCaveBiomeProvider;
         this.defaultBiome = defaultBiome;
-        
-        this.showNoiseOptions = showNoiseOptions;
     }
     
     public String getName() {
@@ -56,10 +51,6 @@ public class WorldProvider {
     
     public String getChunkGenSettings() {
         return this.chunkGenSettings;
-    }
-    
-    public boolean showNoiseOptions() {
-        return this.showNoiseOptions;
     }
     
     public String getDefaultBiomeProvider() {

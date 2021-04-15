@@ -28,8 +28,7 @@ public class BuiltInWorldProviders {
             BuiltInWorldScreenType.INF.name,
             BuiltInBiomeType.BETA.name, 
             BuiltInCaveBiomeType.VANILLA.name, 
-            BetaBiomes.FOREST_ID.toString(),
-            true
+            BetaBiomes.FOREST_ID.toString()
         );
         
         SKYLANDS = new WorldProvider(
@@ -39,8 +38,7 @@ public class BuiltInWorldProviders {
             BuiltInWorldScreenType.SKYLANDS.name, 
             BuiltInBiomeType.SINGLE.name, 
             BuiltInCaveBiomeType.NONE.name, 
-            BetaBiomes.SKY_ID.toString(),
-            true
+            BetaBiomes.SKY_ID.toString()
         );
         
         ALPHA = new WorldProvider(
@@ -50,8 +48,7 @@ public class BuiltInWorldProviders {
             BuiltInWorldScreenType.INF.name, 
             BuiltInBiomeType.SINGLE.name, 
             BuiltInCaveBiomeType.NONE.name, 
-            ClassicBiomes.ALPHA_ID.toString(),
-            true
+            ClassicBiomes.ALPHA_ID.toString()
         );
         
         INFDEV_415 = new WorldProvider(
@@ -61,8 +58,7 @@ public class BuiltInWorldProviders {
             BuiltInWorldScreenType.INF.name, 
             BuiltInBiomeType.SINGLE.name, 
             BuiltInCaveBiomeType.NONE.name, 
-            ClassicBiomes.INFDEV_415_ID.toString(),
-            true
+            ClassicBiomes.INFDEV_415_ID.toString()
         );
         
         INFDEV_227 = new WorldProvider(
@@ -72,8 +68,7 @@ public class BuiltInWorldProviders {
             BuiltInWorldScreenType.INFDEV_OLD.name, 
             BuiltInBiomeType.SINGLE.name, 
             BuiltInCaveBiomeType.NONE.name, 
-            ClassicBiomes.INFDEV_227_ID.toString(),
-            false
+            ClassicBiomes.INFDEV_227_ID.toString()
         );
         
         INDEV = new WorldProvider(
@@ -83,8 +78,7 @@ public class BuiltInWorldProviders {
             BuiltInWorldScreenType.INDEV.name, 
             BuiltInBiomeType.SINGLE.name, 
             BuiltInCaveBiomeType.NONE.name, 
-            IndevBiomes.INDEV_NORMAL_ID.toString(),
-            false
+            IndevBiomes.INDEV_NORMAL_ID.toString()
         );
         
         BETA_ISLANDS = new WorldProvider(
@@ -94,8 +88,7 @@ public class BuiltInWorldProviders {
             BuiltInWorldScreenType.ISLAND.name,
             BuiltInBiomeType.BETA.name,
             BuiltInCaveBiomeType.VANILLA.name,
-            BetaBiomes.FOREST_ID.toString(),
-            true
+            BetaBiomes.FOREST_ID.toString()
         );
     }
 }

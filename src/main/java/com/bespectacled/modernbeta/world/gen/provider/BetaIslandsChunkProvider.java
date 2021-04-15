@@ -50,7 +50,7 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
     
     public BetaIslandsChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, -64, 192, 64, 50, 0, -10, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, true, true, true, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
+        super(seed, 0, 128, 64, 50, 0, -10, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -369,7 +369,7 @@ public class BetaIslandsChunkProvider extends AbstractChunkProvider {
             }
 
             depth0 /= 1.3999999999999999D;
-            if (!this.generateDeepOceans) depth0 /= 2D;
+            depth0 /= 2D;
 
             scale = 0.0D;
 

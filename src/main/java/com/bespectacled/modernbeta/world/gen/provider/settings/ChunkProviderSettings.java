@@ -14,9 +14,6 @@ public class ChunkProviderSettings {
         
         settings.putString("worldType", BuiltInChunkType.BETA.name);
         settings.putBoolean("generateOceans", CONFIG.generateOceans);
-        settings.putBoolean("generateNoiseCaves", CONFIG.generateNoiseCaves);
-        settings.putBoolean("generateAquifers", CONFIG.generateAquifers);
-        settings.putBoolean("generateDeepslate", CONFIG.generateDeepslate);
         
         return settings;
     }
@@ -26,9 +23,6 @@ public class ChunkProviderSettings {
         
         settings.putString("worldType", BuiltInChunkType.ALPHA.name);
         settings.putBoolean("generateOceans", CONFIG.generateOceans);
-        settings.putBoolean("generateNoiseCaves", CONFIG.generateNoiseCaves);
-        settings.putBoolean("generateAquifers", CONFIG.generateAquifers);
-        settings.putBoolean("generateDeepslate", CONFIG.generateDeepslate);
         
         return settings;
     }
@@ -37,8 +31,6 @@ public class ChunkProviderSettings {
         NbtCompound settings = new NbtCompound();
         
         settings.putString("worldType", BuiltInChunkType.SKYLANDS.name);
-        settings.putBoolean("generateNoiseCaves", CONFIG.generateNoiseCaves);
-        settings.putBoolean("generateDeepslate", CONFIG.generateDeepslate);
         
         return settings;
     }
@@ -48,9 +40,6 @@ public class ChunkProviderSettings {
         
         settings.putString("worldType", BuiltInChunkType.INFDEV_415.name);
         settings.putBoolean("generateOceans", CONFIG.generateOceans);
-        settings.putBoolean("generateNoiseCaves", CONFIG.generateNoiseCaves);
-        settings.putBoolean("generateAquifers", CONFIG.generateAquifers);
-        settings.putBoolean("generateDeepslate", CONFIG.generateDeepslate);
         
         return settings;
     }
@@ -60,7 +49,6 @@ public class ChunkProviderSettings {
         
         settings.putString("worldType", BuiltInChunkType.INFDEV_227.name);
         settings.putBoolean("generateOceans", CONFIG.generateOceans);
-        settings.putBoolean("generateDeepslate", CONFIG.generateDeepslate);
         settings.putBoolean("generateInfdevPyramid", CONFIG.generateInfdevPyramid);
         settings.putBoolean("generateInfdevWall", CONFIG.generateInfdevWall);
         
@@ -86,9 +74,6 @@ public class ChunkProviderSettings {
         
         settings.putString("worldType", BuiltInChunkType.BETA_ISLANDS.name);
         settings.putBoolean("generateOceans", CONFIG.generateOceans);
-        settings.putBoolean("generateNoiseCaves", CONFIG.generateNoiseCaves);
-        settings.putBoolean("generateAquifers", CONFIG.generateAquifers);
-        settings.putBoolean("generateDeepslate", CONFIG.generateDeepslate);
         
         settings.putInt("centerOceanLerpDistance", CONFIG.centerOceanLerpDistance);
         settings.putInt("centerOceanRadius", CONFIG.centerOceanRadius);

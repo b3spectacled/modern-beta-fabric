@@ -98,7 +98,6 @@ public abstract class AbstractChunkProvider {
     protected final int bottomSlideSize;
     protected final int bottomSlideOffset;
 
-    protected final boolean generateDeepOceans;
     protected final boolean generateNoiseCaves;
     protected final boolean generateAquifers;
     protected final boolean generateDeepslate;
@@ -127,7 +126,7 @@ public abstract class AbstractChunkProvider {
             generatorSettings.get().getGenerationShapeConfig().getMinimumY(),
             generatorSettings.get().getGenerationShapeConfig().getHeight(),
             generatorSettings.get().getSeaLevel(),
-            generatorSettings.get().method_36212(),
+            generatorSettings.get().getMinSurfaceLevel(),
             generatorSettings.get().getBedrockFloorY(),
             generatorSettings.get().getBedrockCeilingY(),
             generatorSettings.get().getGenerationShapeConfig().getSizeVertical(),
@@ -250,10 +249,9 @@ public abstract class AbstractChunkProvider {
         this.bottomSlideSize = bottomSlideSize;
         this.bottomSlideOffset = bottomSlideOffset;
         
-        this.generateDeepOceans = this.providerSettings.contains("generateDeepOceans") ? this.providerSettings.getBoolean("generateDeepOceans") : false;
-        this.generateNoiseCaves = (this.providerSettings.contains("generateNoiseCaves") && this.providerSettings.getBoolean("generateNoiseCaves")) ? generateNoiseCaves : false;
-        this.generateAquifers = (this.providerSettings.contains("generateAquifers") && this.providerSettings.getBoolean("generateAquifers")) ? generateAquifers : false;
-        this.generateDeepslate = (this.providerSettings.contains("generateDeepslate") && this.providerSettings.getBoolean("generateDeepslate")) ? generateDeepslate : false;
+        this.generateNoiseCaves = generateNoiseCaves;
+        this.generateAquifers = generateAquifers;
+        this.generateDeepslate = generateDeepslate;
         
         this.defaultBlock = defaultBlock;
         this.defaultFluid = defaultFluid;
@@ -263,7 +261,7 @@ public abstract class AbstractChunkProvider {
         this.waterLevelNoise = DoublePerlinNoiseSampler.create(new SimpleRandom(chunkRandom.nextLong()), -3, 1.0, 0.0, 2.0);
         
         this.noiseCaveSampler = this.generateNoiseCaves ? new NoiseCaveSampler(chunkRandom, this.noiseMinY) : null;
-        this.deepslateInterpolator = new DeepslateInterpolator(seed, this.defaultBlock, this.generateDeepslate ? Blocks.DEEPSLATE.getDefaultState() : BlockStates.STONE);
+        this.deepslateInterpolator = new DeepslateInterpolator(seed, this.defaultBlock, this.generateDeepslate ? Blocks.DEEPSLATE.getDefaultState() : BlockStates.STONE, this.generatorSettings);
         
         this.surfaceDepthNoise = this.generatorSettings.get().getGenerationShapeConfig().hasSimplexSurfaceNoise() ? 
             new OctaveSimplexNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0)) : 
@@ -410,8 +408,8 @@ public abstract class AbstractChunkProvider {
         BlockState blockStateToSet = BlockStates.AIR;
         
         if (clampedDensity > 0.0) {
-            blockStateToSet = this.deepslateInterpolator.sample(x, y, z, this.generatorSettings.get());
-        } else if (this.generateAquifers && y < this.minY + 9) {
+            blockStateToSet = this.deepslateInterpolator.sample(x, y, z);
+        } else if (this.generateAquifers && AquiferSampler.method_35324(y - this.minY)) {
             blockStateToSet = BlockStates.LAVA;
         } else {
             int localSeaLevel = (aquiferSampler == null) ? this.getSeaLevel() : aquiferSampler.getWaterLevel();
@@ -441,7 +439,7 @@ public abstract class AbstractChunkProvider {
         BlockState blockState = BlockStates.getBlockState(blockToSet);
         
         if (blockToSet == this.defaultBlock.getBlock() && y <= 0) {
-            return this.deepslateInterpolator.sample(x, y, z, this.generatorSettings.get());
+            return this.deepslateInterpolator.sample(x, y, z);
         }
         
         return blockState;

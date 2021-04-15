@@ -48,6 +48,7 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.Carver;
 import net.minecraft.world.gen.carver.CarverContext;
+import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
@@ -181,7 +182,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     
                     // Special case for old Beta carvers.
                     if (carver instanceof IOldCaveCarver) {
-                        ((IOldCaveCarver)carver).carve(heightContext, chunk, this.random, chunkX, chunkZ, mainChunkX, mainChunkZ);
+                        ((IOldCaveCarver)carver).carve(heightContext, (CaveCarverConfig)configuredCarver.getConfig(), chunk, this.random, chunkX, chunkZ, mainChunkX, mainChunkZ);
                         
                     } else if (configuredCarver.shouldCarve(random)) {
                         configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, this.random, this.getSeaLevel(), caveChunkPos, bitSet);
@@ -290,8 +291,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public int getWorldHeight() {
         // TODO: Causes issue with YOffset.BelowTop decorator (i.e. ORE_COAL_UPPER), find some workaround.
-        //return chunkProvider.getWorldHeight();
-        return 384;
+        return this.chunkProvider.getWorldHeight();
     }
     
     @Override
