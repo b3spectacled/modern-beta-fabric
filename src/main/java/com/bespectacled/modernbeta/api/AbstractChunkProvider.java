@@ -322,7 +322,7 @@ public abstract class AbstractChunkProvider {
      * 
      * @return PerlinOctaveNoise object used for beach surface generation.
      */
-    public abstract PerlinOctaveNoise getBeachNoiseOctaves();
+    public abstract PerlinOctaveNoise getBeachNoise();
     
     /**
      * Determines whether to skip the chunk for some chunk generation step, depending on the x/z chunk coordinates.

@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevTheme;
@@ -45,14 +44,14 @@ public class MixinMinecraftServer {
             ((IntRuleAccessor)world.getGameRules().get(GameRules.SPAWN_RADIUS)).setValue(0); // Ensure a centered spawn
             
             OldChunkGenerator oldGen = (OldChunkGenerator)gen;
-            PerlinOctaveNoise beachNoiseOctaves = oldGen.getChunkProvider().getBeachNoiseOctaves();
+            PerlinOctaveNoise beachNoiseOctaves = oldGen.getChunkProvider().getBeachNoise();
             
             if (beachNoiseOctaves != null) { // Attempt to place a beach spawn if provider generates classic beaches.
                 ModernBeta.LOGGER.log(Level.INFO, "Setting a beach spawn..");
                 spawnPos = getInitialOldSpawn(oldGen, beachNoiseOctaves, oldGen.getSeaLevel());
             }
             
-            if (spawnPos != null && oldGen.getChunkProviderType().equals(BuiltInChunkType.INDEV.name)) {
+            if (spawnPos != null && oldGen.isProviderInstanceOf(IndevChunkProvider.class)) {
                 ModernBeta.LOGGER.log(Level.INFO, "[Indev] Spawning..");
                 IndevChunkProvider indevChunkProvider = (IndevChunkProvider)oldGen.getChunkProvider();
                 

@@ -216,7 +216,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     }
     
     @Override
-    public PerlinOctaveNoise getBeachNoiseOctaves() {
+    public PerlinOctaveNoise getBeachNoise() {
         return this.beachNoiseOctaves;
     }
     

@@ -107,7 +107,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
     }
     
     @Override
-    public PerlinOctaveNoise getBeachNoiseOctaves() {
+    public PerlinOctaveNoise getBeachNoise() {
         return null;
     }
   

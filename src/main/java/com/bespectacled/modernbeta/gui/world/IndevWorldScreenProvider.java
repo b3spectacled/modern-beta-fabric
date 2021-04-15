@@ -87,7 +87,7 @@ public class IndevWorldScreenProvider extends AbstractWorldScreenProvider {
             CyclingOption.create(
                 "createWorld.customize.indev.levelTheme", 
                 indevThemes, 
-                (value) -> new TranslatableText("createWorld.customize.indev.theme." + value.getName()), 
+                (value) -> new TranslatableText("createWorld.customize.indev.levelTheme." + value.getName()), 
                 (gameOptions) -> { return this.levelTheme; }, 
                 (gameOptions, option, value) -> {
                     this.levelTheme = value;
@@ -110,7 +110,7 @@ public class IndevWorldScreenProvider extends AbstractWorldScreenProvider {
                 CyclingOption.create(
                     "createWorld.customize.indev.levelType", 
                     IndevType.values(), 
-                    (value) -> new TranslatableText("createWorld.customize.indev.type." + value.getName()), 
+                    (value) -> new TranslatableText("createWorld.customize.indev.levelType." + value.getName()), 
                     (gameOptions) -> { return this.levelType; }, 
                     (gameOptions, option, value) -> {
                         this.levelType = value;

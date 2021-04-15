@@ -4,9 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
-import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
-import com.bespectacled.modernbeta.world.biome.classic.ClassicBiomes;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;

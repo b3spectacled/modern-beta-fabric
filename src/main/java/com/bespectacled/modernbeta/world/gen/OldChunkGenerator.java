@@ -67,7 +67,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     private static final int OCEAN_Y_CUT_OFF = 40;
     
-    
     private final OldBiomeSource biomeSource;
     private final NbtCompound chunkProviderSettings;
     
@@ -297,7 +296,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public int getMinimumY() {
-        return this.getChunkProvider().getMinimumY();
+        return this.chunkProvider.getMinimumY();
         //return -64;
     }
 
@@ -311,8 +310,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return new OldChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings, this.chunkProviderSettings);
     }
     
-    public String getChunkProviderType() {
-        return this.chunkProviderType;
+    public boolean isProviderInstanceOf(Class<?> c) {
+        return c.isInstance(this.chunkProvider);
     }
     
     public AbstractChunkProvider getChunkProvider() {

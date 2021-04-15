@@ -31,7 +31,7 @@ public class OldBiomeSource extends BiomeSource {
         .group(
             Codec.LONG.fieldOf("seed").stable().forGetter(biomeSource -> biomeSource.seed),
             RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(biomeSource -> biomeSource.biomeRegistry),
-            NbtCompound.CODEC.fieldOf("settings").forGetter(biomeSource -> biomeSource.biomeProviderSettings)
+            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(biomeSource -> biomeSource.biomeProviderSettings)
         ).apply(instance, (instance).stable(OldBiomeSource::new)));
     
     private final long seed;
@@ -74,17 +74,9 @@ public class OldBiomeSource extends BiomeSource {
     public Registry<Biome> getBiomeRegistry() {
         return this.biomeRegistry;
     }
-
-    public boolean isVanilla() {
-        return this.biomeProvider instanceof VanillaBiomeProvider;
-    }
     
-    public boolean isBeta() {
-        return this.biomeProvider instanceof BetaBiomeProvider;
-    }
-    
-    public boolean isSingle() {
-        return this.biomeProvider instanceof SingleBiomeProvider;
+    public boolean isProviderInstanceOf(Class<?> c) {
+        return c.isInstance(this.biomeProvider);
     }
     
     public AbstractBiomeProvider getBiomeProvider() {

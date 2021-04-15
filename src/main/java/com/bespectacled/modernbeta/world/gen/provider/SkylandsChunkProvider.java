@@ -156,7 +156,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     }
     
     @Override
-    public PerlinOctaveNoise getBeachNoiseOctaves() {
+    public PerlinOctaveNoise getBeachNoise() {
         return null;
     }
     
