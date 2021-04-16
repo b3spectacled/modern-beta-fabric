@@ -61,6 +61,7 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
@@ -71,12 +72,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         .group(
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
             Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
-            OldChunkGeneratorSettings.CODEC.fieldOf("settings").forGetter(generator -> generator.settings))
+            ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(generator -> generator.settings),
+            CompoundTag.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings))
         .apply(instance, instance.stable(OldChunkGenerator::new)));
     
     private final OldBiomeSource biomeSource;
     private final CompoundTag chunkProviderSettings;
-    private final OldChunkGeneratorSettings settings;
     
     private final String chunkProviderType;
     private final boolean generateOceans;
@@ -84,25 +85,23 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private final AbstractChunkProvider chunkProvider;
     private final Random random;
     
-    public OldChunkGenerator(BiomeSource biomeSource, long seed, OldChunkGeneratorSettings settings) {
-        super(biomeSource, seed, () -> settings.chunkGenSettings);
+    public OldChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, CompoundTag providerSettings) {
+        super(biomeSource, seed, settings);
         
         this.random = new Random(seed);
         
         this.biomeSource = (OldBiomeSource)biomeSource;
 
-        this.chunkProviderSettings = settings.providerSettings;
-        this.settings = settings;
-        
-        this.chunkProviderType = ChunkProviderRegistry.getChunkProviderType(settings.providerSettings);
+        this.chunkProviderSettings = providerSettings;
+        this.chunkProviderType = ChunkProviderRegistry.getChunkProviderType(providerSettings);
         this.chunkProvider = ChunkProviderRegistry.get(this.chunkProviderType).apply(
             seed, 
             this.biomeSource.getBiomeProvider(), 
-            () -> settings.chunkGenSettings, 
-            settings.providerSettings
+            settings, 
+            providerSettings
         );
         
-        this.generateOceans = settings.providerSettings.contains("generateOceans") ? settings.providerSettings.getBoolean("generateOceans") : false;
+        this.generateOceans = providerSettings.contains("generateOceans") ? providerSettings.getBoolean("generateOceans") : false;
     }
 
     public static void register() {
@@ -325,7 +324,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public ChunkGenerator withSeed(long seed) {
-        return new OldChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings);
+        return new OldChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings, this.chunkProviderSettings);
     }
     
     public String getChunkProviderType() {
@@ -340,7 +339,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.chunkProviderSettings;
     }
     
-    
+    /*
     public static void export() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Path dir = Paths.get("..\\src\\main\\resources\\data\\modern_beta\\dimension");
@@ -359,5 +358,5 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             ModernBeta.LOGGER.error("[Modern Beta] Couldn't serialize old chunk generator!");
             e.printStackTrace();
         }
-    }
+    }*/
 }

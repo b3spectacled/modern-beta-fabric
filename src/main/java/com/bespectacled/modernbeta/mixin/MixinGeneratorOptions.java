@@ -8,7 +8,6 @@ import com.bespectacled.modernbeta.api.registry.WorldProviderRegistry;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.world.gen.OldChunkGeneratorSettings;
 import com.google.common.base.MoreObjects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -87,12 +86,11 @@ public class MixinGeneratorOptions {
             
             CompoundTag chunkProviderSettings = ChunkProviderSettingsRegistry.get(worldProvider.getChunkProviderSettings()).get();
             
-            OldChunkGeneratorSettings settings = new OldChunkGeneratorSettings(registryChunkGenSettings.get(new Identifier(worldProvider.getChunkGenSettings())), chunkProviderSettings);
-            
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 new OldBiomeSource(seed, registryBiome, biomeProviderSettings), 
                 seed,
-                settings
+                () -> registryChunkGenSettings.get(new Identifier(worldProvider.getChunkGenSettings())),
+                chunkProviderSettings
             );
             
             // return our chunk generator

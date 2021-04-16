@@ -56,7 +56,6 @@ public class OldGeneratorType {
             () -> chunkGenSettings.get() :
             () -> registryChunkGenSettings.getOrThrow(ChunkGeneratorSettings.OVERWORLD);
         
-        OldChunkGeneratorSettings settings = new OldChunkGeneratorSettings(chunkGenSettingsSupplier.get(), chunkProviderSettings);
             
         return new GeneratorOptions(
             generatorOptions.getSeed(),
@@ -68,7 +67,8 @@ public class OldGeneratorType {
                 new OldChunkGenerator(
                     new OldBiomeSource(generatorOptions.getSeed(), registryBiome, biomeProviderSettings), 
                     generatorOptions.getSeed(), 
-                    settings
+                    chunkGenSettingsSupplier,
+                    chunkProviderSettings
                 )
             )
         );
@@ -88,12 +88,11 @@ public class OldGeneratorType {
                 
                 CompoundTag chunkProviderSettings = ChunkProviderSettingsRegistry.get(BuiltInChunkSettingsType.BETA.name).get();
                 
-                OldChunkGeneratorSettings settings = new OldChunkGeneratorSettings(chunkGenSettingsSupplier.get(), chunkProviderSettings);
-                
                 return new OldChunkGenerator(
                     new OldBiomeSource(seed, biomes, biomeProviderSettings), 
                     seed, 
-                    settings
+                    chunkGenSettingsSupplier,
+                    chunkProviderSettings
                 );
             }
         };
