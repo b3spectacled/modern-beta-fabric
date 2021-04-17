@@ -120,6 +120,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             else {
                 this.generateWorldBorder(chunk);
             }
+        } else {
+            this.generateFloatBorder(chunk);
         }
     }
 
@@ -497,13 +499,23 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                      if (this.levelType == IndevType.FLOATING && y < var5)
                          blockToSet = Blocks.AIR;
 
-                     Block someBlock = blockArr[x][y][z];
-                     
-                     if (someBlock.equals(Blocks.AIR)) {
-                         blockArr[x][y][z] = blockToSet;
-                     }
-                 }
-             }
+                    if (this.levelType == IndevType.FLOATING && y == 0)
+                        blockToSet = Blocks.DIRT;
+                    if (this.levelType == IndevType.FLOATING && y == 1) { // indev floating worlds have a layer of dirt and lava/water at level 0/1
+                        if (this.levelTheme == IndevTheme.HELL)
+                            blockToSet = Blocks.LAVA;
+                        else
+                            blockToSet = Blocks.WATER;
+                    }
+
+
+                    Block someBlock = blockArr[x][y][z];
+
+                    if (someBlock.equals(Blocks.AIR)) {
+                        blockArr[x][y][z] = blockToSet;
+                    }
+                }
+            }
         }
     }
     
@@ -750,7 +762,18 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             }
         }
     }
-    
+
+    private void generateFloatBorder(Chunk chunk) {
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+
+        for (int x = 0; x < 16; ++x) {
+            for (int z = 0; z < 16; ++z) {
+                chunk.setBlockState(mutable.set(x, 0, z), BlockStates.DIRT, false);
+                chunk.setBlockState(mutable.set(x, 1, z), this.levelTheme == IndevTheme.HELL ? BlockStates.LAVA : BlockStates.WATER, false);
+            }
+        }
+    }
+
     private void fillBlockArr(Block[][][] blockArr) {
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
