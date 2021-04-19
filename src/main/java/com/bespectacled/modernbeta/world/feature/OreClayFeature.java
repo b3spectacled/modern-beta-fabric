@@ -12,6 +12,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkSectionCache;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
@@ -80,17 +81,18 @@ public class OreClayFeature extends Feature<OreFeatureConfig> {
                                 continue;
                             }
 
-                            mutablePos.set(x, y, z);
-                            ChunkSection chunkSection = chunkSectionCache.getSection(mutablePos);
+                            ChunkSection chunkSection = chunkSectionCache.getSection(mutablePos.set(x, y, z));
                             
-                            int localX = ChunkSectionPos.getLocalCoord(x); 
-                            int localY = ChunkSectionPos.getLocalCoord(y);
-                            int localZ = ChunkSectionPos.getLocalCoord(z);
-                            BlockState state = chunkSection.getBlockState(localX, localY, localZ);
-                            
-                            for (final OreFeatureConfig.Target target : config.targets) {
-                                if (OreFeature.shouldPlace(state, chunkSectionCache::getBlockState, random, config, target, mutablePos)) {
-                                    chunkSection.setBlockState(localX, localY, localZ, target.state, false);
+                            if (chunkSection != WorldChunk.EMPTY_SECTION) {
+                                int localX = ChunkSectionPos.getLocalCoord(x); 
+                                int localY = ChunkSectionPos.getLocalCoord(y);
+                                int localZ = ChunkSectionPos.getLocalCoord(z);
+                                BlockState state = chunkSection.getBlockState(localX, localY, localZ);
+                                
+                                for (final OreFeatureConfig.Target target : config.targets) {
+                                    if (OreFeature.shouldPlace(state, chunkSectionCache::getBlockState, random, config, target, mutablePos)) {
+                                        chunkSection.setBlockState(localX, localY, localZ, target.state, false);
+                                    }
                                 }
                             }
                         }

@@ -21,10 +21,10 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 public class OldGeneratorUtil {
     private static final BlockPos.Mutable POS = new BlockPos.Mutable();
     
-    public static int getSolidHeight(Chunk chunk, int worldHeight, int minY, int x, int z) {
+    public static int getSolidHeight(Chunk chunk, int worldHeight, int minY, int x, int z, BlockState defaultFluid) {
         for (int y = worldHeight + minY - 1; y >= minY; y--) {
             BlockState someBlock = chunk.getBlockState(POS.set(x, y, z));
-            if (!(someBlock.equals(BlockStates.AIR) || someBlock.equals(BlockStates.WATER) || someBlock.equals(BlockStates.ICE)))
+            if (!(someBlock.equals(BlockStates.AIR) || someBlock.equals(defaultFluid) || someBlock.equals(BlockStates.ICE)))
                 return y;
         }
         return minY;
@@ -65,7 +65,7 @@ public class OldGeneratorUtil {
                 int absX = chunkPos.getStartX() + (x << 2);
                 int absZ = chunkPos.getStartZ() + (z << 2);
                 
-                if (OldGeneratorUtil.getSolidHeight(chunk, worldHeight, minY, absX, absZ) < seaLevel - 4) {
+                if (OldGeneratorUtil.getSolidHeight(chunk, worldHeight, minY, absX, absZ, BlockStates.WATER) < seaLevel - 4) {
                     BlockPos blockPos = new BlockPos(x, 0, z);
                     oceanPositions.put(blockPos, ((OldBiomeSource)biomeSource).getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2));
                 }

@@ -79,7 +79,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
             for (int x = 0; x < 16; x++) {
                 int absX = (chunkX << 4) + x; 
                 int absZ = (chunkZ << 4) + z;
-                int topY = OldGeneratorUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z) + 1;
+                int topY = OldGeneratorUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
 
                 int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
