@@ -10,10 +10,12 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.IntArrayPool;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
+import com.bespectacled.modernbeta.world.gen.StructureWeightSampler;
 
 import net.minecraft.block.Block;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -257,7 +259,7 @@ public abstract class AbstractChunkProvider {
      * 
      * @return PerlinOctaveNoise object used for beach surface generation.
      */
-    public abstract PerlinOctaveNoise getBeachNoiseOctaves();
+    public abstract PerlinOctaveNoise getBeachNoise();
     
     /**
      * Determines whether to skip the chunk for some chunk generation step, depending on the x/z chunk coordinates.
@@ -305,8 +307,8 @@ public abstract class AbstractChunkProvider {
      * 
      * @return A blockstate, usually air, stone, or water.
      */
-    protected BlockState getBlockState(int x, int y, int z, double density) {
-        return this.getBlockState(x, y, z, density, 1.0D);
+    protected BlockState getBlockState(StructureWeightSampler weightSampler, int x, int y, int z, double density) {
+        return this.getBlockState(weightSampler, x, y, z, density, 1.0D);
     }
     
     /**
@@ -320,10 +322,11 @@ public abstract class AbstractChunkProvider {
      * 
      * @return A blockstate, usually air, stone, or water.
      */
-    protected BlockState getBlockState(int x, int y, int z, double density, double temp) {
-        BlockState blockStateToSet = BlockStates.AIR;
+    protected BlockState getBlockState(StructureWeightSampler weightSampler, int x, int y, int z, double density, double temp) {
+        double clampedDensity = weightSampler.sample(x, y, z, density);
         
-        if (density > 0.0) {
+        BlockState blockStateToSet = BlockStates.AIR;
+        if (clampedDensity > 0.0) {
             blockStateToSet = this.defaultBlock;
         } else if (y < this.getSeaLevel()) {
             blockStateToSet = this.defaultFluid;
@@ -333,19 +336,31 @@ public abstract class AbstractChunkProvider {
     }
     
     /**
-     * Gets blockstate at block coordinates given block.
+     * Gets blockstate at block coordinates given block and default fluid block.
+     * Simulates a noise density for the purpose of masking terrain around structures.
+     * Used for 2D noise terrain generators (i.e. Infdev 20100227 and Indev terrain generators).
      * 
      * @param x x-coordinate in absolute block coordinates.
      * @param y y-coordinate in absolute block coordinates.
      * @param z z-coordinate in absolute block coordinates.
      * @param blockToSet Block to get blockstate for.
+     * @oaran defaultFluid Default fluid block.
      * 
      * @return A blockstate.
      */
-    protected BlockState getBlockState(int x, int y, int z, Block blockToSet) {
-        BlockState blockState = BlockStates.getBlockState(blockToSet);
+    protected BlockState getBlockState(StructureWeightSampler weightSampler, int x, int y, int z, Block blockToSet, Block defaultFluid) {
+        boolean isFluid = blockToSet == Blocks.AIR || blockToSet == defaultFluid;
+        double simDensity = isFluid ? -50D : 50D;
         
+        double clampedDensity = weightSampler.sample(x, y, z, simDensity);
         
+        BlockState blockState = blockToSet.getDefaultState();
+        if (clampedDensity > 0.0 && isFluid) {
+            blockState = BlockStates.STONE;
+        } else if (clampedDensity < 0.0 && !isFluid) {
+            blockState = BlockStates.AIR;
+        }
+
         return blockState;
     }
     

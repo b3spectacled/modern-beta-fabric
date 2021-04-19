@@ -5,8 +5,6 @@ import java.util.Iterator;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.StructurePiece;
@@ -88,7 +86,7 @@ public class StructureWeightSampler {
         this.junctionIterator = junctions.iterator();
     }
 
-    public double getStructDensity(int x, int y, int z, double density) {
+    public double sample(int x, int y, int z, double density) {
         double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
         clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
         
@@ -117,42 +115,5 @@ public class StructureWeightSampler {
         junctionIterator.back(this.junctions.size());
         
         return clampedDensity;
-    }
-    
-    public Block getStructBlock(int x, int y, int z, Block blockToSet) {
-        while (pieceIterator.hasNext()) {
-            StructurePiece curStructurePiece = (StructurePiece) pieceIterator.next();
-            BlockBox blockBox = curStructurePiece.getBoundingBox();
-
-            int sX = Math.max(0, Math.max(blockBox.minX - x, x - blockBox.maxX));
-            int sY = y - (blockBox.minY + ((curStructurePiece instanceof PoolStructurePiece)
-                    ? ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta() : 0));
-            int sZ = Math.max(0, Math.max(blockBox.minZ - z, z - blockBox.maxZ));
-
-            if (sY < 0 && sX == 0 && sZ == 0) {
-                if (sY == -1) blockToSet = Blocks.GRASS_BLOCK;
-                else if (sY >= -2) blockToSet = Blocks.DIRT;
-                else if (sY >= -4) blockToSet = Blocks.STONE;
-            }
-                
-        }
-        pieceIterator.back(this.pieces.size());
-
-        while (junctionIterator.hasNext()) {
-            JigsawJunction curJigsawJunction = (JigsawJunction) junctionIterator.next();
-
-            int jX = x - curJigsawJunction.getSourceX();
-            int jY = y - curJigsawJunction.getSourceGroundY();
-            int jZ = z - curJigsawJunction.getSourceZ();
-
-            if (jY < 0 && jX == 0 && jZ == 0) {
-                if (jY == -1) blockToSet = Blocks.GRASS_BLOCK;
-                else if (jY >= -2) blockToSet = Blocks.DIRT;
-                else if (jY >= -4) blockToSet = Blocks.STONE;
-            }
-        }
-        junctionIterator.back(this.junctions.size());
-        
-        return blockToSet;
     }
 }

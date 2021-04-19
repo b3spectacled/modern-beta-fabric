@@ -89,7 +89,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
             for (int z = 0; z < 16; z++) {
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
-                int topY = OldGeneratorUtil.getSolidHeight(chunk, x, z, this.worldHeight) + 1;
+                int topY = OldGeneratorUtil.getSolidHeight(chunk, x, z, this.worldHeight, this.defaultFluid) + 1;
                 
                 boolean genSandBeach = sandNoise[x + z * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
                 boolean genGravelBeach = gravelNoise[x + z * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
@@ -202,7 +202,7 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
     }
     
     @Override
-    public PerlinOctaveNoise getBeachNoiseOctaves() {
+    public PerlinOctaveNoise getBeachNoise() {
         return this.beachNoiseOctaves;
     }
     
@@ -257,11 +257,8 @@ public class AlphaChunkProvider extends AbstractChunkProvider {
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; subZ++) {
                                 int z = (subChunkZ * this.horizontalNoiseResolution + subZ);
                                 int absZ = (chunk.getPos().z << 4) + z;
-
-                                //BlockState blockToSet = getBlockState(structureWeightSampler, absX, y, absZ, density);
                                 
-                                double clampedDensity = structureWeightSampler.getStructDensity(absX, y, absZ, density);
-                                BlockState blockToSet = this.getBlockState(absX, y, absZ, clampedDensity);
+                                BlockState blockToSet = this.getBlockState(structureWeightSampler, absX, y, absZ, density);
                                 chunk.setBlockState(mutable.set(x, y, z), blockToSet, false);
 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);

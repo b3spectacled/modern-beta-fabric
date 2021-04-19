@@ -15,10 +15,10 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 public class OldGeneratorUtil {
     private static final BlockPos.Mutable POS = new BlockPos.Mutable();
     
-    public static int getSolidHeight(Chunk chunk, int x, int z, int worldHeight) {
+    public static int getSolidHeight(Chunk chunk, int x, int z, int worldHeight, BlockState defaultFluid) {
         for (int y = worldHeight - 1; y >= 0; y--) {
             BlockState someBlock = chunk.getBlockState(POS.set(x, y, z));
-            if (!(someBlock.equals(BlockStates.AIR) || someBlock.equals(BlockStates.WATER) || someBlock.equals(BlockStates.ICE)))
+            if (!(someBlock.equals(BlockStates.AIR) || someBlock.equals(defaultFluid) || someBlock.equals(BlockStates.ICE)))
                 return y;
         }
         

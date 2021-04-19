@@ -1,6 +1,5 @@
 package com.bespectacled.modernbeta.util;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 
@@ -23,25 +22,4 @@ public class BlockStates {
     
     public static BlockState GRASS = Blocks.GRASS.getDefaultState();
     public static BlockState FERN = Blocks.FERN.getDefaultState();
-    
-    public static BlockState getBlockState(Block b) {
-        BlockState state;
-        
-        if (b == Blocks.GRASS_BLOCK) state = GRASS_BLOCK;
-        else if (b == Blocks.PODZOL) state = PODZOL;
-        else if (b == Blocks.DIRT) state = DIRT;
-        else if (b == Blocks.GRAVEL) state = GRAVEL;
-        else if (b == Blocks.SAND) state = SAND;
-        else if (b == Blocks.SANDSTONE) state = SANDSTONE;
-        else if (b == Blocks.STONE) state = STONE;
-        else if (b == Blocks.AIR) state = AIR;
-        else if (b == Blocks.WATER) state = WATER;
-        else if (b == Blocks.ICE) state = ICE;
-        else if (b == Blocks.LAVA) state = LAVA;
-        else if (b == Blocks.BEDROCK) state = BEDROCK;
-        else state = b.getDefaultState();
-        
-        return state;
-    }
-    
 }

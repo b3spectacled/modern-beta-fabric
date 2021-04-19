@@ -82,7 +82,7 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
             for (int z = 0; z < 16; ++z) {
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
-                int topY = OldGeneratorUtil.getSolidHeight(chunk, x, z, this.worldHeight) + 1;
+                int topY = OldGeneratorUtil.getSolidHeight(chunk, x, z, this.worldHeight, this.defaultFluid) + 1;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(
                     absX * thirtysecond, 
@@ -195,7 +195,7 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
     }
     
     @Override
-    public PerlinOctaveNoise getBeachNoiseOctaves() {
+    public PerlinOctaveNoise getBeachNoise() {
         return this.beachNoiseOctaves;
     }
     
@@ -255,9 +255,8 @@ public class Infdev415ChunkProvider extends AbstractChunkProvider {
                                 double lerpZ = subZ / (double)this.horizontalNoiseResolution;
                                 
                                 double density = nz1 + (nz2 - nz1) * lerpZ;
-                                
-                                double clampedDensity = structureWeightSampler.getStructDensity(absX, y, absZ, density);
-                                BlockState blockToSet = this.getBlockState(absX, y, absZ, clampedDensity);
+
+                                BlockState blockToSet = this.getBlockState(structureWeightSampler, absX, y, absZ, density);
                                 chunk.setBlockState(mutable.set(x, y, z), blockToSet, false);
                                 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);

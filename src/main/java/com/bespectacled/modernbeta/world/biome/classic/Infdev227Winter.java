@@ -53,6 +53,7 @@ public class Infdev227Winter {
         
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_SUGAR_CANE);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.FLOWER_OLD_INFDEV);
         
         genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER);
         

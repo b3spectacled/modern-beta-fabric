@@ -79,7 +79,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
             for (int x = 0; x < 16; x++) {
                 int absX = (chunkX << 4) + x; 
                 int absZ = (chunkZ << 4) + z;
-                int topY = OldGeneratorUtil.getSolidHeight(chunk, x, z, this.worldHeight) + 1;
+                int topY = OldGeneratorUtil.getSolidHeight(chunk, x, z, this.worldHeight, this.defaultFluid) + 1;
 
                 int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
@@ -156,7 +156,7 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
     }
     
     @Override
-    public PerlinOctaveNoise getBeachNoiseOctaves() {
+    public PerlinOctaveNoise getBeachNoise() {
         return null;
     }
     
@@ -211,9 +211,8 @@ public class SkylandsChunkProvider extends AbstractChunkProvider {
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; subZ++) {
                                 int z = (subChunkZ * this.horizontalNoiseResolution + subZ);
                                 int absZ = (chunk.getPos().z << 4) + z;
-                                
-                                double clampedDensity = structureWeightSampler.getStructDensity(absX, y, absZ, density);
-                                BlockState blockToSet = this.getBlockState(absX, y, absZ, clampedDensity);
+
+                                BlockState blockToSet = this.getBlockState(structureWeightSampler, absX, y, absZ, density);
                                 chunk.setBlockState(mutable.set(x, y, z), blockToSet, false);
 
                                 heightmapOCEAN.trackUpdate(x, y, z, blockToSet);

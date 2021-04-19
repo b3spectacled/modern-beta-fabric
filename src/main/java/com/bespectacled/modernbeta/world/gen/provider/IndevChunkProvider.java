@@ -43,17 +43,17 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class IndevChunkProvider extends AbstractChunkProvider {
-    private PerlinOctaveNoiseCombined heightNoise1;
-    private PerlinOctaveNoiseCombined heightNoise2;
+    private PerlinOctaveNoiseCombined minHeightNoiseOctaves;
+    private PerlinOctaveNoiseCombined maxHeightNoiseOctaves;
     
-    private PerlinOctaveNoise heightNoise3;
-    private PerlinOctaveNoise islandNoise;
+    private PerlinOctaveNoise mainHeightNoiseOctaves;
+    private PerlinOctaveNoise islandNoiseOctaves;
     
-    private PerlinOctaveNoise dirtNoise;
-    private PerlinOctaveNoise floatingNoise;
+    private PerlinOctaveNoise dirtNoiseOctaves;
+    private PerlinOctaveNoise floatingNoiseOctaves;
     
-    private PerlinOctaveNoiseCombined erodeNoise1;
-    private PerlinOctaveNoiseCombined erodeNoise2;
+    private PerlinOctaveNoiseCombined erodeNoiseOctaves1;
+    private PerlinOctaveNoiseCombined erodeNoiseOctaves2;
     
     private PerlinOctaveNoise sandNoiseOctaves;
     private PerlinOctaveNoise gravelNoiseOctaves;
@@ -87,8 +87,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         
         this.levelTheme = this.providerSettings.contains("levelTheme") ? IndevTheme.fromName(this.providerSettings.getString("levelTheme")) : IndevTheme.NORMAL;
         this.levelType = this.providerSettings.contains("levelType") ? IndevType.fromName(this.providerSettings.getString("levelType")) : IndevType.ISLAND;
-        this.fluidBlock = this.inHell() ? BlockStates.LAVA : BlockStates.WATER;
-        this.topsoilBlock = this.inHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;
+        this.fluidBlock = this.isFloating() ? BlockStates.AIR : (this.isHell() ? BlockStates.LAVA : BlockStates.WATER);
+        this.topsoilBlock = this.isHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;
         
         this.width = this.providerSettings.contains("levelWidth") ? this.providerSettings.getInt("levelWidth") : 256;
         this.length = this.providerSettings.contains("levelLength") ? this.providerSettings.getInt("levelLength") : 256;
@@ -146,7 +146,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                     isCold = biome.getTemperature(mutable) < 0.15f;
                 }
                 
-                for (int y = this.worldHeight; y >= 0; --y) {
+                for (int y = this.worldHeight - 1; y >= 0; --y) {
                     
                     BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                     BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -154,7 +154,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                     BlockState state = chunk.getBlockState(mutable.set(x, y, z));
 
                     // Skip replacing surface blocks if this is a Hell level and biome surface is standard grass/dirt.
-                    if (this.inHell() && topBlock.equals(BlockStates.GRASS_BLOCK) && fillerBlock.equals(BlockStates.DIRT))
+                    if (this.isHell() && topBlock.equals(BlockStates.GRASS_BLOCK) && fillerBlock.equals(BlockStates.DIRT))
                         continue;
                     
                     if (state.equals(this.topsoilBlock)) {
@@ -211,7 +211,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     @Override
-    public PerlinOctaveNoise getBeachNoiseOctaves() {
+    public PerlinOctaveNoise getBeachNoise() {
         return null;
     }
     
@@ -244,8 +244,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         int spawnZ = spawnPos.getZ();
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        Block floorBlock = this.inHell() ? Blocks.MOSSY_COBBLESTONE : Blocks.STONE;
-        Block wallBlock = this.inHell() ? Blocks.MOSSY_COBBLESTONE : Blocks.OAK_PLANKS;
+        Block floorBlock = this.isHell() ? Blocks.MOSSY_COBBLESTONE : Blocks.STONE;
+        Block wallBlock = this.isHell() ? Blocks.MOSSY_COBBLESTONE : Blocks.OAK_PLANKS;
         
         for (int x = spawnX - 3; x <= spawnX + 3; ++x) {
             for (int y = spawnY - 2; y <= spawnY + 2; ++y) {
@@ -262,7 +262,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                         blockToSet = Blocks.AIR;
                     }
                     
-                    world.setBlockState(mutable.set(x, y, z), BlockStates.getBlockState(blockToSet));
+                    world.setBlockState(mutable.set(x, y, z), blockToSet.getDefaultState());
                 }
             }
         }
@@ -301,14 +301,31 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                 int absX = x + (chunkX << 4);
                 int absZ = z + (chunkZ << 4);
                 
-                for (int y = 0; y < this.height; ++y) {
+                boolean terrainModified = false;
+                int soilDepth = 0;
+                
+                for (int y = this.height - 1; y >= 0; --y) {
                     Block blockToSet = this.blockArr[offsetX + x][y][offsetZ + z];
                     
-                    blockToSet = structureWeightSampler.getStructBlock(absX, y, absZ, blockToSet);
-
-                    if (blockToSet != Blocks.AIR) {
-                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.getBlockState(blockToSet), false);
+                    BlockState originalBlockStateToSet = blockToSet.getDefaultState();
+                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, absX, y, absZ, blockToSet, this.fluidBlock.getBlock());
+                    
+                    boolean inFluid = blockstateToSet.equals(BlockStates.AIR) || blockstateToSet.equals(this.fluidBlock);
+                    
+                    // Check to see if structure weight sampler modifies terrain.
+                    if (!originalBlockStateToSet.equals(blockstateToSet)) {
+                        terrainModified = true;
                     }
+                    
+                    // Replace default block set by structure sampling with topsoil blocks.
+                    if (terrainModified && !inFluid) {
+                        if (soilDepth == 0) blockstateToSet = (this.isFloating() || y >= this.waterLevel - 1) ? this.topsoilBlock : BlockStates.DIRT;
+                        if (soilDepth == 1) blockstateToSet = BlockStates.DIRT;
+                        
+                        soilDepth++;
+                    }
+                    
+                    chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
                     
                     if (this.levelType == IndevType.FLOATING) continue;
                      
@@ -319,8 +336,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                     }
                     
-                    heightmapOCEAN.trackUpdate(x, y, z, BlockStates.getBlockState(blockToSet));
-                    heightmapSURFACE.trackUpdate(x, y, z, BlockStates.getBlockState(blockToSet));
+                    heightmapOCEAN.trackUpdate(x, y, z, blockToSet.getDefaultState());
+                    heightmapSURFACE.trackUpdate(x, y, z, blockToSet.getDefaultState());
                         
                 }
             }
@@ -354,17 +371,17 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             //this.groundLevel = this.waterLevel - 2;
             
             // Noise Generators (Here instead of constructor to randomize floating layer generation)    
-            heightNoise1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
-            heightNoise2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
+            minHeightNoiseOctaves = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
+            maxHeightNoiseOctaves = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
             
-            heightNoise3 = new PerlinOctaveNoise(RAND, 6, false);
-            islandNoise = new PerlinOctaveNoise(RAND, 2, false);
+            mainHeightNoiseOctaves = new PerlinOctaveNoise(RAND, 6, false);
+            islandNoiseOctaves = new PerlinOctaveNoise(RAND, 2, false);
             
-            dirtNoise = new PerlinOctaveNoise(RAND, 8, false);
-            floatingNoise = new PerlinOctaveNoise(RAND, 8, false);
+            dirtNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
+            floatingNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
             
-            erodeNoise1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
-            erodeNoise2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
+            erodeNoiseOctaves1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
+            erodeNoiseOctaves2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
             
             sandNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
             gravelNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
@@ -373,11 +390,12 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             this.erodeTerrain(heightmap);
             this.soilSurface(blockArr, heightmap);
             this.growSurface(blockArr, heightmap);
-            this.carveTerrain(blockArr);
-            this.floodFluid(blockArr);   
-            this.floodLava(blockArr);
-            this.plantSurface(blockArr);
         }
+        
+        this.carveTerrain(blockArr);
+        this.floodFluid(blockArr);   
+        this.floodLava(blockArr);
+        this.plantSurface(blockArr);
         
         return blockArr;
     }
@@ -387,15 +405,15 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Raising..");
         
         for (int x = 0; x < this.width; ++x) {
-            double islandVar1 = Math.abs((x / (this.width - 1.0) - 0.5) * 2.0);
+            double normalizedX = Math.abs((x / (this.width - 1.0) - 0.5) * 2.0);
             
             for (int z = 0; z < this.length; ++z) {
-                double islandVar2 = Math.abs((z / (this.length - 1.0) - 0.5) * 2.0);
+                double normalizedZ = Math.abs((z / (this.length - 1.0) - 0.5) * 2.0);
                 
-                double heightLow = heightNoise1.sample(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
-                double heightHigh = heightNoise2.sample(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
+                double heightLow = minHeightNoiseOctaves.sample(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
+                double heightHigh = maxHeightNoiseOctaves.sample(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
                 
-                double heightSelector = heightNoise3.sample(x, z) / 8.0;
+                double heightSelector = mainHeightNoiseOctaves.sample(x, z) / 8.0;
                 
                 if (heightSelector > 0.0) {
                     heightHigh = heightLow;
@@ -404,18 +422,18 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                 double heightResult = Math.max(heightLow, heightHigh) / 2.0;
                 
                 if (this.levelType == IndevType.ISLAND) {
-                    double islandVar3 = Math.sqrt(islandVar1 * islandVar1 + islandVar2 * islandVar2) * 1.2000000476837158;
-                    islandVar3 = Math.min(islandVar3, islandNoise.sample(x * 0.05f, z * 0.05f) / 4.0 + 1.0);
-                    islandVar3 = Math.max(islandVar3, Math.max(islandVar1, islandVar2));
+                    double islandRadius = Math.sqrt(normalizedX * normalizedX + normalizedZ * normalizedZ) * 1.2000000476837158;
+                    islandRadius = Math.min(islandRadius, islandNoiseOctaves.sample(x * 0.05f, z * 0.05f) / 4.0 + 1.0);
+                    islandRadius = Math.max(islandRadius, Math.max(normalizedX, normalizedZ));
                     
-                    if (islandVar3 > 1.0) {
-                        islandVar3 = 1.0;
-                    } else if (islandVar3 < 0.0) {
-                        islandVar3 = 0.0;
+                    if (islandRadius > 1.0) {
+                        islandRadius = 1.0;
+                    } else if (islandRadius < 0.0) {
+                        islandRadius = 0.0;
                     }
                     
-                    islandVar3 *= islandVar3;
-                    heightResult = heightResult * (1.0 - islandVar3) - islandVar3 * 10.0 + 5.0;
+                    islandRadius *= islandRadius;
+                    heightResult = heightResult * (1.0 - islandRadius) - islandRadius * 10.0 + 5.0;
                     
                     if (heightResult < 0.0) {
                         heightResult -= heightResult * heightResult * 0.20000000298023224;
@@ -436,14 +454,14 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
-                double var1 = erodeNoise1.sample(x << 1, z << 1) / 8.0;
-                int var2 = erodeNoise2.sample(x << 1, z << 1) > 0.0 ? 1 : 0;
+                double erodeSelector = erodeNoiseOctaves1.sample(x << 1, z << 1) / 8.0;
+                int erodeNoise = erodeNoiseOctaves2.sample(x << 1, z << 1) > 0.0 ? 1 : 0;
             
-                if (var1 > 2.0) {
-                    int var3 = heightmap[x + z * this.width];
-                    var3 = ((var3 - var2) / 2 << 1) + var2;
+                if (erodeSelector > 2.0) {
+                    int heightResult = heightmap[x + z * this.width];
+                    heightResult = ((heightResult - erodeNoise) / 2 << 1) + erodeNoise;
                     
-                    heightmap[x + z * this.width] = var3;
+                    heightmap[x + z * this.width] = heightResult;
                 }
             }
         }
@@ -452,58 +470,55 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     private void soilSurface(Block[][][] blockArr, int[] heightmap) {
         ModernBeta.LOGGER.log(Level.INFO, "[Indev] Soiling..");
         for (int x = 0; x < this.width; ++x) {
+            double normalizedX = Math.abs((x / (this.width - 1.0) - 0.5) * 2.0);
+            
+            for (int z = 0; z < this.length; ++z) {
+                double normalizedZ = Math.max(normalizedX, Math.abs(z / (this.length - 1.0) - 0.5) * 2.0);
+                normalizedZ = normalizedZ * normalizedZ * normalizedZ;
              
-            double var1 = Math.abs((x / (this.width - 1.0) - 0.5) * 2.0);
+                int dirtThreshold = heightmap[x + z * this.width] + this.waterLevel;
+                int dirtThickness = (int)(dirtNoiseOctaves.sample(x, z) / 24.0) - 4;
+         
+                int stoneThreshold = dirtThreshold + dirtThickness;
+                heightmap[x + z * this.width] = Math.max(dirtThreshold, stoneThreshold);
              
-             //relZ = 0;
-             for (int z = 0; z < this.length; ++z) {
-                 
-                 double var2 = Math.max(var1, Math.abs(z / (this.length - 1.0) - 0.5) * 2.0);
-                 var2 = var2 * var2 * var2;
-                 
-                 int dirtTransition = heightmap[x + z * this.width] + this.waterLevel;
-                 int dirtThickness = (int)(dirtNoise.sample(x, z) / 24.0) - 4;
+                if (heightmap[x + z * this.width] > this.height - 2) {
+                    heightmap[x + z * this.width] = this.height - 2;
+                }
              
-                 int stoneTransition = dirtTransition + dirtThickness;
-                 heightmap[x + z * this.width] = Math.max(dirtTransition, stoneTransition);
+                if (heightmap[x + z * this.width] <= 0) {
+                    heightmap[x + z * this.width] = 1;
+                }
+             
+                double floatingNoise = floatingNoiseOctaves.sample(x * 2.3, z * 2.3) / 24.0;
+             
+                // Rounds out the bottom of terrain to form floating islands
+                int roundedHeight = (int)(Math.sqrt(Math.abs(floatingNoise)) * Math.signum(floatingNoise) * 20.0) + this.waterLevel;
+                roundedHeight = (int)(roundedHeight * (1.0 - normalizedZ) + normalizedZ * this.height);
+             
+                if (roundedHeight > this.waterLevel) {
+                    roundedHeight = this.height;
+                }
                  
-                 if (heightmap[x + z * this.width] > this.height - 2) {
-                     heightmap[x + z * this.width] = this.height - 2;
-                 }
-                 
-                 if (heightmap[x + z * this.width] <= 0) {
-                     heightmap[x + z * this.width] = 1;
-                 }
-                 
-                 double var4 = floatingNoise.sample(x * 2.3, z * 2.3) / 24.0;
-                 
-                 // Rounds out the bottom of terrain to form floating islands
-                 int var5 = (int)(Math.sqrt(Math.abs(var4)) * Math.signum(var4) * 20.0) + this.waterLevel;
-                 var5 = (int)(var5 * (1.0 - var2) + var2 * this.height);
-                 
-                 if (var5 > this.waterLevel) {
-                     var5 = this.height;
-                 }
-                 
-                 for (int y = 0; y < this.height; ++y) {
-                     Block blockToSet = Blocks.AIR;
+                for (int y = 0; y < this.height; ++y) {
+                    Block blockToSet = Blocks.AIR;
                      
-                     if (y <= dirtTransition)
-                         blockToSet = Blocks.DIRT;
+                    if (y <= dirtThreshold)
+                        blockToSet = Blocks.DIRT;
                      
-                     if (y <= stoneTransition)
-                         blockToSet = Blocks.STONE;
+                    if (y <= stoneThreshold)
+                        blockToSet = Blocks.STONE;
                      
-                     if (this.levelType == IndevType.FLOATING && y < var5)
-                         blockToSet = Blocks.AIR;
+                    if (this.levelType == IndevType.FLOATING && y < roundedHeight)
+                        blockToSet = Blocks.AIR;
 
-                     Block someBlock = blockArr[x][y][z];
+                    Block someBlock = blockArr[x][y][z];
                      
-                     if (someBlock.equals(Blocks.AIR)) {
-                         blockArr[x][y][z] = blockToSet;
-                     }
-                 }
-             }
+                    if (someBlock.equals(Blocks.AIR)) {
+                        blockArr[x][y][z] = blockToSet;
+                    }
+                }
+            }
         }
     }
     
@@ -531,7 +546,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                     genSand = sandNoiseOctaves.sample(x, z) > -8.0;
                 }
                 
-                int heightResult = heightmap[x + z *  this.width];
+                int heightResult = heightmap[x + z * this.width];
                 Block block = blockArr[x][heightResult][z];
                 Block blockAbove = blockArr[x][heightResult + 1][z];
                 
@@ -769,7 +784,11 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         return true;
     }
     
-    private boolean inHell() {
+    private boolean isHell() {
         return this.levelTheme == IndevTheme.HELL;
+    }
+    
+    private boolean isFloating() {
+        return this.levelType == IndevType.FLOATING;
     }
 }

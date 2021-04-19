@@ -136,7 +136,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     int absX = pos.getStartX() + (x << 2);
                     int absZ = pos.getStartZ() + (z << 2);
                     
-                    int y = OldGeneratorUtil.getSolidHeight(chunk, absX, absZ, this.getWorldHeight());
+                    int y = OldGeneratorUtil.getSolidHeight(chunk, absX, absZ, this.getWorldHeight(), this.defaultFluid);
 
                     if (y < this.getSeaLevel() - 4) {
                         biome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);

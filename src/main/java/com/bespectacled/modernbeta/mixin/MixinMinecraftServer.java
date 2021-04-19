@@ -46,7 +46,7 @@ public class MixinMinecraftServer {
             ((IntRuleAccessor)world.getGameRules().get(GameRules.SPAWN_RADIUS)).setValue(0); // Ensure a centered spawn
             
             OldChunkGenerator oldGen = (OldChunkGenerator)gen;
-            PerlinOctaveNoise beachNoiseOctaves = oldGen.getChunkProvider().getBeachNoiseOctaves();
+            PerlinOctaveNoise beachNoiseOctaves = oldGen.getChunkProvider().getBeachNoise();
             
             if (beachNoiseOctaves != null) { // Attempt to place a beach spawn if provider generates classic beaches.
                 ModernBeta.LOGGER.log(Level.INFO, "Setting a beach spawn..");

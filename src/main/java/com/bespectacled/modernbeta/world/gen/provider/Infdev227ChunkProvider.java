@@ -8,6 +8,7 @@ import com.bespectacled.modernbeta.api.AbstractChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.gen.OldGeneratorUtil;
 import com.bespectacled.modernbeta.world.gen.StructureWeightSampler;
 
 import net.minecraft.block.Block;
@@ -21,6 +22,7 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
@@ -68,6 +70,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
+        ChunkRandom rand = this.createChunkRand(chunk.getPos().x, chunk.getPos().z);
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
@@ -76,21 +79,40 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
             for (int z = 0; z < 16; ++z) {
                 int absX = startX + x;
                 int absZ = startZ + z;
+                int topY = OldGeneratorUtil.getSolidHeight(chunk, this.worldHeight, x, z, this.defaultFluid) + 1;
+                
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, topY, absZ));
+                
+                BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
+                BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
+
+                int soilDepth = 0;
+
+                if (this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable))
+                   continue;
                 
                 for (int y = this.worldHeight - 1; y >= 0; --y) {
-                    Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, 0, absZ));
-                    BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
-                    BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
+                    BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
                     
-                    BlockState blockstateToSet = chunk.getBlockState(mutable.set(x, y, z));
+                    boolean inFluid = someBlock.equals(BlockStates.AIR) || someBlock.equals(this.defaultFluid);
                     
-                    if (blockstateToSet.equals(BlockStates.GRASS_BLOCK)) {
-                        blockstateToSet = topBlock;
-                    } else if (blockstateToSet.equals(BlockStates.DIRT)) {
-                        blockstateToSet = fillerBlock;
+                    if (inFluid) {
+                        soilDepth = 0;
+                        continue;
+                    }
+                    
+                    if (!someBlock.equals(this.defaultBlock)) {
+                        continue;
+                    }
+                        
+                    if (soilDepth < 2) {
+                        if (soilDepth == 0) someBlock = (y >= this.seaLevel) ? topBlock : fillerBlock;
+                        if (soilDepth == 1) someBlock = fillerBlock;
+                        
+                        soilDepth++;
                     }
 
-                    chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
+                    chunk.setBlockState(mutable.set(x, y, z), someBlock, false);
                 }
             }
         }
@@ -107,7 +129,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
     }
     
     @Override
-    public PerlinOctaveNoise getBeachNoiseOctaves() {
+    public PerlinOctaveNoise getBeachNoise() {
         return null;
     }
   
@@ -118,6 +140,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
+        //BlockStructureWeightSampler blockWeightSampler = new BlockStructureWeightSampler(structureAccessor, chunk);
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
@@ -126,7 +149,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
         
         Block defaultBlock = this.defaultBlock.getBlock();
         Block defaultFluid = this.defaultFluid.getBlock();
-      
+
         for (int x = 0; x < 16; ++x) {
             int absX = startX + x;
             int rX = absX / 1024;
@@ -159,8 +182,10 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
                     if (this.generateInfdevWall && (absX == 0 || absZ == 0) && y <= heightVal + 2) {
                         blockToSet = Blocks.OBSIDIAN;
                     }
+                    
+                    /* Original code for reference, but unused so conventional surface/feature generation can be used.
                     else if (y == heightVal + 1 && heightVal >= this.seaLevel && Math.random() < 0.02) {
-                        blockToSet = Blocks.DANDELION;
+                        //blockToSet = Blocks.DANDELION;
                     }
                     else if (y == heightVal && heightVal >= this.seaLevel) {
                         blockToSet = Blocks.GRASS_BLOCK;
@@ -170,6 +195,11 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
                     }
                     else if (y <= heightVal) {
                         blockToSet = Blocks.DIRT;
+                    }
+                    */
+                    
+                    else if (y <= heightVal) {
+                        blockToSet = defaultBlock;
                     }
                     else if (y <= this.seaLevel) {
                         blockToSet = defaultFluid;
@@ -190,7 +220,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
                         if ((bX = 127 - bX) == 255) bX = 1;
                         if (bX < heightVal) bX = heightVal;
                         
-                        if (y <= bX && (blockToSet == Blocks.AIR || blockToSet == Blocks.WATER))
+                        if (y <= bX && (blockToSet == Blocks.AIR || blockToSet == defaultFluid))
                             blockToSet = Blocks.BRICKS;     
                     }
                     
@@ -198,8 +228,10 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
                         blockToSet = Blocks.BEDROCK;
                     }
                     
-                    blockToSet = structureWeightSampler.getStructBlock(absX, y, absZ, blockToSet);
-                    BlockState blockstateToSet = this.getBlockState(absX, y, absZ, blockToSet);
+                    //blockToSet = blockWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
+                    //BlockState blockstateToSet = this.getBlockState(absX, y, absZ, blockToSet);
+                    
+                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, absX, y, absZ, blockToSet, this.defaultFluid.getBlock());
                     
                     chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
                     
