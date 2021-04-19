@@ -31,7 +31,7 @@ public class OldBiomeSource extends BiomeSource {
         .group(
             Codec.LONG.fieldOf("seed").stable().forGetter(biomeSource -> biomeSource.seed),
             RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(biomeSource -> biomeSource.biomeRegistry),
-            CompoundTag.CODEC.fieldOf("provider_settings").forGetter(biomeSource -> biomeSource.biomeProviderSettings)
+            CompoundTag.CODEC.fieldOf("settings").forGetter(biomeSource -> biomeSource.biomeProviderSettings)
         ).apply(instance, (instance).stable(OldBiomeSource::new)));
     
     private final long seed;

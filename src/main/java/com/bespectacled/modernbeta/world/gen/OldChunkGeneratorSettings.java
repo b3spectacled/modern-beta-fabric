@@ -16,8 +16,12 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
@@ -40,6 +44,19 @@ public class OldChunkGeneratorSettings {
     public static final ChunkGeneratorSettings BETA_ISLANDS_GENERATOR_SETTINGS;
     
     public static final Map<Identifier, ChunkGeneratorSettings> SETTINGS_MAP = new HashMap<Identifier, ChunkGeneratorSettings>();
+    
+    public static final Codec<OldChunkGeneratorSettings> CODEC = RecordCodecBuilder.create(instance -> instance
+            .group(ChunkGeneratorSettings.CODEC.fieldOf("type").forGetter(settings -> settings.chunkGenSettings),
+                    CompoundTag.CODEC.fieldOf("settings").forGetter(settings -> settings.providerSettings))
+            .apply(instance, OldChunkGeneratorSettings::new));
+
+    public final ChunkGeneratorSettings chunkGenSettings;
+    public final CompoundTag providerSettings;
+
+    public OldChunkGeneratorSettings(ChunkGeneratorSettings chunkGenSettings, CompoundTag providerSettings) {
+        this.chunkGenSettings = chunkGenSettings;
+        this.providerSettings = providerSettings;
+    }
 
     public static void register() {
         register(BETA, BETA_GENERATOR_SETTINGS);
