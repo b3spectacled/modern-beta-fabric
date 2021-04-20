@@ -81,6 +81,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     private final AtomicBoolean generated;
     private final CountDownLatch generatedLatch;
     
+    private String phase;
+    
     public IndevChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, CompoundTag providerSettings) {
         //super(seed, settings);
         super(seed, 256, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
@@ -101,6 +103,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         this.blockArr = null;
         this.generated = new AtomicBoolean(false);
         this.generatedLatch = new CountDownLatch(1);
+        
+        this.phase = "";
     }
 
     /**
@@ -237,7 +241,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     public void generateIndevHouse(ServerWorld world, BlockPos spawnPos) {
-        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Building..");
+        this.setPhase("Building");
         
         int spawnX = spawnPos.getX();
         int spawnY = spawnPos.getY() + 1;
@@ -397,12 +401,14 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         this.floodLava(blockArr);
         this.plantSurface(blockArr);
         
+        this.setPhase("Spawning");
+        
         return blockArr;
     }
     
     
     private void generateHeightmap(int heightmap[]) {
-        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Raising..");
+        this.setPhase("Raising");
         
         for (int x = 0; x < this.width; ++x) {
             double normalizedX = Math.abs((x / (this.width - 1.0) - 0.5) * 2.0);
@@ -450,7 +456,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     private void erodeTerrain(int[] heightmap) {
-        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Eroding..");
+        this.setPhase("Eroding");
         
         for (int x = 0; x < this.width; ++x) {
             for (int z = 0; z < this.length; ++z) {
@@ -468,7 +474,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     private void soilSurface(Block[][][] blockArr, int[] heightmap) {
-        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Soiling..");
+        this.setPhase("Soiling");
+        
         for (int x = 0; x < this.width; ++x) {
             double normalizedX = Math.abs((x / (this.width - 1.0) - 0.5) * 2.0);
             
@@ -523,7 +530,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     private void growSurface(Block[][][] blockArr, int[] heightmap) {
-        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Growing..");
+        this.setPhase("Growing");
         
         int seaLevel = this.waterLevel - 1;
         
@@ -571,7 +578,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     private void carveTerrain(Block[][][] blockArr) {
-        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Carving..");
+        this.setPhase("Carving");
         
         int caveCount = this.width * this.length * this.height / 256 / 64 << 1;
         
@@ -637,7 +644,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     
     // Using Classic generation algorithm
     private void floodFluid(Block[][][] blockArr) {
-        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Watering..");
+        this.setPhase("Watering");
+        
         Block toFill = this.fluidBlock.getBlock();
         
         if (this.levelType == IndevType.FLOATING) {
@@ -668,7 +676,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     
     // Using Classic generation algorithm
     private void floodLava(Block[][][] blockArr) {
-        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Melting..");
+        this.setPhase("Melting");
         
         if (this.levelType == IndevType.FLOATING) {
             return;
@@ -713,7 +721,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     }
     
     private void plantSurface(Block[][][] blockArr) {
-        ModernBeta.LOGGER.log(Level.INFO, "[Indev] Planting..");
+        this.setPhase("Planting");
         
         Block blockToPlant = this.topsoilBlock.getBlock();
         
@@ -790,5 +798,15 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     
     private boolean isFloating() {
         return this.levelType == IndevType.FLOATING;
+    }
+    
+    private void setPhase(String phase) {
+        this.phase = phase;
+        
+        ModernBeta.LOGGER.log(Level.INFO, "[Indev] " + phase + "..");
+    }
+    
+    public String getPhase() {
+        return this.phase;
     }
 }
