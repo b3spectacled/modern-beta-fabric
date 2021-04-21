@@ -39,7 +39,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
     
     public Infdev227ChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, 0, 128, 64, 50, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
+        super(seed, 0, 128, 65, 50, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
         
         // Noise Generators
         noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true); 
@@ -106,7 +106,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
                     }
                         
                     if (soilDepth < 2) {
-                        if (soilDepth == 0) someBlock = (y >= this.seaLevel) ? topBlock : fillerBlock;
+                        if (soilDepth == 0) someBlock = (y >= this.seaLevel - 1) ? topBlock : fillerBlock;
                         if (soilDepth == 1) someBlock = fillerBlock;
                         
                         soilDepth++;
@@ -123,7 +123,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
         int groundHeight = this.sampleHeightmap(x, z) + 1;
         
         if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
-            groundHeight = this.seaLevel + 1;
+            groundHeight = this.seaLevel;
         
         return groundHeight;
     }
@@ -169,8 +169,11 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
                 noiseB = noiseB > 0.0f ? 
                     ((float)(this.noiseOctavesC.sample(absX * 0.25714284f * 2.0f, absZ * 0.25714284f * 2.0f) * noiseC / 4.0)) :
                     ((float)(this.noiseOctavesD.sample(absX * 0.25714284f, absZ * 0.25714284f) * noiseC));
-                    
-                int heightVal = (int)(noiseA + this.seaLevel + noiseB);
+                
+                //int heightVal = (int)(noiseA + this.seaLevel + noiseB);
+
+                // Subtract 1 to be more consistent with modern versions.
+                int heightVal = (int)(noiseA + (this.seaLevel - 1) + noiseB);
                 if ((float)this.noiseOctavesE.sample(absX, absZ) < 0.0f) {
                     heightVal = heightVal / 2 << 1;
                     if ((float)this.noiseOctavesE.sample(absX / 5, absZ / 5) < 0.0f) {
@@ -203,7 +206,15 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
                     else if (y <= heightVal) {
                         blockToSet = defaultBlock;
                     }
+                    
+                    /*
                     else if (y <= this.seaLevel) {
+                        blockToSet = defaultFluid;
+                    }
+                    */
+
+                    // Subtract 1 to be more consistent with modern versions.
+                    else if (y <= this.seaLevel - 1) {
                         blockToSet = defaultFluid;
                     }
                     
@@ -261,7 +272,10 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
             ((float)(this.noiseOctavesC.sample(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
             ((float)(this.noiseOctavesD.sample(x * 0.25714284f, z * 0.25714284f) * noiseC));
             
-        int heightVal = (int)(noiseA + this.seaLevel + noiseB);
+        //int heightVal = (int)(noiseA + this.seaLevel + noiseB);
+
+        // Subtract 1 to be more consistent with modern versions.
+        int heightVal = (int)(noiseA + (this.seaLevel - 1) + noiseB);
         if ((float)this.noiseOctavesE.sample(x, z) < 0.0f) {
             heightVal = heightVal / 2 << 1;
             if ((float)this.noiseOctavesE.sample(x / 5, z / 5) < 0.0f) {
