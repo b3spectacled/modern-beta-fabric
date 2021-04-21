@@ -634,7 +634,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                     if ((dx * dx + dy * dy * 2.0f + dz * dz) < radius * radius && inLevelBounds(x, y, z)) {
                         Block someBlock = blockArr[x][y][z];
                         
-                        if (someBlock == Blocks.STONE) {
+                        if (someBlock == this.defaultBlock.getBlock()) {
                             blockArr[x][y][z] = fillBlock;
                         }
                     }

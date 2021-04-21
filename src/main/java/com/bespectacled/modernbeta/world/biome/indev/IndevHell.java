@@ -65,7 +65,7 @@ public class IndevHell {
                 .grassColor(11272039)
                 .foliageColor(5242667)
                 .skyColor(1049600)
-                .fogColor(2164736)
+                .fogColor(1049600)
                 .waterColor(2838783)
                 .waterFogColor(329011)
                 .build())

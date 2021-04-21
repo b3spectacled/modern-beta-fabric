@@ -34,7 +34,7 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
     
     @Unique private Vec3d curPos = new Vec3d(0, 0, 0);
     
-    @Unique private boolean useBetaColors = false;
+    @Unique private boolean useBetaBiomeColors = false;
     @Unique private boolean isOverworld = false;
     
     @Shadow private MinecraftClient client;
@@ -64,7 +64,7 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
         }
         
         this.isOverworld = worldKey.getValue().equals(DimensionType.OVERWORLD_REGISTRY_KEY.getValue());
-        this.useBetaColors = useBetaColors;
+        this.useBetaBiomeColors = useBetaColors;
         
         ModernBeta.setBlockColorsSeed(worldSeed, useBetaColors);
     }
@@ -85,7 +85,7 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
         index = 6  
     )
     private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
-        if (useBetaColors && BETA_CONFIG.rendering_config.renderBetaSkyColor && this.isOverworld) {
+        if (useBetaBiomeColors && BETA_CONFIG.rendering_config.renderBetaSkyColor && this.isOverworld) {
             skyColorVec = Vec3d.unpackRgb(BetaClimateSampler.INSTANCE.getSkyColor((int)curPos.getX(), (int)curPos.getZ()));
         }
         
@@ -93,8 +93,8 @@ public abstract class MixinClientWorld extends World implements MutableClientWor
     }
     
     @Override
-    public boolean usesBetaColors() {
-        return this.useBetaColors;
+    public boolean useBetaBiomeColors() {
+        return this.useBetaBiomeColors;
     }
 }
 

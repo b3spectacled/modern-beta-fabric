@@ -7,5 +7,5 @@ public interface MutableClientWorld {
         return (MutableClientWorld)world;
     }
     
-    boolean usesBetaColors();
+    boolean useBetaBiomeColors();
 }
