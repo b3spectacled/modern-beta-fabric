@@ -9,7 +9,6 @@
     "MixinGeneratorOptions",
     "MixinChunkGeneratorInvoker",
     "MixinStructureWeightSampler",
-    "MixinAquiferSamplerInvoker",
     "MixinConfiguredCarverAccessor",
     "MixinChunkGeneratorSettingsInvoker",
     "MixinVanillaLayeredBiomeSourceAccessor"

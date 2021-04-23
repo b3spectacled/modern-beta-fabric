@@ -35,7 +35,7 @@ public class IceDesert {
         DefaultBiomeFeatures.addDungeons(genSettings);
         DefaultBiomeFeatures.addDesertFeatures(genSettings);
         DefaultBiomeFeatures.addFossils(genSettings);
-        DefaultBiomeFeatures.addMineables(genSettings);
+        DefaultBiomeFeatures.method_36453(genSettings);
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);

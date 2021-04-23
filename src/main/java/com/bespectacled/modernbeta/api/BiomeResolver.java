@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.api;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public interface IBiomeResolver {
+public interface BiomeResolver {
     /**
      * Gets a biome at given block coordinates, for purpose of surface generation.
      * 

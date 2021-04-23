@@ -5,7 +5,6 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.ModernBeta;
 
-import net.minecraft.class_6130;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
@@ -19,6 +18,7 @@ import net.minecraft.structure.SimpleStructurePiece;
 import net.minecraft.structure.Structure;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePiece;
+import net.minecraft.structure.StructurePiecesHolder;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.processor.BlockIgnoreStructureProcessor;
 import net.minecraft.structure.processor.BlockRotStructureProcessor;
@@ -40,13 +40,13 @@ import net.minecraft.world.Heightmap;
 public class OceanShrineGenerator {
     private static final Identifier SHRINE_BASE = ModernBeta.createId("ocean_shrine/base");
     
-    public static void addPieces(StructureManager manager, BlockPos pos, BlockRotation rot, class_6130 class_6130, List<StructurePiece> pieces) {
-        pieces.add(new Piece(manager, pos, class_6130, SHRINE_BASE, rot));
+    public static void addPieces(StructureManager manager, BlockPos pos, BlockRotation rot, StructurePiecesHolder structurePiecesHolder, List<StructurePiece> pieces) {
+        pieces.add(new Piece(manager, pos, structurePiecesHolder, SHRINE_BASE, rot));
     }
     
     public static class Piece extends SimpleStructurePiece {
         
-        public Piece(StructureManager manager, BlockPos pos, class_6130 class_6130, Identifier template, BlockRotation rot) {
+        public Piece(StructureManager manager, BlockPos pos, StructurePiecesHolder structurePiecesHolder, Identifier template, BlockRotation rot) {
             super(OldStructures.OCEAN_SHRINE_PIECE, 0, manager, template, template.toString(), getPlacementData(rot), pos);
         }
         
@@ -57,16 +57,6 @@ public class OceanShrineGenerator {
         private static StructurePlacementData getPlacementData(BlockRotation blockRotation) {
             return new StructurePlacementData().setRotation(blockRotation).setMirror(BlockMirror.NONE).addProcessor(BlockIgnoreStructureProcessor.IGNORE_AIR_AND_STRUCTURE_BLOCKS);
         }
-      
-        /*
-        private void initializeStructureData(StructureManager manager) {
-            Structure structure = manager.getStructureOrBlank(this.template);
-            StructurePlacementData placementData = (new StructurePlacementData())
-                .setRotation(this.rot)
-                .setMirror(BlockMirror.NONE)
-                .addProcessor(BlockIgnoreStructureProcessor.IGNORE_STRUCTURE_BLOCKS);
-            this.setStructureData(structure, this.pos, placementData);      
-        }*/
         
         protected void writeNbt(ServerWorld serverWorld, NbtCompound NbtCompound) {
             super.writeNbt(serverWorld, NbtCompound);

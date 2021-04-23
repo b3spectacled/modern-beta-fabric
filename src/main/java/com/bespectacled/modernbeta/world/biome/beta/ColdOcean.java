@@ -35,7 +35,7 @@ public class ColdOcean {
         DefaultBiomeFeatures.addOceanStructures(genSettings);
         DefaultBiomeFeatures.addDefaultLakes(genSettings);
         DefaultBiomeFeatures.addDungeons(genSettings);
-        DefaultBiomeFeatures.addMineables(genSettings);
+        DefaultBiomeFeatures.addMineables(genSettings, true);
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);

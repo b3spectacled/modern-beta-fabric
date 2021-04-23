@@ -1,7 +1,9 @@
 package com.bespectacled.modernbeta.world.carver;
 
 import java.util.Random;
+import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
@@ -14,6 +16,7 @@ import net.minecraft.world.gen.carver.CaveCarver;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 
 public class OldBetaCaveCarver extends CaveCarver implements IOldCaveCarver {
+    private static final Set<Block> ALWAYS_CARVABLE_BLOCKS;
 
     public OldBetaCaveCarver(Codec<CaveCarverConfig> codec) {
         super(codec);
@@ -226,7 +229,7 @@ public class OldBetaCaveCarver extends CaveCarver implements IOldCaveCarver {
                         }
 
                         // Don't use canCarveBlock for accuracy, for now.
-                        if (block == Blocks.STONE || block == Blocks.DIRT || block == Blocks.GRASS_BLOCK || block == Blocks.DEEPSLATE) { 
+                        if (ALWAYS_CARVABLE_BLOCKS.contains(block)) { 
                             //if (relY < 11) { // Set lava below y = 11
                             // Will not hit this lava check at default minY (-64), since minY is capped at 1,
                             // however, if world minY is set to 0 (i.e. through noise settings), lava should generate, preserving accuracy.
@@ -344,5 +347,17 @@ public class OldBetaCaveCarver extends CaveCarver implements IOldCaveCarver {
         return width;
     }
 
-
+    static {
+        ALWAYS_CARVABLE_BLOCKS = ImmutableSet.<Block>of(
+            Blocks.STONE,
+            Blocks.DIRT,
+            Blocks.GRASS_BLOCK,
+            Blocks.DEEPSLATE, 
+            Blocks.TUFF, 
+            Blocks.GRANITE, 
+            Blocks.IRON_ORE, 
+            Blocks.DEEPSLATE_IRON_ORE,
+            Blocks.COPPER_ORE
+        );
+    }
 }

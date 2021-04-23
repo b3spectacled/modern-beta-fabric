@@ -41,7 +41,7 @@ public class Taiga {
         DefaultBiomeFeatures.addDefaultUndergroundStructures(genSettings);
         DefaultBiomeFeatures.addDefaultLakes(genSettings);
         DefaultBiomeFeatures.addDungeons(genSettings);
-        DefaultBiomeFeatures.addMineables(genSettings);
+        DefaultBiomeFeatures.method_36453(genSettings);
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);

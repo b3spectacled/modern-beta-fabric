@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.ChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
@@ -25,7 +25,7 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class Infdev227ChunkProvider extends AbstractChunkProvider {
+public class Infdev227ChunkProvider extends ChunkProvider {
     private boolean generateInfdevPyramid = true;
     private boolean generateInfdevWall = true;
 
@@ -39,7 +39,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
     
     public Infdev227ChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, 0, 128, 65, 50, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
+        super(seed, biomeProvider, generatorSettings, providerSettings, 0, 128, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
         // Noise Generators
         noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true); 
@@ -129,11 +129,7 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
     }
     
     @Override
-    public PerlinOctaveNoise getBeachNoise() {
-        return null;
-    }
-  
-    private void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
+    protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         Random rand = new Random();
         Random chunkRand = this.createChunkRand(chunk.getPos().x, chunk.getPos().z);
         
@@ -255,7 +251,8 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
         }
     }
     
-    private int sampleHeightmap(int sampleX, int sampleZ) {
+    @Override
+    protected int sampleHeightmap(int sampleX, int sampleZ) {
         int startX = (sampleX >> 4) << 4;
         int startZ = (sampleZ >> 4) << 4;
         

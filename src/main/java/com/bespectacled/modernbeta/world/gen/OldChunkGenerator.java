@@ -20,6 +20,7 @@ import com.bespectacled.modernbeta.world.structure.OldStructures;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.class_6350;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
@@ -162,6 +163,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         GenerationSettings genSettings = biome.getGenerationSettings();
         CarverContext heightContext = new CarverContext(this);
         
+        class_6350 class_635013 = this.method_36380(chunk);
         BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);
 
         this.random.setSeed(seed);
@@ -185,7 +187,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                         ((IOldCaveCarver)carver).carve(heightContext, (CaveCarverConfig)configuredCarver.getConfig(), chunk, this.random, chunkX, chunkZ, mainChunkX, mainChunkZ);
                         
                     } else if (configuredCarver.shouldCarve(random)) {
-                        configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, this.random, this.getSeaLevel(), caveChunkPos, bitSet);
+                        configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, this.random, class_635013, caveChunkPos, bitSet);
 
                     }
                 }

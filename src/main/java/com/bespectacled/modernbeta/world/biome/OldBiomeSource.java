@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.world.biome;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.IBiomeResolver;
+import com.bespectacled.modernbeta.api.BiomeResolver;
 import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry;
 import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
@@ -65,8 +65,8 @@ public class OldBiomeSource extends BiomeSource {
     }
     
     public Biome getBiomeForSurfaceGen(ChunkRegion region, BlockPos pos) {
-        if (this.biomeProvider instanceof IBiomeResolver)
-            return ((IBiomeResolver)this.biomeProvider).getBiome(this.biomeRegistry, pos.getX(), pos.getY(), pos.getZ());
+        if (this.biomeProvider instanceof BiomeResolver)
+            return ((BiomeResolver)this.biomeProvider).getBiome(this.biomeRegistry, pos.getX(), pos.getY(), pos.getZ());
         
         return region.getBiome(pos);
     }

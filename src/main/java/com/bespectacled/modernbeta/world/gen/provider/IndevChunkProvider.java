@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.ChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -41,7 +41,7 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class IndevChunkProvider extends AbstractChunkProvider {
+public class IndevChunkProvider extends ChunkProvider {
     private PerlinOctaveNoiseCombined minHeightNoiseOctaves;
     private PerlinOctaveNoiseCombined maxHeightNoiseOctaves;
     
@@ -84,7 +84,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     
     public IndevChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, 0, 256, 64, 50, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, false, false, false, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
+        //super(seed, 0, 256, 64, 50, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, false, false, false, false, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
+        super(seed, biomeProvider, generatorSettings, providerSettings, 0, 256, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
         this.levelTheme = this.providerSettings.contains("levelTheme") ? IndevTheme.fromName(this.providerSettings.getString("levelTheme")) : IndevTheme.NORMAL;
         this.levelType = this.providerSettings.contains("levelType") ? IndevType.fromName(this.providerSettings.getString("levelType")) : IndevType.ISLAND;
@@ -115,7 +116,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
 
         if (this.inWorldBounds(pos.getStartX(), pos.getStartZ())) {
             this.pregenerateTerrainOrWait();
-            this.setTerrain(structureAccessor, chunk);
+            this.generateTerrain(chunk, structureAccessor);
      
         } else if (this.levelType != IndevType.FLOATING) {
             if (this.levelType == IndevType.ISLAND)
@@ -203,9 +204,9 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         this.pregenerateTerrainOrWait();
         
         for (int y = this.height - 1; y >= 0; --y) {
-            Block someBlock = this.blockArr[x][y][z];
+            Block block = this.blockArr[x][y][z];
             
-            if (!someBlock.equals(Blocks.AIR)) {
+            if (!block.equals(Blocks.AIR)) {
                 break;
             }
             
@@ -215,11 +216,6 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         if (height <= this.waterLevel) height = this.waterLevel;
          
         return height;
-    }
-    
-    @Override
-    public PerlinOctaveNoise getBeachNoise() {
-        return null;
     }
     
     @Override
@@ -238,6 +234,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         
         return false;
     }
+    
     
     public boolean inWorldBounds(int x, int z) {
         return IndevUtil.inIndevRegion(x, z, this.width, this.length);
@@ -286,7 +283,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         return this.levelTheme;
     }
     
-    private void setTerrain(StructureAccessor structureAccessor, Chunk chunk) {
+    @Override
+    protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         if (this.blockArr == null)
             throw new IllegalStateException("[Modern Beta] Indev chunk provider is trying to set terrain before level has been generated!");
         
@@ -350,6 +348,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             }
         }
     }
+    
     
     private void pregenerateTerrainOrWait() {
         // Only one thread should enter pregeneration method,
@@ -456,6 +455,19 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         }
     }
     
+    @Override
+    protected int sampleHeightmap(int sampleX, int sampleZ) {
+        for (int y = this.height - 1; y >= 0; --y) {
+            Block block = this.blockArr[sampleX][y][sampleZ];
+            
+            if (!block.equals(Blocks.AIR)) {
+                return y;
+            }
+        }
+        
+        return 0;
+    }
+    
     private void erodeTerrain(int[] heightmap) {
         this.setPhase("Eroding");
         
@@ -520,9 +532,9 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                     if (this.levelType == IndevType.FLOATING && y < roundedHeight)
                         blockToSet = Blocks.AIR;
 
-                    Block someBlock = blockArr[x][y][z];
+                    Block block = blockArr[x][y][z];
                      
-                    if (someBlock.equals(Blocks.AIR)) {
+                    if (block.equals(Blocks.AIR)) {
                         blockArr[x][y][z] = blockToSet;
                     }
                 }
@@ -632,9 +644,9 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                     float dz = z - centerZ;
                     
                     if ((dx * dx + dy * dy * 2.0f + dz * dz) < radius * radius && inLevelBounds(x, y, z)) {
-                        Block someBlock = blockArr[x][y][z];
+                        Block block = blockArr[x][y][z];
                         
-                        if (someBlock == this.defaultBlock.getBlock()) {
+                        if (block == this.defaultBlock.getBlock()) {
                             blockArr[x][y][z] = fillBlock;
                         }
                     }
@@ -706,9 +718,9 @@ public class IndevChunkProvider extends AbstractChunkProvider {
             y = (int)curPos.y;
             z = (int)curPos.z;
             
-            Block someBlock = blockArr[x][y][z];
+            Block block = blockArr[x][y][z];
 
-            if (someBlock == Blocks.AIR) {
+            if (block == Blocks.AIR) {
                 blockArr[x][y][z] = toFill;
                 
                 if (y - 1 >= 0)          positions.add(new Vec3d(x, y - 1, z));

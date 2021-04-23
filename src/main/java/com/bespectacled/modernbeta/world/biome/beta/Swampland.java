@@ -38,7 +38,7 @@ public class Swampland {
         DefaultBiomeFeatures.addDefaultLakes(genSettings);
         DefaultBiomeFeatures.addDungeons(genSettings);
         DefaultBiomeFeatures.addFossils(genSettings);
-        DefaultBiomeFeatures.addMineables(genSettings);
+        DefaultBiomeFeatures.method_36453(genSettings);
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
