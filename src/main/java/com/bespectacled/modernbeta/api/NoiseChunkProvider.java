@@ -394,14 +394,6 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
      * 
      * @return A blockstate, usually air, stone, or water.
      */
-    protected BlockState getBlockState(StructureWeightSampler weightSampler, class_6350 aquiferSampler, int x, int y, int z, double density) {
-        double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
-        clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
-        clampedDensity += weightSampler.getWeight(x, y, z);
-        
-        return aquiferSampler.a(this.blockSource, x, y, z, clampedDensity);
-    }
-    
     protected BlockState getBlockState(StructureWeightSampler weightSampler, class_6350 aquiferSampler, BlockSource blockSource, int x, int y, int z, double density) {
         double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
         clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
@@ -442,8 +434,8 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
             if (blockState != this.defaultBlock) {
                 return blockState;
             } else {
-                //return this.blockSource.sample(x, y, z);
-                return BlockStates.AIR;
+                return this.blockSource.sample(x, y, z);
+                //return BlockStates.AIR;
             }
             
         };

@@ -68,7 +68,7 @@ public class Sky {
             .downfall(0.0F)
             .effects((new BiomeEffects.Builder())
                 .skyColor(12632319)
-                .fogColor(9605819)
+                .fogColor(8421536)
                 .waterColor(4159204)
                 .waterFogColor(329011)
                 .build())
