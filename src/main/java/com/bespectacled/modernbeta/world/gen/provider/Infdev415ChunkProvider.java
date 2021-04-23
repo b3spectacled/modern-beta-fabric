@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.world.gen.provider;
 
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
 import com.bespectacled.modernbeta.api.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -20,6 +19,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 /**
@@ -35,8 +35,8 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise stoneNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    public Infdev415ChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
-        super(seed, biomeProvider, generatorSettings, providerSettings, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 1, 1, 1.0, 1.0, 80, 400, -10, 3, 0, 15, 3, 0, false, false, false, true);
+    public Infdev415ChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+        super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 1, 1, 1.0, 1.0, 80, 400, -10, 3, 0, 15, 3, 0, false, false, false, true);
         
         // Noise Generators
         minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);

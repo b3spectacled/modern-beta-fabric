@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class WorldProvider {
@@ -69,8 +70,8 @@ public class WorldProvider {
         return new Identifier(this.defaultBiome);
     }
     
-    public AbstractChunkProvider createChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
-        return ChunkProviderRegistry.get(this.chunkProvider).apply(seed, biomeProvider, generatorSettings, providerSettings);
+    public AbstractChunkProvider createChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+        return ChunkProviderRegistry.get(this.chunkProvider).apply(seed, chunkGenerator, generatorSettings, providerSettings);
     }
     
     public AbstractWorldScreenProvider createLevelScreen(

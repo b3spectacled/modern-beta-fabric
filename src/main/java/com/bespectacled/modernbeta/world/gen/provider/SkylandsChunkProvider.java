@@ -1,7 +1,6 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
 import java.util.function.Supplier;
-import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
 import com.bespectacled.modernbeta.api.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -16,6 +15,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class SkylandsChunkProvider extends NoiseChunkProvider {
@@ -25,9 +25,9 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise stoneNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    public SkylandsChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+    public SkylandsChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, biomeProvider, generatorSettings, providerSettings, 0, 128, 0, 0, 0, -10, BlockStates.STONE, BlockStates.AIR, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0, false, false, false, true);
+        super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 0, 0, 0, -10, BlockStates.STONE, BlockStates.AIR, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0, false, false, false, true);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);

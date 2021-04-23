@@ -11,11 +11,12 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public abstract class AbstractChunkProvider {
     protected final long seed;
-    protected final AbstractBiomeProvider biomeProvider;
+    protected final ChunkGenerator chunkGenerator;
     protected final Supplier<ChunkGeneratorSettings> generatorSettings;
     protected final NbtCompound providerSettings;
     
@@ -27,9 +28,9 @@ public abstract class AbstractChunkProvider {
      * @param generatorSettings Vanilla settings used to control various terrain and noise settings.
      * @param providerSettings NbtCompound for additional settings not part of vanilla generator settings.
      */
-    public AbstractChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+    public AbstractChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         this.seed = seed;
-        this.biomeProvider = biomeProvider;
+        this.chunkGenerator = chunkGenerator;
         this.generatorSettings = generatorSettings;
         this.providerSettings = providerSettings;
     }

@@ -27,6 +27,7 @@ import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.DefaultBlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public abstract class ChunkProvider extends AbstractChunkProvider {
@@ -50,13 +51,13 @@ public abstract class ChunkProvider extends AbstractChunkProvider {
 
     public ChunkProvider(
         long seed, 
-        AbstractBiomeProvider biomeProvider,    
+        ChunkGenerator chunkGenerator,    
         Supplier<ChunkGeneratorSettings> generatorSettings, 
         NbtCompound providerSettings
     ) {
         this(
             seed, 
-            biomeProvider, 
+            chunkGenerator, 
             generatorSettings, 
             providerSettings,
             generatorSettings.get().getGenerationShapeConfig().getMinimumY(),
@@ -72,7 +73,7 @@ public abstract class ChunkProvider extends AbstractChunkProvider {
     
     public ChunkProvider(
         long seed,
-        AbstractBiomeProvider biomeProvider,
+        ChunkGenerator chunkGenerator, 
         Supplier<ChunkGeneratorSettings> generatorSettings,
         NbtCompound providerSettings,
         int minY,
@@ -84,7 +85,7 @@ public abstract class ChunkProvider extends AbstractChunkProvider {
         BlockState defaultBlock,
         BlockState defaultFluid
     ) {
-        super(seed, biomeProvider, generatorSettings, providerSettings);
+        super(seed, chunkGenerator, generatorSettings, providerSettings);
         
         this.minY = minY;
         this.worldHeight = worldHeight;

@@ -89,7 +89,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.chunkProviderType = ChunkProviderRegistry.getChunkProviderType(providerSettings);
         this.chunkProvider = ChunkProviderRegistry.get(this.chunkProviderType).apply(
             seed, 
-            this.biomeSource.getBiomeProvider(), 
+            this, 
             settings, 
             providerSettings
         );

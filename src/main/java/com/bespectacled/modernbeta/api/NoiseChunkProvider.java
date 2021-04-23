@@ -33,7 +33,10 @@ import net.minecraft.world.gen.NoiseInterpolator;
 import net.minecraft.world.gen.SimpleRandom;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
+import net.minecraft.world.gen.chunk.NoiseChunkGenerator.class_6352;
 
 public abstract class NoiseChunkProvider extends ChunkProvider {
     protected final int verticalNoiseResolution;   // Number of blocks in a vertical subchunk
@@ -80,13 +83,13 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     
     public NoiseChunkProvider(
         long seed, 
-        AbstractBiomeProvider biomeProvider, 
+        ChunkGenerator chunkGenerator, 
         Supplier<ChunkGeneratorSettings> generatorSettings, 
         NbtCompound providerSettings
     ) {
         this(
             seed, 
-            biomeProvider, 
+            chunkGenerator, 
             generatorSettings, 
             providerSettings,
             generatorSettings.get().getGenerationShapeConfig().getMinimumY(),
@@ -118,7 +121,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
 
     public NoiseChunkProvider(
         long seed,
-        AbstractBiomeProvider biomeProvider,
+        ChunkGenerator chunkGenerator, 
         Supplier<ChunkGeneratorSettings> generatorSettings,
         NbtCompound providerSettings,
         int minY, 
@@ -146,7 +149,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         boolean generateDeepslate,
         boolean generateOreVeins
     ) {
-        super(seed, biomeProvider, generatorSettings, providerSettings, minY, worldHeight, seaLevel, minSurfaceY, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid);
+        super(seed, chunkGenerator, generatorSettings, providerSettings, minY, worldHeight, seaLevel, minSurfaceY, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid);
         
         this.verticalNoiseResolution = sizeVertical * 4;
         this.horizontalNoiseResolution = sizeHorizontal * 4;
@@ -426,11 +429,11 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     }
     
     protected Pair<BlockSource, DoubleConsumer> createOreVeinSamplers(int worldBottomNoiseY, ChunkPos chunkPos, Consumer<NoiseInterpolator> consumer) {
-        if (!this.generateOreVeins) {
+        if (!this.generateOreVeins || !(this.chunkGenerator instanceof NoiseChunkGenerator)) {
             return Pair.of(this.blockSource, doubleConsumer -> {});
         }
         
-        class_6352 oreVeinBlockSource = new class_6352(chunkPos, worldBottomNoiseY, this.seed + 1L);
+        class_6352 oreVeinBlockSource = ((NoiseChunkGenerator)this.chunkGenerator).new class_6352(chunkPos, worldBottomNoiseY, this.seed + 1L);
         oreVeinBlockSource.method_36395(consumer);
         
         BlockSource blockSource = (x, y, z) -> {
@@ -439,8 +442,8 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
             if (blockState != this.defaultBlock) {
                 return blockState;
             } else {
-                return this.blockSource.sample(x, y, z);
-                //return BlockStates.AIR;
+                //return this.blockSource.sample(x, y, z);
+                return BlockStates.AIR;
             }
             
         };
@@ -505,41 +508,5 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         }
         
         return density;
-    }
-    
-    class class_6352 implements BlockSource {
-        private final NoiseInterpolator field_33581;
-        private final NoiseInterpolator field_33582;
-        private final NoiseInterpolator field_33583;
-        private double field_33584;
-        private final long field_33585;
-        private final ChunkRandom field_33586;
-        
-        public class_6352(ChunkPos chunkPos, int noiseMinY, long seed) {
-            this.field_33586 = new ChunkRandom();
-            this.field_33581 = new NoiseInterpolator(NoiseChunkProvider.this.noiseSizeX, NoiseChunkProvider.this.noiseSizeY, NoiseChunkProvider.this.noiseSizeZ, chunkPos, noiseMinY, NoiseChunkProvider.this.oreVeinSampler::method_36401);
-            this.field_33582 = new NoiseInterpolator(NoiseChunkProvider.this.noiseSizeX, NoiseChunkProvider.this.noiseSizeY, NoiseChunkProvider.this.noiseSizeZ, chunkPos, noiseMinY, NoiseChunkProvider.this.oreVeinSampler::method_36404);
-            this.field_33583 = new NoiseInterpolator(NoiseChunkProvider.this.noiseSizeX, NoiseChunkProvider.this.noiseSizeY, NoiseChunkProvider.this.noiseSizeZ, chunkPos, noiseMinY, NoiseChunkProvider.this.oreVeinSampler::method_36405);
-            this.field_33585 = seed;
-        }
-        
-        public void method_36395(Consumer<NoiseInterpolator> consumer) {
-            consumer.accept(this.field_33581);
-            consumer.accept(this.field_33582);
-            consumer.accept(this.field_33583);
-        }
-        
-        public void method_36394(double double2) {
-            this.field_33584 = double2;
-        }
-        
-        @Override
-        public BlockState sample(int x, int y, int z) {
-            double double5 = this.field_33581.sampleNoise(this.field_33584);
-            double double7 = this.field_33582.sampleNoise(this.field_33584);
-            double double9 = this.field_33583.sampleNoise(this.field_33584);
-            this.field_33586.setGrimstoneSeed(this.field_33585, x, y, z);
-            return NoiseChunkProvider.this.oreVeinSampler.method_36400(this.field_33586, y, double5, double7, double9);
-        }
     }
 }
