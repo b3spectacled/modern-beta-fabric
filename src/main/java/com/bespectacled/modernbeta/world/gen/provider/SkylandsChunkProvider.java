@@ -27,7 +27,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
     
     public SkylandsChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 0, 0, 0, -10, BlockStates.STONE, BlockStates.AIR, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0, false, false, false, true);
+        super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 0, 0, 0, -10, BlockStates.STONE, BlockStates.AIR, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0, false, false, false, false);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);

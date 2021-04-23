@@ -24,7 +24,7 @@ public abstract class AbstractChunkProvider {
      * Construct a Modern Beta chunk provider with seed and settings.
      * 
      * @param seed Seed to initialize terrain generators. 
-     * @param biomeProvider Biome provider used for terrain generation, if applicable.
+     * @param chunkGenerator Parent vanilla chunk generator by which this chunk provider will be called.  Accessed for biome source primarily.
      * @param generatorSettings Vanilla settings used to control various terrain and noise settings.
      * @param providerSettings NbtCompound for additional settings not part of vanilla generator settings.
      */
@@ -71,7 +71,7 @@ public abstract class AbstractChunkProvider {
      * 
      * @param chunkX x-coordinate in chunk coordinates.
      * @param chunkZ z-coordinate in chunk coordinates.
-     * @param chunkStatus Chunk generation step used to determine skip context.
+     * @param chunkStatus Chunk generation step used for skip context.
      * 
      * @return Whether to skip the chunk.
      */
@@ -87,7 +87,6 @@ public abstract class AbstractChunkProvider {
     }
     
     /**
-     * 
      * @return Minimum Y coordinate.
      */
     public int getMinimumY() {
@@ -95,7 +94,6 @@ public abstract class AbstractChunkProvider {
     }
     
     /**
-     * 
      * @return World sea level.
      */
     public int getSeaLevel() {

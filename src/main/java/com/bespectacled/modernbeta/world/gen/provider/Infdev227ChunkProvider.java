@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.Random;
 import java.util.function.Supplier;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.ChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -26,8 +27,8 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class Infdev227ChunkProvider extends ChunkProvider {
-    private boolean generateInfdevPyramid = true;
-    private boolean generateInfdevWall = true;
+    private final boolean generateInfdevPyramid;
+    private final boolean generateInfdevWall;
 
     private final PerlinOctaveNoise noiseOctavesA;
     private final PerlinOctaveNoise noiseOctavesB;
@@ -53,10 +54,13 @@ public class Infdev227ChunkProvider extends ChunkProvider {
         new PerlinOctaveNoise(RAND, 3, true);
         forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
         
-        if (this.providerSettings.contains("generateInfdevPyramid")) 
-            this.generateInfdevPyramid = this.providerSettings.getBoolean("generateInfdevPyramid");
-        if (this.providerSettings.contains("generateInfdevWall")) 
-            this.generateInfdevWall = this.providerSettings.getBoolean("generateInfdevWall");
+        this.generateInfdevPyramid = this.providerSettings.contains("generateInfdevPyramid") ?
+            this.providerSettings.getBoolean("generateInfdevPyramid") :
+            ModernBeta.BETA_CONFIG.generation_config.generateInfdevPyramid;
+        
+        this.generateInfdevWall = this.providerSettings.contains("generateInfdevWall") ?
+            this.providerSettings.getBoolean("generateInfdevWall") :
+            ModernBeta.BETA_CONFIG.generation_config.generateInfdevWall;
         
         setForestOctaves(forestNoiseOctaves);
     }

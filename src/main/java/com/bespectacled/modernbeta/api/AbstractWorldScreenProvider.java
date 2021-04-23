@@ -112,13 +112,6 @@ public abstract class AbstractWorldScreenProvider extends Screen {
             })
         );
         
-        // Get biome type list, sans legacy types
-        String[] biomeProviderTypes = BiomeProviderRegistry
-            .getBiomeProviderKeys()
-            .stream()
-            .filter(str -> !BiomeProviderRegistry.getLegacyTypes().contains(str))
-            .toArray(String[]::new);
-        
         Function<AbstractWorldScreenProvider, Screen> biomeScreenFunction = BiomeScreenProviderRegistry.get(this.biomeType);
         Screen biomeScreen = biomeScreenFunction != null ? biomeScreenFunction.apply(this) : null;
         
@@ -131,7 +124,7 @@ public abstract class AbstractWorldScreenProvider extends Screen {
         this.buttonList.addOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.biomeType",
-                biomeProviderTypes, 
+                BiomeProviderRegistry.getBiomeProviderKeys().stream().toArray(String[]::new), 
                 (value) -> new TranslatableText("createWorld.customize.biomeType." + value), 
                 (gameOptions) -> { return this.biomeType; },
                 (gameOptions, option, value) -> {

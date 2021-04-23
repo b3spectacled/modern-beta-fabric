@@ -226,9 +226,11 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         class_6350 aquiferSampler = this.createAquiferSampler(chunkX, chunkZ, chunk.getPos());
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
+        // Get and populate primary noise array
         double[] heightNoise = this.heightNoisePool.borrowArr();
         this.generateHeightNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
         
+        // Create ore vein samplers
         List<NoiseInterpolator> interpolatorList = new ArrayList<>();
         Pair<BlockSource, DoubleConsumer> pair = this.createOreVeinSamplers(this.noiseMinY, chunkPos, interpolatorList::add);
         BlockSource blockSource = pair.getFirst();

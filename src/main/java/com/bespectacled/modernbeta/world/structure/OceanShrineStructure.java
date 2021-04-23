@@ -67,6 +67,6 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
     }
     
     static {
-        MONSTER_SPAWNS = Pool.<SpawnSettings.SpawnEntry>of(new SpawnSettings.SpawnEntry(EntityType.GUARDIAN, 1, 1, 2));
+        MONSTER_SPAWNS = Pool.<SpawnSettings.SpawnEntry>of(new SpawnSettings.SpawnEntry(EntityType.GUARDIAN, 1, 0, 1));
     }
 }

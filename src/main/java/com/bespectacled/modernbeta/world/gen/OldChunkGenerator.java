@@ -87,12 +87,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
         this.chunkProviderSettings = providerSettings;
         this.chunkProviderType = ChunkProviderRegistry.getChunkProviderType(providerSettings);
-        this.chunkProvider = ChunkProviderRegistry.get(this.chunkProviderType).apply(
-            seed, 
-            this, 
-            settings, 
-            providerSettings
-        );
+        this.chunkProvider = ChunkProviderRegistry.get(this.chunkProviderType).apply(seed, this, settings, providerSettings);
         
         this.generateOceans = providerSettings.contains("generateOceans") ? providerSettings.getBoolean("generateOceans") : false;
     }
@@ -299,7 +294,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public int getMinimumY() {
         return this.chunkProvider.getMinimumY();
-        //return -64;
     }
 
     @Override

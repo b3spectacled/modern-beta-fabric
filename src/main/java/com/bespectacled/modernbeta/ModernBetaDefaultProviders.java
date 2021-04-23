@@ -54,12 +54,6 @@ public class ModernBetaDefaultProviders {
         BiomeProviderRegistry.register(BuiltInBiomeType.BETA.name, BetaBiomeProvider::new);
         BiomeProviderRegistry.register(BuiltInBiomeType.SINGLE.name, SingleBiomeProvider::new);
         BiomeProviderRegistry.register(BuiltInBiomeType.VANILLA.name, VanillaBiomeProvider::new);
-        
-        // Register legacy biome providers
-        BiomeProviderRegistry.register(BuiltInBiomeType.CLASSIC.name, SingleBiomeProvider::new);
-        BiomeProviderRegistry.register(BuiltInBiomeType.WINTER.name, SingleBiomeProvider::new);
-        BiomeProviderRegistry.register(BuiltInBiomeType.SKY.name, SingleBiomeProvider::new);
-        BiomeProviderRegistry.register(BuiltInBiomeType.PLUS.name, SingleBiomeProvider::new);
     }
     
     // Register default cave biome providers

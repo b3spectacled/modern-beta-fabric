@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.api.registry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -11,24 +10,15 @@ import java.util.stream.Collectors;
 import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
 
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import net.minecraft.nbt.NbtCompound;
 
 public class BiomeProviderRegistry {
-    private static final Set<String> LEGACY_TYPES;
-    
     public enum BuiltInBiomeType {
         BETA("beta"),
         SINGLE("single"),
-        VANILLA("vanilla"),
-        
-        // Legacy biome types
-        SKY("sky"),
-        CLASSIC("classic"),
-        WINTER("winter"),
-        PLUS("plus");
+        VANILLA("vanilla");
         
         public final String name;
         
@@ -58,23 +48,10 @@ public class BiomeProviderRegistry {
         return entryList.stream().map(e -> e.getKey()).collect(Collectors.toList());
     }
     
-    public static Set<String> getLegacyTypes() {
-        return LEGACY_TYPES;
-    }
-    
     public static String getBiomeProviderType(NbtCompound settings) {
         if (settings.contains("biomeType")) 
             return settings.getString("biomeType");
         
         throw new NoSuchElementException("[Modern Beta] Settings does not contain biomeType field!");
-    }
-    
-    static {
-        LEGACY_TYPES = new HashSet<String>();
-        
-        LEGACY_TYPES.add(BuiltInBiomeType.SKY.name);
-        LEGACY_TYPES.add(BuiltInBiomeType.CLASSIC.name);
-        LEGACY_TYPES.add(BuiltInBiomeType.WINTER.name);
-        LEGACY_TYPES.add(BuiltInBiomeType.PLUS.name);
     }
 }

@@ -84,18 +84,34 @@ public class IndevChunkProvider extends ChunkProvider {
     
     public IndevChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        //super(seed, 0, 256, 64, 50, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, false, false, false, false, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
         super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 256, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
-        this.levelTheme = this.providerSettings.contains("levelTheme") ? IndevTheme.fromName(this.providerSettings.getString("levelTheme")) : IndevTheme.NORMAL;
-        this.levelType = this.providerSettings.contains("levelType") ? IndevType.fromName(this.providerSettings.getString("levelType")) : IndevType.ISLAND;
-        this.fluidBlock = this.isFloating() ? BlockStates.AIR : (this.isHell() ? BlockStates.LAVA : BlockStates.WATER);
-        this.topsoilBlock = this.isHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;
+        this.levelTheme = this.providerSettings.contains("levelTheme") ? 
+            IndevTheme.fromName(this.providerSettings.getString("levelTheme")) : 
+            IndevTheme.fromName(ModernBeta.BETA_CONFIG.generation_config.indevLevelTheme);
         
-        this.width = this.providerSettings.contains("levelWidth") ? this.providerSettings.getInt("levelWidth") : 256;
-        this.length = this.providerSettings.contains("levelLength") ? this.providerSettings.getInt("levelLength") : 256;
-        this.height = this.providerSettings.contains("levelHeight") ? this.providerSettings.getInt("levelHeight") : 128;
-        this.caveRadius = this.providerSettings.contains("caveRadius") ? this.providerSettings.getFloat("caveRadius") : 1.0f;
+        this.levelType = this.providerSettings.contains("levelType") ? 
+            IndevType.fromName(this.providerSettings.getString("levelType")) : 
+            IndevType.fromName(ModernBeta.BETA_CONFIG.generation_config.indevLevelType);
+        
+        this.width = this.providerSettings.contains("levelWidth") ? 
+            this.providerSettings.getInt("levelWidth") : 
+            ModernBeta.BETA_CONFIG.generation_config.indevLevelWidth;
+        
+        this.length = this.providerSettings.contains("levelLength") ? 
+            this.providerSettings.getInt("levelLength") : 
+            ModernBeta.BETA_CONFIG.generation_config.indevLevelLength;
+        
+        this.height = this.providerSettings.contains("levelHeight") ? 
+            this.providerSettings.getInt("levelHeight") : 
+            ModernBeta.BETA_CONFIG.generation_config.indevLevelHeight;
+        
+        this.caveRadius = this.providerSettings.contains("caveRadius") ? 
+            this.providerSettings.getFloat("caveRadius") : 
+            ModernBeta.BETA_CONFIG.generation_config.indevCaveRadius;
+        
+        this.fluidBlock = this.isFloating() ? BlockStates.AIR : (this.isHell() ? BlockStates.LAVA : this.defaultFluid);
+        this.topsoilBlock = this.isHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;
         
         this.waterLevel = this.height / 2;
         this.layers = (this.levelType == IndevType.FLOATING) ? (this.height - 64) / 48 + 1 : 1;
