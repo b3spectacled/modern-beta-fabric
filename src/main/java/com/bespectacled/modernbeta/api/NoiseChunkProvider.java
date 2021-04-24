@@ -401,7 +401,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
         clampedDensity += weightSampler.getWeight(x, y, z);
         
-        return aquiferSampler.a(blockSource, x, y, z, clampedDensity);
+        return aquiferSampler.apply(blockSource, x, y, z, clampedDensity);
     }
     
     /**
@@ -461,7 +461,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
      * @param blockState Blockstate at pos.
      */
     protected void scheduleFluidTick(Chunk chunk, class_6350 aquiferSampler, BlockPos pos, BlockState blockState) {
-        if (aquiferSampler.a() && !blockState.getFluidState().isEmpty()) {
+        if (aquiferSampler.needsFluidTick() && !blockState.getFluidState().isEmpty()) {
             chunk.getFluidTickScheduler().schedule(pos, blockState.getFluidState().getFluid(), 0);
         }
     }
