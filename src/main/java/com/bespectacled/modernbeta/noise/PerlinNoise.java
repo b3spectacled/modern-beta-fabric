@@ -140,7 +140,7 @@ public class PerlinNoise extends Noise {
             lerp(
                 v, 
                 lerp(
-                    u, 
+                    u,
                     grad(this.permutations[AA], x, y, z), 
                     grad(this.permutations[BA], x - 1.0, y, z)), 
                 lerp(

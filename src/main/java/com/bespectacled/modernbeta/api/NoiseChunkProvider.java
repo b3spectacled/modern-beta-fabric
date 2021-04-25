@@ -243,10 +243,10 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
             interpolatorList.forEach(noiseInterpolator -> noiseInterpolator.sampleEndNoise(noiseX));
             
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++ subChunkZ) {
+                int noiseZ = subChunkZ;
+                
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
                     int noiseY = subChunkY;
-                    int noiseZ = subChunkZ;
-                    
                     interpolatorList.forEach(noiseInterpolator -> noiseInterpolator.sampleNoiseCorners(noiseY, noiseZ));
                     
                     double lowerNW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
@@ -266,10 +266,10 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
                         double deltaY = subY / (double)this.verticalNoiseResolution;
                         interpolatorList.forEach(noiseInterpolator -> noiseInterpolator.sampleNoiseY(deltaY));
                         
-                        double nx1 = lowerNW + (upperNW - lowerNW) * deltaY;
-                        double nx2 = lowerSW + (upperSW - lowerSW) * deltaY;
-                        double nx3 = lowerNE + (upperNE - lowerNE) * deltaY;
-                        double nx4 = lowerSE + (upperSE - lowerSE) * deltaY;
+                        double nw = MathHelper.lerp(deltaY, lowerNW, upperNW);
+                        double sw = MathHelper.lerp(deltaY, lowerSW, upperSW);
+                        double ne = MathHelper.lerp(deltaY, lowerNE, upperNE);
+                        double se = MathHelper.lerp(deltaY, lowerSE, upperSE);
                         
                         for (int subX = 0; subX < this.horizontalNoiseResolution; ++subX) {
                             int x = subX + subChunkX * this.horizontalNoiseResolution;
@@ -278,8 +278,8 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
                             double deltaX = subX / (double)this.horizontalNoiseResolution;
                             interpolatorList.forEach(noiseInterpolator -> noiseInterpolator.sampleNoiseX(deltaX));
                             
-                            double nz1 = nx1 + (nx3 - nx1) * deltaX;
-                            double nz2 = nx2 + (nx4 - nx2) * deltaX;
+                            double n = MathHelper.lerp(deltaX, nw, ne);
+                            double s = MathHelper.lerp(deltaX, sw, se);
                             
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; ++subZ) {
                                 int z = subZ + subChunkZ * this.horizontalNoiseResolution;
@@ -288,7 +288,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
                                 double deltaZ = subZ / (double)this.horizontalNoiseResolution;
                                 doubleConsumer.accept(deltaZ);
                                 
-                                double density = nz1 + (nz2 - nz1) * deltaZ;
+                                double density = MathHelper.lerp(deltaZ, n, s);
                                 
                                 BlockState blockToSet = this.getBlockState(structureWeightSampler, aquiferSampler, blockSource, absX, y, absZ, density);
                                 chunk.setBlockState(mutable.set(x, y, z), blockToSet, false);
@@ -343,25 +343,25 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
                         
                         double deltaY = subY / (double)this.verticalNoiseResolution;
                         
-                        double nx1 = lowerNW + (upperNW - lowerNW) * deltaY;
-                        double nx2 = lowerSW + (upperSW - lowerSW) * deltaY;
-                        double nx3 = lowerNE + (upperNE - lowerNE) * deltaY;
-                        double nx4 = lowerSE + (upperSE - lowerSE) * deltaY;
+                        double nw = MathHelper.lerp(deltaY, lowerNW, upperNW);
+                        double sw = MathHelper.lerp(deltaY, lowerSW, upperSW);
+                        double ne = MathHelper.lerp(deltaY, lowerNE, upperNE);
+                        double se = MathHelper.lerp(deltaY, lowerSE, upperSE);
                         
                         for (int subX = 0; subX < this.horizontalNoiseResolution; ++subX) {
                             int x = subX + subChunkX * this.horizontalNoiseResolution;
                             
                             double deltaX = subX / (double)this.horizontalNoiseResolution;
                             
-                            double nz1 = nx1 + (nx3 - nx1) * deltaX;
-                            double nz2 = nx2 + (nx4 - nx2) * deltaX;
+                            double n = MathHelper.lerp(deltaX, nw, ne);
+                            double s = MathHelper.lerp(deltaX, sw, se);
                             
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; ++subZ) {
                                 int z = subZ + subChunkZ * this.horizontalNoiseResolution;
                                 
                                 double deltaZ = subZ / (double)this.horizontalNoiseResolution;
                                 
-                                double density = nz1 + (nz2 - nz1) * deltaZ;
+                                double density = MathHelper.lerp(deltaZ, n, s);
                                 
                                 if (density > 0.0) {
                                     heightmap[z + x * 16] = y;
