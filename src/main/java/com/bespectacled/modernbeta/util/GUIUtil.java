@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.util;
 
 import net.minecraft.util.Identifier;
 
-public class GUIUtil {
+public abstract class GUIUtil {
     public static String createTranslatableBiomeStringFromId(String biomeId) {
         String[] strArr = biomeId.split(":");
         

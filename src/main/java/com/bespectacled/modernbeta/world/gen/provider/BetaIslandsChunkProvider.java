@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.NoiseChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.SimplexNoise;
 import com.bespectacled.modernbeta.util.BlockStates;

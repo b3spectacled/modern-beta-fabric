@@ -9,10 +9,11 @@ import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractChunkProvider;
-import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry;
+import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
+import com.bespectacled.modernbeta.api.world.gen.AbstractChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.mixin.MixinConfiguredCarverAccessor;
+import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.carver.IOldCaveCarver;
 import com.bespectacled.modernbeta.world.feature.OldFeatures;
@@ -86,8 +87,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.biomeSource = (OldBiomeSource)biomeSource;
 
         this.chunkProviderSettings = providerSettings;
-        this.chunkProviderType = ChunkProviderRegistry.getChunkProviderType(providerSettings);
-        this.chunkProvider = ChunkProviderRegistry.get(this.chunkProviderType).apply(seed, this, settings, providerSettings);
+        this.chunkProviderType = NBTUtil.readString("worldType", providerSettings);
+        this.chunkProvider = ProviderRegistries.CHUNK.get(this.chunkProviderType).apply(seed, this, settings, providerSettings);
         
         this.generateOceans = providerSettings.contains("generateOceans") ? providerSettings.getBoolean("generateOceans") : false;
     }

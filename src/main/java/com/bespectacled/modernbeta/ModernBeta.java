@@ -29,7 +29,7 @@ import com.bespectacled.modernbeta.config.ModernBetaConfig;
 
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
-    public static final Logger LOGGER = LogManager.getLogger("ModernBeta");
+    public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
     public static final ModernBetaConfig BETA_CONFIG = AutoConfig.register(ModernBetaConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new)).getConfig();
 
     // Ehh...

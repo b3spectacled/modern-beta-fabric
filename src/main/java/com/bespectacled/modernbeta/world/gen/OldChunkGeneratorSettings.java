@@ -11,7 +11,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
+import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -77,13 +77,13 @@ public class OldChunkGeneratorSettings {
     }
     
     static {
-        BETA = ModernBeta.createId(BuiltInChunkType.BETA.name);
-        ALPHA = ModernBeta.createId(BuiltInChunkType.ALPHA.name);
-        SKYLANDS = ModernBeta.createId(BuiltInChunkType.SKYLANDS.name);
-        INFDEV_415 = ModernBeta.createId(BuiltInChunkType.INFDEV_415.name);
-        INFDEV_227 = ModernBeta.createId(BuiltInChunkType.INFDEV_227.name);
-        INDEV = ModernBeta.createId(BuiltInChunkType.INDEV.name);
-        BETA_ISLANDS = ModernBeta.createId(BuiltInChunkType.BETA_ISLANDS.name);
+        BETA = ModernBeta.createId(BuiltInTypes.Chunk.BETA.name);
+        ALPHA = ModernBeta.createId(BuiltInTypes.Chunk.ALPHA.name);
+        SKYLANDS = ModernBeta.createId(BuiltInTypes.Chunk.SKYLANDS.name);
+        INFDEV_415 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_415.name);
+        INFDEV_227 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_227.name);
+        INDEV = ModernBeta.createId(BuiltInTypes.Chunk.INDEV.name);
+        BETA_ISLANDS = ModernBeta.createId(BuiltInTypes.Chunk.BETA_ISLANDS.name);
         
         BETA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, 50, false, false, false, false, true);
         ALPHA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.ALPHA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, 50, false, false, false, false, false);

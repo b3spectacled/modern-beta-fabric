@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api;
+package com.bespectacled.modernbeta.api.world.biome;
 
 import net.minecraft.nbt.NbtCompound;
 

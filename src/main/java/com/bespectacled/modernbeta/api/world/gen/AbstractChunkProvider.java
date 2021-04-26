@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api;
+package com.bespectacled.modernbeta.api.world.gen;
 
 import java.util.function.Supplier;
 

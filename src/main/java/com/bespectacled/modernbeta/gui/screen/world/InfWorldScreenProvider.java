@@ -1,10 +1,10 @@
-package com.bespectacled.modernbeta.gui.world;
+package com.bespectacled.modernbeta.gui.screen.world;
 
 import java.util.function.BiConsumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractWorldScreenProvider;
-import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
+import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.gui.TextOption;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.CyclingOption;
@@ -33,7 +33,7 @@ public class InfWorldScreenProvider extends AbstractWorldScreenProvider {
     protected void init() {
         super.init();
         
-        if (!this.biomeType.equals(BuiltInBiomeType.SINGLE.name)) {
+        if (!this.biomeType.equals(BuiltInTypes.Biome.SINGLE.name)) {
             buttonList.addSingleOptionEntry(
                 CyclingOption.create("createWorld.customize.inf.generateOceans",
                 (gameOptions) -> { return this.generateOceans; }, 

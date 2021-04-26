@@ -1,8 +1,8 @@
-package com.bespectacled.modernbeta.gui.world;
+package com.bespectacled.modernbeta.gui.screen.world;
 
 import java.util.function.BiConsumer;
 
-import com.bespectacled.modernbeta.api.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
 import com.bespectacled.modernbeta.gui.TextOption;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;

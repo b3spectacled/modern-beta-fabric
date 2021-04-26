@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.AbstractBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeLayer;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaOceanLayer;
 

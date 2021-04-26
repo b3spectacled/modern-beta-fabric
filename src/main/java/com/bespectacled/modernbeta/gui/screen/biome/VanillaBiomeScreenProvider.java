@@ -1,9 +1,9 @@
-package com.bespectacled.modernbeta.gui.biome;
+package com.bespectacled.modernbeta.gui.screen.biome;
 
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
