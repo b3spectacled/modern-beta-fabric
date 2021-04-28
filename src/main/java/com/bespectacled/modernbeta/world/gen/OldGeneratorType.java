@@ -3,14 +3,11 @@ package com.bespectacled.modernbeta.world.gen;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry;
-import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry.BuiltInChunkSettingsType;
-import com.bespectacled.modernbeta.api.registry.WorldProviderRegistry;
+import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
+import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.mixin.client.MixinMoreOptionsDialogInvoker;
-import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
-import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
-import com.bespectacled.modernbeta.api.WorldProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.google.common.collect.ImmutableMap;
@@ -51,7 +48,7 @@ public class OldGeneratorType {
         Registry<ChunkGeneratorSettings> registryChunkGenSettings = registryManager.<ChunkGeneratorSettings>get(Registry.NOISE_SETTINGS_WORLDGEN);
         Registry<Biome> registryBiome = registryManager.<Biome>get(Registry.BIOME_KEY);
         
-        Optional<ChunkGeneratorSettings> chunkGenSettings = registryChunkGenSettings.getOrEmpty(new Identifier(WorldProviderRegistry.get(chunkProviderType).getChunkGenSettings()));
+        Optional<ChunkGeneratorSettings> chunkGenSettings = registryChunkGenSettings.getOrEmpty(new Identifier(ProviderRegistries.WORLD.get(chunkProviderType).getChunkGenSettings()));
         Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = chunkGenSettings.isPresent() ?
             () -> chunkGenSettings.get() :
             () -> registryChunkGenSettings.getOrThrow(ChunkGeneratorSettings.OVERWORLD);
@@ -79,14 +76,14 @@ public class OldGeneratorType {
             @Override
             protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> registryChunkGenSettings, long seed) {
                 Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = () -> 
-                    registryChunkGenSettings.get(new Identifier(WorldProviderRegistry.get(BuiltInChunkType.BETA.name).getChunkGenSettings()));
+                    registryChunkGenSettings.get(new Identifier(ProviderRegistries.WORLD.get(BuiltInTypes.Chunk.BETA.name).getChunkGenSettings()));
                 
                 CompoundTag biomeProviderSettings = BiomeProviderSettings.createBiomeSettings(
-                    BuiltInBiomeType.BETA.name,
-                    WorldProviderRegistry.get(BuiltInChunkType.BETA.name).getDefaultBiome()
+                    BuiltInTypes.Biome.BETA.name,
+                    ProviderRegistries.WORLD.get(BuiltInTypes.Chunk.BETA.name).getDefaultBiome()
                 );
                 
-                CompoundTag chunkProviderSettings = ChunkProviderSettingsRegistry.get(BuiltInChunkSettingsType.BETA.name).get();
+                CompoundTag chunkProviderSettings = ProviderRegistries.CHUNK_SETTINGS.get(BuiltInTypes.Chunk.BETA.name).get();
                 
                 OldChunkGeneratorSettings settings = new OldChunkGeneratorSettings(chunkGenSettingsSupplier.get(), chunkProviderSettings);
                 
@@ -111,16 +108,16 @@ public class OldGeneratorType {
                         CompoundTag biomeSettings = biomeSource instanceof OldBiomeSource ? 
                             (new CompoundTag()).copyFrom(((OldBiomeSource)biomeSource).getProviderSettings()) : 
                             BiomeProviderSettings.createBiomeSettings(
-                                BuiltInBiomeType.BETA.name,
-                                WorldProviderRegistry.get(BuiltInChunkType.BETA.name).getDefaultBiome()
+                                BuiltInTypes.Biome.BETA.name,
+                                ProviderRegistries.WORLD.get(BuiltInTypes.Chunk.BETA.name).getDefaultBiome()
                             );
                         
                         CompoundTag chunkSettings = chunkGenerator instanceof OldChunkGenerator ?
                             (new CompoundTag()).copyFrom(((OldChunkGenerator)chunkGenerator).getProviderSettings()) :
-                            ChunkProviderSettingsRegistry.get(BuiltInChunkSettingsType.BETA.name).get();
+                                ProviderRegistries.CHUNK_SETTINGS.get(BuiltInTypes.Chunk.BETA.name).get();
                         
                         String chunkProviderType = chunkSettings.getString("worldType");
-                        WorldProvider worldProvider = WorldProviderRegistry.get(chunkProviderType);
+                        WorldProvider worldProvider = ProviderRegistries.WORLD.get(chunkProviderType);
                         
                         return worldProvider.createLevelScreen(
                             screen,

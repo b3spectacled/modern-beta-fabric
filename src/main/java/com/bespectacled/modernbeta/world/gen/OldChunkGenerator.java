@@ -1,37 +1,21 @@
 package com.bespectacled.modernbeta.world.gen;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.BitSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractChunkProvider;
-import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry;
-import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry;
-import com.bespectacled.modernbeta.api.registry.WorldProviderRegistry;
-import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
-import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
-import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry.BuiltInChunkSettingsType;
+import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
+import com.bespectacled.modernbeta.api.world.gen.AbstractChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
+import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.feature.OldFeatures;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.entity.SpawnGroup;
@@ -42,7 +26,6 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
@@ -94,10 +77,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.chunkProviderSettings = settings.providerSettings;
         this.settings = settings;
         
-        this.chunkProviderType = ChunkProviderRegistry.getChunkProviderType(settings.providerSettings);
-        this.chunkProvider = ChunkProviderRegistry.get(this.chunkProviderType).apply(
+        this.chunkProviderType = NBTUtil.readString("worldType", settings.providerSettings);
+        this.chunkProvider = ProviderRegistries.CHUNK.get(this.chunkProviderType).apply(
             seed, 
-            this.biomeSource.getBiomeProvider(), 
+            this, 
             () -> settings.chunkGenSettings, 
             settings.providerSettings
         );
@@ -328,8 +311,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return new OldChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings);
     }
     
-    public String getChunkProviderType() {
-        return this.chunkProviderType;
+    public boolean isProviderInstanceOf(Class<?> c) {
+        return c.isInstance(this.chunkProvider);
     }
     
     public AbstractChunkProvider getChunkProvider() {
@@ -340,7 +323,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.chunkProviderSettings;
     }
     
-    
+    /*
     public static void export() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Path dir = Paths.get("..\\src\\main\\resources\\data\\modern_beta\\dimension");
@@ -360,4 +343,5 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             e.printStackTrace();
         }
     }
+    */
 }

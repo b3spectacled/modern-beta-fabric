@@ -1,18 +1,16 @@
-package com.bespectacled.modernbeta.api;
+package com.bespectacled.modernbeta.api.gui;
 
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry;
-import com.bespectacled.modernbeta.api.registry.BiomeScreenProviderRegistry;
-import com.bespectacled.modernbeta.api.registry.ChunkProviderSettingsRegistry;
-import com.bespectacled.modernbeta.api.registry.WorldProviderRegistry;
-import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
+import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
+import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.gui.CyclingOptionWrapper;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
-import com.bespectacled.modernbeta.gui.world.IndevWorldScreenProvider;
+import com.bespectacled.modernbeta.gui.screen.world.IndevWorldScreenProvider;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 
@@ -37,14 +35,14 @@ public abstract class AbstractWorldScreenProvider extends Screen {
     protected final CompoundTag chunkProviderSettings;
     protected final BiConsumer<CompoundTag, CompoundTag> consumer;
     
-    protected final WorldProvider worldProvider;
+    protected final String worldProvider;
     
     protected String biomeType;
     protected String caveBiomeType;
     protected String singleBiome;
     
     protected ButtonListWidget buttonList;
-    protected ScreenButtonOption biomeOption;
+    protected ScreenButtonOption biomeSettingsOption;
     
     public AbstractWorldScreenProvider(
         CreateWorldScreen parent, 
@@ -61,7 +59,7 @@ public abstract class AbstractWorldScreenProvider extends Screen {
         this.chunkProviderSettings = chunkProviderSettings;
         this.consumer = consumer;
         
-        this.worldProvider = WorldProviderRegistry.get(this.chunkProviderSettings.getString("worldType"));
+        this.worldProvider = this.chunkProviderSettings.getString("worldType");
         
         this.biomeType = this.biomeProviderSettings.getString("biomeType");
         this.caveBiomeType = this.biomeProviderSettings.getString("caveBiomeType");
@@ -91,17 +89,17 @@ public abstract class AbstractWorldScreenProvider extends Screen {
             }
         ));
         
-        this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
-        
-        CyclingOptionWrapper<WorldProvider> worldProviderOption = new CyclingOptionWrapper<>(
+        CyclingOptionWrapper<String> worldProviderOption = new CyclingOptionWrapper<>(
             "createWorld.customize.worldType",
-            WorldProviderRegistry.getWorldProviders(),
+            ProviderRegistries.WORLD.getKeys().stream().collect(Collectors.toUnmodifiableList()),
             this.worldProvider,
             value -> {
-                CompoundTag newBiomeProviderSettings = BiomeProviderSettings.createBiomeSettings(value.getDefaultBiomeProvider(), value.getDefaultBiome());
-                CompoundTag newChunkProviderSettings = ChunkProviderSettingsRegistry.get(value.getChunkProviderSettings()).get();
+                WorldProvider worldProvider = ProviderRegistries.WORLD.get(value);
                 
-                this.client.openScreen(value.createLevelScreen(
+                CompoundTag newBiomeProviderSettings = BiomeProviderSettings.createBiomeSettings(worldProvider.getDefaultBiomeProvider(), worldProvider.getDefaultBiome());
+                CompoundTag newChunkProviderSettings = ProviderRegistries.CHUNK_SETTINGS.get(worldProvider.getChunkProviderSettings()).get();
+                
+                this.client.openScreen(worldProvider.createLevelScreen(
                     this.parent, 
                     this.registryManager,
                     newBiomeProviderSettings,
@@ -111,34 +109,24 @@ public abstract class AbstractWorldScreenProvider extends Screen {
             }
         );
         
-        this.buttonList.addSingleOptionEntry(
-            worldProviderOption.create()
-        );
-        
-        // Get biome type list, sans legacy types
-        List<String> biomeProviderTypes = BiomeProviderRegistry
-            .getBiomeProviderKeys()
-            .stream()
-            .filter(str -> !BiomeProviderRegistry.getLegacyTypes().contains(str))
-            .collect(Collectors.toList());
-        
-        Function<AbstractWorldScreenProvider, Screen> biomeScreenFunction = BiomeScreenProviderRegistry.get(this.biomeType);
+        Function<AbstractWorldScreenProvider, Screen> biomeScreenFunction = ProviderRegistries.BIOME_SCREEN.get(this.biomeType);
         Screen biomeScreen = biomeScreenFunction != null ? biomeScreenFunction.apply(this) : null;
         
-        this.biomeOption = new ScreenButtonOption(
-            this.biomeType.equals(BuiltInBiomeType.SINGLE.name) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
-            this.biomeType.equals(BuiltInBiomeType.SINGLE.name) ? GUIUtil.createTranslatableBiomeStringFromId(this.singleBiome) : "",
+        this.biomeSettingsOption = new ScreenButtonOption(
+            this.biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
+            this.biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? GUIUtil.createTranslatableBiomeStringFromId(this.singleBiome) : "",
             buttonWidget -> this.client.openScreen(biomeScreen)
         );
         
         CyclingOptionWrapper<String> biomeProviderOption = new CyclingOptionWrapper<>(
             "createWorld.customize.biomeType",
-            biomeProviderTypes,
+            ProviderRegistries.BIOME.getKeys().stream().collect(Collectors.toUnmodifiableList()),
             this.biomeType,
             value -> {
                 this.biomeType = value;
                 
-                String defaultBiome = this.worldProvider.getDefaultBiome();
+                WorldProvider worldProvider = ProviderRegistries.WORLD.get(this.worldProvider);
+                String defaultBiome = worldProvider.getDefaultBiome();
                 
                 // Change default biome if on Indev world type
                 if (this instanceof IndevWorldScreenProvider) {
@@ -151,7 +139,7 @@ public abstract class AbstractWorldScreenProvider extends Screen {
                 );
                 
                 this.client.openScreen(
-                    this.worldProvider.createLevelScreen(
+                    worldProvider.createLevelScreen(
                         this.parent, 
                         this.registryManager, 
                         newBiomeProviderSettings, 
@@ -161,7 +149,10 @@ public abstract class AbstractWorldScreenProvider extends Screen {
             }
         );
         
-        this.buttonList.addOptionEntry(biomeProviderOption.create(), this.biomeOption);
+        this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        
+        this.buttonList.addSingleOptionEntry(worldProviderOption.create());
+        this.buttonList.addOptionEntry(biomeProviderOption.create(), this.biomeSettingsOption);
         
         this.children.add(this.buttonList);
     }

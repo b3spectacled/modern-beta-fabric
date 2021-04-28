@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
-import com.bespectacled.modernbeta.util.MutableClientWorld;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.world.ClientWorld;
@@ -20,7 +19,6 @@ public class MixinBackgroundRenderer {
     
     @Unique private static ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
     @Unique private static int capturedRenderDistance = 16;
-    @Unique private static ClientWorld clientWorld = null;
     
     @ModifyVariable(
         method = "render",
@@ -34,10 +32,6 @@ public class MixinBackgroundRenderer {
     private static void captureVars(Camera camera, float tickDelta, ClientWorld world, int renderDistance, float skyDarkness, CallbackInfo info) {
         if (capturedRenderDistance != renderDistance)
             capturedRenderDistance = renderDistance;
-        
-        if (!world.equals(clientWorld)) {
-            clientWorld = world;
-        }
     }
     
     @ModifyVariable(
@@ -48,7 +42,7 @@ public class MixinBackgroundRenderer {
     private static float modifyFogModifier(float weighting) {
         // Old fog formula with old render distance: weighting = 1.0F / (float)(4 - renderDistance) 
         // where renderDistance is 0-3, 0 being 'Far' and 3 being 'Short'
-        if (BETA_CONFIG.rendering_config.renderBetaSkyColor && MutableClientWorld.inject(clientWorld).usesBetaColors()) {
+        if (BETA_CONFIG.rendering_config.renderOldFogColor) {
             int clampedDistance = MathHelper.clamp(capturedRenderDistance, 0, 16);
             clampedDistance = (int)((16 - clampedDistance) / (float)16 * 3); 
             

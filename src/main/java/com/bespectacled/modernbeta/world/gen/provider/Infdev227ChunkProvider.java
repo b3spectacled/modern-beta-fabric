@@ -3,8 +3,8 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.AbstractChunkProvider;
+import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
@@ -24,11 +24,12 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class Infdev227ChunkProvider extends AbstractChunkProvider {
-    private boolean generateInfdevPyramid = true;
-    private boolean generateInfdevWall = true;
+public class Infdev227ChunkProvider extends ChunkProvider {
+    private final boolean generateInfdevPyramid;
+    private final boolean generateInfdevWall;
 
     private final PerlinOctaveNoise noiseOctavesA;
     private final PerlinOctaveNoise noiseOctavesB;
@@ -38,9 +39,9 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
     private final PerlinOctaveNoise noiseOctavesF;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    public Infdev227ChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, CompoundTag providerSettings) {
+    public Infdev227ChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, CompoundTag providerSettings) {
         //super(seed, settings);
-        super(seed, 128, 65, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
+        super(seed, chunkGenerator, generatorSettings, providerSettings, 128, 64, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
         // Noise Generators
         noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true); 
@@ -54,10 +55,13 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
         new PerlinOctaveNoise(RAND, 3, true);
         forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
         
-        if (this.providerSettings.contains("generateInfdevPyramid")) 
-            this.generateInfdevPyramid = this.providerSettings.getBoolean("generateInfdevPyramid");
-        if (this.providerSettings.contains("generateInfdevWall")) 
-            this.generateInfdevWall = this.providerSettings.getBoolean("generateInfdevWall");
+        this.generateInfdevPyramid = this.providerSettings.contains("generateInfdevPyramid") ?
+            this.providerSettings.getBoolean("generateInfdevPyramid") :
+            ModernBeta.BETA_CONFIG.generation_config.generateInfdevPyramid;
+
+        this.generateInfdevWall = this.providerSettings.contains("generateInfdevWall") ?
+            this.providerSettings.getBoolean("generateInfdevWall") :
+            ModernBeta.BETA_CONFIG.generation_config.generateInfdevWall;
         
         setForestOctaves(forestNoiseOctaves);
     }
@@ -133,7 +137,8 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
         return null;
     }
   
-    private void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
+    @Override
+    protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         Random rand = new Random();
         Random chunkRand = this.createChunkRand(chunk.getPos().x, chunk.getPos().z);
         
@@ -250,7 +255,8 @@ public class Infdev227ChunkProvider extends AbstractChunkProvider {
         }
     }
     
-    private int sampleHeightmap(int sampleX, int sampleZ) {
+    @Override
+    protected int sampleHeightmap(int sampleX, int sampleZ) {
         int startX = (sampleX >> 4) << 4;
         int startZ = (sampleZ >> 4) << 4;
         

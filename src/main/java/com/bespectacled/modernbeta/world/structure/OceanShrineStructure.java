@@ -67,6 +67,6 @@ private static final List<SpawnSettings.SpawnEntry> MONSTER_SPAWNS;
     }
     
     static {
-        MONSTER_SPAWNS = ImmutableList.<SpawnSettings.SpawnEntry>of(new SpawnSettings.SpawnEntry(EntityType.GUARDIAN, 1, 2, 4));
+        MONSTER_SPAWNS = ImmutableList.<SpawnSettings.SpawnEntry>of(new SpawnSettings.SpawnEntry(EntityType.GUARDIAN, 1, 0, 1));
     }
 }

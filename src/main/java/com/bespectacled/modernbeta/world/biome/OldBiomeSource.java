@@ -1,16 +1,15 @@
 package com.bespectacled.modernbeta.world.biome;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.IBiomeResolver;
-import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry;
-import com.bespectacled.modernbeta.api.registry.BiomeProviderRegistry.BuiltInBiomeType;
+import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
+import com.bespectacled.modernbeta.api.world.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
+import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.world.biome.classic.ClassicBiomes;
 import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
 import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevTheme;
-import com.bespectacled.modernbeta.world.biome.provider.*;
-
+import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.registry.RegistryLookupCodec;
@@ -65,8 +64,8 @@ public class OldBiomeSource extends BiomeSource {
     }
     
     public Biome getBiomeForSurfaceGen(ChunkRegion region, BlockPos pos) {
-        if (this.biomeProvider instanceof IBiomeResolver)
-            return ((IBiomeResolver)this.biomeProvider).getBiome(this.biomeRegistry, pos.getX(), pos.getY(), pos.getZ());
+        if (this.biomeProvider instanceof BiomeResolver)
+            return ((BiomeResolver)this.biomeProvider).getBiome(this.biomeRegistry, pos.getX(), pos.getY(), pos.getZ());
         
         return region.getBiome(pos);
     }
@@ -75,16 +74,8 @@ public class OldBiomeSource extends BiomeSource {
         return this.biomeRegistry;
     }
 
-    public boolean isVanilla() {
-        return this.biomeProvider instanceof VanillaBiomeProvider;
-    }
-    
-    public boolean isBeta() {
-        return this.biomeProvider instanceof BetaBiomeProvider;
-    }
-    
-    public boolean isSingle() {
-        return this.biomeProvider instanceof SingleBiomeProvider;
+    public boolean isProviderInstanceOf(Class<?> c) {
+        return c.isInstance(this.biomeProvider);
     }
     
     public AbstractBiomeProvider getBiomeProvider() {
@@ -133,24 +124,24 @@ public class OldBiomeSource extends BiomeSource {
         
         // Load legacy Classic settings if present
         if (oldWorldType.equals("alpha")) {
-            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.name) || oldBiomeType.equals(BuiltInBiomeType.PLUS.name)) 
+            if (oldBiomeType.equals("classic") || oldBiomeType.equals("plus")) 
                 biomeId = ClassicBiomes.ALPHA_ID;
-            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.name)) 
+            if (oldBiomeType.equals("winter")) 
                 biomeId = ClassicBiomes.ALPHA_WINTER_ID;
         } else if (oldWorldType.equals("infdev")) {
-            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.name) || oldBiomeType.equals(BuiltInBiomeType.PLUS.name)) 
+            if (oldBiomeType.equals("classic") || oldBiomeType.equals("plus")) 
                 biomeId = ClassicBiomes.INFDEV_415_ID;
-            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.name)) 
+            if (oldBiomeType.equals("winter")) 
                 biomeId = ClassicBiomes.INFDEV_415_WINTER_ID;
         } else if (oldWorldType.equals("infdev_old")) {
-            if (oldBiomeType.equals(BuiltInBiomeType.CLASSIC.name) || oldBiomeType.equals(BuiltInBiomeType.PLUS.name)) 
+            if (oldBiomeType.equals("classic") || oldBiomeType.equals("plus")) 
                 biomeId = ClassicBiomes.INFDEV_227_ID;
-            if (oldBiomeType.equals(BuiltInBiomeType.WINTER.name)) 
+            if (oldBiomeType.equals("winter")) 
                 biomeId = ClassicBiomes.INFDEV_227_WINTER_ID;
         }
         
         // Load legacy Sky settings if present
-        if (oldBiomeType.equals(BuiltInBiomeType.SKY.name)) 
+        if (oldBiomeType.equals("sky")) 
             biomeId = BetaBiomes.SKY_ID;
         
         if (biomeId != null) {
@@ -158,6 +149,6 @@ public class OldBiomeSource extends BiomeSource {
             return new SingleBiomeProvider(seed, settings);
         }
         
-        return BiomeProviderRegistry.get(BiomeProviderRegistry.getBiomeProviderType(settings)).apply(seed, settings);
+        return ProviderRegistries.BIOME.get(NBTUtil.readString("biomeType", settings)).apply(seed, settings);
     }
 }

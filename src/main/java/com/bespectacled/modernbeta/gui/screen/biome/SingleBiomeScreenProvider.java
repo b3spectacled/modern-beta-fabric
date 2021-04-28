@@ -1,6 +1,6 @@
-package com.bespectacled.modernbeta.gui.biome;
+package com.bespectacled.modernbeta.gui.screen.biome;
 
-import com.bespectacled.modernbeta.api.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.StringTag;

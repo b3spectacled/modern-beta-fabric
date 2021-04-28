@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.world.biome.*;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateSampler;
+import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
@@ -51,7 +52,7 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 mutableDown.set(mutable).move(Direction.DOWN, 1);
                 
                 double temp;
-                if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource && ((OldBiomeSource)biomeSource).isBeta()) {
+                if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource && ((OldBiomeSource)biomeSource).isProviderInstanceOf(BetaBiomeProvider.class)) {
                     temp = BetaClimateSampler.INSTANCE.sampleTemp(absX, absZ);  
                 } else {
                     temp = world.getBiome(mutable).getTemperature();

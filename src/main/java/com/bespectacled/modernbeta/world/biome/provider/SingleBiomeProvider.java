@@ -3,7 +3,8 @@ package com.bespectacled.modernbeta.world.biome.provider;
 import java.util.Arrays;
 import java.util.List;
 
-import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.AbstractBiomeProvider;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;

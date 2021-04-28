@@ -1,10 +1,10 @@
-package com.bespectacled.modernbeta.gui.biome;
+package com.bespectacled.modernbeta.gui.screen.biome;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.api.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
 import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.GUIUtil;

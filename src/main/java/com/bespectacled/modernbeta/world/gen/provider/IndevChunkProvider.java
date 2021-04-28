@@ -8,8 +8,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -40,9 +39,10 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class IndevChunkProvider extends AbstractChunkProvider {
+public class IndevChunkProvider extends ChunkProvider {
     private PerlinOctaveNoiseCombined minHeightNoiseOctaves;
     private PerlinOctaveNoiseCombined maxHeightNoiseOctaves;
     
@@ -83,19 +83,36 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     
     private String phase;
     
-    public IndevChunkProvider(long seed, AbstractBiomeProvider biomeProvider, Supplier<ChunkGeneratorSettings> generatorSettings, CompoundTag providerSettings) {
+    public IndevChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, CompoundTag providerSettings) {
         //super(seed, settings);
-        super(seed, 256, 64, 0, -10, 2, 1, 1.0, 1.0, 80, 160, 0, 0, 0, 0, 0, 0, BlockStates.STONE, BlockStates.WATER, biomeProvider, generatorSettings, providerSettings);
+        super(seed, chunkGenerator, generatorSettings, providerSettings, 256, 64, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
-        this.levelTheme = this.providerSettings.contains("levelTheme") ? IndevTheme.fromName(this.providerSettings.getString("levelTheme")) : IndevTheme.NORMAL;
-        this.levelType = this.providerSettings.contains("levelType") ? IndevType.fromName(this.providerSettings.getString("levelType")) : IndevType.ISLAND;
-        this.fluidBlock = this.isFloating() ? BlockStates.AIR : (this.isHell() ? BlockStates.LAVA : BlockStates.WATER);
+        this.levelTheme = this.providerSettings.contains("levelTheme") ? 
+            IndevTheme.fromName(this.providerSettings.getString("levelTheme")) : 
+            IndevTheme.fromName(ModernBeta.BETA_CONFIG.generation_config.indevLevelTheme);
+        
+        this.levelType = this.providerSettings.contains("levelType") ? 
+            IndevType.fromName(this.providerSettings.getString("levelType")) : 
+            IndevType.fromName(ModernBeta.BETA_CONFIG.generation_config.indevLevelType);
+        
+        this.width = this.providerSettings.contains("levelWidth") ? 
+            this.providerSettings.getInt("levelWidth") : 
+            ModernBeta.BETA_CONFIG.generation_config.indevLevelWidth;
+        
+        this.length = this.providerSettings.contains("levelLength") ? 
+            this.providerSettings.getInt("levelLength") : 
+            ModernBeta.BETA_CONFIG.generation_config.indevLevelLength;
+        
+        this.height = this.providerSettings.contains("levelHeight") ? 
+            this.providerSettings.getInt("levelHeight") : 
+            ModernBeta.BETA_CONFIG.generation_config.indevLevelHeight;
+        
+        this.caveRadius = this.providerSettings.contains("caveRadius") ? 
+            this.providerSettings.getFloat("caveRadius") : 
+            ModernBeta.BETA_CONFIG.generation_config.indevCaveRadius;
+        
+        this.fluidBlock = this.isFloating() ? BlockStates.AIR : (this.isHell() ? BlockStates.LAVA : this.defaultFluid);
         this.topsoilBlock = this.isHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;
-        
-        this.width = this.providerSettings.contains("levelWidth") ? this.providerSettings.getInt("levelWidth") : 256;
-        this.length = this.providerSettings.contains("levelLength") ? this.providerSettings.getInt("levelLength") : 256;
-        this.height = this.providerSettings.contains("levelHeight") ? this.providerSettings.getInt("levelHeight") : 128;
-        this.caveRadius = this.providerSettings.contains("caveRadius") ? this.providerSettings.getFloat("caveRadius") : 1.0f;
         
         this.waterLevel = this.height / 2;
         this.layers = (this.levelType == IndevType.FLOATING) ? (this.height - 64) / 48 + 1 : 1;
@@ -116,7 +133,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
 
         if (this.inWorldBounds(pos.getStartX(), pos.getStartZ())) {
             this.pregenerateTerrainOrWait();
-            this.setTerrain(structureAccessor, chunk);
+            this.generateTerrain(chunk, structureAccessor);
      
         } else if (this.levelType != IndevType.FLOATING) {
             if (this.levelType == IndevType.ISLAND)
@@ -190,28 +207,14 @@ public class IndevChunkProvider extends AbstractChunkProvider {
     
     @Override
     public int getHeight(int x, int z, Type type) {
-        int height = this.height - 1;
-        
         x = x + this.width / 2;
         z = z + this.length / 2;
         
         if (x < 0 || x >= this.width || z < 0 || z >= this.length) return waterLevel;
         
         this.pregenerateTerrainOrWait();
-        
-        for (int y = this.height - 1; y >= 0; --y) {
-            Block someBlock = this.blockArr[x][y][z];
-            
-            if (!someBlock.equals(Blocks.AIR)) {
-                break;
-            }
-            
-            height = y;
-        }
-        
-        if (height <= this.waterLevel) height = this.waterLevel;
-         
-        return height;
+
+        return this.sampleHeightmap(x, z);
     }
     
     @Override
@@ -283,7 +286,8 @@ public class IndevChunkProvider extends AbstractChunkProvider {
         return this.levelTheme;
     }
     
-    private void setTerrain(StructureAccessor structureAccessor, Chunk chunk) {
+    @Override
+    protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         if (this.blockArr == null)
             throw new IllegalStateException("[Modern Beta] Indev chunk provider is trying to set terrain before level has been generated!");
         
@@ -346,6 +350,19 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                 }
             }
         }
+    }
+    
+    @Override
+    protected int sampleHeightmap(int sampleX, int sampleZ) {
+        for (int y = this.height - 1; y >= 0; --y) {
+            Block block = this.blockArr[sampleX][y][sampleZ];
+            
+            if (!block.equals(Blocks.AIR)) {
+                return y;
+            }
+        }
+        
+        return 0;
     }
     
     private void pregenerateTerrainOrWait() {
@@ -633,7 +650,7 @@ public class IndevChunkProvider extends AbstractChunkProvider {
                     if ((dx * dx + dy * dy * 2.0f + dz * dz) < radius * radius && inLevelBounds(x, y, z)) {
                         Block someBlock = blockArr[x][y][z];
                         
-                        if (someBlock == Blocks.STONE) {
+                        if (someBlock == this.defaultBlock.getBlock()) {
                             blockArr[x][y][z] = fillBlock;
                         }
                     }

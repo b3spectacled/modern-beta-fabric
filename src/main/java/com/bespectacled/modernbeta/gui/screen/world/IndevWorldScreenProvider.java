@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.gui.world;
+package com.bespectacled.modernbeta.gui.screen.world;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,8 +7,10 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.AbstractWorldScreenProvider;
-import com.bespectacled.modernbeta.api.registry.ChunkProviderRegistry.BuiltInChunkType;
+import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
+import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.gui.CyclingOptionWrapper;
 import com.bespectacled.modernbeta.world.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevTheme;
@@ -69,7 +71,7 @@ public class IndevWorldScreenProvider extends AbstractWorldScreenProvider {
             ModernBeta.BETA_CONFIG.generation_config.indevCaveRadius;
         
         this.chunkGenSettings = () -> 
-            this.registryManager.<ChunkGeneratorSettings>get(Registry.NOISE_SETTINGS_WORLDGEN).get(ModernBeta.createId(BuiltInChunkType.INDEV.name));
+            this.registryManager.<ChunkGeneratorSettings>get(Registry.NOISE_SETTINGS_WORLDGEN).get(ModernBeta.createId(BuiltInTypes.Chunk.INDEV.name));
     }
     
     @Override
@@ -88,12 +90,14 @@ public class IndevWorldScreenProvider extends AbstractWorldScreenProvider {
             indevThemes,
             this.levelTheme,
             value -> {
+                WorldProvider worldProvider = ProviderRegistries.WORLD.get(this.worldProvider);
+                
                 this.levelTheme = value;
                 this.chunkProviderSettings.putString("levelTheme", this.levelTheme.getName());
                 this.biomeProviderSettings.putString("singleBiome", this.levelTheme.getDefaultBiome().toString());
                 
                 this.client.openScreen(
-                    this.worldProvider.createLevelScreen(
+                    worldProvider.createLevelScreen(
                         this.parent, 
                         this.registryManager, 
                         this.biomeProviderSettings, 

@@ -28,7 +28,7 @@ public class OreClayFeature extends Feature<OreFeatureConfig> {
         
         BlockPos.Mutable mutablePos = new BlockPos.Mutable();
         
-        if(world.testBlockState(pos, state -> state.isOf(Blocks.WATER))) {
+        if(!world.testBlockState(pos, state -> state.isOf(Blocks.WATER))) {
             return false;
         }
         

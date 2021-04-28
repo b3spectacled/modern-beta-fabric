@@ -18,10 +18,15 @@ public class ModernBetaRenderingConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip(count = 3)
     public boolean renderBetaBiomeColor = true;
+    
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean renderOldFogColor = true;
 
     @ConfigEntry.Gui.Tooltip(count = 1)
     public boolean renderAlphaSunset = false;
     
     @ConfigEntry.Gui.Tooltip(count = 1)
     public boolean renderGameVersion = false;
+    
+    
 }

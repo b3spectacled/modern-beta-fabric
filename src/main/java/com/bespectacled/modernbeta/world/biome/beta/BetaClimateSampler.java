@@ -94,7 +94,7 @@ public enum BetaClimateSampler {
         
         public BiomeCache(BetaClimateSampler climateSampler) {
             this.climateSampler = climateSampler;
-            this.biomeCache = new Long2ObjectLinkedOpenHashMap<BiomeCacheChunk>(320, 0.25f);
+            this.biomeCache = new Long2ObjectLinkedOpenHashMap<BiomeCacheChunk>(384);
             this.lock = new ReentrantReadWriteLock();
         }
         
