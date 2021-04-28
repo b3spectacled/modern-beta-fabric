@@ -5,13 +5,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.NBTUtil;
-import com.bespectacled.modernbeta.world.biome.indev.IndevUtil;
-import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevTheme;
-import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevType;
+import com.bespectacled.modernbeta.world.biome.indev.IndevTheme;
+import com.bespectacled.modernbeta.world.biome.indev.IndevType;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.CyclingOption;
@@ -23,7 +22,7 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class IndevWorldScreenProvider extends AbstractWorldScreenProvider {
+public class IndevWorldScreenProvider extends WorldScreenProvider {
     private IndevType levelType;
     private IndevTheme levelTheme;
 
@@ -60,9 +59,6 @@ public class IndevWorldScreenProvider extends AbstractWorldScreenProvider {
     protected void init() {
         super.init();
         
-        // Get Indev Theme list, sans legacy themes
-        IndevTheme[] indevThemes = Arrays.stream(IndevTheme.values()).filter(theme -> IndevUtil.IndevTheme.getExclusions(theme)).toArray(IndevTheme[]::new);
-        
         int worldHeight = this.chunkGenSettings.get().getGenerationShapeConfig().getHeight();
         int minimumY = this.chunkGenSettings.get().getGenerationShapeConfig().getMinimumY();
         
@@ -71,7 +67,7 @@ public class IndevWorldScreenProvider extends AbstractWorldScreenProvider {
         this.buttonList.addSingleOptionEntry(
             CyclingOption.create(
                 "createWorld.customize.indev.levelTheme", 
-                indevThemes, 
+                Arrays.stream(IndevTheme.values()).toArray(IndevTheme[]::new), 
                 (value) -> new TranslatableText("createWorld.customize.indev.levelTheme." + value.getName()), 
                 (gameOptions) -> { return this.levelTheme; }, 
                 (gameOptions, option, value) -> {

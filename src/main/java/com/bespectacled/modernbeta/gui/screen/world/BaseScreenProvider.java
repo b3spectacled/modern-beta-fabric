@@ -2,16 +2,16 @@ package com.bespectacled.modernbeta.gui.screen.world;
 
 import java.util.function.BiConsumer;
 
-import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
 import com.bespectacled.modernbeta.gui.TextOption;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class SkylandsWorldScreenProvider extends AbstractWorldScreenProvider {
+public class BaseScreenProvider extends WorldScreenProvider {
     
-    public SkylandsWorldScreenProvider(
+    public BaseScreenProvider(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings, 

@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.gui.screen.world;
 import java.util.function.BiConsumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.NBTUtil;
@@ -13,7 +13,7 @@ import net.minecraft.client.option.CyclingOption;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class InfWorldScreenProvider extends AbstractWorldScreenProvider {
+public class InfWorldScreenProvider extends WorldScreenProvider {
     
     private boolean generateOceans;
     

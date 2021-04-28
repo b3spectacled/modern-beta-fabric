@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.world.biome.provider;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.bespectacled.modernbeta.api.world.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMapCustomizable;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateSampler;
@@ -14,7 +14,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
-public class BetaBiomeProvider extends AbstractBiomeProvider implements BiomeResolver {
+public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver {
     private static final double[] TEMP_HUMID_POINT = new double[2];
     private final BetaClimateMapCustomizable betaClimateMap;
     

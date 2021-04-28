@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.world.biome.provider;
 import java.util.Arrays;
 import java.util.List;
 
-import com.bespectacled.modernbeta.api.world.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.util.NBTUtil;
 
 import net.minecraft.nbt.NbtCompound;
@@ -12,7 +12,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
-public class SingleBiomeProvider extends AbstractBiomeProvider {
+public class SingleBiomeProvider extends BiomeProvider {
     private final Identifier biomeId;
     
     public SingleBiomeProvider(long seed, NbtCompound settings) {

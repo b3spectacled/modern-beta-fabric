@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.world.biome;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
-import com.bespectacled.modernbeta.api.world.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.mojang.serialization.Codec;
@@ -31,7 +31,7 @@ public class OldBiomeSource extends BiomeSource {
     private final Registry<Biome> biomeRegistry;
     private final NbtCompound biomeProviderSettings;
     
-    private final AbstractBiomeProvider biomeProvider;
+    private final BiomeProvider biomeProvider;
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, NbtCompound settings) {
         super(
@@ -72,7 +72,7 @@ public class OldBiomeSource extends BiomeSource {
         return c.isInstance(this.biomeProvider);
     }
     
-    public AbstractBiomeProvider getBiomeProvider() {
+    public BiomeProvider getBiomeProvider() {
         return this.biomeProvider;
     }
     

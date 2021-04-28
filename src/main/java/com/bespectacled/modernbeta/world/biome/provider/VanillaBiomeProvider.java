@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeLayer;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaOceanLayer;
@@ -17,7 +17,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 
-public class VanillaBiomeProvider extends AbstractBiomeProvider {
+public class VanillaBiomeProvider extends BiomeProvider {
     private final int vanillaBiomeSize;
     private final int vanillaOceanBiomeSize;
     

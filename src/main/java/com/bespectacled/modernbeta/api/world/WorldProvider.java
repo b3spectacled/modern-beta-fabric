@@ -3,9 +3,9 @@ package com.bespectacled.modernbeta.api.world;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
-import com.bespectacled.modernbeta.api.world.gen.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtCompound;
@@ -71,11 +71,11 @@ public final class WorldProvider {
         return new Identifier(this.defaultBiome);
     }
     
-    public AbstractChunkProvider createChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+    public ChunkProvider createChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         return ProviderRegistries.CHUNK.get(this.chunkProvider).apply(seed, chunkGenerator, generatorSettings, providerSettings);
     }
     
-    public AbstractWorldScreenProvider createLevelScreen(
+    public WorldScreenProvider createLevelScreen(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings,

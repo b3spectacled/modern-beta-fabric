@@ -1,225 +1,111 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
-import java.util.Random;
 import java.util.function.Supplier;
-import java.util.stream.IntStream;
 
-import com.bespectacled.modernbeta.compat.CompatBiomes;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
-import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.world.decorator.OldDecorators;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.noise.NoiseSampler;
-import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
-import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.BlockSource;
-import net.minecraft.world.gen.ChunkRandom;
-import net.minecraft.world.gen.DefaultBlockSource;
+import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public abstract class ChunkProvider extends AbstractChunkProvider {
-    protected static final Random RAND = new Random();
+public abstract class ChunkProvider {
+    protected final long seed;
+    protected final ChunkGenerator chunkGenerator;
+    protected final Supplier<ChunkGeneratorSettings> generatorSettings;
+    protected final NbtCompound providerSettings;
     
-    protected final int minY;
-    protected final int worldHeight;
-    protected final int worldTopY;
-    protected final int seaLevel;
-    protected final int minSurfaceY;
-    
-    protected final int bedrockFloor;
-    protected final int bedrockCeiling;
-    
-    protected final BlockState defaultBlock;
-    protected final BlockState defaultFluid;
-    
-    protected final NoiseSampler surfaceDepthNoise;
-
-    protected BlockSource blockSource;
-
-    public ChunkProvider(
-        long seed, 
-        ChunkGenerator chunkGenerator,    
-        Supplier<ChunkGeneratorSettings> generatorSettings, 
-        NbtCompound providerSettings
-    ) {
-        this(
-            seed, 
-            chunkGenerator, 
-            generatorSettings, 
-            providerSettings,
-            generatorSettings.get().getGenerationShapeConfig().getMinimumY(),
-            generatorSettings.get().getGenerationShapeConfig().getHeight(),
-            generatorSettings.get().getSeaLevel(),
-            generatorSettings.get().getMinSurfaceLevel(),
-            generatorSettings.get().getBedrockFloorY(),
-            generatorSettings.get().getBedrockCeilingY(),
-            generatorSettings.get().getDefaultBlock(),
-            generatorSettings.get().getDefaultBlock()
-        );
-    }
-    
-    public ChunkProvider(
-        long seed,
-        ChunkGenerator chunkGenerator, 
-        Supplier<ChunkGeneratorSettings> generatorSettings,
-        NbtCompound providerSettings,
-        int minY,
-        int worldHeight,
-        int seaLevel,
-        int minSurfaceY,
-        int bedrockFloor,
-        int bedrockCeiling,
-        BlockState defaultBlock,
-        BlockState defaultFluid
-    ) {
-        super(seed, chunkGenerator, generatorSettings, providerSettings);
-        
-        this.minY = minY;
-        this.worldHeight = worldHeight;
-        this.worldTopY = worldHeight + minY;
-        this.seaLevel = seaLevel;
-        this.minSurfaceY = minSurfaceY;
-        this.bedrockFloor = bedrockFloor;
-        this.bedrockCeiling = bedrockCeiling;
-
-        this.defaultBlock = defaultBlock;
-        this.defaultFluid = defaultFluid;
-        
-        this.blockSource = new DefaultBlockSource(BlockStates.STONE);
-        
-        // Surface noise sampler
-        this.surfaceDepthNoise = this.generatorSettings.get().getGenerationShapeConfig().hasSimplexSurfaceNoise() ? 
-            new OctaveSimplexNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0)) : 
-            new OctavePerlinNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
-        
-        RAND.setSeed(seed);
-        
-        // Handle bad height values
-        if (this.minY > this.worldHeight)
-            throw new IllegalStateException("[Modern Beta] Minimum height cannot be greater than world height!");
-    }
-    
-    protected abstract void generateTerrain(Chunk chunk, StructureAccessor structureAccessor);
-    protected abstract int sampleHeightmap(int sampleX, int sampleZ);
-    
-    public int getWorldHeight() {
-        return this.worldHeight;
-    }
-    
-    public int getMinimumY() {
-        return this.minY;
-    }
-    
-    public int getSeaLevel() {
-        return this.seaLevel;
+    /**
+     * Construct a Modern Beta chunk provider with seed and settings.
+     * 
+     * @param seed Seed to initialize terrain generators. 
+     * @param chunkGenerator Parent vanilla chunk generator by which this chunk provider will be called.  Accessed for biome source primarily.
+     * @param generatorSettings Vanilla settings used to control various terrain and noise settings.
+     * @param providerSettings NbtCompound for additional settings not part of vanilla generator settings.
+     */
+    public ChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+        this.seed = seed;
+        this.chunkGenerator = chunkGenerator;
+        this.generatorSettings = generatorSettings;
+        this.providerSettings = providerSettings;
     }
     
     /**
-     * Get a new ChunkRandom object initialized with chunk coordinates for seed, for surface generation.
+     * Generates base terrain for given chunk and returns it.
+     * 
+     * @param structureAccessor
+     * @param chunk
+     * @param biomeSource
+     * 
+     * @return A completed chunk.
+     */
+    public abstract Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk);
+    
+    /**
+     * Generates biome-specific surface for given chunk.
+     * 
+     * @param region
+     * @param chunk
+     * @param biomeSource
+     */
+    public abstract void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource);
+    
+    /**
+     * Gets or calculates the height of the topmost block at given x/z coordinates.
+     * 
+     * @param x x-coordinate in block coordinates. 
+     * @param z z-coordinate in block coordinates.
+     * @param type The heightmap type
+     * 
+     * @return The y-coordinate of top block at x/z.
+     */
+    public abstract int getHeight(int x, int z, Heightmap.Type type);
+    
+    /**
+     * Determines whether to skip the chunk for some chunk generation step, depending on the x/z chunk coordinates.
      * 
      * @param chunkX x-coordinate in chunk coordinates.
      * @param chunkZ z-coordinate in chunk coordinates.
+     * @param chunkStatus Chunk generation step used for skip context.
      * 
-     * @return New ChunkRandom object initialized with chunk coordinates for seed.
+     * @return Whether to skip the chunk.
      */
-    protected ChunkRandom createChunkRand(int chunkX, int chunkZ) {
-        ChunkRandom chunkRand = new ChunkRandom();
-        chunkRand.setTerrainSeed(chunkX, chunkZ);
-        
-        return chunkRand;
-    }
-    
-    /**
-     * Sets forest density using PerlinOctaveNoise object created using world seed.
-     * 
-     * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
-     */
-    protected void setForestOctaves(PerlinOctaveNoise forestOctaves) {
-        OldDecorators.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestOctaves);
-        OldDecorators.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestOctaves);
-        OldDecorators.COUNT_INFDEV_NOISE_DECORATOR.setOctaves(forestOctaves);
-    }
-    
-    /**
-     * Use a biome-specific surface builder, at a given x/z-coordinate and topmost y-coordinate.
-     * Valid biomes are checked on per-biome basis using identifier from BIOMES_WITH_CUSTOM_SURFACES set. 
-     * 
-     * @param biome Biome with surface builder to use.
-     * @param biomeId Biome identifier, used to check if it uses valid custom surface builder.
-     * @param region
-     * @param chunk
-     * @param random
-     * @param mutable Mutable BlockPos at block coordinates position.
-     * 
-     * @return True if biome is included in valid biomes set and has run surface builder. False if not included and not run.
-     */
-    protected boolean useCustomSurfaceBuilder(Biome biome, Identifier biomeId, ChunkRegion region, Chunk chunk, ChunkRandom random, BlockPos.Mutable mutable) {
-        int x = mutable.getX();
-        int y = mutable.getY();
-        int z = mutable.getZ();
-        
-        if (CompatBiomes.hasCustomSurface(biomeId)) {
-            double surfaceNoise = this.surfaceDepthNoise.sample(x * 0.0625, z * 0.0625, 0.0625, (x & 0xF) * 0.0625) * 15.0;
-            biome.buildSurface(
-                random, 
-                chunk, 
-                x, z, y, 
-                surfaceNoise, 
-                this.defaultBlock, 
-                this.defaultFluid,
-                this.seaLevel, 
-                this.minSurfaceY,
-                region.getSeed()
-            );
-            
-            return true;
-        }
-        
+    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
         return false;
     }
     
+    /**
+     * @return Total world height including minimum y coordinate. 
+     */
+    public int getWorldHeight() {
+        return 256;
+    }
     
     /**
-     * Gets blockstate at block coordinates given block and default fluid block.
-     * Simulates a noise density for the purpose of masking terrain around structures.
-     * Used for 2D noise terrain generators (i.e. Infdev 20100227 and Indev terrain generators).
-     * 
-     * @param x x-coordinate in absolute block coordinates.
-     * @param y y-coordinate in absolute block coordinates.
-     * @param z z-coordinate in absolute block coordinates.
-     * @param blockToSet Block to get blockstate for.
-     * @oaran defaultFluid Default fluid block.
-     * 
-     * @return A blockstate.
+     * @return Minimum Y coordinate.
      */
-    protected BlockState getBlockState(StructureWeightSampler weightSampler, int x, int y, int z, Block blockToSet, Block defaultFluid) {
-        boolean isFluid = blockToSet == Blocks.AIR || blockToSet == defaultFluid;
-        double simDensity = isFluid ? -50D : 50D;
-        
-        double clampedDensity = MathHelper.clamp(simDensity / 200.0, -1.0, 1.0);
-        clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
-        clampedDensity += weightSampler.getWeight(x, y, z);
-        
-        BlockState blockState = blockToSet.getDefaultState();
-        if (clampedDensity > 0.0 && isFluid) {
-            blockState = this.blockSource.sample(x, y, z);
-        } else if (clampedDensity < 0.0 && !isFluid) {
-            blockState = BlockStates.AIR;
-        }
-
-        return blockState;
+    public int getMinimumY() {
+        return 0;
+    }
+    
+    /**
+     * @return World sea level.
+     */
+    public int getSeaLevel() {
+        return 64;
+    }
+    
+    /**
+     * Get the PerlinOctaveNoise object used for beach surface generation for determining beach spawn location.
+     * 
+     * @return PerlinOctaveNoise object used for beach surface generation.
+     */
+    public PerlinOctaveNoise getBeachNoise() {
+        return null;
     }
 }

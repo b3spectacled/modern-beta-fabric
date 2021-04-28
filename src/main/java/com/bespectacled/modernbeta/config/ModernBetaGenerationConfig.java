@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.config;
 
-import com.bespectacled.modernbeta.world.biome.indev.IndevUtil;
+import com.bespectacled.modernbeta.world.biome.indev.IndevTheme;
+import com.bespectacled.modernbeta.world.biome.indev.IndevType;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -36,10 +37,10 @@ public class ModernBetaGenerationConfig implements ConfigData {
     /* Indev Generation */
     
     @ConfigEntry.Gui.Excluded
-    public String indevLevelType = IndevUtil.IndevType.ISLAND.getName();
+    public String indevLevelType = IndevType.ISLAND.getName();
     
     @ConfigEntry.Gui.Excluded
-    public String indevLevelTheme = IndevUtil.IndevTheme.NORMAL.getName();
+    public String indevLevelTheme = IndevTheme.NORMAL.getName();
     
     @ConfigEntry.Gui.Excluded
     public int indevLevelWidth = 256;

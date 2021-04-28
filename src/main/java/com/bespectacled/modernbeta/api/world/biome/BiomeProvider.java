@@ -7,7 +7,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
-public abstract class AbstractBiomeProvider {
+public abstract class BiomeProvider {
     protected final long seed;
     protected final NbtCompound settings;
     
@@ -18,7 +18,7 @@ public abstract class AbstractBiomeProvider {
      * @param seed Seed to initialize biome provider.
      * @param settings NbtCompound for additional settings.
      */
-    public AbstractBiomeProvider(long seed, NbtCompound settings) {
+    public BiomeProvider(long seed, NbtCompound settings) {
         this.seed = seed;
         this.settings = settings;
     }

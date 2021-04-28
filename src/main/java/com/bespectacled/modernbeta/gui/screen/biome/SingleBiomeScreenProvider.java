@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.gui.screen.biome;
 
-import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.NbtString;
@@ -9,7 +9,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 public class SingleBiomeScreenProvider {
-    public static CustomizeBuffetLevelScreen create(AbstractWorldScreenProvider screenProvider) {
+    public static CustomizeBuffetLevelScreen create(WorldScreenProvider screenProvider) {
         return new CustomizeBuffetLevelScreen(
             screenProvider, 
             screenProvider.getRegistryManager(),

@@ -8,16 +8,16 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateSampler;
+import com.bespectacled.modernbeta.world.biome.indev.IndevTheme;
+import com.bespectacled.modernbeta.world.biome.indev.IndevType;
 import com.bespectacled.modernbeta.world.biome.indev.IndevUtil;
-import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevTheme;
-import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevType;
 import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 
 import net.minecraft.block.Block;
@@ -42,7 +42,7 @@ import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class IndevChunkProvider extends ChunkProvider {
+public class IndevChunkProvider extends BaseChunkProvider {
     private PerlinOctaveNoiseCombined minHeightNoiseOctaves;
     private PerlinOctaveNoiseCombined maxHeightNoiseOctaves;
     

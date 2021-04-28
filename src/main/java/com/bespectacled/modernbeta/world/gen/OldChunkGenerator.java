@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
-import com.bespectacled.modernbeta.api.world.gen.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.mixin.MixinConfiguredCarverAccessor;
 import com.bespectacled.modernbeta.util.NBTUtil;
@@ -76,7 +76,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private final String chunkProviderType;
     private final boolean generateOceans;
     
-    private final AbstractChunkProvider chunkProvider;
+    private final ChunkProvider chunkProvider;
     private final Random random;
     
     public OldChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, NbtCompound providerSettings) {
@@ -311,7 +311,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return c.isInstance(this.chunkProvider);
     }
     
-    public AbstractChunkProvider getChunkProvider() {
+    public ChunkProvider getChunkProvider() {
         return this.chunkProvider;
     }
     

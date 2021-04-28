@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
 import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
@@ -25,7 +25,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 public class BetaBiomeScreenProvider extends Screen {
-    private final AbstractWorldScreenProvider parent;
+    private final WorldScreenProvider parent;
     private final DynamicRegistryManager registryManager;
     private final NbtCompound biomeProviderSettings;
     private final Consumer<NbtCompound> consumer;
@@ -36,7 +36,7 @@ public class BetaBiomeScreenProvider extends Screen {
     private final Map<String, Identifier> biomeMap;
     
     private BetaBiomeScreenProvider(
-        AbstractWorldScreenProvider parent, 
+        WorldScreenProvider parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings,
         Consumer<NbtCompound> consumer
@@ -70,7 +70,7 @@ public class BetaBiomeScreenProvider extends Screen {
         this.loadBiomeId("warm_ocean",  BetaBiomes.WARM_OCEAN_ID);
     }
     
-    public static BetaBiomeScreenProvider create(AbstractWorldScreenProvider screenProvider) {
+    public static BetaBiomeScreenProvider create(WorldScreenProvider screenProvider) {
         return new BetaBiomeScreenProvider(
             screenProvider, 
             screenProvider.getRegistryManager(), 

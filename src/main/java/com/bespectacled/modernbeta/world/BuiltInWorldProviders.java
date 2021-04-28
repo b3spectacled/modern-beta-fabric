@@ -31,7 +31,7 @@ public class BuiltInWorldProviders {
             BuiltInTypes.Chunk.SKYLANDS.name, 
             BuiltInTypes.ChunkSettings.SKYLANDS.name,
             OldChunkGeneratorSettings.SKYLANDS.toString(), 
-            BuiltInTypes.WorldScreen.SKYLANDS.name, 
+            BuiltInTypes.WorldScreen.BASE.name, 
             BuiltInTypes.Biome.SINGLE.name, 
             BuiltInTypes.CaveBiome.NONE.name, 
             BetaBiomes.SKY_ID.toString()
@@ -61,7 +61,7 @@ public class BuiltInWorldProviders {
             BuiltInTypes.Chunk.INFDEV_227.name,
             BuiltInTypes.ChunkSettings.INFDEV_227.name,
             OldChunkGeneratorSettings.INFDEV_227.toString(), 
-            BuiltInTypes.WorldScreen.INFDEV_OLD.name, 
+            BuiltInTypes.WorldScreen.INFDEV_227.name, 
             BuiltInTypes.Biome.SINGLE.name, 
             BuiltInTypes.CaveBiome.NONE.name, 
             ClassicBiomes.INFDEV_227_ID.toString()

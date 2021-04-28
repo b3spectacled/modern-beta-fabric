@@ -5,11 +5,11 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
-import com.bespectacled.modernbeta.api.world.biome.AbstractBiomeProvider;
-import com.bespectacled.modernbeta.api.world.biome.AbstractCaveBiomeProvider;
-import com.bespectacled.modernbeta.api.world.gen.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
+import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
+import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.util.PentaFunction;
 import com.bespectacled.modernbeta.util.QuadFunction;
 
@@ -21,13 +21,13 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class ProviderRegistries {
-    public static final ProviderRegistry<BiFunction<Long, NbtCompound, AbstractBiomeProvider>> BIOME;
-    public static final ProviderRegistry<Function<AbstractWorldScreenProvider, Screen>> BIOME_SCREEN;
-    public static final ProviderRegistry<BiFunction<Long, NbtCompound, AbstractCaveBiomeProvider>> CAVE_BIOME;
-    public static final ProviderRegistry<QuadFunction<Long, ChunkGenerator, Supplier<ChunkGeneratorSettings>, NbtCompound, AbstractChunkProvider>> CHUNK;
+    public static final ProviderRegistry<BiFunction<Long, NbtCompound, BiomeProvider>> BIOME;
+    public static final ProviderRegistry<Function<WorldScreenProvider, Screen>> BIOME_SCREEN;
+    public static final ProviderRegistry<BiFunction<Long, NbtCompound, CaveBiomeProvider>> CAVE_BIOME;
+    public static final ProviderRegistry<QuadFunction<Long, ChunkGenerator, Supplier<ChunkGeneratorSettings>, NbtCompound, ChunkProvider>> CHUNK;
     public static final ProviderRegistry<Supplier<NbtCompound>> CHUNK_SETTINGS;
     public static final ProviderRegistry<WorldProvider> WORLD;
-    public static final ProviderRegistry<PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, AbstractWorldScreenProvider>> WORLD_SCREEN;
+    public static final ProviderRegistry<PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, WorldScreenProvider>> WORLD_SCREEN;
     
     static {
         BIOME = new ProviderRegistry<>();

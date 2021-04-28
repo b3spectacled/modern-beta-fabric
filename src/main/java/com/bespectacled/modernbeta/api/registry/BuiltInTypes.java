@@ -51,9 +51,9 @@ public class BuiltInTypes {
     }
     
     public enum WorldScreen {
+        BASE("base"),
         INF("inf"),
-        SKYLANDS("skylands"),
-        INFDEV_OLD("infdev_old"),
+        INFDEV_227("infdev_227"),
         INDEV("indev"),
         ISLAND("island")
         ;

@@ -38,7 +38,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator.class_6352;
 
-public abstract class NoiseChunkProvider extends ChunkProvider {
+public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final int verticalNoiseResolution;   // Number of blocks in a vertical subchunk
     protected final int horizontalNoiseResolution; // Number of blocks in a horizontal subchunk 
     

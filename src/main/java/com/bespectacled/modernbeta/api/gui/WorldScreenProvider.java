@@ -28,7 +28,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public abstract class AbstractWorldScreenProvider extends Screen {
+public abstract class WorldScreenProvider extends Screen {
     protected final CreateWorldScreen parent;
     protected final DynamicRegistryManager registryManager;
     protected final NbtCompound biomeProviderSettings;
@@ -44,7 +44,7 @@ public abstract class AbstractWorldScreenProvider extends Screen {
     protected ButtonListWidget buttonList;
     protected ScreenButtonOption biomeOption;
     
-    public AbstractWorldScreenProvider(
+    public WorldScreenProvider(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings, 
@@ -111,7 +111,7 @@ public abstract class AbstractWorldScreenProvider extends Screen {
             })
         );
         
-        Function<AbstractWorldScreenProvider, Screen> biomeScreenFunction = ProviderRegistries.BIOME_SCREEN.get(this.biomeType);
+        Function<WorldScreenProvider, Screen> biomeScreenFunction = ProviderRegistries.BIOME_SCREEN.get(this.biomeType);
         Screen biomeScreen = biomeScreenFunction != null ? biomeScreenFunction.apply(this) : null;
         
         this.biomeOption = new ScreenButtonOption(

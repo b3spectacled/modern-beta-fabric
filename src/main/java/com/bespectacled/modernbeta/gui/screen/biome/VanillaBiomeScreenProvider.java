@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.gui.screen.biome;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
 import com.bespectacled.modernbeta.util.NBTUtil;
 
 import net.minecraft.client.gui.DrawableHelper;
@@ -19,7 +19,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class VanillaBiomeScreenProvider extends Screen {
-    private final AbstractWorldScreenProvider parent;
+    private final WorldScreenProvider parent;
     //private final DynamicRegistryManager registryManager;
     private final NbtCompound biomeProviderSettings;
     private final Consumer<NbtCompound> consumer;
@@ -31,7 +31,7 @@ public class VanillaBiomeScreenProvider extends Screen {
     private ButtonListWidget buttonList;
     
     private VanillaBiomeScreenProvider(
-        AbstractWorldScreenProvider parent, 
+        WorldScreenProvider parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings,
         Consumer<NbtCompound> consumer
@@ -48,7 +48,7 @@ public class VanillaBiomeScreenProvider extends Screen {
         this.vanillaOceanBiomeSize = NBTUtil.readInt("vanillaOceanBiomeSize", biomeProviderSettings, ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize);
     }
     
-    public static VanillaBiomeScreenProvider create(AbstractWorldScreenProvider screenProvider) {
+    public static VanillaBiomeScreenProvider create(WorldScreenProvider screenProvider) {
         return new VanillaBiomeScreenProvider(
             screenProvider, 
             screenProvider.getRegistryManager(), 

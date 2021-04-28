@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NBTUtil;
@@ -27,7 +27,7 @@ import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class Infdev227ChunkProvider extends ChunkProvider {
+public class Infdev227ChunkProvider extends BaseChunkProvider {
     private final boolean generateInfdevPyramid;
     private final boolean generateInfdevWall;
 
