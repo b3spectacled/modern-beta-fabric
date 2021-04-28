@@ -4,6 +4,7 @@ import java.util.function.BiConsumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gui.TextOption;
+import com.bespectacled.modernbeta.util.NBTUtil;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.DoubleOption;
@@ -29,26 +30,12 @@ public class IslandWorldScreenProvider extends InfWorldScreenProvider {
         BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
         super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
-        
-        this.centerOceanLerpDistance = this.chunkProviderSettings.contains("centerOceanLerpDistance") ?
-            this.chunkProviderSettings.getInt("centerOceanLerpDistance") :
-            ModernBeta.BETA_CONFIG.generation_config.centerOceanLerpDistance;
-        
-        this.centerOceanRadius = this.chunkProviderSettings.contains("centerOceanRadius") ?
-            this.chunkProviderSettings.getInt("centerOceanRadius") :
-            ModernBeta.BETA_CONFIG.generation_config.centerOceanRadius;
-        
-        this.centerIslandFalloff = this.chunkProviderSettings.contains("centerIslandFalloff") ?
-            this.chunkProviderSettings.getFloat("centerIslandFalloff") :
-            ModernBeta.BETA_CONFIG.generation_config.centerIslandFalloff;
-        
-        this.outerIslandNoiseScale = this.chunkProviderSettings.contains("outerIslandNoiseScale") ?
-            this.chunkProviderSettings.getFloat("outerIslandNoiseScale") :
-            ModernBeta.BETA_CONFIG.generation_config.outerIslandNoiseScale;
-        
-        this.outerIslandNoiseOffset = this.chunkProviderSettings.contains("outerIslandNoiseOffset") ?
-            this.chunkProviderSettings.getFloat("outerIslandNoiseOffset") :
-            ModernBeta.BETA_CONFIG.generation_config.outerIslandNoiseOffset;
+       
+        this.centerOceanLerpDistance = NBTUtil.readInt("centerOceanLerpDistance", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.centerOceanLerpDistance);
+        this.centerOceanRadius = NBTUtil.readInt("centerOceanRadius", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.centerOceanRadius);
+        this.centerIslandFalloff = NBTUtil.readFloat("centerIslandFalloff", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.centerIslandFalloff);
+        this.outerIslandNoiseScale = NBTUtil.readFloat("outerIslandNoiseScale", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.outerIslandNoiseScale);
+        this.outerIslandNoiseOffset = NBTUtil.readFloat("outerIslandNoiseOffset", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.outerIslandNoiseOffset);
     }
 
     @Override

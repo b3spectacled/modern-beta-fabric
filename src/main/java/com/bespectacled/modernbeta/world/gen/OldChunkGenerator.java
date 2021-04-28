@@ -87,10 +87,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.biomeSource = (OldBiomeSource)biomeSource;
 
         this.chunkProviderSettings = providerSettings;
-        this.chunkProviderType = NBTUtil.readString("worldType", providerSettings);
+        this.chunkProviderType = NBTUtil.readStringOrThrow("worldType", providerSettings);
         this.chunkProvider = ProviderRegistries.CHUNK.get(this.chunkProviderType).apply(seed, this, settings, providerSettings);
         
-        this.generateOceans = providerSettings.contains("generateOceans") ? providerSettings.getBoolean("generateOceans") : false;
+        this.generateOceans = NBTUtil.readBoolean("generateOceans", providerSettings, true);
     }
 
     public static void register() {

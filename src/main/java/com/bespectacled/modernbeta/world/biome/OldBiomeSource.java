@@ -35,7 +35,7 @@ public class OldBiomeSource extends BiomeSource {
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, NbtCompound settings) {
         super(
-            ProviderRegistries.BIOME.get(NBTUtil.readString("biomeType", settings)).apply(seed, settings)
+            ProviderRegistries.BIOME.get(NBTUtil.readStringOrThrow("biomeType", settings)).apply(seed, settings)
             .getBiomesForRegistry()
             .stream()
             .map((registryKey) -> () -> (Biome) biomeRegistry.get(registryKey))
@@ -45,7 +45,7 @@ public class OldBiomeSource extends BiomeSource {
         this.biomeRegistry = biomeRegistry;
         this.biomeProviderSettings = settings;
         
-        this.biomeProvider = ProviderRegistries.BIOME.get(NBTUtil.readString("biomeType", settings)).apply(seed, settings);
+        this.biomeProvider = ProviderRegistries.BIOME.get(NBTUtil.readStringOrThrow("biomeType", settings)).apply(seed, settings);
     }
 
     @Override

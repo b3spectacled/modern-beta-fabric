@@ -10,6 +10,7 @@ import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
 import com.bespectacled.modernbeta.gui.screen.world.IndevWorldScreenProvider;
 import com.bespectacled.modernbeta.util.GUIUtil;
+import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 
 import net.minecraft.client.gui.DrawableHelper;
@@ -60,9 +61,9 @@ public abstract class AbstractWorldScreenProvider extends Screen {
         
         this.worldProvider = ProviderRegistries.WORLD.get(this.chunkProviderSettings.getString("worldType"));
         
-        this.biomeType = this.biomeProviderSettings.getString("biomeType");
-        this.caveBiomeType = this.biomeProviderSettings.getString("caveBiomeType");
-        this.singleBiome = this.biomeProviderSettings.getString("singleBiome");
+        this.biomeType = NBTUtil.readStringOrThrow("biomeType", this.biomeProviderSettings);
+        this.caveBiomeType = NBTUtil.readStringOrThrow("caveBiomeType", this.biomeProviderSettings);
+        this.singleBiome = NBTUtil.readStringOrThrow("singleBiome", this.biomeProviderSettings);
         
     }
     

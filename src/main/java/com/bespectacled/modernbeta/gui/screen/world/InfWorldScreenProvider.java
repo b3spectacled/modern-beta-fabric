@@ -6,6 +6,8 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.gui.TextOption;
+import com.bespectacled.modernbeta.util.NBTUtil;
+
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.nbt.NbtCompound;
@@ -24,9 +26,7 @@ public class InfWorldScreenProvider extends AbstractWorldScreenProvider {
     ) {
         super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
         
-        this.generateOceans = this.chunkProviderSettings.contains("generateOceans") ? 
-            this.chunkProviderSettings.getBoolean("generateOceans") : 
-            ModernBeta.BETA_CONFIG.generation_config.generateOceans;
+        this.generateOceans = NBTUtil.readBoolean("generateOceans", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.generateOceans);
     }
     
     @Override
@@ -43,7 +43,7 @@ public class InfWorldScreenProvider extends AbstractWorldScreenProvider {
             }));
         }
         
-        if (!(this instanceof InfdevOldWorldScreenProvider) && !(this instanceof IslandWorldScreenProvider))
+        if (!(this instanceof Infdev227WorldScreenProvider) && !(this instanceof IslandWorldScreenProvider))
             this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
     }
 }

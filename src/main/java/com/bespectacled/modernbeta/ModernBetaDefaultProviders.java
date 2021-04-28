@@ -60,7 +60,7 @@ public class ModernBetaDefaultProviders {
     // Register default screen providers
     public static void registerWorldScreenProviders() {
         ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF.name, InfWorldScreenProvider::new);
-        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INFDEV_OLD.name, InfdevOldWorldScreenProvider::new);
+        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INFDEV_OLD.name, Infdev227WorldScreenProvider::new);
         ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INDEV.name, IndevWorldScreenProvider::new);
         ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.SKYLANDS.name, SkylandsWorldScreenProvider::new);
         ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.ISLAND.name, IslandWorldScreenProvider::new);

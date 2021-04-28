@@ -3,17 +3,18 @@ package com.bespectacled.modernbeta.gui.screen.world;
 import java.util.function.BiConsumer;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gui.TextOption;
+import com.bespectacled.modernbeta.util.NBTUtil;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class InfdevOldWorldScreenProvider extends InfWorldScreenProvider {
+public class Infdev227WorldScreenProvider extends InfWorldScreenProvider {
     private boolean generateInfdevPyramid;
     private boolean generateInfdevWall;
     
-    public InfdevOldWorldScreenProvider(
+    public Infdev227WorldScreenProvider(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings, 
@@ -22,13 +23,8 @@ public class InfdevOldWorldScreenProvider extends InfWorldScreenProvider {
     ) {
         super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
         
-        this.generateInfdevPyramid = this.chunkProviderSettings.contains("generateInfdevPyramid") ? 
-            this.chunkProviderSettings.getBoolean("generateInfdevPyramid") :    
-            ModernBeta.BETA_CONFIG.generation_config.generateInfdevPyramid;
-        
-        this.generateInfdevWall = this.chunkProviderSettings.contains("generateInfdevWall") ? 
-            this.chunkProviderSettings.getBoolean("generateInfdevWall") :
-            ModernBeta.BETA_CONFIG.generation_config.generateInfdevWall;
+        this.generateInfdevPyramid = NBTUtil.readBoolean("generateInfdevPyramid", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.generateInfdevPyramid);
+        this.generateInfdevWall = NBTUtil.readBoolean("generateInfdevWall", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.generateInfdevWall);
     }
     
     @Override

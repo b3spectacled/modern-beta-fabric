@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.bespectacled.modernbeta.api.world.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.util.NBTUtil;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -12,14 +13,12 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class SingleBiomeProvider extends AbstractBiomeProvider {
-    private Identifier biomeId;
+    private final Identifier biomeId;
     
     public SingleBiomeProvider(long seed, NbtCompound settings) {
         super(seed, settings);
         
-        this.biomeId = (settings.contains("singleBiome")) ?
-            new Identifier(settings.getString("singleBiome")) :
-            new Identifier("plains");
+        this.biomeId = new Identifier(NBTUtil.readString("singleBiome", settings, "plains"));
     }
 
     @Override

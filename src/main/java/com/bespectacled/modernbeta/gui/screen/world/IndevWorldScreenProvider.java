@@ -8,6 +8,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.gui.TextOption;
+import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.indev.IndevUtil;
 import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevTheme;
 import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevType;
@@ -43,29 +44,13 @@ public class IndevWorldScreenProvider extends AbstractWorldScreenProvider {
     ) {
         super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
         
-        this.levelType = this.chunkProviderSettings.contains("levelType") ? 
-            IndevType.fromName(this.chunkProviderSettings.getString("levelType")) : 
-            IndevType.fromName(ModernBeta.BETA_CONFIG.generation_config.indevLevelType);
+        this.levelType = IndevType.fromName(NBTUtil.readString("levelType", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelType));
+        this.levelTheme = IndevTheme.fromName(NBTUtil.readString("levelTheme", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelTheme));
         
-        this.levelTheme = this.chunkProviderSettings.contains("levelTheme") ? 
-            IndevTheme.fromName(this.chunkProviderSettings.getString("levelTheme")) :                 
-            IndevTheme.fromName(ModernBeta.BETA_CONFIG.generation_config.indevLevelTheme);
-        
-        this.levelWidth = this.chunkProviderSettings.contains("levelWidth") ?
-            this.chunkProviderSettings.getInt("levelWidth") :
-            ModernBeta.BETA_CONFIG.generation_config.indevLevelWidth;
-        
-        this.levelLength = this.chunkProviderSettings.contains("levelLength") ?
-            this.chunkProviderSettings.getInt("levelLength") :
-            ModernBeta.BETA_CONFIG.generation_config.indevLevelLength;
-        
-        this.levelHeight = this.chunkProviderSettings.contains("levelHeight") ?
-            this.chunkProviderSettings.getInt("levelHeight") :
-            ModernBeta.BETA_CONFIG.generation_config.indevLevelHeight;
-        
-        this.caveRadius = this.chunkProviderSettings.contains("caveRadius") ?
-            this.chunkProviderSettings.getFloat("caveRadius") :
-            ModernBeta.BETA_CONFIG.generation_config.indevCaveRadius;
+        this.levelWidth = NBTUtil.readInt("levelWidth", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelWidth);
+        this.levelLength = NBTUtil.readInt("levelLength", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelLength);
+        this.levelHeight = NBTUtil.readInt("levelHeight", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelHeight);
+        this.caveRadius = NBTUtil.readFloat("caveRadius", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevCaveRadius);
         
         this.chunkGenSettings = () -> 
             this.registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).get(ModernBeta.createId(BuiltInTypes.Chunk.INDEV.name));

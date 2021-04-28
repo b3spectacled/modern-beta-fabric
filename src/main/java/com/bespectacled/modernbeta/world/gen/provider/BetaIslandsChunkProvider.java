@@ -7,6 +7,7 @@ import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.SimplexNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.world.gen.OldGeneratorUtil;
@@ -59,25 +60,11 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         this.islandNoise = new SimplexNoise(RAND);
         
         // Beta Islands settings
-        this.centerOceanLerpDistance = this.providerSettings.contains("centerOceanLerpDistance") ? 
-            this.providerSettings.getInt("centerOceanLerpDistance") : 
-            ModernBeta.BETA_CONFIG.generation_config.centerOceanLerpDistance;
-        
-        this.centerOceanRadius = this.providerSettings.contains("centerOceanRadius") ? 
-            this.providerSettings.getInt("centerOceanRadius") : 
-            ModernBeta.BETA_CONFIG.generation_config.centerOceanRadius;
-        
-        this.centerIslandFalloff = this.providerSettings.contains("centerIslandFalloff") ? 
-            this.providerSettings.getFloat("centerIslandFalloff") : 
-            ModernBeta.BETA_CONFIG.generation_config.centerIslandFalloff;
-        
-        this.outerIslandNoiseScale = this.providerSettings.contains("outerIslandNoiseScale") ? 
-            this.providerSettings.getFloat("outerIslandNoiseScale") : 
-            ModernBeta.BETA_CONFIG.generation_config.outerIslandNoiseOffset;
-        
-        this.outerIslandNoiseOffset = this.providerSettings.contains("outerIslandNoiseOffset") ? 
-            this.providerSettings.getFloat("outerIslandNoiseOffset") : 
-            ModernBeta.BETA_CONFIG.generation_config.outerIslandNoiseOffset;
+        this.centerOceanLerpDistance = NBTUtil.readInt("centerOceanLerpDistance", providerSettings, ModernBeta.BETA_CONFIG.generation_config.centerOceanLerpDistance);
+        this.centerOceanRadius = NBTUtil.readInt("centerOceanRadius", providerSettings, ModernBeta.BETA_CONFIG.generation_config.centerOceanRadius);
+        this.centerIslandFalloff = NBTUtil.readFloat("centerIslandFalloff", providerSettings, ModernBeta.BETA_CONFIG.generation_config.centerIslandFalloff);
+        this.outerIslandNoiseScale = NBTUtil.readFloat("outerIslandNoiseScale", providerSettings, ModernBeta.BETA_CONFIG.generation_config.outerIslandNoiseScale);
+        this.outerIslandNoiseOffset = NBTUtil.readFloat("outerIslandNoiseOffset", providerSettings, ModernBeta.BETA_CONFIG.generation_config.outerIslandNoiseOffset);
         
         BetaClimateSampler.INSTANCE.setSeed(seed);
         setForestOctaves(forestNoiseOctaves);
