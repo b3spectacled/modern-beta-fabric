@@ -53,6 +53,8 @@ public class IndevWorldScreenProvider extends WorldScreenProvider {
         
         this.chunkGenSettings = () -> 
             this.registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).get(ModernBeta.createId(BuiltInTypes.Chunk.INDEV.name));
+            
+        this.singleBiome = this.levelTheme.getDefaultBiome().toString();
     }
     
     @Override
@@ -72,8 +74,7 @@ public class IndevWorldScreenProvider extends WorldScreenProvider {
                 (gameOptions) -> { return this.levelTheme; }, 
                 (gameOptions, option, value) -> {
                     this.levelTheme = value;
-                    this.chunkProviderSettings.putString("levelTheme", this.levelTheme.getName());
-                    this.biomeProviderSettings.putString("singleBiome", this.levelTheme.getDefaultBiome().toString());
+                    this.setChunkProviderSettings();
                     
                     this.client.openScreen(
                         this.worldProvider.createLevelScreen(
@@ -88,16 +89,15 @@ public class IndevWorldScreenProvider extends WorldScreenProvider {
         );
         
         this.buttonList.addSingleOptionEntry(
-                CyclingOption.create(
-                    "createWorld.customize.indev.levelType", 
-                    IndevType.values(), 
-                    (value) -> new TranslatableText("createWorld.customize.indev.levelType." + value.getName()), 
-                    (gameOptions) -> { return this.levelType; }, 
-                    (gameOptions, option, value) -> {
-                        this.levelType = value;
-                        this.chunkProviderSettings.putString("levelType", this.levelType.getName());
-                    })
-            );
+            CyclingOption.create(
+                "createWorld.customize.indev.levelType", 
+                IndevType.values(), 
+                (value) -> new TranslatableText("createWorld.customize.indev.levelType." + value.getName()), 
+                (gameOptions) -> { return this.levelType; }, 
+                (gameOptions, option, value) -> {
+                    this.levelType = value;
+                })
+        );
         
         this.buttonList.addSingleOptionEntry(
             new DoubleOption(
@@ -106,7 +106,6 @@ public class IndevWorldScreenProvider extends WorldScreenProvider {
                 (gameOptions) -> { return (double) this.levelWidth; }, // Getter
                 (gameOptions, value) -> { // Setter
                     this.levelWidth = value.intValue();
-                    this.chunkProviderSettings.putInt("levelWidth", this.levelWidth);
                 },
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
@@ -125,7 +124,6 @@ public class IndevWorldScreenProvider extends WorldScreenProvider {
                 (gameOptions) -> { return (double) this.levelLength; }, // Getter
                 (gameOptions, value) -> { // Setter
                     this.levelLength = value.intValue();
-                    this.chunkProviderSettings.putInt("levelLength", this.levelLength);
                 },
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
@@ -144,7 +142,6 @@ public class IndevWorldScreenProvider extends WorldScreenProvider {
                 (gameOptions) -> { return (double) this.levelHeight; }, // Getter
                 (gameOptions, value) -> { // Setter
                     this.levelHeight = value.intValue();
-                    this.chunkProviderSettings.putInt("levelHeight", this.levelHeight);
                 },
                 (gameOptions, doubleOptions) -> {
                     int seaLevel = this.levelHeight / 2;
@@ -166,7 +163,6 @@ public class IndevWorldScreenProvider extends WorldScreenProvider {
                 (gameOptions) -> { return (double) this.caveRadius; }, // Getter
                 (gameOptions, value) -> { // Setter
                     this.caveRadius = value.floatValue();
-                    this.chunkProviderSettings.putFloat("caveRadius", this.caveRadius);
                 },
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
@@ -181,7 +177,14 @@ public class IndevWorldScreenProvider extends WorldScreenProvider {
         this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
     }
     
-    public IndevTheme getTheme() {
-        return this.levelTheme;
+    @Override
+    protected void setChunkProviderSettings() {
+        this.chunkProviderSettings.putString("levelTheme", this.levelTheme.getName());
+        this.chunkProviderSettings.putString("levelType", this.levelType.getName());
+        
+        this.chunkProviderSettings.putInt("levelWidth", this.levelWidth);
+        this.chunkProviderSettings.putInt("levelLength", this.levelLength);
+        this.chunkProviderSettings.putInt("levelHeight", this.levelHeight);
+        this.chunkProviderSettings.putFloat("caveRadius", this.caveRadius);
     }
 }

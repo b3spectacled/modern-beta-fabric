@@ -15,9 +15,6 @@ public class ModernBetaGenerationConfig implements ConfigData {
     public boolean generateOceans = true;
     
     @ConfigEntry.Gui.Excluded
-    public boolean generateDeepOceans = false;
-    
-    @ConfigEntry.Gui.Excluded
     public boolean generateNoiseCaves = true;
     
     @ConfigEntry.Gui.Excluded
@@ -55,6 +52,9 @@ public class ModernBetaGenerationConfig implements ConfigData {
     public float indevCaveRadius = 1.0f;
     
     /* Beta Islands Generation */
+    
+    @ConfigEntry.Gui.Excluded
+    public boolean generateOuterIslands = true;
     
     @ConfigEntry.Gui.Excluded
     public int centerOceanLerpDistance = 16;

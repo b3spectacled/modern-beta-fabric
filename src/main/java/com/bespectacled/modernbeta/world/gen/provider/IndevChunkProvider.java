@@ -87,13 +87,13 @@ public class IndevChunkProvider extends BaseChunkProvider {
         //super(seed, settings);
         super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 256, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
-        this.levelType = IndevType.fromName(NBTUtil.readString("levelType", providerSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelType));
-        this.levelTheme = IndevTheme.fromName(NBTUtil.readString("levelTheme", providerSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelTheme));
+        this.levelType = IndevType.fromName(NBTUtil.readString("levelType", providerSettings, ModernBeta.GEN_CONFIG.indevLevelType));
+        this.levelTheme = IndevTheme.fromName(NBTUtil.readString("levelTheme", providerSettings, ModernBeta.GEN_CONFIG.indevLevelTheme));
         
-        this.levelWidth = NBTUtil.readInt("levelWidth", providerSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelWidth);
-        this.levelLength = NBTUtil.readInt("levelLength", providerSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelLength);
-        this.levelHeight = NBTUtil.readInt("levelHeight", providerSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelHeight);
-        this.caveRadius = NBTUtil.readFloat("caveRadius", providerSettings, ModernBeta.BETA_CONFIG.generation_config.indevCaveRadius);
+        this.levelWidth = NBTUtil.readInt("levelWidth", providerSettings, ModernBeta.GEN_CONFIG.indevLevelWidth);
+        this.levelLength = NBTUtil.readInt("levelLength", providerSettings, ModernBeta.GEN_CONFIG.indevLevelLength);
+        this.levelHeight = NBTUtil.readInt("levelHeight", providerSettings, ModernBeta.GEN_CONFIG.indevLevelHeight);
+        this.caveRadius = NBTUtil.readFloat("caveRadius", providerSettings, ModernBeta.GEN_CONFIG.indevCaveRadius);
         
         this.fluidBlock = this.isFloating() ? BlockStates.AIR : (this.isHell() ? BlockStates.LAVA : this.defaultFluid);
         this.topsoilBlock = this.isHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;

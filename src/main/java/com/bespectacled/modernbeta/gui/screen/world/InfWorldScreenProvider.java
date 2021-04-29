@@ -26,7 +26,7 @@ public class InfWorldScreenProvider extends WorldScreenProvider {
     ) {
         super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
         
-        this.generateOceans = NBTUtil.readBoolean("generateOceans", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.generateOceans);
+        this.generateOceans = NBTUtil.readBoolean("generateOceans", chunkProviderSettings, ModernBeta.GEN_CONFIG.generateOceans);
     }
     
     @Override
@@ -39,11 +39,15 @@ public class InfWorldScreenProvider extends WorldScreenProvider {
                 (gameOptions) -> { return this.generateOceans; }, 
                 (gameOptions, option, value) -> { // Setter
                     this.generateOceans = value;
-                    this.chunkProviderSettings.putBoolean("generateOceans", this.generateOceans);
             }));
         }
         
         if (!(this instanceof Infdev227WorldScreenProvider) && !(this instanceof IslandWorldScreenProvider))
             this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
+    }
+
+    @Override
+    protected void setChunkProviderSettings() {
+        this.chunkProviderSettings.putBoolean("generateOceans", this.generateOceans);
     }
 }

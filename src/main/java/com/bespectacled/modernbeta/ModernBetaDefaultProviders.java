@@ -5,6 +5,7 @@ import com.bespectacled.modernbeta.gui.screen.biome.*;
 import com.bespectacled.modernbeta.gui.screen.world.*;
 import com.bespectacled.modernbeta.world.BuiltInWorldProviders;
 import com.bespectacled.modernbeta.world.biome.provider.*;
+import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.*;
 import com.bespectacled.modernbeta.world.gen.provider.*;
 import com.bespectacled.modernbeta.world.gen.provider.settings.*;
@@ -35,13 +36,13 @@ public class ModernBetaDefaultProviders {
     
     // Register default chunk settings
     public static void registerChunkProviderSettings() {
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.ChunkSettings.BETA.name, ChunkProviderSettings::createSettingsBeta);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.ChunkSettings.SKYLANDS.name, ChunkProviderSettings::createSettingsSkylands);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.ChunkSettings.ALPHA.name, ChunkProviderSettings::createSettingsAlpha);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.ChunkSettings.INFDEV_415.name, ChunkProviderSettings::createSettingsInfdev415);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.ChunkSettings.INFDEV_227.name, ChunkProviderSettings::createSettingsInfdev227);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.ChunkSettings.INDEV.name, ChunkProviderSettings::createSettingsIndev);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.ChunkSettings.BETA_ISLANDS.name, ChunkProviderSettings::createSettingsBetaIslands);
+        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.BETA.name, ChunkProviderSettings::createSettingsBeta);
+        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.SKYLANDS.name, ChunkProviderSettings::createSettingsSkylands);
+        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.ALPHA.name, ChunkProviderSettings::createSettingsAlpha);
+        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_415.name, ChunkProviderSettings::createSettingsInfdev415);
+        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_227.name, ChunkProviderSettings::createSettingsInfdev227);
+        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INDEV.name, ChunkProviderSettings::createSettingsIndev);
+        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, ChunkProviderSettings::createSettingsBetaIslands);
     }
     
     // Register default biome providers
@@ -51,15 +52,23 @@ public class ModernBetaDefaultProviders {
         ProviderRegistries.BIOME.register(BuiltInTypes.Biome.VANILLA.name, VanillaBiomeProvider::new);
     }
     
+    // Register default biome settings
+    public static void registerBiomeProviderSettings() {
+        ProviderRegistries.BIOME_SETTINGS.register(BuiltInTypes.Biome.BETA.name, BiomeProviderSettings::createBiomeSettingsBeta);
+        ProviderRegistries.BIOME_SETTINGS.register(BuiltInTypes.Biome.SINGLE.name, BiomeProviderSettings::createBiomeSettingsSingle);
+        ProviderRegistries.BIOME_SETTINGS.register(BuiltInTypes.Biome.VANILLA.name, BiomeProviderSettings::createBiomeSettingsVanilla);
+    }
+    
     // Register default cave biome providers
     public static void registerCaveBiomeProvider() {
         ProviderRegistries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.VANILLA.name, VanillaCaveBiomeProvider::new);
         ProviderRegistries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.NONE.name, NoCaveBiomeProvider::new);
+        ProviderRegistries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.SINGLE.name, SingleCaveBiomeProvider::new);
     }
     
     // Register default screen providers
     public static void registerWorldScreenProviders() {
-        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.BASE.name, BaseScreenProvider::new);
+        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.BASE.name, BaseWorldScreenProvider::new);
         ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF.name, InfWorldScreenProvider::new);
         ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INFDEV_227.name, Infdev227WorldScreenProvider::new);
         ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INDEV.name, IndevWorldScreenProvider::new);

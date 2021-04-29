@@ -20,8 +20,9 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class ProviderRegistries {
+public final class ProviderRegistries {
     public static final ProviderRegistry<BiFunction<Long, NbtCompound, BiomeProvider>> BIOME;
+    public static final ProviderRegistry<Supplier<NbtCompound>> BIOME_SETTINGS;
     public static final ProviderRegistry<Function<WorldScreenProvider, Screen>> BIOME_SCREEN;
     public static final ProviderRegistry<BiFunction<Long, NbtCompound, CaveBiomeProvider>> CAVE_BIOME;
     public static final ProviderRegistry<QuadFunction<Long, ChunkGenerator, Supplier<ChunkGeneratorSettings>, NbtCompound, ChunkProvider>> CHUNK;
@@ -31,6 +32,7 @@ public class ProviderRegistries {
     
     static {
         BIOME = new ProviderRegistry<>();
+        BIOME_SETTINGS = new ProviderRegistry<>();
         BIOME_SCREEN = new ProviderRegistry<>();
         CAVE_BIOME = new ProviderRegistry<>();
         CHUNK = new ProviderRegistry<>();

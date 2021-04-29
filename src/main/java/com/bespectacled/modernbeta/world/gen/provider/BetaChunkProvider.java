@@ -16,6 +16,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -32,8 +33,8 @@ public class BetaChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise forestNoiseOctaves;
     
     public BetaChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
-        //super(seed, settings);
-        super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false);
+        //super(seed, chunkGenerator, generatorSettings, providerSettings);
+        super(seed, chunkGenerator, generatorSettings, providerSettings, -64, 192, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, true, true, true, true, true);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -368,5 +369,11 @@ public class BetaChunkProvider extends NoiseChunkProvider {
     }
 
     
-    
-}
+    @Override
+    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
+        if (chunkStatus == ChunkStatus.CARVERS || chunkStatus == ChunkStatus.LIQUID_CARVERS)
+            ;//return true;
+        
+        return false;
+    }
+} 

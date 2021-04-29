@@ -28,7 +28,6 @@
     "createWorld.customize.vanilla.title": "Vanilla Biomes Configuration",
     
     "createWorld.customize.inf.generateOceans": "Generate Oceans",
-    "createWorld.customize.inf.generateDeepOceans": "Generate Deep Oceans",
     "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",
     "createWorld.customize.infdev.generateInfdevWall": "Generate Infdev Obsidian Wall",
     "createWorld.customize.inf.generateNoiseCaves": "Generate Noise Caves",
@@ -38,6 +37,7 @@
     "createWorld.customize.vanilla.biomeSize": "Biome Size",
     "createWorld.customize.vanilla.oceanBiomeSize": "Ocean Biome Size",
     
+    "createWorld.customize.island.generateOuterIslands": "Generate Outer Islands",
     "createWorld.customize.island.centerOceanLerpDistance": "Center Ocean Lerp Distance",
     "createWorld.customize.island.centerOceanRadius": "Center Ocean Radius",
     "createWorld.customize.island.centerIslandFalloff": "Center Island Falloff",

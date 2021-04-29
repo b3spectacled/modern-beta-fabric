@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.gui.screen.world;
 
 import java.util.function.BiConsumer;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.NBTUtil;
@@ -23,8 +24,8 @@ public class Infdev227WorldScreenProvider extends InfWorldScreenProvider {
     ) {
         super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
         
-        this.generateInfdevPyramid = NBTUtil.readBoolean("generateInfdevPyramid", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.generateInfdevPyramid);
-        this.generateInfdevWall = NBTUtil.readBoolean("generateInfdevWall", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.generateInfdevWall);
+        this.generateInfdevPyramid = NBTUtil.readBoolean("generateInfdevPyramid", chunkProviderSettings, ModernBeta.GEN_CONFIG.generateInfdevPyramid);
+        this.generateInfdevWall = NBTUtil.readBoolean("generateInfdevWall", chunkProviderSettings, ModernBeta.GEN_CONFIG.generateInfdevWall);
     }
     
     @Override
@@ -36,7 +37,6 @@ public class Infdev227WorldScreenProvider extends InfWorldScreenProvider {
                (gameOptions) -> { return generateInfdevPyramid; }, 
                (gameOptions, option, value) -> { // Setter
                    this.generateInfdevPyramid = value;
-                   this.chunkProviderSettings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
        }));
        
        this.buttonList.addSingleOptionEntry(
@@ -44,9 +44,16 @@ public class Infdev227WorldScreenProvider extends InfWorldScreenProvider {
                (gameOptions) -> { return generateInfdevWall; }, 
                (gameOptions, option, value) -> { // Setter
                    this.generateInfdevWall = value;
-                   this.chunkProviderSettings.putBoolean("generateInfdevWall", this.generateInfdevWall);
        }));
        
        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
+    }
+    
+    @Override
+    protected void setChunkProviderSettings() {
+        super.setChunkProviderSettings();
+
+        this.chunkProviderSettings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
+        this.chunkProviderSettings.putBoolean("generateInfdevWall", this.generateInfdevWall);
     }
 }

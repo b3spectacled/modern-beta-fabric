@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public final class ProviderRegistry<T> {
     private final Map<String, T> map;
     
-    public ProviderRegistry() {
+    protected ProviderRegistry() {
         this.map = new LinkedHashMap<String, T>();
     }
     

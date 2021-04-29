@@ -2,9 +2,7 @@ package com.bespectacled.modernbeta.mixin;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
-import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.google.common.base.MoreObjects;
 import net.minecraft.nbt.NbtCompound;
@@ -73,22 +71,13 @@ public class MixinGeneratorOptions {
             String generate_structures = (String) properties.get("generate-structures");
             boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
             
-            WorldProvider worldProvider = ProviderRegistries.WORLD.get(levelType);
-            
-            NbtCompound biomeProviderSettings = BiomeProviderSettings.createBiomeSettings(
-                ModernBeta.BETA_CONFIG.biome_config.biomeType, 
-                ModernBeta.BETA_CONFIG.biome_config.caveBiomeType, 
-                ModernBeta.BETA_CONFIG.biome_config.singleBiome
-            );
-            biomeProviderSettings = BiomeProviderSettings.addBetaBiomeSettings(biomeProviderSettings);
-            biomeProviderSettings = BiomeProviderSettings.addVanillaBiomeSettings(biomeProviderSettings);
-            
-            NbtCompound chunkProviderSettings = ProviderRegistries.CHUNK_SETTINGS.get(worldProvider.getChunkProviderSettings()).get();
+            NbtCompound chunkProviderSettings = ProviderRegistries.CHUNK_SETTINGS.get(levelType).get();
+            NbtCompound biomeProviderSettings = ProviderRegistries.BIOME_SETTINGS.get(ModernBeta.BIOME_CONFIG.biomeType).get();
             
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 new OldBiomeSource(seed, registryBiome, biomeProviderSettings), 
                 seed,
-                () -> registryChunkGenSettings.get(new Identifier(worldProvider.getChunkGenSettings())), 
+                () -> registryChunkGenSettings.get(new Identifier(levelType)), 
                 chunkProviderSettings
             );
             

@@ -19,7 +19,6 @@ public class BuiltInWorldProviders {
     static {
         BETA = new WorldProvider(
             BuiltInTypes.Chunk.BETA.name, 
-            BuiltInTypes.ChunkSettings.BETA.name,
             OldChunkGeneratorSettings.BETA.toString(), 
             BuiltInTypes.WorldScreen.INF.name,
             BuiltInTypes.Biome.BETA.name, 
@@ -29,7 +28,6 @@ public class BuiltInWorldProviders {
         
         SKYLANDS = new WorldProvider(
             BuiltInTypes.Chunk.SKYLANDS.name, 
-            BuiltInTypes.ChunkSettings.SKYLANDS.name,
             OldChunkGeneratorSettings.SKYLANDS.toString(), 
             BuiltInTypes.WorldScreen.BASE.name, 
             BuiltInTypes.Biome.SINGLE.name, 
@@ -39,7 +37,6 @@ public class BuiltInWorldProviders {
         
         ALPHA = new WorldProvider(
             BuiltInTypes.Chunk.ALPHA.name,
-            BuiltInTypes.ChunkSettings.ALPHA.name,
             OldChunkGeneratorSettings.ALPHA.toString(), 
             BuiltInTypes.WorldScreen.INF.name, 
             BuiltInTypes.Biome.SINGLE.name, 
@@ -49,7 +46,6 @@ public class BuiltInWorldProviders {
         
         INFDEV_415 = new WorldProvider(
             BuiltInTypes.Chunk.INFDEV_415.name,
-            BuiltInTypes.ChunkSettings.INFDEV_415.name,
             OldChunkGeneratorSettings.INFDEV_415.toString(), 
             BuiltInTypes.WorldScreen.INF.name, 
             BuiltInTypes.Biome.SINGLE.name, 
@@ -59,7 +55,6 @@ public class BuiltInWorldProviders {
         
         INFDEV_227 = new WorldProvider(
             BuiltInTypes.Chunk.INFDEV_227.name,
-            BuiltInTypes.ChunkSettings.INFDEV_227.name,
             OldChunkGeneratorSettings.INFDEV_227.toString(), 
             BuiltInTypes.WorldScreen.INFDEV_227.name, 
             BuiltInTypes.Biome.SINGLE.name, 
@@ -69,7 +64,6 @@ public class BuiltInWorldProviders {
         
         INDEV = new WorldProvider(
             BuiltInTypes.Chunk.INDEV.name,
-            BuiltInTypes.ChunkSettings.INDEV.name,
             OldChunkGeneratorSettings.INDEV.toString(), 
             BuiltInTypes.WorldScreen.INDEV.name, 
             BuiltInTypes.Biome.SINGLE.name, 
@@ -79,7 +73,6 @@ public class BuiltInWorldProviders {
         
         BETA_ISLANDS = new WorldProvider(
             BuiltInTypes.Chunk.BETA_ISLANDS.name,
-            BuiltInTypes.ChunkSettings.BETA_ISLANDS.name,
             OldChunkGeneratorSettings.BETA_ISLANDS.toString(),
             BuiltInTypes.WorldScreen.ISLAND.name,
             BuiltInTypes.Biome.BETA.name,

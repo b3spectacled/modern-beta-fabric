@@ -16,7 +16,6 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public final class WorldProvider {
     private final String chunkProvider;
-    private final String chunkProviderSettings;
     private final String chunkGenSettings;
     private final String guiProvider;
 
@@ -26,7 +25,6 @@ public final class WorldProvider {
 
     public WorldProvider(
         String chunkProvider,
-        String chunkProviderSettings,
         String chunkGenSettings,
         String guiProvider,
         String defaultBiomeProvider,
@@ -34,7 +32,6 @@ public final class WorldProvider {
         String defaultBiome
     ) {
         this.chunkProvider = chunkProvider;
-        this.chunkProviderSettings = chunkProviderSettings;
         this.chunkGenSettings = chunkGenSettings;
         this.guiProvider = guiProvider;
         
@@ -43,12 +40,12 @@ public final class WorldProvider {
         this.defaultBiome = defaultBiome;
     }
     
-    public String getName() {
+    public String getChunkProvider() {
         return this.chunkProvider;
     }
     
     public String getChunkProviderSettings() {
-        return this.chunkProviderSettings;
+        return this.chunkProvider;
     }
     
     public String getChunkGenSettings() {
@@ -56,6 +53,10 @@ public final class WorldProvider {
     }
     
     public String getDefaultBiomeProvider() {
+        return this.defaultBiomeProvider;
+    }
+    
+    public String getDefaultBiomeProviderSettings() {
         return this.defaultBiomeProvider;
     }
     

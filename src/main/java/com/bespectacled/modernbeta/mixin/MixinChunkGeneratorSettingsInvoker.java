@@ -18,4 +18,7 @@ public interface MixinChunkGeneratorSettingsInvoker {
     
     @Invoker("method_36396")
     public boolean invokeHasOreVeins();
+    
+    @Invoker("method_36468")
+    public boolean invokeHasNoodleCaves();
 }

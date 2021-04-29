@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.api.registry;
 
-public class BuiltInTypes {
+public final class BuiltInTypes {
     public enum Chunk {
         BETA("beta"),
         SKYLANDS("skylands"),
@@ -16,21 +16,6 @@ public class BuiltInTypes {
         private Chunk(String name) { this.name = name; }
     }
     
-    public enum ChunkSettings {
-        BETA("beta"),
-        SKYLANDS("skylands"),
-        ALPHA("alpha"),
-        INFDEV_415("infdev_415"),
-        INFDEV_227("infdev_227"),
-        INDEV("indev"),
-        BETA_ISLANDS("beta_islands")
-        ;
-        
-        public final String name;
-        
-        private ChunkSettings(String name) { this.name = name; }
-    }
-    
     public enum Biome {
         BETA("beta"),
         SINGLE("single"),
@@ -43,7 +28,9 @@ public class BuiltInTypes {
     
     public enum CaveBiome {
         NONE("none"),
-        VANILLA("vanilla");
+        VANILLA("vanilla"),
+        SINGLE("single")
+        ;
         
         public final String name;
         

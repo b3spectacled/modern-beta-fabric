@@ -37,6 +37,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
     
     private final SimplexNoise islandNoise;
     
+    private final boolean generateOuterIslands;
     private final int centerOceanLerpDistance;
     private final int centerOceanRadius;
     private final float centerIslandFalloff;
@@ -45,7 +46,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
     
     public BetaIslandsChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
-        super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false);
+        super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -60,11 +61,12 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         this.islandNoise = new SimplexNoise(RAND);
         
         // Beta Islands settings
-        this.centerOceanLerpDistance = NBTUtil.readInt("centerOceanLerpDistance", providerSettings, ModernBeta.BETA_CONFIG.generation_config.centerOceanLerpDistance);
-        this.centerOceanRadius = NBTUtil.readInt("centerOceanRadius", providerSettings, ModernBeta.BETA_CONFIG.generation_config.centerOceanRadius);
-        this.centerIslandFalloff = NBTUtil.readFloat("centerIslandFalloff", providerSettings, ModernBeta.BETA_CONFIG.generation_config.centerIslandFalloff);
-        this.outerIslandNoiseScale = NBTUtil.readFloat("outerIslandNoiseScale", providerSettings, ModernBeta.BETA_CONFIG.generation_config.outerIslandNoiseScale);
-        this.outerIslandNoiseOffset = NBTUtil.readFloat("outerIslandNoiseOffset", providerSettings, ModernBeta.BETA_CONFIG.generation_config.outerIslandNoiseOffset);
+        this.generateOuterIslands = NBTUtil.readBoolean("generateOuterIslands", providerSettings, ModernBeta.GEN_CONFIG.generateOuterIslands);
+        this.centerOceanLerpDistance = NBTUtil.readInt("centerOceanLerpDistance", providerSettings, ModernBeta.GEN_CONFIG.centerOceanLerpDistance);
+        this.centerOceanRadius = NBTUtil.readInt("centerOceanRadius", providerSettings, ModernBeta.GEN_CONFIG.centerOceanRadius);
+        this.centerIslandFalloff = NBTUtil.readFloat("centerIslandFalloff", providerSettings, ModernBeta.GEN_CONFIG.centerIslandFalloff);
+        this.outerIslandNoiseScale = NBTUtil.readFloat("outerIslandNoiseScale", providerSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseScale);
+        this.outerIslandNoiseOffset = NBTUtil.readFloat("outerIslandNoiseOffset", providerSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseOffset);
         
         BetaClimateSampler.INSTANCE.setSeed(seed);
         setForestOctaves(forestNoiseOctaves);
@@ -356,7 +358,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         float islandOffset = 100.0F - radius * centerIslandFalloff;
         islandOffset = MathHelper.clamp(islandOffset, -oceanDepth, 0.0F);
             
-        if (radius > centerOceanRadius) {
+        if (this.generateOuterIslands && radius > centerOceanRadius) {
             float islandAddition = (float)this.islandNoise.sample(noiseX / outerIslandNoiseScale, noiseZ / outerIslandNoiseScale, 1.0, 1.0) + outerIslandNoiseOffset;
             
             // 0.885539 = Simplex upper range, but scale a little higher to ensure island centers have untouched terrain.

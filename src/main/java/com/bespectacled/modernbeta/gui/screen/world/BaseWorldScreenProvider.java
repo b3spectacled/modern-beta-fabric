@@ -9,9 +9,8 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class BaseScreenProvider extends WorldScreenProvider {
-    
-    public BaseScreenProvider(
+public class BaseWorldScreenProvider extends WorldScreenProvider {
+    public BaseWorldScreenProvider(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound biomeProviderSettings, 
@@ -26,4 +25,7 @@ public class BaseScreenProvider extends WorldScreenProvider {
         super.init();
         this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
     }
+    
+    @Override
+    protected void setChunkProviderSettings() {}
 }

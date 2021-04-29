@@ -233,7 +233,8 @@ public class OldBetaCaveCarver extends CaveCarver implements IOldCaveCarver {
                             //if (relY < 11) { // Set lava below y = 11
                             // Will not hit this lava check at default minY (-64), since minY is capped at 1,
                             // however, if world minY is set to 0 (i.e. through noise settings), lava should generate, preserving accuracy.
-                            if (relY < config.lavaLevel.getY(context)) { 
+                            if (relY < config.lavaLevel.getY(context)) {
+                            //if (relY < context.getMinY() + 11) {
                                 chunk.setBlockState(blockPos.set(relX, relY, relZ), Blocks.LAVA.getDefaultState(), false);
                             } else {
                                 chunk.setBlockState(blockPos.set(relX, relY, relZ), Blocks.CAVE_AIR.getDefaultState(), false);

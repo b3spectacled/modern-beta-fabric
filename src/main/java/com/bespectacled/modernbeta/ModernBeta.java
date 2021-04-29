@@ -25,13 +25,17 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 
 import com.bespectacled.modernbeta.compat.Compat;
-import com.bespectacled.modernbeta.config.ModernBetaConfig;
+import com.bespectacled.modernbeta.config.*;
 
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+    
     public static final ModernBetaConfig BETA_CONFIG = AutoConfig.register(ModernBetaConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new)).getConfig();
-
+    public static final ModernBetaGenerationConfig GEN_CONFIG = BETA_CONFIG.generation_config;
+    public static final ModernBetaBiomeConfig BIOME_CONFIG = BETA_CONFIG.biome_config;
+    public static final ModernBetaRenderingConfig RENDER_CONFIG = BETA_CONFIG.rendering_config;
+    
     // Ehh...
     public static void setBlockColorsSeed(long seed, boolean useBetaColors) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -64,6 +68,7 @@ public class ModernBeta implements ModInitializer {
         ModernBetaDefaultProviders.registerChunkProviders();
         ModernBetaDefaultProviders.registerChunkProviderSettings();
         ModernBetaDefaultProviders.registerBiomeProviders();
+        ModernBetaDefaultProviders.registerBiomeProviderSettings();
         ModernBetaDefaultProviders.registerCaveBiomeProvider();
         ModernBetaDefaultProviders.registerWorldProviders();
         
