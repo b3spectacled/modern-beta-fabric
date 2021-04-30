@@ -14,40 +14,35 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class InfWorldScreenProvider extends WorldScreenProvider {
-    
-    private boolean generateOceans;
-    
     public InfWorldScreenProvider(
         CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager, 
-        NbtCompound biomeProviderSettings, 
-        NbtCompound chunkProviderSettings, 
+        DynamicRegistryManager registryManager,
+        NbtCompound chunkProviderSettings,
+        NbtCompound biomeProviderSettings,
         BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
-        super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
-        
-        this.generateOceans = NBTUtil.readBoolean("generateOceans", chunkProviderSettings, ModernBeta.GEN_CONFIG.generateOceans);
+        super(parent, registryManager, chunkProviderSettings, biomeProviderSettings, consumer);
     }
-    
+
     @Override
     protected void init() {
         super.init();
         
-        if (!this.biomeType.equals(BuiltInTypes.Biome.SINGLE.name)) {
-            buttonList.addSingleOptionEntry(
-                CyclingOption.create("createWorld.customize.inf.generateOceans",
-                (gameOptions) -> { return this.generateOceans; }, 
-                (gameOptions, option, value) -> { // Setter
-                    this.generateOceans = value;
-            }));
-        }
+        String biomeType = NBTUtil.readStringOrThrow("biomeType", this.biomeProviderSettings);
         
+        CyclingOption<Boolean> generateOceans = 
+            CyclingOption.create("createWorld.customize.inf.generateOceans",
+                (gameOptions) -> NBTUtil.readBoolean("generateOceans", this.chunkProviderSettings, ModernBeta.GEN_CONFIG.generateOceans), 
+                (gameOptions, option, value) -> { // Setter
+                    this.chunkProviderSettings.putBoolean("generateOceans", value);
+            });
+        
+        if (!biomeType.equals(BuiltInTypes.Biome.SINGLE.name)) {
+            buttonList.addSingleOptionEntry(generateOceans);
+        }
+
         if (!(this instanceof Infdev227WorldScreenProvider) && !(this instanceof IslandWorldScreenProvider))
             this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
-    }
 
-    @Override
-    protected void setChunkProviderSettings() {
-        this.chunkProviderSettings.putBoolean("generateOceans", this.generateOceans);
     }
 }

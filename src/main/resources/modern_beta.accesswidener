@@ -13,5 +13,5 @@ accessible method net/minecraft/world/gen/StructureWeightSampler getWeight (III)
 
 extendable method net/minecraft/client/world/GeneratorType <init> (Ljava/lang/String;)V
 
-accessible class net/minecraft/world/gen/chunk/NoiseChunkGenerator$class_6352
+accessible class net/minecraft/world/gen/chunk/NoiseChunkGenerator$OreVeinSource
 accessible class net/minecraft/world/gen/chunk/NoiseChunkGenerator$class_6356

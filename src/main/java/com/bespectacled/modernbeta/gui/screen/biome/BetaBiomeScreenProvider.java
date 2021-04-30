@@ -4,51 +4,32 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import com.bespectacled.modernbeta.api.gui.BiomeScreenProvider;
 import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
 import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
+import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
-import net.minecraft.client.gui.widget.ButtonListWidget;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class BetaBiomeScreenProvider extends Screen {
-    private final WorldScreenProvider parent;
-    private final DynamicRegistryManager registryManager;
-    private final NbtCompound biomeProviderSettings;
-    private final Consumer<NbtCompound> consumer;
-    private final NbtCompound betaBiomeSettings;
-    
-    private ButtonListWidget buttonList;
-
+public class BetaBiomeScreenProvider extends BiomeScreenProvider {
     private final Map<String, Identifier> biomeMap;
     
     private BetaBiomeScreenProvider(
         WorldScreenProvider parent, 
         DynamicRegistryManager registryManager, 
-        NbtCompound biomeProviderSettings,
+        NbtCompound parentProviderSettings,
         Consumer<NbtCompound> consumer
     ) {
-        super(new TranslatableText("createWorld.customize.beta.title"));
+        super(parent, registryManager, parentProviderSettings, consumer);
         
-        this.parent = parent;
-        this.registryManager = registryManager;
-        this.biomeProviderSettings = biomeProviderSettings;
-        this.consumer = consumer;
-        
-        this.betaBiomeSettings = new NbtCompound();
         this.biomeMap = new HashMap<String, Identifier>();
         
         this.loadBiomeId("desert", BetaBiomes.DESERT_ID);
@@ -81,25 +62,7 @@ public class BetaBiomeScreenProvider extends Screen {
     
     @Override
     protected void init() {
-        this.addButton(new ButtonWidget(
-            this.width / 2 - 155, this.height - 28, 150, 20, 
-            ScreenTexts.DONE, 
-            (buttonWidget) -> {
-                this.biomeProviderSettings.copyFrom(betaBiomeSettings);
-                this.consumer.accept(this.biomeProviderSettings);
-                this.client.openScreen(this.parent);
-            }
-        ));
-
-        this.addButton(new ButtonWidget(
-            this.width / 2 + 5, this.height - 28, 150, 20, 
-            ScreenTexts.CANCEL,
-            (buttonWidget) -> {
-                this.client.openScreen(this.parent);
-            }
-        ));
-            
-        this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        super.init();
         
         this.addBiomeButtonEntry("desert", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.DESERT_ID));
         this.addBiomeButtonEntry("forest", GUIUtil.createTranslatableBiomeStringFromId(BetaBiomes.FOREST_ID));
@@ -122,22 +85,8 @@ public class BetaBiomeScreenProvider extends Screen {
         this.children.add(this.buttonList);
     }
     
-    @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float tickDelta) {
-        this.renderBackground(matrixStack);
-        
-        this.buttonList.render(matrixStack, mouseX, mouseY, tickDelta);
-        DrawableHelper.drawCenteredText(matrixStack, this.textRenderer, this.title, this.width / 2, 16, 16777215);
-        
-        super.render(matrixStack, mouseX, mouseY, tickDelta);
-    }
-    
-    private Identifier loadBiomeId(String key, Identifier defaultId) {
-        NbtCompound source = this.biomeProviderSettings;
-        Identifier biomeId = (source.contains(key)) ? new Identifier(source.getString(key)) : defaultId;
-        this.biomeMap.put(key, biomeId);
-        
-        return biomeId;
+    private void loadBiomeId(String key, Identifier alternate) {
+        this.biomeMap.put(key, new Identifier(NBTUtil.readString(key, this.biomeProviderSettings, alternate.toString())));
     }
     
     private void addBiomeButtonEntry(String key, String biomeText) {
@@ -150,7 +99,7 @@ public class BetaBiomeScreenProvider extends Screen {
                   this,
                   this.registryManager,
                   (biome) -> {
-                      this.betaBiomeSettings.putString(key, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString());
+                      this.biomeProviderSettings.putString(key, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString());
                       this.biomeMap.put(key, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome));
                   }, 
                   this.registryManager.<Biome>get(Registry.BIOME_KEY).get(this.biomeMap.get(key))  

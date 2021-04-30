@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -42,7 +43,7 @@ import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class IndevChunkProvider extends BaseChunkProvider {
+public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkImitable {
     private PerlinOctaveNoiseCombined minHeightNoiseOctaves;
     private PerlinOctaveNoiseCombined maxHeightNoiseOctaves;
     
@@ -314,7 +315,7 @@ public class IndevChunkProvider extends BaseChunkProvider {
                     Block blockToSet = this.blockArr[offsetX + x][y][offsetZ + z];
                     
                     BlockState originalBlockStateToSet = blockToSet.getDefaultState();
-                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, absX, y, absZ, blockToSet, this.fluidBlock.getBlock());
+                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, this.blockSource, absX, y, absZ, blockToSet, this.fluidBlock.getBlock());
                     
                     boolean inFluid = blockstateToSet.equals(BlockStates.AIR) || blockstateToSet.equals(this.fluidBlock);
                     

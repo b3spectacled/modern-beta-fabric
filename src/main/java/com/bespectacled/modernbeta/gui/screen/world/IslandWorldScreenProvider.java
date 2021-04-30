@@ -15,144 +15,114 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class IslandWorldScreenProvider extends InfWorldScreenProvider {
-
-    private boolean generateOuterIslands;
-    private int centerOceanLerpDistance;
-    private int centerOceanRadius;
-    private float centerIslandFalloff;
-    private float outerIslandNoiseScale;
-    private float outerIslandNoiseOffset;
-    
     public IslandWorldScreenProvider(
         CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager, 
-        NbtCompound biomeProviderSettings, 
-        NbtCompound chunkProviderSettings, 
+        DynamicRegistryManager registryManager,
+        NbtCompound chunkProviderSettings,
+        NbtCompound biomeProviderSettings,
         BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
-        super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
-       
-        this.generateOuterIslands = NBTUtil.readBoolean("generateOuterIslands", chunkProviderSettings, ModernBeta.GEN_CONFIG.generateOuterIslands);
-        this.centerOceanLerpDistance = NBTUtil.readInt("centerOceanLerpDistance", chunkProviderSettings, ModernBeta.GEN_CONFIG.centerOceanLerpDistance);
-        this.centerOceanRadius = NBTUtil.readInt("centerOceanRadius", chunkProviderSettings, ModernBeta.GEN_CONFIG.centerOceanRadius);
-        this.centerIslandFalloff = NBTUtil.readFloat("centerIslandFalloff", chunkProviderSettings, ModernBeta.GEN_CONFIG.centerIslandFalloff);
-        this.outerIslandNoiseScale = NBTUtil.readFloat("outerIslandNoiseScale", chunkProviderSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseScale);
-        this.outerIslandNoiseOffset = NBTUtil.readFloat("outerIslandNoiseOffset", chunkProviderSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseOffset);
+        super(parent, registryManager, chunkProviderSettings, biomeProviderSettings, consumer);
     }
-
+    
     @Override
     protected void init() {
         super.init();
         
-        buttonList.addSingleOptionEntry(
+        CyclingOption<Boolean> generateOuterIslands = 
             CyclingOption.create("createWorld.customize.island.generateOuterIslands",
-            (gameOptions) -> { return this.generateOuterIslands; }, 
-            (gameOptions, option, value) -> { // Setter
-                this.generateOuterIslands = value;
-        }));
-    
-        this.buttonList.addSingleOptionEntry(
+                (gameOptions) -> NBTUtil.readBoolean("generateOuterIslands", this.chunkProviderSettings, ModernBeta.GEN_CONFIG.generateOuterIslands), 
+                (gameOptions, option, value) -> this.chunkProviderSettings.putBoolean("generateOuterIslands", value)
+            );
+            
+        DoubleOption centerOceanLerpDistance =
             new DoubleOption(
                 "createWorld.customize.island.centerOceanLerpDistanceSlider", 
                 1D, 32D, 1F,
-                (gameOptions) -> { return (double) this.centerOceanLerpDistance; }, // Getter
-                (gameOptions, value) -> { // Setter
-                    this.centerOceanLerpDistance = value.intValue();
-                },
+                (gameOptions) -> (double)NBTUtil.readInt("centerOceanLerpDistance", this.chunkProviderSettings, ModernBeta.GEN_CONFIG.centerOceanLerpDistance), // Getter
+                (gameOptions, value) -> this.chunkProviderSettings.putInt("centerOceanLerpDistance", value.intValue()),
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
                         "options.generic_value", 
                         new Object[] { 
                             new TranslatableText("createWorld.customize.island.centerOceanLerpDistance"), 
-                            Text.of(String.valueOf(this.centerOceanLerpDistance) + " chunks") 
+                            Text.of(String.valueOf(NBTUtil.readInt("centerOceanLerpDistance", this.chunkProviderSettings, ModernBeta.GEN_CONFIG.centerOceanLerpDistance)) + " chunks") 
                     });
                 }
-        ));
+            );
         
-        this.buttonList.addSingleOptionEntry(
+        DoubleOption centerOceanRadius =
             new DoubleOption(
                 "createWorld.customize.island.centerOceanRadiusSlider", 
                 8D, 256D, 8F,
-                (gameOptions) -> { return (double) this.centerOceanRadius; }, // Getter
-                (gameOptions, value) -> { // Setter
-                    this.centerOceanRadius = value.intValue();
-                },
+                (gameOptions) -> (double)NBTUtil.readInt("centerOceanRadius", this.chunkProviderSettings, ModernBeta.GEN_CONFIG.centerOceanRadius), // Getter
+                (gameOptions, value) -> this.chunkProviderSettings.putInt("centerOceanRadius", value.intValue()),
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
                         "options.generic_value", 
                         new Object[] { 
                             new TranslatableText("createWorld.customize.island.centerOceanRadius"), 
-                            Text.of(String.valueOf(this.centerOceanRadius) + " chunks") 
+                            Text.of(String.valueOf(NBTUtil.readInt("centerOceanRadius", this.chunkProviderSettings, ModernBeta.GEN_CONFIG.centerOceanRadius)) + " chunks") 
                     });
                 }
-        ));
+            );
         
-        this.buttonList.addSingleOptionEntry(
+        DoubleOption centerIslandFalloff =
             new DoubleOption(
                 "createWorld.customize.island.centerIslandFalloffSlider", 
                 1D, 8D, 1f,
-                (gameOptions) -> { return (double) this.centerIslandFalloff; }, // Getter
-                (gameOptions, value) -> { // Setter
-                    this.centerIslandFalloff = value.floatValue();
-                },
+                (gameOptions) -> (double)NBTUtil.readFloat("centerIslandFalloff", this.chunkProviderSettings, ModernBeta.GEN_CONFIG.centerIslandFalloff), // Getter
+                (gameOptions, value) -> this.chunkProviderSettings.putFloat("centerIslandFalloff", value.floatValue()),
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
                         "options.generic_value", 
                         new Object[] { 
                             new TranslatableText("createWorld.customize.island.centerIslandFalloff"), 
-                            Text.of(String.valueOf(this.centerIslandFalloff)) 
+                            Text.of(String.valueOf(NBTUtil.readFloat("centerIslandFalloff", this.chunkProviderSettings, ModernBeta.GEN_CONFIG.centerIslandFalloff))) 
                     });
                 }
-        ));
-    
-        this.buttonList.addSingleOptionEntry(
+            );
+        
+        DoubleOption outerIslandNoiseScale = 
             new DoubleOption(
                 "createWorld.customize.island.outerIslandNoiseScaleSlider", 
                 1D, 1000D, 50f,
-                (gameOptions) -> { return (double) this.outerIslandNoiseScale; }, // Getter
-                (gameOptions, value) -> { // Setter
-                    this.outerIslandNoiseScale = value.floatValue();
-                },
+                (gameOptions) -> (double)NBTUtil.readFloat("outerIslandNoiseScale", this.chunkProviderSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseScale), // Getter
+                (gameOptions, value) -> this.chunkProviderSettings.putFloat("outerIslandNoiseScale", value.floatValue()),
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
                         "options.generic_value", 
                         new Object[] { 
                             new TranslatableText("createWorld.customize.island.outerIslandNoiseScale"), 
-                            Text.of(String.valueOf(this.outerIslandNoiseScale)) 
+                            Text.of(String.valueOf(NBTUtil.readFloat("outerIslandNoiseScale", this.chunkProviderSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseScale))) 
                     });
                 }
-        ));
-        
-        this.buttonList.addSingleOptionEntry(
+            );
+    
+        DoubleOption outerIslandNoiseOffset = 
             new DoubleOption(
                 "createWorld.customize.island.outerIslandNoiseOffsetSlider", 
                 -1.0D, 1.0D, 0.25f,
-                (gameOptions) -> { return (double) this.outerIslandNoiseOffset; }, // Getter
-                (gameOptions, value) -> { // Setter
-                    this.outerIslandNoiseOffset = value.floatValue();
-                },
+                (gameOptions) -> (double)NBTUtil.readFloat("outerIslandNoiseOffset", chunkProviderSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseOffset), // Getter
+                (gameOptions, value) -> this.chunkProviderSettings.putFloat("outerIslandNoiseScale", value.floatValue()),
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
                         "options.generic_value", 
                         new Object[] { 
                             new TranslatableText("createWorld.customize.island.outerIslandNoiseOffset"), 
-                            Text.of(String.valueOf(this.outerIslandNoiseOffset)) 
+                            Text.of(String.valueOf(NBTUtil.readFloat("outerIslandNoiseOffset", chunkProviderSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseOffset))) 
                     });
                 }
-        ));
+            );
+
+        this.buttonList.addSingleOptionEntry(generateOuterIslands);
+        this.buttonList.addSingleOptionEntry(centerOceanLerpDistance);
+        this.buttonList.addSingleOptionEntry(centerOceanRadius);
+        this.buttonList.addSingleOptionEntry(centerIslandFalloff);
+        this.buttonList.addSingleOptionEntry(outerIslandNoiseScale);
+        this.buttonList.addSingleOptionEntry(outerIslandNoiseOffset);
         
         this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
     }
-    
-    @Override
-    protected void setChunkProviderSettings() {
-        super.setChunkProviderSettings();
 
-        this.chunkProviderSettings.putBoolean("generateOuterIslands", this.generateOuterIslands);
-        this.chunkProviderSettings.putInt("centerOceanLerpDistance", this.centerOceanLerpDistance);
-        this.chunkProviderSettings.putInt("centerOceanRadius", this.centerOceanRadius);
-        this.chunkProviderSettings.putFloat("centerIslandFalloff", this.centerIslandFalloff);
-        this.chunkProviderSettings.putFloat("outerIslandNoiseScale", this.outerIslandNoiseScale);
-        this.chunkProviderSettings.putFloat("outerIslandNoiseOffset", this.outerIslandNoiseOffset);
-    }
 }

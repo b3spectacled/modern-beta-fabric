@@ -13,7 +13,6 @@ import com.bespectacled.modernbeta.util.DoubleArrayPool;
 import com.bespectacled.modernbeta.util.IntArrayPool;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.class_6350;
-import net.minecraft.class_6353;
 import net.minecraft.class_6357;
 import net.minecraft.class_6358;
 import net.minecraft.block.BlockState;
@@ -30,13 +29,14 @@ import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.DeepslateBlockSource;
 import net.minecraft.world.gen.NoiseCaveSampler;
 import net.minecraft.world.gen.NoiseInterpolator;
+import net.minecraft.world.gen.OreVeinGenerator;
 import net.minecraft.world.gen.SimpleRandom;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
-import net.minecraft.world.gen.chunk.NoiseChunkGenerator.class_6352;
+import net.minecraft.world.gen.chunk.NoiseChunkGenerator.OreVeinSource;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator.class_6356;
 
 public abstract class NoiseChunkProvider extends BaseChunkProvider {
@@ -80,8 +80,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final DoublePerlinNoiseSampler lavaNoise;
 
     protected final NoiseCaveSampler noiseCaveSampler;
-    protected final class_6353 oreVeinSampler;
-    protected final class_6358 noodleCaveSampler;
+    protected final OreVeinGenerator oreVeinGenerator;
+    protected final class_6358 noodleCaveGenerator;
 
     public NoiseChunkProvider(
         long seed, 
@@ -202,8 +202,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         // Samplers
         this.noiseCaveSampler = this.generateNoiseCaves ? new NoiseCaveSampler(chunkRandom, this.noiseMinY) : null;
-        this.oreVeinSampler = new class_6353(seed, this.defaultBlock, this.horizontalNoiseResolution, this.verticalNoiseResolution, this.generatorSettings.get().getGenerationShapeConfig().getMinimumY());
-        this.noodleCaveSampler = new class_6358(seed);
+        this.oreVeinGenerator = new OreVeinGenerator(seed, this.defaultBlock, this.horizontalNoiseResolution, this.verticalNoiseResolution, this.generatorSettings.get().getGenerationShapeConfig().getMinimumY());
+        this.noodleCaveGenerator = new class_6358(seed);
     }
     
     protected abstract void generateHeightNoiseArr(int noiseX, int noiseZ, double[] heightNoise);
@@ -459,7 +459,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             return noisePoint -> this.blockSource;
         }
         
-        class_6352 oreVeinSampler = ((NoiseChunkGenerator)this.chunkGenerator).new class_6352(chunkPos, worldBottomNoiseY, this.seed + 1L);
+        OreVeinSource oreVeinSampler = ((NoiseChunkGenerator)this.chunkGenerator).new OreVeinSource(chunkPos, worldBottomNoiseY, this.seed + 1L);
         oreVeinSampler.method_36395(consumer);
         
         BlockSource blockSource = (x, y, z) -> {

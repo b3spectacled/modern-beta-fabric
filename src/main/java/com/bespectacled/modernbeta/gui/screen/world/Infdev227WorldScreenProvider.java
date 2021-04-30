@@ -12,48 +12,35 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class Infdev227WorldScreenProvider extends InfWorldScreenProvider {
-    private boolean generateInfdevPyramid;
-    private boolean generateInfdevWall;
-    
     public Infdev227WorldScreenProvider(
         CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager, 
-        NbtCompound biomeProviderSettings, 
-        NbtCompound chunkProviderSettings, 
+        DynamicRegistryManager registryManager,
+        NbtCompound chunkProviderSettings,
+        NbtCompound biomeProviderSettings,
         BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
-        super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
-        
-        this.generateInfdevPyramid = NBTUtil.readBoolean("generateInfdevPyramid", chunkProviderSettings, ModernBeta.GEN_CONFIG.generateInfdevPyramid);
-        this.generateInfdevWall = NBTUtil.readBoolean("generateInfdevWall", chunkProviderSettings, ModernBeta.GEN_CONFIG.generateInfdevWall);
+        super(parent, registryManager, chunkProviderSettings, biomeProviderSettings, consumer);
     }
     
     @Override
     protected void init() {
         super.init();
         
-        this.buttonList.addSingleOptionEntry(
-           CyclingOption.create("createWorld.customize.infdev.generateInfdevPyramid", 
-               (gameOptions) -> { return generateInfdevPyramid; }, 
-               (gameOptions, option, value) -> { // Setter
-                   this.generateInfdevPyramid = value;
-       }));
-       
-       this.buttonList.addSingleOptionEntry(
-           CyclingOption.create("createWorld.customize.infdev.generateInfdevWall", 
-               (gameOptions) -> { return generateInfdevWall; }, 
-               (gameOptions, option, value) -> { // Setter
-                   this.generateInfdevWall = value;
-       }));
+        CyclingOption<Boolean> generateInfdevPyramid = 
+            CyclingOption.create("createWorld.customize.infdev.generateInfdevPyramid", 
+                (gameOptions) -> NBTUtil.readBoolean("generateInfdevPyramid", this.chunkProviderSettings, ModernBeta.GEN_CONFIG.generateInfdevPyramid), 
+                (gameOptions, option, value) -> this.chunkProviderSettings.putBoolean("generateInfdevPyramid", value)
+            );
+        
+        CyclingOption<Boolean> generateInfdevWall = 
+            CyclingOption.create("createWorld.customize.infdev.generateInfdevWall", 
+                (gameOptions) -> NBTUtil.readBoolean("generateInfdevWall", this.chunkProviderSettings, ModernBeta.GEN_CONFIG.generateInfdevWall), 
+                (gameOptions, option, value) -> this.chunkProviderSettings.putBoolean("generateInfdevWall", value)
+            );
+      
+       this.buttonList.addSingleOptionEntry(generateInfdevPyramid);
+       this.buttonList.addSingleOptionEntry(generateInfdevWall);
        
        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
-    }
-    
-    @Override
-    protected void setChunkProviderSettings() {
-        super.setChunkProviderSettings();
-
-        this.chunkProviderSettings.putBoolean("generateInfdevPyramid", this.generateInfdevPyramid);
-        this.chunkProviderSettings.putBoolean("generateInfdevWall", this.generateInfdevWall);
     }
 }

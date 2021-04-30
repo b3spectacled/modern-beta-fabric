@@ -7,7 +7,7 @@ public abstract class NBTUtil {
         if (tag.contains(key))
             return tag.getString(key);
         
-        throw new IllegalArgumentException("NBT compound does not contain field " + key);
+        throw new IllegalArgumentException("[Modern Beta] NBT compound does not contain field " + key);
     }
     
     public static String readString(String key, NbtCompound tag, String alternate) {
@@ -21,7 +21,7 @@ public abstract class NBTUtil {
         if (tag.contains(key))
             return tag.getInt(key);
         
-        throw new IllegalArgumentException("NBT compound does not contain field " + key);
+        throw new IllegalArgumentException("[Modern Beta] NBT compound does not contain field " + key);
     }
     
     public static int readInt(String key, NbtCompound tag, int alternate) {
@@ -35,7 +35,7 @@ public abstract class NBTUtil {
         if (tag.contains(key))
             return tag.getFloat(key);
         
-        throw new IllegalArgumentException("NBT compound does not contain field " + key);
+        throw new IllegalArgumentException("[Modern Beta] NBT compound does not contain field " + key);
     }
     
     public static float readFloat(String key, NbtCompound tag, float alternate) {
@@ -49,7 +49,7 @@ public abstract class NBTUtil {
         if (tag.contains(key))
             return tag.getBoolean(key);
         
-        throw new IllegalArgumentException("NBT compound does not contain field " + key);
+        throw new IllegalArgumentException("[Modern Beta] NBT compound does not contain field " + key);
     }
     
     public static boolean readBoolean(String key, NbtCompound tag, boolean alternate) {

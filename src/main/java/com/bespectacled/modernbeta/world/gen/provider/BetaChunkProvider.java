@@ -34,7 +34,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
     
     public BetaChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, chunkGenerator, generatorSettings, providerSettings);
-        super(seed, chunkGenerator, generatorSettings, providerSettings, -64, 192, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, true, true, true, true, true);
+        super(seed, chunkGenerator, generatorSettings, providerSettings, -64, 192, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);

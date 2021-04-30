@@ -2,14 +2,15 @@ package com.bespectacled.modernbeta.api.gui;
 
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.gui.ScreenButtonOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.NBTUtil;
+
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
@@ -28,48 +29,39 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 public abstract class WorldScreenProvider extends Screen {
     protected final CreateWorldScreen parent;
     protected final DynamicRegistryManager registryManager;
-    protected final NbtCompound biomeProviderSettings;
-    protected final NbtCompound chunkProviderSettings;
+    protected final WorldProvider worldProvider;
     protected final BiConsumer<NbtCompound, NbtCompound> consumer;
     
-    protected final WorldProvider worldProvider;
-    
-    protected String biomeType;
-    protected String singleBiome;
+    protected final NbtCompound biomeProviderSettings;
+    protected final NbtCompound chunkProviderSettings;
     
     protected ButtonListWidget buttonList;
     
     public WorldScreenProvider(
         CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager, 
-        NbtCompound biomeProviderSettings, 
-        NbtCompound chunkProviderSettings, 
-        BiConsumer<NbtCompound, NbtCompound> consumer
+        DynamicRegistryManager registryManager,
+        NbtCompound chunkProviderSettings,
+        NbtCompound biomeProviderSettings,
+        BiConsumer<NbtCompound, NbtCompound> consumer       
     ) {
         super(new TranslatableText("createWorld.customize.old.title"));
         
         this.parent = parent;
         this.registryManager = registryManager;
-        this.biomeProviderSettings = biomeProviderSettings;
+        this.worldProvider = ProviderRegistries.WORLD.get(NBTUtil.readStringOrThrow("worldType", chunkProviderSettings));
         this.chunkProviderSettings = chunkProviderSettings;
+        this.biomeProviderSettings = biomeProviderSettings;
         this.consumer = consumer;
-        
-        // Assume only default chunk and biome provider settings have been supplied at this point.
-        this.worldProvider = ProviderRegistries.WORLD.get(NBTUtil.readStringOrThrow("worldType", this.chunkProviderSettings));
-        this.biomeType = NBTUtil.readStringOrThrow("biomeType", this.biomeProviderSettings);
-        this.singleBiome = this.worldProvider.getDefaultBiome();
     }
     
-    /*
-     * Note: Remember that this is called every time a screen is switched!
-     */
     @Override
     protected void init() {
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        this.children.add(this.buttonList);
         
-        Function<WorldScreenProvider, Screen> biomeScreenFunction = ProviderRegistries.BIOME_SCREEN.get(this.biomeType);
-        Screen biomeScreen = biomeScreenFunction != null ? biomeScreenFunction.apply(this) : null;
-        
+        String biomeType = NBTUtil.readStringOrThrow("biomeType", this.biomeProviderSettings);
+        String singleBiome = NBTUtil.readString("singleBiome", this.biomeProviderSettings, ModernBeta.BIOME_CONFIG.singleBiome);
+
         ButtonWidget doneButton;
         ButtonWidget cancelButton;
         
@@ -82,11 +74,7 @@ public abstract class WorldScreenProvider extends Screen {
             this.width / 2 - 155, this.height - 28, 150, 20, 
             ScreenTexts.DONE, 
             (buttonWidget) -> {
-                // Set generation options to NBT compounds ONLY when user presses Done.
-                this.setBiomeProviderSettings();
-                this.setChunkProviderSettings();
-                
-                this.consumer.accept(this.biomeProviderSettings, this.chunkProviderSettings);
+                this.consumer.accept(this.chunkProviderSettings, this.biomeProviderSettings);
                 this.client.openScreen(this.parent);
             }
         );
@@ -105,13 +93,15 @@ public abstract class WorldScreenProvider extends Screen {
             (value) -> new TranslatableText("createWorld.customize.worldType." + value.getChunkProvider()), 
             (gameOptions) -> { return this.worldProvider; }, 
             (gameOptions, option, value) -> {
-                
                 // Reset settings when switching to new world type
+                NbtCompound newBiomeProviderSettings = ProviderRegistries.BIOME_SETTINGS.get(value.getDefaultBiomeProviderSettings()).get();
+                this.setDefaultSingleBiome(newBiomeProviderSettings, value.getDefaultBiome());
+                
                 this.client.openScreen(value.createLevelScreen(
                     this.parent, 
                     this.registryManager,
-                    ProviderRegistries.BIOME_SETTINGS.get(value.getDefaultBiomeProviderSettings()).get(),
                     ProviderRegistries.CHUNK_SETTINGS.get(value.getChunkProviderSettings()).get(),
+                    newBiomeProviderSettings,
                     this.consumer
                 ));
         });
@@ -120,34 +110,34 @@ public abstract class WorldScreenProvider extends Screen {
             "createWorld.customize.biomeType",
             ProviderRegistries.BIOME.getKeys().stream().toArray(String[]::new), 
             (value) -> new TranslatableText("createWorld.customize.biomeType." + value), 
-            (gameOptions) -> { return this.biomeType; },
+            (gameOptions) -> NBTUtil.readStringOrThrow("biomeType", this.biomeProviderSettings),
             (gameOptions, option, value) -> {
-                
                 // Reset biome settings when switching to new biome type
+                NbtCompound newBiomeProviderSettings = ProviderRegistries.BIOME_SETTINGS.get(value).get();
+                this.setDefaultSingleBiome(newBiomeProviderSettings, this.worldProvider.getDefaultBiome());                
+                
                 this.client.openScreen(
                     this.worldProvider.createLevelScreen(
                         this.parent, 
-                        this.registryManager, 
-                        ProviderRegistries.BIOME_SETTINGS.get(value).get(), 
+                        this.registryManager,
                         this.chunkProviderSettings, 
+                        newBiomeProviderSettings,
                         this.consumer
                 ));
             }
         );
         
         biomeSettingsOption = new ScreenButtonOption(
-            this.biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
-            this.biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? GUIUtil.createTranslatableBiomeStringFromId(this.singleBiome) : "",
-            buttonWidget -> this.client.openScreen(biomeScreen)
+            biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
+            biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? GUIUtil.createTranslatableBiomeStringFromId(singleBiome) : "",
+            buttonWidget -> this.client.openScreen(ProviderRegistries.BIOME_SCREEN.get(NBTUtil.readStringOrThrow("biomeType", this.biomeProviderSettings)).apply(this))
         );
-    
+        
         this.addButton(doneButton);
         this.addButton(cancelButton);
 
         this.buttonList.addSingleOptionEntry(worldTypeOption);
         this.buttonList.addOptionEntry(biomeTypeOption, biomeSettingsOption);
-        
-        this.children.add(this.buttonList);
     }
     
     @Override
@@ -159,18 +149,17 @@ public abstract class WorldScreenProvider extends Screen {
         
         super.render(matrixStack, mouseX, mouseY, tickDelta);
         
-        // Render tooltips
+        // Render tooltips, if present
         List<OrderedText> tooltips = GameOptionsScreen.getHoveredButtonTooltip(this.buttonList, mouseX, mouseY);
         if (tooltips != null) {
             this.renderOrderedTooltip(matrixStack, tooltips, mouseX, mouseY);
         }
     }
     
-    protected abstract void setChunkProviderSettings();
-    
-    private void setBiomeProviderSettings() {
-        this.biomeProviderSettings.putString("biomeType", this.biomeType);
-        this.biomeProviderSettings.putString("singleBiome", this.singleBiome);
+    protected void setDefaultSingleBiome(NbtCompound biomeProviderSettings, String defaultBiome) {
+     // Replace default single biome with one supplied by world provider, if switching to Single biome type
+        if (NBTUtil.readStringOrThrow("biomeType", biomeProviderSettings).equals(BuiltInTypes.Biome.SINGLE.name))
+            biomeProviderSettings.putString("singleBiome", defaultBiome);
     }
     
     public DynamicRegistryManager getRegistryManager() {
@@ -178,26 +167,14 @@ public abstract class WorldScreenProvider extends Screen {
     }
     
     public NbtCompound getBiomeProviderSettings() {
-        return (new NbtCompound()).copyFrom(this.biomeProviderSettings);
+        return new NbtCompound().copyFrom(this.biomeProviderSettings);
     }
     
-    public void setBiomeProviderSettings(String name, NbtElement element) {
-        this.biomeProviderSettings.put(name, element);
+    public void setBiomeProviderSettings(NbtCompound newBiomeProviderSettings) {
+        this.biomeProviderSettings.copyFrom(newBiomeProviderSettings);
     }
     
-    public void setBiomeProviderSettings(NbtCompound settings) {
-        this.biomeProviderSettings.copyFrom(settings);
-    }
-    
-    public NbtCompound getChunkProviderSettings() {
-        return (new NbtCompound()).copyFrom(this.chunkProviderSettings);
-    }
-    
-    public String getSingleBiome() {
-        return this.singleBiome;
-    }
-    
-    public void setSingleBiome(String singleBiome) {
-        this.singleBiome = singleBiome;
+    public void setBiomeProviderSettings(String key, NbtElement element) {
+        this.biomeProviderSettings.put(key, element);
     }
 }

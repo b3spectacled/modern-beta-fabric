@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.gui.screen.biome;
 
 import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
+import com.bespectacled.modernbeta.util.NBTUtil;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.NbtString;
@@ -13,11 +14,14 @@ public class SingleBiomeScreenProvider {
         return new CustomizeBuffetLevelScreen(
             screenProvider, 
             screenProvider.getRegistryManager(),
-            (biome) -> {
-                screenProvider.setSingleBiome(screenProvider.getRegistryManager().<Biome>get(Registry.BIOME_KEY).getId(biome).toString());
-                screenProvider.setBiomeProviderSettings("singleBiome", NbtString.of(screenProvider.getSingleBiome()));
-            },
-            screenProvider.getRegistryManager().<Biome>get(Registry.BIOME_KEY).get(new Identifier(screenProvider.getSingleBiome()))
+            biome -> screenProvider.setBiomeProviderSettings(
+                "singleBiome", 
+                NbtString.of(screenProvider.getRegistryManager().<Biome>get(Registry.BIOME_KEY).getId(biome).toString())
+            ),
+            screenProvider
+                .getRegistryManager()
+                .<Biome>get(Registry.BIOME_KEY)
+                .get(new Identifier(NBTUtil.readStringOrThrow("singleBiome", screenProvider.getBiomeProviderSettings())))
         );
     }
 }

@@ -1,6 +1,5 @@
 package com.bespectacled.modernbeta.gui.screen.world;
 
-import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -23,168 +22,124 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class IndevWorldScreenProvider extends WorldScreenProvider {
-    private IndevType levelType;
-    private IndevTheme levelTheme;
-
-    private int levelWidth;
-    private int levelLength;
-    private int levelHeight;
-    
-    private float caveRadius;
-    
-    private final Supplier<ChunkGeneratorSettings> chunkGenSettings;
-    
     public IndevWorldScreenProvider(
         CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager, 
-        NbtCompound biomeProviderSettings, 
-        NbtCompound chunkProviderSettings, 
+        DynamicRegistryManager registryManager,
+        NbtCompound chunkProviderSettings,
+        NbtCompound biomeProviderSettings,
         BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
-        super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
-        
-        this.levelType = IndevType.fromName(NBTUtil.readString("levelType", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelType));
-        this.levelTheme = IndevTheme.fromName(NBTUtil.readString("levelTheme", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelTheme));
-        
-        this.levelWidth = NBTUtil.readInt("levelWidth", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelWidth);
-        this.levelLength = NBTUtil.readInt("levelLength", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelLength);
-        this.levelHeight = NBTUtil.readInt("levelHeight", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelHeight);
-        this.caveRadius = NBTUtil.readFloat("caveRadius", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevCaveRadius);
-        
-        this.chunkGenSettings = () -> 
-            this.registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).get(ModernBeta.createId(BuiltInTypes.Chunk.INDEV.name));
-            
-        this.singleBiome = this.levelTheme.getDefaultBiome().toString();
+        super(parent, registryManager, chunkProviderSettings, biomeProviderSettings, consumer);
     }
     
     @Override
     protected void init() {
         super.init();
         
-        int worldHeight = this.chunkGenSettings.get().getGenerationShapeConfig().getHeight();
-        int minimumY = this.chunkGenSettings.get().getGenerationShapeConfig().getMinimumY();
-        
-        int topY = worldHeight + minimumY;
-        
-        this.buttonList.addSingleOptionEntry(
+        Supplier<ChunkGeneratorSettings> chunkGenSettings = () -> this.registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).get(ModernBeta.createId(BuiltInTypes.Chunk.INDEV.name));
+        int topY = chunkGenSettings.get().getGenerationShapeConfig().getHeight() + chunkGenSettings.get().getGenerationShapeConfig().getMinimumY();
+
+        CyclingOption<IndevTheme> levelTheme = 
             CyclingOption.create(
                 "createWorld.customize.indev.levelTheme", 
-                Arrays.stream(IndevTheme.values()).toArray(IndevTheme[]::new), 
+                IndevTheme.values(), 
                 (value) -> new TranslatableText("createWorld.customize.indev.levelTheme." + value.getName()), 
-                (gameOptions) -> { return this.levelTheme; }, 
+                (gameOptions) -> IndevTheme.fromName(NBTUtil.readString("levelTheme", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelTheme)), 
                 (gameOptions, option, value) -> {
-                    this.levelTheme = value;
-                    this.setChunkProviderSettings();
+                    this.chunkProviderSettings.putString("levelTheme", value.getName());
+                    this.setDefaultSingleBiome(this.biomeProviderSettings, value.getDefaultBiome().toString());
                     
                     this.client.openScreen(
                         this.worldProvider.createLevelScreen(
                             this.parent, 
                             this.registryManager, 
-                            this.biomeProviderSettings, 
                             this.chunkProviderSettings, 
+                            this.biomeProviderSettings, 
                             this.consumer
                     ));
                 }
-            )
-        );
-        
-        this.buttonList.addSingleOptionEntry(
+            );
+    
+        CyclingOption<IndevType> levelType = 
             CyclingOption.create(
                 "createWorld.customize.indev.levelType", 
                 IndevType.values(), 
                 (value) -> new TranslatableText("createWorld.customize.indev.levelType." + value.getName()), 
-                (gameOptions) -> { return this.levelType; }, 
-                (gameOptions, option, value) -> {
-                    this.levelType = value;
-                })
-        );
+                (gameOptions) -> IndevType.fromName(NBTUtil.readString("levelType", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelType)), 
+                (gameOptions, option, value) -> this.chunkProviderSettings.putString("levelType", value.getName())
+            );
         
-        this.buttonList.addSingleOptionEntry(
+        DoubleOption levelWidth = 
             new DoubleOption(
                 "createWorld.customize.indev.widthSlider", 
                 128D, 1024D, 128f,
-                (gameOptions) -> { return (double) this.levelWidth; }, // Getter
-                (gameOptions, value) -> { // Setter
-                    this.levelWidth = value.intValue();
-                },
+                (gameOptions) -> (double)NBTUtil.readInt("levelWidth", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelWidth), // Getter
+                (gameOptions, value) -> this.chunkProviderSettings.putInt("levelWidth", value.intValue()),
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
                         "options.generic_value", 
                         new Object[] { 
                             new TranslatableText("createWorld.customize.indev.levelWidth"), 
-                            Text.of(String.valueOf(this.levelWidth)) 
+                            Text.of(String.valueOf(NBTUtil.readInt("levelWidth", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelWidth))) 
                     });
                 }
-        ));
+            );
         
-        this.buttonList.addSingleOptionEntry(
+        DoubleOption levelLength =
             new DoubleOption(
-                "createWorld.customize.indev.lengthSlider", 
+                "createWorld.customize.indev.widthSlider", 
                 128D, 1024D, 128f,
-                (gameOptions) -> { return (double) this.levelLength; }, // Getter
-                (gameOptions, value) -> { // Setter
-                    this.levelLength = value.intValue();
-                },
+                (gameOptions) -> (double)NBTUtil.readInt("levelLength", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelLength), // Getter
+                (gameOptions, value) -> this.chunkProviderSettings.putInt("levelLength", value.intValue()),
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
                         "options.generic_value", 
                         new Object[] { 
                             new TranslatableText("createWorld.customize.indev.levelLength"), 
-                            Text.of(String.valueOf(this.levelLength)) 
+                            Text.of(String.valueOf(NBTUtil.readInt("levelLength", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelLength))) 
                     });
                 }
-        ));
-      
-        this.buttonList.addSingleOptionEntry(
+            );
+        
+        DoubleOption levelHeight =
             new DoubleOption(
                 "createWorld.customize.indev.heightSlider", 
                 64D, (double)topY, 64F,
-                (gameOptions) -> { return (double) this.levelHeight; }, // Getter
-                (gameOptions, value) -> { // Setter
-                    this.levelHeight = value.intValue();
-                },
+                (gameOptions) -> (double)NBTUtil.readInt("levelHeight", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelHeight), // Getter
+                (gameOptions, value) ->this.chunkProviderSettings.putInt("levelHeight", value.intValue()),
                 (gameOptions, doubleOptions) -> {
-                    int seaLevel = this.levelHeight / 2;
-                    String heightString = String.valueOf(this.levelHeight) + " (Sea Level: " + String.valueOf(seaLevel) + ")";
-                    
                     return new TranslatableText(
                         "options.generic_value", 
                         new Object[] { 
                             new TranslatableText("createWorld.customize.indev.levelHeight"), 
-                            Text.of(heightString) 
+                            Text.of(String.valueOf(NBTUtil.readInt("levelHeight", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelHeight))) 
                     });
                 }
-        ));
+            );
         
-        this.buttonList.addSingleOptionEntry(
+        DoubleOption caveRadius =
             new DoubleOption(
                 "createWorld.customize.indev.caveRadiusSlider", 
                 1D, 3D, 0.1f,
-                (gameOptions) -> { return (double) this.caveRadius; }, // Getter
-                (gameOptions, value) -> { // Setter
-                    this.caveRadius = value.floatValue();
-                },
+                (gameOptions) -> (double)NBTUtil.readFloat("caveRadius", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevCaveRadius), // Getter
+                (gameOptions, value) ->this.chunkProviderSettings.putFloat("caveRadius", value.floatValue()),
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
-                        "options.generic_value",  
+                        "options.generic_value", 
                         new Object[] { 
                             new TranslatableText("createWorld.customize.indev.caveRadius"), 
-                            Text.of(String.format("%.01f", this.caveRadius)) 
+                            Text.of(String.format("%.01f", NBTUtil.readFloat("caveRadius", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevCaveRadius)))  
                     });
                 }
-        ));
+            );
+        
+        this.buttonList.addSingleOptionEntry(levelTheme);
+        this.buttonList.addSingleOptionEntry(levelType);
+        this.buttonList.addSingleOptionEntry(levelWidth);
+        this.buttonList.addSingleOptionEntry(levelLength);        
+        this.buttonList.addSingleOptionEntry(levelHeight);
+        this.buttonList.addSingleOptionEntry(caveRadius);
         
         this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
-    }
-    
-    @Override
-    protected void setChunkProviderSettings() {
-        this.chunkProviderSettings.putString("levelTheme", this.levelTheme.getName());
-        this.chunkProviderSettings.putString("levelType", this.levelType.getName());
-        
-        this.chunkProviderSettings.putInt("levelWidth", this.levelWidth);
-        this.chunkProviderSettings.putInt("levelLength", this.levelLength);
-        this.chunkProviderSettings.putInt("levelHeight", this.levelHeight);
-        this.chunkProviderSettings.putFloat("caveRadius", this.caveRadius);
     }
 }

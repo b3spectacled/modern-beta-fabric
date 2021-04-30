@@ -12,20 +12,18 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 public class BaseWorldScreenProvider extends WorldScreenProvider {
     public BaseWorldScreenProvider(
         CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager, 
-        NbtCompound biomeProviderSettings, 
-        NbtCompound chunkProviderSettings, 
+        DynamicRegistryManager registryManager,
+        NbtCompound chunkProviderSettings,
+        NbtCompound biomeProviderSettings,
         BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
-        super(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
+        super(parent, registryManager, chunkProviderSettings, biomeProviderSettings, consumer);
     }
-
+    
     @Override
     protected void init() {
         super.init();
         this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
     }
-    
-    @Override
-    protected void setChunkProviderSettings() {}
+
 }

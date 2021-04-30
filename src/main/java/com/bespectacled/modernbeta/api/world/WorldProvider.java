@@ -78,11 +78,11 @@ public final class WorldProvider {
     
     public WorldScreenProvider createLevelScreen(
         CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager, 
+        DynamicRegistryManager registryManager,
+        NbtCompound chunkProviderSettings,
         NbtCompound biomeProviderSettings,
-        NbtCompound chunkProviderSettings, 
         BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
-        return ProviderRegistries.WORLD_SCREEN.get(this.guiProvider).apply(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
+        return ProviderRegistries.WORLD_SCREEN.get(this.guiProvider).apply(parent, registryManager, chunkProviderSettings, biomeProviderSettings, consumer);
     }
 }

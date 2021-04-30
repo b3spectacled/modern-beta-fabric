@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NBTUtil;
@@ -27,7 +28,7 @@ import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class Infdev227ChunkProvider extends BaseChunkProvider {
+public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseChunkImitable {
     private final boolean generateInfdevPyramid;
     private final boolean generateInfdevWall;
 
@@ -240,7 +241,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider {
                     //blockToSet = blockWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
                     //BlockState blockstateToSet = this.getBlockState(absX, y, absZ, blockToSet);
                     
-                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, absX, y, absZ, blockToSet, this.defaultFluid.getBlock());
+                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, this.blockSource, absX, y, absZ, blockToSet, this.defaultFluid.getBlock());
                     
                     chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
                     
