@@ -3,13 +3,13 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.SimplexNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.world.gen.OldGeneratorUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
@@ -25,7 +25,7 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class BetaIslandsChunkProvider extends NoiseChunkProvider {
+public class BetaIslandsChunkProvider extends NoiseChunkProvider implements BetaClimateResolver {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
@@ -68,7 +68,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         this.outerIslandNoiseScale = NBTUtil.readFloat("outerIslandNoiseScale", providerSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseScale);
         this.outerIslandNoiseOffset = NBTUtil.readFloat("outerIslandNoiseOffset", providerSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseOffset);
         
-        BetaClimateSampler.INSTANCE.setSeed(seed);
+        this.setSeed(seed);
         setForestOctaves(forestNoiseOctaves);
     }
 
@@ -273,16 +273,14 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         if (scaleDepth.length != 2) 
             throw new IllegalArgumentException("[Modern Beta] Scale/Depth array has incorrect length, should be 2.");
         
-        BetaClimateSampler climateSampler = BetaClimateSampler.INSTANCE;
-        
         double depthNoiseScaleX = 200D;
         double depthNoiseScaleZ = 200D;
         
         //double baseSize = noiseResolutionY / 2D; // Or: 17 / 2D = 8.5
         double baseSize = 8.5D;
         
-        double temp = climateSampler.sampleTemp(x, z);
-        double humid = climateSampler.sampleHumid(x, z) * temp;
+        double temp = this.sampleTemp(x, z);
+        double humid = this.sampleHumid(x, z) * temp;
         
         humid = 1.0D - humid;
         humid *= humid;

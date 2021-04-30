@@ -26,7 +26,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public abstract class WorldScreenProvider extends Screen {
+public abstract class WorldScreen extends Screen {
     protected final CreateWorldScreen parent;
     protected final DynamicRegistryManager registryManager;
     protected final WorldProvider worldProvider;
@@ -37,7 +37,7 @@ public abstract class WorldScreenProvider extends Screen {
     
     protected ButtonListWidget buttonList;
     
-    public WorldScreenProvider(
+    public WorldScreen(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager,
         NbtCompound chunkProviderSettings,

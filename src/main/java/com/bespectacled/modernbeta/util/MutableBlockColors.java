@@ -7,7 +7,5 @@ public interface MutableBlockColors {
         return (MutableBlockColors) blockColors;
     }
 
-    void setSeed(long seed);
-
     void setSeed(long seed, boolean defaultColors);
 }

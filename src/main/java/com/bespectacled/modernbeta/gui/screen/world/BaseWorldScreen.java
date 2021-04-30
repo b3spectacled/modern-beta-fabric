@@ -2,15 +2,15 @@ package com.bespectacled.modernbeta.gui.screen.world;
 
 import java.util.function.BiConsumer;
 
-import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.WorldScreen;
 import com.bespectacled.modernbeta.gui.TextOption;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class BaseWorldScreenProvider extends WorldScreenProvider {
-    public BaseWorldScreenProvider(
+public class BaseWorldScreen extends WorldScreen {
+    public BaseWorldScreen(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager,
         NbtCompound chunkProviderSettings,

@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.api.world;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.WorldScreen;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 
@@ -76,7 +76,7 @@ public final class WorldProvider {
         return ProviderRegistries.CHUNK.get(this.chunkProvider).apply(seed, chunkGenerator, generatorSettings, providerSettings);
     }
     
-    public WorldScreenProvider createLevelScreen(
+    public WorldScreen createLevelScreen(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager,
         NbtCompound chunkProviderSettings,

@@ -11,8 +11,8 @@ import net.minecraft.client.option.CyclingOption;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class Infdev227WorldScreenProvider extends InfWorldScreenProvider {
-    public Infdev227WorldScreenProvider(
+public class Infdev227WorldScreen extends InfWorldScreen {
+    public Infdev227WorldScreen(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager,
         NbtCompound chunkProviderSettings,

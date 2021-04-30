@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.gui.screen.world;
 import java.util.function.BiConsumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.WorldScreen;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.NBTUtil;
@@ -13,8 +13,8 @@ import net.minecraft.client.option.CyclingOption;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class InfWorldScreenProvider extends WorldScreenProvider {
-    public InfWorldScreenProvider(
+public class InfWorldScreen extends WorldScreen {
+    public InfWorldScreen(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager,
         NbtCompound chunkProviderSettings,
@@ -41,7 +41,7 @@ public class InfWorldScreenProvider extends WorldScreenProvider {
             buttonList.addSingleOptionEntry(generateOceans);
         }
 
-        if (!(this instanceof Infdev227WorldScreenProvider) && !(this instanceof IslandWorldScreenProvider))
+        if (!(this instanceof Infdev227WorldScreen) && !(this instanceof IslandWorldScreen))
             this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
 
     }

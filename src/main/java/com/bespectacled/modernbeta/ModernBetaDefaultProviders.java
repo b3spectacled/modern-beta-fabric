@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta;
 
+import com.bespectacled.modernbeta.api.gui.BiomeScreen;
 import com.bespectacled.modernbeta.api.registry.*;
 import com.bespectacled.modernbeta.gui.screen.world.*;
 import com.bespectacled.modernbeta.gui.screen.biome.*;
@@ -68,18 +69,19 @@ public class ModernBetaDefaultProviders {
     
     // Register default screen providers
     public static void registerWorldScreenProviders() {
-        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.BASE.name, BaseWorldScreenProvider::new);
-        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF.name, InfWorldScreenProvider::new);
-        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INFDEV_227.name, Infdev227WorldScreenProvider::new);
-        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INDEV.name, IndevWorldScreenProvider::new);
-        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.ISLAND.name, IslandWorldScreenProvider::new);
+        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.BASE.name, BaseWorldScreen::new);
+        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF.name, InfWorldScreen::new);
+        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INFDEV_227.name, Infdev227WorldScreen::new);
+        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INDEV.name, IndevWorldScreen::new);
+        ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.ISLAND.name, IslandWorldScreen::new);
     }
     
     // Register default settings screen actions (Note: Match identifiers with biome ids!)
     public static void registerBiomeScreenProviders() {
-        ProviderRegistries.BIOME_SCREEN.register(BuiltInTypes.Biome.BETA.name, BetaBiomeScreenProvider::create);
-        ProviderRegistries.BIOME_SCREEN.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeScreenProvider::create);
-        ProviderRegistries.BIOME_SCREEN.register(BuiltInTypes.Biome.VANILLA.name, VanillaBiomeScreenProvider::create);
+        ProviderRegistries.BIOME_SCREEN.register("none", BiomeScreen::createNullScreen);
+        ProviderRegistries.BIOME_SCREEN.register(BuiltInTypes.Biome.BETA.name, BetaBiomeScreen::create);
+        ProviderRegistries.BIOME_SCREEN.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeScreen::create);
+        ProviderRegistries.BIOME_SCREEN.register(BuiltInTypes.Biome.VANILLA.name, VanillaBiomeScreen::create);
     }
     
     // Register default world providers

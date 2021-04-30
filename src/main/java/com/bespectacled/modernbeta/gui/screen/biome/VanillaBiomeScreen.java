@@ -3,8 +3,8 @@ package com.bespectacled.modernbeta.gui.screen.biome;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gui.BiomeScreenProvider;
-import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.BiomeScreen;
+import com.bespectacled.modernbeta.api.gui.WorldScreen;
 import com.bespectacled.modernbeta.util.NBTUtil;
 
 import net.minecraft.client.option.DoubleOption;
@@ -13,9 +13,9 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class VanillaBiomeScreenProvider extends BiomeScreenProvider {
-    private VanillaBiomeScreenProvider(
-        WorldScreenProvider parent, 
+public class VanillaBiomeScreen extends BiomeScreen {
+    private VanillaBiomeScreen(
+        WorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound parentProviderSettings,
         Consumer<NbtCompound> consumer
@@ -23,8 +23,8 @@ public class VanillaBiomeScreenProvider extends BiomeScreenProvider {
         super(parent, registryManager, parentProviderSettings, consumer);
     }
     
-    public static VanillaBiomeScreenProvider create(WorldScreenProvider screenProvider) {
-        return new VanillaBiomeScreenProvider(
+    public static VanillaBiomeScreen create(WorldScreen screenProvider) {
+        return new VanillaBiomeScreen(
             screenProvider, 
             screenProvider.getRegistryManager(), 
             screenProvider.getBiomeProviderSettings(),

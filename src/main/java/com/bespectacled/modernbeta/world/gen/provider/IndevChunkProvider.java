@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
 import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -15,12 +16,9 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.beta.BetaClimateSampler;
 import com.bespectacled.modernbeta.world.biome.indev.IndevTheme;
 import com.bespectacled.modernbeta.world.biome.indev.IndevType;
 import com.bespectacled.modernbeta.world.biome.indev.IndevUtil;
-import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -147,11 +145,9 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                 int absZ = startZ + z;
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, 0, absZ));
                 
-                double temp;
                 boolean isCold;
-                if (biomeSource.getBiomeProvider() instanceof BetaBiomeProvider) {
-                    temp = BetaClimateSampler.INSTANCE.sampleTemp(absX, absZ);
-                    isCold = temp < 0.5D ? true : false;
+                if (biomeSource.getBiomeProvider() instanceof BetaClimateResolver) {
+                    isCold = ((BetaClimateResolver)biomeSource.getBiomeProvider()).sampleTemp(absX, absZ) < 0.5D ? true : false;
                 } else {
                     isCold = biome.isCold(mutable);
                 }

@@ -4,7 +4,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gui.WorldScreenProvider;
+import com.bespectacled.modernbeta.api.gui.WorldScreen;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.NBTUtil;
@@ -21,8 +21,8 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class IndevWorldScreenProvider extends WorldScreenProvider {
-    public IndevWorldScreenProvider(
+public class IndevWorldScreen extends WorldScreen {
+    public IndevWorldScreen(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager,
         NbtCompound chunkProviderSettings,
@@ -87,7 +87,7 @@ public class IndevWorldScreenProvider extends WorldScreenProvider {
         
         DoubleOption levelLength =
             new DoubleOption(
-                "createWorld.customize.indev.widthSlider", 
+                "createWorld.customize.indev.lengthSlider", 
                 128D, 1024D, 128f,
                 (gameOptions) -> (double)NBTUtil.readInt("levelLength", chunkProviderSettings, ModernBeta.BETA_CONFIG.generation_config.indevLevelLength), // Getter
                 (gameOptions, value) -> this.chunkProviderSettings.putInt("levelLength", value.intValue()),

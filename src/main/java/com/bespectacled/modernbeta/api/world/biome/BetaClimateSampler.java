@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.world.biome.beta;
+package com.bespectacled.modernbeta.api.world.biome;
 
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -22,7 +22,7 @@ public enum BetaClimateSampler {
         this.biomeCache = new BiomeCache(this);
     }
     
-    public void setSeed(long seed) {
+    protected void setSeed(long seed) {
         if (this.seed == seed) return;
         
         this.seed = seed;
@@ -30,29 +30,29 @@ public enum BetaClimateSampler {
         this.biomeCache.clear();
     }
     
-    public double sampleTemp(int x, int z) {
+    protected double sampleTemp(int x, int z) {
         return this.biomeCache.getCachedChunk(x, z).sampleTempAtPoint(x, z);
     }
     
-    public double sampleHumid(int x, int z) {
+    protected double sampleHumid(int x, int z) {
         return this.biomeCache.getCachedChunk(x, z).sampleHumidAtPoint(x, z);
     }
     
-    public void sampleTempHumid(double[] arr, int x, int z) {
+    protected void sampleTempHumid(double[] arr, int x, int z) {
         this.biomeCache.getCachedChunk(x, z).sampleTempHumidAtPoint(arr, x, z);
     }
     
-    public int getSkyColor(int x, int z) {
+    protected double sampleSkyTemp(int x, int z) {
+        return this.biomeCache.getCachedChunk(x, z).sampleSkyTempAtPoint(x, z);
+    }
+    
+    protected int sampleSkyColor(int x, int z) {
         float temp = (float)sampleSkyTemp(x, z);
         
         temp /= 3F;
         temp = MathHelper.clamp(temp, -1F, 1F);
         
         return MathHelper.hsvToRgb(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F);
-    }
-    
-    private double sampleSkyTemp(int x, int z) {
-        return this.biomeCache.getCachedChunk(x, z).sampleSkyTempAtPoint(x, z);
     }
     
     private void sampleTempHumidAtPoint(double arr[], int x, int z) {

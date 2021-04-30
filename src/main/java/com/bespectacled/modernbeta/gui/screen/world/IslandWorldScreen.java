@@ -14,8 +14,8 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class IslandWorldScreenProvider extends InfWorldScreenProvider {
-    public IslandWorldScreenProvider(
+public class IslandWorldScreen extends InfWorldScreen {
+    public IslandWorldScreen(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager,
         NbtCompound chunkProviderSettings,

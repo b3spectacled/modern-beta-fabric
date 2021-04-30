@@ -12,8 +12,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public abstract class BiomeScreenProvider extends Screen {
-    protected final WorldScreenProvider parent;    
+public abstract class BiomeScreen extends Screen {
+    protected final WorldScreen parent;    
     protected final DynamicRegistryManager registryManager;
     protected final NbtCompound parentProviderSettings;
     protected final Consumer<NbtCompound> consumer;
@@ -22,8 +22,8 @@ public abstract class BiomeScreenProvider extends Screen {
     
     protected ButtonListWidget buttonList;
     
-    protected BiomeScreenProvider(
-        WorldScreenProvider parent, 
+    protected BiomeScreen(
+        WorldScreen parent, 
         DynamicRegistryManager registryManager, 
         NbtCompound parentProviderSettings,
         Consumer<NbtCompound> consumer
@@ -75,6 +75,10 @@ public abstract class BiomeScreenProvider extends Screen {
         DrawableHelper.drawCenteredText(matrixStack, this.textRenderer, this.title, this.width / 2, 16, 16777215);
         
         super.render(matrixStack, mouseX, mouseY, tickDelta);
+    }
+    
+    public static WorldScreen createNullScreen(Screen parent) {
+        return null;
     }
 }   
 

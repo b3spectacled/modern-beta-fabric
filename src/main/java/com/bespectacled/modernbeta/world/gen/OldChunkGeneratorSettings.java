@@ -60,7 +60,7 @@ public class OldChunkGeneratorSettings {
     
     public static void export() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Path dir = Paths.get("..\\src\\main\\resources\\data\\modern_beta\\noise_settings");
+        Path dir = Paths.get("..\\src\\main\\resources\\data\\modern_beta\\worldgen\\noise_settings");
         
         for (Identifier i : SETTINGS_MAP.keySet()) {
             ChunkGeneratorSettings s = SETTINGS_MAP.get(i);
