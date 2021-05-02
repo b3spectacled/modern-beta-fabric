@@ -7,7 +7,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
-import com.bespectacled.modernbeta.gui.ScreenButtonOption;
+import com.bespectacled.modernbeta.gui.ActionButtonOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.NBTUtil;
 
@@ -69,7 +69,7 @@ public abstract class WorldScreen extends Screen {
         CyclingOption<String> biomeTypeOption;
         
         Screen biomeSettingsScreen;
-        ScreenButtonOption biomeSettingsOption;
+        ActionButtonOption biomeSettingsOption;
         
         doneButton = new ButtonWidget(
             this.width / 2 - 155, this.height - 28, 150, 20, 
@@ -129,7 +129,7 @@ public abstract class WorldScreen extends Screen {
         );
         
         biomeSettingsScreen = ProviderRegistries.BIOME_SCREEN.get(NBTUtil.readStringOrThrow("biomeType", this.biomeProviderSettings), screen -> null).apply(this); 
-        biomeSettingsOption = new ScreenButtonOption(
+        biomeSettingsOption = new ActionButtonOption(
             biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
             biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? GUIUtil.createTranslatableBiomeStringFromId(singleBiome) : "",
             biomeSettingsScreen != null ? widget -> this.client.openScreen(biomeSettingsScreen) : null

@@ -1,9 +1,10 @@
 package com.bespectacled.modernbeta.world.biome.beta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMap.BetaBiomeType;
 
@@ -20,7 +21,7 @@ public class BetaClimateMapCustomizable {
     
     public BetaClimateMapCustomizable(NbtCompound biomeProviderSettings) {
         this.biomeProviderSettings = biomeProviderSettings;
-        this.biomeMap = new HashMap<String, Identifier>();
+        this.biomeMap = new LinkedHashMap<String, Identifier>();
         
         this.loadBiomeId("desert", BetaBiomes.DESERT_ID);
         this.loadBiomeId("forest", BetaBiomes.FOREST_ID);
@@ -41,6 +42,13 @@ public class BetaClimateMapCustomizable {
         this.loadBiomeId("warm_ocean",  BetaBiomes.WARM_OCEAN_ID);
         
         this.generateBiomeLookup();
+    }
+    
+    public Map<String, Identifier> getMap() {
+        Map<String, Identifier> newBiomeMap = new LinkedHashMap<>();
+        this.biomeMap.entrySet().forEach(e -> newBiomeMap.put(e.getKey(), e.getValue()));
+
+        return newBiomeMap;
     }
     
     public Identifier getBiomeFromLookup(double temp, double humid, BetaBiomeType type) {

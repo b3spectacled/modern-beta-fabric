@@ -44,7 +44,7 @@ public final class ProviderRegistry<T> {
     }
     
     public List<T> getEntries() {
-        return this.map.values().stream().collect(Collectors.toUnmodifiableList());
+        return this.map.values().stream().collect(Collectors.toList());
     }
 }
   

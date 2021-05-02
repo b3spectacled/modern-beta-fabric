@@ -8,16 +8,16 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 
 /*
- * Option Wrapper for Screen Open Button
+ * Option Wrapper for arbitrary actions (i.e. opening new screens)
  */
-public class ScreenButtonOption extends Option {
+public class ActionButtonOption extends Option {
     private final String key;
     private final String suffix;
     private final ButtonWidget.PressAction onPress;
     
     private AbstractButtonWidget button;
     
-    public ScreenButtonOption(String key, String suffix, ButtonWidget.PressAction onPress) {
+    public ActionButtonOption(String key, String suffix, ButtonWidget.PressAction onPress) {
         super(key);
         
         this.key = key;
