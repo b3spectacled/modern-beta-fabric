@@ -157,8 +157,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                             --flag;
                             chunk.setBlockState(mutable, fillerBlock, false);
                             
-                            // Gens layer of sandstone starting at lowest block of sand, of height 1 to 4.
-                            // Beta backport.
+                            // Beta backport, adds layer of sandstone starting at lowest block of sand, of height 1 to 4.
                             if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
                                 flag = sandstoneRand.nextInt(4);
                                 fillerBlock = BlockStates.SANDSTONE;

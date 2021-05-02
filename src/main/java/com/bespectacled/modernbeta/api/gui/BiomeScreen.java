@@ -76,10 +76,6 @@ public abstract class BiomeScreen extends Screen {
         
         super.render(matrixStack, mouseX, mouseY, tickDelta);
     }
-    
-    public static WorldScreen createNullScreen(Screen parent) {
-        return null;
-    }
 }   
 
 

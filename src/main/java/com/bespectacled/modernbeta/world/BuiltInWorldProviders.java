@@ -11,6 +11,7 @@ public class BuiltInWorldProviders {
     public static final WorldProvider BETA;
     public static final WorldProvider SKYLANDS;
     public static final WorldProvider ALPHA;
+    public static final WorldProvider INFDEV_611;
     public static final WorldProvider INFDEV_415;
     public static final WorldProvider INFDEV_227;
     public static final WorldProvider INDEV;
@@ -41,6 +42,15 @@ public class BuiltInWorldProviders {
             BuiltInTypes.WorldScreen.INF.name, 
             BuiltInTypes.Biome.SINGLE.name, 
             BuiltInTypes.CaveBiome.NONE.name, 
+            ClassicBiomes.ALPHA_ID.toString()
+        );
+        
+        INFDEV_611 = new WorldProvider(
+            BuiltInTypes.Chunk.INFDEV_611.name,
+            OldChunkGeneratorSettings.INFDEV_611.toString(),
+            BuiltInTypes.WorldScreen.INF.name,
+            BuiltInTypes.Biome.SINGLE.name,
+            BuiltInTypes.CaveBiome.NONE.name,
             ClassicBiomes.ALPHA_ID.toString()
         );
         

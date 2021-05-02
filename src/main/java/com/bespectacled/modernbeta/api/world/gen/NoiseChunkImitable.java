@@ -25,7 +25,7 @@ public interface NoiseChunkImitable {
      */
     default BlockState getBlockState(StructureWeightSampler weightSampler, BlockSource blockSource, int x, int y, int z, Block blockToSet, Block defaultFluid) {
         boolean isFluid = blockToSet == Blocks.AIR || blockToSet == defaultFluid;
-        double simDensity = isFluid ? -50D : 50D;
+        double simDensity = isFluid ? -25D : 25D;
         
         double clampedDensity = MathHelper.clamp(simDensity / 200.0, -1.0, 1.0);
         clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;

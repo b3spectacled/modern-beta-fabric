@@ -108,7 +108,7 @@ public class MixinBlockColors implements MutableBlockColors {
         }
 
         int x = pos.getX();
-        int y = pos.getY();
+        //int y = pos.getY();
         int z = pos.getZ();
         
         //double tempModifier = getTempOffset(y);

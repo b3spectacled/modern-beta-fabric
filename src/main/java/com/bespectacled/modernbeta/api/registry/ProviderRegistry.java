@@ -28,7 +28,14 @@ public final class ProviderRegistry<T> {
         return this.map.get(key);
     }
     
-    private boolean contains(String key) {
+    public T get(String key, T alternate) {
+        if (!this.contains(key))
+            return alternate;
+        
+        return this.map.get(key);
+    }
+    
+    public boolean contains(String key) {
         return this.map.containsKey(key);
     }
     

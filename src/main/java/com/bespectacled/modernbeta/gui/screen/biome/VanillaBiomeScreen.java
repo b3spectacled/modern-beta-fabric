@@ -40,14 +40,14 @@ public class VanillaBiomeScreen extends BiomeScreen {
             new DoubleOption(
                 "createWorld.customize.vanilla.vanillaBiomeSizeSlider", 
                 1D, 8D, 1F,
-                (gameOptions) -> (double)NBTUtil.readInt("vanillaBiomeSize", parentProviderSettings, ModernBeta.BETA_CONFIG.biome_config.vanillaBiomeSize),
+                (gameOptions) -> (double)NBTUtil.readInt("vanillaBiomeSize", this.biomeProviderSettings, ModernBeta.BETA_CONFIG.biome_config.vanillaBiomeSize),
                 (gameOptions, value) -> this.biomeProviderSettings.putInt("vanillaBiomeSize", value.intValue()),
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
                         "options.generic_value", 
                         new Object[] { 
                             new TranslatableText("createWorld.customize.vanilla.biomeSize"), 
-                            Text.of(String.valueOf(NBTUtil.readInt("vanillaBiomeSize", parentProviderSettings, ModernBeta.BETA_CONFIG.biome_config.vanillaBiomeSize))) 
+                            Text.of(String.valueOf(NBTUtil.readInt("vanillaBiomeSize", this.biomeProviderSettings, ModernBeta.BETA_CONFIG.biome_config.vanillaBiomeSize))) 
                     });
                 }
             );
@@ -56,14 +56,14 @@ public class VanillaBiomeScreen extends BiomeScreen {
             new DoubleOption(
                 "createWorld.customize.indev.vanillaOceanBiomeSizeSlider", 
                 1D, 8D, 1F,
-                (gameOptions) -> (double)NBTUtil.readInt("vanillaOceanBiomeSize", parentProviderSettings, ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize), // Getter
+                (gameOptions) -> (double)NBTUtil.readInt("vanillaOceanBiomeSize", this.biomeProviderSettings, ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize), // Getter
                 (gameOptions, value) -> this.biomeProviderSettings.putInt("vanillaOceanBiomeSize", value.intValue()),
                 (gameOptions, doubleOptions) -> {
                     return new TranslatableText(
                         "options.generic_value", 
                         new Object[] { 
                             new TranslatableText("createWorld.customize.vanilla.oceanBiomeSize"), 
-                            Text.of(String.valueOf(NBTUtil.readInt("vanillaOceanBiomeSize", parentProviderSettings, ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize))) 
+                            Text.of(String.valueOf(NBTUtil.readInt("vanillaOceanBiomeSize", this.biomeProviderSettings, ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize))) 
                     });
                 }
             );

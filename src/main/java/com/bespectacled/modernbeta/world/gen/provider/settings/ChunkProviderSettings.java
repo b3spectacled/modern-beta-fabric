@@ -30,6 +30,10 @@ public class ChunkProviderSettings {
         return createSettingsBase(BuiltInTypes.Chunk.SKYLANDS.name, false);
     }
     
+    public static NbtCompound createSettingsInfdev611() {
+        return createSettingsBase(BuiltInTypes.Chunk.INFDEV_611.name, false);
+    }
+    
     public static NbtCompound createSettingsInfdev415() {
         return createSettingsBase(BuiltInTypes.Chunk.INFDEV_415.name, CONFIG.generateOceans);
     }

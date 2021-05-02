@@ -68,6 +68,7 @@ public abstract class WorldScreen extends Screen {
         CyclingOption<WorldProvider> worldTypeOption;
         CyclingOption<String> biomeTypeOption;
         
+        Screen biomeSettingsScreen;
         ScreenButtonOption biomeSettingsOption;
         
         doneButton = new ButtonWidget(
@@ -89,7 +90,7 @@ public abstract class WorldScreen extends Screen {
         
         worldTypeOption = CyclingOption.create(
             "createWorld.customize.worldType", 
-            ProviderRegistries.WORLD.getEntries().toArray(WorldProvider[]::new),
+            ProviderRegistries.WORLD.getEntries().stream().toArray(WorldProvider[]::new),
             (value) -> new TranslatableText("createWorld.customize.worldType." + value.getChunkProvider()), 
             (gameOptions) -> { return this.worldProvider; }, 
             (gameOptions, option, value) -> {
@@ -127,10 +128,11 @@ public abstract class WorldScreen extends Screen {
             }
         );
         
+        biomeSettingsScreen = ProviderRegistries.BIOME_SCREEN.get(NBTUtil.readStringOrThrow("biomeType", this.biomeProviderSettings), screen -> null).apply(this); 
         biomeSettingsOption = new ScreenButtonOption(
             biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
             biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? GUIUtil.createTranslatableBiomeStringFromId(singleBiome) : "",
-            buttonWidget -> this.client.openScreen(ProviderRegistries.BIOME_SCREEN.get(NBTUtil.readStringOrThrow("biomeType", this.biomeProviderSettings)).apply(this))
+            biomeSettingsScreen != null ? widget -> this.client.openScreen(biomeSettingsScreen) : null
         );
         
         this.addButton(doneButton);

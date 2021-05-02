@@ -20,7 +20,7 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class AlphaChunkProvider extends NoiseChunkProvider {
+public class Infdev611ChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
@@ -30,7 +30,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    public AlphaChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+    public Infdev611ChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, settings);
         super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
         
@@ -67,14 +67,6 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         ChunkRandom sandstoneRand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        double[] sandNoise = this.surfaceNoisePool.borrowArr();
-        double[] gravelNoise = this.surfaceNoisePool.borrowArr();
-        double[] stoneNoise = this.surfaceNoisePool.borrowArr();
-
-        beachNoiseOctaves.sampleArr(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth, eighth, 1.0D);
-        beachNoiseOctaves.sampleArr(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
-        stoneNoiseOctaves.sampleArr(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
-
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.
         for (int x = 0; x < 16; x++) {
@@ -83,9 +75,9 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                 int absZ = (chunkZ << 4) + z;
                 int topY = OldGeneratorUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
                 
-                boolean genSandBeach = sandNoise[x + z * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
-                boolean genGravelBeach = gravelNoise[x + z * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
-                int genStone = (int) (stoneNoise[x + z * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
+                boolean genSandBeach = this.beachNoiseOctaves.sample(absX * eighth, absZ * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0;
+                boolean genGravelBeach = this.beachNoiseOctaves.sample(absZ * eighth, 109.0134, absX * eighth) + rand.nextDouble() * 0.2 > 3.0;
+                int genStone = (int)(this.stoneNoiseOctaves.sample(absX * eighth * 2.0, absX * eighth * 2.0) / 3.0 + 3.0 + rand.nextDouble() * 0.25);
 
                 int flag = -1;
                 
@@ -103,7 +95,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                 for (int y = this.worldTopY - 1; y >= this.minY; y--) {
 
                     // Randomly place bedrock from y=0 to y=5
-                    if (y <= bedrockFloor + rand.nextInt(6) - 1) {
+                    if (y <= bedrockFloor + sandstoneRand.nextInt(6) - 1) {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                         continue;
                     }
@@ -127,65 +119,52 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
 
                     if (someBlock.equals(BlockStates.AIR)) { // Skip if air block
                         flag = -1;
-                        continue;
-                    }
+                    } else if (someBlock.equals(this.defaultBlock)) {
+                        if (flag == -1) {
+                            if (genStone <= 0) { // Generate stone basin if noise permits
+                                topBlock = BlockStates.AIR;
+                                fillerBlock = this.defaultBlock;
+                                
+                            } else if (y >= this.seaLevel - 4 && y <= this.seaLevel + 1) { // Generate beaches at this y range
+                                topBlock = biomeTopBlock;
+                                fillerBlock = biomeFillerBlock;
 
-                    if (!someBlock.equals(this.defaultBlock)) { // Skip if not stone
-                        continue;
-                    }
+                                if (genGravelBeach) {
+                                    topBlock = BlockStates.AIR; // This reduces gravel beach height by 1
+                                    fillerBlock = BlockStates.GRAVEL;
+                                }
 
-                    if (flag == -1) {
-                        if (genStone <= 0) { // Generate stone basin if noise permits
-                            topBlock = BlockStates.AIR;
-                            fillerBlock = this.defaultBlock;
+                                if (genSandBeach) {
+                                    topBlock = BlockStates.SAND;
+                                    fillerBlock = BlockStates.SAND;
+                                }
+                            }
+
+                            if (y < this.seaLevel && topBlock.equals(BlockStates.AIR)) {
+                                topBlock = this.defaultFluid;
+                            }
+
+                            flag = genStone;
+                            if (y >= this.seaLevel - 1) {
+                                chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
+                            } else {
+                                chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
+                            }
                             
-                        } else if (y >= this.seaLevel - 4 && y <= this.seaLevel + 1) { // Generate beaches at this y range
-                            topBlock = biomeTopBlock;
-                            fillerBlock = biomeFillerBlock;
-
-                            if (genGravelBeach) {
-                                topBlock = BlockStates.AIR; // This reduces gravel beach height by 1
-                                fillerBlock = BlockStates.GRAVEL;
-                            }
-
-                            if (genSandBeach) {
-                                topBlock = BlockStates.SAND;
-                                fillerBlock = BlockStates.SAND;
-                            }
-                        }
-
-                        if (y < this.seaLevel && topBlock.equals(BlockStates.AIR)) {
-                            topBlock = this.defaultFluid;
-                        }
-
-                        // Main surface builder section
-                        flag = genStone;
-                        if (y >= this.seaLevel - 1) {
-                            chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
-                        } else {
+                        } else if (flag > 0) { 
+                            flag--;
                             chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
                         }
-
-                        continue;
-                    }
-                    
-                    if (flag > 0) { 
-                        flag--;
-                        chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
-                    }
-
-                    // Beta backport, adds layer of sandstone starting at lowest block of sand, of height 1 to 4.
-                    if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                        flag = sandstoneRand.nextInt(4);
-                        fillerBlock = BlockStates.SANDSTONE;
+                        
+                        // Beta backport, adds layer of sandstone starting at lowest block of sand, of height 1 to 4.
+                        if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
+                            flag = sandstoneRand.nextInt(4);
+                            fillerBlock = BlockStates.SANDSTONE;
+                        }
                     }
                 }
             }
         }
-        
-        this.surfaceNoisePool.returnArr(sandNoise);
-        this.surfaceNoisePool.returnArr(gravelNoise);
-        this.surfaceNoisePool.returnArr(stoneNoise);
     }
     
     @Override
@@ -262,7 +241,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
             }
 
             depth0 /= 1.3999999999999999D;
-            depth0 /= 2D; // Omitting this creates the Infdev 20100611 generator.
+            //depth0 /= 2D; // Omitting this creates the Infdev 20100611 generator.
 
             scale = 0.0D;
 
