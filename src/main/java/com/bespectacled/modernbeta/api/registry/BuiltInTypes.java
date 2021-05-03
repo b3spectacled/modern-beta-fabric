@@ -1,6 +1,8 @@
 package com.bespectacled.modernbeta.api.registry;
 
 public final class BuiltInTypes {
+    public static final String DEFAULT_ID = "default";
+    
     public enum Chunk {
         BETA("beta"),
         SKYLANDS("skylands"),

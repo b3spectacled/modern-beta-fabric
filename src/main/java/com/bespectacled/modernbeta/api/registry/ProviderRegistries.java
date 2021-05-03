@@ -22,22 +22,22 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public final class ProviderRegistries {
     public static final ProviderRegistry<BiFunction<Long, NbtCompound, BiomeProvider>> BIOME;
-    public static final ProviderRegistry<Supplier<NbtCompound>> BIOME_SETTINGS;
+    public static final ProviderRegistry<Function<String, NbtCompound>> BIOME_SETTINGS;
     public static final ProviderRegistry<Function<WorldScreen, Screen>> BIOME_SCREEN;
     public static final ProviderRegistry<BiFunction<Long, NbtCompound, CaveBiomeProvider>> CAVE_BIOME;
     public static final ProviderRegistry<QuadFunction<Long, ChunkGenerator, Supplier<ChunkGeneratorSettings>, NbtCompound, ChunkProvider>> CHUNK;
-    public static final ProviderRegistry<Supplier<NbtCompound>> CHUNK_SETTINGS;
+    public static final ProviderRegistry<Function<String, NbtCompound>> CHUNK_SETTINGS;
     public static final ProviderRegistry<WorldProvider> WORLD;
     public static final ProviderRegistry<PentaFunction<CreateWorldScreen, DynamicRegistryManager, NbtCompound, NbtCompound, BiConsumer<NbtCompound, NbtCompound>, WorldScreen>> WORLD_SCREEN;
     
     static {
-        BIOME = new ProviderRegistry<>();
-        BIOME_SETTINGS = new ProviderRegistry<>();
-        BIOME_SCREEN = new ProviderRegistry<>();
-        CAVE_BIOME = new ProviderRegistry<>();
-        CHUNK = new ProviderRegistry<>();
-        CHUNK_SETTINGS = new ProviderRegistry<>();
-        WORLD = new ProviderRegistry<>();
-        WORLD_SCREEN = new ProviderRegistry<>();
+        BIOME = new ProviderRegistry<>("BIOME");
+        BIOME_SETTINGS = new ProviderRegistry<>("BIOME_SETTINGS");
+        BIOME_SCREEN = new ProviderRegistry<>("BIOME_SCREEN");
+        CAVE_BIOME = new ProviderRegistry<>("CAVE_BIOME");
+        CHUNK = new ProviderRegistry<>("CHUNK");
+        CHUNK_SETTINGS = new ProviderRegistry<>("CHUNK_SETTINGS");
+        WORLD = new ProviderRegistry<>("WORLD");
+        WORLD_SCREEN = new ProviderRegistry<>("WORLD_SCREEN");
     }
 }

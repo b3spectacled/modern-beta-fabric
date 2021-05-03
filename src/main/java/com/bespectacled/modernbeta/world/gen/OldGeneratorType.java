@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
+import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.mixin.client.MixinMoreOptionsDialogInvoker;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
@@ -75,8 +76,15 @@ public class OldGeneratorType {
                 Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = () -> 
                     registryChunkGenSettings.get(new Identifier(ProviderRegistries.WORLD.get(BuiltInTypes.Chunk.BETA.name).getChunkGenSettings()));
                 
-                NbtCompound chunkProviderSettings = ProviderRegistries.CHUNK_SETTINGS.get(BuiltInTypes.Chunk.BETA.name).get();
-                NbtCompound biomeProviderSettings = ProviderRegistries.BIOME_SETTINGS.get(BuiltInTypes.Biome.BETA.name).get();
+                WorldProvider worldProvider = ProviderRegistries.WORLD.get(BuiltInTypes.Chunk.BETA.name);
+                
+                NbtCompound chunkProviderSettings = ProviderRegistries.CHUNK_SETTINGS
+                    .getOrDefault(worldProvider.getChunkProviderSettings())
+                    .apply(worldProvider.getChunkProvider());
+                
+                NbtCompound biomeProviderSettings = ProviderRegistries.BIOME_SETTINGS
+                    .getOrDefault(worldProvider.getDefaultBiomeProviderSettings())
+                    .apply(worldProvider.getDefaultBiomeProvider());
                                 
                 return new OldChunkGenerator(
                     new OldBiomeSource(seed, biomes, biomeProviderSettings), 
@@ -95,15 +103,21 @@ public class OldGeneratorType {
                         ChunkGenerator chunkGenerator = generatorOptions.getChunkGenerator();
                         BiomeSource biomeSource = chunkGenerator.getBiomeSource();
                         
+                        WorldProvider defaultWorldProvider = ProviderRegistries.WORLD.get(BuiltInTypes.Chunk.BETA.name);
+                        
                         // If settings already present, create new compound tag and copy from source,
                         // otherwise, not copying will modify original settings.
                         NbtCompound chunkSettings = chunkGenerator instanceof OldChunkGenerator ?
                             new NbtCompound().copyFrom(((OldChunkGenerator)chunkGenerator).getProviderSettings()) :
-                            ProviderRegistries.CHUNK_SETTINGS.get(BuiltInTypes.Chunk.BETA.name).get();
+                            ProviderRegistries.CHUNK_SETTINGS
+                                .getOrDefault(defaultWorldProvider.getChunkProviderSettings())
+                                .apply(defaultWorldProvider.getChunkProvider());
                         
                         NbtCompound biomeSettings = biomeSource instanceof OldBiomeSource ? 
                             new NbtCompound().copyFrom(((OldBiomeSource)biomeSource).getProviderSettings()) : 
-                            ProviderRegistries.BIOME_SETTINGS.get(BuiltInTypes.Biome.BETA.name).get();
+                            ProviderRegistries.BIOME_SETTINGS
+                                .getOrDefault(defaultWorldProvider.getDefaultBiomeProviderSettings())
+                                .apply(defaultWorldProvider.getDefaultBiomeProvider());
                         
                         return ProviderRegistries.WORLD.get(chunkSettings.getString("worldType")).createLevelScreen(
                             screen,

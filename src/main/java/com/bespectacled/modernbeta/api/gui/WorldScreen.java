@@ -95,13 +95,20 @@ public abstract class WorldScreen extends Screen {
             (gameOptions) -> { return this.worldProvider; }, 
             (gameOptions, option, value) -> {
                 // Reset settings when switching to new world type
-                NbtCompound newBiomeProviderSettings = ProviderRegistries.BIOME_SETTINGS.get(value.getDefaultBiomeProviderSettings()).get();
+                NbtCompound newBiomeProviderSettings = ProviderRegistries.BIOME_SETTINGS
+                    .getOrDefault(value.getDefaultBiomeProviderSettings())
+                    .apply(value.getDefaultBiomeProvider());
+                
+                NbtCompound newChunkProviderSettings = ProviderRegistries.CHUNK_SETTINGS
+                    .getOrDefault(value.getChunkProviderSettings())
+                    .apply(value.getChunkProvider());
+                
                 this.setDefaultSingleBiome(newBiomeProviderSettings, value.getDefaultBiome());
                 
                 this.client.openScreen(value.createLevelScreen(
                     this.parent, 
                     this.registryManager,
-                    ProviderRegistries.CHUNK_SETTINGS.get(value.getChunkProviderSettings()).get(),
+                    newChunkProviderSettings,
                     newBiomeProviderSettings,
                     this.consumer
                 ));
@@ -114,7 +121,10 @@ public abstract class WorldScreen extends Screen {
             (gameOptions) -> NBTUtil.readStringOrThrow("biomeType", this.biomeProviderSettings),
             (gameOptions, option, value) -> {
                 // Reset biome settings when switching to new biome type
-                NbtCompound newBiomeProviderSettings = ProviderRegistries.BIOME_SETTINGS.get(value).get();
+                NbtCompound newBiomeProviderSettings = ProviderRegistries.BIOME_SETTINGS
+                    .getOrDefault(value)
+                    .apply(value);
+                
                 this.setDefaultSingleBiome(newBiomeProviderSettings, this.worldProvider.getDefaultBiome());                
                 
                 this.client.openScreen(
@@ -128,7 +138,10 @@ public abstract class WorldScreen extends Screen {
             }
         );
         
-        biomeSettingsScreen = ProviderRegistries.BIOME_SCREEN.get(NBTUtil.readStringOrThrow("biomeType", this.biomeProviderSettings), screen -> null).apply(this); 
+        biomeSettingsScreen = ProviderRegistries.BIOME_SCREEN
+            .getOrDefault(NBTUtil.readStringOrThrow("biomeType", this.biomeProviderSettings))
+            .apply(this); 
+        
         biomeSettingsOption = new ActionButtonOption(
             biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
             biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? GUIUtil.createTranslatableBiomeStringFromId(singleBiome) : "",

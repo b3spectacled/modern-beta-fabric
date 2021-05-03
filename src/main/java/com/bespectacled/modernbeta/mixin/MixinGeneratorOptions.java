@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.mixin;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
+import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.google.common.base.MoreObjects;
@@ -71,8 +72,9 @@ public class MixinGeneratorOptions {
             String generate_structures = (String) properties.get("generate-structures");
             boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
             
-            NbtCompound chunkProviderSettings = ProviderRegistries.CHUNK_SETTINGS.get(levelType).get();
-            NbtCompound biomeProviderSettings = ProviderRegistries.BIOME_SETTINGS.get(ModernBeta.BIOME_CONFIG.biomeType).get();
+            WorldProvider worldProvider = ProviderRegistries.WORLD.get(levelType);
+            NbtCompound chunkProviderSettings = ProviderRegistries.CHUNK_SETTINGS.get(worldProvider.getChunkProviderSettings()).apply(worldProvider.getChunkProvider());
+            NbtCompound biomeProviderSettings = ProviderRegistries.BIOME_SETTINGS.get(ModernBeta.BIOME_CONFIG.biomeType).apply(ModernBeta.BIOME_CONFIG.biomeType);
             
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 new OldBiomeSource(seed, registryBiome, biomeProviderSettings), 

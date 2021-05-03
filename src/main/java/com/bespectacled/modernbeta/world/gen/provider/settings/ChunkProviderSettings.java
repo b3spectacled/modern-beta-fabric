@@ -1,45 +1,32 @@
 package com.bespectacled.modernbeta.world.gen.provider.settings;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.config.ModernBetaGenerationConfig;
 
 import net.minecraft.nbt.NbtCompound;
 
 public class ChunkProviderSettings {
     protected static final ModernBetaGenerationConfig CONFIG = ModernBeta.BETA_CONFIG.generation_config;
-    
+   
     private static NbtCompound createSettingsBase(String worldType, boolean generateOceans) {
         NbtCompound settings = new NbtCompound();
         
         settings.putString("worldType", worldType);
-        settings.putBoolean(worldType, generateOceans);
+        settings.putBoolean("generateOceans", generateOceans);
         
         return settings;
     }
     
-    public static NbtCompound createSettingsBeta() {
-        return createSettingsBase(BuiltInTypes.Chunk.BETA.name, CONFIG.generateOceans);
+    public static NbtCompound createSettingsInf(String worldType) {
+        return createSettingsBase(worldType, CONFIG.generateOceans);
     }
     
-    public static NbtCompound createSettingsAlpha() {
-        return createSettingsBase(BuiltInTypes.Chunk.ALPHA.name, CONFIG.generateOceans);
+    public static NbtCompound createSettingsInfNoOceans(String worldType) {
+        return createSettingsBase(worldType, false);
     }
     
-    public static NbtCompound createSettingsSkylands() {
-        return createSettingsBase(BuiltInTypes.Chunk.SKYLANDS.name, false);
-    }
-    
-    public static NbtCompound createSettingsInfdev611() {
-        return createSettingsBase(BuiltInTypes.Chunk.INFDEV_611.name, false);
-    }
-    
-    public static NbtCompound createSettingsInfdev415() {
-        return createSettingsBase(BuiltInTypes.Chunk.INFDEV_415.name, CONFIG.generateOceans);
-    }
-    
-    public static NbtCompound createSettingsInfdev227() {
-        NbtCompound settings = createSettingsBase(BuiltInTypes.Chunk.INFDEV_227.name, CONFIG.generateOceans);
+    public static NbtCompound createSettingsInfdev227(String worldType) {
+        NbtCompound settings = createSettingsBase(worldType, CONFIG.generateOceans);
         
         settings.putBoolean("generateInfdevPyramid", CONFIG.generateInfdevPyramid);
         settings.putBoolean("generateInfdevWall", CONFIG.generateInfdevWall);
@@ -47,8 +34,8 @@ public class ChunkProviderSettings {
         return settings;
     }
     
-    public static NbtCompound createSettingsIndev() {
-        NbtCompound settings = createSettingsBase(BuiltInTypes.Chunk.INDEV.name, false);
+    public static NbtCompound createSettingsIndev(String worldType) {
+        NbtCompound settings = createSettingsBase(worldType, false);
         
         settings.putString("levelType", CONFIG.indevLevelType);
         settings.putString("levelTheme", CONFIG.indevLevelTheme);
@@ -60,8 +47,8 @@ public class ChunkProviderSettings {
         return settings;
     }
     
-    public static NbtCompound createSettingsBetaIslands() {
-        NbtCompound settings = createSettingsBase(BuiltInTypes.Chunk.BETA_ISLANDS.name, CONFIG.generateOceans);
+    public static NbtCompound createSettingsIslands(String worldType) {
+        NbtCompound settings = createSettingsBase(worldType, CONFIG.generateOceans);
         
         settings.putBoolean("generateOuterIslands", CONFIG.generateOuterIslands);
         settings.putInt("centerOceanLerpDistance", CONFIG.centerOceanLerpDistance);

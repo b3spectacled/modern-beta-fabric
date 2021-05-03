@@ -72,8 +72,15 @@ public final class WorldProvider {
         return new Identifier(this.defaultBiome);
     }
     
-    public ChunkProvider createChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
-        return ProviderRegistries.CHUNK.get(this.chunkProvider).apply(seed, chunkGenerator, generatorSettings, providerSettings);
+    public ChunkProvider createChunkProvider(
+        long seed, 
+        ChunkGenerator chunkGenerator, 
+        Supplier<ChunkGeneratorSettings> generatorSettings, 
+        NbtCompound providerSettings
+    ) {
+        return ProviderRegistries.CHUNK
+            .get(this.chunkProvider)
+            .apply(seed, chunkGenerator, generatorSettings, providerSettings);
     }
     
     public WorldScreen createLevelScreen(
@@ -83,6 +90,8 @@ public final class WorldProvider {
         NbtCompound biomeProviderSettings,
         BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
-        return ProviderRegistries.WORLD_SCREEN.get(this.guiProvider).apply(parent, registryManager, chunkProviderSettings, biomeProviderSettings, consumer);
+        return ProviderRegistries.WORLD_SCREEN
+            .getOrDefault(this.guiProvider)
+            .apply(parent, registryManager, chunkProviderSettings, biomeProviderSettings, consumer);
     }
 }
