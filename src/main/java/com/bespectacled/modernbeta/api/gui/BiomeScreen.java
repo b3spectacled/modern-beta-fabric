@@ -28,7 +28,7 @@ public abstract class BiomeScreen extends Screen {
         NbtCompound parentProviderSettings,
         Consumer<NbtCompound> consumer
     ) {
-        super(new TranslatableText("createWorld.customize.vanilla.title"));
+        super(new TranslatableText("createWorld.customize.biomeType.title"));
         
         this.parent = parent;
         this.registryManager = registryManager;

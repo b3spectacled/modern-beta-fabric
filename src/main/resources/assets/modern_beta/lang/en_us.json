@@ -24,9 +24,8 @@
     "createWorld.customize.caveBiomeType.vanilla": "Vanilla",
     "createWorld.customize.caveBiomeType.none": "None",
     
-    "createWorld.customize.old.title": "Modern Beta World Configuration",
-    "createWorld.customize.beta.title": "Beta Biomes Configuration",
-    "createWorld.customize.vanilla.title": "Vanilla Biomes Configuration",
+    "createWorld.customize.worldType.title": "Modern Beta World Configuration",
+    "createWorld.customize.biomeType.title": "Modern Beta Biome Configuration",
     
     "createWorld.customize.inf.generateOceans": "Generate Oceans",
     "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",

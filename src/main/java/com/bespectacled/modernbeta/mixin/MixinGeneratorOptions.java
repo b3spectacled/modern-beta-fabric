@@ -4,7 +4,9 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 import com.google.common.base.MoreObjects;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -22,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
 
@@ -73,8 +76,8 @@ public class MixinGeneratorOptions {
             boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
             
             WorldProvider worldProvider = ProviderRegistries.WORLD.get(levelType);
-            NbtCompound chunkProviderSettings = ProviderRegistries.CHUNK_SETTINGS.get(worldProvider.getChunkProviderSettings()).apply(worldProvider.getChunkProvider());
-            NbtCompound biomeProviderSettings = ProviderRegistries.BIOME_SETTINGS.get(ModernBeta.BIOME_CONFIG.biomeType).apply(ModernBeta.BIOME_CONFIG.biomeType);
+            NbtCompound chunkProviderSettings = ChunkProviderSettings.createSettingsAll(worldProvider.getChunkProvider());
+            NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsAll(ModernBeta.BIOME_CONFIG.biomeType);
             
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 new OldBiomeSource(seed, registryBiome, biomeProviderSettings), 

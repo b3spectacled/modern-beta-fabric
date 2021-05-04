@@ -17,7 +17,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 public final class WorldProvider {
     private final String chunkProvider;
     private final String chunkGenSettings;
-    private final String guiProvider;
+    private final String worldScreen;
 
     private final String defaultBiomeProvider;
     private final String defaultCaveBiomeProvider;
@@ -26,14 +26,14 @@ public final class WorldProvider {
     public WorldProvider(
         String chunkProvider,
         String chunkGenSettings,
-        String guiProvider,
+        String worldScreen,
         String defaultBiomeProvider,
         String defaultCaveBiomeProvider,
         String defaultBiome
     ) {
         this.chunkProvider = chunkProvider;
         this.chunkGenSettings = chunkGenSettings;
-        this.guiProvider = guiProvider;
+        this.worldScreen = worldScreen;
         
         this.defaultBiomeProvider = defaultBiomeProvider;
         this.defaultCaveBiomeProvider = defaultCaveBiomeProvider;
@@ -44,19 +44,11 @@ public final class WorldProvider {
         return this.chunkProvider;
     }
     
-    public String getChunkProviderSettings() {
-        return this.chunkProvider;
-    }
-    
     public String getChunkGenSettings() {
         return this.chunkGenSettings;
     }
     
     public String getDefaultBiomeProvider() {
-        return this.defaultBiomeProvider;
-    }
-    
-    public String getDefaultBiomeProviderSettings() {
         return this.defaultBiomeProvider;
     }
     
@@ -91,7 +83,7 @@ public final class WorldProvider {
         BiConsumer<NbtCompound, NbtCompound> consumer
     ) {
         return ProviderRegistries.WORLD_SCREEN
-            .getOrDefault(this.guiProvider)
+            .getOrDefault(this.worldScreen)
             .apply(parent, registryManager, chunkProviderSettings, biomeProviderSettings, consumer);
     }
 }

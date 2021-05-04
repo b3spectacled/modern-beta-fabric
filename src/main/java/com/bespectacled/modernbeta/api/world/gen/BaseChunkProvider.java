@@ -22,7 +22,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.DefaultBlockSource;
-import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
@@ -107,9 +106,6 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         if (this.minY > this.worldHeight)
             throw new IllegalStateException("[Modern Beta] Minimum height cannot be greater than world height!");
     }
-    
-    protected abstract void generateTerrain(Chunk chunk, StructureAccessor structureAccessor);
-    protected abstract int sampleHeightmap(int sampleX, int sampleZ);
     
     public int getWorldHeight() {
         return this.worldHeight;

@@ -130,7 +130,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         Biome biome = OldGeneratorUtil.getOceanBiome(region.getChunk(chunkPos.x, chunkPos.z), this, biomeSource, generateOceans, this.getSeaLevel());
         
-        
         // TODO: Remove chunkRandom at some point
         ChunkRandom chunkRandom = new ChunkRandom();
         long popSeed = chunkRandom.setPopulationSeed(region.getSeed(), startX, startZ);

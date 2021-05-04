@@ -281,7 +281,6 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         return this.levelTheme;
     }
     
-    @Override
     protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         if (this.blockArr == null)
             throw new IllegalStateException("[Modern Beta] Indev chunk provider is trying to set terrain before level has been generated!");
@@ -453,7 +452,6 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         }
     }
     
-    @Override
     protected int sampleHeightmap(int sampleX, int sampleZ) {
         for (int y = this.levelHeight - 1; y >= 0; --y) {
             Block block = this.blockArr[sampleX][y][sampleZ];

@@ -66,9 +66,7 @@ public class ModernBeta implements ModInitializer {
         
         // Register default providers
         ModernBetaDefaultProviders.registerChunkProviders();
-        ModernBetaDefaultProviders.registerChunkProviderSettings();
         ModernBetaDefaultProviders.registerBiomeProviders();
-        ModernBetaDefaultProviders.registerBiomeProviderSettings();
         ModernBetaDefaultProviders.registerCaveBiomeProvider();
         ModernBetaDefaultProviders.registerWorldProviders();
         
@@ -76,8 +74,8 @@ public class ModernBeta implements ModInitializer {
             OldGeneratorType.register();
             
             // Register default screen providers
-            ModernBetaDefaultProviders.registerWorldScreenProviders();
-            ModernBetaDefaultProviders.registerBiomeScreenProviders();
+            ModernBetaDefaultProviders.registerWorldScreens();
+            ModernBetaDefaultProviders.registerBiomeScreens();
         }
         
         // Serialize various world gen stuff to JSON

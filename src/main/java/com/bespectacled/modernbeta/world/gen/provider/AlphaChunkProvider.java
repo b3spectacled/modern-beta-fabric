@@ -11,12 +11,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
-import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
@@ -45,12 +42,6 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         this.forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
 
         setForestOctaves(forestNoiseOctaves);
-    }
-
-    @Override
-    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk) {
-        this.generateTerrain(chunk, structureAccessor);
-        return chunk;
     }
 
     @Override
@@ -187,22 +178,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         this.surfaceNoisePool.returnArr(gravelNoise);
         this.surfaceNoisePool.returnArr(stoneNoise);
     }
-    
-    @Override
-    public int getHeight(int x, int z, Type type) {
-        Integer groundHeight = heightmapCache.get(new BlockPos(x, 0, z));
-        
-        if (groundHeight == null) {
-            groundHeight = this.sampleHeightmap(x, z);
-        }
 
-        // Not ideal
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
-            groundHeight = this.seaLevel;
-
-        return groundHeight;
-    }
-    
     @Override
     public PerlinOctaveNoise getBeachNoise() {
         return this.beachNoiseOctaves;

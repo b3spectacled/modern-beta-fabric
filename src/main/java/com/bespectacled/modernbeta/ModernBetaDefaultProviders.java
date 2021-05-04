@@ -5,10 +5,8 @@ import com.bespectacled.modernbeta.gui.screen.world.*;
 import com.bespectacled.modernbeta.gui.screen.biome.*;
 import com.bespectacled.modernbeta.world.BuiltInWorldProviders;
 import com.bespectacled.modernbeta.world.biome.provider.*;
-import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.*;
 import com.bespectacled.modernbeta.world.gen.provider.*;
-import com.bespectacled.modernbeta.world.gen.provider.settings.*;
 
 /*
  * Registration of built-in providers for various things.
@@ -29,33 +27,12 @@ public class ModernBetaDefaultProviders {
         ProviderRegistries.CHUNK.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, BetaIslandsChunkProvider::new);
     }
     
-    // Register default chunk settings
-    public static void registerChunkProviderSettings() {
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.DEFAULT_ID, ChunkProviderSettings::createSettingsInf);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.BETA.name, ChunkProviderSettings::createSettingsInf);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.SKYLANDS.name, ChunkProviderSettings::createSettingsInfNoOceans);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.ALPHA.name, ChunkProviderSettings::createSettingsInf);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_611.name, ChunkProviderSettings::createSettingsInf);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_415.name, ChunkProviderSettings::createSettingsInf);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_227.name, ChunkProviderSettings::createSettingsInfdev227);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INDEV.name, ChunkProviderSettings::createSettingsIndev);
-        ProviderRegistries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, ChunkProviderSettings::createSettingsIslands);
-    }
-    
     // Register default biome providers
     public static void registerBiomeProviders() {
         ProviderRegistries.BIOME.register(BuiltInTypes.DEFAULT_ID, BetaBiomeProvider::new);
         ProviderRegistries.BIOME.register(BuiltInTypes.Biome.BETA.name, BetaBiomeProvider::new);
         ProviderRegistries.BIOME.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeProvider::new);
         ProviderRegistries.BIOME.register(BuiltInTypes.Biome.VANILLA.name, VanillaBiomeProvider::new);
-    }
-    
-    // Register default biome settings
-    public static void registerBiomeProviderSettings() {
-        ProviderRegistries.BIOME_SETTINGS.register(BuiltInTypes.DEFAULT_ID, BiomeProviderSettings::createBiomeSettingsBase);
-        ProviderRegistries.BIOME_SETTINGS.register(BuiltInTypes.Biome.BETA.name, BiomeProviderSettings::createBiomeSettingsBeta);
-        ProviderRegistries.BIOME_SETTINGS.register(BuiltInTypes.Biome.SINGLE.name, BiomeProviderSettings::createBiomeSettingsSingle);
-        ProviderRegistries.BIOME_SETTINGS.register(BuiltInTypes.Biome.VANILLA.name, BiomeProviderSettings::createBiomeSettingsVanilla);
     }
     
     // Register default cave biome providers
@@ -66,8 +43,8 @@ public class ModernBetaDefaultProviders {
         ProviderRegistries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.VANILLA.name, VanillaCaveBiomeProvider::new);
     }
     
-    // Register default screen providers
-    public static void registerWorldScreenProviders() {
+    // Register default world screens
+    public static void registerWorldScreens() {
         ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.DEFAULT_ID, BaseWorldScreen::new);
         ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.BASE.name, BaseWorldScreen::new);
         ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF.name, InfWorldScreen::new);
@@ -76,8 +53,8 @@ public class ModernBetaDefaultProviders {
         ProviderRegistries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.ISLAND.name, IslandWorldScreen::new);
     }
     
-    // Register default settings screen actions (Note: Match identifiers with biome ids!)
-    public static void registerBiomeScreenProviders() {
+    // Register default biome settings screens (Note: Match identifiers with biome ids!)
+    public static void registerBiomeScreens() {
         ProviderRegistries.BIOME_SCREEN.register(BuiltInTypes.DEFAULT_ID, screen -> null);
         ProviderRegistries.BIOME_SCREEN.register(BuiltInTypes.Biome.BETA.name, BetaBiomeScreen::create);
         ProviderRegistries.BIOME_SCREEN.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeScreen::create);

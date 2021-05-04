@@ -68,7 +68,6 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         return chunk;
     }
 
-    @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         ChunkRandom rand = this.createChunkRand(chunk.getPos().x, chunk.getPos().z);
@@ -129,7 +128,6 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         return groundHeight;
     }
     
-    @Override
     protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         Random rand = new Random();
         Random chunkRand = this.createChunkRand(chunk.getPos().x, chunk.getPos().z);
@@ -252,7 +250,6 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         }
     }
     
-    @Override
     protected int sampleHeightmap(int sampleX, int sampleZ) {
         int startX = (sampleX >> 4) << 4;
         int startZ = (sampleZ >> 4) << 4;

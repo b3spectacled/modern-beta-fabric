@@ -31,7 +31,8 @@ public class InfWorldScreen extends WorldScreen {
         String biomeType = NBTUtil.readStringOrThrow("biomeType", this.biomeProviderSettings);
         
         CyclingOption<Boolean> generateOceans = 
-            CyclingOption.create("createWorld.customize.inf.generateOceans",
+            CyclingOption.create(
+                "createWorld.customize.inf.generateOceans",
                 (gameOptions) -> NBTUtil.readBoolean("generateOceans", this.chunkProviderSettings, ModernBeta.GEN_CONFIG.generateOceans), 
                 (gameOptions, option, value) -> { // Setter
                     this.chunkProviderSettings.putBoolean("generateOceans", value);

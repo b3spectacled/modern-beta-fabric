@@ -30,6 +30,7 @@ public class OldBiomeSource extends BiomeSource {
     private final long seed;
     private final Registry<Biome> biomeRegistry;
     private final NbtCompound biomeProviderSettings;
+    //private final Optional<NbtCompound> caveBiomeProviderSettings;
     
     private final BiomeProvider biomeProvider;
     

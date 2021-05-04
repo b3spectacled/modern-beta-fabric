@@ -23,6 +23,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.ChunkRandom;
@@ -217,6 +218,26 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     }
     
     @Override
+    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk) {
+        this.generateTerrain(chunk, structureAccessor);
+        return chunk;
+    }
+    
+    @Override
+    public int getHeight(int x, int z, Type type) {
+        Integer groundHeight = heightmapCache.get(new BlockPos(x, 0, z));
+        
+        if (groundHeight == null) {
+            groundHeight = this.sampleHeightmap(x, z);
+        }
+
+        // Not ideal
+        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
+            groundHeight = this.seaLevel;
+
+        return groundHeight;
+    }
+    
     protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
@@ -326,7 +347,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         this.heightNoisePool.returnArr(heightNoise);
     }
     
-    @Override
     protected int sampleHeightmap(int sampleX, int sampleZ) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
