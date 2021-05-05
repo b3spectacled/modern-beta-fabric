@@ -6,7 +6,6 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.gui.BiomeScreen;
 import com.bespectacled.modernbeta.api.gui.WorldScreen;
 import com.bespectacled.modernbeta.util.NBTUtil;
-
 import net.minecraft.client.option.DoubleOption;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
@@ -22,7 +21,7 @@ public class VanillaBiomeScreen extends BiomeScreen {
     ) {
         super(parent, registryManager, parentProviderSettings, consumer);
     }
-    
+
     public static VanillaBiomeScreen create(WorldScreen screenProvider) {
         return new VanillaBiomeScreen(
             screenProvider, 

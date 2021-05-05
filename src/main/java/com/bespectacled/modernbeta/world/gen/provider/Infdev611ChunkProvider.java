@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.world.gen.provider;
 
 import java.util.function.Supplier;
 
+import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -11,13 +12,14 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class Infdev611ChunkProvider extends NoiseChunkProvider {
+public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachSpawnable {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
@@ -157,11 +159,6 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             }
         }
     }
-    
-    @Override
-    public PerlinOctaveNoise getBeachNoise() {
-        return this.beachNoiseOctaves;
-    }
 
     @Override
     protected void generateHeightNoiseArr(int noiseX, int noiseZ, double[] heightNoise) {
@@ -292,5 +289,17 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);
         
         return densityWithOffset;
+    }
+    
+    @Override
+    public boolean isSandAt(int x, int z) {
+        double eighth = 0.03125D;
+        
+        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
+        
+        return 
+            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
+            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + RAND.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
 }

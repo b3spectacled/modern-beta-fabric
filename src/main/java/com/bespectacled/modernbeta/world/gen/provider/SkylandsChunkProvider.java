@@ -124,11 +124,6 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         
         this.surfaceNoisePool.returnArr(stoneNoise);
     }
-    
-    @Override
-    public PerlinOctaveNoise getBeachNoise() {
-        return null;
-    }
 
     @Override
     protected void generateHeightNoiseArr(int noiseX, int noiseZ, double[] heightNoise) {

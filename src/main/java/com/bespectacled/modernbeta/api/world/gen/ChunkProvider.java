@@ -2,12 +2,12 @@ package com.bespectacled.modernbeta.api.world.gen;
 
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
@@ -100,12 +100,7 @@ public abstract class ChunkProvider {
         return 64;
     }
     
-    /**
-     * Get the PerlinOctaveNoise object used for beach surface generation for determining beach spawn location.
-     * 
-     * @return PerlinOctaveNoise object used for beach surface generation.
-     */
-    public PerlinOctaveNoise getBeachNoise() {
-        return null;
+    protected Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+        return this.chunkGenerator.getBiomeSource().getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
 }

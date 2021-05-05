@@ -1,8 +1,10 @@
 package com.bespectacled.modernbeta.world.gen;
 
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -13,6 +15,8 @@ import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.mixin.MixinConfiguredCarverAccessor;
+import com.bespectacled.modernbeta.util.BiomeUtil;
+import com.bespectacled.modernbeta.util.MutableBiomeArray;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.carver.IOldCaveCarver;
@@ -41,6 +45,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
+import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
@@ -69,6 +74,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         .apply(instance, instance.stable(OldChunkGenerator::new)));
     
     private static final int OCEAN_Y_CUT_OFF = 40;
+    private static final int OCEAN_MIN_DEPTH = 4;
     
     private final OldBiomeSource biomeSource;
     private final NbtCompound chunkProviderSettings;
@@ -115,7 +121,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             this.chunkProvider.provideSurface(region, chunk, this.biomeSource);
         
         if (this.generateOceans) {
-            OldGeneratorUtil.replaceOceansInChunk(chunk, this.biomeSource, this.getWorldHeight(), this.getMinimumY(), this.getSeaLevel(), OCEAN_Y_CUT_OFF);
+            this.replaceOceansInChunk(chunk);
         }
     }
 
@@ -128,7 +134,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int startX = chunkPos.getStartX();
         int startZ = chunkPos.getStartZ();
         
-        Biome biome = OldGeneratorUtil.getOceanBiome(region.getChunk(chunkPos.x, chunkPos.z), this, biomeSource, generateOceans, this.getSeaLevel());
+        Biome biome = this.getBiomeAt(chunkPos.getStartX(), 0, chunkPos.getStartZ());
         
         // TODO: Remove chunkRandom at some point
         ChunkRandom chunkRandom = new ChunkRandom();
@@ -154,7 +160,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int mainChunkX = chunkPos.x;
         int mainChunkZ = chunkPos.z;
 
-        Biome biome = OldGeneratorUtil.getOceanBiome(chunk, this, this.biomeSource, this.generateOceans, this.getSeaLevel());
+        Biome biome = this.getBiomeAt(chunkPos.getStartX(), 0, chunkPos.getStartZ());
         GenerationSettings genSettings = biome.getGenerationSettings();
         CarverContext heightContext = new CarverContext(this);
         
@@ -200,7 +206,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     ) {
         if (this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.STRUCTURE_STARTS)) return;
         
-        Biome biome = OldGeneratorUtil.getOceanBiome(chunk, this, this.biomeSource, this.generateOceans, this.getSeaLevel());
+        Biome biome = this.getBiomeAt(chunk.getPos().getStartX(), 0, chunk.getPos().getStartZ());
 
         ((MixinChunkGeneratorInvoker)this).invokeSetStructureStart(
             ConfiguredStructureFeatures.STRONGHOLD, 
@@ -339,4 +345,66 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         }
     }
     */
+    
+    private void replaceOceansInChunk(Chunk chunk) {
+        MutableBiomeArray mutableBiomeArray = MutableBiomeArray.inject(chunk.getBiomeArray());
+        Map<BlockPos, Biome> oceanPositions = new HashMap<BlockPos, Biome>();
+        BlockPos.Mutable mutablePos = new BlockPos.Mutable();
+        ChunkPos chunkPos = chunk.getPos();
+        
+        int worldHeight = this.getWorldHeight();
+        int minY = this.getMinimumY();
+        int seaLevel = this.getSeaLevel();
+        
+        int biomeCutoff = BiomeCoords.fromBlock(OCEAN_Y_CUT_OFF);
+        int biomeMinY = BiomeCoords.fromBlock(minY);
+        
+        // Collect potential ocean positions in a chunk.
+        for (int x = 0; x < 4; ++x) {
+            for (int z = 0; z < 4; ++z) {
+                int absX = chunkPos.getStartX() + (x << 2);
+                int absZ = chunkPos.getStartZ() + (z << 2);
+                
+                if (OldGeneratorUtil.getSolidHeight(chunk, worldHeight, minY, absX, absZ, this.defaultFluid) < seaLevel - OCEAN_MIN_DEPTH) {
+                    oceanPositions.put(new BlockPos(x, 0, z), this.biomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2));
+                }
+            }
+        }
+        
+        // See BiomeArray for reference.
+        for (int i = 0; i < mutableBiomeArray.getBiomeArrLen(); ++i) {
+            int offsetBiomeX = i & BiomeUtil.HORIZONTAL_BIT_MASK;
+            int offsetBiomeY = i >> BiomeUtil.HORIZONTAL_SECTION_COUNT + BiomeUtil.HORIZONTAL_SECTION_COUNT;
+            int offsetBiomeZ = i >> BiomeUtil.HORIZONTAL_SECTION_COUNT & BiomeUtil.HORIZONTAL_BIT_MASK;
+            
+            // Skip if below y-cutoff.
+            int biomeY = biomeMinY + offsetBiomeY;
+            boolean isAboveCutoff = biomeY >= biomeCutoff;
+            
+            isAboveCutoff = true; // TODO: Remove when cave biomes are in.
+            
+            mutablePos.set(offsetBiomeX, 0, offsetBiomeZ);
+            if (isAboveCutoff && oceanPositions.get(mutablePos) != null) {
+                mutableBiomeArray.setBiome(i, oceanPositions.get(mutablePos));
+            }
+        }
+    }
+    
+    private Biome getBiomeAt(int x, int y, int z) {
+        int seaLevel = this.getSeaLevel();
+        
+        int biomeX = x >> 2;
+        int biomeY = y >> 2;
+        int biomeZ = z >> 2;
+        
+        Biome biome;
+        
+        if (this.generateOceans && this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null) < seaLevel - OCEAN_MIN_DEPTH) {
+            biome = this.biomeSource.getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
+        } else {
+            biome = this.biomeSource.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        }
+        
+        return biome;
+    }
 }

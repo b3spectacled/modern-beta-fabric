@@ -7,8 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
-import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
 import com.bespectacled.modernbeta.world.biome.indev.IndevTheme;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.provider.IndevChunkProvider;
@@ -22,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Mixin(MinecraftServer.class)
@@ -37,23 +35,23 @@ public class MixinMinecraftServer {
         )
     )
     private static BlockPos redirectSpawnLocating(ServerWorld world, ChunkPos chunkPos, boolean validSpawnNeeded) {
-        ChunkGenerator gen = world.getChunkManager().getChunkGenerator();
+        ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
         BlockPos spawnPos = SpawnLocating.findServerSpawnPoint(world, chunkPos, validSpawnNeeded);
         
-        if (gen instanceof OldChunkGenerator) {
+        if (chunkGenerator instanceof OldChunkGenerator) {
             ((IntRuleAccessor)world.getGameRules().get(GameRules.SPAWN_RADIUS)).setValue(0); // Ensure a centered spawn
-            OldChunkGenerator oldGen = (OldChunkGenerator)gen;
-           
-            PerlinOctaveNoise beachNoiseOctaves = oldGen.getChunkProvider().getBeachNoise();
+            OldChunkGenerator oldChunkGenerator = (OldChunkGenerator)chunkGenerator;
             
-            if (beachNoiseOctaves != null) { // Attempt to place a beach spawn if provider generates classic beaches.
+            if (oldChunkGenerator.getChunkProvider() instanceof BeachSpawnable) { // Attempt to place a beach spawn if provider generates classic beaches.
                 ModernBeta.LOGGER.log(Level.INFO, "Setting a beach spawn..");
-                spawnPos = getInitialOldSpawn(oldGen, beachNoiseOctaves, oldGen.getSeaLevel());
+                
+                BeachSpawnable chunkProvider = (BeachSpawnable)oldChunkGenerator.getChunkProvider();
+                spawnPos = getInitialOldSpawn(oldChunkGenerator, chunkProvider, oldChunkGenerator.getSeaLevel());
             }
             
-            if (spawnPos != null && oldGen.isProviderInstanceOf(IndevChunkProvider.class)) {
+            if (spawnPos != null && oldChunkGenerator.isProviderInstanceOf(IndevChunkProvider.class)) {
                 ModernBeta.LOGGER.log(Level.INFO, "[Indev] Spawning..");
-                IndevChunkProvider indevChunkProvider = (IndevChunkProvider)oldGen.getChunkProvider();
+                IndevChunkProvider indevChunkProvider = (IndevChunkProvider)oldChunkGenerator.getChunkProvider();
                 
                 // Ensure spawn location and Indev house is within level bounds.
                 if (!indevChunkProvider.inWorldBounds(spawnPos.getX(), spawnPos.getZ())) {
@@ -74,6 +72,28 @@ public class MixinMinecraftServer {
     }
     
     @Unique
+    private static BlockPos getInitialOldSpawn(OldChunkGenerator chunkGenerator, BeachSpawnable chunkProvider, int seaLevel) {
+        int x = 0;
+        int z;
+        int attempts = 0;
+        
+        for (z = 0; !chunkProvider.isSandAt(x, z); z += spawnRand.nextInt(64) - spawnRand.nextInt(64)) {
+            if (attempts > 10000) {
+                ModernBeta.LOGGER.log(Level.INFO, "Exceeded spawn attempts, spawning anyway..");
+                break;
+            }
+            attempts++;
+            
+            x += spawnRand.nextInt(64) - spawnRand.nextInt(64);
+        }
+        
+        int y = chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
+        
+        return new BlockPos(x, y - 1, z);
+    }
+    /*
+     * 
+    @Unique
     private static BlockPos getInitialOldSpawn(OldChunkGenerator gen, PerlinOctaveNoise beachNoiseOctaves, int seaLevel) {
         int x = 0;
         int z;
@@ -93,7 +113,9 @@ public class MixinMinecraftServer {
         
         return new BlockPos(x, y - 1, z);
     }
+    */
     
+    /*
     @Unique
     private static boolean isBlockSand(int x, int z, OldChunkGenerator gen, PerlinOctaveNoise beachNoiseOctaves, int seaLevel) {
         double thirtysecond = 0.03125D;
@@ -106,6 +128,7 @@ public class MixinMinecraftServer {
             (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
             (beachNoiseOctaves.sample(x * thirtysecond, z * thirtysecond, 0.0) + spawnRand.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
+    */
     
     @Unique
     private static void setIndevProperties(ServerWorld world, IndevTheme theme) {

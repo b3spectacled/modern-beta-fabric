@@ -558,3 +558,4 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         return density;
     }
 }
+

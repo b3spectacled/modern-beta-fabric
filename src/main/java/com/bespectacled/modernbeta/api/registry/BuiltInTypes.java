@@ -50,6 +50,16 @@ public final class BuiltInTypes {
         
         public final String name;
         
-        private WorldScreen(String id) { this.name = id; }
+        private WorldScreen(String name) { this.name = name; }
+    }
+    
+    public enum BetaBiomePreset {
+        BETA("beta"),
+        BETA_PLUS("beta_plus")
+        ;
+        
+        public final String name;
+        
+        private BetaBiomePreset(String name) { this.name = name; }
     }
 }

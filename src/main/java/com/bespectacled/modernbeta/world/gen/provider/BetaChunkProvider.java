@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
+import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -13,13 +14,13 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimateResolver {
+public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimateResolver, BeachSpawnable {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
@@ -31,7 +32,7 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
     
     public BetaChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
         //super(seed, chunkGenerator, generatorSettings, providerSettings);
-        super(seed, chunkGenerator, generatorSettings, providerSettings, -64, 192, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
+        super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
@@ -187,11 +188,6 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
     }
     
     @Override
-    public PerlinOctaveNoise getBeachNoise() {
-        return this.beachNoiseOctaves;
-    }
-    
-    @Override
     protected void generateHeightNoiseArr(int noiseX, int noiseZ, double[] heightNoise) {
         int noiseResolutionX = this.noiseSizeX + 1;
         int noiseResolutionZ = this.noiseSizeZ + 1;
@@ -341,13 +337,16 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
         
         return densityWithOffset;
     }
-
     
     @Override
-    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
-        if (chunkStatus == ChunkStatus.CARVERS || chunkStatus == ChunkStatus.LIQUID_CARVERS)
-            ;//return true;
+    public boolean isSandAt(int x, int z) {
+        double eighth = 0.03125D;
         
-        return false;
+        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
+        
+        return 
+            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
+            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + RAND.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
 } 

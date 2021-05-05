@@ -13,7 +13,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 
 public final class ProviderRegistry<T> {
     private final String name;
-    private final Map<String, T> map;
+    private final Map<String, T> map; // Use LinkedHashMap so entries are displayed in order if retrieved as list.
     
     protected ProviderRegistry() {
         this.name = "";

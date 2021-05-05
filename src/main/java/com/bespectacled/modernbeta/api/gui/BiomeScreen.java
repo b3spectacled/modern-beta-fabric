@@ -18,13 +18,13 @@ public abstract class BiomeScreen extends Screen {
     protected final NbtCompound parentProviderSettings;
     protected final Consumer<NbtCompound> consumer;
     
-    protected final NbtCompound biomeProviderSettings;
+    protected NbtCompound biomeProviderSettings;
     
     protected ButtonListWidget buttonList;
     
     protected BiomeScreen(
         WorldScreen parent, 
-        DynamicRegistryManager registryManager, 
+        DynamicRegistryManager registryManager,
         NbtCompound parentProviderSettings,
         Consumer<NbtCompound> consumer
     ) {
@@ -35,7 +35,8 @@ public abstract class BiomeScreen extends Screen {
         this.parentProviderSettings = parentProviderSettings;
         this.consumer = consumer;
         
-        this.biomeProviderSettings = new NbtCompound();
+        // Make copy as to not modify original biome settings (if cancelled)
+        this.biomeProviderSettings = new NbtCompound().copyFrom(parentProviderSettings);
     }
     
     @Override
