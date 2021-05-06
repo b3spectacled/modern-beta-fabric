@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.gui.BiomeScreen;
 import com.bespectacled.modernbeta.api.gui.WorldScreen;
+import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import net.minecraft.client.option.DoubleOption;
 import net.minecraft.nbt.NbtCompound;
@@ -26,8 +27,8 @@ public class VanillaBiomeScreen extends BiomeScreen {
         return new VanillaBiomeScreen(
             screenProvider, 
             screenProvider.getRegistryManager(), 
-            screenProvider.getBiomeProviderSettings(),
-            vanillaBiomeSettings -> screenProvider.setBiomeProviderSettings(vanillaBiomeSettings)
+            screenProvider.getWorldSettings().getSettings(WorldSetting.BIOME),
+            biomeProviderSettings -> screenProvider.getWorldSettings().copySettingsFrom(WorldSetting.BIOME, biomeProviderSettings)
         );
     }
     

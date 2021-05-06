@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.gui.BiomeScreen;
 import com.bespectacled.modernbeta.api.gui.WorldScreen;
+import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.gui.ActionButtonOption;
 import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
@@ -36,8 +37,8 @@ public class BetaBiomeScreen extends BiomeScreen {
         return new BetaBiomeScreen(
             screenProvider, 
             screenProvider.getRegistryManager(), 
-            screenProvider.getBiomeProviderSettings(),
-            biomeProviderSettings -> screenProvider.setBiomeProviderSettings(biomeProviderSettings)
+            screenProvider.getWorldSettings().getSettings(WorldSetting.BIOME),
+            biomeProviderSettings -> screenProvider.getWorldSettings().copySettingsFrom(WorldSetting.BIOME, biomeProviderSettings)
         );
     }
     

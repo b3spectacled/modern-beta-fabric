@@ -6,6 +6,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.gui.WorldScreen;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.NBTUtil;
 
@@ -28,13 +29,13 @@ public class InfWorldScreen extends WorldScreen {
     protected void init() {
         super.init();
         
-        String biomeType = NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getBiomeSettings());
+        String biomeType = NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getSettings(WorldSetting.BIOME));
         
         CyclingOption<Boolean> generateOceans = 
             CyclingOption.create(
                 "createWorld.customize.inf.generateOceans",
-                (gameOptions) -> NBTUtil.readBoolean("generateOceans", this.worldSettings.getChunkSettings(), ModernBeta.GEN_CONFIG.generateOceans), 
-                (gameOptions, option, value) -> this.worldSettings.putChunkSetting("generateOceans", NbtByte.of(value))
+                (gameOptions) -> NBTUtil.readBoolean("generateOceans", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.generateOceans), 
+                (gameOptions, option, value) -> this.worldSettings.putSetting(WorldSetting.CHUNK, "generateOceans", NbtByte.of(value))
             );
         
         if (!biomeType.equals(BuiltInTypes.Biome.SINGLE.name)) {

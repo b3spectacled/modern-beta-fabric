@@ -28,7 +28,6 @@ public final class ProviderRegistries {
     public static final ProviderRegistry<QuadFunction<Long, ChunkGenerator, Supplier<ChunkGeneratorSettings>, NbtCompound, ChunkProvider>> CHUNK;
     public static final ProviderRegistry<WorldProvider> WORLD;
     public static final ProviderRegistry<QuadFunction<CreateWorldScreen, DynamicRegistryManager, WorldSettings, Consumer<WorldSettings>, WorldScreen>> WORLD_SCREEN;
-    public static final ProviderRegistry<Supplier<NbtCompound>> BETA_BIOME_PRESET;
     
     static {
         BIOME = new ProviderRegistry<>("BIOME");
@@ -38,6 +37,5 @@ public final class ProviderRegistries {
         CHUNK = new ProviderRegistry<>("CHUNK");
         WORLD = new ProviderRegistry<>("WORLD");
         WORLD_SCREEN = new ProviderRegistry<>("WORLD_SCREEN");
-        BETA_BIOME_PRESET = new ProviderRegistry<>("BETA_BIOME_PRESET");
     }
 }

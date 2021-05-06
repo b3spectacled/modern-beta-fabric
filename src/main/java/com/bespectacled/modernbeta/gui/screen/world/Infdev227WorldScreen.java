@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.NBTUtil;
 
@@ -28,14 +29,14 @@ public class Infdev227WorldScreen extends InfWorldScreen {
         
         CyclingOption<Boolean> generateInfdevPyramid = 
             CyclingOption.create("createWorld.customize.infdev.generateInfdevPyramid", 
-                (gameOptions) -> NBTUtil.readBoolean("generateInfdevPyramid", this.worldSettings.getChunkSettings(), ModernBeta.GEN_CONFIG.generateInfdevPyramid), 
-                (gameOptions, option, value) -> this.worldSettings.putChunkSetting("generateInfdevPyramid",  NbtByte.of(value))
+                (gameOptions) -> NBTUtil.readBoolean("generateInfdevPyramid", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.generateInfdevPyramid), 
+                (gameOptions, option, value) -> this.worldSettings.putSetting(WorldSetting.CHUNK, "generateInfdevPyramid",  NbtByte.of(value))
             );
         
         CyclingOption<Boolean> generateInfdevWall = 
             CyclingOption.create("createWorld.customize.infdev.generateInfdevWall", 
-                (gameOptions) -> NBTUtil.readBoolean("generateInfdevWall", this.worldSettings.getChunkSettings(), ModernBeta.GEN_CONFIG.generateInfdevWall), 
-                (gameOptions, option, value) -> this.worldSettings.putChunkSetting("generateInfdevWall",  NbtByte.of(value))
+                (gameOptions) -> NBTUtil.readBoolean("generateInfdevWall", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.generateInfdevWall), 
+                (gameOptions, option, value) -> this.worldSettings.putSetting(WorldSetting.CHUNK, "generateInfdevWall",  NbtByte.of(value))
             );
       
        this.buttonList.addSingleOptionEntry(generateInfdevPyramid);

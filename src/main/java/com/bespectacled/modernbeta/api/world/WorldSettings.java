@@ -1,55 +1,49 @@
 package com.bespectacled.modernbeta.api.world;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
 public final class WorldSettings {
-    private NbtCompound chunkProviderSettings;
-    private NbtCompound biomeProviderSettings;
-    @SuppressWarnings("unused")
-    private NbtCompound caveBiomeProviderSettings;
+    public enum WorldSetting {
+        CHUNK,
+        BIOME,
+        CAVE_BIOME
+    }
+    
+    private final Map<WorldSetting, NbtCompound> settings;
     
     public WorldSettings() {
-        this.chunkProviderSettings = new NbtCompound();
-        this.biomeProviderSettings = new NbtCompound();
-        this.caveBiomeProviderSettings = new NbtCompound();
+        this.settings = new LinkedHashMap<WorldSetting, NbtCompound>();
+        
+        for (WorldSetting w : WorldSetting.values()) {
+            this.settings.put(w, new NbtCompound());
+        }
     }
     
     public WorldSettings(NbtCompound chunkProviderSettings, NbtCompound biomeProviderSettings) {
-        this.chunkProviderSettings = new NbtCompound().copyFrom(chunkProviderSettings);
-        this.biomeProviderSettings = new NbtCompound().copyFrom(biomeProviderSettings);
-        this.caveBiomeProviderSettings = new NbtCompound();
+        this(); // Ensure settings are initialized with something.
+        
+        this.settings.put(WorldSetting.CHUNK, new NbtCompound().copyFrom(chunkProviderSettings));
+        this.settings.put(WorldSetting.BIOME, new NbtCompound().copyFrom(biomeProviderSettings));
+        this.settings.put(WorldSetting.CAVE_BIOME, new NbtCompound());
     }
     
-    public NbtCompound getChunkSettings() {
-        return new NbtCompound().copyFrom(this.chunkProviderSettings);
+    public NbtCompound getSettings(WorldSetting settingsKey) {
+        return new NbtCompound().copyFrom(this.settings.get(settingsKey));
     }
     
-    public NbtCompound getBiomeSettings() {
-        return new NbtCompound().copyFrom(this.biomeProviderSettings);
+    public NbtElement getSetting(WorldSetting settingsKey, String key) {
+        return this.settings.get(settingsKey).get(key);
     }
     
-    public NbtElement getChunkSetting(String key) {
-        return this.chunkProviderSettings.get(key);
+    public void putSetting(WorldSetting settingsKey, String key, NbtElement element) {
+        this.settings.get(settingsKey).put(key, element);
     }
     
-    public NbtElement getBiomeSetting(String key) {
-        return this.biomeProviderSettings.get(key);
-    }
-    
-    public void putChunkSetting(String key, NbtElement element) {
-        this.chunkProviderSettings.put(key, element);
-    }
-    
-    public void putBiomeSetting(String key, NbtElement element) {
-        this.biomeProviderSettings.put(key, element);
-    }
-    
-    public void copyChunkSettingsFrom(NbtCompound chunkProviderSettings) {
-        this.chunkProviderSettings = this.chunkProviderSettings.copyFrom(chunkProviderSettings);
-    }
-    
-    public void copyBiomeSettingsFrom(NbtCompound biomeProviderSettings) {
-        this.biomeProviderSettings = this.biomeProviderSettings.copyFrom(biomeProviderSettings);
+    public void copySettingsFrom(WorldSetting settingsKey, NbtCompound settings) {
+        this.settings.get(settingsKey).copyFrom(settings);
     }
 }

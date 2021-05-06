@@ -7,6 +7,7 @@ import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.mixin.client.MixinMoreOptionsDialogInvoker;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
@@ -43,8 +44,8 @@ public class OldGeneratorType {
         GeneratorOptions generatorOptions,
         WorldSettings worldSettings
     ) {
-        NbtCompound chunkProviderSettings = worldSettings.getChunkSettings();
-        NbtCompound biomeProviderSettings = worldSettings.getBiomeSettings();
+        NbtCompound chunkProviderSettings = worldSettings.getSettings(WorldSetting.CHUNK);
+        NbtCompound biomeProviderSettings = worldSettings.getSettings(WorldSetting.BIOME);
         
         String chunkProviderType = chunkProviderSettings.getString("worldType");
     

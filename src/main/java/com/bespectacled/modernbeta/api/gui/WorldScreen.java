@@ -8,6 +8,7 @@ import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.gui.ActionButtonOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.NBTUtil;
@@ -24,7 +25,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
@@ -53,7 +53,7 @@ public abstract class WorldScreen extends Screen {
         this.worldSettings = worldSettings;
         this.consumer = consumer;
         
-        this.worldProvider = ProviderRegistries.WORLD.get(NBTUtil.readStringOrThrow("worldType", this.worldSettings.getChunkSettings()));
+        this.worldProvider = ProviderRegistries.WORLD.get(NBTUtil.readStringOrThrow("worldType", this.worldSettings.getSettings(WorldSetting.CHUNK)));
     }
     
     @Override
@@ -61,8 +61,8 @@ public abstract class WorldScreen extends Screen {
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         this.children.add(this.buttonList);
         
-        String biomeType = NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getBiomeSettings());
-        String singleBiome = NBTUtil.readString("singleBiome", this.worldSettings.getBiomeSettings(), ModernBeta.BIOME_CONFIG.singleBiome);
+        String biomeType = NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getSettings(WorldSetting.BIOME));
+        String singleBiome = NBTUtil.readString("singleBiome", this.worldSettings.getSettings(WorldSetting.BIOME), ModernBeta.BIOME_CONFIG.singleBiome);
 
         ButtonWidget doneButton;
         ButtonWidget cancelButton;
@@ -113,7 +113,7 @@ public abstract class WorldScreen extends Screen {
             "createWorld.customize.biomeType",
             ProviderRegistries.BIOME.getKeys().stream().toArray(String[]::new), 
             (value) -> new TranslatableText("createWorld.customize.biomeType." + value), 
-            (gameOptions) -> NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getBiomeSettings()),
+            (gameOptions) -> NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getSettings(WorldSetting.BIOME)),
             (gameOptions, option, value) -> {
                 // Reset biome settings when switching to new biome type
                 NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsBase(value);
@@ -123,14 +123,14 @@ public abstract class WorldScreen extends Screen {
                     this.worldProvider.createLevelScreen(
                         this.parent, 
                         this.registryManager,
-                        new WorldSettings(this.worldSettings.getChunkSettings(), biomeProviderSettings),
+                        new WorldSettings(this.worldSettings.getSettings(WorldSetting.CHUNK), biomeProviderSettings),
                         this.consumer
                 ));
             }
         );
         
         biomeSettingsScreen = ProviderRegistries.BIOME_SCREEN
-            .getOrDefault(NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getBiomeSettings()))
+            .getOrDefault(NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getSettings(WorldSetting.BIOME)))
             .apply(this); 
         
         biomeSettingsOption = new ActionButtonOption(
@@ -164,23 +164,15 @@ public abstract class WorldScreen extends Screen {
     
     protected void setDefaultSingleBiome(String defaultBiome) {
         // Replace default single biome with one supplied by world provider, if switching to Single biome type
-        if (NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getBiomeSettings()).equals(BuiltInTypes.Biome.SINGLE.name))
-            this.worldSettings.putBiomeSetting("singleBiome", NbtString.of(defaultBiome));
+        if (NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getSettings(WorldSetting.BIOME)).equals(BuiltInTypes.Biome.SINGLE.name))
+            this.worldSettings.putSetting(WorldSetting.BIOME, "singleBiome", NbtString.of(defaultBiome));
     }
     
     public DynamicRegistryManager getRegistryManager() {
         return this.registryManager;
     }
     
-    public NbtCompound getBiomeProviderSettings() {
-        return this.worldSettings.getBiomeSettings();
-    }
-    
-    public void setBiomeProviderSettings(NbtCompound newBiomeProviderSettings) {
-        this.worldSettings.copyBiomeSettingsFrom(newBiomeProviderSettings);
-    }
-    
-    public void setBiomeProviderSettings(String key, NbtElement element) {
-        this.worldSettings.putBiomeSetting(key, element);
+    public WorldSettings getWorldSettings() {
+        return this.worldSettings;
     }
 }

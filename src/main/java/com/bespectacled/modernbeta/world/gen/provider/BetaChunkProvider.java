@@ -16,6 +16,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
@@ -336,6 +337,17 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
         densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);
         
         return densityWithOffset;
+    }
+    
+    @Override
+    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus status) {
+        /*
+        if (status == ChunkStatus.CARVERS || status == ChunkStatus.LIQUID_CARVERS) {
+            return true;
+        }
+        */
+        
+        return false;
     }
     
     @Override
