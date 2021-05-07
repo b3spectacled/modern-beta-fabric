@@ -1,17 +1,12 @@
 package com.bespectacled.modernbeta.api.world;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.api.gui.WorldScreen;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
-import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public final class WorldProvider {
     private final String chunkProvider;
@@ -63,18 +58,7 @@ public final class WorldProvider {
         return this.worldScreen;
     }
     
-    public ChunkProvider createChunkProvider(
-        long seed, 
-        ChunkGenerator chunkGenerator, 
-        Supplier<ChunkGeneratorSettings> generatorSettings, 
-        NbtCompound providerSettings
-    ) {
-        return ProviderRegistries.CHUNK
-            .get(this.chunkProvider)
-            .apply(seed, chunkGenerator, generatorSettings, providerSettings);
-    }
-    
-    public WorldScreen createLevelScreen(
+    public WorldScreen createWorldScreen(
         CreateWorldScreen parent, 
         DynamicRegistryManager registryManager,
         WorldSettings worldSettings,

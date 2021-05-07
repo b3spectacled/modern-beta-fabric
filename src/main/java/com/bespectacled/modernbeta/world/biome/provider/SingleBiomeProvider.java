@@ -22,14 +22,10 @@ public class SingleBiomeProvider extends BiomeProvider {
     }
 
     @Override
-    public Biome getBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
-        return registry.get(biomeId); 
+    public Biome getBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+        return biomeRegistry.get(biomeId); 
     }
     
-    public Identifier getBiomeId() {
-        return this.biomeId;
-    }
-
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
         return Arrays.asList(RegistryKey.of(Registry.BIOME_KEY, this.biomeId));

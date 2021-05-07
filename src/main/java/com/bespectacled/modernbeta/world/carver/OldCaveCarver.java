@@ -6,7 +6,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 
-public interface IOldCaveCarver {
+public interface OldCaveCarver {
     public boolean carve(
         CarverContext heightContext,
         CaveCarverConfig config,

@@ -19,7 +19,7 @@ import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.carver.IOldCaveCarver;
+import com.bespectacled.modernbeta.world.carver.OldCaveCarver;
 import com.bespectacled.modernbeta.world.feature.OldFeatures;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
 import com.mojang.serialization.Codec;
@@ -184,8 +184,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     this.random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
                     
                     // Special case for old Beta carvers.
-                    if (carver instanceof IOldCaveCarver) {
-                        ((IOldCaveCarver)carver).carve(heightContext, (CaveCarverConfig)configuredCarver.getConfig(), chunk, this.random, chunkX, chunkZ, mainChunkX, mainChunkZ);
+                    if (carver instanceof OldCaveCarver) {
+                        ((OldCaveCarver)carver).carve(heightContext, (CaveCarverConfig)configuredCarver.getConfig(), chunk, this.random, chunkX, chunkZ, mainChunkX, mainChunkZ);
                         
                     } else if (configuredCarver.shouldCarve(random)) {
                         configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, this.random, class_635013, caveChunkPos, bitSet);
@@ -321,7 +321,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     public NbtCompound getProviderSettings() {
-        return this.chunkProviderSettings;
+        return new NbtCompound().copyFrom(this.chunkProviderSettings);
     }
     
     /*

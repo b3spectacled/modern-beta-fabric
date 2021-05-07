@@ -13,6 +13,7 @@ import com.bespectacled.modernbeta.gui.ActionButtonOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
+import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 
 import net.minecraft.client.gui.DrawableHelper;
@@ -69,9 +70,13 @@ public abstract class WorldScreen extends Screen {
         
         CyclingOption<WorldProvider> worldTypeOption;
         CyclingOption<String> biomeTypeOption;
+        CyclingOption<String> caveBiomeTypeOption;
         
         Screen biomeSettingsScreen;
         ActionButtonOption biomeSettingsOption;
+        
+        Screen caveBiomeSettingsScreen;
+        ActionButtonOption caveBiomeSettingsOption;
         
         doneButton = new ButtonWidget(
             this.width / 2 - 155, this.height - 28, 150, 20, 
@@ -99,12 +104,13 @@ public abstract class WorldScreen extends Screen {
                 // Reset settings when switching to new world type
                 NbtCompound chunkProviderSettings = ChunkProviderSettings.createSettingsBase(value.getChunkProvider());
                 NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsBase(value.getBiomeProvider());
+                NbtCompound caveBiomeProviderSettings = CaveBiomeProviderSettings.createSettingsBase(value.getCaveBiomeProvider());
                 biomeProviderSettings.putString("singleBiome", value.getSingleBiome());
                 
-                this.client.openScreen(value.createLevelScreen(
+                this.client.openScreen(value.createWorldScreen(
                     this.parent, 
                     this.registryManager,
-                    new WorldSettings(chunkProviderSettings, biomeProviderSettings),
+                    new WorldSettings(chunkProviderSettings, biomeProviderSettings, caveBiomeProviderSettings),
                     this.consumer
                 ));
         });
@@ -120,11 +126,39 @@ public abstract class WorldScreen extends Screen {
                 biomeProviderSettings.putString("singleBiome", this.worldProvider.getSingleBiome());
                 
                 this.client.openScreen(
-                    this.worldProvider.createLevelScreen(
+                    this.worldProvider.createWorldScreen(
                         this.parent, 
                         this.registryManager,
-                        new WorldSettings(this.worldSettings.getSettings(WorldSetting.CHUNK), biomeProviderSettings),
+                        new WorldSettings(
+                            this.worldSettings.getSettings(WorldSetting.CHUNK), 
+                            biomeProviderSettings,
+                            this.worldSettings.getSettings(WorldSetting.CAVE_BIOME)
+                        ),
                         this.consumer
+                ));
+            }
+        );
+        
+        caveBiomeTypeOption = CyclingOption.create(
+            "createWorld.customize.caveBiomeType",
+            ProviderRegistries.CAVE_BIOME.getKeys().stream().toArray(String[]::new), 
+            (value) -> new TranslatableText("createWorld.customize.caveBiomeType." + value), 
+            (gameOptions) -> NBTUtil.readStringOrThrow("caveBiomeType", this.worldSettings.getSettings(WorldSetting.CAVE_BIOME)),
+            (gameOptions, option, value) -> {
+                // Reset biome settings when switching to new biome type
+                NbtCompound caveBiomeProviderSettings = CaveBiomeProviderSettings.createSettingsBase(value);
+                
+                this.client.openScreen(
+                    this.worldProvider.createWorldScreen(
+                        this.parent, 
+                        this.registryManager,
+                        new WorldSettings(
+                            this.worldSettings.getSettings(WorldSetting.CHUNK), 
+                            this.worldSettings.getSettings(WorldSetting.BIOME),
+                            caveBiomeProviderSettings
+                        ),
+                        this.consumer
+                        
                 ));
             }
         );
@@ -144,6 +178,7 @@ public abstract class WorldScreen extends Screen {
 
         this.buttonList.addSingleOptionEntry(worldTypeOption);
         this.buttonList.addOptionEntry(biomeTypeOption, biomeSettingsOption);
+        //this.buttonList.addOptionEntry(caveBiomeTypeOption, biomeSettingsOption);
     }
     
     @Override

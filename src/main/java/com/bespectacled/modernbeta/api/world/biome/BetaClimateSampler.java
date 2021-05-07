@@ -2,15 +2,18 @@ package com.bespectacled.modernbeta.api.world.biome;
 
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.BiFunction;
 
 import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
+
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.util.math.MathHelper;
 
 public enum BetaClimateSampler {
     INSTANCE;
     
-    private final BiomeCache biomeCache;
+    private final ChunkCache<ClimateCacheChunk> climateCache;
+    private final ChunkCache<SkyCacheChunk> skyCache;
     
     private SimplexOctaveNoise tempNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 9871L), 4);
     private SimplexOctaveNoise humidNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 39811L), 4);
@@ -19,7 +22,8 @@ public enum BetaClimateSampler {
     private long seed;
     
     private BetaClimateSampler() {
-        this.biomeCache = new BiomeCache(this);
+        this.climateCache = new ChunkCache<>(ClimateCacheChunk::new, 384);
+        this.skyCache = new ChunkCache<>(SkyCacheChunk::new, 128);
     }
     
     protected void setSeed(long seed) {
@@ -27,23 +31,24 @@ public enum BetaClimateSampler {
         
         this.seed = seed;
         this.initNoise(seed);
-        this.biomeCache.clear();
+        this.climateCache.clear();
+        this.skyCache.clear();
     }
     
     protected double sampleTemp(int x, int z) {
-        return this.biomeCache.getCachedChunk(x, z).sampleTempAtPoint(x, z);
+        return this.climateCache.getCachedChunk(x, z).sampleTempAtPoint(x, z);
     }
     
     protected double sampleHumid(int x, int z) {
-        return this.biomeCache.getCachedChunk(x, z).sampleHumidAtPoint(x, z);
+        return this.climateCache.getCachedChunk(x, z).sampleHumidAtPoint(x, z);
     }
     
     protected void sampleTempHumid(double[] arr, int x, int z) {
-        this.biomeCache.getCachedChunk(x, z).sampleTempHumidAtPoint(arr, x, z);
+        this.climateCache.getCachedChunk(x, z).sampleTempHumidAtPoint(arr, x, z);
     }
     
     protected double sampleSkyTemp(int x, int z) {
-        return this.biomeCache.getCachedChunk(x, z).sampleSkyTempAtPoint(x, z);
+        return this.skyCache.getCachedChunk(x, z).sampleSkyTempAtPoint(x, z);
     }
     
     protected int sampleSkyColor(int x, int z) {
@@ -87,64 +92,13 @@ public enum BetaClimateSampler {
         this.noiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
     }
     
-    private class BiomeCache {
-        private final Long2ObjectLinkedOpenHashMap<BiomeCacheChunk> biomeCache;
-        private final BetaClimateSampler climateSampler;
-        private final ReentrantReadWriteLock lock;
-        
-        public BiomeCache(BetaClimateSampler climateSampler) {
-            this.climateSampler = climateSampler;
-            this.biomeCache = new Long2ObjectLinkedOpenHashMap<BiomeCacheChunk>(256, 0.25f);
-            this.lock = new ReentrantReadWriteLock();
-        }
-        
-        public void clear() {
-            this.lock.writeLock().lock();
-            try {
-                this.biomeCache.clear();
-            } finally {
-                this.lock.writeLock().unlock();
-            }
-        }
-        
-        public BiomeCacheChunk getCachedChunk(int x, int z) {
-            int chunkX = x >> 4;
-            int chunkZ = z >> 4;
-            
-            long hashedCoord = (long)chunkX & 0xffffffffL | ((long)chunkZ & 0xffffffffL) << 32;
-            BiomeCacheChunk cachedChunk;
-            
-            this.lock.readLock().lock();
-            try {
-                cachedChunk = this.biomeCache.get(hashedCoord);
-            } finally {
-                this.lock.readLock().unlock();
-            }
-            
-            if (cachedChunk == null) { 
-                this.lock.writeLock().lock();
-                try {
-                    cachedChunk = new BiomeCacheChunk(chunkX, chunkZ, this.climateSampler);
-                    this.biomeCache.put(hashedCoord, cachedChunk);
-                } finally {
-                    this.lock.writeLock().unlock();
-                }
-                
-            }
-            
-            return cachedChunk;
-        }
-    }
-    
-    private class BiomeCacheChunk {
+    private class ClimateCacheChunk extends CacheChunk {
         private final double temps[];
         private final double humids[];
-        private final float skyTemps[]; // Lower precision, change back to double if there are issues.
         
-        public BiomeCacheChunk(int chunkX, int chunkZ, BetaClimateSampler climateSampler) {
+        public ClimateCacheChunk(int chunkX, int chunkZ) {
             this.temps = new double[256];
             this.humids = new double[256];
-            this.skyTemps = new float[256];
             
             int startX = chunkX << 4;
             int startZ = chunkZ << 4;
@@ -153,11 +107,10 @@ public enum BetaClimateSampler {
             int ndx = 0;
             for (int z = startZ; z < startZ + 16; ++z) {
                 for (int x = startX; x < startX + 16; ++x) {
-                    climateSampler.sampleTempHumidAtPoint(tempHumid, x, z);
+                    BetaClimateSampler.INSTANCE.sampleTempHumidAtPoint(tempHumid, x, z);
                     
                     temps[ndx] = tempHumid[0];
                     humids[ndx] = tempHumid[1];
-                    skyTemps[ndx] = (float)climateSampler.sampleSkyTempAtPoint(x, z);
 
                     ndx++;
                 }
@@ -176,11 +129,82 @@ public enum BetaClimateSampler {
             tempHumid[0] = temps[x & 0xF | (z & 0xF) << 4];
             tempHumid[1] = humids[x & 0xF | (z & 0xF) << 4];
         }
+    }
+    
+    private class SkyCacheChunk extends CacheChunk {
+        private final float skyTemps[];
+        
+        public SkyCacheChunk(int chunkX, int chunkZ) {
+            this.skyTemps = new float[256];
+            
+            int startX = chunkX << 4;
+            int startZ = chunkZ << 4;
+            
+            int ndx = 0;
+            for (int z = startZ; z < startZ + 16; ++z) {
+                for (int x = startX; x < startX + 16; ++x) {
+                    skyTemps[ndx] = (float)BetaClimateSampler.INSTANCE.sampleSkyTempAtPoint(x, z);
+                    
+                    ndx++;
+                }
+            }
+        }
         
         public double sampleSkyTempAtPoint(int x, int z) {
             return skyTemps[x & 0xF | (z & 0xF) << 4];
         }
-        
     }
     
+    private final class ChunkCache<T extends CacheChunk> {
+        private final Long2ObjectLinkedOpenHashMap<T> chunkCache;
+        private final ReentrantReadWriteLock lock;
+        private final BiFunction<Integer, Integer, T> newCacheChunk;
+        
+        private ChunkCache(BiFunction<Integer, Integer, T> newCacheChunk, int expected) {
+            this.chunkCache = new Long2ObjectLinkedOpenHashMap<T>(expected);
+            this.lock = new ReentrantReadWriteLock();
+            this.newCacheChunk = newCacheChunk;
+        }
+        
+        private void clear() {
+            this.lock.writeLock().lock();
+            try {
+                this.chunkCache.clear();
+                this.chunkCache.trim();
+            } finally {
+                this.lock.writeLock().unlock();
+            }
+        }
+        
+        private T getCachedChunk(int x, int z) {
+            int chunkX = x >> 4;
+            int chunkZ = z >> 4;
+            
+            long hashedCoord = (long)chunkX & 0xffffffffL | ((long)chunkZ & 0xffffffffL) << 32;
+            
+            T cachedChunk;
+            
+            this.lock.readLock().lock();
+            try {
+                cachedChunk = this.chunkCache.get(hashedCoord);
+            } finally {
+                this.lock.readLock().unlock();
+            }
+            
+            if (cachedChunk == null) { 
+                this.lock.writeLock().lock();
+                try {
+                    cachedChunk = this.newCacheChunk.apply(chunkX, chunkZ);
+                    this.chunkCache.put(hashedCoord, cachedChunk);
+                } finally {
+                    this.lock.writeLock().unlock();
+                }
+                
+            }
+            
+            return cachedChunk;
+        }
+    }
+    
+    private abstract class CacheChunk {}
 }

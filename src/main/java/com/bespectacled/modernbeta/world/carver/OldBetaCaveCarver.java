@@ -15,7 +15,7 @@ import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.CaveCarver;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 
-public class OldBetaCaveCarver extends CaveCarver implements IOldCaveCarver {
+public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
     private static final Set<Block> ALWAYS_CARVABLE_BLOCKS;
 
     public OldBetaCaveCarver(Codec<CaveCarverConfig> codec) {

@@ -77,8 +77,8 @@ public class OldBiomeSource extends BiomeSource {
         return this.biomeProvider;
     }
     
-    public NbtCompound getProviderSettings() {
-        return this.biomeProviderSettings;
+    public NbtCompound getBiomeProviderSettings() {
+        return new NbtCompound().copyFrom(this.biomeProviderSettings);
     }
 
     @Environment(EnvType.CLIENT)

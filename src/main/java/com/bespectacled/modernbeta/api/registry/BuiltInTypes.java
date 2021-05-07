@@ -32,6 +32,7 @@ public final class BuiltInTypes {
     public enum CaveBiome {
         NONE("none"),
         VANILLA("vanilla"),
+        BETA("beta"),
         SINGLE("single")
         ;
         
@@ -51,15 +52,5 @@ public final class BuiltInTypes {
         public final String name;
         
         private WorldScreen(String name) { this.name = name; }
-    }
-    
-    public enum BetaBiomePreset {
-        BETA("beta"),
-        BETA_PLUS("beta_plus")
-        ;
-        
-        public final String name;
-        
-        private BetaBiomePreset(String name) { this.name = name; }
     }
 }

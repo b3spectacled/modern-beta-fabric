@@ -12,6 +12,7 @@ import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.mixin.client.MixinMoreOptionsDialogInvoker;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
+import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 import com.google.common.collect.ImmutableMap;
 
@@ -108,16 +109,19 @@ public class OldGeneratorType {
                         // If settings already present, create new compound tag and copy from source,
                         // otherwise, not copying will modify original settings.
                         NbtCompound chunkProviderSettings = chunkGenerator instanceof OldChunkGenerator ?
-                            new NbtCompound().copyFrom(((OldChunkGenerator)chunkGenerator).getProviderSettings()) :
+                            ((OldChunkGenerator)chunkGenerator).getProviderSettings() :
                             ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider());
                         
                         NbtCompound biomeProviderSettings = biomeSource instanceof OldBiomeSource ? 
-                            new NbtCompound().copyFrom(((OldBiomeSource)biomeSource).getProviderSettings()) : 
-                                BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider());
+                            ((OldBiomeSource)biomeSource).getBiomeProviderSettings() : 
+                            BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider());
                         
-                        WorldSettings worldSettings = new WorldSettings(chunkProviderSettings, biomeProviderSettings);
+                        // TODO: Add functionality later
+                        NbtCompound caveBiomeProviderSettings = CaveBiomeProviderSettings.createSettingsBase(worldProvider.getCaveBiomeProvider());
                         
-                        return ProviderRegistries.WORLD.get(chunkProviderSettings.getString("worldType")).createLevelScreen(
+                        WorldSettings worldSettings = new WorldSettings(chunkProviderSettings, biomeProviderSettings, caveBiomeProviderSettings);
+                        
+                        return ProviderRegistries.WORLD.get(chunkProviderSettings.getString("worldType")).createWorldScreen(
                             screen,
                             screen.moreOptionsDialog.getRegistryManager(),
                             worldSettings,

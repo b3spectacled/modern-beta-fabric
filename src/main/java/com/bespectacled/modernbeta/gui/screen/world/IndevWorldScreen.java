@@ -56,7 +56,7 @@ public class IndevWorldScreen extends WorldScreen {
                     this.setDefaultSingleBiome(value.getDefaultBiome().toString());
                     
                     this.client.openScreen(
-                        this.worldProvider.createLevelScreen(
+                        this.worldProvider.createWorldScreen(
                             this.parent, 
                             this.registryManager,
                             this.worldSettings,

@@ -11,7 +11,8 @@ import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.DoubleArrayPool;
 import com.bespectacled.modernbeta.util.IntArrayPool;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.class_6350;
 import net.minecraft.class_6357;
 import net.minecraft.class_6358;
@@ -69,8 +70,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final boolean generateDeepslate;
     protected final boolean generateOreVeins;
     protected final boolean generateNoodleCaves;
-    
-    protected final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> heightmapCache;
+
+    protected Long2ObjectLinkedOpenHashMap<HeightmapChunk> heightmapCache;
     protected final IntArrayPool heightmapPool;
     
     protected final DoubleArrayPool heightNoisePool;
@@ -188,7 +189,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         this.blockSource = new DeepslateBlockSource(seed, this.defaultBlock, this.generateDeepslate ? Blocks.DEEPSLATE.getDefaultState() : BlockStates.STONE, this.generatorSettings.get());
         
         // Heightmap cache
-        this.heightmapCache = new Object2ObjectLinkedOpenHashMap<>(512);
+        this.heightmapCache = new Long2ObjectLinkedOpenHashMap<>(512);
         this.heightmapPool = new IntArrayPool(64, 16 * 16);
         
         // Noise array pools
@@ -225,12 +226,20 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     
     @Override
     public int getHeight(int x, int z, Type type) {
-        Integer groundHeight = heightmapCache.get(new BlockPos(x, 0, z));
+        int chunkX = x >> 4;
+        int chunkZ = z >> 4;
         
-        if (groundHeight == null) {
-            groundHeight = this.sampleHeightmap(x, z);
+        long hashedCoord = (long)chunkX & 0xffffffffL | ((long)chunkZ & 0xffffffffL) << 32;
+        
+        HeightmapChunk cachedChunk = heightmapCache.get(hashedCoord);
+        
+        if (cachedChunk == null) {
+            cachedChunk = this.sampleHeightmap(x, z);
+            heightmapCache.put(hashedCoord, cachedChunk);
         }
-
+        
+        int groundHeight = cachedChunk.getHeight(x, z);
+        
         // Not ideal
         if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
             groundHeight = this.seaLevel;
@@ -347,15 +356,12 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         this.heightNoisePool.returnArr(heightNoise);
     }
     
-    protected int sampleHeightmap(int sampleX, int sampleZ) {
+    protected HeightmapChunk sampleHeightmap(int sampleX, int sampleZ) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
 
         int chunkX = sampleX >> 4;
         int chunkZ = sampleZ >> 4;
-        
-        int startX = chunkX << 4;
-        int startZ = chunkZ << 4;
 
         double[] heightNoise = this.heightNoisePool.borrowArr();
         this.generateHeightNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
@@ -412,15 +418,13 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             }
         }
 
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                heightmapCache.put(new BlockPos(startX + x, 0, startZ + z), heightmap[z + x * 16] + 1);
-            }
-        }
+        // Construct new heightmap cache from generated heightmap array
+        HeightmapChunk heightmapChunk = new HeightmapChunk(heightmap);
         
         this.heightmapPool.returnArr(heightmap);
         this.heightNoisePool.returnArr(heightNoise);
-        return heightmapCache.get(new BlockPos(sampleX, 0, sampleZ));
+        
+        return heightmapChunk;
     }
     
     /**
@@ -521,7 +525,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     }
     
     /**
-     * Modifies density to set terrain curve at bottom of the world.
+     * Interpolates density to set terrain curve at bottom of the world.
      * 
      * @param density Base density.
      * @param noiseY y-coordinate in noise coordinates.
@@ -540,7 +544,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     }
     
     /**
-     * Modifies density to set terrain curve at top of the world.
+     * Interpolates density to set terrain curve at top of the world.
      * 
      * @param density Base density.
      * @param noiseY y-coordinate in noise coordinates.
@@ -556,6 +560,51 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         }
         
         return density;
+    }
+    
+    /**
+     * Interpolates density to set terrain curve at top of the world.
+     * Height target is provided to set curve at a lower world height than the actual.
+     * TODO: Check back later to see if this will work with new mountains.
+     * 
+     * @param density Base density.
+     * @param noiseY y-coordinate in noise coordinates.
+     * @param initialOffset Initial noise y-coordinate offset. Generator settings offset is subtracted from this.
+     * @param heightTarget The world height the curve should target.
+     * 
+     * @return Modified noise density.
+     */
+    protected double applyTopSlide(double density, int noiseY, int initialOffset, int heightTarget) {
+        int noiseSizeY = MathHelper.floorDiv(heightTarget, this.verticalNoiseResolution);
+        int topSlideStart = (noiseSizeY + 1) - initialOffset - this.topSlideOffset;
+        if (noiseY > topSlideStart) {
+            // Clamp delta since difference of noiseY and slideStart can exceed slideSize if real world height is larger than provided target "height"
+            double topSlideDelta = MathHelper.clamp((float) (noiseY - topSlideStart) / (float) this.topSlideSize, 0.0D, 1.0D);
+            density = density * (1.0D - topSlideDelta) + this.topSlideTarget * topSlideDelta;
+        }
+        
+        return density;
+    }
+    
+    private class HeightmapChunk {
+        private final int heightmap[];
+        
+        private HeightmapChunk(int[] heightmap) {
+            this.heightmap = new int[256];
+            
+            if (heightmap.length != 256) 
+                throw new IllegalArgumentException("[Modern Beta] Heightmap is an invalid size!");
+            
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    this.heightmap[x & 0xF | (z & 0xF) << 4] = heightmap[z + x * 16];
+                }
+            }
+        }
+        
+        private int getHeight(int x, int z) {
+            return this.heightmap[x & 0xF | (z & 0xF) << 4];
+        }
     }
 }
 

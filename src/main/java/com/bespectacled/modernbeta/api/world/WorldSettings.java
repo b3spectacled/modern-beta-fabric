@@ -23,12 +23,16 @@ public final class WorldSettings {
         }
     }
     
-    public WorldSettings(NbtCompound chunkProviderSettings, NbtCompound biomeProviderSettings) {
+    public WorldSettings(
+        NbtCompound chunkProviderSettings, 
+        NbtCompound biomeProviderSettings,
+        NbtCompound caveBiomeProviderSettings
+    ) {
         this(); // Ensure settings are initialized with something.
         
         this.settings.put(WorldSetting.CHUNK, new NbtCompound().copyFrom(chunkProviderSettings));
         this.settings.put(WorldSetting.BIOME, new NbtCompound().copyFrom(biomeProviderSettings));
-        this.settings.put(WorldSetting.CAVE_BIOME, new NbtCompound());
+        this.settings.put(WorldSetting.CAVE_BIOME, new NbtCompound().copyFrom(caveBiomeProviderSettings));
     }
     
     public NbtCompound getSettings(WorldSetting settingsKey) {
