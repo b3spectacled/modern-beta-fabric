@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.api.gui.WorldScreen;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
-import com.bespectacled.modernbeta.gui.TextOption;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -22,7 +21,6 @@ public class BaseWorldScreen extends WorldScreen {
     @Override
     protected void init() {
         super.init();
-        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
     }
 
 }

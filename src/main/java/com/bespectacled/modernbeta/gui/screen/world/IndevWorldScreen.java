@@ -8,7 +8,6 @@ import com.bespectacled.modernbeta.api.gui.WorldScreen;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
-import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.indev.IndevTheme;
 import com.bespectacled.modernbeta.world.biome.indev.IndevType;
@@ -144,7 +143,5 @@ public class IndevWorldScreen extends WorldScreen {
         this.buttonList.addSingleOptionEntry(levelLength);        
         this.buttonList.addSingleOptionEntry(levelHeight);
         this.buttonList.addSingleOptionEntry(caveRadius);
-        
-        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
     }
 }

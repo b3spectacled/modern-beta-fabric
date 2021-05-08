@@ -5,7 +5,6 @@ import java.util.function.Consumer;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
-import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.NBTUtil;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -124,8 +123,6 @@ public class IslandWorldScreen extends InfWorldScreen {
         this.buttonList.addSingleOptionEntry(centerIslandFalloff);
         this.buttonList.addSingleOptionEntry(outerIslandNoiseScale);
         this.buttonList.addSingleOptionEntry(outerIslandNoiseOffset);
-        
-        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
     }
 
 }

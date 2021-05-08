@@ -597,13 +597,13 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
-                    this.heightmap[x & 0xF | (z & 0xF) << 4] = heightmap[z + x * 16];
+                    this.heightmap[z + x * 16] = heightmap[z + x * 16] + 1;
                 }
             }
         }
         
         private int getHeight(int x, int z) {
-            return this.heightmap[x & 0xF | (z & 0xF) << 4];
+            return this.heightmap[(z & 0xF) + (x & 0xF) * 16];
         }
     }
 }

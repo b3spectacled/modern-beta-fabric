@@ -10,6 +10,7 @@ import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.gui.ActionButtonOption;
+import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
@@ -70,13 +71,13 @@ public abstract class WorldScreen extends Screen {
         
         CyclingOption<WorldProvider> worldTypeOption;
         CyclingOption<String> biomeTypeOption;
-        CyclingOption<String> caveBiomeTypeOption;
+        //CyclingOption<String> caveBiomeTypeOption;
         
         Screen biomeSettingsScreen;
         ActionButtonOption biomeSettingsOption;
         
-        Screen caveBiomeSettingsScreen;
-        ActionButtonOption caveBiomeSettingsOption;
+        //Screen caveBiomeSettingsScreen;
+        //ActionButtonOption caveBiomeSettingsOption;
         
         doneButton = new ButtonWidget(
             this.width / 2 - 155, this.height - 28, 150, 20, 
@@ -139,6 +140,7 @@ public abstract class WorldScreen extends Screen {
             }
         );
         
+        /*
         caveBiomeTypeOption = CyclingOption.create(
             "createWorld.customize.caveBiomeType",
             ProviderRegistries.CAVE_BIOME.getKeys().stream().toArray(String[]::new), 
@@ -162,6 +164,7 @@ public abstract class WorldScreen extends Screen {
                 ));
             }
         );
+        */
         
         biomeSettingsScreen = ProviderRegistries.BIOME_SCREEN
             .getOrDefault(NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getSettings(WorldSetting.BIOME)))
@@ -176,6 +179,7 @@ public abstract class WorldScreen extends Screen {
         this.addButton(doneButton);
         this.addButton(cancelButton);
 
+        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
         this.buttonList.addSingleOptionEntry(worldTypeOption);
         this.buttonList.addOptionEntry(biomeTypeOption, biomeSettingsOption);
         //this.buttonList.addOptionEntry(caveBiomeTypeOption, biomeSettingsOption);

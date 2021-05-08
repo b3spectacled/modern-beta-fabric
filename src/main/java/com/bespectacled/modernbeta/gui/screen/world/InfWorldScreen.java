@@ -7,7 +7,6 @@ import com.bespectacled.modernbeta.api.gui.WorldScreen;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
-import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.NBTUtil;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -41,9 +40,6 @@ public class InfWorldScreen extends WorldScreen {
         if (!biomeType.equals(BuiltInTypes.Biome.SINGLE.name)) {
             buttonList.addSingleOptionEntry(generateOceans);
         }
-
-        if (!(this instanceof Infdev227WorldScreen) && !(this instanceof IslandWorldScreen))
-            this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
 
     }
 }

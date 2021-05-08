@@ -36,19 +36,19 @@ public enum BetaClimateSampler {
     }
     
     protected double sampleTemp(int x, int z) {
-        return this.climateCache.getCachedChunk(x, z).sampleTempAtPoint(x, z);
+        return this.climateCache.getCachedChunk(x, z).sampleTemp(x, z);
     }
     
     protected double sampleHumid(int x, int z) {
-        return this.climateCache.getCachedChunk(x, z).sampleHumidAtPoint(x, z);
+        return this.climateCache.getCachedChunk(x, z).sampleHumid(x, z);
     }
     
     protected void sampleTempHumid(double[] arr, int x, int z) {
-        this.climateCache.getCachedChunk(x, z).sampleTempHumidAtPoint(arr, x, z);
+        this.climateCache.getCachedChunk(x, z).sampleTempHumid(arr, x, z);
     }
     
     protected double sampleSkyTemp(int x, int z) {
-        return this.skyCache.getCachedChunk(x, z).sampleSkyTempAtPoint(x, z);
+        return this.skyCache.getCachedChunk(x, z).sampleTemp(x, z);
     }
     
     protected int sampleSkyColor(int x, int z) {
@@ -92,66 +92,63 @@ public enum BetaClimateSampler {
         this.noiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
     }
     
+    private abstract class CacheChunk {}
+    
     private class ClimateCacheChunk extends CacheChunk {
-        private final double temps[];
-        private final double humids[];
+        protected final double temps[] = new double[256];
+        protected final double humids[] = new double [256];
         
         public ClimateCacheChunk(int chunkX, int chunkZ) {
-            this.temps = new double[256];
-            this.humids = new double[256];
-            
             int startX = chunkX << 4;
             int startZ = chunkZ << 4;
             double[] tempHumid = new double[2];
             
             int ndx = 0;
-            for (int z = startZ; z < startZ + 16; ++z) {
-                for (int x = startX; x < startX + 16; ++x) {
+            for (int x = startX; x < startX + 16; ++x) {
+                for (int z = startZ; z < startZ + 16; ++z) {
                     BetaClimateSampler.INSTANCE.sampleTempHumidAtPoint(tempHumid, x, z);
                     
-                    temps[ndx] = tempHumid[0];
-                    humids[ndx] = tempHumid[1];
+                    this.temps[ndx] = tempHumid[0];
+                    this.humids[ndx] = tempHumid[1];
 
                     ndx++;
                 }
             }
         }
         
-        public double sampleTempAtPoint(int x, int z) {
-            return temps[x & 0xF | (z & 0xF) << 4];
+        protected double sampleTemp(int x, int z) {
+            return temps[(z & 0xF) + (x & 0xF) * 16];
         }
         
-        public double sampleHumidAtPoint(int x, int z) {
-            return humids[x & 0xF | (z & 0xF) << 4];
+        protected double sampleHumid(int x, int z) {
+            return humids[(z & 0xF) + (x & 0xF) * 16];
         }
         
-        public void sampleTempHumidAtPoint(double[] tempHumid, int x, int z) {
-            tempHumid[0] = temps[x & 0xF | (z & 0xF) << 4];
-            tempHumid[1] = humids[x & 0xF | (z & 0xF) << 4];
+        protected void sampleTempHumid(double[] tempHumid, int x, int z) {
+            tempHumid[0] = temps[(z & 0xF) + (x & 0xF) * 16];
+            tempHumid[1] = humids[(z & 0xF) + (x & 0xF) * 16];
         }
     }
     
     private class SkyCacheChunk extends CacheChunk {
-        private final float skyTemps[];
+        protected final double temps[] = new double[256];
         
         public SkyCacheChunk(int chunkX, int chunkZ) {
-            this.skyTemps = new float[256];
-            
             int startX = chunkX << 4;
             int startZ = chunkZ << 4;
             
             int ndx = 0;
-            for (int z = startZ; z < startZ + 16; ++z) {
-                for (int x = startX; x < startX + 16; ++x) {
-                    skyTemps[ndx] = (float)BetaClimateSampler.INSTANCE.sampleSkyTempAtPoint(x, z);
+            for (int x = startX; x < startX + 16; ++x) {
+                for (int z = startZ; z < startZ + 16; ++z) {    
+                    this.temps[ndx] = BetaClimateSampler.INSTANCE.sampleSkyTempAtPoint(x, z);
                     
                     ndx++;
                 }
             }
         }
         
-        public double sampleSkyTempAtPoint(int x, int z) {
-            return skyTemps[x & 0xF | (z & 0xF) << 4];
+        protected double sampleTemp(int x, int z) {
+            return temps[(z & 0xF) + (x & 0xF) * 16];
         }
     }
     
@@ -161,9 +158,10 @@ public enum BetaClimateSampler {
         private final BiFunction<Integer, Integer, T> newCacheChunk;
         
         private ChunkCache(BiFunction<Integer, Integer, T> newCacheChunk, int expected) {
-            this.chunkCache = new Long2ObjectLinkedOpenHashMap<T>(expected);
-            this.lock = new ReentrantReadWriteLock();
             this.newCacheChunk = newCacheChunk;
+            this.chunkCache = new Long2ObjectLinkedOpenHashMap<T>(expected);
+            
+            this.lock = new ReentrantReadWriteLock();
         }
         
         private void clear() {
@@ -205,6 +203,4 @@ public enum BetaClimateSampler {
             return cachedChunk;
         }
     }
-    
-    private abstract class CacheChunk {}
 }
