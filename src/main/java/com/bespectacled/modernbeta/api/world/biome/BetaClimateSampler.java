@@ -95,10 +95,10 @@ public enum BetaClimateSampler {
     private abstract class CacheChunk {}
     
     private class ClimateCacheChunk extends CacheChunk {
-        protected final double temps[] = new double[256];
-        protected final double humids[] = new double [256];
+        private final double temps[] = new double[256];
+        private final double humids[] = new double [256];
         
-        public ClimateCacheChunk(int chunkX, int chunkZ) {
+        private ClimateCacheChunk(int chunkX, int chunkZ) {
             int startX = chunkX << 4;
             int startZ = chunkZ << 4;
             double[] tempHumid = new double[2];
@@ -116,24 +116,24 @@ public enum BetaClimateSampler {
             }
         }
         
-        protected double sampleTemp(int x, int z) {
+        private double sampleTemp(int x, int z) {
             return temps[(z & 0xF) + (x & 0xF) * 16];
         }
         
-        protected double sampleHumid(int x, int z) {
+        private double sampleHumid(int x, int z) {
             return humids[(z & 0xF) + (x & 0xF) * 16];
         }
         
-        protected void sampleTempHumid(double[] tempHumid, int x, int z) {
+        private void sampleTempHumid(double[] tempHumid, int x, int z) {
             tempHumid[0] = temps[(z & 0xF) + (x & 0xF) * 16];
             tempHumid[1] = humids[(z & 0xF) + (x & 0xF) * 16];
         }
     }
     
     private class SkyCacheChunk extends CacheChunk {
-        protected final double temps[] = new double[256];
+        private final double temps[] = new double[256];
         
-        public SkyCacheChunk(int chunkX, int chunkZ) {
+        private SkyCacheChunk(int chunkX, int chunkZ) {
             int startX = chunkX << 4;
             int startZ = chunkZ << 4;
             
@@ -147,7 +147,7 @@ public enum BetaClimateSampler {
             }
         }
         
-        protected double sampleTemp(int x, int z) {
+        private double sampleTemp(int x, int z) {
             return temps[(z & 0xF) + (x & 0xF) * 16];
         }
     }

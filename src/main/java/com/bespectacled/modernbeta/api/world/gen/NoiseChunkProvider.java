@@ -189,12 +189,12 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         this.blockSource = new DeepslateBlockSource(seed, this.defaultBlock, this.generateDeepslate ? Blocks.DEEPSLATE.getDefaultState() : BlockStates.STONE, this.generatorSettings.get());
         
         // Heightmap cache
-        this.heightmapCache = new Long2ObjectLinkedOpenHashMap<>(512);
-        this.heightmapPool = new IntArrayPool(64, 16 * 16);
+        this.heightmapCache = new Long2ObjectLinkedOpenHashMap<>(1024);
+        this.heightmapPool = new IntArrayPool(64, 256);
         
         // Noise array pools
         this.heightNoisePool = new DoubleArrayPool(64, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1));
-        this.surfaceNoisePool = new DoubleArrayPool(64, 16 * 16);
+        this.surfaceNoisePool = new DoubleArrayPool(64, 256);
         
         // Aquifer samplers
         ChunkRandom chunkRandom = new ChunkRandom(seed);
@@ -207,8 +207,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         this.oreVeinGenerator = new OreVeinGenerator(seed, this.defaultBlock, this.horizontalNoiseResolution, this.verticalNoiseResolution, this.generatorSettings.get().getGenerationShapeConfig().getMinimumY());
         this.noodleCaveGenerator = new class_6358(seed);
     }
-    
-    protected abstract void generateHeightNoiseArr(int noiseX, int noiseZ, double[] heightNoise);
     
     /**
      * 
@@ -247,6 +245,29 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         return groundHeight;
     }
     
+    protected abstract void generateScaleDepth(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ, double[] scaleDepth);
+    protected abstract double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth);
+    
+    protected void generateNoiseArr(int noiseX, int noiseZ, double[] noise) {
+        int noiseResolutionX = this.noiseSizeX + 1;
+        int noiseResolutionZ = this.noiseSizeZ + 1;
+        int noiseResolutionY = this.noiseSizeY + 1;
+        
+        double[] scaleDepth = new double[4];
+        
+        int ndx = 0;
+        for (int nX = 0; nX < noiseResolutionX; ++nX) {
+            for (int nZ = 0; nZ < noiseResolutionZ; ++nZ) {
+                this.generateScaleDepth(noiseX, noiseZ, nX, nZ, scaleDepth);
+                
+                for (int nY = this.noiseMinY; nY < noiseResolutionY + this.noiseMinY; ++nY) {
+                    noise[ndx] = this.generateNoise(noiseX + nX, nY, noiseZ + nZ, scaleDepth);
+                    ndx++;
+                }
+            }
+        }
+    }
+    
     protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
@@ -272,7 +293,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         // Get and populate primary noise array
         double[] heightNoise = this.heightNoisePool.borrowArr();
-        this.generateHeightNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
+        this.generateNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
         
         // Create ore vein and noodle cave samplers
         List<NoiseInterpolator> interpolatorList = new ArrayList<>();
@@ -364,7 +385,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int chunkZ = sampleZ >> 4;
 
         double[] heightNoise = this.heightNoisePool.borrowArr();
-        this.generateHeightNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
+        this.generateNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
         
         int[] heightmap = this.heightmapPool.borrowArr(); 
         IntStream.range(0, heightmap.length).forEach(i -> heightmap[i] = 16);
@@ -450,15 +471,14 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     
     /**
      * Samples density for noise cave.
-     * 
+     * @param noise Base density.
      * @param noiseX x-coordinate in absolute noise coordinates.
      * @param noiseY y-coordinate in absolute noise coordinates.
      * @param noiseZ z-coordinate in absolute noise coordinates.
-     * @param noise Base density.
      * 
      * @return Modified noise density.
      */
-    protected double sampleNoiseCave(int noiseX, int noiseY, int noiseZ, double noise) {
+    protected double sampleNoiseCave(double noise, int noiseX, int noiseY, int noiseZ) {
         if (this.noiseCaveSampler != null) {
             //return this.noiseCaveSampler.sample(noise, noiseX, noiseY, noiseZ);
             return this.noiseCaveSampler.sample(noise, noiseY, noiseZ, noiseX); // ????
@@ -587,11 +607,9 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     }
     
     private class HeightmapChunk {
-        private final int heightmap[];
+        private final int heightmap[] = new int[256];
         
         private HeightmapChunk(int[] heightmap) {
-            this.heightmap = new int[256];
-            
             if (heightmap.length != 256) 
                 throw new IllegalArgumentException("[Modern Beta] Heightmap is an invalid size!");
             

@@ -25,8 +25,6 @@ public class DoubleArrayPool {
         if (arrToBorrow == null)
             arrToBorrow = new double[this.arraySize];
         
-        //System.out.println("Borrowing, size after poll: " + this.arrPool.size());
-        
         return arrToBorrow;
     }
     

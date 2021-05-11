@@ -357,7 +357,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
             try {
                 this.generatedLatch.await();
             } catch (InterruptedException e) {
-                ModernBeta.LOGGER.log(Level.ERROR, "[Modern Beta] Indev chunk provider failed to pregenerate terrain!");
+                ModernBeta.log(Level.ERROR, "Indev chunk provider failed to pregenerate terrain!");
                 e.printStackTrace();
             }
         }
@@ -812,7 +812,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
     private void setPhase(String phase) {
         this.phase = phase;
 
-        ModernBeta.LOGGER.log(Level.INFO, "[Indev] " + phase + "..");
+        ModernBeta.log(Level.INFO, "[Indev] " + phase + "..");
     }
 
     public String getPhase() {

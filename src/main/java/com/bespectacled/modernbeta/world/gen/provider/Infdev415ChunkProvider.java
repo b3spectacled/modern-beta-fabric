@@ -158,23 +158,22 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
     }
     
     @Override
-    protected void generateHeightNoiseArr(int noiseX, int noiseZ, double[] heightNoise) {
-        int noiseResolutionX = this.noiseSizeX + 1;
-        int noiseResolutionZ = this.noiseSizeZ + 1;
-        int noiseResolutionY = this.noiseSizeY + 1;
+    public boolean isSandAt(int x, int z) {
+        double eighth = 0.03125D;
         
-        int ndx = 0;
-        for (int nX = 0; nX < noiseResolutionX; ++nX) {
-            for (int nZ = 0; nZ < noiseResolutionZ; ++nZ) {
-                for (int nY = this.noiseMinY; nY < noiseResolutionY + this.noiseMinY; ++nY) {
-                    heightNoise[ndx] = this.generateHeightNoise(noiseX + nX, nY, noiseZ + nZ);
-                    ndx++;
-                }
-            }
-        }
+        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
+        
+        return 
+            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
+            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + RAND.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
     
-    private double generateHeightNoise(int noiseX, int noiseY, int noiseZ) {
+    @Override
+    protected void generateScaleDepth(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ, double[] scaleDepth) {}
+
+    @Override
+    protected double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth) {
         // Check if y (in scaled space) is below sealevel
         // and increase density accordingly.
         //double elevGrad = y * 4.0 - 64.0;
@@ -223,27 +222,16 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
             density = minLimitVal + (maxLimitVal - minLimitVal) * mix;
         };
         
+        // Sample for noise caves
         density = this.sampleNoiseCave(
+            density,
             noiseX * this.horizontalNoiseResolution,
             noiseY * this.verticalNoiseResolution,
-            noiseZ * this.horizontalNoiseResolution,
-            density
+            noiseZ * this.horizontalNoiseResolution
         );
         
         density = this.applyBottomSlide(density, noiseY, -3);
         
         return density;
-    }
-    
-    @Override
-    public boolean isSandAt(int x, int z) {
-        double eighth = 0.03125D;
-        
-        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
-        
-        return 
-            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
-            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + RAND.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
 }

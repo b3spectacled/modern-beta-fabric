@@ -29,6 +29,8 @@ import com.bespectacled.modernbeta.config.*;
 
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
+    public static final String MOD_NAME = "Modern Beta";
+
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
     
     public static final ModernBetaConfig BETA_CONFIG = AutoConfig.register(ModernBetaConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new)).getConfig();
@@ -47,10 +49,14 @@ public class ModernBeta implements ModInitializer {
     public static Identifier createId(String name) {
         return new Identifier(MOD_ID, name);
     }
+    
+    public static void log(Level level, String message) {
+        LogManager.getLogger(MOD_ID).log(level, "[" + MOD_NAME + "] {}", message);
+    }
 
     @Override
     public void onInitialize() {
-        LOGGER.log(Level.INFO, "Initializing Modern Beta...");
+        log(Level.INFO, "Initializing Modern Beta...");
 
         // Register mod stuff
         OldStructures.register();
@@ -59,6 +65,7 @@ public class ModernBeta implements ModInitializer {
         OldChunkGenerator.register();
         OldChunkGeneratorSettings.register();
         
+        // Add Ocean Shrine to vanilla oceans, when using vanilla biome type.
         VanillaBiomeModifier.addShrineToOceans();
         
         // Set up mod compatibility
@@ -82,7 +89,7 @@ public class ModernBeta implements ModInitializer {
         //OldChunkGeneratorSettings.export();
         //OldChunkGenerator.export();
 
-        LOGGER.log(Level.INFO, "Initialized Modern Beta!");
+        log(Level.INFO, "Initialized Modern Beta!");
 
         // Man, I am not good at this...
     }

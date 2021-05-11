@@ -189,35 +189,25 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
     }
     
     @Override
-    protected void generateHeightNoiseArr(int noiseX, int noiseZ, double[] heightNoise) {
-        int noiseResolutionX = this.noiseSizeX + 1;
-        int noiseResolutionZ = this.noiseSizeZ + 1;
-        int noiseResolutionY = this.noiseSizeY + 1;
+    public boolean isSandAt(int x, int z) {
+        double eighth = 0.03125D;
         
-        int startX = noiseX / this.noiseSizeX * 16;
-        int startZ = noiseZ / this.noiseSizeZ * 16;
-        int transformCoord = 16 / noiseResolutionX;
+        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
         
-        double[] scaleDepth = new double[2];
-        
-        int ndx = 0;
-        for (int nX = 0; nX < noiseResolutionX; ++nX) {
-            for (int nZ = 0; nZ < noiseResolutionZ; ++nZ) {
-                int absX = startX + nX * transformCoord + transformCoord / 2;
-                int absZ = startZ + nZ * transformCoord + transformCoord / 2;
-                this.generateScaleDepth(absX, absZ, noiseX + nX, noiseZ + nZ, scaleDepth);
-                
-                for (int nY = this.noiseMinY; nY < noiseResolutionY + this.noiseMinY; ++nY) {
-                    heightNoise[ndx] = this.generateHeightNoise(noiseX + nX, nY, noiseZ + nZ, scaleDepth[0], scaleDepth[1]);
-                    ndx++;
-                }
-            }
-        }
+        return 
+            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
+            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + RAND.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
-    
-    private void generateScaleDepth(int x, int z, int noiseX, int noiseZ, double[] scaleDepth) {
-        if (scaleDepth.length != 2) 
-            throw new IllegalArgumentException("[Modern Beta] Scale/Depth array has incorrect length, should be 2.");
+
+    @Override
+    protected void generateScaleDepth(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ, double[] scaleDepth) {
+        int horizNoiseResolution = 16 / (this.noiseSizeX + 1);
+        int x = (startNoiseX / this.noiseSizeX * 16) + curNoiseX * horizNoiseResolution + horizNoiseResolution / 2;
+        int z = (startNoiseZ / this.noiseSizeZ * 16) + curNoiseZ * horizNoiseResolution + horizNoiseResolution / 2;
+        
+        int noiseX = startNoiseX + curNoiseX;
+        int noiseZ = startNoiseZ + curNoiseZ;
         
         double depthNoiseScaleX = 200D;
         double depthNoiseScaleZ = 200D;
@@ -283,7 +273,81 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
         scaleDepth[1] = depth1;
     }
     
-    private double generateHeightNoise(int noiseX, int noiseY, int noiseZ, double scale, double depth) {
+    /*
+    private void generateScaleDepth(int x, int z, int noiseX, int noiseZ, double[] scaleDepth) {
+        if (scaleDepth.length != 2) 
+            throw new IllegalArgumentException("[Modern Beta] Scale/Depth array has incorrect length, should be 2.");
+
+        double depthNoiseScaleX = 200D;
+        double depthNoiseScaleZ = 200D;
+        
+        //double baseSize = noiseResolutionY / 2D; // Or: 17 / 2D = 8.5
+        double baseSize = 8.5D;
+        
+        double temp = this.sampleTemp(x, z);
+        double humid = this.sampleHumid(x, z) * temp;
+        
+        humid = 1.0D - humid;
+        humid *= humid;
+        humid *= humid;
+        humid = 1.0D - humid;
+
+        double scale = this.scaleNoiseOctaves.sample(noiseX, noiseZ, 1.121D, 1.121D);
+        scale = (scale + 256D) / 512D;
+        scale *= humid;
+        
+        if (scale > 1.0D) {
+            scale = 1.0D;
+        }
+        
+        double depth0 = this.depthNoiseOctaves.sample(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
+        depth0 /= 8000D;
+
+        if (depth0 < 0.0D) {
+            depth0 = -depth0 * 0.29999999999999999D;
+        }
+
+        depth0 = depth0 * 3D - 2D;
+
+        if (depth0 < 0.0D) {
+            depth0 /= 2D;
+
+            if (depth0 < -1D) {
+                depth0 = -1D;
+            }
+
+            depth0 /= 1.3999999999999999D;
+            depth0 /= 2D;
+
+            scale = 0.0D;
+
+        } else {
+            if (depth0 > 1.0D) {
+                depth0 = 1.0D;
+            }
+            depth0 /= 8D;
+        }
+
+        if (scale < 0.0D) {
+            scale = 0.0D;
+        }
+
+        scale += 0.5D;
+        //depthVal = (depthVal * (double) noiseResolutionY) / 16D;
+        //double depthVal2 = (double) noiseResolutionY / 2D + depthVal * 4D;
+        depth0 = depth0 * baseSize / 8D;
+        double depth1 = baseSize + depth0 * 4D;
+        
+        scaleDepth[0] = scale;
+        scaleDepth[1] = depth1;
+    }
+    */
+    
+    @Override
+    protected double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth) {
+        double scale = scaleDepth[0];
+        double depth = scaleDepth[1];
+        
         // Var names taken from old customized preset names
         double coordinateScale = 684.41200000000003D * this.xzScale; 
         double heightScale = 684.41200000000003D * this.yScale;
@@ -327,10 +391,10 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
         
         // Sample for noise caves
         densityWithOffset = this.sampleNoiseCave(
+            densityWithOffset, 
             noiseX * this.horizontalNoiseResolution, 
-            noiseY * this.verticalNoiseResolution, 
-            noiseZ * this.horizontalNoiseResolution,
-            densityWithOffset
+            noiseY * this.verticalNoiseResolution,
+            noiseZ * this.horizontalNoiseResolution
         );
         
         densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
@@ -341,24 +405,10 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
     
     @Override
     public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus status) {
-        /*
+        
         if (status == ChunkStatus.CARVERS || status == ChunkStatus.LIQUID_CARVERS) {
             return true;
         }
-        */
-        
         return false;
-    }
-    
-    @Override
-    public boolean isSandAt(int x, int z) {
-        double eighth = 0.03125D;
-        
-        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
-        
-        return 
-            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
-            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + RAND.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
 } 

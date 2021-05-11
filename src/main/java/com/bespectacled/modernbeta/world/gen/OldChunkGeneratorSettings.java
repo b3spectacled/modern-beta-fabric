@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.Level;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -73,7 +75,7 @@ public class OldChunkGeneratorSettings {
                 JsonElement json = toJson.apply(() -> s).result().get();
                 Files.write(dir.resolve(i.getPath() + ".json"), gson.toJson(json).getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
-                ModernBeta.LOGGER.error("[Modern Beta] Couldn't serialize chunk generator settings!");
+                ModernBeta.log(Level.ERROR, "[Modern Beta] Couldn't serialize chunk generator settings!");
                 e.printStackTrace();
             }
         }

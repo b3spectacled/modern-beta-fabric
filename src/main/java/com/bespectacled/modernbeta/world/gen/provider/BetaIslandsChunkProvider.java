@@ -37,9 +37,10 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
     private final SimplexNoise islandNoise;
     
     private final boolean generateOuterIslands;
+    private final int centerIslandRadius;
+    private final float centerIslandFalloff;
     private final int centerOceanLerpDistance;
     private final int centerOceanRadius;
-    private final float centerIslandFalloff;
     private final float outerIslandNoiseScale;
     private final float outerIslandNoiseOffset;
     
@@ -61,9 +62,10 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         
         // Beta Islands settings
         this.generateOuterIslands = NBTUtil.readBoolean("generateOuterIslands", providerSettings, ModernBeta.GEN_CONFIG.generateOuterIslands);
+        this.centerIslandRadius = NBTUtil.readInt("centerIslandRadius", providerSettings, ModernBeta.GEN_CONFIG.centerIslandRadius);
+        this.centerIslandFalloff = NBTUtil.readFloat("centerIslandFalloff", providerSettings, ModernBeta.GEN_CONFIG.centerIslandFalloff);
         this.centerOceanLerpDistance = NBTUtil.readInt("centerOceanLerpDistance", providerSettings, ModernBeta.GEN_CONFIG.centerOceanLerpDistance);
         this.centerOceanRadius = NBTUtil.readInt("centerOceanRadius", providerSettings, ModernBeta.GEN_CONFIG.centerOceanRadius);
-        this.centerIslandFalloff = NBTUtil.readFloat("centerIslandFalloff", providerSettings, ModernBeta.GEN_CONFIG.centerIslandFalloff);
         this.outerIslandNoiseScale = NBTUtil.readFloat("outerIslandNoiseScale", providerSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseScale);
         this.outerIslandNoiseOffset = NBTUtil.readFloat("outerIslandNoiseOffset", providerSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseOffset);
         
@@ -211,40 +213,25 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
     }
     
     @Override
-    protected void generateHeightNoiseArr(int noiseX, int noiseZ, double[] heightNoise) {
-        int noiseResolutionX = this.noiseSizeX + 1;
-        int noiseResolutionZ = this.noiseSizeZ + 1;
-        int noiseResolutionY = this.noiseSizeY + 1;
+    public boolean isSandAt(int x, int z) {
+        double eighth = 0.03125D;
         
-        int chunkX = noiseX / this.noiseSizeX;
-        int chunkZ = noiseZ / this.noiseSizeZ;
+        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
         
-        int startX = chunkX * 16;
-        int startZ = chunkZ * 16;
-        int transformCoord = 16 / noiseResolutionX;
-        
-        double[] scaleDepth = new double[2];
-        
-        int ndx = 0;
-        for (int nX = 0; nX < noiseResolutionX; ++nX) {
-            for (int nZ = 0; nZ < noiseResolutionZ; ++nZ) {
-                int absX = startX + nX * transformCoord + transformCoord / 2;
-                int absZ = startZ + nZ * transformCoord + transformCoord / 2;
-                this.generateScaleDepth(absX, absZ, noiseX + nX, noiseZ + nZ, scaleDepth);
-                
-                double islandOffset = this.generateIslandOffset(nX, nZ, noiseX, noiseZ);
-                
-                for (int nY = this.noiseMinY; nY < noiseResolutionY + this.noiseMinY; ++nY) {
-                    heightNoise[ndx] = this.generateHeightNoise(noiseX + nX, nY, noiseZ + nZ, scaleDepth[0], scaleDepth[1], islandOffset);
-                    ndx++;
-                }
-            }
-        }
+        return 
+            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
+            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + RAND.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
-    
-    private void generateScaleDepth(int x, int z, int noiseX, int noiseZ, double[] scaleDepth) {
-        if (scaleDepth.length != 2) 
-            throw new IllegalArgumentException("[Modern Beta] Scale/Depth array has incorrect length, should be 2.");
+
+    @Override
+    protected void generateScaleDepth(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ, double[] scaleDepth) {
+        int horizNoiseResolution = 16 / (this.noiseSizeX + 1);
+        int x = (startNoiseX / this.noiseSizeX * 16) + curNoiseX * horizNoiseResolution + horizNoiseResolution / 2;
+        int z = (startNoiseZ / this.noiseSizeZ * 16) + curNoiseZ * horizNoiseResolution + horizNoiseResolution / 2;
+        
+        int noiseX = startNoiseX + curNoiseX;
+        int noiseZ = startNoiseZ + curNoiseZ;
         
         double depthNoiseScaleX = 200D;
         double depthNoiseScaleZ = 200D;
@@ -308,47 +295,16 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         
         scaleDepth[0] = scale;
         scaleDepth[1] = depth1;
-    }
-    
-    // Debug: Outer edge starts at ~/tp -1170 100 770
-    private double generateIslandOffset(int x, int z, int noiseStartX, int noiseStartZ) {
-        float noiseX = x + noiseStartX;
-        float noiseZ = z + noiseStartZ;
-        
-        float oceanDepth = 200.0F;
-        
-        int centerOceanLerpDistance = this.centerOceanLerpDistance * this.noiseSizeX;
-        int centerOceanRadius = this.centerOceanRadius * this.noiseSizeX;
-        float centerIslandFalloff = this.centerIslandFalloff;
-        float outerIslandNoiseScale = this.outerIslandNoiseScale;
-        float outerIslandNoiseOffset = this.outerIslandNoiseOffset;
-        
-        float dist = noiseX * noiseX + noiseZ * noiseZ;
-        float radius = MathHelper.sqrt(dist);
-        
-        float islandOffset = 100.0F - radius * centerIslandFalloff;
-        islandOffset = MathHelper.clamp(islandOffset, -oceanDepth, 0.0F);
-            
-        if (this.generateOuterIslands && radius > centerOceanRadius) {
-            float islandAddition = (float)this.islandNoise.sample(noiseX / outerIslandNoiseScale, noiseZ / outerIslandNoiseScale, 1.0, 1.0) + outerIslandNoiseOffset;
-            
-            // 0.885539 = Simplex upper range, but scale a little higher to ensure island centers have untouched terrain.
-            islandAddition /= 0.8F;
-            islandAddition = MathHelper.clamp(islandAddition, 0.0F, 1.0F);
-            
-            // Interpolate noise addition so there isn't a sharp cutoff at start of ocean ring edge.
-            islandAddition = (float)MathHelper.clampedLerp(0.0F, islandAddition, (radius - centerOceanRadius) / centerOceanLerpDistance);
-            
-            islandOffset += islandAddition * oceanDepth;
-            islandOffset = MathHelper.clamp(islandOffset, -oceanDepth, 0.0F);
-        }
-        
-        return islandOffset;
+        scaleDepth[2] = this.generateIslandOffset(startNoiseX, startNoiseZ, curNoiseX, curNoiseZ);
     }
     
     
-    
-    private double generateHeightNoise(int noiseX, int noiseY, int noiseZ, double scale, double depth, double islandOffset) {
+    @Override
+    protected double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth) {
+        double scale = scaleDepth[0];
+        double depth = scaleDepth[1];
+        double islandOffset = scaleDepth[2];
+        
         // Var names taken from old customized preset names
         double coordinateScale = 684.41200000000003D * this.xzScale; 
         double heightScale = 684.41200000000003D * this.yScale;
@@ -395,10 +351,10 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         
         // Sample for noise caves
         densityWithOffset = this.sampleNoiseCave(
+            densityWithOffset, 
             noiseX * this.horizontalNoiseResolution, 
-            noiseY * this.verticalNoiseResolution, 
-            noiseZ * this.horizontalNoiseResolution,
-            densityWithOffset
+            noiseY * this.verticalNoiseResolution,
+            noiseZ * this.horizontalNoiseResolution
         );
         
         densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
@@ -406,16 +362,44 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         
         return densityWithOffset;
     }
-    
-    @Override
-    public boolean isSandAt(int x, int z) {
-        double eighth = 0.03125D;
+
+    private double generateIslandOffset(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ) {
+        float noiseX = curNoiseX + startNoiseX;
+        float noiseZ = curNoiseZ + startNoiseZ;
         
-        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
+        float oceanDepth = 200.0F;
         
-        return 
-            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
-            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + RAND.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
+        int centerOceanLerpDistance = this.centerOceanLerpDistance * this.noiseSizeX;
+        int centerOceanRadius = this.centerOceanRadius * this.noiseSizeX;
+        
+        float centerIslandRadius = this.centerIslandRadius * this.noiseSizeX;
+        
+        float outerIslandNoiseScale = this.outerIslandNoiseScale;
+        float outerIslandNoiseOffset = this.outerIslandNoiseOffset;
+        
+        float dist = noiseX * noiseX + noiseZ * noiseZ;
+        float radius = MathHelper.sqrt(dist);
+        
+        float islandOffset = centerIslandRadius - radius; 
+        if (islandOffset < 0.0) 
+            islandOffset *= this.centerIslandFalloff; // Increase the rate of falloff past the island radius
+        
+        islandOffset = MathHelper.clamp(islandOffset, -oceanDepth, 0.0F);
+            
+        if (this.generateOuterIslands && radius > centerOceanRadius) {
+            float islandAddition = (float)this.islandNoise.sample(noiseX / outerIslandNoiseScale, noiseZ / outerIslandNoiseScale, 1.0, 1.0) + outerIslandNoiseOffset;
+            
+            // 0.885539 = Simplex upper range, but scale a little higher to ensure island centers have untouched terrain.
+            islandAddition /= 0.8F;
+            islandAddition = MathHelper.clamp(islandAddition, 0.0F, 1.0F);
+            
+            // Interpolate noise addition so there isn't a sharp cutoff at start of ocean ring edge.
+            islandAddition = (float)MathHelper.clampedLerp(0.0F, islandAddition, (radius - centerOceanRadius) / centerOceanLerpDistance);
+            
+            islandOffset += islandAddition * oceanDepth;
+            islandOffset = MathHelper.clamp(islandOffset, -oceanDepth, 0.0F);
+        }
+        
+        return islandOffset;
     }
 }

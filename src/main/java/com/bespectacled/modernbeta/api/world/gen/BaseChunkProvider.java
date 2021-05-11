@@ -128,10 +128,9 @@ public abstract class BaseChunkProvider extends ChunkProvider {
      * @return New ChunkRandom object initialized with chunk coordinates for seed.
      */
     protected ChunkRandom createChunkRand(int chunkX, int chunkZ) {
-        ChunkRandom chunkRand = new ChunkRandom();
-        chunkRand.setTerrainSeed(chunkX, chunkZ);
+        long seed = (long)chunkX * 0x4f9939f508L + (long)chunkZ * 0x1ef1565bd5L;
         
-        return chunkRand;
+        return new ChunkRandom(seed);
     }
     
     /**

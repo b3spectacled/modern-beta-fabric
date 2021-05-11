@@ -11,7 +11,7 @@ public class Compat {
             if (FabricLoader.getInstance().isModLoaded("techreborn")) CompatTechReborn.addCompat();
             
         } catch (Exception e) {
-            ModernBeta.LOGGER.log(Level.ERROR, "[Modern Beta] Something went wrong when attempting to add mod compatibility!");
+            ModernBeta.log(Level.ERROR, "Something went wrong when attempting to add mod compatibility!");
             e.printStackTrace();
         }
     }

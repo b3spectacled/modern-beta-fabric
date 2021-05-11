@@ -1,9 +1,9 @@
 package com.bespectacled.modernbeta.world.cavebiome.provider;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
-import com.google.common.collect.ImmutableList;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
@@ -22,7 +22,7 @@ public class NoCaveBiomeProvider extends CaveBiomeProvider {
 
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        return new ImmutableList.Builder<RegistryKey<Biome>>().build();
+        return Arrays.asList();
     }
 
 }

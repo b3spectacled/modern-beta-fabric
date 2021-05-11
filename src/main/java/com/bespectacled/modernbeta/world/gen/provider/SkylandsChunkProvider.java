@@ -124,25 +124,12 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         
         this.surfaceNoisePool.returnArr(stoneNoise);
     }
+    
+    @Override
+    protected void generateScaleDepth(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ, double[] scaleDepth) { }
 
     @Override
-    protected void generateHeightNoiseArr(int noiseX, int noiseZ, double[] heightNoise) {
-        int noiseResolutionX = this.noiseSizeX + 1;
-        int noiseResolutionZ = this.noiseSizeZ + 1;
-        int noiseResolutionY = this.noiseSizeY + 1;
-        
-        int ndx = 0;
-        for (int nX = 0; nX < noiseResolutionX; ++nX) {
-            for (int nZ = 0; nZ < noiseResolutionZ; ++nZ) {
-                for (int nY = this.noiseMinY; nY < noiseResolutionY + this.noiseMinY; ++nY) {
-                    heightNoise[ndx] = this.generateHeightNoise(noiseX + nX, nY, noiseZ + nZ);
-                    ndx++;
-                }
-            }
-        }
-    }
-    
-    private double generateHeightNoise(int noiseX, int noiseY, int noiseZ) {
+    protected double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth) {
         // Var names taken from old customized preset names
         double coordinateScale = 684.41200000000003D * this.xzScale; 
         double heightScale = 684.41200000000003D * this.yScale;
@@ -180,10 +167,10 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         
         // Sample for noise caves
         densityWithOffset = this.sampleNoiseCave(
+            densityWithOffset, 
             noiseX * this.horizontalNoiseResolution, 
-            noiseY * this.verticalNoiseResolution, 
-            noiseZ * this.horizontalNoiseResolution,
-            densityWithOffset
+            noiseY * this.verticalNoiseResolution,
+            noiseZ * this.horizontalNoiseResolution
         );
         
         densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, this.noiseSizeY);

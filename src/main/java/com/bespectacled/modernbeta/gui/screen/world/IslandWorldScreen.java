@@ -36,6 +36,38 @@ public class IslandWorldScreen extends InfWorldScreen {
                 (gameOptions) -> NBTUtil.readBoolean("generateOuterIslands", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.generateOuterIslands), 
                 (gameOptions, option, value) -> this.worldSettings.putSetting(WorldSetting.CHUNK, "generateOuterIslands", NbtByte.of(value))
             );
+        
+        DoubleOption centerIslandRadius =
+            new DoubleOption(
+                "createWorld.customize.island.centerIslandRadiusSlider", 
+                1D, 32D, 1f,
+                (gameOptions) -> (double)NBTUtil.readInt("centerIslandRadius", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.centerIslandRadius), // Getter
+                (gameOptions, value) -> this.worldSettings.putSetting(WorldSetting.CHUNK, "centerIslandRadius", NbtInt.of(value.intValue())),
+                (gameOptions, doubleOptions) -> {
+                    return new TranslatableText(
+                        "options.generic_value", 
+                        new Object[] { 
+                            new TranslatableText("createWorld.customize.island.centerIslandRadius"), 
+                            Text.of(String.valueOf(NBTUtil.readInt("centerIslandRadius", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.centerIslandRadius) + " chunks")) 
+                    });
+                }
+            );
+        
+        DoubleOption centerIslandFalloff =
+                new DoubleOption(
+                "createWorld.customize.island.centerIslandFalloffSlider", 
+                1D, 8D, 1f,
+                (gameOptions) -> (double)NBTUtil.readFloat("centerIslandFalloff", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.centerIslandFalloff), // Getter
+                (gameOptions, value) -> this.worldSettings.putSetting(WorldSetting.CHUNK, "centerIslandFalloff", NbtFloat.of(value.floatValue())),
+                (gameOptions, doubleOptions) -> {
+                    return new TranslatableText(
+                        "options.generic_value", 
+                        new Object[] { 
+                            new TranslatableText("createWorld.customize.island.centerIslandFalloff"), 
+                            Text.of(String.valueOf(NBTUtil.readFloat("centerIslandFalloff", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.centerIslandFalloff))) 
+                    });
+                }
+            );
             
         DoubleOption centerOceanLerpDistance =
             new DoubleOption(
@@ -65,22 +97,6 @@ public class IslandWorldScreen extends InfWorldScreen {
                         new Object[] { 
                             new TranslatableText("createWorld.customize.island.centerOceanRadius"), 
                             Text.of(String.valueOf(NBTUtil.readInt("centerOceanRadius", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.centerOceanRadius)) + " chunks") 
-                    });
-                }
-            );
-        
-        DoubleOption centerIslandFalloff =
-            new DoubleOption(
-                "createWorld.customize.island.centerIslandFalloffSlider", 
-                1D, 8D, 1f,
-                (gameOptions) -> (double)NBTUtil.readFloat("centerIslandFalloff", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.centerIslandFalloff), // Getter
-                (gameOptions, value) -> this.worldSettings.putSetting(WorldSetting.CHUNK, "centerIslandFalloff", NbtFloat.of(value.floatValue())),
-                (gameOptions, doubleOptions) -> {
-                    return new TranslatableText(
-                        "options.generic_value", 
-                        new Object[] { 
-                            new TranslatableText("createWorld.customize.island.centerIslandFalloff"), 
-                            Text.of(String.valueOf(NBTUtil.readFloat("centerIslandFalloff", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.centerIslandFalloff))) 
                     });
                 }
             );
@@ -118,9 +134,10 @@ public class IslandWorldScreen extends InfWorldScreen {
             );
 
         this.buttonList.addSingleOptionEntry(generateOuterIslands);
-        this.buttonList.addSingleOptionEntry(centerOceanLerpDistance);
-        this.buttonList.addSingleOptionEntry(centerOceanRadius);
+        this.buttonList.addSingleOptionEntry(centerIslandRadius);
         this.buttonList.addSingleOptionEntry(centerIslandFalloff);
+        this.buttonList.addSingleOptionEntry(centerOceanRadius);
+        this.buttonList.addSingleOptionEntry(centerOceanLerpDistance);
         this.buttonList.addSingleOptionEntry(outerIslandNoiseScale);
         this.buttonList.addSingleOptionEntry(outerIslandNoiseOffset);
     }

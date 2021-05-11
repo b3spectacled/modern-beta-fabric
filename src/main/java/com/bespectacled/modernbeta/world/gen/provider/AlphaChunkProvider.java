@@ -180,31 +180,23 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
         this.surfaceNoisePool.returnArr(gravelNoise);
         this.surfaceNoisePool.returnArr(stoneNoise);
     }
+    
+    @Override
+    public boolean isSandAt(int x, int z) {
+        double eighth = 0.03125D;
+        
+        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
+        
+        return 
+            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
+            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + RAND.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
+    }
 
     @Override
-    protected void generateHeightNoiseArr(int noiseX, int noiseZ, double[] heightNoise) {
-        int noiseResolutionX = this.noiseSizeX + 1;
-        int noiseResolutionZ = this.noiseSizeZ + 1;
-        int noiseResolutionY = this.noiseSizeY + 1;
-        
-        double[] scaleDepth = new double[2];
-        
-        int ndx = 0;
-        for (int nX = 0; nX < noiseResolutionX; ++nX) {
-            for (int nZ = 0; nZ < noiseResolutionZ; ++nZ) {
-                this.generateScaleDepth(noiseX + nX, noiseZ + nZ, scaleDepth);
-                
-                for (int nY = this.noiseMinY; nY < noiseResolutionY + this.noiseMinY; ++nY) {
-                    heightNoise[ndx] = this.generateHeightNoise(noiseX + nX, nY, noiseZ + nZ, scaleDepth[0], scaleDepth[1]);
-                    ndx++;
-                }
-            }
-        }
-    }
-    
-    private void generateScaleDepth(int noiseX, int noiseZ, double[] scaleDepth) {
-        if (scaleDepth.length != 2) 
-            throw new IllegalArgumentException("[Modern Beta] Scale/Depth array is incorrect length, should be 2.");
+    protected void generateScaleDepth(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ, double[] scaleDepth) {
+        int noiseX = startNoiseX + curNoiseX;
+        int noiseZ = startNoiseZ + curNoiseZ;
 
         double depthNoiseScaleX = 100D;
         double depthNoiseScaleZ = 100D;
@@ -256,7 +248,11 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
         scaleDepth[1] = depth1;
     }
     
-    private double generateHeightNoise(int noiseX, int noiseY, int noiseZ, double scale, double depth) {
+    @Override
+    protected double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth) {
+        double scale = scaleDepth[0];
+        double depth = scaleDepth[1];
+        
         // Var names taken from old customized preset names
         double coordinateScale = 684.41200000000003D * this.xzScale; 
         double heightScale = 684.41200000000003D * this.yScale;
@@ -300,27 +296,15 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
         
         // Sample for noise caves
         densityWithOffset = this.sampleNoiseCave(
-            noiseX * this.horizontalNoiseResolution,
-            noiseY * this.verticalNoiseResolution, 
-            noiseZ * this.horizontalNoiseResolution,
-            densityWithOffset
+            densityWithOffset,
+            noiseX * this.horizontalNoiseResolution, 
+            noiseY * this.verticalNoiseResolution,
+            noiseZ * this.horizontalNoiseResolution
         );
         
         densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
         densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);
         
         return densityWithOffset;
-    }
-
-    @Override
-    public boolean isSandAt(int x, int z) {
-        double eighth = 0.03125D;
-        
-        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
-        
-        return 
-            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
-            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + RAND.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
 }

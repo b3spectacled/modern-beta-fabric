@@ -40,9 +40,10 @@
     "createWorld.customize.vanilla.oceanBiomeSize": "Ocean Biome Size",
     
     "createWorld.customize.island.generateOuterIslands": "Generate Outer Islands",
+    "createWorld.customize.island.centerIslandRadius": "Center Island Radius",
+    "createWorld.customize.island.centerIslandFalloff": "Center Island Falloff",
     "createWorld.customize.island.centerOceanLerpDistance": "Center Ocean Lerp Distance",
     "createWorld.customize.island.centerOceanRadius": "Center Ocean Radius",
-    "createWorld.customize.island.centerIslandFalloff": "Center Island Falloff",
     "createWorld.customize.island.outerIslandNoiseScale": "Island Noise Scale",
     "createWorld.customize.island.outerIslandNoiseOffset": "Island Noise Offset",
     

@@ -41,7 +41,7 @@ public final class ProviderRegistry<T> {
 
     public T getOrDefault(String key) {
         if (!this.contains(key)) {
-            ModernBeta.LOGGER.log(Level.WARN, "[Modern Beta] Registry " + this.name + " does not contain entry named " + key + ", getting default entry.");
+            ModernBeta.log(Level.WARN, "Registry " + this.name + " does not contain entry named " + key + ", getting default entry.");
             return this.map.get(BuiltInTypes.DEFAULT_ID);
         }
         
@@ -50,7 +50,7 @@ public final class ProviderRegistry<T> {
     
     public T get(String key, String alternate) {
         if (!this.contains(key)) {
-            ModernBeta.LOGGER.log(Level.WARN, "[Modern Beta] Registry " + this.name + " does not contain entry named " + key + ", defaulting to " + alternate);
+            ModernBeta.log(Level.WARN, "Registry " + this.name + " does not contain entry named " + key + ", defaulting to " + alternate);
             return this.map.get(alternate);
         }
         

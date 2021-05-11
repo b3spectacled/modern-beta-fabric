@@ -57,13 +57,16 @@ public class ModernBetaGenerationConfig implements ConfigData {
     public boolean generateOuterIslands = true;
     
     @ConfigEntry.Gui.Excluded
+    public int centerIslandRadius = 16;
+    
+    @ConfigEntry.Gui.Excluded
+    public float centerIslandFalloff = 4.0F;
+    
+    @ConfigEntry.Gui.Excluded
     public int centerOceanLerpDistance = 16;
     
     @ConfigEntry.Gui.Excluded
     public int centerOceanRadius = 64;
-    
-    @ConfigEntry.Gui.Excluded
-    public float centerIslandFalloff = 4.0F;
     
     @ConfigEntry.Gui.Excluded
     public float outerIslandNoiseScale = 300F;

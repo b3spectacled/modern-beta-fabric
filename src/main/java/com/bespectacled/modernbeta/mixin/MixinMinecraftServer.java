@@ -43,14 +43,14 @@ public class MixinMinecraftServer {
             OldChunkGenerator oldChunkGenerator = (OldChunkGenerator)chunkGenerator;
             
             if (oldChunkGenerator.getChunkProvider() instanceof BeachSpawnable) { // Attempt to place a beach spawn if provider generates classic beaches.
-                ModernBeta.LOGGER.log(Level.INFO, "Setting a beach spawn..");
+                ModernBeta.log(Level.INFO, "Setting a beach spawn..");
                 
                 BeachSpawnable chunkProvider = (BeachSpawnable)oldChunkGenerator.getChunkProvider();
                 spawnPos = getInitialOldSpawn(oldChunkGenerator, chunkProvider, oldChunkGenerator.getSeaLevel());
             }
             
             if (spawnPos != null && oldChunkGenerator.isProviderInstanceOf(IndevChunkProvider.class)) {
-                ModernBeta.LOGGER.log(Level.INFO, "[Indev] Spawning..");
+                ModernBeta.log(Level.INFO, "[Indev] Spawning..");
                 IndevChunkProvider indevChunkProvider = (IndevChunkProvider)oldChunkGenerator.getChunkProvider();
                 
                 // Ensure spawn location and Indev house is within level bounds.
@@ -79,7 +79,7 @@ public class MixinMinecraftServer {
         
         for (z = 0; !chunkProvider.isSandAt(x, z); z += spawnRand.nextInt(64) - spawnRand.nextInt(64)) {
             if (attempts > 10000) {
-                ModernBeta.LOGGER.log(Level.INFO, "Exceeded spawn attempts, spawning anyway..");
+                ModernBeta.log(Level.INFO, "Exceeded spawn attempts, spawning anyway..");
                 break;
             }
             attempts++;
@@ -91,44 +91,6 @@ public class MixinMinecraftServer {
         
         return new BlockPos(x, y - 1, z);
     }
-    /*
-     * 
-    @Unique
-    private static BlockPos getInitialOldSpawn(OldChunkGenerator gen, PerlinOctaveNoise beachNoiseOctaves, int seaLevel) {
-        int x = 0;
-        int z;
-        int attempts = 0;
-        
-        for (z = 0; !isBlockSand(x, z, gen, beachNoiseOctaves, seaLevel); z += spawnRand.nextInt(64) - spawnRand.nextInt(64)) {
-            if (attempts >= 10000) {
-                ModernBeta.LOGGER.log(Level.INFO, "Exceeded spawn attempts, spawning anyway..");
-                break;
-            }
-            attempts++;
-            
-            x += spawnRand.nextInt(64) - spawnRand.nextInt(64);
-        }
-        
-        int y = gen.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG, null);
-        
-        return new BlockPos(x, y - 1, z);
-    }
-    */
-    
-    /*
-    @Unique
-    private static boolean isBlockSand(int x, int z, OldChunkGenerator gen, PerlinOctaveNoise beachNoiseOctaves, int seaLevel) {
-        double thirtysecond = 0.03125D;
-        int y = gen.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR, null);
-        Biome biome = gen.getBiomeSource().getBiomeForNoiseGen(x >> 2, 0, z >> 2);
-        
-        //System.out.println("Height found at " + x + "/" + z + ": " + y);
-        
-        return 
-            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
-            (beachNoiseOctaves.sample(x * thirtysecond, z * thirtysecond, 0.0) + spawnRand.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
-    }
-    */
     
     @Unique
     private static void setIndevProperties(ServerWorld world, IndevTheme theme) {
