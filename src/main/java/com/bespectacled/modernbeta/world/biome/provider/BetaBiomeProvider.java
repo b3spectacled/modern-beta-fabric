@@ -32,7 +32,7 @@ public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, B
         double temp = this.sampleTemp(absX, absZ);
         double humid = this.sampleHumid(absX, absZ);
         
-        return biomeRegistry.get(betaClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.LAND));
+        return biomeRegistry.get(this.betaClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.LAND));
     }
  
     @Override
@@ -43,7 +43,7 @@ public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, B
         double temp = this.sampleTemp(absX, absZ);
         double humid = this.sampleHumid(absX, absZ);
         
-        return biomeRegistry.get(betaClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.OCEAN));
+        return biomeRegistry.get(this.betaClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.OCEAN));
     }
     
     @Override

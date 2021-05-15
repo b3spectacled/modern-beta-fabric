@@ -30,6 +30,7 @@ public class CompatTechReborn {
     };
     
     public static void addCompat() {
+        /*
         for (String o : ORES) {
             BiomeModifications.addFeature(
                 BiomeSelectors.includeByKey(
@@ -46,5 +47,6 @@ public class CompatTechReborn {
                 )
             );
         }
+        */
     }
 }

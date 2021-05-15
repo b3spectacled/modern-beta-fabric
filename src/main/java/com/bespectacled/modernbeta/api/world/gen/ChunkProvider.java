@@ -6,6 +6,7 @@ import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -64,7 +65,7 @@ public abstract class ChunkProvider {
      * 
      * @return The y-coordinate of top block at x/z.
      */
-    public abstract int getHeight(int x, int z, Heightmap.Type type);
+    public abstract int getHeight(int x, int z, Heightmap.Type heightmap, HeightLimitView world);
     
     /**
      * Determines whether to skip the chunk for some chunk generation step, depending on the x/z chunk coordinates.

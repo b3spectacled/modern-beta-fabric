@@ -12,8 +12,8 @@ import net.minecraft.util.math.MathHelper;
 public enum BetaClimateSampler {
     INSTANCE;
     
-    private final ChunkCache<ClimateCacheChunk> climateCache;
-    private final ChunkCache<SkyCacheChunk> skyCache;
+    private final ChunkCache<ClimateCacheChunk> climateCache = new ChunkCache<>(ClimateCacheChunk::new, 384);
+    private final ChunkCache<SkyCacheChunk> skyCache = new ChunkCache<>(SkyCacheChunk::new, 64);
     
     private SimplexOctaveNoise tempNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 9871L), 4);
     private SimplexOctaveNoise humidNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 39811L), 4);
@@ -21,10 +21,7 @@ public enum BetaClimateSampler {
     
     private long seed;
     
-    private BetaClimateSampler() {
-        this.climateCache = new ChunkCache<>(ClimateCacheChunk::new, 384);
-        this.skyCache = new ChunkCache<>(SkyCacheChunk::new, 128);
-    }
+    private BetaClimateSampler() {}
     
     protected void setSeed(long seed) {
         if (this.seed == seed) return;

@@ -18,6 +18,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
@@ -119,7 +120,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     }
 
     @Override
-    public int getHeight(int x, int z, Type type) {
+    public int getHeight(int x, int z, Type type, HeightLimitView world) {
         int groundHeight = this.sampleHeightmap(x, z) + 1;
         
         if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)

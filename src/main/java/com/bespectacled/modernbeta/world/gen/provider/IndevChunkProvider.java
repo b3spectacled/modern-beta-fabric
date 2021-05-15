@@ -31,6 +31,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
@@ -58,7 +59,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
     private PerlinOctaveNoise gravelNoiseOctaves;
  
     // Note:
-    // I considered using 1D array for block storage,
+    // Considered using 1D array for block storage,
     // but apparently 1D array is significantly slower,
     // tested on 1024*1024*256 world
     private Block blockArr[][][];
@@ -191,7 +192,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
     }
     
     @Override
-    public int getHeight(int x, int z, Type type) {
+    public int getHeight(int x, int z, Type type, HeightLimitView world) {
         int height = this.levelHeight - 1;
         
         x = x + this.levelWidth / 2;

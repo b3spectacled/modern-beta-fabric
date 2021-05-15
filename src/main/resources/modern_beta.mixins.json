@@ -2,16 +2,14 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.bespectacled.modernbeta.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "mixins": [
     "MixinMinecraftServer",
     "MixinBiomeArray",
     "MixinGeneratorOptions",
     "MixinChunkGeneratorInvoker",
-    "MixinStructureWeightSampler",
     "MixinConfiguredCarverAccessor",
-    "MixinChunkGeneratorSettingsInvoker",
-    "MixinVanillaLayeredBiomeSourceAccessor"
+    "MixinChunkGeneratorSettingsInvoker"
   ],
   "client": [
     "client.MixinBlockColors",

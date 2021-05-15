@@ -23,8 +23,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.ChunkRandom;
@@ -223,7 +223,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     }
     
     @Override
-    public int getHeight(int x, int z, Type type) {
+    public int getHeight(int x, int z, Heightmap.Type type, HeightLimitView world) {
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         
@@ -390,9 +390,9 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int[] heightmap = this.heightmapPool.borrowArr(); 
         IntStream.range(0, heightmap.length).forEach(i -> heightmap[i] = 16);
 
-        for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
-            for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
-                for (int subChunkY = 0; subChunkY < this.noiseSizeY; subChunkY++) {
+        for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
+            for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++subChunkZ) {
+                for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
                     double lowerNW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerSW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerNE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
@@ -557,7 +557,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int bottomSlideStart = this.noiseMinY - initialOffset - this.bottomSlideOffset;
         if (noiseY < bottomSlideStart) {
             double bottomSlideDelta = (float) (bottomSlideStart - noiseY) / ((float) this.bottomSlideSize);
-            density = density * (1.0D - bottomSlideDelta) + this.bottomSlideTarget * bottomSlideDelta;
+            density = MathHelper.lerp(bottomSlideDelta, density, this.bottomSlideTarget);
         }
         
         return density;
@@ -576,7 +576,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int topSlideStart = (this.noiseSizeY + this.noiseMinY + 1) - initialOffset - this.topSlideOffset;
         if (noiseY > topSlideStart) {
             double topSlideDelta = (float) (noiseY - topSlideStart) / (float) this.topSlideSize;
-            density = density * (1.0D - topSlideDelta) + this.topSlideTarget * topSlideDelta;
+            density = MathHelper.lerp(topSlideDelta, density, this.topSlideTarget);
         }
         
         return density;
@@ -600,7 +600,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         if (noiseY > topSlideStart) {
             // Clamp delta since difference of noiseY and slideStart can exceed slideSize if real world height is larger than provided target "height"
             double topSlideDelta = MathHelper.clamp((float) (noiseY - topSlideStart) / (float) this.topSlideSize, 0.0D, 1.0D);
-            density = density * (1.0D - topSlideDelta) + this.topSlideTarget * topSlideDelta;
+            density = MathHelper.lerp(topSlideDelta, density, this.topSlideTarget);
         }
         
         return density;

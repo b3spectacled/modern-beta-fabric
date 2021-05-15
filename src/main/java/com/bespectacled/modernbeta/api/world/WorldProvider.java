@@ -68,4 +68,23 @@ public final class WorldProvider {
             .getOrDefault(this.worldScreen)
             .apply(parent, registryManager, worldSettings, consumer);
     }
+    
+    @Override
+    public String toString() {
+        return String.format(
+            "[World Provider]\n" +
+                "* Chunk Provider: %s\n" +
+                "* Chunk Generator Settings: %s\n" +
+                "* Biome Provider: %s\n" +
+                "* Cave Biome Provider: %s\n" +
+                "* Single Biome: %s\n" +
+                "* World Screen: %s",
+            this.chunkProvider, 
+            this.chunkGenSettings, 
+            this.biomeProvider, 
+            this.caveBiomeProvider, 
+            this.singleBiome, 
+            this.worldScreen
+        );
+    }
 }

@@ -21,11 +21,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
-    @Unique private static Random spawnRand = new Random();
+    @Unique private static final Random SPAWN_RAND = new Random();
     
     @Redirect(
         method = "setupSpawn", 
@@ -46,7 +47,7 @@ public class MixinMinecraftServer {
                 ModernBeta.log(Level.INFO, "Setting a beach spawn..");
                 
                 BeachSpawnable chunkProvider = (BeachSpawnable)oldChunkGenerator.getChunkProvider();
-                spawnPos = getInitialOldSpawn(oldChunkGenerator, chunkProvider, oldChunkGenerator.getSeaLevel());
+                spawnPos = getInitialOldSpawn(world.getChunk(chunkPos.getStartPos()), oldChunkGenerator, chunkProvider, oldChunkGenerator.getSeaLevel());
             }
             
             if (spawnPos != null && oldChunkGenerator.isProviderInstanceOf(IndevChunkProvider.class)) {
@@ -55,39 +56,39 @@ public class MixinMinecraftServer {
                 
                 // Ensure spawn location and Indev house is within level bounds.
                 if (!indevChunkProvider.inWorldBounds(spawnPos.getX(), spawnPos.getZ())) {
-                    spawnPos = new BlockPos(0, indevChunkProvider.getHeight(0, 0, Heightmap.Type.WORLD_SURFACE_WG), 0);
+                    spawnPos = new BlockPos(0, indevChunkProvider.getHeight(0, 0, Heightmap.Type.WORLD_SURFACE_WG, null), 0);
                 }
                 
                 // Generate Indev house
                 indevChunkProvider.generateIndevHouse(world, spawnPos);
                 
                 // Set Indev world properties
-                IndevTheme theme = indevChunkProvider.getTheme();
-                setIndevProperties(world, theme);
+                setIndevProperties(world, indevChunkProvider.getTheme());
             }
-        } 
-        
+        }
         
         return spawnPos;
     }
     
     @Unique
-    private static BlockPos getInitialOldSpawn(OldChunkGenerator chunkGenerator, BeachSpawnable chunkProvider, int seaLevel) {
+    private static BlockPos getInitialOldSpawn(Chunk chunk, OldChunkGenerator chunkGenerator, BeachSpawnable chunkProvider, int seaLevel) {
         int x = 0;
-        int z;
+        int z = 0;
         int attempts = 0;
         
-        for (z = 0; !chunkProvider.isSandAt(x, z); z += spawnRand.nextInt(64) - spawnRand.nextInt(64)) {
+        while (!chunkProvider.isSandAt(x, z, chunk)) {
             if (attempts > 10000) {
                 ModernBeta.log(Level.INFO, "Exceeded spawn attempts, spawning anyway..");
                 break;
             }
-            attempts++;
             
-            x += spawnRand.nextInt(64) - spawnRand.nextInt(64);
+            x += SPAWN_RAND.nextInt(64) - SPAWN_RAND.nextInt(64);
+            z += SPAWN_RAND.nextInt(64) - SPAWN_RAND.nextInt(64);
+            
+            attempts++;
         }
         
-        int y = chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
+        int y = chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG, chunk);
         
         return new BlockPos(x, y - 1, z);
     }

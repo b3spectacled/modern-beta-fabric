@@ -35,7 +35,7 @@ public class Desert {
         DefaultBiomeFeatures.addDungeons(genSettings);
         DefaultBiomeFeatures.addDesertFeatures(genSettings);
         DefaultBiomeFeatures.addFossils(genSettings);
-        DefaultBiomeFeatures.method_36453(genSettings);
+        DefaultBiomeFeatures.addMineables(genSettings, false);
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);

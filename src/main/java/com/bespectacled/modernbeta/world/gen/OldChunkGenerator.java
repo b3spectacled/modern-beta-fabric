@@ -134,7 +134,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int startX = chunkPos.getStartX();
         int startZ = chunkPos.getStartZ();
         
-        Biome biome = this.getBiomeAt(chunkPos.getStartX(), 0, chunkPos.getStartZ());
+        Biome biome = this.getBiomeAt(chunkPos.getStartX(), 0, chunkPos.getStartZ(), region.getChunk(chunkPos.x, chunkPos.z));
         
         // TODO: Remove chunkRandom at some point
         ChunkRandom chunkRandom = new ChunkRandom();
@@ -160,7 +160,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int mainChunkX = chunkPos.x;
         int mainChunkZ = chunkPos.z;
 
-        Biome biome = this.getBiomeAt(chunkPos.getStartX(), 0, chunkPos.getStartZ());
+        Biome biome = this.getBiomeAt(chunkPos.getStartX(), 0, chunkPos.getStartZ(), chunk);
         GenerationSettings genSettings = biome.getGenerationSettings();
         CarverContext heightContext = new CarverContext(this);
         
@@ -206,7 +206,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     ) {
         if (this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.STRUCTURE_STARTS)) return;
         
-        Biome biome = this.getBiomeAt(chunk.getPos().getStartX(), 0, chunk.getPos().getStartZ());
+        Biome biome = this.getBiomeAt(chunk.getPos().getStartX(), 0, chunk.getPos().getStartZ(), chunk);
 
         ((MixinChunkGeneratorInvoker)this).invokeSetStructureStart(
             ConfiguredStructureFeatures.STRONGHOLD, 
@@ -234,7 +234,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public int getHeight(int x, int z, Heightmap.Type type, HeightLimitView world) {
-        return this.chunkProvider.getHeight(x, z, type);
+        return this.chunkProvider.getHeight(x, z, type, world);
     }
     
     /*
@@ -356,14 +356,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int minY = this.getMinimumY();
         int seaLevel = this.getSeaLevel();
         
-        int biomeCutoff = BiomeCoords.fromBlock(OCEAN_Y_CUT_OFF);
-        int biomeMinY = BiomeCoords.fromBlock(minY);
+        int biomeCutoff = OCEAN_Y_CUT_OFF >> 2;
+        int biomeMinY = minY >> 2;
         
         // Collect potential ocean positions in a chunk.
         for (int x = 0; x < 4; ++x) {
             for (int z = 0; z < 4; ++z) {
-                int absX = chunkPos.getStartX() + (x << 2);
-                int absZ = chunkPos.getStartZ() + (z << 2);
+                int absX = chunkPos.getStartX() + (x << 2) + 2; // Offset by 2 to get center of biome coordinate section,
+                int absZ = chunkPos.getStartZ() + (z << 2) + 2; // to sample overall ocean depth as accurately as possible.
                 
                 if (OldGeneratorUtil.getSolidHeight(chunk, worldHeight, minY, absX, absZ, this.defaultFluid) < seaLevel - OCEAN_MIN_DEPTH) {
                     oceanPositions.put(new BlockPos(x, 0, z), this.biomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2));
@@ -390,7 +390,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         }
     }
     
-    private Biome getBiomeAt(int x, int y, int z) {
+    private Biome getBiomeAt(int x, int y, int z, HeightLimitView world) {
         int seaLevel = this.getSeaLevel();
         
         int biomeX = x >> 2;
@@ -399,7 +399,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         Biome biome;
         
-        if (this.generateOceans && this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null) < seaLevel - OCEAN_MIN_DEPTH) {
+        if (this.generateOceans && this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world) < seaLevel - OCEAN_MIN_DEPTH) {
             biome = this.biomeSource.getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
         } else {
             biome = this.biomeSource.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);

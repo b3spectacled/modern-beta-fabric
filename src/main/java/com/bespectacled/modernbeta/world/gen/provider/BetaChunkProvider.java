@@ -14,6 +14,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
@@ -189,10 +190,10 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
     }
     
     @Override
-    public boolean isSandAt(int x, int z) {
+    public boolean isSandAt(int x, int z, HeightLimitView world) {
         double eighth = 0.03125D;
         
-        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world);
         Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
         
         return 
@@ -273,76 +274,6 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
         scaleDepth[1] = depth1;
     }
     
-    /*
-    private void generateScaleDepth(int x, int z, int noiseX, int noiseZ, double[] scaleDepth) {
-        if (scaleDepth.length != 2) 
-            throw new IllegalArgumentException("[Modern Beta] Scale/Depth array has incorrect length, should be 2.");
-
-        double depthNoiseScaleX = 200D;
-        double depthNoiseScaleZ = 200D;
-        
-        //double baseSize = noiseResolutionY / 2D; // Or: 17 / 2D = 8.5
-        double baseSize = 8.5D;
-        
-        double temp = this.sampleTemp(x, z);
-        double humid = this.sampleHumid(x, z) * temp;
-        
-        humid = 1.0D - humid;
-        humid *= humid;
-        humid *= humid;
-        humid = 1.0D - humid;
-
-        double scale = this.scaleNoiseOctaves.sample(noiseX, noiseZ, 1.121D, 1.121D);
-        scale = (scale + 256D) / 512D;
-        scale *= humid;
-        
-        if (scale > 1.0D) {
-            scale = 1.0D;
-        }
-        
-        double depth0 = this.depthNoiseOctaves.sample(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
-        depth0 /= 8000D;
-
-        if (depth0 < 0.0D) {
-            depth0 = -depth0 * 0.29999999999999999D;
-        }
-
-        depth0 = depth0 * 3D - 2D;
-
-        if (depth0 < 0.0D) {
-            depth0 /= 2D;
-
-            if (depth0 < -1D) {
-                depth0 = -1D;
-            }
-
-            depth0 /= 1.3999999999999999D;
-            depth0 /= 2D;
-
-            scale = 0.0D;
-
-        } else {
-            if (depth0 > 1.0D) {
-                depth0 = 1.0D;
-            }
-            depth0 /= 8D;
-        }
-
-        if (scale < 0.0D) {
-            scale = 0.0D;
-        }
-
-        scale += 0.5D;
-        //depthVal = (depthVal * (double) noiseResolutionY) / 16D;
-        //double depthVal2 = (double) noiseResolutionY / 2D + depthVal * 4D;
-        depth0 = depth0 * baseSize / 8D;
-        double depth1 = baseSize + depth0 * 4D;
-        
-        scaleDepth[0] = scale;
-        scaleDepth[1] = depth1;
-    }
-    */
-    
     @Override
     protected double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth) {
         double scale = scaleDepth[0];
@@ -405,10 +336,12 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
     
     @Override
     public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus status) {
-        
+        /*
         if (status == ChunkStatus.CARVERS || status == ChunkStatus.LIQUID_CARVERS) {
             return true;
         }
+        */
+        
         return false;
     }
 } 

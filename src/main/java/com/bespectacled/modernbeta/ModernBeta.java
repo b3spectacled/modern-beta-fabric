@@ -72,17 +72,17 @@ public class ModernBeta implements ModInitializer {
         Compat.setupCompat();
         
         // Register default providers
-        ModernBetaDefaultProviders.registerChunkProviders();
-        ModernBetaDefaultProviders.registerBiomeProviders();
-        ModernBetaDefaultProviders.registerCaveBiomeProvider();
-        ModernBetaDefaultProviders.registerWorldProviders();
+        ModernBetaBuiltInProviders.registerChunkProviders();
+        ModernBetaBuiltInProviders.registerBiomeProviders();
+        ModernBetaBuiltInProviders.registerCaveBiomeProvider();
+        ModernBetaBuiltInProviders.registerWorldProviders();
         
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             OldGeneratorType.register();
             
             // Register default screen providers
-            ModernBetaDefaultProviders.registerWorldScreens();
-            ModernBetaDefaultProviders.registerBiomeScreens();
+            ModernBetaBuiltInProviders.registerWorldScreens();
+            ModernBetaBuiltInProviders.registerBiomeScreens();
         }
         
         // Serialize various world gen stuff to JSON

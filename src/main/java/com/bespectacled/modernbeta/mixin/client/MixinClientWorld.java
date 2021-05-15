@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.mixin.client;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.WorldRenderer;
@@ -23,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
+@Environment(EnvType.CLIENT)
 @Mixin(value = ClientWorld.class, priority = 1)
 public abstract class MixinClientWorld extends World implements BetaClimateResolver {
     @Shadow private MinecraftClient client;

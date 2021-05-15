@@ -55,6 +55,7 @@ public class BetaClimateMapCustomizable {
         int j = (int) (humid * 63D);
         
         Identifier biomeId;
+
         switch(type) {
             case OCEAN:
                 biomeId = OCEAN_BIOME_TABLE[i + j * 64];

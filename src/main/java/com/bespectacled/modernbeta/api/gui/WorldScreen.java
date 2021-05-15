@@ -104,9 +104,8 @@ public abstract class WorldScreen extends Screen {
             (gameOptions, option, value) -> {
                 // Reset settings when switching to new world type
                 NbtCompound chunkProviderSettings = ChunkProviderSettings.createSettingsBase(value.getChunkProvider());
-                NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsBase(value.getBiomeProvider());
+                NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsBase(value.getBiomeProvider(), value.getSingleBiome());
                 NbtCompound caveBiomeProviderSettings = CaveBiomeProviderSettings.createSettingsBase(value.getCaveBiomeProvider());
-                biomeProviderSettings.putString("singleBiome", value.getSingleBiome());
                 
                 this.client.openScreen(value.createWorldScreen(
                     this.parent, 
@@ -123,8 +122,7 @@ public abstract class WorldScreen extends Screen {
             (gameOptions) -> NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getSettings(WorldSetting.BIOME)),
             (gameOptions, option, value) -> {
                 // Reset biome settings when switching to new biome type
-                NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsBase(value);
-                biomeProviderSettings.putString("singleBiome", this.worldProvider.getSingleBiome());
+                NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsBase(value, this.worldProvider.getSingleBiome());
                 
                 this.client.openScreen(
                     this.worldProvider.createWorldScreen(

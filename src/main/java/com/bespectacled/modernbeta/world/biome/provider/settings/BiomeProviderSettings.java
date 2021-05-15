@@ -6,16 +6,17 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.biome.BiomeKeys;
 
 public class BiomeProviderSettings {
-    public static NbtCompound createSettingsBase(String biomeType) {
+    public static NbtCompound createSettingsBase(String biomeType, String singleBiome) {
         NbtCompound settings = new NbtCompound();
         
         settings.putString("biomeType", biomeType);
+        settings.putString("singleBiome", singleBiome);
         
         return settings;
     }
     
     public static NbtCompound createSettingsAll(String biomeType) {
-        NbtCompound settings = createSettingsBase(biomeType);
+        NbtCompound settings = createSettingsBase(biomeType, ModernBeta.BIOME_CONFIG.singleBiome);
         
         settings.putString("desert", ModernBeta.BIOME_CONFIG.betaDesertBiome);
         settings.putString("forest", ModernBeta.BIOME_CONFIG.betaForestBiome);
@@ -34,8 +35,6 @@ public class BiomeProviderSettings {
         settings.putString("frozen_ocean", ModernBeta.BIOME_CONFIG.betaFrozenOceanBiome);
         settings.putString("lukewarm_ocean", ModernBeta.BIOME_CONFIG.betaLukewarmOceanBiome);
         settings.putString("warm_ocean", ModernBeta.BIOME_CONFIG.betaWarmOceanBiome);
-        
-        settings.putString("singleBiome", ModernBeta.BIOME_CONFIG.singleBiome);
         
         settings.putInt("vanillaBiomeSize", ModernBeta.BIOME_CONFIG.vanillaBiomeSize);
         settings.putInt("vanillaOceanBiomeSize", ModernBeta.BIOME_CONFIG.vanillaOceanBiomeSize);

@@ -9,11 +9,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
 
+@Environment(EnvType.CLIENT)
 @Mixin(BackgroundRenderer.class)
 public class MixinBackgroundRenderer {
     @Unique private static ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;

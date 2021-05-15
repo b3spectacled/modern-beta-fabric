@@ -18,7 +18,7 @@ public class SingleBiomeProvider extends BiomeProvider {
     public SingleBiomeProvider(long seed, NbtCompound settings) {
         super(seed, settings);
         
-        this.biomeId = new Identifier(NBTUtil.readString("singleBiome", settings, "plains"));
+        this.biomeId = new Identifier(NBTUtil.readString("singleBiome", settings, "minecraft:plains"));
     }
 
     @Override

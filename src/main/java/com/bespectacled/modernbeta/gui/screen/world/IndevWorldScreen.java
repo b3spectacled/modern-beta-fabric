@@ -32,6 +32,10 @@ public class IndevWorldScreen extends WorldScreen {
         Consumer<WorldSettings> consumer
     ) {
         super(parent, registryManager, worldSettings, consumer);
+        
+        // Set default single biome per level theme
+        String levelTheme = NBTUtil.readString("levelTheme", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.indevLevelTheme);
+        this.setDefaultSingleBiome(IndevTheme.fromName(levelTheme).getDefaultBiome().toString());
     }
     
     @Override
@@ -52,7 +56,6 @@ public class IndevWorldScreen extends WorldScreen {
                 (gameOptions) -> IndevTheme.fromName(NBTUtil.readString("levelTheme", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.indevLevelTheme)), 
                 (gameOptions, option, value) -> {
                     this.worldSettings.putSetting(WorldSetting.CHUNK, "levelTheme", NbtString.of(value.getName()));
-                    this.setDefaultSingleBiome(value.getDefaultBiome().toString());
                     
                     this.client.openScreen(
                         this.worldProvider.createWorldScreen(

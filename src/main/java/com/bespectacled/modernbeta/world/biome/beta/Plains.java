@@ -34,7 +34,7 @@ public class Plains {
         DefaultBiomeFeatures.addDefaultUndergroundStructures(genSettings);
         DefaultBiomeFeatures.addDefaultLakes(genSettings);
         DefaultBiomeFeatures.addDungeons(genSettings);
-        DefaultBiomeFeatures.method_36453(genSettings);
+        DefaultBiomeFeatures.addMineables(genSettings, false);
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);

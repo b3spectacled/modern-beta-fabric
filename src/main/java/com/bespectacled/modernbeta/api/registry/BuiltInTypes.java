@@ -22,7 +22,8 @@ public final class BuiltInTypes {
     public enum Biome {
         BETA("beta"),
         SINGLE("single"),
-        VANILLA("vanilla");
+        VANILLA("vanilla")
+        ;
         
         public final String name;
         

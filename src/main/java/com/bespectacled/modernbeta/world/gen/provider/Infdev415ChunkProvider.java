@@ -14,6 +14,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -158,10 +159,10 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
     }
     
     @Override
-    public boolean isSandAt(int x, int z) {
+    public boolean isSandAt(int x, int z, HeightLimitView world) {
         double eighth = 0.03125D;
         
-        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world);
         Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
         
         return 

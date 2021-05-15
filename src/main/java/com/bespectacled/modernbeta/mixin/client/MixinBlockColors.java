@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.mixin.client;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.util.math.BlockPos;
@@ -15,6 +17,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.BetaColorResolver;
 import com.bespectacled.modernbeta.util.MutableBlockColors;
 
+@Environment(EnvType.CLIENT)
 @Mixin(value = BlockColors.class, priority = 1)
 public class MixinBlockColors implements MutableBlockColors {
     @Unique private static boolean useBetaColors = false;

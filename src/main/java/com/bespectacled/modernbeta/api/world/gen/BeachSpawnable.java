@@ -1,22 +1,24 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 
 public interface BeachSpawnable {
     /**
      * Samples topmost block at x/z coordinate to check if it is sand, for beach spawns.
-     * This does not account for added variance from random.nextDouble(), so it is not exact.
+     * This does not account for added variance from random.nextDouble() if simulating beaches, 
+     * so it is not exact.
      * 
      * @param x x-coordinate in block coordinates.
      * @param z z-coordinate in block coordinates.
      * 
      * @return If block at x/z coordinate is sand.
      */
-    boolean isSandAt(int x, int z);
+    boolean isSandAt(int x, int z, HeightLimitView world);
     
     /**
      * Samples height of block at x/z coordinate.
-     * Keep in sync with ChunkProvider method to ensure implementation.
+     * Keep in sync with ChunkProvider method.
      * 
      * @param x x-coordinate in block coordinates.
      * @param z z-coordinate in block coordinates.
@@ -24,5 +26,5 @@ public interface BeachSpawnable {
      * 
      * @return Height of block at x/z in block coordinates.
      */
-    int getHeight(int x, int z, Heightmap.Type type);
+    int getHeight(int x, int z, Heightmap.Type type, HeightLimitView world);
 }

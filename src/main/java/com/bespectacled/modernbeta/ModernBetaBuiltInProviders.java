@@ -12,7 +12,7 @@ import com.bespectacled.modernbeta.world.gen.provider.*;
  * Registration of built-in providers for various things.
  *  
  */
-public class ModernBetaDefaultProviders {
+public class ModernBetaBuiltInProviders {
     
     // Register default chunk providers
     public static void registerChunkProviders() {
