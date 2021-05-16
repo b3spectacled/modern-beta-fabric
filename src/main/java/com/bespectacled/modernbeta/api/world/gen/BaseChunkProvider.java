@@ -107,14 +107,23 @@ public abstract class BaseChunkProvider extends ChunkProvider {
             throw new IllegalStateException("[Modern Beta] Minimum height cannot be greater than world height!");
     }
     
+    /**
+     * @return Total world height including minimum y coordinate in block coordinates. 
+     */
     public int getWorldHeight() {
         return this.worldHeight;
     }
     
+    /**
+     * @return Minimum Y coordinate in block coordinates.
+     */
     public int getMinimumY() {
         return this.minY;
     }
     
+    /**
+     * @return World sea level in block coordinates.
+     */
     public int getSeaLevel() {
         return this.seaLevel;
     }

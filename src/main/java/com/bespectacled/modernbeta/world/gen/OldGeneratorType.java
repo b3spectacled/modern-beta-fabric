@@ -10,7 +10,6 @@ import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.mixin.client.MixinMoreOptionsDialogInvoker;
-import com.bespectacled.modernbeta.util.MutableGeneratorType;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
@@ -50,7 +49,7 @@ public class OldGeneratorType {
         NbtCompound chunkProviderSettings = worldSettings.getSettings(WorldSetting.CHUNK);
         NbtCompound biomeProviderSettings = worldSettings.getSettings(WorldSetting.BIOME);
         
-        String chunkProviderType = chunkProviderSettings.getString("worldType");
+        String chunkProviderType = chunkProviderSettings.getString(WorldSettings.TAG_WORLD);
     
         Registry<DimensionType> registryDimensionType = registryManager.<DimensionType>get(Registry.DIMENSION_TYPE_KEY);
         Registry<ChunkGeneratorSettings> registryChunkGenSettings = registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
@@ -116,7 +115,7 @@ public class OldGeneratorType {
                             ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider());
                         
                         NbtCompound biomeProviderSettings = biomeSource instanceof OldBiomeSource ? 
-                            ((OldBiomeSource)biomeSource).getBiomeProviderSettings() : 
+                            ((OldBiomeSource)biomeSource).getProviderSettings() : 
                             BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome());
                         
                         // TODO: Add functionality later
@@ -124,7 +123,7 @@ public class OldGeneratorType {
                         
                         WorldSettings worldSettings = new WorldSettings(chunkProviderSettings, biomeProviderSettings, caveBiomeProviderSettings);
                         
-                        return ProviderRegistries.WORLD.get(chunkProviderSettings.getString("worldType")).createWorldScreen(
+                        return ProviderRegistries.WORLD.get(chunkProviderSettings.getString(WorldSettings.TAG_WORLD)).createWorldScreen(
                             screen,
                             screen.moreOptionsDialog.getRegistryManager(),
                             worldSettings,

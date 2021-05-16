@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.gui.screen.biome;
 
 import com.bespectacled.modernbeta.api.gui.WorldScreen;
+import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.util.NBTUtil;
 
@@ -17,13 +18,13 @@ public class SingleBiomeScreen {
             screenProvider.getRegistryManager(),
             biome -> screenProvider.getWorldSettings().putSetting(
                 WorldSetting.BIOME,
-                "singleBiome", 
+                WorldSettings.TAG_SINGLE_BIOME, 
                 NbtString.of(screenProvider.getRegistryManager().<Biome>get(Registry.BIOME_KEY).getId(biome).toString())
             ),
             screenProvider
                 .getRegistryManager()
                 .<Biome>get(Registry.BIOME_KEY)
-                .get(new Identifier(NBTUtil.readStringOrThrow("singleBiome", screenProvider.getWorldSettings().getSettings(WorldSetting.BIOME))))
+                .get(new Identifier(NBTUtil.readStringOrThrow(WorldSettings.TAG_SINGLE_BIOME, screenProvider.getWorldSettings().getSettings(WorldSetting.BIOME))))
         );
     }
 }

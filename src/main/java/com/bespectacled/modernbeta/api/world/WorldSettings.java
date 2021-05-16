@@ -3,10 +3,18 @@ package com.bespectacled.modernbeta.api.world;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
+import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
 public final class WorldSettings {
+    public static final String TAG_WORLD = "worldType";
+    public static final String TAG_BIOME = "biomeType";
+    public static final String TAG_CAVE_BIOME = "caveBiomeType";
+    public static final String TAG_SINGLE_BIOME = "singleBiome";
+    
     public enum WorldSetting {
         CHUNK,
         BIOME,
@@ -33,6 +41,14 @@ public final class WorldSettings {
         this.settings.put(WorldSetting.CHUNK, new NbtCompound().copyFrom(chunkProviderSettings));
         this.settings.put(WorldSetting.BIOME, new NbtCompound().copyFrom(biomeProviderSettings));
         this.settings.put(WorldSetting.CAVE_BIOME, new NbtCompound().copyFrom(caveBiomeProviderSettings));
+    }
+    
+    public WorldSettings(WorldProvider worldProvider) {
+        this();
+        
+        this.settings.put(WorldSetting.CHUNK, ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider()));
+        this.settings.put(WorldSetting.BIOME, BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome()));
+        this.settings.put(WorldSetting.CAVE_BIOME, new NbtCompound());
     }
     
     public NbtCompound getSettings(WorldSetting settingsKey) {

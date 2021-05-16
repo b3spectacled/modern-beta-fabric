@@ -24,6 +24,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 
+import com.bespectacled.modernbeta.command.DebugProviderSettingsCommand;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.config.*;
 
@@ -83,6 +84,11 @@ public class ModernBeta implements ModInitializer {
             // Register default screen providers
             ModernBetaBuiltInProviders.registerWorldScreens();
             ModernBetaBuiltInProviders.registerBiomeScreens();
+        }
+        
+        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            // Register provider settings debug command
+            DebugProviderSettingsCommand.register();
         }
         
         // Serialize various world gen stuff to JSON

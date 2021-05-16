@@ -28,7 +28,7 @@ public class InfWorldScreen extends WorldScreen {
     protected void init() {
         super.init();
         
-        String biomeType = NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getSettings(WorldSetting.BIOME));
+        String biomeType = NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME));
         
         CyclingOption<Boolean> generateOceans = 
             CyclingOption.create(

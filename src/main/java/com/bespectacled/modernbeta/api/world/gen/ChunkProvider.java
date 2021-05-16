@@ -57,11 +57,13 @@ public abstract class ChunkProvider {
     public abstract void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource);
     
     /**
-     * Gets or calculates the height of the topmost block at given x/z coordinates.
-     * 
-     * @param x x-coordinate in block coordinates. 
+     * Sample height at given x/z coordinate. Initially generates heightmap for entire chunk, 
+     * if chunk containing x/z coordinates has never been sampled.
+     *
+     * @param x x-coordinate in block coordinates.
      * @param z z-coordinate in block coordinates.
-     * @param type The heightmap type
+     * @param type Vanilla heightmap type.
+     * @param world
      * 
      * @return The y-coordinate of top block at x/z.
      */
@@ -81,26 +83,35 @@ public abstract class ChunkProvider {
     }
     
     /**
-     * @return Total world height including minimum y coordinate. 
+     * @return Total world height including minimum y coordinate in block coordinates. 256 by default. 
      */
     public int getWorldHeight() {
         return 256;
     }
     
     /**
-     * @return Minimum Y coordinate.
+     * @return Minimum Y coordinate in block coordinates. 0 by default.
      */
     public int getMinimumY() {
         return 0;
     }
     
     /**
-     * @return World sea level.
+     * @return World sea level in block coordinates. 64 by default.
      */
     public int getSeaLevel() {
         return 64;
     }
     
+    /**
+     * Samples biome at given biome coordinates.
+     * 
+     * @param biomeX x-coordinate in biome coordinates.
+     * @param biomeY y-coordinate in biome coordinates.
+     * @param biomeZ z-coordinate in biome coordinates.
+     * 
+     * @return A biome.
+     */
     protected Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.chunkGenerator.getBiomeSource().getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }

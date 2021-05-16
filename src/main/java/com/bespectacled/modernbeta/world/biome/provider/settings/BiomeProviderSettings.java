@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.world.biome.provider.settings;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.WorldSettings;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.biome.BiomeKeys;
@@ -9,8 +10,8 @@ public class BiomeProviderSettings {
     public static NbtCompound createSettingsBase(String biomeType, String singleBiome) {
         NbtCompound settings = new NbtCompound();
         
-        settings.putString("biomeType", biomeType);
-        settings.putString("singleBiome", singleBiome);
+        settings.putString(WorldSettings.TAG_BIOME, biomeType);
+        settings.putString(WorldSettings.TAG_SINGLE_BIOME, singleBiome);
         
         return settings;
     }

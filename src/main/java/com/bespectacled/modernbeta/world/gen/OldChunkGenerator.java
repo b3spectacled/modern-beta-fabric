@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
+import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.mixin.MixinConfiguredCarverAccessor;
@@ -45,7 +46,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
-import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
@@ -76,24 +76,21 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private static final int OCEAN_Y_CUT_OFF = 40;
     private static final int OCEAN_MIN_DEPTH = 4;
     
-    private final OldBiomeSource biomeSource;
+    private final BiomeSource biomeSource;
     private final NbtCompound chunkProviderSettings;
     
     private final String chunkProviderType;
     private final boolean generateOceans;
     
     private final ChunkProvider chunkProvider;
-    private final Random random;
     
     public OldChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, NbtCompound providerSettings) {
         super(biomeSource, seed, settings);
         
-        this.random = new Random(seed);
-        
-        this.biomeSource = (OldBiomeSource)biomeSource;
+        this.biomeSource = biomeSource;
 
         this.chunkProviderSettings = providerSettings;
-        this.chunkProviderType = NBTUtil.readStringOrThrow("worldType", providerSettings);
+        this.chunkProviderType = NBTUtil.readStringOrThrow(WorldSettings.TAG_WORLD, providerSettings);
         this.chunkProvider = ProviderRegistries.CHUNK.get(this.chunkProviderType).apply(seed, this, settings, providerSettings);
         
         this.generateOceans = NBTUtil.readBoolean("generateOceans", providerSettings, true);
@@ -118,11 +115,13 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public void buildSurface(ChunkRegion region, Chunk chunk) {
         if (!this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.SURFACE))  
-            this.chunkProvider.provideSurface(region, chunk, this.biomeSource);
+            if (this.biomeSource instanceof OldBiomeSource)
+                this.chunkProvider.provideSurface(region, chunk, (OldBiomeSource)this.biomeSource);
+            else
+                super.buildSurface(region, chunk);
         
-        if (this.generateOceans) {
+        if (this.generateOceans)
             this.replaceOceansInChunk(chunk);
-        }
     }
 
     @Override
@@ -167,9 +166,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         class_6350 class_635013 = this.method_36380(chunk);
         BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);
 
-        this.random.setSeed(seed);
-        long l = (this.random.nextLong() / 2L) * 2L + 1L;
-        long l1 = (this.random.nextLong() / 2L) * 2L + 1L;
+        Random random = new Random(seed);
+        long l = (random.nextLong() / 2L) * 2L + 1L;
+        long l1 = (random.nextLong() / 2L) * 2L + 1L;
 
         for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
             for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
@@ -181,14 +180,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
                     Carver<?> carver = ((MixinConfiguredCarverAccessor)configuredCarver).getCarver();
                     
-                    this.random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
+                    random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
                     
                     // Special case for old Beta carvers.
                     if (carver instanceof OldCaveCarver) {
-                        ((OldCaveCarver)carver).carve(heightContext, (CaveCarverConfig)configuredCarver.getConfig(), chunk, this.random, chunkX, chunkZ, mainChunkX, mainChunkZ);
+                        ((OldCaveCarver)carver).carve(heightContext, (CaveCarverConfig)configuredCarver.getConfig(), chunk, random, chunkX, chunkZ, mainChunkX, mainChunkZ);
                         
                     } else if (configuredCarver.shouldCarve(random)) {
-                        configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, this.random, class_635013, caveChunkPos, bitSet);
+                        configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, random, class_635013, caveChunkPos, bitSet);
 
                     }
                 }
@@ -347,6 +346,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     */
     
     private void replaceOceansInChunk(Chunk chunk) {
+        if (!(this.biomeSource instanceof OldBiomeSource)) return;
+        
+        OldBiomeSource biomeSource = (OldBiomeSource)this.biomeSource;
+        
         MutableBiomeArray mutableBiomeArray = MutableBiomeArray.inject(chunk.getBiomeArray());
         Map<BlockPos, Biome> oceanPositions = new HashMap<BlockPos, Biome>();
         BlockPos.Mutable mutablePos = new BlockPos.Mutable();
@@ -366,7 +369,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 int absZ = chunkPos.getStartZ() + (z << 2) + 2; // to sample overall ocean depth as accurately as possible.
                 
                 if (OldGeneratorUtil.getSolidHeight(chunk, worldHeight, minY, absX, absZ, this.defaultFluid) < seaLevel - OCEAN_MIN_DEPTH) {
-                    oceanPositions.put(new BlockPos(x, 0, z), this.biomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2));
+                    oceanPositions.put(new BlockPos(x, 0, z), biomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2));
                 }
             }
         }
@@ -398,9 +401,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int biomeZ = z >> 2;
         
         Biome biome;
-        
-        if (this.generateOceans && this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world) < seaLevel - OCEAN_MIN_DEPTH) {
-            biome = this.biomeSource.getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
+        if (this.generateOceans && this.biomeSource instanceof OldBiomeSource && this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world) < seaLevel - OCEAN_MIN_DEPTH) {
+            biome = ((OldBiomeSource)this.biomeSource).getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
         } else {
             biome = this.biomeSource.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
         }

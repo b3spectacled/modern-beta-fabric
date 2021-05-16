@@ -17,14 +17,15 @@ public interface BeachSpawnable {
     boolean isSandAt(int x, int z, HeightLimitView world);
     
     /**
-     * Samples height of block at x/z coordinate.
-     * Keep in sync with ChunkProvider method.
-     * 
+     * Sample height at given x/z coordinate.
+     * Keep in sync with {@link ChunkProvider#getHeight(int, int, net.minecraft.world.Heightmap.Type, HeightLimitView)}.
+     *
      * @param x x-coordinate in block coordinates.
      * @param z z-coordinate in block coordinates.
-     * @param type Heightmap type.
+     * @param type Vanilla heightmap type.
+     * @param world
      * 
-     * @return Height of block at x/z in block coordinates.
+     * @return The y-coordinate of top block at x/z.
      */
     int getHeight(int x, int z, Heightmap.Type type, HeightLimitView world);
 }

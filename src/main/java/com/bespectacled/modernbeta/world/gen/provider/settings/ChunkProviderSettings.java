@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.world.gen.provider.settings;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.config.ModernBetaGenerationConfig;
 
 import net.minecraft.nbt.NbtCompound;
@@ -11,7 +12,7 @@ public class ChunkProviderSettings {
     public static NbtCompound createSettingsBase(String worldType) {
         NbtCompound settings = new NbtCompound();
         
-        settings.putString("worldType", worldType);
+        settings.putString(WorldSettings.TAG_WORLD, worldType);
         
         return settings;
     }

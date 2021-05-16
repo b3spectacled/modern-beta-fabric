@@ -14,9 +14,6 @@ import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
-import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
-import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
-
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
@@ -55,7 +52,10 @@ public abstract class WorldScreen extends Screen {
         this.worldSettings = worldSettings;
         this.consumer = consumer;
         
-        this.worldProvider = ProviderRegistries.WORLD.get(NBTUtil.readStringOrThrow("worldType", this.worldSettings.getSettings(WorldSetting.CHUNK)));
+        this.worldProvider = ProviderRegistries.WORLD.get(NBTUtil.readStringOrThrow(
+            WorldSettings.TAG_WORLD, 
+            this.worldSettings.getSettings(WorldSetting.CHUNK)
+        ));
     }
     
     @Override
@@ -63,8 +63,8 @@ public abstract class WorldScreen extends Screen {
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         this.children.add(this.buttonList);
         
-        String biomeType = NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getSettings(WorldSetting.BIOME));
-        String singleBiome = NBTUtil.readString("singleBiome", this.worldSettings.getSettings(WorldSetting.BIOME), ModernBeta.BIOME_CONFIG.singleBiome);
+        String biomeType = NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME));
+        String singleBiome = NBTUtil.readString(WorldSettings.TAG_SINGLE_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME), ModernBeta.BIOME_CONFIG.singleBiome);
 
         ButtonWidget doneButton;
         ButtonWidget cancelButton;
@@ -102,15 +102,11 @@ public abstract class WorldScreen extends Screen {
             (value) -> new TranslatableText("createWorld.customize.worldType." + value.getChunkProvider()), 
             (gameOptions) -> { return this.worldProvider; }, 
             (gameOptions, option, value) -> {
-                // Reset settings when switching to new world type
-                NbtCompound chunkProviderSettings = ChunkProviderSettings.createSettingsBase(value.getChunkProvider());
-                NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsBase(value.getBiomeProvider(), value.getSingleBiome());
-                NbtCompound caveBiomeProviderSettings = CaveBiomeProviderSettings.createSettingsBase(value.getCaveBiomeProvider());
-                
+                // Reset settings when switching to new world type                
                 this.client.openScreen(value.createWorldScreen(
                     this.parent, 
                     this.registryManager,
-                    new WorldSettings(chunkProviderSettings, biomeProviderSettings, caveBiomeProviderSettings),
+                    new WorldSettings(value),
                     this.consumer
                 ));
         });
@@ -119,7 +115,7 @@ public abstract class WorldScreen extends Screen {
             "createWorld.customize.biomeType",
             ProviderRegistries.BIOME.getKeys().stream().toArray(String[]::new), 
             (value) -> new TranslatableText("createWorld.customize.biomeType." + value), 
-            (gameOptions) -> NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getSettings(WorldSetting.BIOME)),
+            (gameOptions) -> NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME)),
             (gameOptions, option, value) -> {
                 // Reset biome settings when switching to new biome type
                 NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsBase(value, this.worldProvider.getSingleBiome());
@@ -143,7 +139,7 @@ public abstract class WorldScreen extends Screen {
             "createWorld.customize.caveBiomeType",
             ProviderRegistries.CAVE_BIOME.getKeys().stream().toArray(String[]::new), 
             (value) -> new TranslatableText("createWorld.customize.caveBiomeType." + value), 
-            (gameOptions) -> NBTUtil.readStringOrThrow("caveBiomeType", this.worldSettings.getSettings(WorldSetting.CAVE_BIOME)),
+            (gameOptions) -> NBTUtil.readStringOrThrow(WorldSettings.TAG_CAVE_BIOME, this.worldSettings.getSettings(WorldSetting.CAVE_BIOME)),
             (gameOptions, option, value) -> {
                 // Reset biome settings when switching to new biome type
                 NbtCompound caveBiomeProviderSettings = CaveBiomeProviderSettings.createSettingsBase(value);
@@ -165,7 +161,7 @@ public abstract class WorldScreen extends Screen {
         */
         
         biomeSettingsScreen = ProviderRegistries.BIOME_SCREEN
-            .getOrDefault(NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getSettings(WorldSetting.BIOME)))
+            .getOrDefault(NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME)))
             .apply(this); 
         
         biomeSettingsOption = new ActionButtonOption(
@@ -201,8 +197,8 @@ public abstract class WorldScreen extends Screen {
     
     protected void setDefaultSingleBiome(String defaultBiome) {
         // Replace default single biome with one supplied by world provider, if switching to Single biome type
-        if (NBTUtil.readStringOrThrow("biomeType", this.worldSettings.getSettings(WorldSetting.BIOME)).equals(BuiltInTypes.Biome.SINGLE.name))
-            this.worldSettings.putSetting(WorldSetting.BIOME, "singleBiome", NbtString.of(defaultBiome));
+        if (NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME)).equals(BuiltInTypes.Biome.SINGLE.name))
+            this.worldSettings.putSetting(WorldSetting.BIOME, WorldSettings.TAG_SINGLE_BIOME, NbtString.of(defaultBiome));
     }
     
     public DynamicRegistryManager getRegistryManager() {

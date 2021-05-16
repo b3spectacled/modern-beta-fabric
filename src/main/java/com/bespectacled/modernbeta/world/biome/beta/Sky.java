@@ -9,7 +9,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.biome.SpawnSettings.SpawnEntry;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.GenerationStep.Feature;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
@@ -22,12 +21,8 @@ public class Sky {
     
     private static Biome create() {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
-        DefaultBiomeFeatures.addFarmAnimals(spawnSettings);
-        DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
-        
-        spawnSettings.spawn(SpawnGroup.WATER_CREATURE, new SpawnSettings.SpawnEntry(EntityType.SQUID, 10, 1, 4));
-        
-        spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnEntry(EntityType.WOLF, 8, 4, 4));
+        DefaultBiomeFeatures.addMonsters(spawnSettings, 95, 5, 20);
+        spawnSettings.spawn(SpawnGroup.CREATURE,  new SpawnSettings.SpawnEntry(EntityType.CHICKEN, 10, 4, 4));
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
@@ -35,7 +30,7 @@ public class Sky {
         DefaultBiomeFeatures.addDefaultUndergroundStructures(genSettings);
         DefaultBiomeFeatures.addDefaultLakes(genSettings);
         DefaultBiomeFeatures.addDungeons(genSettings);
-        DefaultBiomeFeatures.addMineables(genSettings, false);
+        //DefaultBiomeFeatures.addMineables(genSettings, false);
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
@@ -45,6 +40,9 @@ public class Sky {
         genSettings.structureFeature(ConfiguredStructureFeatures.VILLAGE_PLAINS);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
         
+        genSettings.feature(Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_DIRT);
+        genSettings.feature(Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_GRAVEL);
+        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
         genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
         genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_EMERALD_Y95);
         
