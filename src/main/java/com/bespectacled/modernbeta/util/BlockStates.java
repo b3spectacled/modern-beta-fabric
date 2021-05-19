@@ -24,4 +24,7 @@ public abstract class BlockStates {
     public static final BlockState FERN = Blocks.FERN.getDefaultState();
     public static final BlockState TALL_GRASS = Blocks.TALL_GRASS.getDefaultState();
     public static final BlockState TALL_FERN = Blocks.LARGE_FERN.getDefaultState();
+    
+    public static final BlockState OAK_LEAVES = Blocks.OAK_LEAVES.getDefaultState();
+    public static final BlockState OAK_LOG = Blocks.OAK_LOG.getDefaultState();
 }
