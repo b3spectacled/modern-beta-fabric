@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.world.biome.provider;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
@@ -16,12 +17,14 @@ import net.minecraft.world.biome.Biome;
 
 public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, BetaClimateResolver {
     private final BetaClimateMapCustomizable betaClimateMap;
+    private final BetaClimateMapCustomizable defaultClimateMap;
     
     public BetaBiomeProvider(long seed, NbtCompound settings) {
         super(seed, settings);
         
         this.setSeed(seed);
         this.betaClimateMap = new BetaClimateMapCustomizable(settings);
+        this.defaultClimateMap = new BetaClimateMapCustomizable(new NbtCompound());
     }
 
     @Override
@@ -32,7 +35,10 @@ public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, B
         double temp = this.sampleTemp(absX, absZ);
         double humid = this.sampleHumid(absX, absZ);
         
-        return biomeRegistry.get(this.betaClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.LAND));
+        Optional<Biome> biome = biomeRegistry.getOrEmpty(this.betaClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.LAND));
+
+        // If custom biome is not present for whatever reason, fetch the default for the climate range.
+        return biome.orElse(biomeRegistry.get(this.defaultClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.LAND)));
     }
  
     @Override
@@ -43,15 +49,21 @@ public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, B
         double temp = this.sampleTemp(absX, absZ);
         double humid = this.sampleHumid(absX, absZ);
         
-        return biomeRegistry.get(this.betaClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.OCEAN));
+        Optional<Biome> biome = biomeRegistry.getOrEmpty(this.betaClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.OCEAN));
+
+        // If custom biome is not present for whatever reason, fetch the default for the climate range.
+        return biome.orElse(biomeRegistry.get(this.defaultClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.OCEAN)));
     }
     
     @Override
-    public Biome getBiome(Registry<Biome> registry, int x, int y, int z) {
+    public Biome getBiome(Registry<Biome> biomeRegistry, int x, int y, int z) {
         double temp = this.sampleTemp(x, z);
         double humid = this.sampleHumid(x, z);
         
-        return registry.get(betaClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.LAND));
+        Optional<Biome> biome = biomeRegistry.getOrEmpty(this.betaClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.LAND));
+
+        // If custom biome is not present for whatever reason, fetch the default for the climate range.
+        return biome.orElse(biomeRegistry.get(this.defaultClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.LAND)));
     }
 
     @Override

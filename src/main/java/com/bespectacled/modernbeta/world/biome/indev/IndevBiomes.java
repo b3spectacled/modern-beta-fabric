@@ -14,6 +14,7 @@ public class IndevBiomes {
 
     public static void registerBiomes() {
         // Unused, registered for compatibility with 1.16 versions
+        // TODO: Consider removing in future versions.
         OldBiomes.register(ModernBeta.createId("indev_edge"), IndevNormal.EDGE_COMPAT);
         OldBiomes.register(ModernBeta.createId("indev_hell_edge"), IndevHell.EDGE_COMPAT);
         OldBiomes.register(ModernBeta.createId("indev_paradise_edge"), IndevParadise.EDGE_COMPAT);
