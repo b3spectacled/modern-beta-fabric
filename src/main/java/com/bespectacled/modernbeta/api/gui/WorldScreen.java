@@ -61,7 +61,7 @@ public abstract class WorldScreen extends Screen {
     @Override
     protected void init() {
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
-        this.children.add(this.buttonList);
+        this.addChild(this.buttonList);
         
         String biomeType = NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME));
         String singleBiome = NBTUtil.readString(WorldSettings.TAG_SINGLE_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME), ModernBeta.BIOME_CONFIG.singleBiome);
@@ -170,8 +170,8 @@ public abstract class WorldScreen extends Screen {
             biomeSettingsScreen != null ? widget -> this.client.openScreen(biomeSettingsScreen) : null
         );
         
-        this.addButton(doneButton);
-        this.addButton(cancelButton);
+        this.method_37063(doneButton);
+        this.method_37063(cancelButton);
 
         this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
         this.buttonList.addSingleOptionEntry(worldTypeOption);

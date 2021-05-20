@@ -42,7 +42,7 @@ public abstract class BiomeScreen extends Screen {
     @Override
     protected void init() {
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
-        this.children.add(this.buttonList);
+        this.addChild(this.buttonList);
 
         ButtonWidget doneButton;
         ButtonWidget cancelButton;
@@ -64,8 +64,8 @@ public abstract class BiomeScreen extends Screen {
             }
         );
         
-        this.addButton(doneButton);
-        this.addButton(cancelButton);
+        this.method_37063(doneButton);
+        this.method_37063(cancelButton);
     }
     
     @Override

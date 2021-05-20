@@ -16,9 +16,9 @@ public interface MixinChunkGeneratorSettingsInvoker {
     @Invoker("hasDeepslate")
     public boolean invokeHasDeepslate();
     
-    @Invoker("method_36396")
+    @Invoker("hasOreVeins")
     public boolean invokeHasOreVeins();
     
-    @Invoker("method_36468")
+    @Invoker("hasNoodleCaves")
     public boolean invokeHasNoodleCaves();
 }

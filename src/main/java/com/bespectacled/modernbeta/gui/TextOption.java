@@ -3,8 +3,8 @@ package com.bespectacled.modernbeta.gui;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.Option;
 import net.minecraft.client.util.math.MatrixStack;
@@ -16,7 +16,7 @@ import net.minecraft.util.math.MathHelper;
  */
 public class TextOption extends Option {
     private final String key;
-    private AbstractButtonWidget button;
+    private ClickableWidget button;
 
     public TextOption(String key) {
         super(key);
@@ -25,7 +25,7 @@ public class TextOption extends Option {
     }
 
     @Override
-    public AbstractButtonWidget createButton(GameOptions options, int x, int y, int width) {
+    public ClickableWidget createButton(GameOptions options, int x, int y, int width) {
         this.button = new ButtonWidget(
             x, y, width, 20,
             new TranslatableText(this.key),

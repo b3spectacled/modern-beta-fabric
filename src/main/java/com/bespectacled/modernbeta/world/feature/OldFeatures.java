@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.world.feature;
 
 import com.bespectacled.modernbeta.ModernBeta;
+
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;

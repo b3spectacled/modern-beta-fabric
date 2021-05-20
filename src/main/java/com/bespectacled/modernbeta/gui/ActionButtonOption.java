@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.gui;
 
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.MutableText;
@@ -15,7 +15,7 @@ public class ActionButtonOption extends Option {
     private final String suffix;
     private final ButtonWidget.PressAction onPress;
     
-    private AbstractButtonWidget button;
+    private ClickableWidget button;
     
     public ActionButtonOption(String key, String suffix, ButtonWidget.PressAction onPress) {
         super(key);
@@ -26,7 +26,7 @@ public class ActionButtonOption extends Option {
     }
 
     @Override
-    public AbstractButtonWidget createButton(GameOptions options, int x, int y, int width) {
+    public ClickableWidget createButton(GameOptions options, int x, int y, int width) {
         MutableText buttonText = new TranslatableText(this.key);
         MutableText suffixText = new TranslatableText(this.suffix);
         

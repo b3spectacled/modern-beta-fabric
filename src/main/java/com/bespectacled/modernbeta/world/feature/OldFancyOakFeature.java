@@ -11,7 +11,6 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.LeavesBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.StructureWorldAccess;
@@ -28,14 +27,8 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
     ).collect(Collectors.toCollection(HashSet::new));
     
     private static final Random RANDOM = new Random();
-    
-    protected static final BlockState LOG = Blocks.OAK_LOG.getDefaultState();
-    protected static final BlockState LEAVES = Blocks.OAK_LEAVES.getDefaultState().with(LeavesBlock.DISTANCE, 1);
-    
-    private static final byte[] AXIS_TRANSLATOR = new byte[] {2, 0, 0, 1, 2, 1};
-
+    private static final byte[] AXIS_LOOKUP = new byte[] {2, 0, 0, 1, 2, 1};
     private static final int[] BASE_POS = new int[3];
-    
     private static final int FOLIAGE_BLOB_HEIGHT = 5;
     
     private int height;
@@ -258,8 +251,8 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
         }
     
         if (distance[longestSideNdx] != 0) {
-            byte ndx0 = AXIS_TRANSLATOR[longestSideNdx];
-            byte ndx1 = AXIS_TRANSLATOR[longestSideNdx + 3];
+            byte ndx0 = AXIS_LOOKUP[longestSideNdx];
+            byte ndx1 = AXIS_LOOKUP[longestSideNdx + 3];
             
             int branchDir = distance[longestSideNdx] > 0 ? 1 : -1;
     
@@ -287,8 +280,8 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         int layerRadius = (int) (radius + 0.618D);
         
-        byte ndx0 = AXIS_TRANSLATOR[axis];
-        byte ndx1 = AXIS_TRANSLATOR[axis + 3];
+        byte ndx0 = AXIS_LOOKUP[axis];
+        byte ndx1 = AXIS_LOOKUP[axis + 3];
         
         int[] centerPos = new int[] { x, y, z };
         int[] pos = new int[] { 0, 0, 0 };
@@ -381,8 +374,8 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
         }
         
         if (distance[longestSideNdx] != 0) {
-            byte ndx0 = AXIS_TRANSLATOR[longestSideNdx];
-            byte ndx1 = AXIS_TRANSLATOR[longestSideNdx + 3];
+            byte ndx0 = AXIS_LOOKUP[longestSideNdx];
+            byte ndx1 = AXIS_LOOKUP[longestSideNdx + 3];
             
             int branchDir = distance[longestSideNdx] > 0 ? 1 : -1;
     

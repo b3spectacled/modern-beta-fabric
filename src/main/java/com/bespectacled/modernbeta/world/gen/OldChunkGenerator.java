@@ -26,7 +26,6 @@ import com.bespectacled.modernbeta.world.structure.OldStructures;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.class_6350;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
@@ -57,6 +56,7 @@ import net.minecraft.world.gen.carver.Carver;
 import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
+import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
@@ -133,7 +133,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int startX = chunkPos.getStartX();
         int startZ = chunkPos.getStartZ();
         
-        Biome biome = this.getBiomeAt(chunkPos.getStartX(), 0, chunkPos.getStartZ(), region.getChunk(chunkPos.x, chunkPos.z));
+        Biome biome = this.getBiomeAt(startX, 0, startZ, region.getChunk(chunkPos.x, chunkPos.z));
         
         // TODO: Remove chunkRandom at some point
         ChunkRandom chunkRandom = new ChunkRandom();
@@ -163,7 +163,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         GenerationSettings genSettings = biome.getGenerationSettings();
         CarverContext heightContext = new CarverContext(this);
         
-        class_6350 class_635013 = this.method_36380(chunk);
+        AquiferSampler aquiferSampler = this.createAquiferSampler(chunk);
         BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);
 
         Random random = new Random(seed);
@@ -187,7 +187,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                         ((OldCaveCarver)carver).carve(heightContext, (CaveCarverConfig)configuredCarver.getConfig(), chunk, random, chunkX, chunkZ, mainChunkX, mainChunkZ);
                         
                     } else if (configuredCarver.shouldCarve(random)) {
-                        configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, random, class_635013, caveChunkPos, bitSet);
+                        configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, random, aquiferSampler, caveChunkPos, bitSet);
 
                     }
                 }
