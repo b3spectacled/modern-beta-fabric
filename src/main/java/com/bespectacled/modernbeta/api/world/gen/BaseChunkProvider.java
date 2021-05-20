@@ -26,7 +26,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public abstract class BaseChunkProvider extends ChunkProvider {
-    protected static final Random RAND = new Random();
+    protected final Random rand;
     
     protected final int minY;
     protected final int worldHeight;
@@ -100,7 +100,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
             new OctaveSimplexNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0)) : 
             new OctavePerlinNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
         
-        RAND.setSeed(seed);
+        this.rand = new Random(seed);
         
         // Handle bad height values
         if (this.minY > this.worldHeight)

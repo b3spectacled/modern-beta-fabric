@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
+import java.util.Random;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
@@ -34,13 +35,13 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
         super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 1, 1, 1.0, 1.0, 80, 400, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
         
         // Noise Generators
-        minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
-        beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
-        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
-        new PerlinOctaveNoise(RAND, 5, true); // Unused in original source
-        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 5, true);
+        this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        this.mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
+        this.beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        this.stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        new PerlinOctaveNoise(rand, 5, true); // Unused in original source
+        this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 5, true);
 
         setForestOctaves(forestNoiseOctaves);
     }
@@ -167,7 +168,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
         
         return 
             (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
-            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + RAND.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
+            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
     
     @Override

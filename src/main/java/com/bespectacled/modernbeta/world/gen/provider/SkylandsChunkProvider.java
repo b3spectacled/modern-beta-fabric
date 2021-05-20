@@ -29,14 +29,14 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 0, 0, 0, -10, BlockStates.STONE, BlockStates.AIR, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0, false, false, false, false, false);
         
         // Noise Generators
-        this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        this.mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
-        new PerlinOctaveNoise(RAND, 4, true);
-        this.stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
-        new PerlinOctaveNoise(RAND, 10, true);
-        new PerlinOctaveNoise(RAND, 16, true);
-        this.forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        this.mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
+        new PerlinOctaveNoise(rand, 4, true);
+        this.stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        new PerlinOctaveNoise(rand, 10, true);
+        new PerlinOctaveNoise(rand, 16, true);
+        this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
 
         setForestOctaves(forestNoiseOctaves);
     }

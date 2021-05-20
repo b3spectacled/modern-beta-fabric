@@ -46,16 +46,16 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
         // Noise Generators
-        noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true); 
-        noiseOctavesB = new PerlinOctaveNoise(RAND, 16, true);
-        noiseOctavesC = new PerlinOctaveNoise(RAND, 8, true);
-        noiseOctavesD = new PerlinOctaveNoise(RAND, 4, true);
-        noiseOctavesE = new PerlinOctaveNoise(RAND, 4, true);
-        noiseOctavesF = new PerlinOctaveNoise(RAND, 5, true);
-        new PerlinOctaveNoise(RAND, 3, true);
-        new PerlinOctaveNoise(RAND, 3, true);
-        new PerlinOctaveNoise(RAND, 3, true);
-        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        this.noiseOctavesA = new PerlinOctaveNoise(rand, 16, true); 
+        this.noiseOctavesB = new PerlinOctaveNoise(rand, 16, true);
+        this.noiseOctavesC = new PerlinOctaveNoise(rand, 8, true);
+        this.noiseOctavesD = new PerlinOctaveNoise(rand, 4, true);
+        this.noiseOctavesE = new PerlinOctaveNoise(rand, 4, true);
+        this.noiseOctavesF = new PerlinOctaveNoise(rand, 5, true);
+        new PerlinOctaveNoise(rand, 3, true);
+        new PerlinOctaveNoise(rand, 3, true);
+        new PerlinOctaveNoise(rand, 3, true);
+        this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
         
         this.generateInfdevPyramid = NBTUtil.readBoolean("generateInfdevPyramid", providerSettings, ModernBeta.GEN_CONFIG.generateInfdevPyramid);
         this.generateInfdevWall = NBTUtil.readBoolean("generateInfdevWall", providerSettings, ModernBeta.GEN_CONFIG.generateInfdevWall);

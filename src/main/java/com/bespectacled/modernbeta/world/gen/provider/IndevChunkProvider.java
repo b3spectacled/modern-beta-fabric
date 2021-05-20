@@ -375,20 +375,20 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
             //this.groundLevel = this.waterLevel - 2;
             
             // Noise Generators (Here instead of constructor to randomize floating layer generation)    
-            minHeightNoiseOctaves = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
-            maxHeightNoiseOctaves = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
+            minHeightNoiseOctaves = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(rand, 8, false), new PerlinOctaveNoise(rand, 8, false));
+            maxHeightNoiseOctaves = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(rand, 8, false), new PerlinOctaveNoise(rand, 8, false));
             
-            mainHeightNoiseOctaves = new PerlinOctaveNoise(RAND, 6, false);
-            islandNoiseOctaves = new PerlinOctaveNoise(RAND, 2, false);
+            mainHeightNoiseOctaves = new PerlinOctaveNoise(rand, 6, false);
+            islandNoiseOctaves = new PerlinOctaveNoise(rand, 2, false);
             
-            dirtNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
-            floatingNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
+            dirtNoiseOctaves = new PerlinOctaveNoise(rand, 8, false);
+            floatingNoiseOctaves = new PerlinOctaveNoise(rand, 8, false);
             
-            erodeNoiseOctaves1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
-            erodeNoiseOctaves2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
+            erodeNoiseOctaves1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(rand, 8, false), new PerlinOctaveNoise(rand, 8, false));
+            erodeNoiseOctaves2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(rand, 8, false), new PerlinOctaveNoise(rand, 8, false));
             
-            sandNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
-            gravelNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
+            sandNoiseOctaves = new PerlinOctaveNoise(rand, 8, false);
+            gravelNoiseOctaves = new PerlinOctaveNoise(rand, 8, false);
             
             this.generateHeightmap(heightmap);
             this.erodeTerrain(heightmap);
@@ -593,18 +593,18 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         int caveCount = this.levelWidth * this.levelLength * this.levelHeight / 256 / 64 << 1;
         
         for (int i = 0; i < caveCount; ++i) {
-            float caveX = RAND.nextFloat() * this.levelWidth;
-            float caveY = RAND.nextFloat() * this.levelHeight;
-            float caveZ = RAND.nextFloat() * this.levelLength;
+            float caveX = rand.nextFloat() * this.levelWidth;
+            float caveY = rand.nextFloat() * this.levelHeight;
+            float caveZ = rand.nextFloat() * this.levelLength;
 
-            int caveLen = (int)((RAND.nextFloat() + RAND.nextFloat()) * 200F);
+            int caveLen = (int)((rand.nextFloat() + rand.nextFloat()) * 200F);
             
-            float theta = RAND.nextFloat() * 3.1415927f * 2.0f;
+            float theta = rand.nextFloat() * 3.1415927f * 2.0f;
             float deltaTheta = 0.0f;
-            float phi = RAND.nextFloat() * 3.1415927f * 2.0f;
+            float phi = rand.nextFloat() * 3.1415927f * 2.0f;
             float deltaPhi = 0.0f;
             
-            float caveRadius = RAND.nextFloat() * RAND.nextFloat() * this.caveRadius;
+            float caveRadius = rand.nextFloat() * rand.nextFloat() * this.caveRadius;
             
             for (int len = 0; len < caveLen; ++len) {
                 caveX += MathHelper.sin(theta) * MathHelper.cos(phi);
@@ -612,14 +612,14 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                 caveY += MathHelper.sin(phi);
                 
                 theta = theta + deltaTheta * 0.2f;
-                deltaTheta = (deltaTheta * 0.9f) + (RAND.nextFloat() - RAND.nextFloat());
+                deltaTheta = (deltaTheta * 0.9f) + (rand.nextFloat() - rand.nextFloat());
                 phi = phi / 2 + deltaPhi / 4;
-                deltaPhi = (deltaPhi * 0.75f) + (RAND.nextFloat() - RAND.nextFloat());
+                deltaPhi = (deltaPhi * 0.75f) + (rand.nextFloat() - rand.nextFloat());
                 
-                if (RAND.nextFloat() >= 0.25f) {
-                    float centerX = caveX + (RAND.nextFloat() * 4.0f - 2.0f) * 0.2f;
-                    float centerY = caveY + (RAND.nextFloat() * 4.0f - 2.0f) * 0.2f;
-                    float centerZ = caveZ + (RAND.nextFloat() * 4.0f - 2.0f) * 0.2f;
+                if (rand.nextFloat() >= 0.25f) {
+                    float centerX = caveX + (rand.nextFloat() * 4.0f - 2.0f) * 0.2f;
+                    float centerY = caveY + (rand.nextFloat() * 4.0f - 2.0f) * 0.2f;
+                    float centerZ = caveZ + (rand.nextFloat() * 4.0f - 2.0f) * 0.2f;
                     
                     float radius = (this.levelHeight - centerY) / this.levelHeight;
                     radius = 1.2f + (radius * 3.5f + 1.0f) * caveRadius;
@@ -675,9 +675,9 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         int waterSourceCount = this.levelWidth * this.levelLength / 800;
         
         for (int i = 0; i < waterSourceCount; ++i) {
-            int randX = RAND.nextInt(this.levelWidth);
-            int randZ = RAND.nextInt(this.levelLength);
-            int randY = RAND.nextBoolean() ? waterLevel - 1 : waterLevel - 2;
+            int randX = rand.nextInt(this.levelWidth);
+            int randZ = rand.nextInt(this.levelLength);
+            int randY = rand.nextBoolean() ? waterLevel - 1 : waterLevel - 2;
             
             flood(blockArr, randX, randY, randZ, toFill);
         }
@@ -695,9 +695,9 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         int lavaSourceCount = this.levelWidth * this.levelLength / 20000;
          
         for (int i = 0; i < lavaSourceCount; ++i) {
-            int randX = RAND.nextInt(this.levelWidth);
-            int randZ = RAND.nextInt(this.levelLength);
-            int randY = (int)((this.waterLevel - 3) * RAND.nextFloat() * RAND.nextFloat());
+            int randX = rand.nextInt(this.levelWidth);
+            int randZ = rand.nextInt(this.levelLength);
+            int randY = (int)((this.waterLevel - 3) * rand.nextFloat() * rand.nextFloat());
             
             flood(blockArr, randX, randY, randZ, Blocks.LAVA);
         }

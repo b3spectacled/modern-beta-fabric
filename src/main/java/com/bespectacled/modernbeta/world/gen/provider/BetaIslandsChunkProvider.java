@@ -50,16 +50,16 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
         
         // Noise Generators
-        this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        this.mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
-        this.beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
-        this.stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
-        this.scaleNoiseOctaves = new PerlinOctaveNoise(RAND, 10, true);
-        this.depthNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        this.forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        this.mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
+        this.beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        this.stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        this.scaleNoiseOctaves = new PerlinOctaveNoise(rand, 10, true);
+        this.depthNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
         
-        this.islandNoise = new SimplexNoise(RAND);
+        this.islandNoise = new SimplexNoise(rand);
         
         // Beta Islands settings
         this.generateOuterIslands = NBTUtil.readBoolean("generateOuterIslands", providerSettings, ModernBeta.GEN_CONFIG.generateOuterIslands);
@@ -222,7 +222,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         
         return 
             (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
-            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + RAND.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
+            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
 
     @Override
