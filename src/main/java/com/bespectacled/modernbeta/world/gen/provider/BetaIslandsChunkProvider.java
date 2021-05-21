@@ -30,7 +30,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
     private final PerlinOctaveNoise beachNoiseOctaves;
-    private final PerlinOctaveNoise stoneNoiseOctaves;
+    private final PerlinOctaveNoise surfaceNoiseOctaves;
     private final PerlinOctaveNoise scaleNoiseOctaves;
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
@@ -54,7 +54,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
         this.beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
-        this.stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        this.surfaceNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
         this.scaleNoiseOctaves = new PerlinOctaveNoise(rand, 10, true);
         this.depthNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
@@ -89,7 +89,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         
         double[] sandNoise = this.surfaceNoisePool.borrowArr();
         double[] gravelNoise = this.surfaceNoisePool.borrowArr();
-        double[] stoneNoise = this.surfaceNoisePool.borrowArr();
+        double[] surfaceNoise = this.surfaceNoisePool.borrowArr();
 
         sandNoise = beachNoiseOctaves.sampleArrBeta(
             sandNoise, 
@@ -103,8 +103,8 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
             16, 1, 16, 
             eighth, 1.0D, eighth);
         
-        stoneNoise = stoneNoiseOctaves.sampleArrBeta(
-            stoneNoise, 
+        surfaceNoise = surfaceNoiseOctaves.sampleArrBeta(
+            surfaceNoise, 
             chunkX * 16, chunkZ * 16, 0.0D, 
             16, 16, 1,
             eighth * 2D, eighth * 2D, eighth * 2D
@@ -118,8 +118,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
                 
                 boolean genSandBeach = sandNoise[z + x * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
                 boolean genGravelBeach = gravelNoise[z + x * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
-                
-                int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
+                int surfaceDepth = (int) (surfaceNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 
                 int flag = -1;
                 
@@ -159,7 +158,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
                     }
 
                     if (flag == -1) {
-                        if (genStone <= 0) { // Generate stone basin if noise permits
+                        if (surfaceDepth <= 0) { // Generate stone basin if noise permits
                             topBlock = BlockStates.AIR;
                             fillerBlock = this.defaultBlock;
                             
@@ -182,7 +181,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
                             topBlock = this.defaultFluid;
                         }
 
-                        flag = genStone;
+                        flag = surfaceDepth;
                         if (y >= this.seaLevel - 1) {
                             chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
                         } else {
@@ -210,7 +209,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         
         this.surfaceNoisePool.returnArr(sandNoise);
         this.surfaceNoisePool.returnArr(gravelNoise);
-        this.surfaceNoisePool.returnArr(stoneNoise);
+        this.surfaceNoisePool.returnArr(surfaceNoise);
     }
     
     @Override

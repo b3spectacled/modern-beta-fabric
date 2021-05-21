@@ -62,7 +62,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
             generatorSettings.get().getBedrockFloorY(),
             generatorSettings.get().getBedrockCeilingY(),
             generatorSettings.get().getDefaultBlock(),
-            generatorSettings.get().getDefaultBlock()
+            generatorSettings.get().getDefaultFluid()
         );
     }
     

@@ -25,7 +25,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
     private final PerlinOctaveNoise beachNoiseOctaves;
-    private final PerlinOctaveNoise stoneNoiseOctaves;
+    private final PerlinOctaveNoise surfaceNoiseOctaves;
     private final PerlinOctaveNoise scaleNoiseOctaves;
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
@@ -39,7 +39,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
         this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
         this.beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
-        this.stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        this.surfaceNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
         this.scaleNoiseOctaves = new PerlinOctaveNoise(rand, 10, true);
         this.depthNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
@@ -71,7 +71,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(absX * eighth, absZ * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0;
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(absZ * eighth, 109.0134, absX * eighth) + rand.nextDouble() * 0.2 > 3.0;
-                int genStone = (int)(this.stoneNoiseOctaves.sample(absX * eighth * 2.0, absX * eighth * 2.0) / 3.0 + 3.0 + rand.nextDouble() * 0.25);
+                int surfaceDepth = (int)(this.surfaceNoiseOctaves.sample(absX * eighth * 2.0, absX * eighth * 2.0) / 3.0 + 3.0 + rand.nextDouble() * 0.25);
 
                 int flag = -1;
                 
@@ -115,7 +115,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
                         flag = -1;
                     } else if (someBlock.equals(this.defaultBlock)) {
                         if (flag == -1) {
-                            if (genStone <= 0) { // Generate stone basin if noise permits
+                            if (surfaceDepth <= 0) { // Generate stone basin if noise permits
                                 topBlock = BlockStates.AIR;
                                 fillerBlock = this.defaultBlock;
                                 
@@ -138,7 +138,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
                                 topBlock = this.defaultFluid;
                             }
 
-                            flag = genStone;
+                            flag = surfaceDepth;
                             if (y >= this.seaLevel - 1) {
                                 chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
                             } else {

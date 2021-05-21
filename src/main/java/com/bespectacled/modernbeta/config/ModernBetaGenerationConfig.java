@@ -14,15 +14,6 @@ public class ModernBetaGenerationConfig implements ConfigData {
     @ConfigEntry.Gui.Excluded
     public boolean generateOceans = true;
     
-    @ConfigEntry.Gui.Excluded
-    public boolean generateNoiseCaves = true;
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean generateAquifers = true;
-    
-    @ConfigEntry.Gui.Excluded
-    public boolean generateDeepslate = true;
-    
     /* Old Infdev Generation */
     
     @ConfigEntry.Gui.Excluded

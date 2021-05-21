@@ -1,10 +1,8 @@
 package com.bespectacled.modernbeta.world.gen;
 
 import java.util.BitSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -16,7 +14,6 @@ import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.mixin.MixinConfiguredCarverAccessor;
-import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.MutableBiomeArray;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
@@ -93,7 +90,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.chunkProviderType = NBTUtil.readStringOrThrow(WorldSettings.TAG_WORLD, providerSettings);
         this.chunkProvider = ProviderRegistries.CHUNK.get(this.chunkProviderType).apply(seed, this, settings, providerSettings);
         
-        this.generateOceans = NBTUtil.readBoolean("generateOceans", providerSettings, true);
+        this.generateOceans = NBTUtil.readBoolean("generateOceans", providerSettings, ModernBeta.GEN_CONFIG.generateOceans);
     }
 
     public static void register() {
@@ -349,46 +346,34 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         if (!(this.biomeSource instanceof OldBiomeSource)) return;
         
         OldBiomeSource biomeSource = (OldBiomeSource)this.biomeSource;
-        
         MutableBiomeArray mutableBiomeArray = MutableBiomeArray.inject(chunk.getBiomeArray());
-        Map<BlockPos, Biome> oceanPositions = new HashMap<BlockPos, Biome>();
-        BlockPos.Mutable mutablePos = new BlockPos.Mutable();
+        
         ChunkPos chunkPos = chunk.getPos();
         
         int worldHeight = this.getWorldHeight();
         int minY = this.getMinimumY();
         int seaLevel = this.getSeaLevel();
         
-        int biomeCutoff = OCEAN_Y_CUT_OFF >> 2;
-        int biomeMinY = minY >> 2;
+        int biomeHeight = worldHeight >> 2;
         
-        // Collect potential ocean positions in a chunk.
-        for (int x = 0; x < 4; ++x) {
-            for (int z = 0; z < 4; ++z) {
-                int absX = chunkPos.getStartX() + (x << 2) + 2; // Offset by 2 to get center of biome coordinate section,
-                int absZ = chunkPos.getStartZ() + (z << 2) + 2; // to sample overall ocean depth as accurately as possible.
+        for (int biomeX = 0; biomeX < 4; ++biomeX) {
+            for (int biomeZ = 0; biomeZ < 4; ++biomeZ) {
+                int absX = chunkPos.getStartX() + (biomeX << 2);
+                int absZ = chunkPos.getStartZ() + (biomeZ << 2);
+                    
+                // Offset by 2 to get center of biome coordinate section,
+                // to sample overall ocean depth as accurately as possible.
+                int offsetX = absX + 2;
+                int offsetZ = absZ + 2;
                 
-                if (OldGeneratorUtil.getSolidHeight(chunk, worldHeight, minY, absX, absZ, this.defaultFluid) < seaLevel - OCEAN_MIN_DEPTH) {
-                    oceanPositions.put(new BlockPos(x, 0, z), biomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2));
+                if (OldGeneratorUtil.getSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, this.defaultFluid) < seaLevel - OCEAN_MIN_DEPTH) {
+                    Biome oceanBiome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);
+                    
+                    // Fill biome column
+                    for (int biomeY = 0; biomeY < biomeHeight; ++biomeY) {
+                        mutableBiomeArray.setBiome(absX, biomeY << 2, absZ, oceanBiome);
+                    }
                 }
-            }
-        }
-        
-        // See BiomeArray for reference.
-        for (int i = 0; i < mutableBiomeArray.getBiomeArrLen(); ++i) {
-            int offsetBiomeX = i & BiomeUtil.HORIZONTAL_BIT_MASK;
-            int offsetBiomeY = i >> BiomeUtil.HORIZONTAL_SECTION_COUNT + BiomeUtil.HORIZONTAL_SECTION_COUNT;
-            int offsetBiomeZ = i >> BiomeUtil.HORIZONTAL_SECTION_COUNT & BiomeUtil.HORIZONTAL_BIT_MASK;
-            
-            // Skip if below y-cutoff.
-            int biomeY = biomeMinY + offsetBiomeY;
-            boolean isAboveCutoff = biomeY >= biomeCutoff;
-            
-            isAboveCutoff = true; // TODO: Remove when cave biomes are in.
-            
-            mutablePos.set(offsetBiomeX, 0, offsetBiomeZ);
-            if (isAboveCutoff && oceanPositions.get(mutablePos) != null) {
-                mutableBiomeArray.setBiome(i, oceanPositions.get(mutablePos));
             }
         }
     }

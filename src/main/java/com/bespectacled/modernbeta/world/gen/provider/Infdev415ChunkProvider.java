@@ -1,6 +1,5 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
@@ -28,7 +27,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
     private final PerlinOctaveNoise beachNoiseOctaves;
-    private final PerlinOctaveNoise stoneNoiseOctaves;
+    private final PerlinOctaveNoise surfaceNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
     public Infdev415ChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
@@ -39,7 +38,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
         this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
         this.beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
-        this.stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        this.surfaceNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
         new PerlinOctaveNoise(rand, 5, true); // Unused in original source
         this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 5, true);
 
@@ -76,8 +75,8 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
                     109.0134,
                     absX * thirtysecond) + rand.nextDouble() * 0.2 > 3.0;
                 
-                double stoneNoise = this.stoneNoiseOctaves.sample(absX * thirtysecond * 2.0, absZ * thirtysecond * 2.0);
-                int genStone = (int)(stoneNoise / 3.0 + 3.0 + rand.nextDouble() * 0.25);
+                double surfaceNoise = this.surfaceNoiseOctaves.sample(absX * thirtysecond * 2.0, absZ * thirtysecond * 2.0);
+                int surfaceDepth = (int)(surfaceNoise / 3.0 + 3.0 + rand.nextDouble() * 0.25);
                 
                 int flag = -1;
                 
@@ -112,7 +111,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
                         
                     } else if (someBlock.equals(this.defaultBlock)) {
                         if (flag == -1) {
-                            if (genStone <= 0) {
+                            if (surfaceDepth <= 0) {
                                 topBlock = BlockStates.AIR;
                                 fillerBlock = this.defaultBlock;
                                 
@@ -135,7 +134,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
                                 topBlock = this.defaultFluid;
                             }
                             
-                            flag = genStone;
+                            flag = surfaceDepth;
                             
                             if (y >= this.seaLevel - 1) {
                                 chunk.setBlockState(mutable, topBlock, false);

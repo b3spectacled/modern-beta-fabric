@@ -18,11 +18,11 @@ public abstract class BiomeUtil {
         // array index for biomeY is now computed using lower and upper limits of chunk section. 
         // int m = MathHelper.clamp(y >> 2, 0, VERTICAL_BIT_MASK);
 
-        int bottomY = -64;
-        int height = 384;
+        int minY = 0;
+        int maxY = 128;
         
-        int biomeMinY = BiomeCoords.fromBlock(bottomY);
-        int biomeMaxY = BiomeCoords.fromBlock(height) - 1;
+        int biomeMinY = BiomeCoords.fromBlock(minY);
+        int biomeMaxY = BiomeCoords.fromBlock(maxY) - 1;
         
         int l = (x >> 2) & HORIZONTAL_BIT_MASK;
         int m = MathHelper.clamp((y >> 2) - biomeMinY, 0, biomeMaxY);

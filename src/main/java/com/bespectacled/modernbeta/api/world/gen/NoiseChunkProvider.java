@@ -103,7 +103,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             generatorSettings.get().getBedrockFloorY(),
             generatorSettings.get().getBedrockCeilingY(),
             generatorSettings.get().getDefaultBlock(),
-            generatorSettings.get().getDefaultBlock(),
+            generatorSettings.get().getDefaultFluid(),
             generatorSettings.get().getGenerationShapeConfig().getSizeVertical(),
             generatorSettings.get().getGenerationShapeConfig().getSizeHorizontal(),
             generatorSettings.get().getGenerationShapeConfig().getSampling().getXZScale(),

@@ -11,6 +11,7 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.LeavesBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.StructureWorldAccess;
@@ -26,6 +27,7 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
         Blocks.FARMLAND.getDefaultState()
     ).collect(Collectors.toCollection(HashSet::new));
     
+    private static final BlockState OAK_LEAVES = Blocks.OAK_LEAVES.getDefaultState().with(LeavesBlock.DISTANCE, 1);
     private static final Random RANDOM = new Random();
     private static final byte[] AXIS_LOOKUP = new byte[] {2, 0, 0, 1, 2, 1};
     private static final int[] BASE_POS = new int[3];
@@ -51,15 +53,11 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
         Random random = featureContext.getRandom();
         
         RANDOM.setSeed(random.nextLong());
-        
-        int x = pos.getX();
-        int y = pos.getY();
-        int z = pos.getZ();
-        
+
         // Starting coordinates, base of the tree
-        BASE_POS[0] = x;
-        BASE_POS[1] = y;
-        BASE_POS[2] = z;
+        BASE_POS[0] = pos.getX();
+        BASE_POS[1] = pos.getY();
+        BASE_POS[2] = pos.getZ();
         
         if (this.height == 0) {
             this.height = 5 + RANDOM.nextInt(this.treeMaxHeight);
@@ -300,7 +298,7 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
                 pos[ndx1] = centerPos[ndx1] + off2; // 2
                 
                 BlockState blockState = world.getBlockState(mutable.set(pos[0], pos[1], pos[2]));
-                if (blockState.isAir() || blockState.equals(BlockStates.OAK_LEAVES)) {
+                if (blockState.isAir() || blockState.getBlock().equals(Blocks.OAK_LEAVES)) {
                     world.setBlockState(mutable.set(pos[0], pos[1], pos[2]), state, 19);
                 }
             }
@@ -316,7 +314,7 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
             float radius = getFoliageBlobRadius(blobRelY);
             
             // Generate blob layer at curY
-            this.placeLayer(world, x, curY, z, radius, (byte) 1, BlockStates.OAK_LEAVES);
+            this.placeLayer(world, x, curY, z, radius, (byte) 1, OAK_LEAVES);
             
             curY++;
         }
@@ -394,7 +392,7 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
 
                 BlockState blockState = world.getBlockState(mutable.set(pos[0], pos[1], pos[2]));
                 
-                if (!blockState.isAir() && blockState.equals(BlockStates.OAK_LEAVES)) {
+                if (!blockState.isAir() && blockState.getBlock().equals(Blocks.OAK_LEAVES)) {
                     break;
                 }
                 

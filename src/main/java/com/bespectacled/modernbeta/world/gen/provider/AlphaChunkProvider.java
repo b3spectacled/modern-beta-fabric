@@ -25,7 +25,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
     private final PerlinOctaveNoise beachNoiseOctaves;
-    private final PerlinOctaveNoise stoneNoiseOctaves;
+    private final PerlinOctaveNoise surfaceNoiseOctaves;
     private final PerlinOctaveNoise scaleNoiseOctaves;
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
@@ -39,7 +39,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
         this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
         this.beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
-        this.stoneNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        this.surfaceNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
         this.scaleNoiseOctaves = new PerlinOctaveNoise(rand, 10, true);
         this.depthNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
@@ -63,11 +63,11 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
         
         double[] sandNoise = this.surfaceNoisePool.borrowArr();
         double[] gravelNoise = this.surfaceNoisePool.borrowArr();
-        double[] stoneNoise = this.surfaceNoisePool.borrowArr();
+        double[] surfaceNoise = this.surfaceNoisePool.borrowArr();
 
         beachNoiseOctaves.sampleArr(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth, eighth, 1.0D);
         beachNoiseOctaves.sampleArr(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
-        stoneNoiseOctaves.sampleArr(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
+        surfaceNoiseOctaves.sampleArr(surfaceNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
 
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.
@@ -79,7 +79,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
                 
                 boolean genSandBeach = sandNoise[x + z * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
                 boolean genGravelBeach = gravelNoise[x + z * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
-                int genStone = (int) (stoneNoise[x + z * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
+                int surfaceDepth = (int) (surfaceNoise[x + z * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
 
                 int flag = -1;
                 
@@ -129,7 +129,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
                     }
 
                     if (flag == -1) {
-                        if (genStone <= 0) { // Generate stone basin if noise permits
+                        if (surfaceDepth <= 0) { // Generate stone basin if noise permits
                             topBlock = BlockStates.AIR;
                             fillerBlock = this.defaultBlock;
                             
@@ -153,7 +153,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
                         }
 
                         // Main surface builder section
-                        flag = genStone;
+                        flag = surfaceDepth;
                         if (y >= this.seaLevel - 1) {
                             chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
                         } else {
@@ -179,7 +179,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
         
         this.surfaceNoisePool.returnArr(sandNoise);
         this.surfaceNoisePool.returnArr(gravelNoise);
-        this.surfaceNoisePool.returnArr(stoneNoise);
+        this.surfaceNoisePool.returnArr(surfaceNoise);
     }
     
     @Override
