@@ -8,16 +8,10 @@ import net.minecraft.world.biome.source.BiomeCoords;
  */
 public abstract class BiomeUtil {
     public static final int HORIZONTAL_SECTION_COUNT =  MathHelper.log2DeBruijn(16) - 2;
-    // private static final int VERTICAL_SECTION_COUNT = (int) Math.round(Math.log(256.0D) / Math.log(2.0D)) - 2;
     public static final int HORIZONTAL_BIT_MASK = (1 << HORIZONTAL_SECTION_COUNT) - 1;
-    // private static final int VERTICAL_BIT_MASK = (1 << VERTICAL_SECTION_COUNT) - 1;
     
     // Convert absolute coordinates to BiomeArray index
     public static int computeBiomeIndex(int x, int y, int z) {
-        // Changed: Vertical bit mask no longer used for 1.17,
-        // array index for biomeY is now computed using lower and upper limits of chunk section. 
-        // int m = MathHelper.clamp(y >> 2, 0, VERTICAL_BIT_MASK);
-
         int minY = 0;
         int maxY = 128;
         

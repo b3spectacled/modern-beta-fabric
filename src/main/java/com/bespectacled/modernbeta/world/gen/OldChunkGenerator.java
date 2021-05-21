@@ -342,6 +342,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     */
     
+    @SuppressWarnings("unused")
     private void replaceOceansInChunk(Chunk chunk) {
         if (!(this.biomeSource instanceof OldBiomeSource)) return;
         
@@ -371,7 +372,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     
                     // Fill biome column
                     for (int biomeY = 0; biomeY < biomeHeight; ++biomeY) {
-                        mutableBiomeArray.setBiome(absX, biomeY << 2, absZ, oceanBiome);
+                        int absY = biomeY << 2;
+                        int actualY = absY + this.getMinimumY();
+                        
+                        // TODO: Remove true when cave biomes are in.
+                        if (true || actualY >= OCEAN_Y_CUT_OFF)
+                            mutableBiomeArray.setBiome(absX, absY, absZ, oceanBiome);
                     }
                 }
             }
