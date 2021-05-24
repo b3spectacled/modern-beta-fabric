@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.util;
+package com.bespectacled.modernbeta.util.mutable;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeArray;
@@ -8,7 +8,6 @@ import net.minecraft.world.biome.source.BiomeArray;
  * @author WorldEdit
  */
 public interface MutableBiomeArray {
-
     /**
      * Hook into the given biome array, to allow edits on it.
      * 

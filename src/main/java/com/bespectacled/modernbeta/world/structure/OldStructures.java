@@ -23,7 +23,6 @@ public class OldStructures {
     public static final RegistryKey<ConfiguredStructureFeature<?, ?>> OCEAN_SHRINE_KEY = RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, OCEAN_SHRINE_ID);
     
     public static void register() {
-        
         Registry.register(
             Registry.STRUCTURE_PIECE, 
             OCEAN_SHRINE_BASE_ID,

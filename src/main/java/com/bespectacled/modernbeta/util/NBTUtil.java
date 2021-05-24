@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.util;
 
 import net.minecraft.nbt.NbtCompound;
 
-public abstract class NBTUtil {
+public class NBTUtil {
     public static String readStringOrThrow(String key, NbtCompound tag) {
         if (tag.contains(key))
             return tag.getString(key);

@@ -12,7 +12,7 @@ public class OldFeatures {
     public static final OldFancyOakFeature OLD_FANCY_OAK = (OldFancyOakFeature) register("oak_fancy_oak", new OldFancyOakFeature(DefaultFeatureConfig.CODEC));
     public static final OreClayFeature ORE_CLAY = (OreClayFeature) register("ore_clay", new OreClayFeature(OreFeatureConfig.CODEC));
     
-    public static Feature<?> register(String id, Feature<?> feature) {
+    private static Feature<?> register(String id, Feature<?> feature) {
         return Registry.register(Registry.FEATURE, ModernBeta.createId(id), feature);
     }
 }

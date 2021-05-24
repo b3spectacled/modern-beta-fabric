@@ -1,11 +1,10 @@
-package com.bespectacled.modernbeta.world.gen;
+package com.bespectacled.modernbeta.util;
 
-import com.bespectacled.modernbeta.util.BlockStates;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 
-public class OldGeneratorUtil {
+public class GenUtil {
     public static int getSolidHeight(Chunk chunk, int worldHeight, int minY, int x, int z, BlockState defaultFluid) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
@@ -14,6 +13,7 @@ public class OldGeneratorUtil {
             if (!(blockState.equals(BlockStates.AIR) || blockState.equals(defaultFluid) || blockState.equals(BlockStates.ICE)))
                 return y;
         }
+        
         return minY;
     }
 }

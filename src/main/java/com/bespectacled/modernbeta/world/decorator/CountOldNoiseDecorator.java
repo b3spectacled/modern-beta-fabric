@@ -22,7 +22,7 @@ public abstract class CountOldNoiseDecorator extends AbstractCountDecorator<Coun
         int chunkX = pos.getX() >> 4;
         int chunkZ = pos.getZ() >> 4;
         
-        return this.noiseDecorator.sample(chunkX, chunkZ, random) + config.density + ((random.nextFloat() < config.extraChance) ? config.extraCount : 0);
+        return this.noiseDecorator.sample(chunkX, chunkZ, random) + config.count + ((random.nextFloat() < config.extraChance) ? config.extraCount : 0);
     }
     
     public abstract void setOctaves(PerlinOctaveNoise octaves);

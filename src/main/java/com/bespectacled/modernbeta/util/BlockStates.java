@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.util;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 
-public abstract class BlockStates {
+public class BlockStates {
     public static final BlockState GRASS_BLOCK = Blocks.GRASS_BLOCK.getDefaultState();
     public static final BlockState PODZOL = Blocks.PODZOL.getDefaultState();
     public static final BlockState DIRT = Blocks.DIRT.getDefaultState();

@@ -11,7 +11,7 @@ import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
-import com.bespectacled.modernbeta.util.QuadFunction;
+import com.bespectacled.modernbeta.util.function.QuadFunction;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;

@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.util;
+package com.bespectacled.modernbeta.util.function;
 
 import java.util.Objects;
 import java.util.function.Function;

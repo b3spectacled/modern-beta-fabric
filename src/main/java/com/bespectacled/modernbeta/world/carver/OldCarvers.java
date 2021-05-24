@@ -19,11 +19,11 @@ public class OldCarvers {
     public static final ConfiguredCarver<?> CONF_OLD_BETA_CAVE_CARVER = register("old_beta_cave", new ConfiguredCarver<CaveCarverConfig>(OLD_BETA_CAVE_CARVER, new CaveCarverConfig(0.14285715f, BiasedToBottomHeightProvider.create(YOffset.fixed(0), YOffset.fixed(127), 8), ConstantFloatProvider.create(0.5f), YOffset.aboveBottom(11), false, CarverDebugConfig.create(false, Blocks.CRIMSON_BUTTON.getDefaultState()), ConstantFloatProvider.create(1.0f), ConstantFloatProvider.create(1.0f), ConstantFloatProvider.create(-0.69999999999999996f))));
     public static final ConfiguredCarver<?> CONF_DEEP_BETA_CAVE_CARVER = register("deep_beta_cave", new ConfiguredCarver<CaveCarverConfig>(OLD_BETA_CAVE_CARVER, new CaveCarverConfig(0.14285715f, BiasedToBottomHeightProvider.create(YOffset.aboveBottom(8), YOffset.fixed(-1), 8), ConstantFloatProvider.create(0.5f), YOffset.aboveBottom(9), false, CarverDebugConfig.create(false, Blocks.CRIMSON_BUTTON.getDefaultState()), ConstantFloatProvider.create(1.0f), ConstantFloatProvider.create(1.0f), ConstantFloatProvider.create(-0.69999999999999996f))));
     
-    public static Carver<CaveCarverConfig> register(String id, Carver<CaveCarverConfig> carver) {
+    private static Carver<CaveCarverConfig> register(String id, Carver<CaveCarverConfig> carver) {
         return Registry.register(Registry.CARVER, ModernBeta.createId(id), carver);
     }
     
-    public static ConfiguredCarver<?> register(String id, ConfiguredCarver<?> carver) {
+    private static ConfiguredCarver<?> register(String id, ConfiguredCarver<?> carver) {
         return Registry.register(BuiltinRegistries.CONFIGURED_CARVER, ModernBeta.createId(id), carver);
     }
 }

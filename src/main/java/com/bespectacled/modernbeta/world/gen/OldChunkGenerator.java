@@ -14,8 +14,9 @@ import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.mixin.MixinConfiguredCarverAccessor;
-import com.bespectacled.modernbeta.util.MutableBiomeArray;
 import com.bespectacled.modernbeta.util.NBTUtil;
+import com.bespectacled.modernbeta.util.GenUtil;
+import com.bespectacled.modernbeta.util.mutable.MutableBiomeArray;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.carver.OldCaveCarver;
 import com.bespectacled.modernbeta.world.feature.OldFeatures;
@@ -367,7 +368,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 int offsetX = absX + 2;
                 int offsetZ = absZ + 2;
                 
-                if (OldGeneratorUtil.getSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, this.defaultFluid) < seaLevel - OCEAN_MIN_DEPTH) {
+                if (GenUtil.getSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, this.defaultFluid) < seaLevel - OCEAN_MIN_DEPTH) {
                     Biome oceanBiome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);
                     
                     // Fill biome column

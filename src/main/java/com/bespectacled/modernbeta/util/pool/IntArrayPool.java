@@ -1,34 +1,36 @@
-package com.bespectacled.modernbeta.util;
+package com.bespectacled.modernbeta.util.pool;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class DoubleArrayPool {
-    private final ConcurrentLinkedQueue<double[]> arrPool;
+public class IntArrayPool {
+    private final ConcurrentLinkedQueue<int[]> arrPool;
     
     private final int initialCapacity;
     private final int arraySize;
     
-    public DoubleArrayPool(int initialCapacity, int arraySize) {
-        this.arrPool = new ConcurrentLinkedQueue<double[]>();
+    public IntArrayPool(int initialCapacity, int arraySize) {
+        this.arrPool = new ConcurrentLinkedQueue<int[]>();
         
         this.initialCapacity = initialCapacity;
         this.arraySize = arraySize;
         
         for (int i = 0; i < this.initialCapacity; ++i) {
-            this.arrPool.add(new double[this.arraySize]);
+            this.arrPool.add(new int[this.arraySize]);
         }
     }
     
-    public double[] borrowArr() {
-        double[] arrToBorrow = this.arrPool.poll();
+    public int[] borrowArr() {
+        int[] arrToBorrow = this.arrPool.poll();
         
         if (arrToBorrow == null)
-            arrToBorrow = new double[this.arraySize];
+            arrToBorrow = new int[this.arraySize];
+        
+        //System.out.println("Borrowing, size after poll: " + this.arrPool.size());
         
         return arrToBorrow;
     }
     
-    public void returnArr(double[] arr) {
+    public void returnArr(int[] arr) {
         if (arr == null || arr.length != this.arraySize)
             throw new IllegalArgumentException("[Modern Beta] Returned double array of invalid type!");
 

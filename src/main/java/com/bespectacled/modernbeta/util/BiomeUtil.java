@@ -6,7 +6,7 @@ import net.minecraft.world.biome.source.BiomeCoords;
 /**
  * Author: WorldEdit
  */
-public abstract class BiomeUtil {
+public class BiomeUtil {
     public static final int HORIZONTAL_SECTION_COUNT =  MathHelper.log2DeBruijn(16) - 2;
     public static final int HORIZONTAL_BIT_MASK = (1 << HORIZONTAL_SECTION_COUNT) - 1;
     

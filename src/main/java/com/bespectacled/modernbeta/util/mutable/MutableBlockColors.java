@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.util;
+package com.bespectacled.modernbeta.util.mutable;
 
 import net.minecraft.client.color.block.BlockColors;
 

@@ -9,8 +9,8 @@ import java.util.stream.IntStream;
 
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.DoubleArrayPool;
-import com.bespectacled.modernbeta.util.IntArrayPool;
+import com.bespectacled.modernbeta.util.pool.DoubleArrayPool;
+import com.bespectacled.modernbeta.util.pool.IntArrayPool;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.block.BlockState;

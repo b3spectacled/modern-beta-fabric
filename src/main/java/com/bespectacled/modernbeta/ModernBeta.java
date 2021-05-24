@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.bespectacled.modernbeta.util.MutableBlockColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.OldBiomes;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeModifier;
@@ -27,6 +26,7 @@ import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import com.bespectacled.modernbeta.command.DebugProviderSettingsCommand;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.config.*;
+import com.bespectacled.modernbeta.util.mutable.MutableBlockColors;
 
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";

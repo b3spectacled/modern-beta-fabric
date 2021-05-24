@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.BetaColorResolver;
-import com.bespectacled.modernbeta.util.MutableBlockColors;
+import com.bespectacled.modernbeta.util.mutable.MutableBlockColors;
 
 @Environment(EnvType.CLIENT)
 @Mixin(value = BlockColors.class, priority = 1)
