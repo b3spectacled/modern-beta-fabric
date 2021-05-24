@@ -64,8 +64,12 @@ public abstract class MixinClientWorld extends World implements BetaClimateResol
            }
         }
         
+        // Check for null worldKey (Compat for Mobs Main Menu)
+        this.isOverworld = worldKey != null ?
+            worldKey.getValue().equals(DimensionType.OVERWORLD_REGISTRY_KEY.getValue()) :
+            false;
+        
         this.useBetaBiomeColors = useBetaBiomeColors;
-        this.isOverworld = worldKey.getValue().equals(DimensionType.OVERWORLD_REGISTRY_KEY.getValue());
         
         ModernBeta.setBlockColorsSeed(worldSeed, useBetaBiomeColors && this.isOverworld);
     }

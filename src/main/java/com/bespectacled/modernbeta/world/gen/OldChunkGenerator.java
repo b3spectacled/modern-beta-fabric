@@ -9,7 +9,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
+import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
@@ -88,7 +88,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
         this.chunkProviderSettings = providerSettings;
         this.chunkProviderType = NBTUtil.readStringOrThrow(WorldSettings.TAG_WORLD, providerSettings);
-        this.chunkProvider = ProviderRegistries.CHUNK.get(this.chunkProviderType).apply(seed, this, settings, providerSettings);
+        this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(seed, this, settings, providerSettings);
         
         this.generateOceans = NBTUtil.readBoolean("generateOceans", providerSettings, ModernBeta.GEN_CONFIG.generateOceans);
     }
@@ -300,7 +300,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public int getSeaLevel() {
-        return chunkProvider.getSeaLevel();
+        return this.chunkProvider.getSeaLevel();
     }
     
     @Override

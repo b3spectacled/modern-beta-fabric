@@ -249,11 +249,11 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         long hashedCoord = (long)chunkX & 0xffffffffL | ((long)chunkZ & 0xffffffffL) << 32;
         
-        HeightmapChunk cachedChunk = heightmapCache.get(hashedCoord);
+        HeightmapChunk cachedChunk = this.heightmapCache.get(hashedCoord);
         
         if (cachedChunk == null) {
             cachedChunk = this.sampleHeightmap(x, z);
-            heightmapCache.put(hashedCoord, cachedChunk);
+            this.heightmapCache.put(hashedCoord, cachedChunk);
         }
         
         int groundHeight = cachedChunk.getHeight(x, z);

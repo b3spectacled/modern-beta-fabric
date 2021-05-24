@@ -29,5 +29,4 @@ public class AlphaNoiseDecorator implements OldNoiseDecorator {
         
         return noiseCount;
     }
-
 }

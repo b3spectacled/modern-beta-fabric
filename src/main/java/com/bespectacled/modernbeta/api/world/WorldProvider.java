@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.api.world;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.api.gui.WorldScreen;
-import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
+import com.bespectacled.modernbeta.api.registry.Registries;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.util.registry.DynamicRegistryManager;
@@ -64,7 +64,7 @@ public final class WorldProvider {
         WorldSettings worldSettings,
         Consumer<WorldSettings> consumer
     ) {
-        return ProviderRegistries.WORLD_SCREEN
+        return Registries.WORLD_SCREEN
             .getOrDefault(this.worldScreen)
             .apply(parent, registryManager, worldSettings, consumer);
     }

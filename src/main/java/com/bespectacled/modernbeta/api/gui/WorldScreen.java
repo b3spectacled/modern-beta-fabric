@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
-import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
+import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
@@ -52,7 +52,7 @@ public abstract class WorldScreen extends Screen {
         this.worldSettings = worldSettings;
         this.consumer = consumer;
         
-        this.worldProvider = ProviderRegistries.WORLD.get(NBTUtil.readStringOrThrow(
+        this.worldProvider = Registries.WORLD.get(NBTUtil.readStringOrThrow(
             WorldSettings.TAG_WORLD, 
             this.worldSettings.getSettings(WorldSetting.CHUNK)
         ));
@@ -98,7 +98,7 @@ public abstract class WorldScreen extends Screen {
         
         worldTypeOption = CyclingOption.create(
             "createWorld.customize.worldType", 
-            ProviderRegistries.WORLD.getEntries().stream().toArray(WorldProvider[]::new),
+            Registries.WORLD.getEntries().stream().toArray(WorldProvider[]::new),
             (value) -> new TranslatableText("createWorld.customize.worldType." + value.getChunkProvider()), 
             (gameOptions) -> { return this.worldProvider; }, 
             (gameOptions, option, value) -> {
@@ -113,7 +113,7 @@ public abstract class WorldScreen extends Screen {
         
         biomeTypeOption = CyclingOption.create(
             "createWorld.customize.biomeType",
-            ProviderRegistries.BIOME.getKeys().stream().toArray(String[]::new), 
+            Registries.BIOME.getKeys().stream().toArray(String[]::new), 
             (value) -> new TranslatableText("createWorld.customize.biomeType." + value), 
             (gameOptions) -> NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME)),
             (gameOptions, option, value) -> {
@@ -160,7 +160,7 @@ public abstract class WorldScreen extends Screen {
         );
         */
         
-        biomeSettingsScreen = ProviderRegistries.BIOME_SCREEN
+        biomeSettingsScreen = Registries.BIOME_SCREEN
             .getOrDefault(NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME)))
             .apply(this); 
         

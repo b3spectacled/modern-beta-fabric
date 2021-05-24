@@ -31,9 +31,10 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
     private static final byte[] AXIS_LOOKUP = new byte[] {2, 0, 0, 1, 2, 1};
     private static final int FOLIAGE_BLOB_HEIGHT = 5;
     
+    private final int treeMaxHeight;
+    
     private int height;
     private int treeHeight;
-    private int treeMaxHeight;
     
     private int[][] foliageBlobPositions;
 
@@ -147,7 +148,11 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
                     
                     if (this.getBranchLength(world, startPos, endPos) == -1) {
                         endPos = new int[] { basePos.getX(), basePos.getY(), basePos.getZ() };
-                        double distance = Math.sqrt(Math.pow((double) Math.abs(basePos.getX() - startPos[0]), 2.0D) + Math.pow((double) Math.abs(basePos.getZ() - startPos[2]), 2.0D)) * 0.381D;
+                        
+                        double distance = Math.sqrt(
+                            Math.pow((double) Math.abs(basePos.getX() - startPos[0]), 2.0D) + 
+                            Math.pow((double) Math.abs(basePos.getZ() - startPos[2]), 2.0D)
+                        ) * 0.381D;
                         
                         if ((double) startPos[1] - distance > (double) treeTopY) {
                             endPos[1] = treeTopY;
@@ -155,17 +160,17 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
                             endPos[1] = (int) ((double) startPos[1] - distance);
                         }
     
-                        if (this.getBranchLength(world, endPos, startPos) == -1)
-                        {
+                        if (this.getBranchLength(world, endPos, startPos) == -1) {
                             foliageBlobPositions[blobCount][0] = randX;
                             foliageBlobPositions[blobCount][1] = foliageBaseY;
                             foliageBlobPositions[blobCount][2] = randZ;
                             foliageBlobPositions[blobCount][3] = endPos[1];
+                            
                             ++blobCount;
                         }
                     }
                     
-                    currentBlobCount++;
+                    ++currentBlobCount;
                 }
             }
             

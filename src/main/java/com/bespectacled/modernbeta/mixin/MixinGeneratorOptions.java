@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.mixin;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
+import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
@@ -44,7 +44,7 @@ public class MixinGeneratorOptions {
         String levelType = properties.get("level-type").toString().trim().toLowerCase();
         
         // Check for Modern Beta world type
-        if (ProviderRegistries.CHUNK.contains(levelType)) {
+        if (Registries.CHUNK.contains(levelType)) {
             // get or generate seed
             String seedField = (String) MoreObjects.firstNonNull(properties.get("level-seed"), "");
             long seed = new Random().nextLong();
@@ -74,7 +74,7 @@ public class MixinGeneratorOptions {
             String generate_structures = (String) properties.get("generate-structures");
             boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
             
-            WorldProvider worldProvider = ProviderRegistries.WORLD.get(levelType);
+            WorldProvider worldProvider = Registries.WORLD.get(levelType);
             NbtCompound chunkProviderSettings = ChunkProviderSettings.createSettingsAll(worldProvider.getChunkProvider());
             NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsAll(ModernBeta.BIOME_CONFIG.biomeType);
             

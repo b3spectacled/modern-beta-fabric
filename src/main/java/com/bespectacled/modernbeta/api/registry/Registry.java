@@ -11,16 +11,16 @@ import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 
-public final class ProviderRegistry<T> {
+public final class Registry<T> {
     private final String name;
     private final Map<String, T> map; // Use LinkedHashMap so entries are displayed in order if retrieved as list.
     
-    protected ProviderRegistry() {
+    protected Registry() {
         this.name = "";
         this.map = new LinkedHashMap<String, T>();
     }
     
-    protected ProviderRegistry(String name) {
+    protected Registry(String name) {
         this.name = name;
         this.map = new LinkedHashMap<String, T>();
     }
@@ -42,7 +42,7 @@ public final class ProviderRegistry<T> {
     public T getOrDefault(String key) {
         if (!this.contains(key)) {
             ModernBeta.log(Level.WARN, "Registry " + this.name + " does not contain entry named " + key + ", getting default entry.");
-            return this.map.get(BuiltInTypes.DEFAULT_ID);
+            return this.get(BuiltInTypes.DEFAULT_ID);
         }
         
         return this.map.get(key);
@@ -51,7 +51,7 @@ public final class ProviderRegistry<T> {
     public T get(String key, String alternate) {
         if (!this.contains(key)) {
             ModernBeta.log(Level.WARN, "Registry " + this.name + " does not contain entry named " + key + ", defaulting to " + alternate);
-            return this.map.get(alternate);
+            return this.get(alternate);
         }
         
         return this.map.get(key);
