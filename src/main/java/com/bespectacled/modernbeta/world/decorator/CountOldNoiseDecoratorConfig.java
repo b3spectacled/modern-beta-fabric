@@ -19,7 +19,7 @@ public class CountOldNoiseDecoratorConfig implements DecoratorConfig {
 
     static {
         CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.fieldOf("cound")
+            Codec.INT.fieldOf("count")
                     .forGetter(countNoiseDecoratorConfig -> countNoiseDecoratorConfig.count),
             Codec.FLOAT.fieldOf("extra_chance")
                     .forGetter(countNoiseDecoratorConfig -> countNoiseDecoratorConfig.extraChance),

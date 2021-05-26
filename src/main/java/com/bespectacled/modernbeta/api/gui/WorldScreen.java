@@ -113,7 +113,7 @@ public abstract class WorldScreen extends Screen {
         
         biomeTypeOption = CyclingOption.create(
             "createWorld.customize.biomeType",
-            Registries.BIOME.getKeys().stream().toArray(String[]::new), 
+            Registries.BIOME.getKeySet().stream().toArray(String[]::new), 
             (value) -> new TranslatableText("createWorld.customize.biomeType." + value), 
             (gameOptions) -> NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME)),
             (gameOptions, option, value) -> {

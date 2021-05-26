@@ -11,7 +11,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 public class OldBiomes {
-    public static Map<Identifier, Biome> MODERN_BETA_BIOME_MAP = new HashMap<Identifier, Biome>();
+    public static final Map<Identifier, Biome> MODERN_BETA_BIOME_MAP = new HashMap<Identifier, Biome>();
     
     public static Biome register(Identifier id, Biome biome) {
         MODERN_BETA_BIOME_MAP.put(id, biome);
@@ -22,7 +22,7 @@ public class OldBiomes {
         BetaBiomes.registerBiomes();
         ClassicBiomes.registerAlphaBiomes();
         ClassicBiomes.registerInfdev415Biomes();
-        IndevBiomes.registerBiomes();
         ClassicBiomes.registerInfdev227Biomes();
+        IndevBiomes.registerBiomes();
     }
 }
