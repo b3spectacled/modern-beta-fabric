@@ -1,7 +1,9 @@
 package com.bespectacled.modernbeta.world.carver;
 
+import java.util.BitSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
@@ -9,11 +11,15 @@ import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.carver.Carver;
 import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.CaveCarver;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
+import net.minecraft.world.gen.chunk.AquiferSampler;
 
 public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
     private static final Set<Block> ALWAYS_CARVABLE_BLOCKS;
@@ -21,6 +27,65 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
     public OldBetaCaveCarver(Codec<CaveCarverConfig> codec) {
         super(codec);
     }
+    /*
+    @Override
+    public boolean carve(
+        CarverContext context, 
+        CaveCarverConfig config, 
+        Chunk chunk, 
+        Function<BlockPos, Biome> posToBiome, 
+        Random random, 
+        AquiferSampler aquiferSampler, 
+        ChunkPos pos, 
+        BitSet carvingMask
+    ) {
+        int caveCount = random.nextInt(random.nextInt(random.nextInt(40) + 1) + 1);
+        if (random.nextInt(getMaxCaveCount()) != 0) {
+            caveCount = 0;
+        }
+
+        for (int i = 0; i < caveCount; ++i) {
+            double x = pos.getOffsetX(random.nextInt(16)); // Starts
+            //double y = getCaveY(context, random);
+            double y = config.y.get(random, context); // 1.17 stuff
+            double z = pos.getOffsetZ(random.nextInt(16));
+            
+            // 1.17 stuff
+            double horizontalScale = config.horizontalRadiusMultiplier.get(random);
+            double verticalScale = config.verticalRadiusMultiplier.get(random);
+            double floorLevel = config.floorLevel.get(random);
+            
+            Carver.SkipPredicate skipPredicate = (carverContext, scaledRelativeX, scaledRelativeY, scaledRelativeZ, relativeY) ->
+                this.isPositionExcluded(scaledRelativeX, scaledRelativeY, scaledRelativeZ, floorLevel);
+
+            int tunnelCount = 1;
+            if (random.nextInt(4) == 0) {
+                this.carveCave(context, config, chunk, random, mainChunkX, mainChunkZ, x, y, z, skipPredicate);
+                tunnelCount += random.nextInt(4);
+            }
+
+            for (int j = 0; j < tunnelCount; ++j) {
+                float yaw = random.nextFloat() * 3.141593F * 2.0F;
+                float pitch = ((random.nextFloat() - 0.5F) * 2.0F) / 8F;
+                float width = getTunnelSystemWidth(random);
+
+                this.carveTunnels(
+                    context, 
+                    config, 
+                    chunk, 
+                    random, 
+                    mainChunkX, mainChunkZ, 
+                    x, y, z, 
+                    horizontalScale, verticalScale, 
+                    width, yaw, pitch, 
+                    0, 0, 1.0D,
+                    skipPredicate
+                );
+            }
+        }
+
+        return true;
+    }*/
 
     //@Override
     public boolean carve(
@@ -41,29 +106,72 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
         for (int i = 0; i < caveCount; ++i) {
             double x = chunkX * 16 + random.nextInt(16); // Starts
             //double y = getCaveY(context, random);
-            double y = config.y.get(random, context);
+            double y = config.y.get(random, context); // 1.17 stuff
             double z = chunkZ * 16 + random.nextInt(16);
+            
+            // 1.17 stuff
+            double horizontalScale = config.horizontalRadiusMultiplier.get(random);
+            double verticalScale = config.verticalRadiusMultiplier.get(random);
+            double floorLevel = config.floorLevel.get(random);
+            
+            Carver.SkipPredicate skipPredicate = (carverContext, scaledRelativeX, scaledRelativeY, scaledRelativeZ, relativeY) ->
+                this.isPositionExcluded(scaledRelativeX, scaledRelativeY, scaledRelativeZ, floorLevel);
 
             int tunnelCount = 1;
             if (random.nextInt(4) == 0) {
-                this.carveCave(context, config, chunk, random, mainChunkX, mainChunkZ, x, y, z);
+                this.carveCave(context, config, chunk, random, mainChunkX, mainChunkZ, x, y, z, skipPredicate);
                 tunnelCount += random.nextInt(4);
             }
 
             for (int j = 0; j < tunnelCount; ++j) {
-                float tunnelYaw = random.nextFloat() * 3.141593F * 2.0F;
-                float tunnelPitch = ((random.nextFloat() - 0.5F) * 2.0F) / 8F;
-                float tunnelWidth = getTunnelSystemWidth(random);
+                float yaw = random.nextFloat() * 3.141593F * 2.0F;
+                float pitch = ((random.nextFloat() - 0.5F) * 2.0F) / 8F;
+                float width = getTunnelSystemWidth(random);
 
-                carveTunnels(context, config, chunk, random, mainChunkX, mainChunkZ, x, y, z, tunnelWidth, tunnelYaw, tunnelPitch, 0, 0, 1.0D);
+                this.carveTunnels(
+                    context, 
+                    config, 
+                    chunk, 
+                    random, 
+                    mainChunkX, mainChunkZ, 
+                    x, y, z, 
+                    horizontalScale, verticalScale, 
+                    width, yaw, pitch, 
+                    0, 0, 1.0D,
+                    skipPredicate
+                );
             }
         }
 
-        return false;
+        return true;
     }
 
-    private void carveCave(CarverContext context, CaveCarverConfig config, Chunk chunk, Random random, int mainChunkX, int mainChunkZ, double x, double y, double z) {
-        carveTunnels(context, config, chunk, random, mainChunkX, mainChunkZ, x, y, z, 1.0F + random.nextFloat() * 6F, 0.0F, 0.0F, -1, -1, 0.5D);
+    private void carveCave(
+        CarverContext context, 
+        CaveCarverConfig config, 
+        Chunk chunk, 
+        Random random, 
+        int mainChunkX, 
+        int mainChunkZ, 
+        double x, 
+        double y, 
+        double z,
+        Carver.SkipPredicate skipPredicate
+    ) {
+        carveTunnels(
+            context, 
+            config, 
+            chunk, 
+            random, 
+            mainChunkX, 
+            mainChunkZ, 
+            x, y, z, 
+            1.0, 1.0,
+            1.0F + random.nextFloat() * 6F, 
+            0.0F, 0.0F, 
+            -1, -1, 0.5D,
+            skipPredicate
+        );
     }
 
     private void carveTunnels(
@@ -72,16 +180,19 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
         Chunk chunk, 
         Random rand, 
         int mainChunkX, 
-        int mainChunkZ, 
+        int mainChunkZ,
         double x, 
-        double y, 
+        double y,
         double z,
-        float tunnelWidth, 
-        float tunnelYaw, 
-        float tunnelPitch, 
+        double horizontalScale,
+        double verticalScale,
+        float width, 
+        float yaw, 
+        float pitch, 
         int branch,
         int branchCount, 
-        double tunnelWHRatio
+        double yawPitchRatio,
+        Carver.SkipPredicate skipPredicate
     ) {
         float f2 = 0.0F;
         float f3 = 0.0F;
@@ -103,21 +214,21 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
         boolean vary = random.nextInt(6) == 0;
 
         for (; branch < branchCount; branch++) {
-            double yaw = 1.5D + (double) (MathHelper.sin(((float) branch * 3.141593F) / (float) branchCount)
-                    * tunnelWidth * 1.0F);
-            double pitch = yaw * tunnelWHRatio;
+            double tunnelHorizontalScale = 1.5D + (double) (MathHelper.sin(((float) branch * 3.141593F) / (float) branchCount)
+                    * width * 1.0F);
+            double tunnelVerticalScale = tunnelHorizontalScale * yawPitchRatio;
 
-            float f4 = MathHelper.cos(tunnelPitch);
-            float f5 = MathHelper.sin(tunnelPitch);
+            float f4 = MathHelper.cos(pitch);
+            float f5 = MathHelper.sin(pitch);
 
-            x += MathHelper.cos(tunnelYaw) * f4;
+            x += MathHelper.cos(yaw) * f4;
             y += f5;
-            z += MathHelper.sin(tunnelYaw) * f4;
+            z += MathHelper.sin(yaw) * f4;
 
-            tunnelPitch *= vary ? 0.92F : 0.7F;
+            pitch *= vary ? 0.92F : 0.7F;
 
-            tunnelPitch += f3 * 0.1F;
-            tunnelYaw += f2 * 0.1F;
+            pitch += f3 * 0.1F;
+            yaw += f2 * 0.1F;
 
             f3 *= 0.9F;
             f2 *= 0.75F;
@@ -125,11 +236,33 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
             f3 += (random.nextFloat() - random.nextFloat()) * random.nextFloat() * 2.0F;
             f2 += (random.nextFloat() - random.nextFloat()) * random.nextFloat() * 4F;
 
-            if (!noStarts && branch == randBranch && tunnelWidth > 1.0F) {
-                carveTunnels(context, config, chunk, rand, mainChunkX, mainChunkZ, x, y, z, random.nextFloat() * 0.5F + 0.5F,
-                        tunnelYaw - 1.570796F, tunnelPitch / 3F, branch, branchCount, 1.0D);
-                carveTunnels(context, config, chunk, rand, mainChunkX, mainChunkZ, x, y, z, random.nextFloat() * 0.5F + 0.5F,
-                        tunnelYaw + 1.570796F, tunnelPitch / 3F, branch, branchCount, 1.0D);
+            if (!noStarts && branch == randBranch && width > 1.0F) {
+                carveTunnels(
+                    context, 
+                    config, 
+                    chunk, 
+                    rand, 
+                    mainChunkX, mainChunkZ, 
+                    x, y, z, 
+                    horizontalScale, verticalScale, 
+                    random.nextFloat() * 0.5F + 0.5F,
+                    yaw - 1.570796F, pitch / 3F, 
+                    branch, branchCount, 1.0D,
+                    skipPredicate
+                );
+                carveTunnels(
+                    context, 
+                    config, 
+                    chunk, 
+                    rand, 
+                    mainChunkX, mainChunkZ, 
+                    x, y, z, 
+                    horizontalScale, verticalScale, 
+                    random.nextFloat() * 0.5F + 0.5F,
+                    yaw + 1.570796F, pitch / 3F, 
+                    branch, branchCount, 1.0D,
+                    skipPredicate
+                );
                 return;
             }
 
@@ -137,11 +270,20 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
                 continue;
             }
 
-            if (!canCarveBranch(mainChunkX, mainChunkZ, x, z, branch, branchCount, tunnelWidth)) {
+            if (!canCarveBranch(mainChunkX, mainChunkZ, x, z, branch, branchCount, width)) {
                 return;
             }
 
-            this.carveRegion(context, config, chunk, mainChunkX, mainChunkZ, x, y, z, yaw, pitch);
+            this.carveRegion(
+                context, 
+                config, 
+                chunk, 
+                mainChunkX, mainChunkZ, 
+                x, y, z, 
+                tunnelHorizontalScale * horizontalScale, 
+                tunnelVerticalScale * verticalScale,
+                skipPredicate
+            );
 
             if (noStarts) {
                 break;
@@ -159,8 +301,9 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
         double x, 
         double y, 
         double z, 
-        double yaw, 
-        double pitch
+        double horizontalScale,
+        double verticalScale,
+        Carver.SkipPredicate skipPredicate
     ) {
         double ctrX = mainChunkX * 16 + 8;
         double ctrZ = mainChunkZ * 16 + 8;
@@ -168,8 +311,8 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
 
         if ( // Check for valid tunnel starts, I guess? Or to prevent overlap?
-        x < ctrX - 16D - yaw * 2D || z < ctrZ - 16D - yaw * 2D || x > ctrX + 16D + yaw * 2D
-                || z > ctrZ + 16D + yaw * 2D) {
+        x < ctrX - 16D - horizontalScale * 2D || z < ctrZ - 16D - horizontalScale * 2D || x > ctrX + 16D + horizontalScale * 2D
+                || z > ctrZ + 16D + horizontalScale * 2D) {
             return false;
         }
 
@@ -177,14 +320,14 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
         int mainChunkStartZ = mainChunkZ * 16;
         
         // Get min and max extents of tunnel, relative to chunk coords.
-        int minX = MathHelper.floor(x - yaw) - mainChunkStartX - 1;         
-        int maxX = (MathHelper.floor(x + yaw) - mainChunkStartX) + 1;
+        int minX = MathHelper.floor(x - horizontalScale) - mainChunkStartX - 1;         
+        int maxX = (MathHelper.floor(x + horizontalScale) - mainChunkStartX) + 1;
 
-        int minY = MathHelper.floor(y - pitch) - 1;
-        int maxY = MathHelper.floor(y + pitch) + 1;
+        int minY = MathHelper.floor(y - verticalScale) - 1;
+        int maxY = MathHelper.floor(y + verticalScale) + 1;
 
-        int minZ = MathHelper.floor(z - yaw) - mainChunkStartZ - 1;
-        int maxZ = (MathHelper.floor(z + yaw) - mainChunkStartZ) + 1;
+        int minZ = MathHelper.floor(z - horizontalScale) - mainChunkStartZ - 1;
+        int maxZ = (MathHelper.floor(z + horizontalScale) - mainChunkStartZ) + 1;
 
         if (minX < 0) {
             minX = 0;
@@ -212,16 +355,17 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
         }
 
         for (int relX = minX; relX < maxX; relX++) {
-            double scaledRelX = (((double) (relX + mainChunkX * 16) + 0.5D) - x) / yaw;
+            double scaledRelX = (((double) (relX + mainChunkX * 16) + 0.5D) - x) / horizontalScale;
 
             for (int relZ = minZ; relZ < maxZ; relZ++) {
-                double scaledRelZ = (((double) (relZ + mainChunkZ * 16) + 0.5D) - z) / yaw;
+                double scaledRelZ = (((double) (relZ + mainChunkZ * 16) + 0.5D) - z) / horizontalScale;
                 boolean isGrassBlock = false;
 
                 for (int relY = maxY; relY > minY; relY--) {
-                    double scaledRelY = (((double) (relY - 1) + 0.5D) - y) / pitch;
+                    double scaledRelY = (((double) (relY - 1) + 0.5D) - y) / verticalScale;
 
-                    if (isPositionExcluded(scaledRelX, scaledRelY, scaledRelZ, -0.69999999999999996D)) {
+                    //if (isPositionExcluded(scaledRelX, scaledRelY, scaledRelZ, -0.69999999999999996D)) {
+                    if (skipPredicate.shouldSkip(context, scaledRelX, scaledRelY, scaledRelZ, relY)) {
                         Block block = chunk.getBlockState(blockPos.set(relX, relY, relZ)).getBlock();
 
                         if (block == Blocks.GRASS_BLOCK) {
