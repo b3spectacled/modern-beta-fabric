@@ -13,12 +13,10 @@ import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
-import com.bespectacled.modernbeta.mixin.MixinConfiguredCarverAccessor;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.mutable.MutableBiomeArray;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.carver.OldCaveCarver;
 import com.bespectacled.modernbeta.world.feature.OldFeatures;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
 import com.mojang.serialization.Codec;
@@ -50,9 +48,7 @@ import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.carver.Carver;
 import net.minecraft.world.gen.carver.CarverContext;
-import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -172,20 +168,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
                 List<Supplier<ConfiguredCarver<?>>> carverList = genSettings.getCarversForStep(genCarver);
                 ListIterator<Supplier<ConfiguredCarver<?>>> carverIterator = carverList.listIterator();
-                ChunkPos caveChunkPos = new ChunkPos(chunkX, chunkZ);
+                ChunkPos pos = new ChunkPos(chunkX, chunkZ);
 
                 while (carverIterator.hasNext()) {
                     ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
-                    Carver<?> carver = ((MixinConfiguredCarverAccessor)configuredCarver).getCarver();
-                    
                     random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
                     
-                    // Special case for old Beta carvers.
-                    if (carver instanceof OldCaveCarver) {
-                        ((OldCaveCarver)carver).carve(heightContext, (CaveCarverConfig)configuredCarver.getConfig(), chunk, random, chunkX, chunkZ, mainChunkX, mainChunkZ);
-                        
-                    } else if (configuredCarver.shouldCarve(random)) {
-                        configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, random, aquiferSampler, caveChunkPos, bitSet);
+                    if (configuredCarver.shouldCarve(random)) {
+                        configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, random, aquiferSampler, pos, bitSet);
 
                     }
                 }

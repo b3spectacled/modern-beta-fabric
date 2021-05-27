@@ -21,18 +21,23 @@ import net.minecraft.world.gen.carver.CaveCarver;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 
-public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
+public class OldBetaCaveCarver extends CaveCarver {
     private static final Set<Block> ALWAYS_CARVABLE_BLOCKS;
 
     public OldBetaCaveCarver(Codec<CaveCarverConfig> codec) {
         super(codec);
     }
-    /*
+    
+    @Override
+    public boolean shouldCarve(CaveCarverConfig config, Random random) {
+        return true;
+    }
+    
     @Override
     public boolean carve(
         CarverContext context, 
         CaveCarverConfig config, 
-        Chunk chunk, 
+        Chunk mainChunk, 
         Function<BlockPos, Biome> posToBiome, 
         Random random, 
         AquiferSampler aquiferSampler, 
@@ -46,7 +51,6 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
 
         for (int i = 0; i < caveCount; ++i) {
             double x = pos.getOffsetX(random.nextInt(16)); // Starts
-            //double y = getCaveY(context, random);
             double y = config.y.get(random, context); // 1.17 stuff
             double z = pos.getOffsetZ(random.nextInt(16));
             
@@ -60,7 +64,9 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
 
             int tunnelCount = 1;
             if (random.nextInt(4) == 0) {
-                this.carveCave(context, config, chunk, random, mainChunkX, mainChunkZ, x, y, z, skipPredicate);
+                double yScale = config.yScale.get(random);
+                
+                this.carveCave(context, config, mainChunk, random, mainChunk.getPos().x, mainChunk.getPos().z, x, y, z, yScale, skipPredicate);
                 tunnelCount += random.nextInt(4);
             }
 
@@ -72,68 +78,9 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
                 this.carveTunnels(
                     context, 
                     config, 
-                    chunk, 
+                    mainChunk, 
                     random, 
-                    mainChunkX, mainChunkZ, 
-                    x, y, z, 
-                    horizontalScale, verticalScale, 
-                    width, yaw, pitch, 
-                    0, 0, 1.0D,
-                    skipPredicate
-                );
-            }
-        }
-
-        return true;
-    }*/
-
-    //@Override
-    public boolean carve(
-        CarverContext context,
-        CaveCarverConfig config,
-        Chunk chunk,
-        Random random,
-        int chunkX,
-        int chunkZ, 
-        int mainChunkX, 
-        int mainChunkZ
-    ) {
-        int caveCount = random.nextInt(random.nextInt(random.nextInt(40) + 1) + 1);
-        if (random.nextInt(getMaxCaveCount()) != 0) {
-            caveCount = 0;
-        }
-
-        for (int i = 0; i < caveCount; ++i) {
-            double x = chunkX * 16 + random.nextInt(16); // Starts
-            //double y = getCaveY(context, random);
-            double y = config.y.get(random, context); // 1.17 stuff
-            double z = chunkZ * 16 + random.nextInt(16);
-            
-            // 1.17 stuff
-            double horizontalScale = config.horizontalRadiusMultiplier.get(random);
-            double verticalScale = config.verticalRadiusMultiplier.get(random);
-            double floorLevel = config.floorLevel.get(random);
-            
-            Carver.SkipPredicate skipPredicate = (carverContext, scaledRelativeX, scaledRelativeY, scaledRelativeZ, relativeY) ->
-                this.isPositionExcluded(scaledRelativeX, scaledRelativeY, scaledRelativeZ, floorLevel);
-
-            int tunnelCount = 1;
-            if (random.nextInt(4) == 0) {
-                this.carveCave(context, config, chunk, random, mainChunkX, mainChunkZ, x, y, z, skipPredicate);
-                tunnelCount += random.nextInt(4);
-            }
-
-            for (int j = 0; j < tunnelCount; ++j) {
-                float yaw = random.nextFloat() * 3.141593F * 2.0F;
-                float pitch = ((random.nextFloat() - 0.5F) * 2.0F) / 8F;
-                float width = getTunnelSystemWidth(random);
-
-                this.carveTunnels(
-                    context, 
-                    config, 
-                    chunk, 
-                    random, 
-                    mainChunkX, mainChunkZ, 
+                    mainChunk.getPos().x, mainChunk.getPos().z, 
                     x, y, z, 
                     horizontalScale, verticalScale, 
                     width, yaw, pitch, 
@@ -156,9 +103,10 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
         double x, 
         double y, 
         double z,
+        double yScale,
         Carver.SkipPredicate skipPredicate
     ) {
-        carveTunnels(
+        this.carveTunnels(
             context, 
             config, 
             chunk, 
@@ -169,7 +117,7 @@ public class OldBetaCaveCarver extends CaveCarver implements OldCaveCarver {
             1.0, 1.0,
             1.0F + random.nextFloat() * 6F, 
             0.0F, 0.0F, 
-            -1, -1, 0.5D,
+            -1, -1, yScale,
             skipPredicate
         );
     }

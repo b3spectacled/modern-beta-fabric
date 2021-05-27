@@ -8,7 +8,6 @@
     "MixinBiomeArray",
     "MixinGeneratorOptions",
     "MixinChunkGeneratorInvoker",
-    "MixinConfiguredCarverAccessor",
     "MixinChunkGeneratorSettingsInvoker"
   ],
   "client": [
