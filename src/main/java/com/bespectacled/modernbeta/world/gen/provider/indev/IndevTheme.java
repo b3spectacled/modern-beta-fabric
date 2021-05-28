@@ -1,4 +1,6 @@
-package com.bespectacled.modernbeta.world.biome.indev;
+package com.bespectacled.modernbeta.world.gen.provider.indev;
+
+import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
 
 import net.minecraft.util.Identifier;
 

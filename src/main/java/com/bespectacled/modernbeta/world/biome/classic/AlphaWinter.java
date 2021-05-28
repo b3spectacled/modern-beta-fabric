@@ -18,7 +18,6 @@ import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 public class AlphaWinter {
-    
     public static final Biome BIOME = create();
     
     private static Biome create() {

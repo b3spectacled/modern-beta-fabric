@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.config;
 
-import com.bespectacled.modernbeta.world.biome.indev.IndevTheme;
-import com.bespectacled.modernbeta.world.biome.indev.IndevType;
+import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
+import com.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;

@@ -55,7 +55,7 @@ public class Rainforest {
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_RAINFOREST_10);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.FOREST_FLOWER_VEGETATION);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.BAMBOO_LIGHT);
+        //genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.BAMBOO_LIGHT);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_SUGAR_CANE);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_MELON);

@@ -8,9 +8,9 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
-import com.bespectacled.modernbeta.world.biome.indev.IndevTheme;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.provider.IndevChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
 
 import org.spongepowered.asm.mixin.injection.At;
 import net.fabricmc.fabric.mixin.gamerule.IntRuleAccessor;

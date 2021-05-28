@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.world.biome.indev;
+package com.bespectacled.modernbeta.world.gen.provider.indev;
 
 public enum IndevType {
     ISLAND(0, "island"),

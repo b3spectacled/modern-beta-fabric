@@ -16,9 +16,10 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.indev.IndevTheme;
-import com.bespectacled.modernbeta.world.biome.indev.IndevType;
-import com.bespectacled.modernbeta.world.biome.indev.IndevUtil;
+import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
+import com.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
+import com.bespectacled.modernbeta.world.gen.provider.indev.IndevUtil;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

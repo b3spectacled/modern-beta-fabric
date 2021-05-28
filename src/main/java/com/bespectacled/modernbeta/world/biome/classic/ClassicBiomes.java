@@ -9,11 +9,11 @@ public class ClassicBiomes {
     public static final Identifier ALPHA_ID = ModernBeta.createId("alpha");
     public static final Identifier ALPHA_WINTER_ID = ModernBeta.createId("alpha_winter");
     
-    public static final Identifier INFDEV_415_ID = ModernBeta.createId("infdev");
-    public static final Identifier INFDEV_415_WINTER_ID = ModernBeta.createId("infdev_winter");
+    public static final Identifier INFDEV_415_ID = ModernBeta.createId("infdev_415");
+    public static final Identifier INFDEV_415_WINTER_ID = ModernBeta.createId("infdev_415_winter");
     
-    public static final Identifier INFDEV_227_ID = ModernBeta.createId("infdev_old");
-    public static final Identifier INFDEV_227_WINTER_ID = ModernBeta.createId("infdev_old_winter");
+    public static final Identifier INFDEV_227_ID = ModernBeta.createId("infdev_227");
+    public static final Identifier INFDEV_227_WINTER_ID = ModernBeta.createId("infdev_227_winter");
     
     public static void registerAlphaBiomes() {
         OldBiomes.register(ALPHA_ID, Alpha.BIOME);

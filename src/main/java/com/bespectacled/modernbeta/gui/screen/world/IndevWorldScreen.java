@@ -9,8 +9,8 @@ import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.util.NBTUtil;
-import com.bespectacled.modernbeta.world.biome.indev.IndevTheme;
-import com.bespectacled.modernbeta.world.biome.indev.IndevType;
+import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
+import com.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.CyclingOption;

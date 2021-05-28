@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.world.biome.indev;
+package com.bespectacled.modernbeta.world.gen.provider.indev;
 
 public class IndevUtil {
     public static boolean inIndevRegion(int x, int z, int width, int length) {
