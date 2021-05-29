@@ -30,17 +30,17 @@ public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeRes
         int absZ = biomeZ << 2;
         
         double temp = this.sampleTemp(absX, absZ);
-        double humid = this.sampleHumid(absX, absZ);
+        double rain = this.sampleRain(absX, absZ);
         
-        return biomeRegistry.get(betaClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.LAND));
+        return biomeRegistry.get(betaClimateMap.getBiomeFromLookup(temp, rain, BetaBiomeType.LAND));
     }
 
     @Override
     public Biome getBiome(Registry<Biome> biomeRegistry, int x, int y, int z) {
         double temp = this.sampleTemp(x, z);
-        double humid = this.sampleHumid(x, z);
+        double rain = this.sampleRain(x, z);
         
-        return biomeRegistry.get(betaClimateMap.getBiomeFromLookup(temp, humid, BetaBiomeType.LAND));
+        return biomeRegistry.get(betaClimateMap.getBiomeFromLookup(temp, rain, BetaBiomeType.LAND));
     }
 
     @Override

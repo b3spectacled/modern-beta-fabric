@@ -32,9 +32,6 @@
     "createWorld.customize.inf.generateOceans": "Generate Oceans",
     "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",
     "createWorld.customize.infdev.generateInfdevWall": "Generate Infdev Obsidian Wall",
-    "createWorld.customize.inf.generateNoiseCaves": "Generate Noise Caves",
-    "createWorld.customize.inf.generateAquifers": "Generate Aquifers",
-    "createWorld.customize.inf.generateDeepslate": "Generate Deepslate",
     
     "createWorld.customize.vanilla.biomeSize": "Biome Size",
     "createWorld.customize.vanilla.oceanBiomeSize": "Ocean Biome Size",
@@ -111,17 +108,11 @@
     "biome.modern_beta.alpha": "Alpha",
     "biome.modern_beta.alpha_winter": "Alpha Winter",
     
-    "biome.modern_beta.infdev": "Infdev",
-    "biome.modern_beta.infdev_winter": "Infdev Winter",
+    "biome.modern_beta.infdev_415": "Infdev 415",
+    "biome.modern_beta.infdev_415_winter": "Infdev 415 Winter",
     
-    "biome.modern_beta.infdev_old": "Old Infdev",
-    "biome.modern_beta.infdev_old_winter": "Old Infdev Winter",
-    
-    "biome.modern_beta.indev_edge": "Indev Edge",
-    "biome.modern_beta.indev_hell_edge": "Indev Hell Edge",
-    "biome.modern_beta.indev_paradise_edge": "Indev Paradise Edge",
-    "biome.modern_beta.indev_woods_edge": "Indev Woods Edge",
-    "biome.modern_beta.indev_snowy_edge": "Indev Snowy Edge",
+    "biome.modern_beta.infdev_227": "Infdev 227",
+    "biome.modern_beta.infdev_227_winter": "Infdev 227 Winter",
     
     "biome.modern_beta.indev_normal": "Indev Normal",
     "biome.modern_beta.indev_hell": "Indev Hell",

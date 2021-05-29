@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.world.biome.beta;
 
+import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.carver.OldCarvers;
 import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
@@ -65,10 +66,10 @@ public class Sky {
             .temperature(0.5F)
             .downfall(0.0F)
             .effects((new BiomeEffects.Builder())
-                .skyColor(12632319)
-                .fogColor(8421536)
-                .waterColor(4159204)
-                .waterFogColor(329011)
+                .skyColor(OldBiomeColors.SKYLANDS_SKY_COLOR)
+                .fogColor(OldBiomeColors.SKYLANDS_FOG_COLOR)
+                .waterColor(OldBiomeColors.VANILLA_WATER_COLOR)
+                .waterFogColor(OldBiomeColors.VANILLA_WATER_FOG_COLOR)
                 .build())
             .spawnSettings(spawnSettings.build())
             .generationSettings(genSettings.build())

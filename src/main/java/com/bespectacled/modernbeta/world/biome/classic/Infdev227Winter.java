@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.world.biome.classic;
 
+import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.carver.OldCarvers;
 import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
@@ -65,12 +66,12 @@ public class Infdev227Winter {
             .temperature(0.0F)
             .downfall(0.0F)
             .effects((new BiomeEffects.Builder())
-                .grassColor(11272039)
-                .foliageColor(5242667)
-                .skyColor(255)
-                .fogColor(11908351)
-                .waterColor(2838783)
-                .waterFogColor(329011)
+                .grassColor(OldBiomeColors.OLD_GRASS_COLOR)
+                .foliageColor(OldBiomeColors.OLD_FOLIAGE_COLOR)
+                .skyColor(OldBiomeColors.INFDEV_227_SKY_COLOR)
+                .fogColor(OldBiomeColors.INFDEV_227_FOG_COLOR)
+                .waterColor(OldBiomeColors.OLD_WATER_COLOR)
+                .waterFogColor(OldBiomeColors.OLD_WATER_FOG_COLOR)
                 .build())
             .spawnSettings(spawnSettings.build())
             .generationSettings(genSettings.build())

@@ -31,13 +31,13 @@ import com.bespectacled.modernbeta.util.mutable.MutableBlockColors;
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
     public static final String MOD_NAME = "Modern Beta";
-
-    public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
     
     public static final ModernBetaConfig BETA_CONFIG = AutoConfig.register(ModernBetaConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new)).getConfig();
     public static final ModernBetaGenerationConfig GEN_CONFIG = BETA_CONFIG.generation_config;
     public static final ModernBetaBiomeConfig BIOME_CONFIG = BETA_CONFIG.biome_config;
     public static final ModernBetaRenderingConfig RENDER_CONFIG = BETA_CONFIG.rendering_config;
+
+    private static final Logger LOGGER = LogManager.getLogger(MOD_ID);
     
     // Ehh...
     public static void setBlockColorsSeed(long seed, boolean useBetaColors) {
@@ -52,7 +52,7 @@ public class ModernBeta implements ModInitializer {
     }
     
     public static void log(Level level, String message) {
-        LogManager.getLogger(MOD_ID).log(level, "[" + MOD_NAME + "] {}", message);
+        LOGGER.log(level, "[" + MOD_NAME + "] {}", message);
     }
 
     @Override

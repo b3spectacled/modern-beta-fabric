@@ -9,8 +9,8 @@ public interface BetaClimateResolver {
         return BetaClimateSampler.INSTANCE.sampleTemp(x, z);
     }
     
-    default double sampleHumid(int x, int z) {
-        return BetaClimateSampler.INSTANCE.sampleHumid(x, z);
+    default double sampleRain(int x, int z) {
+        return BetaClimateSampler.INSTANCE.sampleRain(x, z);
     }
     
     default double sampleSkyTemp(int x, int z) {

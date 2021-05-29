@@ -10,7 +10,7 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class OldBiomes {
+public class OldBiomes { 
     public static final Map<Identifier, Biome> MODERN_BETA_BIOME_MAP = new HashMap<Identifier, Biome>();
     
     public static Biome register(Identifier id, Biome biome) {

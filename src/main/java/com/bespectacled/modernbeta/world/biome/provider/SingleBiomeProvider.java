@@ -2,8 +2,6 @@ package com.bespectacled.modernbeta.world.biome.provider;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.util.NBTUtil;
@@ -27,10 +25,7 @@ public class SingleBiomeProvider extends BiomeProvider {
 
     @Override
     public Biome getBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
-        Optional<Biome> biome = biomeRegistry.getOrEmpty(biomeId);
-        
-        // If custom biome is not present for whatever reason, fetch the default.
-        return biome.orElse(biomeRegistry.get(DEFAULT_BIOME_ID));
+        return this.getBiomeOrElse(biomeRegistry, this.biomeId, DEFAULT_BIOME_ID);
     }
     
     @Override

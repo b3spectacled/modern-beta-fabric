@@ -44,9 +44,9 @@ public enum BetaColorResolver {;
         }
 
         double temp = BetaClimateSampler.INSTANCE.sampleTemp(x, z);
-        double humid = BetaClimateSampler.INSTANCE.sampleHumid(x, z);
+        double rain = BetaClimateSampler.INSTANCE.sampleRain(x, z);
 
-        return GrassColors.getColor(temp, humid);
+        return GrassColors.getColor(temp, rain);
     }
     
     public static int getFoliageColor(BlockRenderView world, BlockPos pos) {
@@ -58,9 +58,9 @@ public enum BetaColorResolver {;
         int z = pos.getZ();
         
         double temp = BetaClimateSampler.INSTANCE.sampleTemp(x, z);
-        double humid = BetaClimateSampler.INSTANCE.sampleHumid(x, z);
+        double rain = BetaClimateSampler.INSTANCE.sampleRain(x, z);
         
-        return FoliageColors.getColor(temp, humid);
+        return FoliageColors.getColor(temp, rain);
     }
     
     @SuppressWarnings("unused")

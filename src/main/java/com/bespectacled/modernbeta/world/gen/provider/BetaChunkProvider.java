@@ -217,16 +217,16 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
         double baseSize = 8.5D;
         
         double temp = this.sampleTemp(x, z);
-        double humid = this.sampleHumid(x, z) * temp;
+        double rain = this.sampleRain(x, z) * temp;
         
-        humid = 1.0D - humid;
-        humid *= humid;
-        humid *= humid;
-        humid = 1.0D - humid;
+        rain = 1.0D - rain;
+        rain *= rain;
+        rain *= rain;
+        rain = 1.0D - rain;
 
         double scale = this.scaleNoiseOctaves.sample(noiseX, noiseZ, 1.121D, 1.121D);
         scale = (scale + 256D) / 512D;
-        scale *= humid;
+        scale *= rain;
         
         if (scale > 1.0D) {
             scale = 1.0D;
