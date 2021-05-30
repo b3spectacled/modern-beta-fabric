@@ -15,16 +15,14 @@ import net.minecraft.nbt.NbtFloat;
 import net.minecraft.nbt.NbtInt;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class IslandWorldScreen extends InfWorldScreen {
     public IslandWorldScreen(
-        CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager,
+        CreateWorldScreen parent,
         WorldSettings worldSettings,
         Consumer<WorldSettings> consumer
     ) {
-        super(parent, registryManager, worldSettings, consumer);
+        super(parent, worldSettings, consumer);
     }
     
     @Override

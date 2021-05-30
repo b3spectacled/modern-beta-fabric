@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.api.world.gen;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.ChunkRegion;
@@ -12,28 +13,26 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public abstract class ChunkProvider {
+    protected final OldChunkGenerator chunkGenerator;
+    
     protected final long seed;
-    protected final ChunkGenerator chunkGenerator;
     protected final Supplier<ChunkGeneratorSettings> generatorSettings;
     protected final NbtCompound providerSettings;
     
     /**
      * Construct a Modern Beta chunk provider with seed and settings.
      * 
-     * @param seed Seed to initialize terrain generators. 
-     * @param chunkGenerator Parent vanilla chunk generator by which this chunk provider will be called.  Accessed for biome source primarily.
-     * @param generatorSettings Vanilla settings used to control various terrain and noise settings.
-     * @param providerSettings NbtCompound for additional settings not part of vanilla generator settings.
+     * @param chunkGenerator Parent OldChunkGenerator object used to initialize fields.
      */
-    public ChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
-        this.seed = seed;
+    public ChunkProvider(OldChunkGenerator chunkGenerator) {
         this.chunkGenerator = chunkGenerator;
-        this.generatorSettings = generatorSettings;
-        this.providerSettings = providerSettings;
+        
+        this.seed = chunkGenerator.getWorldSeed();
+        this.generatorSettings = chunkGenerator.getGeneratorSettings();
+        this.providerSettings = chunkGenerator.getProviderSettings();
     }
     
     /**

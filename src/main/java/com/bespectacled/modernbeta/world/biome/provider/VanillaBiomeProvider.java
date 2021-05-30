@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.util.NBTUtil;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeLayer;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaOceanLayer;
 
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -24,8 +24,8 @@ public class VanillaBiomeProvider extends BiomeProvider {
     private final BiomeLayerSampler biomeSampler;
     private final BiomeLayerSampler oceanSampler;
     
-    public VanillaBiomeProvider(long seed, NbtCompound settings) {
-        super(seed, settings);
+    public VanillaBiomeProvider(OldBiomeSource biomeSource) {
+        super(biomeSource);
         
         this.vanillaBiomeSize = NBTUtil.readInt("vanillaBiomeSize", settings, ModernBeta.BETA_CONFIG.biome_config.vanillaBiomeSize);
         this.vanillaOceanBiomeSize = NBTUtil.readInt("vanillaOceanBiomeSize", settings, ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize);

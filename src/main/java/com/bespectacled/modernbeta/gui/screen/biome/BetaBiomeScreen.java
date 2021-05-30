@@ -15,29 +15,21 @@ import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMapCustomizable;
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 public class BetaBiomeScreen extends BiomeScreen {
     private final Map<String, Identifier> biomeSettingsMap;
     
-    private BetaBiomeScreen(
-        WorldScreen parent, 
-        DynamicRegistryManager registryManager, 
-        NbtCompound parentProviderSettings,
-        Consumer<NbtCompound> consumer
-    ) {
-        super(parent, registryManager, parentProviderSettings, consumer);
+    private BetaBiomeScreen(WorldScreen parent, Consumer<NbtCompound> consumer) {
+        super(parent, consumer);
         
         this.biomeSettingsMap = new BetaClimateMapCustomizable(this.biomeProviderSettings).getMap();
     }
     
     public static BetaBiomeScreen create(WorldScreen screenProvider) {
         return new BetaBiomeScreen(
-            screenProvider, 
-            screenProvider.getRegistryManager(), 
-            screenProvider.getWorldSettings().getSettings(WorldSetting.BIOME),
+            screenProvider,
             biomeProviderSettings -> screenProvider.getWorldSettings().copySettingsFrom(WorldSetting.BIOME, biomeProviderSettings)
         );
     }

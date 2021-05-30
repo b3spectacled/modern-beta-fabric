@@ -4,18 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.DoubleFunction;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.pool.DoubleArrayPool;
 import com.bespectacled.modernbeta.util.pool.IntArrayPool;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -33,8 +32,6 @@ import net.minecraft.world.gen.SimpleRandom;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator.NoodleCavesSampler;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator.OreVeinSource;
@@ -85,50 +82,39 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final OreVeinGenerator oreVeinGenerator;
     protected final NoodleCavesGenerator noodleCaveGenerator;
 
-    public NoiseChunkProvider(
-        long seed, 
-        ChunkGenerator chunkGenerator, 
-        Supplier<ChunkGeneratorSettings> generatorSettings, 
-        NbtCompound providerSettings
-    ) {
+    public NoiseChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
-            seed, 
-            chunkGenerator, 
-            generatorSettings, 
-            providerSettings,
-            generatorSettings.get().getGenerationShapeConfig().getMinimumY(),
-            generatorSettings.get().getGenerationShapeConfig().getHeight(),
-            generatorSettings.get().getSeaLevel(),
-            generatorSettings.get().getMinSurfaceLevel(),
-            generatorSettings.get().getBedrockFloorY(),
-            generatorSettings.get().getBedrockCeilingY(),
-            generatorSettings.get().getDefaultBlock(),
-            generatorSettings.get().getDefaultFluid(),
-            generatorSettings.get().getGenerationShapeConfig().getSizeVertical(),
-            generatorSettings.get().getGenerationShapeConfig().getSizeHorizontal(),
-            generatorSettings.get().getGenerationShapeConfig().getSampling().getXZScale(),
-            generatorSettings.get().getGenerationShapeConfig().getSampling().getYScale(),
-            generatorSettings.get().getGenerationShapeConfig().getSampling().getXZFactor(),
-            generatorSettings.get().getGenerationShapeConfig().getSampling().getYFactor(),
-            generatorSettings.get().getGenerationShapeConfig().getTopSlide().getTarget(),
-            generatorSettings.get().getGenerationShapeConfig().getTopSlide().getSize(),
-            generatorSettings.get().getGenerationShapeConfig().getTopSlide().getOffset(),
-            generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getTarget(),
-            generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getSize(),
-            generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getOffset(),
-            ((MixinChunkGeneratorSettingsInvoker)(Object)generatorSettings.get()).invokeHasNoiseCaves(),
-            ((MixinChunkGeneratorSettingsInvoker)(Object)generatorSettings.get()).invokeHasAquifers(),
-            ((MixinChunkGeneratorSettingsInvoker)(Object)generatorSettings.get()).invokeHasDeepslate(),
-            ((MixinChunkGeneratorSettingsInvoker)(Object)generatorSettings.get()).invokeHasOreVeins(),
-            ((MixinChunkGeneratorSettingsInvoker)(Object)generatorSettings.get()).invokeHasNoodleCaves()
+            chunkGenerator,
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getMinimumY(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getHeight(),
+            chunkGenerator.getGeneratorSettings().get().getSeaLevel(),
+            chunkGenerator.getGeneratorSettings().get().getMinSurfaceLevel(),
+            chunkGenerator.getGeneratorSettings().get().getBedrockFloorY(),
+            chunkGenerator.getGeneratorSettings().get().getBedrockCeilingY(),
+            chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
+            chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSizeVertical(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSizeHorizontal(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSampling().getXZScale(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSampling().getYScale(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSampling().getXZFactor(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSampling().getYFactor(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getTopSlide().getTarget(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getTopSlide().getSize(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getTopSlide().getOffset(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getBottomSlide().getTarget(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getBottomSlide().getSize(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getBottomSlide().getOffset(),
+            ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasNoiseCaves(),
+            ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasAquifers(),
+            ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasDeepslate(),
+            ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasOreVeins(),
+            ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasNoodleCaves()
         );
     }
 
     public NoiseChunkProvider(
-        long seed,
-        ChunkGenerator chunkGenerator, 
-        Supplier<ChunkGeneratorSettings> generatorSettings,
-        NbtCompound providerSettings,
+        OldChunkGenerator chunkGenerator,
         int minY, 
         int worldHeight, 
         int seaLevel,
@@ -155,7 +141,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         boolean generateOreVeins,
         boolean generateNoodleCaves
     ) {
-        super(seed, chunkGenerator, generatorSettings, providerSettings, minY, worldHeight, seaLevel, minSurfaceY, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid);
+        super(chunkGenerator, minY, worldHeight, seaLevel, minSurfaceY, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid);
         
         this.verticalNoiseResolution = sizeVertical * 4;
         this.horizontalNoiseResolution = sizeHorizontal * 4;

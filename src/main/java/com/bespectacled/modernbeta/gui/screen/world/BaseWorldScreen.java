@@ -6,16 +6,14 @@ import com.bespectacled.modernbeta.api.gui.WorldScreen;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class BaseWorldScreen extends WorldScreen {
     public BaseWorldScreen(
-        CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager,
+        CreateWorldScreen parent,
         WorldSettings worldSettings,
         Consumer<WorldSettings> consumer
     ) {
-        super(parent, registryManager, worldSettings, consumer);
+        super(parent, worldSettings, consumer);
     }
     
     @Override

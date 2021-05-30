@@ -3,8 +3,6 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.ArrayDeque;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
-
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
@@ -16,6 +14,7 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevUtil;
@@ -24,7 +23,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SnowyBlock;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -40,8 +38,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkImitable {
     private PerlinOctaveNoiseCombined minHeightNoiseOctaves;
@@ -84,9 +80,9 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
     
     private String phase;
     
-    public IndevChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+    public IndevChunkProvider(OldChunkGenerator chunkGenerator) {
         //super(seed, settings);
-        super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 256, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
+        super(chunkGenerator, 0, 256, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
         this.levelType = IndevType.fromName(NBTUtil.readString("levelType", providerSettings, ModernBeta.GEN_CONFIG.indevLevelType));
         this.levelTheme = IndevTheme.fromName(NBTUtil.readString("levelTheme", providerSettings, ModernBeta.GEN_CONFIG.indevLevelTheme));

@@ -85,7 +85,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
         this.chunkProviderSettings = providerSettings;
         this.chunkProviderType = NBTUtil.readStringOrThrow(WorldSettings.TAG_WORLD, providerSettings);
-        this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(seed, this, settings, providerSettings);
+        this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
         
         this.generateOceans = NBTUtil.readBoolean("generateOceans", providerSettings, ModernBeta.GEN_CONFIG.generateOceans);
     }
@@ -297,6 +297,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public ChunkGenerator withSeed(long seed) {
         return new OldChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings, this.chunkProviderSettings);
+    }
+    
+    public long getWorldSeed() {
+        return this.worldSeed;
+    }
+    
+    public Supplier<ChunkGeneratorSettings> getGeneratorSettings() {
+        return this.settings;
     }
     
     public boolean isProviderInstanceOf(Class<?> c) {

@@ -4,15 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class NoCaveBiomeProvider extends CaveBiomeProvider {
-    public NoCaveBiomeProvider(long seed, NbtCompound settings) {
-        super(seed, settings);
+    public NoCaveBiomeProvider(OldBiomeSource biomeSource) {
+        super(biomeSource);
     }
 
     @Override

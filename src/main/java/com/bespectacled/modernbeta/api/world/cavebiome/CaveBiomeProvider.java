@@ -2,6 +2,8 @@ package com.bespectacled.modernbeta.api.world.cavebiome;
 
 import java.util.List;
 
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -18,9 +20,9 @@ public abstract class CaveBiomeProvider {
      * @param seed Seed to initialize biome provider.
      * @param settings NbtCompound for additional settings.
      */
-    public CaveBiomeProvider(long seed, NbtCompound settings) {
-        this.seed = seed;
-        this.settings = settings;
+    public CaveBiomeProvider(OldBiomeSource biomeSource) {
+        this.seed = biomeSource.getWorldSeed();
+        this.settings = biomeSource.getProviderSettings();
     }
     
     /**

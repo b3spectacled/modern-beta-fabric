@@ -125,7 +125,6 @@ public class OldGeneratorType {
                         
                         return Registries.WORLD.get(chunkProviderSettings.getString(WorldSettings.TAG_WORLD)).createWorldScreen(
                             screen,
-                            screen.moreOptionsDialog.getRegistryManager(),
                             worldSettings,
                             modifiedWorldSettings -> ((MixinMoreOptionsDialogInvoker)screen.moreOptionsDialog).invokeSetGeneratorOptions(
                                 createNewGeneratorOptions(

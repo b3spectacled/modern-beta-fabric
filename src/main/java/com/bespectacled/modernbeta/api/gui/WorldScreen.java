@@ -40,15 +40,14 @@ public abstract class WorldScreen extends Screen {
     protected ButtonListWidget buttonList;
     
     public WorldScreen(
-        CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager,
+        CreateWorldScreen parent,
         WorldSettings worldSettings,
         Consumer<WorldSettings> consumer       
     ) {
         super(new TranslatableText("createWorld.customize.worldType.title"));
         
         this.parent = parent;
-        this.registryManager = registryManager;
+        this.registryManager = parent.moreOptionsDialog.getRegistryManager();
         this.worldSettings = worldSettings;
         this.consumer = consumer;
         
@@ -104,8 +103,7 @@ public abstract class WorldScreen extends Screen {
             (gameOptions, option, value) -> {
                 // Reset settings when switching to new world type                
                 this.client.openScreen(value.createWorldScreen(
-                    this.parent, 
-                    this.registryManager,
+                    this.parent,
                     new WorldSettings(value),
                     this.consumer
                 ));
@@ -122,8 +120,7 @@ public abstract class WorldScreen extends Screen {
                 
                 this.client.openScreen(
                     this.worldProvider.createWorldScreen(
-                        this.parent, 
-                        this.registryManager,
+                        this.parent,
                         new WorldSettings(
                             this.worldSettings.getSettings(WorldSetting.CHUNK), 
                             biomeProviderSettings,

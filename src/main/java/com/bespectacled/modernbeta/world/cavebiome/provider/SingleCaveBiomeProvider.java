@@ -6,8 +6,8 @@ import java.util.List;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.util.NBTUtil;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -16,8 +16,8 @@ import net.minecraft.world.biome.Biome;
 public class SingleCaveBiomeProvider extends CaveBiomeProvider {
     private final Identifier biomeId;
     
-    public SingleCaveBiomeProvider(long seed, NbtCompound settings) {
-        super(seed, settings);
+    public SingleCaveBiomeProvider(OldBiomeSource biomeSource) {
+        super(biomeSource);
         
         this.biomeId = new Identifier(NBTUtil.readString(WorldSettings.TAG_SINGLE_BIOME, settings, "lush_caves"));
     }

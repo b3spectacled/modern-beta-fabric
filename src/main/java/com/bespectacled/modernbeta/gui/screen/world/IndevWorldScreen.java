@@ -20,18 +20,16 @@ import net.minecraft.nbt.NbtInt;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class IndevWorldScreen extends WorldScreen {
     public IndevWorldScreen(
-        CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager,
+        CreateWorldScreen parent,
         WorldSettings worldSettings,
         Consumer<WorldSettings> consumer
     ) {
-        super(parent, registryManager, worldSettings, consumer);
+        super(parent, worldSettings, consumer);
         
         // Set default single biome per level theme
         String levelTheme = NBTUtil.readString("levelTheme", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.indevLevelTheme);
@@ -59,8 +57,7 @@ public class IndevWorldScreen extends WorldScreen {
                     
                     this.client.openScreen(
                         this.worldProvider.createWorldScreen(
-                            this.parent, 
-                            this.registryManager,
+                            this.parent,
                             this.worldSettings,
                             this.consumer
                     ));

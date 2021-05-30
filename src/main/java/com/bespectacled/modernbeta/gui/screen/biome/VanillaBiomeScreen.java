@@ -11,23 +11,15 @@ import net.minecraft.client.option.DoubleOption;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class VanillaBiomeScreen extends BiomeScreen {
-    private VanillaBiomeScreen(
-        WorldScreen parent, 
-        DynamicRegistryManager registryManager, 
-        NbtCompound parentProviderSettings,
-        Consumer<NbtCompound> consumer
-    ) {
-        super(parent, registryManager, parentProviderSettings, consumer);
+    private VanillaBiomeScreen(WorldScreen parent, Consumer<NbtCompound> consumer) {
+        super(parent, consumer);
     }
 
     public static VanillaBiomeScreen create(WorldScreen screenProvider) {
         return new VanillaBiomeScreen(
-            screenProvider, 
-            screenProvider.getRegistryManager(), 
-            screenProvider.getWorldSettings().getSettings(WorldSetting.BIOME),
+            screenProvider,
             biomeProviderSettings -> screenProvider.getWorldSettings().copySettingsFrom(WorldSetting.BIOME, biomeProviderSettings)
         );
     }

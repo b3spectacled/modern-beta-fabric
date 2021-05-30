@@ -1,22 +1,24 @@
 package com.bespectacled.modernbeta.world.biome;
 
 public class OldBiomeColors {
+    private static final boolean USE_OLD_WATER_COLORS = false;
+    
     public static final int OLD_GRASS_COLOR = 11272039;
     public static final int OLD_FOLIAGE_COLOR = 5242667;
     public static final int OLD_WATER_COLOR = 2838783;
     public static final int OLD_WATER_FOG_COLOR = 329011; // Vanilla color is apparently the same as original water fog color
 
-    public static final int VANILLA_WATER_COLOR = 4159204;
-    public static final int VANILLA_COLD_WATER_COLOR = 4020182;
-    public static final int VANILLA_FROZEN_WATER_COLOR = 3750089;
-    public static final int VANILLA_LUKEWARM_WATER_COLOR = 4566514;
-    public static final int VANILLA_WARM_WATER_COLOR = 4445678;
+    public static final int VANILLA_WATER_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_COLOR : 4159204;
+    public static final int VANILLA_COLD_WATER_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_COLOR : 4020182;
+    public static final int VANILLA_FROZEN_WATER_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_COLOR : 3750089;
+    public static final int VANILLA_LUKEWARM_WATER_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_COLOR : 4566514;
+    public static final int VANILLA_WARM_WATER_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_COLOR : 4445678;
     
-    public static final int VANILLA_WATER_FOG_COLOR = 329011;
-    public static final int VANILLA_COLD_WATER_FOG_COLOR = 329011;
-    public static final int VANILLA_FROZEN_WATER_FOG_COLOR = 329011;
-    public static final int VANILLA_LUKEWARM_WATER_FOG_COLOR = 267827;
-    public static final int VANILLA_WARM_WATER_FOG_COLOR = 270131;
+    public static final int VANILLA_WATER_FOG_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_FOG_COLOR : 329011;
+    public static final int VANILLA_COLD_WATER_FOG_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_FOG_COLOR : 329011;
+    public static final int VANILLA_FROZEN_WATER_FOG_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_FOG_COLOR : 329011;
+    public static final int VANILLA_LUKEWARM_WATER_FOG_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_FOG_COLOR : 267827;
+    public static final int VANILLA_WARM_WATER_FOG_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_FOG_COLOR : 270131;
     
     // Made-up colors based on biome temperature and own custom sky colormap.
     public static final int BETA_WARM_SKY_COLOR = 6733055;

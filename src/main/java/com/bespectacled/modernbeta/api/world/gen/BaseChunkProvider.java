@@ -1,16 +1,15 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
 import java.util.Random;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import com.bespectacled.modernbeta.compat.CompatBiomes;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.noise.NoiseSampler;
@@ -22,8 +21,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.DefaultBlockSource;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public abstract class BaseChunkProvider extends ChunkProvider {
     protected final Random rand;
@@ -44,33 +41,22 @@ public abstract class BaseChunkProvider extends ChunkProvider {
 
     protected BlockSource blockSource;
 
-    public BaseChunkProvider(
-        long seed, 
-        ChunkGenerator chunkGenerator,    
-        Supplier<ChunkGeneratorSettings> generatorSettings, 
-        NbtCompound providerSettings
-    ) {
+    public BaseChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
-            seed, 
-            chunkGenerator, 
-            generatorSettings, 
-            providerSettings,
-            generatorSettings.get().getGenerationShapeConfig().getMinimumY(),
-            generatorSettings.get().getGenerationShapeConfig().getHeight(),
-            generatorSettings.get().getSeaLevel(),
-            generatorSettings.get().getMinSurfaceLevel(),
-            generatorSettings.get().getBedrockFloorY(),
-            generatorSettings.get().getBedrockCeilingY(),
-            generatorSettings.get().getDefaultBlock(),
-            generatorSettings.get().getDefaultFluid()
+            chunkGenerator,
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getMinimumY(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getHeight(),
+            chunkGenerator.getGeneratorSettings().get().getSeaLevel(),
+            chunkGenerator.getGeneratorSettings().get().getMinSurfaceLevel(),
+            chunkGenerator.getGeneratorSettings().get().getBedrockFloorY(),
+            chunkGenerator.getGeneratorSettings().get().getBedrockCeilingY(),
+            chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
+            chunkGenerator.getGeneratorSettings().get().getDefaultFluid()
         );
     }
     
     public BaseChunkProvider(
-        long seed,
-        ChunkGenerator chunkGenerator, 
-        Supplier<ChunkGeneratorSettings> generatorSettings,
-        NbtCompound providerSettings,
+        OldChunkGenerator chunkGenerator,
         int minY,
         int worldHeight,
         int seaLevel,
@@ -80,7 +66,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         BlockState defaultBlock,
         BlockState defaultFluid
     ) {
-        super(seed, chunkGenerator, generatorSettings, providerSettings);
+        super(chunkGenerator);
         
         this.minY = minY;
         this.worldHeight = worldHeight;

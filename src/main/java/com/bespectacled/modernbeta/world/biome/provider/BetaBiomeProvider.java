@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMapCustomizable;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMap.BetaBiomeType;
 
@@ -19,8 +20,8 @@ public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, B
     private final BetaClimateMapCustomizable climateMap;
     private final BetaClimateMapCustomizable defaultClimateMap;
     
-    public BetaBiomeProvider(long seed, NbtCompound settings) {
-        super(seed, settings);
+    public BetaBiomeProvider(OldBiomeSource biomeSource) {
+        super(biomeSource);
         
         this.setSeed(seed);
         this.climateMap = new BetaClimateMapCustomizable(settings);

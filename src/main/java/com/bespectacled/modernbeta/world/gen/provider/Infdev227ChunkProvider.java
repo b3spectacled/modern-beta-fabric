@@ -1,8 +1,6 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
 import java.util.Random;
-import java.util.function.Supplier;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
@@ -11,11 +9,11 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
@@ -26,8 +24,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseChunkImitable {
     private final boolean generateInfdevPyramid;
@@ -41,9 +37,9 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     private final PerlinOctaveNoise noiseOctavesF;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    public Infdev227ChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+    public Infdev227ChunkProvider(OldChunkGenerator chunkGenerator) {
         //super(seed, settings);
-        super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
+        super(chunkGenerator, 0, 128, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
         // Noise Generators
         this.noiseOctavesA = new PerlinOctaveNoise(rand, 16, true); 

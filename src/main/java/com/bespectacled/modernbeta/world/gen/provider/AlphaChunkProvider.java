@@ -1,16 +1,14 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
-import java.util.function.Supplier;
-
 import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
@@ -18,8 +16,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawnable {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -31,9 +27,9 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    public AlphaChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, NbtCompound providerSettings) {
+    public AlphaChunkProvider(OldChunkGenerator chunkGenerator) {
         //super(seed, settings);
-        super(seed, chunkGenerator, generatorSettings, providerSettings, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
+        super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);

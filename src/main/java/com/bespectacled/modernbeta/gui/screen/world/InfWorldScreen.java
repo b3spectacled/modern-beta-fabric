@@ -12,16 +12,14 @@ import com.bespectacled.modernbeta.util.NBTUtil;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.nbt.NbtByte;
-import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class InfWorldScreen extends WorldScreen {
     public InfWorldScreen(
-        CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager,
+        CreateWorldScreen parent,
         WorldSettings worldSettings,
         Consumer<WorldSettings> consumer
     ) {
-        super(parent, registryManager, worldSettings, consumer);
+        super(parent, worldSettings, consumer);
     }
 
     @Override

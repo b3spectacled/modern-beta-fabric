@@ -2,6 +2,8 @@ package com.bespectacled.modernbeta.api.gui;
 
 import java.util.function.Consumer;
 
+import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
+
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
@@ -22,17 +24,12 @@ public abstract class BiomeScreen extends Screen {
     
     protected ButtonListWidget buttonList;
     
-    protected BiomeScreen(
-        WorldScreen parent, 
-        DynamicRegistryManager registryManager,
-        NbtCompound parentProviderSettings,
-        Consumer<NbtCompound> consumer
-    ) {
+    protected BiomeScreen(WorldScreen parent, Consumer<NbtCompound> consumer) {
         super(new TranslatableText("createWorld.customize.biomeType.title"));
         
         this.parent = parent;
-        this.registryManager = registryManager;
-        this.parentProviderSettings = parentProviderSettings;
+        this.registryManager = parent.getRegistryManager();
+        this.parentProviderSettings = parent.getWorldSettings().getSettings(WorldSetting.BIOME);
         this.consumer = consumer;
         
         // Make copy as to not modify original biome settings (if cancelled)

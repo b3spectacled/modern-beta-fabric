@@ -6,7 +6,6 @@ import com.bespectacled.modernbeta.api.gui.WorldScreen;
 import com.bespectacled.modernbeta.api.registry.Registries;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.util.registry.DynamicRegistryManager;
 
 public final class WorldProvider {
     private final String chunkProvider;
@@ -59,14 +58,13 @@ public final class WorldProvider {
     }
     
     public WorldScreen createWorldScreen(
-        CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager,
+        CreateWorldScreen parent,
         WorldSettings worldSettings,
         Consumer<WorldSettings> consumer
     ) {
         return Registries.WORLD_SCREEN
             .getOrDefault(this.worldScreen)
-            .apply(parent, registryManager, worldSettings, consumer);
+            .apply(parent, worldSettings, consumer);
     }
     
     @Override

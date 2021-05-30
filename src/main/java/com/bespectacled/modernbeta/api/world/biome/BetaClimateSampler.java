@@ -99,15 +99,15 @@ public enum BetaClimateSampler {
         private ClimateCacheChunk(int chunkX, int chunkZ) {
             int startX = chunkX << 4;
             int startZ = chunkZ << 4;
-            double[] tempHumid = new double[2];
+            double[] tempRain = new double[2];
             
             int ndx = 0;
             for (int x = startX; x < startX + 16; ++x) {
                 for (int z = startZ; z < startZ + 16; ++z) {
-                    BetaClimateSampler.INSTANCE.sampleClimeAt(tempHumid, x, z);
+                    BetaClimateSampler.INSTANCE.sampleClimeAt(tempRain, x, z);
                     
-                    this.temp[ndx] = tempHumid[0];
-                    this.rain[ndx] = tempHumid[1];
+                    this.temp[ndx] = tempRain[0];
+                    this.rain[ndx] = tempRain[1];
 
                     ndx++;
                 }

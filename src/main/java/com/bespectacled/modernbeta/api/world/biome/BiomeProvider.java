@@ -8,6 +8,7 @@ import java.util.Set;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -25,13 +26,12 @@ public abstract class BiomeProvider {
      * Constructs a Modern Beta biome provider initialized with seed.
      * Additional settings are supplied in NbtCompound parameter.
      * 
-     * @param seed Seed to initialize biome provider.
-     * @param settings NbtCompound for additional settings.
+     * @param biomeSource Parent OldBiomeSource object used to initialize fields.
      */
-    public BiomeProvider(long seed, NbtCompound settings) {
-        this.seed = seed;
-        this.settings = settings;
-        
+    public BiomeProvider(OldBiomeSource biomeSource) {
+        this.seed = biomeSource.getWorldSeed();
+        this.settings = biomeSource.getProviderSettings();
+
         this.missingBiomes = new HashSet<>();
     }
     
