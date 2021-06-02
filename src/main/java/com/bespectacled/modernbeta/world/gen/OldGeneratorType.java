@@ -12,7 +12,6 @@ import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.mixin.client.MixinMoreOptionsDialogInvoker;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
-import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 import com.google.common.collect.ImmutableMap;
 
@@ -118,10 +117,7 @@ public class OldGeneratorType {
                             ((OldBiomeSource)biomeSource).getProviderSettings() : 
                             BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome());
                         
-                        // TODO: Add functionality later
-                        CompoundTag caveBiomeProviderSettings = CaveBiomeProviderSettings.createSettingsBase(worldProvider.getCaveBiomeProvider());
-                        
-                        WorldSettings worldSettings = new WorldSettings(chunkProviderSettings, biomeProviderSettings, caveBiomeProviderSettings);
+                        WorldSettings worldSettings = new WorldSettings(chunkProviderSettings, biomeProviderSettings);
                         
                         return Registries.WORLD.get(chunkProviderSettings.getString(WorldSettings.TAG_WORLD)).createWorldScreen(
                             screen,

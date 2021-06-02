@@ -12,13 +12,11 @@ import net.minecraft.nbt.Tag;
 public final class WorldSettings {
     public static final String TAG_WORLD = "worldType";
     public static final String TAG_BIOME = "biomeType";
-    public static final String TAG_CAVE_BIOME = "caveBiomeType";
     public static final String TAG_SINGLE_BIOME = "singleBiome";
     
     public enum WorldSetting {
         CHUNK,
-        BIOME,
-        CAVE_BIOME
+        BIOME
     }
     
     private final Map<WorldSetting, CompoundTag> settings;
@@ -33,14 +31,12 @@ public final class WorldSettings {
     
     public WorldSettings(
         CompoundTag chunkProviderSettings, 
-        CompoundTag biomeProviderSettings,
-        CompoundTag caveBiomeProviderSettings
+        CompoundTag biomeProviderSettings
     ) {
         this(); // Ensure settings are initialized with something.
         
         this.settings.put(WorldSetting.CHUNK, new CompoundTag().copyFrom(chunkProviderSettings));
         this.settings.put(WorldSetting.BIOME, new CompoundTag().copyFrom(biomeProviderSettings));
-        this.settings.put(WorldSetting.CAVE_BIOME, new CompoundTag().copyFrom(caveBiomeProviderSettings));
     }
     
     public WorldSettings(WorldProvider worldProvider) {
@@ -48,7 +44,6 @@ public final class WorldSettings {
         
         this.settings.put(WorldSetting.CHUNK, ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider()));
         this.settings.put(WorldSetting.BIOME, BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome()));
-        this.settings.put(WorldSetting.CAVE_BIOME, new CompoundTag());
     }
     
     public CompoundTag getSettings(WorldSetting settingsKey) {

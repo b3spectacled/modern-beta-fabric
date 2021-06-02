@@ -5,7 +5,6 @@ import com.bespectacled.modernbeta.gui.screen.world.*;
 import com.bespectacled.modernbeta.gui.screen.biome.*;
 import com.bespectacled.modernbeta.world.BuiltInWorldProviders;
 import com.bespectacled.modernbeta.world.biome.provider.*;
-import com.bespectacled.modernbeta.world.cavebiome.provider.*;
 import com.bespectacled.modernbeta.world.gen.provider.*;
 
 /*
@@ -33,15 +32,6 @@ public class ModernBetaBuiltInProviders {
         Registries.BIOME.register(BuiltInTypes.Biome.BETA.name, BetaBiomeProvider::new);
         Registries.BIOME.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeProvider::new);
         Registries.BIOME.register(BuiltInTypes.Biome.VANILLA.name, VanillaBiomeProvider::new);
-    }
-    
-    // Register default cave biome providers
-    public static void registerCaveBiomeProvider() {
-        Registries.CAVE_BIOME.register(BuiltInTypes.DEFAULT_ID, VanillaCaveBiomeProvider::new);
-        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.NONE.name, NoCaveBiomeProvider::new);
-        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.BETA.name, BetaCaveBiomeProvider::new);
-        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.SINGLE.name, SingleCaveBiomeProvider::new);
-        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.VANILLA.name, VanillaCaveBiomeProvider::new);
     }
     
     // Register default world screens

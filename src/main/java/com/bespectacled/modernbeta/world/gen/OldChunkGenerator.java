@@ -3,9 +3,6 @@ package com.bespectacled.modernbeta.world.gen;
 import java.util.BitSet;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
@@ -26,7 +23,6 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureManager;
-import net.minecraft.util.Util;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;

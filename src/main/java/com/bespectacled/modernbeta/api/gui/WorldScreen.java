@@ -12,7 +12,6 @@ import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.gui.ActionButtonOption;
 import com.bespectacled.modernbeta.gui.CyclingOptionWrapper;
-import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
@@ -69,7 +68,7 @@ public abstract class WorldScreen extends Screen {
         ButtonWidget doneButton;
         ButtonWidget cancelButton;
         
-        CyclingOptionWrapper<WorldProvider> worldTypeOption;
+        CyclingOptionWrapper<String> worldTypeOption;
         CyclingOptionWrapper<String> biomeTypeOption;
         
         Screen biomeSettingsScreen;
@@ -92,58 +91,23 @@ public abstract class WorldScreen extends Screen {
             }
         );
         
+        String worldTypeString = this.worldProvider.getChunkProvider();
         worldTypeOption = new CyclingOptionWrapper<>(
             "createWorld.customize.worldType",
-            Registries.WORLD.getEntries().stream().collect(Collectors.toList()),
-            this.worldProvider,
+            Registries.WORLD.getKeySet().stream().collect(Collectors.toList()),
+            worldTypeString,
             value -> {
-             // Reset settings when switching to new world type                
-                this.client.openScreen(value.createWorldScreen(
-                    this.parent,
-                    new WorldSettings(value),
-                    this.consumer
-                ));
-            }
-        );
-        
-        /*
-        worldTypeOption = CyclingOption.create(
-            "createWorld.customize.worldType", 
-            Registries.WORLD.getEntries().stream().toArray(WorldProvider[]::new),
-            (value) -> new TranslatableText("createWorld.customize.worldType." + value.getChunkProvider()), 
-            (gameOptions) -> { return this.worldProvider; }, 
-            (gameOptions, option, value) -> {
-                // Reset settings when switching to new world type                
-                this.client.openScreen(value.createWorldScreen(
-                    this.parent,
-                    new WorldSettings(value),
-                    this.consumer
-                ));
-        });
-        
-        biomeTypeOption = CyclingOption.create(
-            "createWorld.customize.biomeType",
-            Registries.BIOME.getKeySet().stream().toArray(String[]::new), 
-            (value) -> new TranslatableText("createWorld.customize.biomeType." + value), 
-            (gameOptions) -> NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME)),
-            (gameOptions, option, value) -> {
-                // Reset biome settings when switching to new biome type
-                CompoundTag biomeProviderSettings = BiomeProviderSettings.createSettingsBase(value, this.worldProvider.getSingleBiome());
+                WorldProvider newWorldProvider = Registries.WORLD.get(value);
                 
-                this.client.openScreen(
-                    this.worldProvider.createWorldScreen(
-                        this.parent,
-                        new WorldSettings(
-                            this.worldSettings.getSettings(WorldSetting.CHUNK), 
-                            biomeProviderSettings,
-                            this.worldSettings.getSettings(WorldSetting.CAVE_BIOME)
-                        ),
-                        this.consumer
+                // Reset settings when switching to new world type
+                this.client.openScreen(newWorldProvider.createWorldScreen(
+                    this.parent,
+                    new WorldSettings(newWorldProvider),
+                    this.consumer
                 ));
             }
         );
         
-        */
         biomeTypeOption = new CyclingOptionWrapper<>(
             "createWorld.customize.biomeType",
             Registries.BIOME.getKeySet().stream().collect(Collectors.toList()),
@@ -157,8 +121,7 @@ public abstract class WorldScreen extends Screen {
                         this.parent,
                         new WorldSettings(
                             this.worldSettings.getSettings(WorldSetting.CHUNK), 
-                            biomeProviderSettings,
-                            this.worldSettings.getSettings(WorldSetting.CAVE_BIOME)
+                            biomeProviderSettings
                         ),
                         this.consumer
                 ));
@@ -179,10 +142,8 @@ public abstract class WorldScreen extends Screen {
         this.addButton(doneButton);
         this.addButton(cancelButton);
 
-        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
         this.buttonList.addSingleOptionEntry(worldTypeOption.create());
         this.buttonList.addOptionEntry(biomeTypeOption.create(), biomeSettingsOption);
-        //this.buttonList.addOptionEntry(caveBiomeTypeOption, biomeSettingsOption);
     }
     
     @Override
