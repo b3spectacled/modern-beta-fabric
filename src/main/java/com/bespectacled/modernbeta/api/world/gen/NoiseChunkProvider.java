@@ -32,7 +32,6 @@ import net.minecraft.world.gen.SimpleRandom;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler;
-import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator.NoodleCavesSampler;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator.OreVeinSource;
 import net.minecraft.world.gen.chunk.NoodleCavesGenerator;
@@ -598,22 +597,22 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     }
     
     private DoubleFunction<WeightSampler> createNoodleCaveSampler(int worldBottomNoiseY, ChunkPos chunkPos, Consumer<NoiseInterpolator> consumer) {
-        if (!this.generateNoodleCaves || !(this.chunkGenerator instanceof NoiseChunkGenerator)) {
+        if (!this.generateNoodleCaves) {
             return d -> WeightSampler.DEFAULT;
         }
         
-        NoodleCavesSampler noodleCaveSampler = ((NoiseChunkGenerator)this.chunkGenerator).new NoodleCavesSampler(chunkPos, worldBottomNoiseY);
+        NoodleCavesSampler noodleCaveSampler = this.chunkGenerator.new NoodleCavesSampler(chunkPos, worldBottomNoiseY);
         noodleCaveSampler.feed(consumer);
         
         return noodleCaveSampler::method_36466;
     }
 
     private DoubleFunction<BlockSource> createOreVeinSamplers(int worldBottomNoiseY, ChunkPos chunkPos, Consumer<NoiseInterpolator> consumer) {
-        if (!this.generateOreVeins || !(this.chunkGenerator instanceof NoiseChunkGenerator)) {
+        if (!this.generateOreVeins) {
             return noisePoint -> this.blockSource;
         }
         
-        OreVeinSource oreVeinSampler = ((NoiseChunkGenerator)this.chunkGenerator).new OreVeinSource(chunkPos, worldBottomNoiseY, this.seed + 1L);
+        OreVeinSource oreVeinSampler = this.chunkGenerator.new OreVeinSource(chunkPos, worldBottomNoiseY, this.seed + 1L);
         oreVeinSampler.feed(consumer);
         
         BlockSource blockSource = (x, y, z) -> {

@@ -20,7 +20,7 @@ public abstract class BiomeProvider {
     protected final long seed;
     protected final NbtCompound settings;
     
-    private Set<Identifier> missingBiomes;
+    private final Set<Identifier> missingBiomes;
     
     /**
      * Constructs a Modern Beta biome provider initialized with seed.

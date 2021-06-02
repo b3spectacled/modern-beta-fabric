@@ -114,8 +114,8 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
                         continue;
                     }
                     
-                    // Don't surface build below 50, per 1.17 default surface builder
-                    if (usedCustomSurface || (this.generateAquifers || this.generateNoiseCaves) && y < this.minSurfaceY) {
+                    // Skip if used custom surface generation or if below minimum surface level.
+                    if (usedCustomSurface || y < this.minSurfaceY) {
                         continue;
                     }
 

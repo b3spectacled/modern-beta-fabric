@@ -85,13 +85,17 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
 
                 int soilDepth = 0;
 
-                if (this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable))
-                   continue;
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
                 
                 for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
                     BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
                     
                     boolean inFluid = someBlock.equals(BlockStates.AIR) || someBlock.equals(this.defaultFluid);
+                    
+                    // Skip if used custom surface generation or if below minimum surface level.
+                    if (usedCustomSurface || y < this.minSurfaceY) {
+                        continue;
+                    }
                     
                     if (inFluid) {
                         soilDepth = 0;

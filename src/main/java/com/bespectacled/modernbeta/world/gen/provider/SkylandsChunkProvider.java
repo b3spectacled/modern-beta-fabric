@@ -74,7 +74,10 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.minY; y--) {
-                    if (usedCustomSurface) break;
+                    // Skip if used custom surface generation or if below minimum surface level.
+                    if (usedCustomSurface || y < this.minSurfaceY) {
+                        continue;
+                    }
                     
                     BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
                     

@@ -102,7 +102,8 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
                     }
                     
                     // Don't surface build below 50, per 1.17 default surface builder
-                    if (usedCustomSurface || (this.generateAquifers || this.generateNoiseCaves) && y < 50) {
+                    // Skip if used custom surface generation or if below minimum surface level.
+                    if (usedCustomSurface || y < this.minSurfaceY) {
                         continue;
                     }
 
