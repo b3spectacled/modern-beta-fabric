@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.bespectacled.modernbeta.util.MutableBlockColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.OldBiomes;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeModifier;
@@ -24,14 +23,22 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 
+import com.bespectacled.modernbeta.command.DebugProviderSettingsCommand;
 import com.bespectacled.modernbeta.compat.Compat;
-import com.bespectacled.modernbeta.config.ModernBetaConfig;
+import com.bespectacled.modernbeta.config.*;
+import com.bespectacled.modernbeta.util.mutable.MutableBlockColors;
 
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
-    public static final Logger LOGGER = LogManager.getLogger("ModernBeta");
+    public static final String MOD_NAME = "Modern Beta";
+    
     public static final ModernBetaConfig BETA_CONFIG = AutoConfig.register(ModernBetaConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new)).getConfig();
+    public static final ModernBetaGenerationConfig GEN_CONFIG = BETA_CONFIG.generation_config;
+    public static final ModernBetaBiomeConfig BIOME_CONFIG = BETA_CONFIG.biome_config;
+    public static final ModernBetaRenderingConfig RENDER_CONFIG = BETA_CONFIG.rendering_config;
 
+    private static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+    
     // Ehh...
     public static void setBlockColorsSeed(long seed, boolean useBetaColors) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -43,10 +50,14 @@ public class ModernBeta implements ModInitializer {
     public static Identifier createId(String name) {
         return new Identifier(MOD_ID, name);
     }
+    
+    public static void log(Level level, String message) {
+        LOGGER.log(level, "[" + MOD_NAME + "] {}", message);
+    }
 
     @Override
     public void onInitialize() {
-        LOGGER.log(Level.INFO, "Initializing Modern Beta...");
+        log(Level.INFO, "Initializing Modern Beta...");
 
         // Register mod stuff
         OldStructures.register();
@@ -55,30 +66,36 @@ public class ModernBeta implements ModInitializer {
         OldChunkGenerator.register();
         OldChunkGeneratorSettings.register();
         
+        // Add Ocean Shrine to vanilla oceans, when using vanilla biome type.
         VanillaBiomeModifier.addShrineToOceans();
-
+        
         // Set up mod compatibility
         Compat.setupCompat();
         
         // Register default providers
-        ModernBetaDefaultProviders.registerChunkProviders();
-        ModernBetaDefaultProviders.registerChunkProviderSettings();
-        ModernBetaDefaultProviders.registerBiomeProviders();
-        ModernBetaDefaultProviders.registerWorldProviders();
+        ModernBetaBuiltInProviders.registerChunkProviders();
+        ModernBetaBuiltInProviders.registerBiomeProviders();
+        ModernBetaBuiltInProviders.registerCaveBiomeProvider();
+        ModernBetaBuiltInProviders.registerWorldProviders();
         
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             OldGeneratorType.register();
             
             // Register default screen providers
-            ModernBetaDefaultProviders.registerWorldScreenProviders();
-            ModernBetaDefaultProviders.registerBiomeScreenProviders();
+            ModernBetaBuiltInProviders.registerWorldScreens();
+            ModernBetaBuiltInProviders.registerBiomeScreens();
+        }
+        
+        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            // Register provider settings debug command
+            DebugProviderSettingsCommand.register();
         }
         
         // Serialize various world gen stuff to JSON
-        //OldGeneratorSettings.export();
+        //OldChunkGeneratorSettings.export();
         //OldChunkGenerator.export();
 
-        LOGGER.log(Level.INFO, "Initialized Modern Beta!");
+        log(Level.INFO, "Initialized Modern Beta!");
 
         // Man, I am not good at this...
     }

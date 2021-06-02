@@ -1,51 +1,41 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
-import java.util.function.Supplier;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.gen.OldGeneratorUtil;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
-import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class SkylandsChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
-    private final PerlinOctaveNoise stoneNoiseOctaves;
+    private final PerlinOctaveNoise surfaceNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    public SkylandsChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, CompoundTag providerSettings) {
+    public SkylandsChunkProvider(OldChunkGenerator chunkGenerator) {
         //super(seed, settings);
-        super(seed, chunkGenerator, generatorSettings, providerSettings, 128, 0, 0, -10, BlockStates.STONE, BlockStates.AIR, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0);
+        super(chunkGenerator, 0, 128, 0, 0, 0, -10, BlockStates.STONE, BlockStates.AIR, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0);
         
         // Noise Generators
-        this.minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        this.mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
-        new PerlinOctaveNoise(RAND, 4, true);
-        this.stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
-        new PerlinOctaveNoise(RAND, 10, true);
-        new PerlinOctaveNoise(RAND, 16, true);
-        this.forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        this.mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
+        new PerlinOctaveNoise(rand, 4, true);
+        this.surfaceNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        new PerlinOctaveNoise(rand, 10, true);
+        new PerlinOctaveNoise(rand, 16, true);
+        this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
 
         setForestOctaves(forestNoiseOctaves);
-    }
-
-    @Override
-    public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
-        this.generateTerrain(chunk, structureAccessor);
     }
 
     @Override
@@ -59,17 +49,17 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        double[] stoneNoise = this.surfaceNoisePool.borrowArr();
+        double[] surfaceNoise = this.surfaceNoisePool.borrowArr();
         
-        stoneNoise = stoneNoiseOctaves.sampleArrBeta(stoneNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
+        surfaceNoise = surfaceNoiseOctaves.sampleArrBeta(surfaceNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
 
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 16; x++) {
                 int absX = (chunkX << 4) + x; 
                 int absZ = (chunkZ << 4) + z;
-                int topY = OldGeneratorUtil.getSolidHeight(chunk, x, z, this.worldHeight, this.defaultFluid) + 1;
+                int topY = GenUtil.getSolidHeight(chunk, x, z, this.worldHeight, this.defaultFluid) + 1;
 
-                int genStone = (int) (stoneNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
+                int surfaceDepth = (int) (surfaceNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
 
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, topY, absZ));
@@ -83,8 +73,11 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
 
                 // Generate from top to bottom of world
-                for (int y = this.worldHeight - 1; y >= 0; y--) {
-                    if (usedCustomSurface) break;
+                for (int y = this.worldTopY - 1; y >= this.minY; y--) {
+                    // Skip if used custom surface generation or if below minimum surface level.
+                    if (usedCustomSurface || y < this.minSurfaceY) {
+                        continue;
+                    }
                     
                     BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
                     
@@ -98,12 +91,12 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                     }
 
                     if (flag == -1) {
-                        if (genStone <= 0) { // Generate stone basin if noise permits
+                        if (surfaceDepth <= 0) { // Generate stone basin if noise permits
                             topBlock = BlockStates.AIR;
                             fillerBlock = this.defaultBlock;
                         }
 
-                        flag = genStone;
+                        flag = surfaceDepth;
                         if (y >= 0) {
                             chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
                         } else {
@@ -129,38 +122,14 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             }
         }
         
-        this.surfaceNoisePool.returnArr(stoneNoise);
-    }
-
-    @Override
-    public int getHeight(int x, int z, Heightmap.Type type) {
-        Integer groundHeight = heightmapCache.get(new BlockPos(x, 0, z));
-        
-        if (groundHeight == null) {
-            groundHeight = this.sampleHeightmap(x, z);
-        }
-
-        return groundHeight;
+        this.surfaceNoisePool.returnArr(surfaceNoise);
     }
     
     @Override
-    protected void generateHeightNoiseArr(int noiseX, int noiseZ, double[] heightNoise) {
-        int noiseResolutionX = this.noiseSizeX + 1;
-        int noiseResolutionZ = this.noiseSizeZ + 1;
-        int noiseResolutionY = this.noiseSizeY + 1;
-        
-        int ndx = 0;
-        for (int nX = 0; nX < noiseResolutionX; ++nX) {
-            for (int nZ = 0; nZ < noiseResolutionZ; ++nZ) {
-                for (int nY = 0; nY < noiseResolutionY; ++nY) {
-                    heightNoise[ndx] = this.generateHeightNoise(noiseX + nX, nY, noiseZ + nZ);
-                    ndx++;
-                }
-            }
-        }
-    }
-    
-    private double generateHeightNoise(int noiseX, int noiseY, int noiseZ) {
+    protected void generateScaleDepth(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ, double[] scaleDepth) { }
+
+    @Override
+    protected double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth) {
         // Var names taken from old customized preset names
         double coordinateScale = 684.41200000000003D * this.xzScale; 
         double heightScale = 684.41200000000003D * this.yScale;

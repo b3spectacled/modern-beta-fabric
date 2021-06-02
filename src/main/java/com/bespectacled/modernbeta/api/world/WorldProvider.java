@@ -1,80 +1,88 @@
 package com.bespectacled.modernbeta.api.world;
 
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.api.gui.AbstractWorldScreenProvider;
-import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
-import com.bespectacled.modernbeta.api.world.gen.AbstractChunkProvider;
+import com.bespectacled.modernbeta.api.gui.WorldScreen;
+import com.bespectacled.modernbeta.api.registry.Registries;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public final class WorldProvider {
     private final String chunkProvider;
-    private final String chunkProviderSettings;
     private final String chunkGenSettings;
-    private final String guiProvider;
+    private final String worldScreen;
 
-    private final String defaultBiomeProvider;
-    private final String defaultBiome;
+    private final String biomeProvider;
+    private final String caveBiomeProvider;
+    private final String singleBiome;
 
     public WorldProvider(
         String chunkProvider,
-        String chunkProviderSettings,
         String chunkGenSettings,
-        String guiProvider,
-        String defaultBiomeProvider,
-        String defaultBiome
+        String biomeProvider,
+        String caveBiomeProvider,
+        String singleBiome,
+        String worldScreen
     ) {
         this.chunkProvider = chunkProvider;
-        this.chunkProviderSettings = chunkProviderSettings;
         this.chunkGenSettings = chunkGenSettings;
-        this.guiProvider = guiProvider;
+        this.worldScreen = worldScreen;
         
-        this.defaultBiomeProvider = defaultBiomeProvider;
-        this.defaultBiome = defaultBiome;
+        this.biomeProvider = biomeProvider;
+        this.caveBiomeProvider = caveBiomeProvider;
+        this.singleBiome = singleBiome;
     }
     
-    public String getName() {
+    public String getChunkProvider() {
         return this.chunkProvider;
-    }
-    
-    public String getChunkProviderSettings() {
-        return this.chunkProviderSettings;
     }
     
     public String getChunkGenSettings() {
         return this.chunkGenSettings;
     }
     
-    public String getDefaultBiomeProvider() {
-        return this.defaultBiomeProvider;
+    public String getBiomeProvider() {
+        return this.biomeProvider;
     }
     
-    public String getDefaultBiome() {
-        return this.defaultBiome;
+    public String getCaveBiomeProvider() {
+        return this.caveBiomeProvider;
     }
     
-    public Identifier getDefaultBiomeId() {
-        return new Identifier(this.defaultBiome);
+    public String getSingleBiome() {
+        return this.singleBiome;
     }
     
-    public AbstractChunkProvider createChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, CompoundTag providerSettings) {
-        return ProviderRegistries.CHUNK.get(this.chunkProvider).apply(seed, chunkGenerator, generatorSettings, providerSettings);
+    public String getWorldScreen() {
+        return this.worldScreen;
     }
     
-    public AbstractWorldScreenProvider createLevelScreen(
-        CreateWorldScreen parent, 
-        DynamicRegistryManager registryManager, 
-        CompoundTag biomeProviderSettings,
-        CompoundTag chunkProviderSettings, 
-        BiConsumer<CompoundTag, CompoundTag> consumer
+    public WorldScreen createWorldScreen(
+        CreateWorldScreen parent,
+        WorldSettings worldSettings,
+        Consumer<WorldSettings> consumer
     ) {
-        return ProviderRegistries.WORLD_SCREEN.get(this.guiProvider).apply(parent, registryManager, biomeProviderSettings, chunkProviderSettings, consumer);
+        return Registries.WORLD_SCREEN
+            .getOrDefault(this.worldScreen)
+            .apply(parent, worldSettings, consumer);
+    }
+    
+    @Override
+    public String toString() {
+        return String.format(
+            "[World Provider]\n" +
+                "* Chunk Provider: %s\n" +
+                "* Chunk Generator Settings: %s\n" +
+                "* Biome Provider: %s\n" +
+                "* Cave Biome Provider: %s\n" +
+                "* Single Biome: %s\n" +
+                "* World Screen: %s",
+            this.chunkProvider, 
+            this.chunkGenSettings, 
+            this.biomeProvider, 
+            this.caveBiomeProvider, 
+            this.singleBiome, 
+            this.worldScreen
+        );
     }
 }

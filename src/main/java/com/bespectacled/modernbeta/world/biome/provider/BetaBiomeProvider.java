@@ -1,12 +1,14 @@
 package com.bespectacled.modernbeta.world.biome.provider;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMapCustomizable;
-import com.bespectacled.modernbeta.world.biome.beta.BetaClimateSampler;
-import com.bespectacled.modernbeta.api.world.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMapCustomizable;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMap.BetaBiomeType;
 
 import net.minecraft.nbt.CompoundTag;
@@ -14,44 +16,62 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
-public class BetaBiomeProvider extends AbstractBiomeProvider implements BiomeResolver {
-    private static final double[] TEMP_HUMID_POINT = new double[2];
-    private final BetaClimateMapCustomizable betaClimateMap;
+public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, BetaClimateResolver {
+    private final BetaClimateMapCustomizable climateMap;
+    private final BetaClimateMapCustomizable defaultClimateMap;
     
-    public BetaBiomeProvider(long seed, CompoundTag settings) {
-        super(seed, settings);
+    public BetaBiomeProvider(OldBiomeSource biomeSource) {
+        super(biomeSource);
         
-        BetaClimateSampler.INSTANCE.setSeed(seed);
-        this.betaClimateMap = new BetaClimateMapCustomizable(settings);
+        this.setSeed(seed);
+        this.climateMap = new BetaClimateMapCustomizable(settings);
+        this.defaultClimateMap = new BetaClimateMapCustomizable(new CompoundTag());
     }
 
     @Override
-    public Biome getBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
+    public Biome getBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
-        return registry.get(betaClimateMap.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.LAND));
+        double temp = this.sampleTemp(absX, absZ);
+        double rain = this.sampleRain(absX, absZ);
+        
+        return this.getBiomeOrElse(
+            biomeRegistry, 
+            this.climateMap.getBiomeFromLookup(temp, rain, BetaBiomeType.LAND), 
+            this.defaultClimateMap.getBiomeFromLookup(temp, rain, BetaBiomeType.LAND)
+        );
     }
  
     @Override
-    public Biome getOceanBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
+    public Biome getOceanBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
+
+        double temp = this.sampleTemp(absX, absZ);
+        double rain = this.sampleRain(absX, absZ);
         
-        BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID_POINT, absX, absZ);
-        return registry.get(betaClimateMap.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.OCEAN));
+        return this.getBiomeOrElse(
+            biomeRegistry, 
+            this.climateMap.getBiomeFromLookup(temp, rain, BetaBiomeType.OCEAN), 
+            this.defaultClimateMap.getBiomeFromLookup(temp, rain, BetaBiomeType.OCEAN)
+        );
     }
     
     @Override
-    public Biome getBiome(Registry<Biome> registry, int x, int y, int z) {
-        BetaClimateSampler.INSTANCE.sampleTempHumid(TEMP_HUMID_POINT, x, z);
-        return registry.get(betaClimateMap.getBiomeFromLookup(TEMP_HUMID_POINT[0], TEMP_HUMID_POINT[1], BetaBiomeType.LAND));
+    public Biome getBiome(Registry<Biome> biomeRegistry, int x, int y, int z) {
+        double temp = this.sampleTemp(x, z);
+        double rain = this.sampleRain(x, z);
+        
+        Optional<Biome> biome = biomeRegistry.getOrEmpty(this.climateMap.getBiomeFromLookup(temp, rain, BetaBiomeType.LAND));
+
+        // If custom biome is not present for whatever reason, fetch the default for the climate range.
+        return biome.orElse(biomeRegistry.get(this.defaultClimateMap.getBiomeFromLookup(temp, rain, BetaBiomeType.LAND)));
     }
 
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        return this.betaClimateMap.getBiomeIds().stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
+        return this.climateMap.getBiomeIds().stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
     }
 
 }

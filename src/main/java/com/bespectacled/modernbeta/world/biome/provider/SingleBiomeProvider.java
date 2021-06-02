@@ -2,35 +2,32 @@ package com.bespectacled.modernbeta.world.biome.provider;
 
 import java.util.Arrays;
 import java.util.List;
+import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
+import com.bespectacled.modernbeta.util.NBTUtil;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
-import com.bespectacled.modernbeta.api.world.biome.AbstractBiomeProvider;
-
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
-public class SingleBiomeProvider extends AbstractBiomeProvider {
-    private Identifier biomeId;
+public class SingleBiomeProvider extends BiomeProvider {
+    private static final Identifier DEFAULT_BIOME_ID = new Identifier("plains");
     
-    public SingleBiomeProvider(long seed, CompoundTag settings) {
-        super(seed, settings);
+    private final Identifier biomeId;
+    
+    public SingleBiomeProvider(OldBiomeSource biomeSource) {
+        super(biomeSource);
         
-        this.biomeId = (settings.contains("singleBiome")) ?
-            new Identifier(settings.getString("singleBiome")) :
-            new Identifier("plains");
+        this.biomeId = new Identifier(NBTUtil.readString(WorldSettings.TAG_SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
     }
 
     @Override
-    public Biome getBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
-        return registry.get(biomeId); 
+    public Biome getBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+        return this.getBiomeOrElse(biomeRegistry, this.biomeId, DEFAULT_BIOME_ID);
     }
     
-    public Identifier getBiomeId() {
-        return this.biomeId;
-    }
-
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
         return Arrays.asList(RegistryKey.of(Registry.BIOME_KEY, this.biomeId));

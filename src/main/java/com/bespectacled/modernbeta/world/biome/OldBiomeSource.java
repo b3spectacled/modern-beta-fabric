@@ -1,24 +1,23 @@
 package com.bespectacled.modernbeta.world.biome;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.registry.ProviderRegistries;
-import com.bespectacled.modernbeta.api.world.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.registry.Registries;
+import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
+import com.bespectacled.modernbeta.mixin.MixinBiomeSourceAccessor;
 import com.bespectacled.modernbeta.util.NBTUtil;
-import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
-import com.bespectacled.modernbeta.world.biome.classic.ClassicBiomes;
-import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
-import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevTheme;
-import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.registry.RegistryLookupCodec;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
@@ -30,28 +29,33 @@ public class OldBiomeSource extends BiomeSource {
         .group(
             Codec.LONG.fieldOf("seed").stable().forGetter(biomeSource -> biomeSource.seed),
             RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(biomeSource -> biomeSource.biomeRegistry),
-            CompoundTag.CODEC.fieldOf("settings").forGetter(biomeSource -> biomeSource.biomeProviderSettings)
+            CompoundTag.CODEC.fieldOf("provider_settings").forGetter(biomeSource -> biomeSource.biomeProviderSettings)
         ).apply(instance, (instance).stable(OldBiomeSource::new)));
     
     private final long seed;
     private final Registry<Biome> biomeRegistry;
     private final CompoundTag biomeProviderSettings;
+    //private final Optional<CompoundTag> caveBiomeProviderSettings;
     
-    private final AbstractBiomeProvider biomeProvider;
+    private final BiomeProvider biomeProvider;
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, CompoundTag settings) {
-        super(
-            loadBiomeProvider(seed, settings)
-            .getBiomesForRegistry()
-            .stream()
-            .map((registryKey) -> () -> (Biome) biomeRegistry.get(registryKey))
-        );
+        super(new ArrayList<Biome>());
         
         this.seed = seed;
         this.biomeRegistry = biomeRegistry;
         this.biomeProviderSettings = settings;
         
-        this.biomeProvider = loadBiomeProvider(seed, settings);
+        this.biomeProvider = Registries.BIOME.get(NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, settings)).apply(this);
+        
+        // Set biomes list here, instead of constructor.
+        ((MixinBiomeSourceAccessor)this).setBiomes(
+            this.biomeProvider
+                .getBiomesForRegistry()
+                .stream()
+                .map((registryKey) -> (Biome) biomeRegistry.get(registryKey))
+                .collect(Collectors.toList())
+        );
     }
 
     @Override
@@ -73,17 +77,21 @@ public class OldBiomeSource extends BiomeSource {
     public Registry<Biome> getBiomeRegistry() {
         return this.biomeRegistry;
     }
-
+    
+    public long getWorldSeed() {
+        return this.seed;
+    }
+    
     public boolean isProviderInstanceOf(Class<?> c) {
         return c.isInstance(this.biomeProvider);
     }
     
-    public AbstractBiomeProvider getBiomeProvider() {
+    public BiomeProvider getBiomeProvider() {
         return this.biomeProvider;
     }
     
     public CompoundTag getProviderSettings() {
-        return this.biomeProviderSettings;
+        return new CompoundTag().copyFrom(this.biomeProviderSettings);
     }
 
     @Environment(EnvType.CLIENT)
@@ -99,56 +107,5 @@ public class OldBiomeSource extends BiomeSource {
 
     public static void register() {
         Registry.register(Registry.BIOME_SOURCE, ModernBeta.createId("old"), CODEC);
-    }
-    
-    private static AbstractBiomeProvider loadBiomeProvider(long seed, CompoundTag settings) {
-        String oldWorldType = settings.getString("worldType");
-        String oldBiomeType = settings.getString("biomeType");
-        String oldIndevTheme = settings.getString("levelTheme");
-
-        Identifier biomeId = null;
-        
-        // Load legacy Indev settings if present
-        if (oldWorldType.equals("indev")) {
-            if (oldIndevTheme.equals(IndevTheme.HELL.getName()))
-                biomeId = IndevBiomes.INDEV_HELL_ID;
-            else if (oldIndevTheme.equals(IndevTheme.PARADISE.getName()))
-                biomeId = IndevBiomes.INDEV_PARADISE_ID;
-            else if (oldIndevTheme.equals(IndevTheme.WOODS.getName()))
-                biomeId = IndevBiomes.INDEV_WOODS_ID;
-            else if (oldIndevTheme.equals(IndevTheme.SNOWY.getName()))
-                biomeId = IndevBiomes.INDEV_SNOWY_ID;
-            else 
-                biomeId = IndevBiomes.INDEV_NORMAL_ID;
-        }
-        
-        // Load legacy Classic settings if present
-        if (oldWorldType.equals("alpha")) {
-            if (oldBiomeType.equals("classic") || oldBiomeType.equals("plus")) 
-                biomeId = ClassicBiomes.ALPHA_ID;
-            if (oldBiomeType.equals("winter")) 
-                biomeId = ClassicBiomes.ALPHA_WINTER_ID;
-        } else if (oldWorldType.equals("infdev")) {
-            if (oldBiomeType.equals("classic") || oldBiomeType.equals("plus")) 
-                biomeId = ClassicBiomes.INFDEV_415_ID;
-            if (oldBiomeType.equals("winter")) 
-                biomeId = ClassicBiomes.INFDEV_415_WINTER_ID;
-        } else if (oldWorldType.equals("infdev_old")) {
-            if (oldBiomeType.equals("classic") || oldBiomeType.equals("plus")) 
-                biomeId = ClassicBiomes.INFDEV_227_ID;
-            if (oldBiomeType.equals("winter")) 
-                biomeId = ClassicBiomes.INFDEV_227_WINTER_ID;
-        }
-        
-        // Load legacy Sky settings if present
-        if (oldBiomeType.equals("sky")) 
-            biomeId = BetaBiomes.SKY_ID;
-        
-        if (biomeId != null) {
-            settings.putString("singleBiome", biomeId.toString());
-            return new SingleBiomeProvider(seed, settings);
-        }
-        
-        return ProviderRegistries.BIOME.get(NBTUtil.readString("biomeType", settings)).apply(seed, settings);
     }
 }

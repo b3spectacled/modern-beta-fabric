@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.world.biome.vanilla;
 import java.util.function.LongFunction;
 
 import net.minecraft.world.biome.layer.AddBambooJungleLayer;
-import net.minecraft.world.biome.layer.SetBaseBiomesLayer;
 import net.minecraft.world.biome.layer.AddClimateLayers;
 import net.minecraft.world.biome.layer.AddColdClimatesLayer;
 import net.minecraft.world.biome.layer.AddEdgeBiomesLayer;
@@ -12,6 +11,7 @@ import net.minecraft.world.biome.layer.AddSunflowerPlainsLayer;
 import net.minecraft.world.biome.layer.EaseBiomeEdgeLayer;
 import net.minecraft.world.biome.layer.IncreaseEdgeCurvatureLayer;
 import net.minecraft.world.biome.layer.ScaleLayer;
+import net.minecraft.world.biome.layer.SetBaseBiomesLayer;
 import net.minecraft.world.biome.layer.SimpleLandNoiseLayer;
 import net.minecraft.world.biome.layer.type.ParentedLayer;
 import net.minecraft.world.biome.layer.util.CachingLayerContext;

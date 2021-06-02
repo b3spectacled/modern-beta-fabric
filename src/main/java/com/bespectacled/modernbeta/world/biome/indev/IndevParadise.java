@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.world.biome.indev;
 
+import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.carver.OldCarvers;
 import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
@@ -18,7 +19,6 @@ import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 public class IndevParadise {
     public static final Biome BIOME = create();
-    public static final Biome EDGE_COMPAT = create();
     
     private static Biome create() {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
@@ -62,12 +62,12 @@ public class IndevParadise {
             .temperature(0.6F)
             .downfall(0.6F)
             .effects((new BiomeEffects.Builder())
-                .grassColor(11272039)
-                .foliageColor(5242667)
-                .skyColor(13033215)
-                .fogColor(13033215)
-                .waterColor(2838783)
-                .waterFogColor(329011)
+                .grassColor(OldBiomeColors.OLD_GRASS_COLOR)
+                .foliageColor(OldBiomeColors.OLD_FOLIAGE_COLOR)
+                .skyColor(OldBiomeColors.INDEV_PARADISE_SKY_COLOR)
+                .fogColor(OldBiomeColors.INDEV_PARADISE_FOG_COLOR)
+                .waterColor(OldBiomeColors.OLD_WATER_COLOR)
+                .waterFogColor(OldBiomeColors.OLD_WATER_FOG_COLOR)
                 .build())
             .spawnSettings(spawnSettings.build())
             .generationSettings(genSettings.build())

@@ -3,28 +3,27 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.ArrayDeque;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
-
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
+import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
+import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
+import com.bespectacled.modernbeta.api.world.gen.StructureWeightSampler;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.beta.BetaClimateSampler;
-import com.bespectacled.modernbeta.world.biome.indev.IndevUtil;
-import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevTheme;
-import com.bespectacled.modernbeta.world.biome.indev.IndevUtil.IndevType;
-import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
-import com.bespectacled.modernbeta.world.gen.StructureWeightSampler;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
+import com.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
+import com.bespectacled.modernbeta.world.gen.provider.indev.IndevUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SnowyBlock;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -33,16 +32,14 @@ import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.Heightmap.Type;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class IndevChunkProvider extends ChunkProvider {
+public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkImitable {
     private PerlinOctaveNoiseCombined minHeightNoiseOctaves;
     private PerlinOctaveNoiseCombined maxHeightNoiseOctaves;
     
@@ -59,7 +56,7 @@ public class IndevChunkProvider extends ChunkProvider {
     private PerlinOctaveNoise gravelNoiseOctaves;
  
     // Note:
-    // I considered using 1D array for block storage,
+    // Considered using 1D array for block storage,
     // but apparently 1D array is significantly slower,
     // tested on 1024*1024*256 world
     private Block blockArr[][][];
@@ -69,9 +66,9 @@ public class IndevChunkProvider extends ChunkProvider {
     private final BlockState fluidBlock;
     private final BlockState topsoilBlock;
     
-    private final int width;
-    private final int length;
-    private final int height;
+    private final int levelWidth;
+    private final int levelLength;
+    private final int levelHeight;
     private final float caveRadius;
     
     private int layers;
@@ -83,39 +80,23 @@ public class IndevChunkProvider extends ChunkProvider {
     
     private String phase;
     
-    public IndevChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, CompoundTag providerSettings) {
+    public IndevChunkProvider(OldChunkGenerator chunkGenerator) {
         //super(seed, settings);
-        super(seed, chunkGenerator, generatorSettings, providerSettings, 256, 64, 0, -10, BlockStates.STONE, BlockStates.WATER);
+        super(chunkGenerator, 0, 256, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
-        this.levelTheme = this.providerSettings.contains("levelTheme") ? 
-            IndevTheme.fromName(this.providerSettings.getString("levelTheme")) : 
-            IndevTheme.fromName(ModernBeta.BETA_CONFIG.generation_config.indevLevelTheme);
+        this.levelType = IndevType.fromName(NBTUtil.readString("levelType", providerSettings, ModernBeta.GEN_CONFIG.indevLevelType));
+        this.levelTheme = IndevTheme.fromName(NBTUtil.readString("levelTheme", providerSettings, ModernBeta.GEN_CONFIG.indevLevelTheme));
         
-        this.levelType = this.providerSettings.contains("levelType") ? 
-            IndevType.fromName(this.providerSettings.getString("levelType")) : 
-            IndevType.fromName(ModernBeta.BETA_CONFIG.generation_config.indevLevelType);
-        
-        this.width = this.providerSettings.contains("levelWidth") ? 
-            this.providerSettings.getInt("levelWidth") : 
-            ModernBeta.BETA_CONFIG.generation_config.indevLevelWidth;
-        
-        this.length = this.providerSettings.contains("levelLength") ? 
-            this.providerSettings.getInt("levelLength") : 
-            ModernBeta.BETA_CONFIG.generation_config.indevLevelLength;
-        
-        this.height = this.providerSettings.contains("levelHeight") ? 
-            this.providerSettings.getInt("levelHeight") : 
-            ModernBeta.BETA_CONFIG.generation_config.indevLevelHeight;
-        
-        this.caveRadius = this.providerSettings.contains("caveRadius") ? 
-            this.providerSettings.getFloat("caveRadius") : 
-            ModernBeta.BETA_CONFIG.generation_config.indevCaveRadius;
+        this.levelWidth = NBTUtil.readInt("levelWidth", providerSettings, ModernBeta.GEN_CONFIG.indevLevelWidth);
+        this.levelLength = NBTUtil.readInt("levelLength", providerSettings, ModernBeta.GEN_CONFIG.indevLevelLength);
+        this.levelHeight = NBTUtil.readInt("levelHeight", providerSettings, ModernBeta.GEN_CONFIG.indevLevelHeight);
+        this.caveRadius = NBTUtil.readFloat("caveRadius", providerSettings, ModernBeta.GEN_CONFIG.indevCaveRadius);
         
         this.fluidBlock = this.isFloating() ? BlockStates.AIR : (this.isHell() ? BlockStates.LAVA : this.defaultFluid);
         this.topsoilBlock = this.isHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;
         
-        this.waterLevel = this.height / 2;
-        this.layers = (this.levelType == IndevType.FLOATING) ? (this.height - 64) / 48 + 1 : 1;
+        this.waterLevel = this.levelHeight / 2;
+        this.layers = (this.levelType == IndevType.FLOATING) ? (this.levelHeight - 64) / 48 + 1 : 1;
         
         this.blockArr = null;
         this.generated = new AtomicBoolean(false);
@@ -152,22 +133,22 @@ public class IndevChunkProvider extends ChunkProvider {
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
         
+        int worldTopY = this.worldHeight + this.minY;
+        
         for (int x = 0; x < 16; ++x) {
             int absX = startX + x;
             for (int z = 0; z < 16; ++z) {
                 int absZ = startZ + z;
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, 0, absZ));
                 
-                double temp;
                 boolean isCold;
-                if (biomeSource.getBiomeProvider() instanceof BetaBiomeProvider) {
-                    temp = BetaClimateSampler.INSTANCE.sampleTemp(absX, absZ);
-                    isCold = temp < 0.5D ? true : false;
+                if (biomeSource.getBiomeProvider() instanceof BetaClimateResolver) {
+                    isCold = ((BetaClimateResolver)biomeSource.getBiomeProvider()).sampleTemp(absX, absZ) < 0.5D ? true : false;
                 } else {
                     isCold = biome.getTemperature(mutable) < 0.15f;
                 }
                 
-                for (int y = this.worldHeight - 1; y >= 0; --y) {
+                for (int y = worldTopY - 1; y >= this.minY; --y) {
                     
                     BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                     BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -207,24 +188,33 @@ public class IndevChunkProvider extends ChunkProvider {
     
     @Override
     public int getHeight(int x, int z, Type type) {
-        x = x + this.width / 2;
-        z = z + this.length / 2;
+        int height = this.levelHeight - 1;
         
-        if (x < 0 || x >= this.width || z < 0 || z >= this.length) return waterLevel;
+        x = x + this.levelWidth / 2;
+        z = z + this.levelLength / 2;
+        
+        if (x < 0 || x >= this.levelWidth || z < 0 || z >= this.levelLength) return waterLevel;
         
         this.pregenerateTerrainOrWait();
-
-        return this.sampleHeightmap(x, z);
-    }
-    
-    @Override
-    public PerlinOctaveNoise getBeachNoise() {
-        return null;
+        
+        for (int y = this.levelHeight - 1; y >= 0; --y) {
+            Block block = this.blockArr[x][y][z];
+            
+            if (!block.equals(Blocks.AIR)) {
+                break;
+            }
+            
+            height = y;
+        }
+        
+        if (height <= this.waterLevel) height = this.waterLevel;
+         
+        return height;
     }
     
     @Override
     public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
-        boolean inIndevRegion = IndevUtil.inIndevRegion(chunkX << 4, chunkZ << 4, this.width, this.length);
+        boolean inIndevRegion = IndevUtil.inIndevRegion(chunkX << 4, chunkZ << 4, this.levelWidth, this.levelLength);
         
         if (chunkStatus == ChunkStatus.FEATURES) {
             return !inIndevRegion;
@@ -239,8 +229,9 @@ public class IndevChunkProvider extends ChunkProvider {
         return false;
     }
     
+    
     public boolean inWorldBounds(int x, int z) {
-        return IndevUtil.inIndevRegion(x, z, this.width, this.length);
+        return IndevUtil.inIndevRegion(x, z, this.levelWidth, this.levelLength);
     }
     
     public void generateIndevHouse(ServerWorld world, BlockPos spawnPos) {
@@ -286,7 +277,6 @@ public class IndevChunkProvider extends ChunkProvider {
         return this.levelTheme;
     }
     
-    @Override
     protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         if (this.blockArr == null)
             throw new IllegalStateException("[Modern Beta] Indev chunk provider is trying to set terrain before level has been generated!");
@@ -294,8 +284,8 @@ public class IndevChunkProvider extends ChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
-        int offsetX = (chunkX + this.width / 16 / 2) * 16;
-        int offsetZ = (chunkZ + this.length / 16 / 2) * 16;
+        int offsetX = (chunkX + this.levelWidth / 16 / 2) * 16;
+        int offsetZ = (chunkZ + this.levelLength / 16 / 2) * 16;
         
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
@@ -312,11 +302,11 @@ public class IndevChunkProvider extends ChunkProvider {
                 boolean terrainModified = false;
                 int soilDepth = 0;
                 
-                for (int y = this.height - 1; y >= 0; --y) {
+                for (int y = this.levelHeight - 1; y >= 0; --y) {
                     Block blockToSet = this.blockArr[offsetX + x][y][offsetZ + z];
                     
                     BlockState originalBlockStateToSet = blockToSet.getDefaultState();
-                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, absX, y, absZ, blockToSet, this.fluidBlock.getBlock());
+                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, absX, y, absZ, blockToSet, this.defaultBlock.getBlock(), this.fluidBlock.getBlock());
                     
                     boolean inFluid = blockstateToSet.equals(BlockStates.AIR) || blockstateToSet.equals(this.fluidBlock);
                     
@@ -352,18 +342,6 @@ public class IndevChunkProvider extends ChunkProvider {
         }
     }
     
-    @Override
-    protected int sampleHeightmap(int sampleX, int sampleZ) {
-        for (int y = this.height - 1; y >= 0; --y) {
-            Block block = this.blockArr[sampleX][y][sampleZ];
-            
-            if (!block.equals(Blocks.AIR)) {
-                return y;
-            }
-        }
-        
-        return 0;
-    }
     
     private void pregenerateTerrainOrWait() {
         // Only one thread should enter pregeneration method,
@@ -375,37 +353,37 @@ public class IndevChunkProvider extends ChunkProvider {
             try {
                 this.generatedLatch.await();
             } catch (InterruptedException e) {
-                ModernBeta.LOGGER.log(Level.ERROR, "[Modern Beta] Indev chunk provider failed to pregenerate terrain!");
+                ModernBeta.log(Level.ERROR, "Indev chunk provider failed to pregenerate terrain!");
                 e.printStackTrace();
             }
         }
     }
     
     private Block[][][] pregenerateTerrain() {
-        int[] heightmap = new int[this.width * this.length];
-        Block[][][] blockArr = new Block[this.width][this.height][this.length];
+        int[] heightmap = new int[this.levelWidth * this.levelLength];
+        Block[][][] blockArr = new Block[this.levelWidth][this.levelHeight][this.levelLength];
         fillBlockArr(blockArr);
         
         for (int l = 0; l < this.layers; ++l) { 
             // Floating island layer generation depends on water level being lowered on each iteration
-            this.waterLevel = (this.levelType == IndevType.FLOATING) ? this.height - 32 - l * 48 : this.waterLevel; 
+            this.waterLevel = (this.levelType == IndevType.FLOATING) ? this.levelHeight - 32 - l * 48 : this.waterLevel; 
             //this.groundLevel = this.waterLevel - 2;
             
             // Noise Generators (Here instead of constructor to randomize floating layer generation)    
-            minHeightNoiseOctaves = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
-            maxHeightNoiseOctaves = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
+            minHeightNoiseOctaves = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(rand, 8, false), new PerlinOctaveNoise(rand, 8, false));
+            maxHeightNoiseOctaves = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(rand, 8, false), new PerlinOctaveNoise(rand, 8, false));
             
-            mainHeightNoiseOctaves = new PerlinOctaveNoise(RAND, 6, false);
-            islandNoiseOctaves = new PerlinOctaveNoise(RAND, 2, false);
+            mainHeightNoiseOctaves = new PerlinOctaveNoise(rand, 6, false);
+            islandNoiseOctaves = new PerlinOctaveNoise(rand, 2, false);
             
-            dirtNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
-            floatingNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
+            dirtNoiseOctaves = new PerlinOctaveNoise(rand, 8, false);
+            floatingNoiseOctaves = new PerlinOctaveNoise(rand, 8, false);
             
-            erodeNoiseOctaves1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
-            erodeNoiseOctaves2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(RAND, 8, false), new PerlinOctaveNoise(RAND, 8, false));
+            erodeNoiseOctaves1 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(rand, 8, false), new PerlinOctaveNoise(rand, 8, false));
+            erodeNoiseOctaves2 = new PerlinOctaveNoiseCombined(new PerlinOctaveNoise(rand, 8, false), new PerlinOctaveNoise(rand, 8, false));
             
-            sandNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
-            gravelNoiseOctaves = new PerlinOctaveNoise(RAND, 8, false);
+            sandNoiseOctaves = new PerlinOctaveNoise(rand, 8, false);
+            gravelNoiseOctaves = new PerlinOctaveNoise(rand, 8, false);
             
             this.generateHeightmap(heightmap);
             this.erodeTerrain(heightmap);
@@ -418,8 +396,6 @@ public class IndevChunkProvider extends ChunkProvider {
         this.floodLava(blockArr);
         this.plantSurface(blockArr);
         
-        this.setPhase("Spawning");
-        
         return blockArr;
     }
     
@@ -427,11 +403,11 @@ public class IndevChunkProvider extends ChunkProvider {
     private void generateHeightmap(int heightmap[]) {
         this.setPhase("Raising");
         
-        for (int x = 0; x < this.width; ++x) {
-            double normalizedX = Math.abs((x / (this.width - 1.0) - 0.5) * 2.0);
+        for (int x = 0; x < this.levelWidth; ++x) {
+            double normalizedX = Math.abs((x / (this.levelWidth - 1.0) - 0.5) * 2.0);
             
-            for (int z = 0; z < this.length; ++z) {
-                double normalizedZ = Math.abs((z / (this.length - 1.0) - 0.5) * 2.0);
+            for (int z = 0; z < this.levelLength; ++z) {
+                double normalizedZ = Math.abs((z / (this.levelLength - 1.0) - 0.5) * 2.0);
                 
                 double heightLow = minHeightNoiseOctaves.sample(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
                 double heightHigh = maxHeightNoiseOctaves.sample(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
@@ -467,24 +443,36 @@ public class IndevChunkProvider extends ChunkProvider {
                     heightResult *= 0.8;
                 }
                 
-                heightmap[x + z * this.width] = (int)heightResult;
+                heightmap[x + z * this.levelWidth] = (int)heightResult;
             }
         }
+    }
+    
+    protected int sampleHeightmap(int sampleX, int sampleZ) {
+        for (int y = this.levelHeight - 1; y >= 0; --y) {
+            Block block = this.blockArr[sampleX][y][sampleZ];
+            
+            if (!block.equals(Blocks.AIR)) {
+                return y;
+            }
+        }
+        
+        return 0;
     }
     
     private void erodeTerrain(int[] heightmap) {
         this.setPhase("Eroding");
         
-        for (int x = 0; x < this.width; ++x) {
-            for (int z = 0; z < this.length; ++z) {
+        for (int x = 0; x < this.levelWidth; ++x) {
+            for (int z = 0; z < this.levelLength; ++z) {
                 double erodeSelector = erodeNoiseOctaves1.sample(x << 1, z << 1) / 8.0;
                 int erodeNoise = erodeNoiseOctaves2.sample(x << 1, z << 1) > 0.0 ? 1 : 0;
             
                 if (erodeSelector > 2.0) {
-                    int heightResult = heightmap[x + z * this.width];
+                    int heightResult = heightmap[x + z * this.levelWidth];
                     heightResult = ((heightResult - erodeNoise) / 2 << 1) + erodeNoise;
                     
-                    heightmap[x + z * this.width] = heightResult;
+                    heightmap[x + z * this.levelWidth] = heightResult;
                 }
             }
         }
@@ -493,38 +481,38 @@ public class IndevChunkProvider extends ChunkProvider {
     private void soilSurface(Block[][][] blockArr, int[] heightmap) {
         this.setPhase("Soiling");
         
-        for (int x = 0; x < this.width; ++x) {
-            double normalizedX = Math.abs((x / (this.width - 1.0) - 0.5) * 2.0);
+        for (int x = 0; x < this.levelWidth; ++x) {
+            double normalizedX = Math.abs((x / (this.levelWidth - 1.0) - 0.5) * 2.0);
             
-            for (int z = 0; z < this.length; ++z) {
-                double normalizedZ = Math.max(normalizedX, Math.abs(z / (this.length - 1.0) - 0.5) * 2.0);
+            for (int z = 0; z < this.levelLength; ++z) {
+                double normalizedZ = Math.max(normalizedX, Math.abs(z / (this.levelLength - 1.0) - 0.5) * 2.0);
                 normalizedZ = normalizedZ * normalizedZ * normalizedZ;
              
-                int dirtThreshold = heightmap[x + z * this.width] + this.waterLevel;
+                int dirtThreshold = heightmap[x + z * this.levelWidth] + this.waterLevel;
                 int dirtThickness = (int)(dirtNoiseOctaves.sample(x, z) / 24.0) - 4;
          
                 int stoneThreshold = dirtThreshold + dirtThickness;
-                heightmap[x + z * this.width] = Math.max(dirtThreshold, stoneThreshold);
+                heightmap[x + z * this.levelWidth] = Math.max(dirtThreshold, stoneThreshold);
              
-                if (heightmap[x + z * this.width] > this.height - 2) {
-                    heightmap[x + z * this.width] = this.height - 2;
+                if (heightmap[x + z * this.levelWidth] > this.levelHeight - 2) {
+                    heightmap[x + z * this.levelWidth] = this.levelHeight - 2;
                 }
              
-                if (heightmap[x + z * this.width] <= 0) {
-                    heightmap[x + z * this.width] = 1;
+                if (heightmap[x + z * this.levelWidth] <= 0) {
+                    heightmap[x + z * this.levelWidth] = 1;
                 }
              
                 double floatingNoise = floatingNoiseOctaves.sample(x * 2.3, z * 2.3) / 24.0;
              
                 // Rounds out the bottom of terrain to form floating islands
                 int roundedHeight = (int)(Math.sqrt(Math.abs(floatingNoise)) * Math.signum(floatingNoise) * 20.0) + this.waterLevel;
-                roundedHeight = (int)(roundedHeight * (1.0 - normalizedZ) + normalizedZ * this.height);
+                roundedHeight = (int)(roundedHeight * (1.0 - normalizedZ) + normalizedZ * this.levelHeight);
              
                 if (roundedHeight > this.waterLevel) {
-                    roundedHeight = this.height;
+                    roundedHeight = this.levelHeight;
                 }
                  
-                for (int y = 0; y < this.height; ++y) {
+                for (int y = 0; y < this.levelHeight; ++y) {
                     Block blockToSet = Blocks.AIR;
                      
                     if (y <= dirtThreshold)
@@ -536,9 +524,9 @@ public class IndevChunkProvider extends ChunkProvider {
                     if (this.levelType == IndevType.FLOATING && y < roundedHeight)
                         blockToSet = Blocks.AIR;
 
-                    Block someBlock = blockArr[x][y][z];
+                    Block block = blockArr[x][y][z];
                      
-                    if (someBlock.equals(Blocks.AIR)) {
+                    if (block.equals(Blocks.AIR)) {
                         blockArr[x][y][z] = blockToSet;
                     }
                 }
@@ -553,8 +541,8 @@ public class IndevChunkProvider extends ChunkProvider {
         
         if (this.levelTheme == IndevTheme.PARADISE) seaLevel += 2;
         
-        for (int x = 0; x < this.width; ++x) {
-            for (int z = 0; z < this.length; ++z) {
+        for (int x = 0; x < this.levelWidth; ++x) {
+            for (int z = 0; z < this.levelLength; ++z) {
                 boolean genSand = sandNoiseOctaves.sample(x, z) > 8.0;
                 boolean genGravel = gravelNoiseOctaves.sample(x, z) > 12.0;
                 
@@ -570,7 +558,7 @@ public class IndevChunkProvider extends ChunkProvider {
                     genSand = sandNoiseOctaves.sample(x, z) > -8.0;
                 }
                 
-                int heightResult = heightmap[x + z * this.width];
+                int heightResult = heightmap[x + z * this.levelWidth];
                 Block block = blockArr[x][heightResult][z];
                 Block blockAbove = blockArr[x][heightResult + 1][z];
                 
@@ -597,21 +585,21 @@ public class IndevChunkProvider extends ChunkProvider {
     private void carveTerrain(Block[][][] blockArr) {
         this.setPhase("Carving");
         
-        int caveCount = this.width * this.length * this.height / 256 / 64 << 1;
+        int caveCount = this.levelWidth * this.levelLength * this.levelHeight / 256 / 64 << 1;
         
         for (int i = 0; i < caveCount; ++i) {
-            float caveX = RAND.nextFloat() * this.width;
-            float caveY = RAND.nextFloat() * this.height;
-            float caveZ = RAND.nextFloat() * this.length;
+            float caveX = rand.nextFloat() * this.levelWidth;
+            float caveY = rand.nextFloat() * this.levelHeight;
+            float caveZ = rand.nextFloat() * this.levelLength;
 
-            int caveLen = (int)((RAND.nextFloat() + RAND.nextFloat()) * 200F);
+            int caveLen = (int)((rand.nextFloat() + rand.nextFloat()) * 200F);
             
-            float theta = RAND.nextFloat() * 3.1415927f * 2.0f;
+            float theta = rand.nextFloat() * 3.1415927f * 2.0f;
             float deltaTheta = 0.0f;
-            float phi = RAND.nextFloat() * 3.1415927f * 2.0f;
+            float phi = rand.nextFloat() * 3.1415927f * 2.0f;
             float deltaPhi = 0.0f;
             
-            float caveRadius = RAND.nextFloat() * RAND.nextFloat() * this.caveRadius;
+            float caveRadius = rand.nextFloat() * rand.nextFloat() * this.caveRadius;
             
             for (int len = 0; len < caveLen; ++len) {
                 caveX += MathHelper.sin(theta) * MathHelper.cos(phi);
@@ -619,16 +607,16 @@ public class IndevChunkProvider extends ChunkProvider {
                 caveY += MathHelper.sin(phi);
                 
                 theta = theta + deltaTheta * 0.2f;
-                deltaTheta = (deltaTheta * 0.9f) + (RAND.nextFloat() - RAND.nextFloat());
+                deltaTheta = (deltaTheta * 0.9f) + (rand.nextFloat() - rand.nextFloat());
                 phi = phi / 2 + deltaPhi / 4;
-                deltaPhi = (deltaPhi * 0.75f) + (RAND.nextFloat() - RAND.nextFloat());
+                deltaPhi = (deltaPhi * 0.75f) + (rand.nextFloat() - rand.nextFloat());
                 
-                if (RAND.nextFloat() >= 0.25f) {
-                    float centerX = caveX + (RAND.nextFloat() * 4.0f - 2.0f) * 0.2f;
-                    float centerY = caveY + (RAND.nextFloat() * 4.0f - 2.0f) * 0.2f;
-                    float centerZ = caveZ + (RAND.nextFloat() * 4.0f - 2.0f) * 0.2f;
+                if (rand.nextFloat() >= 0.25f) {
+                    float centerX = caveX + (rand.nextFloat() * 4.0f - 2.0f) * 0.2f;
+                    float centerY = caveY + (rand.nextFloat() * 4.0f - 2.0f) * 0.2f;
+                    float centerZ = caveZ + (rand.nextFloat() * 4.0f - 2.0f) * 0.2f;
                     
-                    float radius = (this.height - centerY) / this.height;
+                    float radius = (this.levelHeight - centerY) / this.levelHeight;
                     radius = 1.2f + (radius * 3.5f + 1.0f) * caveRadius;
                     radius = radius * MathHelper.sin(len * 3.1415927f / caveLen);
                     
@@ -648,9 +636,9 @@ public class IndevChunkProvider extends ChunkProvider {
                     float dz = z - centerZ;
                     
                     if ((dx * dx + dy * dy * 2.0f + dz * dz) < radius * radius && inLevelBounds(x, y, z)) {
-                        Block someBlock = blockArr[x][y][z];
+                        Block block = blockArr[x][y][z];
                         
-                        if (someBlock == this.defaultBlock.getBlock()) {
+                        if (block == this.defaultBlock.getBlock()) {
                             blockArr[x][y][z] = fillBlock;
                         }
                     }
@@ -669,22 +657,22 @@ public class IndevChunkProvider extends ChunkProvider {
             return;
         }
         
-        for (int x = 0; x < this.width; ++x) {
+        for (int x = 0; x < this.levelWidth; ++x) {
             flood(blockArr, x, this.waterLevel - 1, 0, toFill);
-            flood(blockArr, x, this.waterLevel - 1, this.length - 1, toFill);
+            flood(blockArr, x, this.waterLevel - 1, this.levelLength - 1, toFill);
         }
         
-        for (int z = 0; z < this.length; ++z) {
-            flood(blockArr, this.width - 1, this.waterLevel - 1, z, toFill);
+        for (int z = 0; z < this.levelLength; ++z) {
+            flood(blockArr, this.levelWidth - 1, this.waterLevel - 1, z, toFill);
             flood(blockArr, 0, this.waterLevel - 1, z, toFill);
         }
         
-        int waterSourceCount = this.width * this.length / 800;
+        int waterSourceCount = this.levelWidth * this.levelLength / 800;
         
         for (int i = 0; i < waterSourceCount; ++i) {
-            int randX = RAND.nextInt(this.width);
-            int randZ = RAND.nextInt(this.length);
-            int randY = RAND.nextBoolean() ? waterLevel - 1 : waterLevel - 2;
+            int randX = rand.nextInt(this.levelWidth);
+            int randZ = rand.nextInt(this.levelLength);
+            int randY = rand.nextBoolean() ? waterLevel - 1 : waterLevel - 2;
             
             flood(blockArr, randX, randY, randZ, toFill);
         }
@@ -699,12 +687,12 @@ public class IndevChunkProvider extends ChunkProvider {
             return;
         }
 
-        int lavaSourceCount = this.width * this.length / 20000;
+        int lavaSourceCount = this.levelWidth * this.levelLength / 20000;
          
         for (int i = 0; i < lavaSourceCount; ++i) {
-            int randX = RAND.nextInt(this.width);
-            int randZ = RAND.nextInt(this.length);
-            int randY = (int)((this.waterLevel - 3) * RAND.nextFloat() * RAND.nextFloat());
+            int randX = rand.nextInt(this.levelWidth);
+            int randZ = rand.nextInt(this.levelLength);
+            int randY = (int)((this.waterLevel - 3) * rand.nextFloat() * rand.nextFloat());
             
             flood(blockArr, randX, randY, randZ, Blocks.LAVA);
         }
@@ -722,16 +710,16 @@ public class IndevChunkProvider extends ChunkProvider {
             y = (int)curPos.y;
             z = (int)curPos.z;
             
-            Block someBlock = blockArr[x][y][z];
+            Block block = blockArr[x][y][z];
 
-            if (someBlock == Blocks.AIR) {
+            if (block == Blocks.AIR) {
                 blockArr[x][y][z] = toFill;
                 
                 if (y - 1 >= 0)          positions.add(new Vec3d(x, y - 1, z));
                 if (x - 1 >= 0)          positions.add(new Vec3d(x - 1, y, z));
-                if (x + 1 < this.width)  positions.add(new Vec3d(x + 1, y, z));
+                if (x + 1 < this.levelWidth)  positions.add(new Vec3d(x + 1, y, z));
                 if (z - 1 >= 0)          positions.add(new Vec3d(x, y, z - 1));
-                if (z + 1 < this.length) positions.add(new Vec3d(x, y, z + 1));
+                if (z + 1 < this.levelLength) positions.add(new Vec3d(x, y, z + 1));
             }
         }
         
@@ -742,9 +730,9 @@ public class IndevChunkProvider extends ChunkProvider {
         
         Block blockToPlant = this.topsoilBlock.getBlock();
         
-        for (int x = 0; x < this.width; ++x) {
-            for (int z = 0; z < this.length; ++z) {
-                for (int y = 0; y < this.height - 2; ++y) {
+        for (int x = 0; x < this.levelWidth; ++x) {
+            for (int z = 0; z < this.levelLength; ++z) {
+                for (int y = 0; y < this.levelHeight - 2; ++y) {
                     Block block = blockArr[x][y][z];
                     Block blockAbove = blockArr[x][y + 1][z];
                     
@@ -762,7 +750,7 @@ public class IndevChunkProvider extends ChunkProvider {
          
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
-                for (int y = 0; y < this.height; ++y) {
+                for (int y = 0; y < this.levelHeight; ++y) {
                     if (y < this.waterLevel) {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                     } else if (y == this.waterLevel) {
@@ -778,7 +766,7 @@ public class IndevChunkProvider extends ChunkProvider {
         
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
-                for (int y = 0; y < this.height; ++y) {
+                for (int y = 0; y < this.levelHeight; ++y) {
                     if (y < this.waterLevel - 10) {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                     } else if (y == this.waterLevel - 10) {
@@ -792,9 +780,9 @@ public class IndevChunkProvider extends ChunkProvider {
     }
     
     private void fillBlockArr(Block[][][] blockArr) {
-        for (int x = 0; x < this.width; ++x) {
-            for (int z = 0; z < this.length; ++z) {
-                for (int y = 0; y < this.height; ++y) {
+        for (int x = 0; x < this.levelWidth; ++x) {
+            for (int z = 0; z < this.levelLength; ++z) {
+                for (int y = 0; y < this.levelHeight; ++y) {
                     blockArr[x][y][z] = Blocks.AIR;
                 }
             }
@@ -802,7 +790,7 @@ public class IndevChunkProvider extends ChunkProvider {
     }
     
     private boolean inLevelBounds(int x, int y, int z) {
-        if (x < 0 || x >= this.width || y < 0 || y >= this.height || z < 0 || z >= this.length) {
+        if (x < 0 || x >= this.levelWidth || y < 0 || y >= this.levelHeight || z < 0 || z >= this.levelLength) {
             return false;
         }
             
@@ -819,10 +807,10 @@ public class IndevChunkProvider extends ChunkProvider {
     
     private void setPhase(String phase) {
         this.phase = phase;
-        
-        ModernBeta.LOGGER.log(Level.INFO, "[Indev] " + phase + "..");
+
+        ModernBeta.log(Level.INFO, "[Indev] " + phase + "..");
     }
-    
+
     public String getPhase() {
         return this.phase;
     }

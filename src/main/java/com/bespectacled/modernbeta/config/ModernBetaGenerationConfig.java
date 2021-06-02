@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.config;
 
-import com.bespectacled.modernbeta.world.biome.indev.IndevUtil;
+import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
+import com.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -8,7 +9,6 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
 @Config(name = "generation_config")
 public class ModernBetaGenerationConfig implements ConfigData {
-    
     /* Inf Generation */
     
     @ConfigEntry.Gui.Excluded
@@ -25,10 +25,10 @@ public class ModernBetaGenerationConfig implements ConfigData {
     /* Indev Generation */
     
     @ConfigEntry.Gui.Excluded
-    public String indevLevelType = IndevUtil.IndevType.ISLAND.getName();
+    public String indevLevelType = IndevType.ISLAND.getName();
     
     @ConfigEntry.Gui.Excluded
-    public String indevLevelTheme = IndevUtil.IndevTheme.NORMAL.getName();
+    public String indevLevelTheme = IndevTheme.NORMAL.getName();
     
     @ConfigEntry.Gui.Excluded
     public int indevLevelWidth = 256;
@@ -45,13 +45,19 @@ public class ModernBetaGenerationConfig implements ConfigData {
     /* Beta Islands Generation */
     
     @ConfigEntry.Gui.Excluded
+    public boolean generateOuterIslands = true;
+    
+    @ConfigEntry.Gui.Excluded
+    public int centerIslandRadius = 16;
+    
+    @ConfigEntry.Gui.Excluded
+    public float centerIslandFalloff = 4.0F;
+    
+    @ConfigEntry.Gui.Excluded
     public int centerOceanLerpDistance = 16;
     
     @ConfigEntry.Gui.Excluded
     public int centerOceanRadius = 64;
-    
-    @ConfigEntry.Gui.Excluded
-    public float centerIslandFalloff = 4.0F;
     
     @ConfigEntry.Gui.Excluded
     public float outerIslandNoiseScale = 300F;

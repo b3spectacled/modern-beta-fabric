@@ -3,11 +3,14 @@ package com.bespectacled.modernbeta.config;
 import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import io.github.prospector.modmenu.api.ModMenuApi;
 import me.shedaniel.autoconfig.AutoConfig;
-import net.minecraft.client.gui.screen.Screen;
+import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 
+@SuppressWarnings("deprecation")
+@Environment(EnvType.CLIENT)
 public class ModernBetaModMenu implements ModMenuApi {
     @Override
-    public ConfigScreenFactory<Screen> getModConfigScreenFactory() {
-        return screen -> AutoConfig.getConfigScreen(ModernBetaConfig.class, screen).get();
+    public ConfigScreenFactory<?> getModConfigScreenFactory() {
+        return parent -> AutoConfig.getConfigScreen(ModernBetaConfig.class, parent).get();
     }
 }

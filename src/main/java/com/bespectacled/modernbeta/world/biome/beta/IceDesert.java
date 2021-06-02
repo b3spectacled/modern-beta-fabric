@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.world.biome.beta;
 
+import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.carver.OldCarvers;
 import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
@@ -65,10 +66,10 @@ public class IceDesert {
             .temperature(0.0F)
             .downfall(0.5F)
             .effects((new BiomeEffects.Builder())
-                .skyColor(10263039)
-                .fogColor(12638463)
-                .waterColor(3750089)
-                .waterFogColor(329011)
+                .skyColor(OldBiomeColors.BETA_COLD_SKY_COLOR)
+                .fogColor(OldBiomeColors.BETA_FOG_COLOR)
+                .waterColor(OldBiomeColors.VANILLA_FROZEN_WATER_COLOR)
+                .waterFogColor(OldBiomeColors.VANILLA_FROZEN_WATER_FOG_COLOR)
                 .build())
             .spawnSettings(spawnSettings.build())
             .generationSettings(genSettings.build())

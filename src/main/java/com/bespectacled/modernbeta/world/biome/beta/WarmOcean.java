@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.world.biome.beta;
 
+import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.carver.OldCarvers;
 import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
@@ -57,7 +58,7 @@ public class WarmOcean {
         
         genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER);
         genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
-
+        
         genSettings.carver(GenerationStep.Carver.LIQUID, ConfiguredCarvers.UNDERWATER_CAVE);
         genSettings.carver(GenerationStep.Carver.LIQUID, ConfiguredCarvers.UNDERWATER_CANYON);
         
@@ -69,10 +70,10 @@ public class WarmOcean {
             .temperature(1.0F)
             .downfall(1.0F)
             .effects((new BiomeEffects.Builder())
-                .skyColor(6733055)
-                .fogColor(12638463)
-                .waterColor(4445678)
-                .waterFogColor(270131)
+                .skyColor(OldBiomeColors.BETA_WARM_SKY_COLOR)
+                .fogColor(OldBiomeColors.BETA_FOG_COLOR)
+                .waterColor(OldBiomeColors.VANILLA_WARM_WATER_COLOR)
+                .waterFogColor(OldBiomeColors.VANILLA_WARM_WATER_FOG_COLOR)
                 .build())
             .spawnSettings(spawnSettings.build())
             .generationSettings(genSettings.build())

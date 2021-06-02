@@ -1,6 +1,9 @@
 package com.bespectacled.modernbeta.mixin.client;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
@@ -11,11 +14,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.dimension.DimensionType;
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.config.ModernBetaConfig;
+import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.beta.BetaClimateSampler;
-import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
-
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,49 +26,53 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
-/*
- * Based on Colormatic ClientWorldMixin
- */
+@Environment(EnvType.CLIENT)
 @Mixin(value = ClientWorld.class, priority = 1)
-public abstract class MixinClientWorld extends World {
-    
-    @Unique private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
-    
-    @Unique private BlockPos curBlockPos = new BlockPos(0, 0, 0);
-    
-    @Unique private boolean useBetaBiomeColors = false;
-    @Unique private boolean isOverworld = false;
-    
+public abstract class MixinClientWorld extends World implements BetaClimateResolver {
     @Shadow private MinecraftClient client;
+    
+    @Unique private BlockPos curPos = new BlockPos(0, 0, 0);
+    @Unique private boolean useBetaBiomeColors;
+    @Unique private boolean isOverworld;
 
     private MixinClientWorld() {
         super(null, null, null, null, false, false, 0L);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void init(ClientPlayNetworkHandler netHandler, ClientWorld.Properties properties,
-            RegistryKey<World> worldKey, DimensionType dimensionType, int loadDistance, Supplier<Profiler> profiler,
-            WorldRenderer renderer, boolean debugWorld, long seed, CallbackInfo ci) {
+    private void init(
+        ClientPlayNetworkHandler netHandler, 
+        ClientWorld.Properties properties,
+        RegistryKey<World> worldKey, 
+        DimensionType dimensionType, 
+        int loadDistance, 
+        Supplier<Profiler> profiler,
+        WorldRenderer renderer, 
+        boolean debugWorld, 
+        long seed, 
+        CallbackInfo ci
+    ) {
+        boolean useBetaBiomeColors = ModernBeta.RENDER_CONFIG.useFixedSeed;
+        long worldSeed = ModernBeta.RENDER_CONFIG.fixedSeed;
         
-        boolean useBetaBiomeColors = BETA_CONFIG.rendering_config.useFixedSeed;
-        long worldSeed = BETA_CONFIG.rendering_config.fixedSeed;
-        
-        if (client.getServer() != null) { // Server check
-           BiomeSource biomeSource = client.getServer().getOverworld().getChunkManager().getChunkGenerator().getBiomeSource();
+        if (this.isClient) { // Server check
+           BiomeSource biomeSource = this.client.getServer().getOverworld().getChunkManager().getChunkGenerator().getBiomeSource();
+           boolean inBetaWorld = biomeSource instanceof OldBiomeSource && ((OldBiomeSource)biomeSource).getBiomeProvider() instanceof BetaClimateResolver;
            
-           if (!BETA_CONFIG.rendering_config.useFixedSeed && 
-               biomeSource instanceof OldBiomeSource && 
-               ((OldBiomeSource)biomeSource).isProviderInstanceOf(BetaBiomeProvider.class)
-           ) {
+           if (!ModernBeta.RENDER_CONFIG.useFixedSeed && inBetaWorld) {
                useBetaBiomeColors = true;
-               worldSeed = client.getServer().getOverworld().getSeed();
+               worldSeed = this.client.getServer().getOverworld().getSeed();
            }
         }
         
-        this.isOverworld = worldKey.getValue().equals(DimensionType.OVERWORLD_REGISTRY_KEY.getValue());
+        // Check for null worldKey (Compat for Mobs Main Menu)
+        this.isOverworld = worldKey != null ?
+            worldKey.getValue().equals(DimensionType.OVERWORLD_REGISTRY_KEY.getValue()) :
+            false;
+        
         this.useBetaBiomeColors = useBetaBiomeColors;
         
-        ModernBeta.setBlockColorsSeed(worldSeed, useBetaBiomeColors);
+        ModernBeta.setBlockColorsSeed(worldSeed, useBetaBiomeColors && this.isOverworld);
     }
     
     @ModifyVariable(
@@ -77,9 +81,7 @@ public abstract class MixinClientWorld extends World {
         index = 1
     )
     private BlockPos captureBlockPos(BlockPos pos) {
-        curBlockPos = pos;
-        
-        return pos;
+        return this.curPos = pos;
     }
     
     @ModifyVariable(
@@ -88,8 +90,11 @@ public abstract class MixinClientWorld extends World {
         index = 6  
     )
     private int injectBetaSkyColor(int skyColor) {
-        if (this.useBetaBiomeColors && BETA_CONFIG.rendering_config.renderBetaSkyColor && this.isOverworld) {
-            skyColor = BetaClimateSampler.INSTANCE.getSkyColor(curBlockPos.getX(), curBlockPos.getZ());
+        if (ModernBeta.RENDER_CONFIG.renderBetaSkyColor && this.useBetaBiomeColors && this.isOverworld) {
+            int x = (int)this.curPos.getX();
+            int z = (int)this.curPos.getZ();
+            
+            skyColor = this.sampleSkyColor(x, z);
         }
         
         return skyColor;

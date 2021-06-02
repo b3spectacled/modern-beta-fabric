@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.world.biome.classic;
 
+import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.carver.OldCarvers;
 import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
@@ -66,12 +67,12 @@ public class Alpha {
             .temperature(0.6F)
             .downfall(0.6F)
             .effects((new BiomeEffects.Builder())
-                .grassColor(11272039)
-                .foliageColor(5242667)
-                .skyColor(8961023)
-                .fogColor(12638463)
-                .waterColor(2838783)
-                .waterFogColor(329011)
+                .grassColor(OldBiomeColors.OLD_GRASS_COLOR)
+                .foliageColor(OldBiomeColors.OLD_FOLIAGE_COLOR)
+                .skyColor(OldBiomeColors.ALPHA_SKY_COLOR)
+                .fogColor(OldBiomeColors.ALPHA_FOG_COLOR)
+                .waterColor(OldBiomeColors.OLD_WATER_COLOR)
+                .waterFogColor(OldBiomeColors.OLD_WATER_FOG_COLOR)
                 .build())
             .spawnSettings(spawnSettings.build())
             .generationSettings(genSettings.build())

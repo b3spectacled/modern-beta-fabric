@@ -10,18 +10,17 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.Level;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
@@ -30,6 +29,7 @@ public class OldChunkGeneratorSettings {
     public static final Identifier BETA;
     public static final Identifier ALPHA;
     public static final Identifier SKYLANDS;
+    public static final Identifier INFDEV_611;
     public static final Identifier INFDEV_415;
     public static final Identifier INFDEV_227;
     public static final Identifier INDEV;
@@ -38,30 +38,19 @@ public class OldChunkGeneratorSettings {
     public static final ChunkGeneratorSettings BETA_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings ALPHA_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings SKYLANDS_GENERATOR_SETTINGS;
+    public static final ChunkGeneratorSettings INFDEV_611_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings INFDEV_415_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings INFDEV_227_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings INDEV_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings BETA_ISLANDS_GENERATOR_SETTINGS;
     
     public static final Map<Identifier, ChunkGeneratorSettings> SETTINGS_MAP = new HashMap<Identifier, ChunkGeneratorSettings>();
-    
-    public static final Codec<OldChunkGeneratorSettings> CODEC = RecordCodecBuilder.create(instance -> instance
-            .group(ChunkGeneratorSettings.CODEC.fieldOf("type").forGetter(settings -> settings.chunkGenSettings),
-                    CompoundTag.CODEC.fieldOf("settings").forGetter(settings -> settings.providerSettings))
-            .apply(instance, OldChunkGeneratorSettings::new));
-
-    public final ChunkGeneratorSettings chunkGenSettings;
-    public final CompoundTag providerSettings;
-
-    public OldChunkGeneratorSettings(ChunkGeneratorSettings chunkGenSettings, CompoundTag providerSettings) {
-        this.chunkGenSettings = chunkGenSettings;
-        this.providerSettings = providerSettings;
-    }
 
     public static void register() {
         register(BETA, BETA_GENERATOR_SETTINGS);
         register(SKYLANDS, SKYLANDS_GENERATOR_SETTINGS);
         register(ALPHA, ALPHA_GENERATOR_SETTINGS);
+        register(INFDEV_611, INFDEV_611_GENERATOR_SETTINGS);
         register(INFDEV_415, INFDEV_415_GENERATOR_SETTINGS);
         register(INFDEV_227, INFDEV_227_GENERATOR_SETTINGS);
         register(INDEV, INDEV_GENERATOR_SETTINGS);
@@ -76,7 +65,7 @@ public class OldChunkGeneratorSettings {
     
     public static void export() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Path dir = Paths.get("..\\src\\main\\resources\\data\\modern_beta\\noise_settings");
+        Path dir = Paths.get("..\\src\\main\\resources\\data\\modern_beta\\worldgen\\noise_settings");
         
         for (Identifier i : SETTINGS_MAP.keySet()) {
             ChunkGeneratorSettings s = SETTINGS_MAP.get(i);
@@ -86,7 +75,7 @@ public class OldChunkGeneratorSettings {
                 JsonElement json = toJson.apply(() -> s).result().get();
                 Files.write(dir.resolve(i.getPath() + ".json"), gson.toJson(json).getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
-                ModernBeta.LOGGER.error("[Modern Beta] Couldn't serialize chunk generator settings!");
+                ModernBeta.log(Level.ERROR, "[Modern Beta] Couldn't serialize chunk generator settings!");
                 e.printStackTrace();
             }
         }
@@ -96,18 +85,20 @@ public class OldChunkGeneratorSettings {
         BETA = ModernBeta.createId(BuiltInTypes.Chunk.BETA.name);
         ALPHA = ModernBeta.createId(BuiltInTypes.Chunk.ALPHA.name);
         SKYLANDS = ModernBeta.createId(BuiltInTypes.Chunk.SKYLANDS.name);
+        INFDEV_611 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_611.name);
         INFDEV_415 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_415.name);
         INFDEV_227 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_227.name);
         INDEV = ModernBeta.createId(BuiltInTypes.Chunk.INDEV.name);
         BETA_ISLANDS = ModernBeta.createId(BuiltInTypes.Chunk.BETA_ISLANDS.name);
         
+
         BETA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false);
         ALPHA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.ALPHA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false);
         SKYLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.SKYLANDS_SHAPE_CONFIG, BlockStates.STONE, BlockStates.AIR, -10, -10, 0, false);
-        INFDEV_415_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false);
+        INFDEV_611_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_611_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false);
+        INFDEV_415_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_415_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false);
         INFDEV_227_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 65, false);
         INDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.INDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false);
         BETA_ISLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false);
-         
     }
 }

@@ -14,6 +14,9 @@ public class ModernBetaBiomeConfig implements ConfigData {
     public String biomeType = BuiltInTypes.Biome.BETA.name;
     
     @ConfigEntry.Gui.Excluded
+    public String caveBiomeType = BuiltInTypes.CaveBiome.VANILLA.name;
+    
+    @ConfigEntry.Gui.Excluded
     public String singleBiome = ClassicBiomes.ALPHA_ID.toString();
     
     @ConfigEntry.Gui.Excluded

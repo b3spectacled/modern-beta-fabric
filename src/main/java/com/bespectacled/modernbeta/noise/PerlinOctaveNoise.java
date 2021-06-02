@@ -157,13 +157,13 @@ public class PerlinOctaveNoise extends Noise {
         double frequency = 1.0;
         
         for (int i = 0; i < this.octaves; ++i) {
-            double scaledFrequencyY = scaleY * frequency;
+            double frequencyY = scaleY * frequency;
             total += this.generatorCollection[i].sample3D(
                 this.maintainPrecision(x * scaleX * frequency), 
                 this.maintainPrecision(y * scaleY * frequency), 
                 this.maintainPrecision(z * scaleZ * frequency), 
-                scaledFrequencyY, 
-                y * scaledFrequencyY
+                frequencyY, 
+                y * frequencyY
             ) / frequency;
             frequency /= 2.0;
         }

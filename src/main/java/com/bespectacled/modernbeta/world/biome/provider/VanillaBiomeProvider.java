@@ -4,11 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.AbstractBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
+import com.bespectacled.modernbeta.util.NBTUtil;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeLayer;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaOceanLayer;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -16,36 +17,31 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 
-public class VanillaBiomeProvider extends AbstractBiomeProvider {
+public class VanillaBiomeProvider extends BiomeProvider {
     private final int vanillaBiomeSize;
     private final int vanillaOceanBiomeSize;
     
     private final BiomeLayerSampler biomeSampler;
     private final BiomeLayerSampler oceanSampler;
     
-    public VanillaBiomeProvider(long seed, CompoundTag settings) {
-        super(seed, settings);
+    public VanillaBiomeProvider(OldBiomeSource biomeSource) {
+        super(biomeSource);
         
-        this.vanillaBiomeSize = settings.contains("vanillaBiomeSize") ? 
-            settings.getInt("vanillaBiomeSize") :
-            ModernBeta.BETA_CONFIG.biome_config.vanillaBiomeSize;
-        
-        this.vanillaOceanBiomeSize = settings.contains("vanillaOceanBiomeSize") ?
-            settings.getInt("vanillaOceanBiomeSize") :
-            ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize;
+        this.vanillaBiomeSize = NBTUtil.readInt("vanillaBiomeSize", settings, ModernBeta.BETA_CONFIG.biome_config.vanillaBiomeSize);
+        this.vanillaOceanBiomeSize = NBTUtil.readInt("vanillaOceanBiomeSize", settings, ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize);
         
         this.biomeSampler = VanillaBiomeLayer.build(seed, false, this.vanillaBiomeSize, -1);
         this.oceanSampler = VanillaOceanLayer.build(seed, false, this.vanillaOceanBiomeSize, -1);
     }
 
     @Override
-    public Biome getBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
-        return this.biomeSampler.sample(registry, biomeX, biomeZ);
+    public Biome getBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+        return this.biomeSampler.sample(biomeRegistry, biomeX, biomeZ);
     }
 
     @Override
-    public Biome getOceanBiomeForNoiseGen(Registry<Biome> registry, int biomeX, int biomeY, int biomeZ) {
-        return this.oceanSampler.sample(registry, biomeX, biomeZ); 
+    public Biome getOceanBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+        return this.oceanSampler.sample(biomeRegistry, biomeX, biomeZ); 
     }
 
     @Override

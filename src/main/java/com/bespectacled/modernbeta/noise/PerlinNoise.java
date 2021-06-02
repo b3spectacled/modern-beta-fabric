@@ -140,7 +140,7 @@ public class PerlinNoise extends Noise {
             lerp(
                 v, 
                 lerp(
-                    u, 
+                    u,
                     grad(this.permutations[AA], x, y, z), 
                     grad(this.permutations[BA], x - 1.0, y, z)), 
                 lerp(
@@ -339,9 +339,6 @@ public class PerlinNoise extends Noise {
     
     /*
      * From vanilla PerlinNoiseSampler.
-     * 
-     * yScale = scaleY * frequency
-     * yMax = y * scaleY * frequency = y
      */
     public double sample3D(double x, double y, double z, double yScale, double yMax) {
         x += this.xOrigin;

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.world.decorator.CountNoiseDecoratorConfig;
+import com.bespectacled.modernbeta.world.decorator.CountOldNoiseDecoratorConfig;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Blocks;
@@ -30,7 +30,7 @@ import net.minecraft.world.gen.stateprovider.SimpleBlockStateProvider;
 import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider;
 
 public class OldConfiguredFeatures {
-    public static final class BetaRandomPatchConfigs {
+    private static final class BetaRandomPatchConfigs {
         private static final int TRIES = 64;
         
         public static final RandomPatchFeatureConfig GRASS_CONFIG;
@@ -77,15 +77,15 @@ public class OldConfiguredFeatures {
     public static final ConfiguredFeature<?, ?> PATCH_GRASS_ALPHA_2 = register("patch_grass_alpha_2", Feature.RANDOM_PATCH.configure(ConfiguredFeatures.Configs.GRASS_CONFIG).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP_SPREAD_DOUBLE).repeat(1).decorate(Decorator.COUNT_EXTRA.configure(new CountExtraDecoratorConfig(0, 0.1f, 1))));
     
     // Classic Trees
-    public static final ConfiguredFeature<?, ?> TREES_ALPHA_BEES = register("trees_alpha_bees", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(OLD_FANCY_OAK.withChance(0.1f)), ConfiguredFeatures.OAK_BEES_0002)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(OldDecorators.COUNT_ALPHA_NOISE_DECORATOR.configure(new CountNoiseDecoratorConfig(0, 0.1f, 1))));
-    public static final ConfiguredFeature<?, ?> TREES_INFDEV_BEES = register("trees_infdev_bees", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(ConfiguredFeatures.OAK_BEES_0002.withChance(0.1f)), OLD_FANCY_OAK)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(OldDecorators.COUNT_INFDEV_NOISE_DECORATOR.configure(new CountNoiseDecoratorConfig(0, 0, 0))));
+    public static final ConfiguredFeature<?, ?> TREES_ALPHA_BEES = register("trees_alpha_bees", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(OLD_FANCY_OAK.withChance(0.1f)), ConfiguredFeatures.OAK_BEES_0002)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(OldDecorators.COUNT_ALPHA_NOISE_DECORATOR.configure(new CountOldNoiseDecoratorConfig(0, 0.1f, 1))));
+    public static final ConfiguredFeature<?, ?> TREES_INFDEV_BEES = register("trees_infdev_bees", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(ConfiguredFeatures.OAK_BEES_0002.withChance(0.1f)), OLD_FANCY_OAK)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(OldDecorators.COUNT_INFDEV_NOISE_DECORATOR.configure(new CountOldNoiseDecoratorConfig(0, 0, 0))));
     public static final ConfiguredFeature<?, ?> TREES_OLD_INFDEV_BEES = register("trees_infdev_old_bees", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(ConfiguredFeatures.OAK_BEES_0002.withChance(0.1f)), ConfiguredFeatures.OAK_BEES_0002)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(Decorator.COUNT_EXTRA.configure(new CountExtraDecoratorConfig(0, 0.1f, 1))));
     
     // Beta Trees
-    public static final ConfiguredFeature<?, ?> TREES_BETA_FOREST_BEES = register("trees_beta_forest_bees", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(ConfiguredFeatures.BIRCH_BEES_0002.withChance(0.2f), OLD_FANCY_OAK.withChance(0.33333334f)), ConfiguredFeatures.OAK_BEES_0002)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(OldDecorators.COUNT_BETA_NOISE_DECORATOR.configure(new CountNoiseDecoratorConfig(5, 0.1f, 1))));
-    public static final ConfiguredFeature<?, ?> TREES_BETA_RAINFOREST_BEES = register("trees_beta_rainforest_bees", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(OLD_FANCY_OAK.withChance(0.33333334f)), ConfiguredFeatures.OAK_BEES_0002)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(OldDecorators.COUNT_BETA_NOISE_DECORATOR.configure(new CountNoiseDecoratorConfig(5, 0.1f, 1))));
-    public static final ConfiguredFeature<?, ?> TREES_BETA_SEASONAL_FOREST_BEES = register("trees_beta_seasonal_forest_bees", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(OLD_FANCY_OAK.withChance(0.1f)), ConfiguredFeatures.OAK_BEES_0002)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(OldDecorators.COUNT_BETA_NOISE_DECORATOR.configure(new CountNoiseDecoratorConfig(2, 0.1f, 1))));
-    public static final ConfiguredFeature<?, ?> TREES_BETA_TAIGA = register("trees_beta_taiga", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(ConfiguredFeatures.PINE.withChance(0.33333334f)), ConfiguredFeatures.SPRUCE)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(OldDecorators.COUNT_BETA_NOISE_DECORATOR.configure(new CountNoiseDecoratorConfig(5, 0.1f, 1))));
+    public static final ConfiguredFeature<?, ?> TREES_BETA_FOREST_BEES = register("trees_beta_forest_bees", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(ConfiguredFeatures.BIRCH_BEES_0002.withChance(0.2f), OLD_FANCY_OAK.withChance(0.33333334f)), ConfiguredFeatures.OAK_BEES_0002)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(OldDecorators.COUNT_BETA_NOISE_DECORATOR.configure(new CountOldNoiseDecoratorConfig(5, 0.1f, 1))));
+    public static final ConfiguredFeature<?, ?> TREES_BETA_RAINFOREST_BEES = register("trees_beta_rainforest_bees", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(OLD_FANCY_OAK.withChance(0.33333334f)), ConfiguredFeatures.OAK_BEES_0002)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(OldDecorators.COUNT_BETA_NOISE_DECORATOR.configure(new CountOldNoiseDecoratorConfig(5, 0.1f, 1))));
+    public static final ConfiguredFeature<?, ?> TREES_BETA_SEASONAL_FOREST_BEES = register("trees_beta_seasonal_forest_bees", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(OLD_FANCY_OAK.withChance(0.1f)), ConfiguredFeatures.OAK_BEES_0002)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(OldDecorators.COUNT_BETA_NOISE_DECORATOR.configure(new CountOldNoiseDecoratorConfig(2, 0.1f, 1))));
+    public static final ConfiguredFeature<?, ?> TREES_BETA_TAIGA = register("trees_beta_taiga", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(ConfiguredFeatures.PINE.withChance(0.33333334f)), ConfiguredFeatures.SPRUCE)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(OldDecorators.COUNT_BETA_NOISE_DECORATOR.configure(new CountOldNoiseDecoratorConfig(5, 0.1f, 1))));
     public static final ConfiguredFeature<?, ?> TREES_BETA_SPARSE_BEES = register("trees_beta_sparse_bees", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(OLD_FANCY_OAK.withChance(0.1f)), ConfiguredFeatures.OAK_BEES_0002)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(Decorator.COUNT_EXTRA.configure(new CountExtraDecoratorConfig(0, 0.1f, 1))));
     
     // Indev Trees
@@ -94,7 +94,6 @@ public class OldConfiguredFeatures {
     
     // Infdev 227 Flowers
     public static final ConfiguredFeature<?, ?> FLOWER_OLD_INFDEV = register("flower_old_infdev", Feature.SIMPLE_BLOCK.configure(new SimpleBlockFeatureConfig(Blocks.DANDELION.getDefaultState(), ImmutableList.of(BlockStates.GRASS_BLOCK), ImmutableList.of(BlockStates.AIR), ImmutableList.of(BlockStates.AIR))).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeatRandomly(10));
-
 
     private static <F extends FeatureConfig> ConfiguredFeature<F, ?> register(String id, ConfiguredFeature<F, ?> feature) {
         CONFIGURED_FEATURES.put(ModernBeta.createId(id), feature);

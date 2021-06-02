@@ -23,7 +23,3 @@ public class ModernBetaConfig extends PartitioningSerializer.GlobalData {
     @ConfigEntry.Gui.Excluded
     public ModernBetaBiomeConfig biome_config = new ModernBetaBiomeConfig();
 }
-
-
-
-

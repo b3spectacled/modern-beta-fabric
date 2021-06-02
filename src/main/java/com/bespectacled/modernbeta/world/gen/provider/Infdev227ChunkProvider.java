@@ -1,33 +1,31 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
 import java.util.Random;
-import java.util.function.Supplier;
-
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
+import com.bespectacled.modernbeta.api.world.gen.StructureWeightSampler;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.NBTUtil;
+import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.gen.OldGeneratorUtil;
-import com.bespectacled.modernbeta.world.gen.StructureWeightSampler;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.Heightmap.Type;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class Infdev227ChunkProvider extends ChunkProvider {
+public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseChunkImitable {
     private final boolean generateInfdevPyramid;
     private final boolean generateInfdevWall;
 
@@ -39,29 +37,24 @@ public class Infdev227ChunkProvider extends ChunkProvider {
     private final PerlinOctaveNoise noiseOctavesF;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    public Infdev227ChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, CompoundTag providerSettings) {
+    public Infdev227ChunkProvider(OldChunkGenerator chunkGenerator) {
         //super(seed, settings);
-        super(seed, chunkGenerator, generatorSettings, providerSettings, 128, 64, 0, -10, BlockStates.STONE, BlockStates.WATER);
+        super(chunkGenerator, 0, 128, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
         // Noise Generators
-        noiseOctavesA = new PerlinOctaveNoise(RAND, 16, true); 
-        noiseOctavesB = new PerlinOctaveNoise(RAND, 16, true);
-        noiseOctavesC = new PerlinOctaveNoise(RAND, 8, true);
-        noiseOctavesD = new PerlinOctaveNoise(RAND, 4, true);
-        noiseOctavesE = new PerlinOctaveNoise(RAND, 4, true);
-        noiseOctavesF = new PerlinOctaveNoise(RAND, 5, true);
-        new PerlinOctaveNoise(RAND, 3, true);
-        new PerlinOctaveNoise(RAND, 3, true);
-        new PerlinOctaveNoise(RAND, 3, true);
-        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
+        this.noiseOctavesA = new PerlinOctaveNoise(rand, 16, true); 
+        this.noiseOctavesB = new PerlinOctaveNoise(rand, 16, true);
+        this.noiseOctavesC = new PerlinOctaveNoise(rand, 8, true);
+        this.noiseOctavesD = new PerlinOctaveNoise(rand, 4, true);
+        this.noiseOctavesE = new PerlinOctaveNoise(rand, 4, true);
+        this.noiseOctavesF = new PerlinOctaveNoise(rand, 5, true);
+        new PerlinOctaveNoise(rand, 3, true);
+        new PerlinOctaveNoise(rand, 3, true);
+        new PerlinOctaveNoise(rand, 3, true);
+        this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
         
-        this.generateInfdevPyramid = this.providerSettings.contains("generateInfdevPyramid") ?
-            this.providerSettings.getBoolean("generateInfdevPyramid") :
-            ModernBeta.BETA_CONFIG.generation_config.generateInfdevPyramid;
-
-        this.generateInfdevWall = this.providerSettings.contains("generateInfdevWall") ?
-            this.providerSettings.getBoolean("generateInfdevWall") :
-            ModernBeta.BETA_CONFIG.generation_config.generateInfdevWall;
+        this.generateInfdevPyramid = NBTUtil.readBoolean("generateInfdevPyramid", providerSettings, ModernBeta.GEN_CONFIG.generateInfdevPyramid);
+        this.generateInfdevWall = NBTUtil.readBoolean("generateInfdevWall", providerSettings, ModernBeta.GEN_CONFIG.generateInfdevWall);
         
         setForestOctaves(forestNoiseOctaves);
     }
@@ -70,8 +63,7 @@ public class Infdev227ChunkProvider extends ChunkProvider {
     public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
         this.generateTerrain(chunk, structureAccessor);
     }
-
-    @Override
+    
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         ChunkRandom rand = this.createChunkRand(chunk.getPos().x, chunk.getPos().z);
@@ -83,7 +75,7 @@ public class Infdev227ChunkProvider extends ChunkProvider {
             for (int z = 0; z < 16; ++z) {
                 int absX = startX + x;
                 int absZ = startZ + z;
-                int topY = OldGeneratorUtil.getSolidHeight(chunk, x, z, this.worldHeight, this.defaultFluid) + 1;
+                int topY = GenUtil.getSolidHeight(chunk, x, z, this.worldHeight, this.defaultFluid) + 1;
                 
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, topY, absZ));
                 
@@ -91,14 +83,18 @@ public class Infdev227ChunkProvider extends ChunkProvider {
                 BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
 
                 int soilDepth = 0;
-                
-                if (this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable))
-                    continue;
 
-                for (int y = this.worldHeight - 1; y >= 0; --y) {
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
+                
+                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
                     BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
                     
                     boolean inFluid = someBlock.equals(BlockStates.AIR) || someBlock.equals(this.defaultFluid);
+                    
+                    // Skip if used custom surface generation or if below minimum surface level.
+                    if (usedCustomSurface || y < this.minSurfaceY) {
+                        continue;
+                    }
                     
                     if (inFluid) {
                         soilDepth = 0;
@@ -132,12 +128,6 @@ public class Infdev227ChunkProvider extends ChunkProvider {
         return groundHeight;
     }
     
-    @Override
-    public PerlinOctaveNoise getBeachNoise() {
-        return null;
-    }
-  
-    @Override
     protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         Random rand = new Random();
         Random chunkRand = this.createChunkRand(chunk.getPos().x, chunk.getPos().z);
@@ -151,6 +141,8 @@ public class Infdev227ChunkProvider extends ChunkProvider {
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
+        
+        int bedrockFloor = this.minY + this.bedrockFloor;
         
         Block defaultBlock = this.defaultBlock.getBlock();
         Block defaultFluid = this.defaultFluid.getBlock();
@@ -172,7 +164,7 @@ public class Infdev227ChunkProvider extends ChunkProvider {
                 noiseB = noiseB > 0.0f ? 
                     ((float)(this.noiseOctavesC.sample(absX * 0.25714284f * 2.0f, absZ * 0.25714284f * 2.0f) * noiseC / 4.0)) :
                     ((float)(this.noiseOctavesD.sample(absX * 0.25714284f, absZ * 0.25714284f) * noiseC));
-                    
+                
                 //int heightVal = (int)(noiseA + this.seaLevel + noiseB);
 
                 // Subtract 1 to be more consistent with modern versions.
@@ -184,7 +176,7 @@ public class Infdev227ChunkProvider extends ChunkProvider {
                     }
                 }
                 
-                for (int y = 0; y < this.worldHeight; ++y) {
+                for (int y = this.minY; y < this.worldTopY; ++y) {
                     Block blockToSet = Blocks.AIR;
                     
                     if (this.generateInfdevWall && (absX == 0 || absZ == 0) && y <= heightVal + 2) {
@@ -215,7 +207,7 @@ public class Infdev227ChunkProvider extends ChunkProvider {
                         blockToSet = defaultFluid;
                     }
                     */
-                    
+
                     // Subtract 1 to be more consistent with modern versions.
                     else if (y <= this.seaLevel - 1) {
                         blockToSet = defaultFluid;
@@ -244,7 +236,10 @@ public class Infdev227ChunkProvider extends ChunkProvider {
                         blockToSet = Blocks.BEDROCK;
                     }
                     
-                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, absX, y, absZ, blockToSet, this.defaultFluid.getBlock());
+                    //blockToSet = blockWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
+                    //BlockState blockstateToSet = this.getBlockState(absX, y, absZ, blockToSet);
+                    
+                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, absX, y, absZ, blockToSet, this.defaultBlock.getBlock(), this.defaultFluid.getBlock());
                     
                     chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
                     
@@ -255,7 +250,6 @@ public class Infdev227ChunkProvider extends ChunkProvider {
         }
     }
     
-    @Override
     protected int sampleHeightmap(int sampleX, int sampleZ) {
         int startX = (sampleX >> 4) << 4;
         int startZ = (sampleZ >> 4) << 4;
@@ -277,7 +271,6 @@ public class Infdev227ChunkProvider extends ChunkProvider {
 
         // Subtract 1 to be more consistent with modern versions.
         int heightVal = (int)(noiseA + (this.seaLevel - 1) + noiseB);
-        
         if ((float)this.noiseOctavesE.sample(x, z) < 0.0f) {
             heightVal = heightVal / 2 << 1;
             if ((float)this.noiseOctavesE.sample(x / 5, z / 5) < 0.0f) {

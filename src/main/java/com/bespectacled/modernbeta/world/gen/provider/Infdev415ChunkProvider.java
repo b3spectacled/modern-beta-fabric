@@ -1,62 +1,45 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
-import java.util.function.Supplier;
-
+import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.gen.OldGeneratorUtil;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
-import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-/**
- * 
- * @author Paulevs, B3spectacled
- *
- */
-public class Infdev415ChunkProvider extends NoiseChunkProvider {
-    
+public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachSpawnable {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
     private final PerlinOctaveNoise beachNoiseOctaves;
-    private final PerlinOctaveNoise stoneNoiseOctaves;
+    private final PerlinOctaveNoise surfaceNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    public Infdev415ChunkProvider(long seed, ChunkGenerator chunkGenerator, Supplier<ChunkGeneratorSettings> generatorSettings, CompoundTag providerSettings) {
+    public Infdev415ChunkProvider(OldChunkGenerator chunkGenerator) {
         //super(seed, settings);
-        super(seed, chunkGenerator, generatorSettings, providerSettings, 128, 64, 0, -10, BlockStates.STONE, BlockStates.WATER, 1, 1, 1.0, 1.0, 80, 400, -10, 3, 0, 15, 3, 0);
+        super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 1, 1, 1.0, 1.0, 80, 400, -10, 3, 0, 15, 3, 0);
         
         // Noise Generators
-        minLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        maxLimitNoiseOctaves = new PerlinOctaveNoise(RAND, 16, true);
-        mainNoiseOctaves = new PerlinOctaveNoise(RAND, 8, true);
-        beachNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
-        stoneNoiseOctaves = new PerlinOctaveNoise(RAND, 4, true);
-        new PerlinOctaveNoise(RAND, 5, true); // Unused in original source
-        forestNoiseOctaves = new PerlinOctaveNoise(RAND, 5, true);
+        this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        this.mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
+        this.beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        this.surfaceNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
+        new PerlinOctaveNoise(rand, 5, true); // Unused in original source
+        this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 5, true);
 
         setForestOctaves(forestNoiseOctaves);
-    }
-
-    @Override
-    public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
-        this.generateTerrain(chunk, structureAccessor);
     }
 
     @Override
@@ -65,6 +48,8 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
         
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
+        
+        int bedrockFloor = this.minY + this.bedrockFloor;
         
         // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
@@ -75,7 +60,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             for (int z = 0; z < 16; ++z) {
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
-                int topY = OldGeneratorUtil.getSolidHeight(chunk, x, z, this.worldHeight, this.defaultFluid) + 1;
+                int topY = GenUtil.getSolidHeight(chunk, x, z, this.worldHeight, this.defaultFluid) + 1;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(
                     absX * thirtysecond, 
@@ -87,8 +72,8 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                     109.0134,
                     absX * thirtysecond) + rand.nextDouble() * 0.2 > 3.0;
                 
-                double stoneNoise = this.stoneNoiseOctaves.sample(absX * thirtysecond * 2.0, absZ * thirtysecond * 2.0);
-                int genStone = (int)(stoneNoise / 3.0 + 3.0 + rand.nextDouble() * 0.25);
+                double surfaceNoise = this.surfaceNoiseOctaves.sample(absX * thirtysecond * 2.0, absZ * thirtysecond * 2.0);
+                int surfaceDepth = (int)(surfaceNoise / 3.0 + 3.0 + rand.nextDouble() * 0.25);
                 
                 int flag = -1;
                 
@@ -102,7 +87,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
                 
-                for (int y = this.worldHeight; y >= 0; --y) {
+                for (int y = this.worldTopY - 1; y >= this.minY; --y) {
                     
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= bedrockFloor + rand.nextInt(5)) {
@@ -110,8 +95,8 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
                     
-                    // Don't surface build below 50, per 1.17 default surface builder
-                    if (usedCustomSurface) {
+                    // Skip if used custom surface generation or if below minimum surface level.
+                    if (usedCustomSurface || y < this.minSurfaceY) {
                         continue;
                     }
                     
@@ -123,7 +108,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                         
                     } else if (someBlock.equals(this.defaultBlock)) {
                         if (flag == -1) {
-                            if (genStone <= 0) {
+                            if (surfaceDepth <= 0) {
                                 topBlock = BlockStates.AIR;
                                 fillerBlock = this.defaultBlock;
                                 
@@ -146,7 +131,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                                 topBlock = this.defaultFluid;
                             }
                             
-                            flag = genStone;
+                            flag = surfaceDepth;
                             
                             if (y >= this.seaLevel - 1) {
                                 chunk.setBlockState(mutable, topBlock, false);
@@ -158,8 +143,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                             --flag;
                             chunk.setBlockState(mutable, fillerBlock, false);
                             
-                            // Gens layer of sandstone starting at lowest block of sand, of height 1 to 4.
-                            // Beta backport.
+                            // Beta backport, adds layer of sandstone starting at lowest block of sand, of height 1 to 4.
                             if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
                                 flag = sandstoneRand.nextInt(4);
                                 fillerBlock = BlockStates.SANDSTONE;
@@ -169,47 +153,25 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 }
             }
         }
-        
-    }
-
-    @Override
-    public int getHeight(int x, int z, Type type) {
-        Integer groundHeight = heightmapCache.get(new BlockPos(x, 0, z));
-        
-        if (groundHeight == null) {
-            groundHeight = this.sampleHeightmap(x, z);
-        }
-
-        // Not ideal
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
-            groundHeight = this.seaLevel;
-
-        return groundHeight;
     }
     
     @Override
-    public PerlinOctaveNoise getBeachNoise() {
-        return this.beachNoiseOctaves;
-    }
-
-    @Override
-    protected void generateHeightNoiseArr(int noiseX, int noiseZ, double[] heightNoise) {
-        int noiseResolutionX = this.noiseSizeX + 1;
-        int noiseResolutionZ = this.noiseSizeZ + 1;
-        int noiseResolutionY = this.noiseSizeY + 1;
+    public boolean isSandAt(int x, int z) {
+        double eighth = 0.03125D;
         
-        int ndx = 0;
-        for (int nX = 0; nX < noiseResolutionX; ++nX) {
-            for (int nZ = 0; nZ < noiseResolutionZ; ++nZ) {
-                for (int nY = 0; nY < noiseResolutionY; ++nY) {
-                    heightNoise[ndx] = this.generateHeightNoise(noiseX + nX, nY, noiseZ + nZ);
-                    ndx++;
-                }
-            }
-        }
+        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
+        
+        return 
+            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
+            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
     
-    private double generateHeightNoise(int noiseX, int noiseY, int noiseZ) {
+    @Override
+    protected void generateScaleDepth(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ, double[] scaleDepth) {}
+
+    @Override
+    protected double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth) {
         // Check if y (in scaled space) is below sealevel
         // and increase density accordingly.
         //double elevGrad = y * 4.0 - 64.0;

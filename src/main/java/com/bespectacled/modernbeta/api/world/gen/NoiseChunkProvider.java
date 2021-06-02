@@ -1,31 +1,31 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.DoubleArrayPool;
-import com.bespectacled.modernbeta.util.IntArrayPool;
-import com.bespectacled.modernbeta.world.gen.StructureWeightSampler;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import com.bespectacled.modernbeta.util.pool.DoubleArrayPool;
+import com.bespectacled.modernbeta.util.pool.IntArrayPool;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public abstract class NoiseChunkProvider extends ChunkProvider {
+public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final int verticalNoiseResolution;   // Number of blocks in a vertical subchunk
     protected final int horizontalNoiseResolution; // Number of blocks in a horizontal subchunk 
     
     protected final int noiseSizeX; // Number of horizontal subchunks along x
     protected final int noiseSizeZ; // Number of horizontal subchunks along z
     protected final int noiseSizeY; // Number of vertical subchunks
+    protected final int noiseMinY;  // Subchunk index of bottom of the world
+    protected final int noiseTopY;  // Number of positive (y >= 0) vertical subchunks
 
     protected final double xzScale;
     protected final double yScale;
@@ -40,53 +40,45 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     protected final int bottomSlideTarget;
     protected final int bottomSlideSize;
     protected final int bottomSlideOffset;
-    
-    protected final Object2ObjectLinkedOpenHashMap<BlockPos, Integer> heightmapCache;
+
+    protected Long2ObjectLinkedOpenHashMap<HeightmapChunk> heightmapCache;
     protected final IntArrayPool heightmapPool;
     
     protected final DoubleArrayPool heightNoisePool;
     protected final DoubleArrayPool surfaceNoisePool;
-    
-    
-    public NoiseChunkProvider(
-        long seed, 
-        ChunkGenerator chunkGenerator, 
-        Supplier<ChunkGeneratorSettings> generatorSettings, 
-        CompoundTag providerSettings
-    ) {
+
+    public NoiseChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
-            seed, 
-            chunkGenerator, 
-            generatorSettings, 
-            providerSettings,
-            generatorSettings.get().getGenerationShapeConfig().getHeight(),
-            generatorSettings.get().getSeaLevel(),
-            generatorSettings.get().getBedrockFloorY(),
-            generatorSettings.get().getBedrockCeilingY(),
-            generatorSettings.get().getDefaultBlock(),
-            generatorSettings.get().getDefaultBlock(),
-            generatorSettings.get().getGenerationShapeConfig().getSizeVertical(),
-            generatorSettings.get().getGenerationShapeConfig().getSizeHorizontal(),
-            generatorSettings.get().getGenerationShapeConfig().getSampling().getXZScale(),
-            generatorSettings.get().getGenerationShapeConfig().getSampling().getYScale(),
-            generatorSettings.get().getGenerationShapeConfig().getSampling().getXZFactor(),
-            generatorSettings.get().getGenerationShapeConfig().getSampling().getYFactor(),
-            generatorSettings.get().getGenerationShapeConfig().getTopSlide().getTarget(),
-            generatorSettings.get().getGenerationShapeConfig().getTopSlide().getSize(),
-            generatorSettings.get().getGenerationShapeConfig().getTopSlide().getOffset(),
-            generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getTarget(),
-            generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getSize(),
-            generatorSettings.get().getGenerationShapeConfig().getBottomSlide().getOffset()
+            chunkGenerator,
+            0,
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getHeight(),
+            chunkGenerator.getGeneratorSettings().get().getSeaLevel(),
+            0,
+            chunkGenerator.getGeneratorSettings().get().getBedrockFloorY(),
+            chunkGenerator.getGeneratorSettings().get().getBedrockCeilingY(),
+            chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
+            chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSizeVertical(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSizeHorizontal(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSampling().getXZScale(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSampling().getYScale(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSampling().getXZFactor(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSampling().getYFactor(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getTopSlide().getTarget(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getTopSlide().getSize(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getTopSlide().getOffset(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getBottomSlide().getTarget(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getBottomSlide().getSize(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getBottomSlide().getOffset()
         );
     }
 
     public NoiseChunkProvider(
-        long seed,
-        ChunkGenerator chunkGenerator, 
-        Supplier<ChunkGeneratorSettings> generatorSettings,
-        CompoundTag providerSettings,
+        OldChunkGenerator chunkGenerator,
+        int minY, 
         int worldHeight, 
         int seaLevel,
+        int minSurfaceY,
         int bedrockFloor,
         int bedrockCeiling,
         BlockState defaultBlock,
@@ -104,14 +96,16 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         int bottomSlideSize,
         int bottomSlideOffset
     ) {
-        super(seed, chunkGenerator, generatorSettings, providerSettings, worldHeight, seaLevel, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid);
+        super(chunkGenerator, minY, worldHeight, seaLevel, minSurfaceY, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid);
         
         this.verticalNoiseResolution = sizeVertical * 4;
         this.horizontalNoiseResolution = sizeHorizontal * 4;
         
         this.noiseSizeX = 16 / this.horizontalNoiseResolution;
         this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
-        this.noiseSizeY = this.worldHeight / this.verticalNoiseResolution;
+        this.noiseSizeY = MathHelper.floorDiv(this.worldHeight, this.verticalNoiseResolution);
+        this.noiseMinY = MathHelper.floorDiv(this.minY, this.verticalNoiseResolution);
+        this.noiseTopY = MathHelper.floorDiv(this.minY + this.worldHeight, this.verticalNoiseResolution);
         
         this.xzScale = xzScale;
         this.yScale = yScale;
@@ -126,18 +120,15 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         this.bottomSlideTarget = bottomSlideTarget;
         this.bottomSlideSize = bottomSlideSize;
         this.bottomSlideOffset = bottomSlideOffset;
-        
+
         // Heightmap cache
-        this.heightmapCache = new Object2ObjectLinkedOpenHashMap<>(512);
-        this.heightmapPool = new IntArrayPool(64, 16 * 16);
+        this.heightmapCache = new Long2ObjectLinkedOpenHashMap<>(1024);
+        this.heightmapPool = new IntArrayPool(64, 256);
         
         // Noise array pools
         this.heightNoisePool = new DoubleArrayPool(64, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1));
-        this.surfaceNoisePool = new DoubleArrayPool(64, 16 * 16);
-        
+        this.surfaceNoisePool = new DoubleArrayPool(64, 256);
     }
-    
-    protected abstract void generateHeightNoiseArr(int noiseX, int noiseZ, double[] heightNoise);
     
     /**
      * 
@@ -147,7 +138,109 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         return this.verticalNoiseResolution;
     }
     
+    /**
+     * Generates base terrain for given chunk and returns it.
+     * 
+     * @param structureAccessor
+     * @param chunk
+     * @param biomeSource
+     * 
+     * @return A completed chunk.
+     */
     @Override
+    public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
+        this.generateTerrain(chunk, structureAccessor);
+    }
+    
+    /**
+     * Sample height at given x/z coordinate. Initially generates heightmap for entire chunk, 
+     * if chunk containing x/z coordinates has never been sampled.
+     *
+     * @param x x-coordinate in block coordinates.
+     * @param z z-coordinate in block coordinates.
+     * @param type Vanilla heightmap type.
+     * @param world
+     * 
+     * @return The y-coordinate of top block at x/z.
+     */
+    @Override
+    public int getHeight(int x, int z, Heightmap.Type type) {
+        int chunkX = x >> 4;
+        int chunkZ = z >> 4;
+        
+        long hashedCoord = (long)chunkX & 0xffffffffL | ((long)chunkZ & 0xffffffffL) << 32;
+        
+        HeightmapChunk cachedChunk = this.heightmapCache.get(hashedCoord);
+        
+        if (cachedChunk == null) {
+            cachedChunk = this.sampleHeightmap(x, z);
+            this.heightmapCache.put(hashedCoord, cachedChunk);
+        }
+        
+        int groundHeight = cachedChunk.getHeight(x, z);
+        
+        // Not ideal
+        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
+            groundHeight = this.seaLevel;
+
+        return groundHeight;
+    }
+    
+    /**
+     * Generates noise modifiers to be stored in <code>scaleDepth</code> array.
+     * 
+     * @param startNoiseX x-coordinate start of chunk in noise coordinates.
+     * @param startNoiseZ z-coordinate start of chunk in noise coordinates.
+     * @param curNoiseX Current subchunk index along x-axis.
+     * @param curNoiseZ Current subchunk index along z-axis.
+     * @param scaleDepth Array to hold noise modifiers.
+     */
+    protected abstract void generateScaleDepth(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ, double[] scaleDepth);
+    
+    /**
+     * Generates a noise density for a given noise coordinates and noise modifiers from <code>scaleDepth</code> array.
+     * 
+     * @param noiseX x-coordinate in noise coordinates.
+     * @param noiseY y-coordinate in noise coordinates.
+     * @param noiseZ z-coordinate in noise coordinates.
+     * @param scaleDepth Array holding noise modifiers.
+     * @return
+     */
+    protected abstract double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth);
+    
+    /**
+     * Generates noise values for entire chunk starting at <code>noiseX</code> and <code>noiseZ</code>, to be stored in <code>noise</code> array.
+     * 
+     * @param noiseX x-coordinate start of the chunk in noise coordinates.
+     * @param noiseZ z-coordinate start of the chunk in noise coordinates.
+     * @param noise Array to hold all noise values generated by {@link #generateNoise(int, int, int, double[])}.
+     */
+    protected void generateNoiseArr(int noiseX, int noiseZ, double[] noise) {
+        int noiseResolutionX = this.noiseSizeX + 1;
+        int noiseResolutionZ = this.noiseSizeZ + 1;
+        int noiseResolutionY = this.noiseSizeY + 1;
+        
+        double[] scaleDepth = new double[4];
+        
+        int ndx = 0;
+        for (int nX = 0; nX < noiseResolutionX; ++nX) {
+            for (int nZ = 0; nZ < noiseResolutionZ; ++nZ) {
+                this.generateScaleDepth(noiseX, noiseZ, nX, nZ, scaleDepth);
+                
+                for (int nY = this.noiseMinY; nY < noiseResolutionY + this.noiseMinY; ++nY) {
+                    noise[ndx] = this.generateNoise(noiseX + nX, nY, noiseZ + nZ, scaleDepth);
+                    ndx++;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Generates the base terrain for a given chunk.
+     * 
+     * @param chunk
+     * @param structureAccessor Collects structures within the chunk, so that terrain can be modified to accommodate them.
+     */
     protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
@@ -155,6 +248,8 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         ChunkPos chunkPos = chunk.getPos();
         int chunkX = chunkPos.x;
         int chunkZ = chunkPos.z;
+        int startX = chunkX << 4;
+        int startZ = chunkZ << 4;
         
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
@@ -164,11 +259,11 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         
         // Get and populate primary noise array
         double[] heightNoise = this.heightNoisePool.borrowArr();
-        this.generateHeightNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
-        
+        this.generateNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++ subChunkZ) {
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
+                    
                     double lowerNW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerSW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerNE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
@@ -181,6 +276,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
                         int y = subChunkY * this.verticalNoiseResolution + subY;
+                        y += this.minY;
                         
                         double deltaY = subY / (double)this.verticalNoiseResolution;
                         
@@ -191,7 +287,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
                         
                         for (int subX = 0; subX < this.horizontalNoiseResolution; ++subX) {
                             int x = subX + subChunkX * this.horizontalNoiseResolution;
-                            int absX = (chunk.getPos().x << 4) + x;
+                            int absX = startX + x;
                             
                             double deltaX = subX / (double)this.horizontalNoiseResolution;
                             
@@ -200,7 +296,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
                             
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; ++subZ) {
                                 int z = subZ + subChunkZ * this.horizontalNoiseResolution;
-                                int absZ = (chunk.getPos().z << 4) + z;
+                                int absZ = startZ + z;
                                 
                                 double deltaZ = subZ / (double)this.horizontalNoiseResolution;
                                 
@@ -221,26 +317,32 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         this.heightNoisePool.returnArr(heightNoise);
     }
     
-    @Override
-    protected int sampleHeightmap(int sampleX, int sampleZ) {
+    /**
+     * Generates a heightmap for the chunk containing the given x/z coordinates
+     * and returns to {@link #getHeight(int, int, net.minecraft.world.Heightmap.Type, HeightLimitView)} 
+     * to cache and return the height.
+     * 
+     * @param sampleX x-coordinate to sample topmost y-value for.
+     * @param sampleZ z-coordinate to sample topmost y-value for.
+     * 
+     * @return A HeightmapChunk, containing an array of ints containing the heights for the entire chunk.
+     */
+    protected HeightmapChunk sampleHeightmap(int sampleX, int sampleZ) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
 
         int chunkX = sampleX >> 4;
         int chunkZ = sampleZ >> 4;
-        
-        int startX = chunkX << 4;
-        int startZ = chunkZ << 4;
 
         double[] heightNoise = this.heightNoisePool.borrowArr();
-        this.generateHeightNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
+        this.generateNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
         
         int[] heightmap = this.heightmapPool.borrowArr(); 
         IntStream.range(0, heightmap.length).forEach(i -> heightmap[i] = 16);
 
-        for (int subChunkX = 0; subChunkX < this.noiseSizeX; subChunkX++) {
-            for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; subChunkZ++) {
-                for (int subChunkY = 0; subChunkY < this.noiseSizeY; subChunkY++) {
+        for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
+            for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++subChunkZ) {
+                for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
                     double lowerNW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerSW = heightNoise[((subChunkX + 0) * noiseResolutionXZ + (subChunkZ + 1)) * noiseResolutionY + (subChunkY + 0)];
                     double lowerNE = heightNoise[((subChunkX + 1) * noiseResolutionXZ + (subChunkZ + 0)) * noiseResolutionY + (subChunkY + 0)];
@@ -253,6 +355,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
                         int y = subChunkY * this.verticalNoiseResolution + subY;
+                        y += this.minY;
                         
                         double deltaY = subY / (double)this.verticalNoiseResolution;
                         
@@ -286,15 +389,13 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
             }
         }
 
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                heightmapCache.put(new BlockPos(startX + x, 0, startZ + z), heightmap[z + x * 16] + 1);
-            }
-        }
+        // Construct new heightmap cache from generated heightmap array
+        HeightmapChunk heightmapChunk = new HeightmapChunk(heightmap);
         
         this.heightmapPool.returnArr(heightmap);
         this.heightNoisePool.returnArr(heightNoise);
-        return heightmapCache.get(new BlockPos(sampleX, 0, sampleZ));
+        
+        return heightmapChunk;
     }
     
     /**
@@ -323,7 +424,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     }
     
     /**
-     * Modifies density to set terrain curve at bottom of the world.
+     * Interpolates density to set terrain curve at bottom of the world.
      * 
      * @param density Base density.
      * @param noiseY y-coordinate in noise coordinates.
@@ -332,17 +433,17 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
      * @return Modified noise density.
      */
     protected double applyBottomSlide(double density, int noiseY, int initialOffset) {
-        int bottomSlideStart = 0 - initialOffset - this.bottomSlideOffset;
+        int bottomSlideStart = this.noiseMinY - initialOffset - this.bottomSlideOffset;
         if (noiseY < bottomSlideStart) {
             double bottomSlideDelta = (float) (bottomSlideStart - noiseY) / ((float) this.bottomSlideSize);
-            density = density * (1.0D - bottomSlideDelta) + this.bottomSlideTarget * bottomSlideDelta;
+            density = MathHelper.lerp(bottomSlideDelta, density, this.bottomSlideTarget);
         }
         
         return density;
     }
     
     /**
-     * Modifies density to set terrain curve at top of the world.
+     * Interpolates density to set terrain curve at top of the world.
      * 
      * @param density Base density.
      * @param noiseY y-coordinate in noise coordinates.
@@ -351,12 +452,59 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
      * @return Modified noise density.
      */
     protected double applyTopSlide(double density, int noiseY, int initialOffset) {
-        int topSlideStart = (this.noiseSizeY + 1) - initialOffset - this.topSlideOffset;
+        int topSlideStart = (this.noiseSizeY + this.noiseMinY + 1) - initialOffset - this.topSlideOffset;
         if (noiseY > topSlideStart) {
             double topSlideDelta = (float) (noiseY - topSlideStart) / (float) this.topSlideSize;
-            density = density * (1.0D - topSlideDelta) + this.topSlideTarget * topSlideDelta;
+            density = MathHelper.lerp(topSlideDelta, density, this.topSlideTarget);
         }
         
         return density;
     }
+    
+    /**
+     * Interpolates density to set terrain curve at top of the world.
+     * Height target is provided to set curve at a lower world height than the actual.
+     * TODO: Check back later to see if this will work with new mountains.
+     * 
+     * @param density Base density.
+     * @param noiseY y-coordinate in noise coordinates.
+     * @param initialOffset Initial noise y-coordinate offset. Generator settings offset is subtracted from this.
+     * @param heightTarget The world height the curve should target.
+     * 
+     * @return Modified noise density.
+     */
+    protected double applyTopSlide(double density, int noiseY, int initialOffset, int heightTarget) {
+        int noiseSizeY = MathHelper.floorDiv(heightTarget, this.verticalNoiseResolution);
+        int topSlideStart = (noiseSizeY + 1) - initialOffset - this.topSlideOffset;
+        if (noiseY > topSlideStart) {
+            // Clamp delta since difference of noiseY and slideStart can exceed slideSize if real world height is larger than provided target "height"
+            double topSlideDelta = MathHelper.clamp((float) (noiseY - topSlideStart) / (float) this.topSlideSize, 0.0D, 1.0D);
+            density = MathHelper.lerp(topSlideDelta, density, this.topSlideTarget);
+        }
+        
+        return density;
+    }
+
+    /**
+     * A simple container for an array to hold height values for entire chunk (256 blocks).
+     */
+    private class HeightmapChunk {
+        private final int heightmap[] = new int[256];
+        
+        private HeightmapChunk(int[] heightmap) {
+            if (heightmap.length != 256) 
+                throw new IllegalArgumentException("[Modern Beta] Heightmap is an invalid size!");
+            
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    this.heightmap[z + x * 16] = heightmap[z + x * 16] + 1;
+                }
+            }
+        }
+        
+        private int getHeight(int x, int z) {
+            return this.heightmap[(z & 0xF) + (x & 0xF) * 16];
+        }
+    }
 }
+

@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.world.biome.beta;
 
+import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.carver.OldCarvers;
 import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
@@ -54,7 +55,7 @@ public class Rainforest {
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_RAINFOREST_10);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.FOREST_FLOWER_VEGETATION);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.BAMBOO_LIGHT);
+        //genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.BAMBOO_LIGHT);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_SUGAR_CANE);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_MELON);
@@ -72,10 +73,10 @@ public class Rainforest {
             .temperature(1.0F)
             .downfall(1.0F)
             .effects((new BiomeEffects.Builder())
-                .skyColor(6733055)
-                .fogColor(12638463)
-                .waterColor(4445678)
-                .waterFogColor(270131)
+                .skyColor(OldBiomeColors.BETA_WARM_SKY_COLOR)
+                .fogColor(OldBiomeColors.BETA_FOG_COLOR)
+                .waterColor(OldBiomeColors.VANILLA_WARM_WATER_COLOR)
+                .waterFogColor(OldBiomeColors.VANILLA_WARM_WATER_FOG_COLOR)
                 .build())
             .spawnSettings(spawnSettings.build())
             .generationSettings(genSettings.build())

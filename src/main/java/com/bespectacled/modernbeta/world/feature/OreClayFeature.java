@@ -1,6 +1,5 @@
 package com.bespectacled.modernbeta.world.feature;
 
-
 import java.util.Random;
 
 import com.mojang.serialization.Codec;
@@ -19,7 +18,13 @@ public class OreClayFeature extends Feature<OreFeatureConfig> {
     }
 
     @Override
-    public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos pos, OreFeatureConfig config) {
+    public boolean generate(
+        StructureWorldAccess world, 
+        ChunkGenerator chunkGenerator, 
+        Random random, 
+        BlockPos pos, 
+        OreFeatureConfig config
+    ) {
         int startX = pos.getX();
         int startY = pos.getY();
         int startZ = pos.getZ();

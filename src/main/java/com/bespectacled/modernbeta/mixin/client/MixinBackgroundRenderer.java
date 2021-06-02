@@ -16,7 +16,6 @@ import net.minecraft.util.math.MathHelper;
 
 @Mixin(BackgroundRenderer.class)
 public class MixinBackgroundRenderer {
-    
     @Unique private static ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
     @Unique private static int capturedRenderDistance = 16;
     

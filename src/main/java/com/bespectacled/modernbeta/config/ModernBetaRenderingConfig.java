@@ -27,6 +27,4 @@ public class ModernBetaRenderingConfig implements ConfigData {
     
     @ConfigEntry.Gui.Tooltip(count = 1)
     public boolean renderGameVersion = false;
-    
-    
 }

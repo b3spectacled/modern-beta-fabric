@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.world.biome.beta;
 
+import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.carver.OldCarvers;
 import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
@@ -68,10 +69,10 @@ public class Desert {
             .temperature(1.0F)
             .downfall(0.0F)
             .effects((new BiomeEffects.Builder())
-                .skyColor(6733055)
-                .fogColor(12638463)
-                .waterColor(4159204)
-                .waterFogColor(329011)
+                .skyColor(OldBiomeColors.BETA_WARM_SKY_COLOR)
+                .fogColor(OldBiomeColors.BETA_FOG_COLOR)
+                .waterColor(OldBiomeColors.VANILLA_WATER_COLOR)
+                .waterFogColor(OldBiomeColors.VANILLA_WATER_FOG_COLOR)
                 .build())
             .spawnSettings(spawnSettings.build())
             .generationSettings(genSettings.build())

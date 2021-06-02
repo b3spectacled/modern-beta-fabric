@@ -1,365 +1,410 @@
 package com.bespectacled.modernbeta.world.feature;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import com.bespectacled.modernbeta.util.BlockStates;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 
-/**
- * 
- * @author Paulevs
- *
- */
-public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
-    protected static final Mutable B_POS = new Mutable();
-    protected static final BlockState LOG = Blocks.OAK_LOG.getDefaultState();
-    protected static final BlockState LEAVES = Blocks.OAK_LEAVES.getDefaultState().with(LeavesBlock.DISTANCE, 1);
+public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> { 
+    private static final Set<BlockState> DIRT_REPLACEABLE = Stream.of(
+        BlockStates.DIRT,
+        BlockStates.GRASS_BLOCK, 
+        BlockStates.PODZOL, 
+        Blocks.FARMLAND.getDefaultState()
+    ).collect(Collectors.toCollection(HashSet::new));
     
-    private static final byte[] INDEXES = new byte[] {2, 0, 0, 1, 2, 1};
-    private static final Random RANDOM = new Random();
-    private static final int[] POS = new int[3];
-    private static final int[] DISTANCE = new int[3];
+    private static final BlockState OAK_LEAVES = Blocks.OAK_LEAVES.getDefaultState().with(LeavesBlock.DISTANCE, 1);
+    private static final byte[] AXIS_LOOKUP = new byte[] {2, 0, 0, 1, 2, 1};
+    private static final int FOLIAGE_BLOB_HEIGHT = 5;
     
-    private int height = 0;
-    private int actualHeight;
-    private int maxHeight = 12;
-    //private int field_366 = 4;
-    private int[][] field_367;
+    private final int treeMaxHeight;
+    
+    private int height;
+    private int treeHeight;
+    
+    private int[][] foliageBlobPositions;
 
     public OldFancyOakFeature(Codec<DefaultFeatureConfig> configCodec) {
         super(configCodec);
+        
+        this.treeMaxHeight = 12;
+        this.height = 0;
     }
     
-    private void blockLine(StructureWorldAccess world, int[] start, int[] end)
-    {
-        byte index1 = 0;
-        byte index2 = 0;
-
-        for (index1 = 0; index1 < 3; ++index1)
-        {
-            DISTANCE[index1] = end[index1] - start[index1];
-            if (Math.abs(DISTANCE[index1]) > Math.abs(DISTANCE[index2]))
-            {
-                index2 = index1;
-            }
-        }
-
-        if (DISTANCE[index2] != 0)
-        {
-            byte index3 = INDEXES[index2];
-            index1 = INDEXES[index2 + 3];
-            int offset = DISTANCE[index2] > 0 ? 1 : -1;
-
-            double d1 = (double) DISTANCE[index3] / (double) DISTANCE[index2];
-            double d2 = (double) DISTANCE[index1] / (double) DISTANCE[index2];
-
-            int[] pos = new int[3];
-            int i = 0;
-
-            for (int dist = DISTANCE[index2] + offset; i != dist; i += offset)
-            {
-                pos[index2] = MathHelper.floor((double) (start[index2] + i) + 0.5D);
-                pos[index3] = MathHelper.floor((double) start[index3] + (double) i * d1 + 0.5D);
-                pos[index1] = MathHelper.floor((double) start[index1] + (double) i * d2 + 0.5D);
-                world.setBlockState(B_POS.set(pos[0], pos[1], pos[2]), LOG, 19);
-            }
-        }
-    }
-
-    private int getLineLength(StructureWorldAccess world, int[] start, int[] end)
-    {
-        byte index1 = 0;
-        byte index2 = 0;
-
-        for (index1 = 0; index1 < 3; ++index1)
-        {
-            DISTANCE[index1] = end[index1] - start[index1];
-            if (Math.abs(DISTANCE[index1]) > Math.abs(DISTANCE[index2]))
-            {
-                index2 = index1;
-            }
-        }
-
-        if (DISTANCE[index2] == 0)
-        {
-            return -1;
-        }
-        else
-        {
-            byte var14 = INDEXES[index2];
-            index1 = INDEXES[index2 + 3];
-
-            int offset = DISTANCE[index2] > 0 ? 1 : -1;
-
-            double var9 = (double) DISTANCE[var14] / (double) DISTANCE[index2];
-            double var11 = (double) DISTANCE[index1] / (double) DISTANCE[index2];
-            int[] pos = new int[] { 0, 0, 0 };
-            int i = 0;
-
-            int dist = 0;
-            for (dist = DISTANCE[index2] + offset; i != dist; i += offset)
-            {
-                pos[index2] = start[index2] + i;
-                pos[var14] = (int) ((double) start[var14] + (double) i * var9);
-                pos[index1] = (int) ((double) start[index1] + (double) i * var11);
-                BlockState var13;
-                if (!(var13 = world.getBlockState(B_POS.set(pos[0], pos[1], pos[2]))).isAir() && var13.getBlock() != Blocks.OAK_LEAVES)
-                {
-                    break;
-                }
-            }
-
-            return i == dist ? -1 : Math.abs(i);
-        }
-    }
-    
-    public final void chunkReset()
-    {
-        POS[0] = 0;
-        POS[1] = 0;
-        POS[2] = 0;
-        height = 0;
-        maxHeight = 12;
-        //field_366 = 4;
-    }
-
     @Override
-    public final boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos pos, DefaultFeatureConfig config) {
-        maxHeight = 12;
+    public final boolean generate(
+        StructureWorldAccess world, 
+        ChunkGenerator chunkGenerator, 
+        Random random, 
+        BlockPos pos, 
+        DefaultFeatureConfig config
+    ) {
+        Random treeRandom = new Random(random.nextLong());
         
-        RANDOM.setSeed(random.nextLong());
-        
-        int x = pos.getX();
-        int y = pos.getY();
-        int z = pos.getZ();
-        
-        POS[0] = x;
-        POS[1] = y;
-        POS[2] = z;
-        
-        if (height == 0)
-        {
-            height = 5 + RANDOM.nextInt(maxHeight);
+        if (this.height == 0) {
+            this.height = 5 + treeRandom.nextInt(this.treeMaxHeight);
         }
-
-        int[] start = new int[] {POS[0], POS[1], POS[2]};
-        int[] end = new int[] {POS[0], POS[1] + height - 1, POS[2]};
-
-        boolean canGenerate;
-
-        Block block = world.getBlockState(B_POS.set(POS[0], POS[1] - 1, POS[2])).getBlock();
-        if (block != Blocks.DIRT && block != Blocks.GRASS_BLOCK && block != Blocks.PODZOL)
-        {
-            canGenerate = false;
-        }
-        else if ((z = getLineLength(world, start, end)) == -1)
-        {
-            canGenerate = true;
-        }
-        else if (z < 6)
-        {
-            canGenerate = false;
-        }
-        else
-        {
-            height = z;
-            canGenerate = true;
-        }
-
-        if (!canGenerate)
-        {
-            return false;
-        }
-        else
-        {
-            actualHeight = (int) ((double) height * 0.618);
-            if (actualHeight >= height)
-            {
-                actualHeight = height - 1;
-            }
-
-            int var42;
-            if ((var42 = (int) (1.382D + Math.pow((double) height / 13.0D, 2.0D))) <= 0)
-            {
-                var42 = 1;
-            }
-
-            int[][] var47 = new int[var42 * height][4];
-            y = POS[1] + height - 5;
-            z = 1;
-            int var64 = POS[1] + actualHeight;
-            int var7 = y - POS[1];
-            var47[0][0] = POS[0];
-            var47[0][1] = y;
-            var47[0][2] = POS[2];
-            var47[0][3] = var64;
-            --y;
-
-            while (var7 >= 0)
-            {
-                int var8 = 0;
-                float var86;
-                if ((double) var7 < (double) ((float) height) * 0.3D)
-                {
-                    var86 = -1.618F;
-                } else
-                {
-                    float var13 = (float) height / 2.0F;
-                    float var14;
-                    float var36;
-                    if ((var14 = (float) height / 2.0F - (float) var7) == 0.0F)
-                    {
-                        var36 = var13;
-                    } else if (Math.abs(var14) >= var13)
-                    {
-                        var36 = 0.0F;
-                    } else
-                    {
-                        var36 = (float) Math.sqrt(
-                                Math.pow((double) Math.abs(var13), 2.0D) - Math.pow((double) Math.abs(var14), 2.0D));
-                    }
-
-                    var86 = var36 * 0.5F;
-                }
-
-                float var9 = var86;
-                if (var86 < 0.0F)
-                {
-                    --y;
-                    --var7;
-                } else
-                {
-                    for (; var8 < var42; ++var8)
-                    {
-                        double var19 = (double) var9 * ((double) RANDOM.nextFloat() + 0.328D);
-                        double var21 = (double) RANDOM.nextFloat() * 2.0D * 3.14159D;
-                        int var10 = (int) (var19 * Math.sin(var21) + (double) POS[0] + 0.5D);
-                        int var11 = (int) (var19 * Math.cos(var21) + (double) POS[2] + 0.5D);
-                        int[] var12 = new int[] { var10, y, var11 };
-                        int[] var76 = new int[] { var10, y + 5, var11 };
-                        if (getLineLength(world, var12, var76) == -1)
-                        {
-                            var76 = new int[] { POS[0], POS[1], POS[2] };
-                            double var30 = Math.sqrt(Math.pow((double) Math.abs(POS[0] - var12[0]), 2.0D) + Math.pow((double) Math.abs(POS[2] - var12[2]), 2.0D)) * 0.381D;
-                            if ((double) var12[1] - var30 > (double) var64)
-                            {
-                                var76[1] = var64;
-                            } else
-                            {
-                                var76[1] = (int) ((double) var12[1] - var30);
-                            }
-
-                            if (getLineLength(world, var76, var12) == -1)
-                            {
-                                var47[z][0] = var10;
-                                var47[z][1] = y;
-                                var47[z][2] = var11;
-                                var47[z][3] = var76[1];
-                                ++z;
-                            }
-                        }
-                    }
-
-                    --y;
-                    --var7;
-                }
-            }
-
-            field_367 = new int[z][4];
-            System.arraycopy(var47, 0, field_367, 0, z);
-            var42 = 0;
-
-            for (int var48 = field_367.length; var42 < var48; ++var42)
-            {
-                y = field_367[var42][0];
-                z = field_367[var42][1];
-                var64 = field_367[var42][2];
-                int var55 = var64;
-                int var72 = z;
-                int var71 = y;
-
-                for (int var82 = z + 5; z < var82; ++z)
-                {
-                    int var22 = z - var72;
-                    float var20 = var22 >= 0 && var22 < 5 ? (var22 != 0 && var22 != 5 - 1 ? 3.0F : 2.0F) : -1.0F;
-                            int var78 = 18;
-                            var78 = 1;
-                            float var75 = var20;
-                            int var28 = (int) ((double) var20 + 0.618D);
-                            byte var29 = INDEXES[1];
-                            byte var84 = INDEXES[4];
-                            int[] var31 = new int[] { var71, z, var55 };
-                            int[] var73 = new int[] { 0, 0, 0 };
-                            int var74 = -var28;
-
-                            for (var73[1] = var31[1]; var74 <= var28; ++var74)
-                            {
-                                var73[var29] = var31[var29] + var74;
-                                var78 = -var28;
-
-                                while (var78 <= var28)
-                                {
-                                    if (Math.sqrt(Math.pow((double) Math.abs(var74) + 0.5D, 2.0D)
-                                            + Math.pow((double) Math.abs(var78) + 0.5D, 2.0D)) > (double) var75)
-                                    {
-                                        ++var78;
-                                    } else
-                                    {
-                                        var73[var84] = var31[var84] + var78;
-                                        BlockState var81 = world.getBlockState(B_POS.set(var73[0], var73[1], var73[2]));
-                                        if (!var81.isAir() && var81.getBlock() != Blocks.OAK_LEAVES)
-                                        {
-                                            ++var78;
-                                        }
-                                        else
-                                        {
-                                            world.setBlockState(B_POS, LEAVES, 19);
-                                            ++ var78;
-                                        }
-                                    }
-                                }
-                            }
-                }
-            }
-
-            var42 = POS[0];
-            int var49 = POS[1];
-            y = POS[1] + actualHeight;
-            z = POS[2];
-            int[] var66 = new int[] {var42, var49, z};
-            int[] var69 = new int[] {var42, y, z};
-            blockLine(world, var66, var69);
-
-            var42 = 0;
-            var49 = field_367.length;
-
-            for (int[] var57 = new int[] { POS[0], POS[1],
-                    POS[2] }; var42 < var49; ++var42)
-            {
-                int[] var63 = field_367[var42];
-                var66 = new int[] { var63[0], var63[1], var63[2] };
-                var57[1] = var63[3];
-                int var70 = var57[1] - POS[1];
-                if ((double) var70 >= (double) height * 0.2D)
-                {
-                    blockLine(world, var57, var66);
-                }
-            }
-
+    
+        if (this.canGenerate(world, pos)) {
+            this.initializeTree(world, pos, treeRandom);
+            this.placeFoliageBlobs(world, pos);
+            this.placeTreeTrunk(world, pos);
+            this.placeTreeBranches(world, pos);
+    
             return true;
         }
+        
+        return false;
     }
 
+    public final void chunkReset() {
+        this.height = 0;
+    }
     
+    private boolean canGenerate(StructureWorldAccess world, BlockPos basePos) {
+        int[] treeStartPos = { basePos.getX(), basePos.getY(), basePos.getZ() };
+        int[] treeEndPos = { basePos.getX(), basePos.getY() + this.height - 1, basePos.getZ() };
+
+        BlockPos treeBasePos = new BlockPos(basePos.getX(), basePos.getY() - 1, basePos.getZ());
+        
+        BlockState blockState = world.getBlockState(treeBasePos);
+        if (!DIRT_REPLACEABLE.contains(blockState)) {
+            return false;
+        }
+        
+        int testHeight = this.getBranchLength(world, treeStartPos, treeEndPos);
+        
+        if (testHeight == -1) {
+            return true;
+        } else if (testHeight < 6) {
+            return false;
+        } 
+        
+        this.treeHeight = testHeight;
+        return true;
+    }
+    
+    private void initializeTree(StructureWorldAccess world, BlockPos basePos, Random random) {
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        
+        // Replace grass/podzol/etc. at base position
+        if (DIRT_REPLACEABLE.contains(world.getBlockState(mutable.set(basePos.getX(), basePos.getY() - 1, basePos.getZ())))) {
+            world.setBlockState(mutable, BlockStates.DIRT, 0);
+        }
+        
+        // Height of trunk section
+        this.treeHeight = (int) ((double) this.height * 0.618);
+        
+        if (this.treeHeight >= this.height) {
+            this.treeHeight = this.height - 1;
+        }
+    
+        // Foliage blob count per y level
+        int foliageBlobCount = (int) (1.382D + Math.pow((double) this.height / 13.0D, 2.0D));
+        if (foliageBlobCount <= 0) {
+            foliageBlobCount = 1;
+        }
+        
+        int foliageBaseY = basePos.getY() + this.height - FOLIAGE_BLOB_HEIGHT;
+        int treeTopY = basePos.getY() + this.treeHeight;
+        int treeRelY = foliageBaseY - basePos.getY();
+        int blobCount = 1;
+        
+        // Create and maintain list of foliage blob positions where position is [x, baseY, z, topY]
+        int[][] foliageBlobPositions = new int[foliageBlobCount * this.height][4];
+        foliageBlobPositions[0][0] = basePos.getX();
+        foliageBlobPositions[0][1] = foliageBaseY;
+        foliageBlobPositions[0][2] = basePos.getZ();
+        foliageBlobPositions[0][3] = treeTopY;
+        
+        --foliageBaseY;
+    
+        while (treeRelY >= 0) {
+            int currentBlobCount = 0;
+            float foliageDistance = this.getFoliageDistance(treeRelY);
+            
+            // If foliage distance given, generate foliage
+            if (foliageDistance >= 0.0F) {
+                while (currentBlobCount < foliageBlobCount) {
+                    double randRadius = (double) foliageDistance * ((double) random.nextFloat() + 0.328D);
+                    double randAngle = (double) random.nextFloat() * 2.0D * 3.14159D;
+                    
+                    int randX = (int) (randRadius * Math.sin(randAngle) + (double) basePos.getX() + 0.5D);
+                    int randZ = (int) (randRadius * Math.cos(randAngle) + (double) basePos.getZ() + 0.5D);
+                    
+                    int[] startPos = new int[] { randX, foliageBaseY, randZ };
+                    int[] endPos = new int[] { randX, foliageBaseY + FOLIAGE_BLOB_HEIGHT, randZ };
+                    
+                    if (this.getBranchLength(world, startPos, endPos) == -1) {
+                        endPos = new int[] { basePos.getX(), basePos.getY(), basePos.getZ() };
+                        
+                        double distance = Math.sqrt(
+                            Math.pow((double) Math.abs(basePos.getX() - startPos[0]), 2.0D) + 
+                            Math.pow((double) Math.abs(basePos.getZ() - startPos[2]), 2.0D)
+                        ) * 0.381D;
+                        
+                        if ((double) startPos[1] - distance > (double) treeTopY) {
+                            endPos[1] = treeTopY;
+                        } else {
+                            endPos[1] = (int) ((double) startPos[1] - distance);
+                        }
+    
+                        if (this.getBranchLength(world, endPos, startPos) == -1) {
+                            foliageBlobPositions[blobCount][0] = randX;
+                            foliageBlobPositions[blobCount][1] = foliageBaseY;
+                            foliageBlobPositions[blobCount][2] = randZ;
+                            foliageBlobPositions[blobCount][3] = endPos[1];
+                            
+                            ++blobCount;
+                        }
+                    }
+                    
+                    ++currentBlobCount;
+                }
+            }
+            
+            --foliageBaseY;
+            --treeRelY;
+        }
+    
+        // Save foliage blob positions
+        this.foliageBlobPositions = new int[blobCount][4];
+        System.arraycopy(foliageBlobPositions, 0, this.foliageBlobPositions, 0, blobCount);
+    }
+
+    private void placeFoliageBlobs(StructureWorldAccess world, BlockPos basePos) {
+        int curBlob = 0;
+    
+        while(curBlob < this.foliageBlobPositions.length) {
+            int x = this.foliageBlobPositions[curBlob][0];
+            int y = this.foliageBlobPositions[curBlob][1];
+            int z = this.foliageBlobPositions[curBlob][2];
+            
+            this.placeFoliageBlob(world, x, y, z);
+            
+            curBlob++;
+        }
+    }
+
+    private void placeTreeTrunk(StructureWorldAccess world, BlockPos basePos) {
+        int x = basePos.getX();
+        int z = basePos.getZ();
+        
+        int startY = basePos.getY();
+        int topY = basePos.getY() + this.treeHeight;
+        
+        int[] startPos = {x, startY, z};
+        int[] endPos = {x, topY, z};
+        
+        this.placeBranch(world, startPos, endPos, BlockStates.OAK_LOG);
+    }
+
+    private void placeTreeBranches(StructureWorldAccess world, BlockPos basePos) {
+        int curBranch = 0 ;
+        int[] branchStartPos = { basePos.getX(), basePos.getY(), basePos.getZ() };
+        
+        while (curBranch < this.foliageBlobPositions.length) {
+            int[] foliageBlobPos = this.foliageBlobPositions[curBranch];
+            int[] branchEndPos = { foliageBlobPos[0], foliageBlobPos[1], foliageBlobPos[2] };
+            
+            // Set start y to bottom of foliage blob
+            branchStartPos[1] = foliageBlobPos[3];
+            
+            int relY = branchStartPos[1] - basePos.getY();
+            if (relY >= this.height * 0.2D) {
+                this.placeBranch(world, branchStartPos, branchEndPos, BlockStates.OAK_LOG);
+            }
+            
+            curBranch++;
+        }
+    }
+
+    private void placeBranch(StructureWorldAccess world, int[] startPos, int[] endPos, BlockState state) {
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        
+        int[] distance = {0, 0, 0};
+        
+        byte sideNdx = 0;
+        byte longestSideNdx = 0;
+    
+        for (sideNdx = 0; sideNdx < 3; ++sideNdx) {
+            distance[sideNdx] = endPos[sideNdx] - startPos[sideNdx];
+            if (Math.abs(distance[sideNdx]) > Math.abs(distance[longestSideNdx])) {
+                longestSideNdx = sideNdx;
+            }
+        }
+    
+        if (distance[longestSideNdx] != 0) {
+            byte ndx0 = AXIS_LOOKUP[longestSideNdx];
+            byte ndx1 = AXIS_LOOKUP[longestSideNdx + 3];
+            
+            int branchDir = distance[longestSideNdx] > 0 ? 1 : -1;
+    
+            double branchStep0 = (double) distance[ndx0] / (double) distance[longestSideNdx];
+            double branchStep1 = (double) distance[ndx1] / (double) distance[longestSideNdx];
+    
+            int[] pos = new int[3];
+            
+            int offset = 0;
+            int endOffset = distance[longestSideNdx] + branchDir;
+            
+            while(offset != endOffset) {
+                pos[longestSideNdx] = MathHelper.floor((startPos[longestSideNdx] + offset) + 0.5D);
+                pos[ndx0] = MathHelper.floor(startPos[ndx0] + offset * branchStep0 + 0.5D);
+                pos[ndx1] = MathHelper.floor(startPos[ndx1] + offset * branchStep1 + 0.5D);
+                
+                world.setBlockState(mutable.set(pos[0], pos[1], pos[2]), state, 19);
+                
+                offset += branchDir;
+            }
+        }
+    }
+
+    private void placeLayer(StructureWorldAccess world, int x, int y, int z, float radius, byte axis, BlockState state) {
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        int layerRadius = (int) (radius + 0.618D);
+        
+        byte ndx0 = AXIS_LOOKUP[axis];
+        byte ndx1 = AXIS_LOOKUP[axis + 3];
+        
+        int[] centerPos = new int[] { x, y, z };
+        int[] pos = new int[] { 0, 0, 0 };
+        
+        for (int off1 = -layerRadius; off1 <= layerRadius; ++off1) {
+            for (int off2 = -layerRadius; off2 <= layerRadius; ++off2) {
+                double foliageDist = Math.sqrt(
+                    Math.pow((double) Math.abs(off1) + 0.5D, 2.0D) + 
+                    Math.pow((double) Math.abs(off2) + 0.5D, 2.0D));
+                
+                if (foliageDist > radius)
+                    continue;
+                
+                pos[ndx0] = centerPos[ndx0] + off1; // 0
+                pos[1] = centerPos[1];              // 1
+                pos[ndx1] = centerPos[ndx1] + off2; // 2
+                
+                BlockState blockState = world.getBlockState(mutable.set(pos[0], pos[1], pos[2]));
+                if (blockState.isAir() || blockState.getBlock().equals(Blocks.OAK_LEAVES)) {
+                    world.setBlockState(mutable.set(pos[0], pos[1], pos[2]), state, 19);
+                }
+            }
+        }
+    }
+    
+    private void placeFoliageBlob(StructureWorldAccess world, int x, int y, int z) {
+        int curY = y;
+        int topY = y + FOLIAGE_BLOB_HEIGHT; // Foliage height
+        
+        while (curY < topY) {
+            int blobRelY = curY - y;
+            float radius = getFoliageBlobRadius(blobRelY);
+            
+            // Generate blob layer at curY
+            this.placeLayer(world, x, curY, z, radius, (byte) 1, OAK_LEAVES);
+            
+            curY++;
+        }
+    }
+
+    private float getFoliageBlobRadius(int blobRelY) {
+        return blobRelY >= 0 && blobRelY < FOLIAGE_BLOB_HEIGHT ? 
+            (blobRelY != 0 && blobRelY != FOLIAGE_BLOB_HEIGHT - 1 ? 3.0F : 2.0F) : 
+            -1.0F;
+    }
+
+    /**
+     * 
+     * @param treeRelY
+     * @return Distance foliage blob should be from main trunk, negative number if blob should not be created at y.
+     */
+    private float getFoliageDistance(int treeRelY) {
+        float distance;
+        
+        // Check to generate branch
+        if ((double) treeRelY < (double) ((float) this.height) * 0.3D) {
+            distance = -1.618F;
+            
+        } else {
+            float treeRadius = (float) this.height / 2.0F;
+            float distFromRadius = treeRadius - (float) treeRelY;
+            
+            if (distFromRadius == 0.0F) {
+                distance = treeRadius;
+            } else if (Math.abs(distFromRadius) >= treeRadius) {
+                distance = 0.0F;
+            } else {
+                distance = (float) Math.sqrt(treeRadius * treeRadius - distFromRadius * distFromRadius);
+            }
+    
+            distance *= 0.5F;
+        }
+        
+        return distance;
+    }
+    
+    private int getBranchLength(StructureWorldAccess world, int[] startPos, int[] endPos) {
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        
+        int[] distance = {0, 0, 0};
+        
+        byte sideNdx = 0;
+        byte longestSideNdx = 0;
+    
+        for (sideNdx = 0; sideNdx < 3; ++sideNdx) {
+            distance[sideNdx] = endPos[sideNdx] - startPos[sideNdx];
+            if (Math.abs(distance[sideNdx]) > Math.abs(distance[longestSideNdx])) {
+                longestSideNdx = sideNdx;
+            }
+        }
+        
+        if (distance[longestSideNdx] != 0) {
+            byte ndx0 = AXIS_LOOKUP[longestSideNdx];
+            byte ndx1 = AXIS_LOOKUP[longestSideNdx + 3];
+            
+            int branchDir = distance[longestSideNdx] > 0 ? 1 : -1;
+    
+            double branchStep0 = (double) distance[ndx0] / (double) distance[longestSideNdx];
+            double branchStep1 = (double) distance[ndx1] / (double) distance[longestSideNdx];
+    
+            int[] pos = { 0, 0, 0 };
+            
+            int offset = 0;
+            int endOffset = distance[longestSideNdx] + branchDir;
+            
+            while(offset != endOffset) {
+                pos[longestSideNdx] = startPos[longestSideNdx] + offset;
+                pos[ndx0] = MathHelper.floor(startPos[ndx0] + offset * branchStep0);
+                pos[ndx1] = MathHelper.floor(startPos[ndx1] + offset * branchStep1);
+
+                BlockState blockState = world.getBlockState(mutable.set(pos[0], pos[1], pos[2]));
+                
+                if (!blockState.isAir() && blockState.getBlock().equals(Blocks.OAK_LEAVES)) {
+                    break;
+                }
+                
+                offset += branchDir;
+            }
+            
+            if (offset == endOffset)
+                return -1;
+            
+            return Math.abs(offset);
+        }
+        
+        return -1;
+    }
 }
