@@ -243,7 +243,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     @Override
     public int getWorldHeight() {
-        // TODO: Causes issue with YOffset.BelowTop decorator (i.e. ORE_COAL_UPPER), find some workaround.
         return this.chunkProvider.getWorldHeight();
     }
 
@@ -299,7 +298,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     */
     
-    @SuppressWarnings("unused")
     private void replaceOceansInChunk(Chunk chunk) {
         if (this.biomeSource instanceof OldBiomeSource) {
             OldBiomeSource biomeSource = (OldBiomeSource)this.biomeSource;
@@ -309,9 +307,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             
             // Replace biomes in bodies of water at least four deep with ocean biomes
             for (int x = 0; x < 4; x++) {
+                int absX = pos.getStartX() + (x << 2);
                 
                 for (int z = 0; z < 4; z++) {
-                    int absX = pos.getStartX() + (x << 2);
                     int absZ = pos.getStartZ() + (z << 2);
                     
                     int y = GenUtil.getSolidHeight(chunk, absX, absZ, this.getWorldHeight(), this.defaultFluid);
