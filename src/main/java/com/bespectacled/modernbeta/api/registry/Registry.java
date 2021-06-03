@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.api.registry;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -65,7 +66,7 @@ public final class Registry<T> {
         return this.map.keySet()
             .stream()
             .filter(k -> !k.equals(BuiltInTypes.DEFAULT_ID))
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
     
     public List<T> getEntries() {

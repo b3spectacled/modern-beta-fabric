@@ -9,7 +9,6 @@ import java.util.stream.IntStream;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.pool.DoubleArrayPool;
-import com.bespectacled.modernbeta.util.pool.IntArrayPool;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
@@ -68,7 +67,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final boolean generateNoodleCaves;
 
     protected Long2ObjectLinkedOpenHashMap<HeightmapChunk> heightmapCache;
-    protected final IntArrayPool heightmapPool;
     
     protected final DoubleArrayPool heightNoisePool;
     protected final DoubleArrayPool surfaceNoisePool;
@@ -175,7 +173,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         // Heightmap cache
         this.heightmapCache = new Long2ObjectLinkedOpenHashMap<>(1024);
-        this.heightmapPool = new IntArrayPool(64, 256);
         
         // Noise array pools
         this.heightNoisePool = new DoubleArrayPool(64, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1));
@@ -434,7 +431,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         double[] heightNoise = this.heightNoisePool.borrowArr();
         this.generateNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
         
-        int[] heightmap = this.heightmapPool.borrowArr(); 
+        int[] heightmap = new int[256];
         IntStream.range(0, heightmap.length).forEach(i -> heightmap[i] = 16);
 
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
@@ -477,7 +474,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 double density = MathHelper.lerp(deltaZ, n, s);
                                 
                                 if (density > 0.0) {
-                                    heightmap[z + x * 16] = y;
+                                    heightmap[z + x * 16] = y + 1;
                                 }
                             }
                         }
@@ -489,7 +486,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         // Construct new heightmap cache from generated heightmap array
         HeightmapChunk heightmapChunk = new HeightmapChunk(heightmap);
         
-        this.heightmapPool.returnArr(heightmap);
         this.heightNoisePool.returnArr(heightNoise);
         
         return heightmapChunk;
@@ -657,17 +653,13 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * A simple container for an array to hold height values for entire chunk (256 blocks).
      */
     private class HeightmapChunk {
-        private final int heightmap[] = new int[256];
+        private final int heightmap[];
         
         private HeightmapChunk(int[] heightmap) {
             if (heightmap.length != 256) 
                 throw new IllegalArgumentException("[Modern Beta] Heightmap is an invalid size!");
             
-            for (int x = 0; x < 16; x++) {
-                for (int z = 0; z < 16; z++) {
-                    this.heightmap[z + x * 16] = heightmap[z + x * 16] + 1;
-                }
-            }
+            this.heightmap = heightmap;
         }
         
         private int getHeight(int x, int z) {
