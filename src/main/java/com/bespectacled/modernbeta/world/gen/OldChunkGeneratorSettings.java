@@ -90,7 +90,6 @@ public class OldChunkGeneratorSettings {
         INFDEV_227 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_227.name);
         INDEV = ModernBeta.createId(BuiltInTypes.Chunk.INDEV.name);
         BETA_ISLANDS = ModernBeta.createId(BuiltInTypes.Chunk.BETA_ISLANDS.name);
-        
 
         BETA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false);
         ALPHA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.ALPHA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false);
