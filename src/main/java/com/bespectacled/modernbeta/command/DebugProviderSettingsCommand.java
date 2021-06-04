@@ -20,22 +20,20 @@ public class DebugProviderSettingsCommand {
     }
     
     private static int execute(ServerCommandSource source) {
-        if (!(source.getWorld().getChunkManager().getChunkGenerator() instanceof OldChunkGenerator)) {
-            source.sendFeedback(new LiteralText("Not a Modern Beta world!").formatted(Formatting.RED), false);
-            return -1;
+        if (source.getWorld().getChunkManager().getChunkGenerator() instanceof OldChunkGenerator oldChunkGenerator) {
+            String chunkProviderSettings = oldChunkGenerator.getProviderSettings().asString();
+            String biomeProviderSettings = ((OldBiomeSource)oldChunkGenerator.getBiomeSource()).getProviderSettings().asString();
+            
+            source.sendFeedback(new LiteralText("Chunk Provider Settings:").formatted(Formatting.YELLOW), false);
+            source.sendFeedback(new LiteralText(chunkProviderSettings), false);
+            
+            source.sendFeedback(new LiteralText("Biome Provider Settings:").formatted(Formatting.YELLOW), false);
+            source.sendFeedback(new LiteralText(biomeProviderSettings), false);
+            
+            return 0;
         }
         
-        OldChunkGenerator oldChunkGenerator = (OldChunkGenerator)source.getWorld().getChunkManager().getChunkGenerator();
-        
-        String chunkProviderSettings = oldChunkGenerator.getProviderSettings().asString();
-        String biomeProviderSettings = ((OldBiomeSource)oldChunkGenerator.getBiomeSource()).getProviderSettings().asString();
-        
-        source.sendFeedback(new LiteralText("Chunk Provider Settings:").formatted(Formatting.YELLOW), false);
-        source.sendFeedback(new LiteralText(chunkProviderSettings), false);
-        
-        source.sendFeedback(new LiteralText("Biome Provider Settings:").formatted(Formatting.YELLOW), false);
-        source.sendFeedback(new LiteralText(biomeProviderSettings), false);
-        
-        return 0;
+        source.sendFeedback(new LiteralText("Not a Modern Beta world!").formatted(Formatting.RED), false);
+        return -1;
     }
 }

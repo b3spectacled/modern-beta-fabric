@@ -482,13 +482,10 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                 }
             }
         }
-
-        // Construct new heightmap cache from generated heightmap array
-        HeightmapChunk heightmapChunk = new HeightmapChunk(heightmap);
-        
         this.heightNoisePool.returnArr(heightNoise);
         
-        return heightmapChunk;
+        // Construct new heightmap cache from generated heightmap array
+        return new HeightmapChunk(heightmap);
     }
     
     /**

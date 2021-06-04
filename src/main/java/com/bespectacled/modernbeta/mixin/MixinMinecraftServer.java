@@ -39,20 +39,17 @@ public class MixinMinecraftServer {
         ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
         BlockPos spawnPos = SpawnLocating.findServerSpawnPoint(world, chunkPos, validSpawnNeeded);
         
-        if (chunkGenerator instanceof OldChunkGenerator) {
+        if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
             ((IntRuleAccessor)world.getGameRules().get(GameRules.SPAWN_RADIUS)).setValue(0); // Ensure a centered spawn
-            OldChunkGenerator oldChunkGenerator = (OldChunkGenerator)chunkGenerator;
             
-            if (oldChunkGenerator.getChunkProvider() instanceof BeachSpawnable) { // Attempt to place a beach spawn if provider generates classic beaches.
+            if (oldChunkGenerator.getChunkProvider() instanceof BeachSpawnable chunkProvider) { // Attempt to place a beach spawn if provider generates classic beaches.
                 ModernBeta.log(Level.INFO, "Setting a beach spawn..");
                 
-                BeachSpawnable chunkProvider = (BeachSpawnable)oldChunkGenerator.getChunkProvider();
                 spawnPos = getInitialOldSpawn(world.getChunk(chunkPos.getStartPos()), oldChunkGenerator, chunkProvider, oldChunkGenerator.getSeaLevel());
             }
             
-            if (spawnPos != null && oldChunkGenerator.isProviderInstanceOf(IndevChunkProvider.class)) {
+            if (spawnPos != null && oldChunkGenerator.getChunkProvider() instanceof IndevChunkProvider indevChunkProvider) {
                 ModernBeta.log(Level.INFO, "[Indev] Spawning..");
-                IndevChunkProvider indevChunkProvider = (IndevChunkProvider)oldChunkGenerator.getChunkProvider();
                 
                 // Ensure spawn location and Indev house is within level bounds.
                 if (!indevChunkProvider.inWorldBounds(spawnPos.getX(), spawnPos.getZ())) {

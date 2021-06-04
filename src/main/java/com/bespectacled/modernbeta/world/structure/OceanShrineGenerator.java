@@ -74,8 +74,8 @@ public class OceanShrineGenerator {
                         serverWorldAccess.getFluidState(pos).isIn(FluidTags.WATER)), 
                     2);
                 BlockEntity blockEnt = serverWorldAccess.getBlockEntity(pos);
-                if (blockEnt instanceof ChestBlockEntity) {
-                    ((ChestBlockEntity)blockEnt).setLootTable(LootTables.BURIED_TREASURE_CHEST, random.nextLong());
+                if (blockEnt instanceof ChestBlockEntity chestBlockEntity) {
+                    chestBlockEntity.setLootTable(LootTables.BURIED_TREASURE_CHEST, random.nextLong());
                 }
             }
         }

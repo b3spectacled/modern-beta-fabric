@@ -144,8 +144,8 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, 0, absZ));
                 
                 boolean isCold;
-                if (biomeSource.getBiomeProvider() instanceof BetaClimateResolver) {
-                    isCold = ((BetaClimateResolver)biomeSource.getBiomeProvider()).sampleTemp(absX, absZ) < 0.5D ? true : false;
+                if (biomeSource.getBiomeProvider() instanceof BetaClimateResolver betaClimateResolver) {
+                    isCold = betaClimateResolver.sampleTemp(absX, absZ) < 0.5D ? true : false;
                 } else {
                     isCold = biome.isCold(mutable);
                 }

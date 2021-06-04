@@ -68,8 +68,8 @@ public class OldBiomeSource extends BiomeSource {
     }
     
     public Biome getBiomeForSurfaceGen(ChunkRegion region, BlockPos pos) {
-        if (this.biomeProvider instanceof BiomeResolver)
-            return ((BiomeResolver)this.biomeProvider).getBiome(this.biomeRegistry, pos.getX(), pos.getY(), pos.getZ());
+        if (this.biomeProvider instanceof BiomeResolver biomeResolver)
+            return biomeResolver.getBiome(this.biomeRegistry, pos.getX(), pos.getY(), pos.getZ());
         
         return region.getBiome(pos);
     }
@@ -80,10 +80,6 @@ public class OldBiomeSource extends BiomeSource {
     
     public long getWorldSeed() {
         return this.seed;
-    }
-    
-    public boolean isProviderInstanceOf(Class<?> c) {
-        return c.isInstance(this.biomeProvider);
     }
     
     public BiomeProvider getBiomeProvider() {

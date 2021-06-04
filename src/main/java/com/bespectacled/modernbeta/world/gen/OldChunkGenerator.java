@@ -109,8 +109,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public void buildSurface(ChunkRegion region, Chunk chunk) {
         if (!this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.SURFACE))  
-            if (this.biomeSource instanceof OldBiomeSource)
-                this.chunkProvider.provideSurface(region, chunk, (OldBiomeSource)this.biomeSource);
+            if (this.biomeSource instanceof OldBiomeSource oldBiomeSource)
+                this.chunkProvider.provideSurface(region, chunk, oldBiomeSource);
             else
                 super.buildSurface(region, chunk);
         
@@ -307,10 +307,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.settings;
     }
     
-    public boolean isProviderInstanceOf(Class<?> c) {
-        return c.isInstance(this.chunkProvider);
-    }
-    
     public ChunkProvider getChunkProvider() {
         return this.chunkProvider;
     }
@@ -343,8 +339,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @SuppressWarnings("unused")
     private void replaceOceansInChunk(Chunk chunk) {
-        if (this.biomeSource instanceof OldBiomeSource) {
-            OldBiomeSource biomeSource = (OldBiomeSource)this.biomeSource;
+        if (this.biomeSource instanceof OldBiomeSource oldBiomeSource) {
             MutableBiomeArray mutableBiomeArray = MutableBiomeArray.inject(chunk.getBiomeArray());
             
             ChunkPos chunkPos = chunk.getPos();
@@ -366,7 +361,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     int offsetZ = absZ + 2;
                     
                     if (GenUtil.getSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, this.defaultFluid) < seaLevel - OCEAN_MIN_DEPTH) {
-                        Biome oceanBiome = biomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);
+                        Biome oceanBiome = oldBiomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);
                         
                         // Fill biome column
                         for (int biomeY = 0; biomeY < biomeHeight; ++biomeY) {
@@ -391,8 +386,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int biomeZ = z >> 2;
         
         Biome biome;
-        if (this.generateOceans && this.biomeSource instanceof OldBiomeSource && this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world) < seaLevel - OCEAN_MIN_DEPTH) {
-            biome = ((OldBiomeSource)this.biomeSource).getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
+        if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource && 
+            this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world) < seaLevel - OCEAN_MIN_DEPTH
+        ) {
+            biome = oldBiomeSource.getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
         } else {
             biome = this.biomeSource.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
         }

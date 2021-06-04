@@ -14,7 +14,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.WorldView;
-import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
@@ -35,8 +34,6 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
         
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutableDown = new BlockPos.Mutable();
-
-        BiomeSource biomeSource = generator.getBiomeSource();
         
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
@@ -48,8 +45,10 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 mutableDown.set(mutable).move(Direction.DOWN, 1);
                 
                 double temp;
-                if (generator.getBiomeSource() instanceof OldBiomeSource && ((OldBiomeSource)biomeSource).getBiomeProvider() instanceof BetaClimateResolver) {
-                    temp = ((BetaClimateResolver)((OldBiomeSource)biomeSource).getBiomeProvider()).sampleTemp(absX, absZ);
+                if (generator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource && 
+                    oldBiomeSource.getBiomeProvider() instanceof BetaClimateResolver betaClimateResolver
+                ) {
+                    temp = betaClimateResolver.sampleTemp(absX, absZ);
                 } else {
                     temp = world.getBiome(mutable).getTemperature();
                 }
@@ -84,9 +83,9 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                     return true;
                 }
 
-                boolean boolean7 = worldView.isWater(blockPos.west()) && worldView.isWater(blockPos.east())
+                boolean submerged = worldView.isWater(blockPos.west()) && worldView.isWater(blockPos.east())
                         && worldView.isWater(blockPos.north()) && worldView.isWater(blockPos.south());
-                if (!boolean7) {
+                if (!submerged) {
                     return true;
                 }
             }

@@ -56,7 +56,7 @@ public abstract class MixinClientWorld extends World implements BetaClimateResol
         
         if (this.isClient && this.client.getServer() != null) { // Server check
            BiomeSource biomeSource = this.client.getServer().getOverworld().getChunkManager().getChunkGenerator().getBiomeSource();
-           boolean inBetaWorld = biomeSource instanceof OldBiomeSource && ((OldBiomeSource)biomeSource).getBiomeProvider() instanceof BetaClimateResolver;
+           boolean inBetaWorld = biomeSource instanceof OldBiomeSource oldBiomeSource && oldBiomeSource.getBiomeProvider() instanceof BetaClimateResolver;
            
            if (!ModernBeta.RENDER_CONFIG.useFixedSeed && inBetaWorld) {
                useBetaBiomeColors = true;
