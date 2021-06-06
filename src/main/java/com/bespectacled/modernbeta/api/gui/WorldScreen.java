@@ -10,7 +10,6 @@ import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.gui.ActionButtonOption;
-import com.bespectacled.modernbeta.gui.TextOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
@@ -170,7 +169,6 @@ public abstract class WorldScreen extends Screen {
         this.addDrawableChild(doneButton);
         this.addDrawableChild(cancelButton);
 
-        this.buttonList.addSingleOptionEntry(new TextOption("Note: Settings are not final and may change."));
         this.buttonList.addSingleOptionEntry(worldTypeOption);
         this.buttonList.addOptionEntry(biomeTypeOption, biomeSettingsOption);
         //this.buttonList.addOptionEntry(caveBiomeTypeOption, biomeSettingsOption);
