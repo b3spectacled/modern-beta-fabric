@@ -597,7 +597,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         NoodleCavesSampler noodleCaveSampler = this.chunkGenerator.new NoodleCavesSampler(chunkPos, worldBottomNoiseY);
         noodleCaveSampler.feed(consumer);
         
-        return noodleCaveSampler::method_36466;
+        return noodleCaveSampler::setDeltaZ;
     }
 
     private DoubleFunction<BlockSource> createOreVeinSamplers(int worldBottomNoiseY, ChunkPos chunkPos, Consumer<NoiseInterpolator> consumer) {
@@ -613,14 +613,13 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             if (blockState != this.defaultBlock) {
                 return blockState;
             }
-            else {
-                return this.blockSource.sample(x, y, z);
-                //return BlockStates.AIR;
-            }
+            
+            return this.blockSource.sample(x, y, z);
+            //return BlockStates.AIR;
         };
     
         return noisePoint -> {
-            oreVeinSampler.method_36394(noisePoint);
+            oreVeinSampler.setDeltaZ(noisePoint);
             return blockSource;
         };
     }
