@@ -17,7 +17,6 @@ import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.mutable.MutableBiomeArray;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.feature.OldFeatures;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -120,7 +119,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public void generateFeatures(ChunkRegion region, StructureAccessor accessor) {
-        OldFeatures.OLD_FANCY_OAK.chunkReset();
         if (this.chunkProvider.skipChunk(region.getCenterPos().x, region.getCenterPos().z, ChunkStatus.FEATURES)) return;
         
         ChunkPos chunkPos = region.getCenterPos();

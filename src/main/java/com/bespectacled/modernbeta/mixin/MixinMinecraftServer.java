@@ -76,6 +76,9 @@ public class MixinMinecraftServer {
         while (!chunkProvider.isSandAt(x, z, chunk)) {
             if (attempts > 10000) {
                 ModernBeta.log(Level.INFO, "Exceeded spawn attempts, spawning anyway..");
+                
+                x = 0;
+                z = 0;
                 break;
             }
             

@@ -32,7 +32,17 @@ public class IslandWorldScreen extends InfWorldScreen {
         CyclingOption<Boolean> generateOuterIslands = 
             CyclingOption.create("createWorld.customize.island.generateOuterIslands",
                 (gameOptions) -> NBTUtil.readBoolean("generateOuterIslands", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.generateOuterIslands), 
-                (gameOptions, option, value) -> this.worldSettings.putSetting(WorldSetting.CHUNK, "generateOuterIslands", NbtByte.of(value))
+                (gameOptions, option, value) -> {
+                    this.worldSettings.putSetting(WorldSetting.CHUNK, "generateOuterIslands", NbtByte.of(value));
+                    
+                    // Reset screen, to hide outer islands options, if generateOuterIslands set to false.
+                    this.client.openScreen(
+                        this.worldProvider.createWorldScreen(
+                            this.parent,
+                            this.worldSettings,
+                            this.consumer
+                    ));
+                }
             );
         
         DoubleOption centerIslandRadius =
@@ -134,10 +144,13 @@ public class IslandWorldScreen extends InfWorldScreen {
         this.buttonList.addSingleOptionEntry(generateOuterIslands);
         this.buttonList.addSingleOptionEntry(centerIslandRadius);
         this.buttonList.addSingleOptionEntry(centerIslandFalloff);
-        this.buttonList.addSingleOptionEntry(centerOceanRadius);
-        this.buttonList.addSingleOptionEntry(centerOceanLerpDistance);
-        this.buttonList.addSingleOptionEntry(outerIslandNoiseScale);
-        this.buttonList.addSingleOptionEntry(outerIslandNoiseOffset);
+        
+        if (NBTUtil.readBoolean("generateOuterIslands", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.generateOuterIslands)) {
+            this.buttonList.addSingleOptionEntry(centerOceanRadius);
+            this.buttonList.addSingleOptionEntry(centerOceanLerpDistance);
+            this.buttonList.addSingleOptionEntry(outerIslandNoiseScale);
+            this.buttonList.addSingleOptionEntry(outerIslandNoiseOffset);
+        }
     }
 
 }
