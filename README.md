@@ -13,3 +13,7 @@ Classic old world generation with modern vanilla features and additions like the
 ## License
 
 This project is licensed under LGPLv3.
+
+## Credits
+
+See credits [here](https://github.com/b3spectacled/modern-beta-fabric/wiki/Credits).
