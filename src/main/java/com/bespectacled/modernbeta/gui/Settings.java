@@ -52,7 +52,17 @@ public class Settings {
         return this.compound.get(key);
     }
     
-    public NbtCompound getNbt() {
+    public NbtCompound getStored() {
         return new NbtCompound().copyFrom(this.compound);
+    }
+    
+    public NbtCompound getStoredAndQueued() {
+        NbtCompound queued = this.getStored();
+        
+        for (Entry<String, NbtElement> change : this.changes.entrySet()) {
+            queued.put(change.getKey(), change.getValue());
+        }
+        
+        return queued;
     }
 }

@@ -9,9 +9,9 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 public class BooleanCyclingOptionWrapper implements OptionWrapper {
-    private String key;
-    private Supplier<Boolean> getter;
-    private Consumer<Boolean> setter;
+    private final String key;
+    private final Supplier<Boolean> getter;
+    private final Consumer<Boolean> setter;
     
     public BooleanCyclingOptionWrapper(String key, Supplier<Boolean> getter, Consumer<Boolean> setter) {
         this.key = key;

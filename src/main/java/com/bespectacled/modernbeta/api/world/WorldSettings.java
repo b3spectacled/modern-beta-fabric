@@ -32,7 +32,7 @@ public final class WorldSettings {
     
     public WorldSettings(WorldSettings worldSettings) {
         for (WorldSetting w : WorldSetting.values()) {
-            this.settings.put(w, new Settings(worldSettings.getSettings(w)));
+            this.settings.put(w, new Settings(worldSettings.getStoredSettings(w)));
         }
     }
     
@@ -70,14 +70,20 @@ public final class WorldSettings {
         for (Settings s : this.settings.values()) {
             s.applyChanges();
         }
+        
+        this.clearChanges();
     }
     
     public NbtElement getSetting(WorldSetting settingsKey, String key) {
         return this.settings.get(settingsKey).getSetting(key);
     }
     
-    public NbtCompound getSettings(WorldSetting settingsKey) {
-        return this.settings.get(settingsKey).getNbt();
+    public NbtCompound getStoredSettings(WorldSetting settingsKey) {
+        return this.settings.get(settingsKey).getStored();
+    }
+    
+    public NbtCompound getStoredAndQueuedSettings(WorldSetting settingsKey) {
+        return this.settings.get(settingsKey).getStoredAndQueued();
     }
     
     /*

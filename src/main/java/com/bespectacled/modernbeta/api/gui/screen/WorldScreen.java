@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.api.gui.screen;
 
 import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.gui.wrapper.ActionOptionWrapper;
 import com.bespectacled.modernbeta.api.gui.wrapper.CyclingOptionWrapper;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
@@ -15,17 +14,24 @@ import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public abstract class WorldScreen extends GUIScreen {
+    protected final WorldSettings worldSettings;
+    protected final Consumer<WorldSettings> consumer;
+    
     protected final DynamicRegistryManager registryManager;
     protected final WorldProvider worldProvider;
 
     protected WorldScreen(CreateWorldScreen parent, WorldSettings worldSettings, Consumer<WorldSettings> consumer) {
-        super("createWorld.customize.worldType.title", parent, worldSettings, consumer);
+        super("createWorld.customize.worldType.title", parent);
+        
+        this.worldSettings = worldSettings;
+        this.consumer = consumer;
         
         this.registryManager = parent.moreOptionsDialog.getRegistryManager();
         this.worldProvider = Registries.WORLD.get(NBTUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.CHUNK, WorldSettings.TAG_WORLD)));
@@ -34,6 +40,32 @@ public abstract class WorldScreen extends GUIScreen {
     @Override
     protected void init() {
         super.init();
+        
+        ButtonWidget doneButton;
+        ButtonWidget cancelButton;
+        
+        doneButton = new ButtonWidget(
+            this.width / 2 - 155, this.height - 28, 150, 20, 
+            ScreenTexts.DONE, 
+            buttonWidget -> {
+                // Apply all settings change only on done!
+                this.worldSettings.applyChanges();
+                
+                this.consumer.accept(this.worldSettings);
+                this.client.openScreen(this.parent);
+            }
+        );
+        
+        cancelButton = new ButtonWidget(
+            this.width / 2 + 5, this.height - 28, 150, 20, 
+            ScreenTexts.CANCEL,
+            buttonWidget -> {
+                this.client.openScreen(this.parent);
+            }
+        );
+        
+        this.addDrawableChild(doneButton);
+        this.addDrawableChild(cancelButton);
         
         String biomeType = NBTUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, WorldSettings.TAG_BIOME));
         String singleBiome = NBTUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, WorldSettings.TAG_SINGLE_BIOME));

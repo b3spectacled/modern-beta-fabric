@@ -7,10 +7,10 @@ import java.util.function.Consumer;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.gui.screen.BiomeScreen;
 import com.bespectacled.modernbeta.api.gui.screen.WorldScreen;
-import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.api.gui.wrapper.ActionOptionWrapper;
+import com.bespectacled.modernbeta.api.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
-import com.bespectacled.modernbeta.gui.option.ActionOption;
-import com.bespectacled.modernbeta.gui.option.TextOption;
+import com.bespectacled.modernbeta.gui.Settings;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMapCustomizable;
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
@@ -22,17 +22,16 @@ import net.minecraft.world.biome.Biome;
 public class BetaBiomeScreen extends BiomeScreen {
     private final Map<String, Identifier> biomeSettingsMap;
     
-    private BetaBiomeScreen(WorldScreen parent, WorldSettings worldSettings, Consumer<WorldSettings> consumer) {
-        super(parent, worldSettings, consumer);
+    private BetaBiomeScreen(WorldScreen parent, Consumer<Settings> consumer) {
+        super(parent, consumer);
         
-        this.biomeSettingsMap = new BetaClimateMapCustomizable(this.worldSettings.getSettings(WorldSetting.BIOME)).getMap();
+        this.biomeSettingsMap = new BetaClimateMapCustomizable(this.biomeSettings.getStoredAndQueued()).getMap();
     }
     
     public static BetaBiomeScreen create(WorldScreen worldScreen) {
         return new BetaBiomeScreen(
             worldScreen,
-            worldScreen.getWorldSettings(),
-            worldSettings -> {}
+            settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getStored())
         );
     }
     
@@ -46,21 +45,21 @@ public class BetaBiomeScreen extends BiomeScreen {
     }
     
     private void addBiomeButtonEntry(String key, String biomeText) {
-        this.buttonList.addOptionEntry(
-            new TextOption(GUIUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(key))),
-            new ActionOption(
-                GUIUtil.createTranslatableBiomeStringFromId(this.biomeSettingsMap.get(key)),
-                "",
-                buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
-                  this,
-                  this.registryManager,
-                  biome -> {
-                      //this.biomeProviderSettings.putString(key, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString());
-                      this.biomeSettingsMap.put(key, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome));
-                  }, 
-                  this.registryManager.<Biome>get(Registry.BIOME_KEY).get(this.biomeSettingsMap.get(key))  
-                ))
-            )
+        TextOptionWrapper text = new TextOptionWrapper(GUIUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(key)));
+        ActionOptionWrapper singleBiomeScreen = new ActionOptionWrapper(
+            GUIUtil.createTranslatableBiomeStringFromId(this.biomeSettingsMap.get(key)), 
+            "",
+            buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
+                this,
+                this.registryManager,
+                biome -> {
+                    this.biomeSettings.putChange(key, NbtString.of(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString()));
+                    this.biomeSettingsMap.put(key, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome));
+                }, 
+                this.registryManager.<Biome>get(Registry.BIOME_KEY).get(this.biomeSettingsMap.get(key))  
+            ))
         );
+        
+        this.addDualOption(text, singleBiomeScreen);
     }
 }

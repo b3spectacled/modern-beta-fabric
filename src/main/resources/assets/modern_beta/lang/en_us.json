@@ -16,7 +16,7 @@
     "createWorld.customize.biomeType": "Biome Type",
     "createWorld.customize.biomeType.beta": "Beta",
     "createWorld.customize.biomeType.single": "Single",
-    "createWorld.customize.biomeType.vanilla": "Vanilla/Modded",
+    "createWorld.customize.biomeType.vanilla": "Vanilla",
     "createWorld.customize.biomeType.settings": "Settings",
     "createWorld.customize.biomeType.biome": "Biome",
     
@@ -33,8 +33,8 @@
     "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",
     "createWorld.customize.infdev.generateInfdevWall": "Generate Infdev Obsidian Wall",
     
-    "createWorld.customize.vanilla.biomeSize": "Biome Size",
-    "createWorld.customize.vanilla.oceanBiomeSize": "Ocean Biome Size",
+    "createWorld.customize.vanilla.vanillaBiomeSize": "Biome Size",
+    "createWorld.customize.vanilla.vanillaOceanBiomeSize": "Ocean Biome Size",
     
     "createWorld.customize.island.generateOuterIslands": "Generate Outer Islands",
     "createWorld.customize.island.centerIslandRadius": "Center Island Radius",

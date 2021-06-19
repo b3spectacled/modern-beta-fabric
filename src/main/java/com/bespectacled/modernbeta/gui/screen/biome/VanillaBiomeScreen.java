@@ -3,26 +3,23 @@ package com.bespectacled.modernbeta.gui.screen.biome;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gui.OldBiomeScreen;
-import com.bespectacled.modernbeta.api.gui.OldWorldScreen;
+import com.bespectacled.modernbeta.api.gui.screen.BiomeScreen;
 import com.bespectacled.modernbeta.api.gui.screen.WorldScreen;
+import com.bespectacled.modernbeta.api.gui.wrapper.DoubleOptionWrapper;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
+import com.bespectacled.modernbeta.gui.Settings;
 import com.bespectacled.modernbeta.util.NBTUtil;
-import net.minecraft.client.option.DoubleOption;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.nbt.NbtInt;
 
-public class VanillaBiomeScreen extends OldBiomeScreen {
-    private VanillaBiomeScreen(WorldScreen parent, Consumer<NbtCompound> consumer) {
+public class VanillaBiomeScreen extends BiomeScreen {
+    private VanillaBiomeScreen(WorldScreen parent, Consumer<Settings> consumer) {
         super(parent, consumer);
     }
 
-    public static VanillaBiomeScreen create(WorldScreen screenProvider) {
+    public static VanillaBiomeScreen create(WorldScreen worldScreen) {
         return new VanillaBiomeScreen(
-            screenProvider,
-            //biomeProviderSettings -> screenProvider.getWorldSettings().copySettingsFrom(WorldSetting.BIOME, biomeProviderSettings)
-            biomeProviderSettings -> {}
+            worldScreen,
+            settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getStored())
         );
     }
     
@@ -30,39 +27,23 @@ public class VanillaBiomeScreen extends OldBiomeScreen {
     protected void init() {
         super.init();
         
-        DoubleOption vanillaBiomeSize = 
-            new DoubleOption(
-                "createWorld.customize.vanilla.vanillaBiomeSizeSlider", 
-                1D, 8D, 1F,
-                (gameOptions) -> (double)NBTUtil.readInt("vanillaBiomeSize", this.biomeProviderSettings, ModernBeta.BETA_CONFIG.biome_config.vanillaBiomeSize),
-                (gameOptions, value) -> this.biomeProviderSettings.putInt("vanillaBiomeSize", value.intValue()),
-                (gameOptions, doubleOptions) -> {
-                    return new TranslatableText(
-                        "options.generic_value", 
-                        new Object[] { 
-                            new TranslatableText("createWorld.customize.vanilla.biomeSize"), 
-                            Text.of(String.valueOf(NBTUtil.readInt("vanillaBiomeSize", this.biomeProviderSettings, ModernBeta.BETA_CONFIG.biome_config.vanillaBiomeSize))) 
-                    });
-                }
-            );
+        DoubleOptionWrapper<Integer> vanillaBiomeSize = new DoubleOptionWrapper<>(
+            "createWorld.customize.vanilla.vanillaBiomeSize",
+            "",
+            1D, 8D, 1F,
+            () -> NBTUtil.toInt(this.biomeSettings.getSetting("vanillaBiomeSize"), ModernBeta.BIOME_CONFIG.vanillaBiomeSize),
+            value -> this.biomeSettings.putChange("vanillaBiomeSize", NbtInt.of(value.intValue()))
+        );
         
-        DoubleOption vanillaOceanBiomeSize =
-            new DoubleOption(
-                "createWorld.customize.indev.vanillaOceanBiomeSizeSlider", 
-                1D, 8D, 1F,
-                (gameOptions) -> (double)NBTUtil.readInt("vanillaOceanBiomeSize", this.biomeProviderSettings, ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize), // Getter
-                (gameOptions, value) -> this.biomeProviderSettings.putInt("vanillaOceanBiomeSize", value.intValue()),
-                (gameOptions, doubleOptions) -> {
-                    return new TranslatableText(
-                        "options.generic_value", 
-                        new Object[] { 
-                            new TranslatableText("createWorld.customize.vanilla.oceanBiomeSize"), 
-                            Text.of(String.valueOf(NBTUtil.readInt("vanillaOceanBiomeSize", this.biomeProviderSettings, ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize))) 
-                    });
-                }
-            );
-
-        this.buttonList.addSingleOptionEntry(vanillaBiomeSize);
-        this.buttonList.addSingleOptionEntry(vanillaOceanBiomeSize);
+        DoubleOptionWrapper<Integer> vanillaOceanBiomeSize = new DoubleOptionWrapper<>(
+            "createWorld.customize.vanilla.vanillaOceanBiomeSize",
+            "",
+            1D, 8D, 1F,
+            () -> NBTUtil.toInt(this.biomeSettings.getSetting("vanillaOceanBiomeSize"), ModernBeta.BIOME_CONFIG.vanillaOceanBiomeSize),
+            value -> this.biomeSettings.putChange("vanillaOceanBiomeSize", NbtInt.of(value.intValue()))
+        );
+        
+        this.addOption(vanillaBiomeSize);
+        this.addOption(vanillaOceanBiomeSize);
     }
 }

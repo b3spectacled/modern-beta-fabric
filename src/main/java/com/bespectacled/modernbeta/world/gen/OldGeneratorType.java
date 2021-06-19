@@ -46,8 +46,8 @@ public class OldGeneratorType {
         GeneratorOptions generatorOptions,
         WorldSettings worldSettings
     ) {
-        NbtCompound chunkProviderSettings = worldSettings.getSettings(WorldSetting.CHUNK);
-        NbtCompound biomeProviderSettings = worldSettings.getSettings(WorldSetting.BIOME);
+        NbtCompound chunkProviderSettings = worldSettings.getStoredSettings(WorldSetting.CHUNK);
+        NbtCompound biomeProviderSettings = worldSettings.getStoredSettings(WorldSetting.BIOME);
         
         String chunkProviderType = chunkProviderSettings.getString(WorldSettings.TAG_WORLD);
     
