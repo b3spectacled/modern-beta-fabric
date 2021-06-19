@@ -1,8 +1,17 @@
 package com.bespectacled.modernbeta.util;
 
+import net.minecraft.nbt.NbtByte;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtFloat;
+import net.minecraft.nbt.NbtInt;
+import net.minecraft.nbt.NbtString;
 
 public class NBTUtil {
+    /*
+     * Helper methods for reading primitive values from NbtCompound objects
+     */
+    
     public static String readStringOrThrow(String key, NbtCompound tag) {
         if (tag.contains(key))
             return tag.getString(key);
@@ -55,6 +64,66 @@ public class NBTUtil {
     public static boolean readBoolean(String key, NbtCompound tag, boolean alternate) {
         if (tag.contains(key))
             return tag.getBoolean(key);
+        
+        return alternate;
+    }
+    
+    /*
+     * Conversion methods for extracting primitive values from NbtElement objects
+     */
+    
+    public static String toStringOrThrow(NbtElement element) {
+        if (element instanceof NbtString nbtString)
+            return nbtString.asString();
+        
+        throw new IllegalArgumentException("[Modern Beta] NBT Element is not a string!");
+    }
+    
+    public static String toString(NbtElement element, String alternate) {
+        if (element instanceof NbtString nbtString)
+            return nbtString.asString();
+        
+        return alternate;
+    }
+    
+    public static int toIntOrThrow(NbtElement element) {
+        if (element instanceof NbtInt nbtInt)
+            return nbtInt.intValue();
+        
+        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an int!"); 
+    }
+    
+    public static int toInt(NbtElement element, int alternate) {
+        if (element instanceof NbtInt nbtInt) 
+            return nbtInt.intValue();
+        
+        return alternate;
+    }
+    
+    public static float toFloatOrThrow(NbtElement element) {
+        if (element instanceof NbtFloat nbtFloat) 
+            return nbtFloat.floatValue();
+        
+        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an float!"); 
+    }
+    
+    public static float toFloat(NbtElement element, float alternate) {
+        if (element instanceof NbtFloat nbtFloat) 
+            return nbtFloat.floatValue();
+        
+        return alternate;
+    }
+    
+    public static boolean toBooleanOrThrow(NbtElement element) {
+        if (element instanceof NbtByte nbtByte) 
+            return nbtByte.byteValue() == 1 ? true : false;
+        
+        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an byte/boolean!"); 
+    }
+    
+    public static boolean toBoolean(NbtElement element, boolean alternate) {
+        if (element instanceof NbtByte nbtByte) 
+            return nbtByte.byteValue() == 1 ? true : false;
         
         return alternate;
     }

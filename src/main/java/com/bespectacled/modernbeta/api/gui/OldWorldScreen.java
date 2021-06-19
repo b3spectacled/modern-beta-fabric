@@ -9,7 +9,7 @@ import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
-import com.bespectacled.modernbeta.gui.ActionButtonOption;
+import com.bespectacled.modernbeta.gui.option.ActionOption;
 import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
@@ -28,7 +28,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public abstract class WorldScreen extends Screen {
+public abstract class OldWorldScreen extends Screen {
     protected final CreateWorldScreen parent;
     protected final DynamicRegistryManager registryManager;
     protected final WorldSettings worldSettings;
@@ -38,7 +38,7 @@ public abstract class WorldScreen extends Screen {
     
     protected ButtonListWidget buttonList;
     
-    public WorldScreen(
+    public OldWorldScreen(
         CreateWorldScreen parent,
         WorldSettings worldSettings,
         Consumer<WorldSettings> consumer       
@@ -72,7 +72,7 @@ public abstract class WorldScreen extends Screen {
         //CyclingOption<String> caveBiomeTypeOption;
         
         Screen biomeSettingsScreen;
-        ActionButtonOption biomeSettingsOption;
+        ActionOption biomeSettingsOption;
         
         //Screen caveBiomeSettingsScreen;
         //ActionButtonOption caveBiomeSettingsOption;
@@ -94,6 +94,7 @@ public abstract class WorldScreen extends Screen {
             }
         );
         
+        /*
         worldTypeOption = CyclingOption.create(
             "createWorld.customize.worldType", 
             Registries.WORLD.getEntries().stream().toArray(WorldProvider[]::new),
@@ -129,6 +130,7 @@ public abstract class WorldScreen extends Screen {
                 ));
             }
         );
+        */
         
         /*
         caveBiomeTypeOption = CyclingOption.create(
@@ -154,23 +156,23 @@ public abstract class WorldScreen extends Screen {
                 ));
             }
         );
-        */
         
         biomeSettingsScreen = Registries.BIOME_SCREEN
             .getOrDefault(NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME)))
             .apply(this); 
         
-        biomeSettingsOption = new ActionButtonOption(
+        biomeSettingsOption = new ActionOption(
             biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? "createWorld.customize.biomeType.biome" : "createWorld.customize.biomeType.settings", // Key
             biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? GUIUtil.createTranslatableBiomeStringFromId(singleBiome) : "",
             biomeSettingsScreen != null ? widget -> this.client.openScreen(biomeSettingsScreen) : null
         );
+        */
         
         this.addDrawableChild(doneButton);
         this.addDrawableChild(cancelButton);
 
-        this.buttonList.addSingleOptionEntry(worldTypeOption);
-        this.buttonList.addOptionEntry(biomeTypeOption, biomeSettingsOption);
+        //this.buttonList.addSingleOptionEntry(worldTypeOption);
+        //this.buttonList.addOptionEntry(biomeTypeOption, biomeSettingsOption);
         //this.buttonList.addOptionEntry(caveBiomeTypeOption, biomeSettingsOption);
     }
     
@@ -190,11 +192,12 @@ public abstract class WorldScreen extends Screen {
         }
     }
     
+    /*
     protected void setDefaultSingleBiome(String defaultBiome) {
         // Replace default single biome with one supplied by world provider, if switching to Single biome type
         if (NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME)).equals(BuiltInTypes.Biome.SINGLE.name))
             this.worldSettings.putSetting(WorldSetting.BIOME, WorldSettings.TAG_SINGLE_BIOME, NbtString.of(defaultBiome));
-    }
+    }*/
     
     public DynamicRegistryManager getRegistryManager() {
         return this.registryManager;

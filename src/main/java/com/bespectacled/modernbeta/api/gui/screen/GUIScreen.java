@@ -1,8 +1,9 @@
-package com.bespectacled.modernbeta.api.gui;
+package com.bespectacled.modernbeta.api.gui.screen;
 
 import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
+import com.bespectacled.modernbeta.api.gui.wrapper.OptionWrapper;
+import com.bespectacled.modernbeta.api.world.WorldSettings;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -10,45 +11,39 @@ import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.registry.DynamicRegistryManager;
 
-public abstract class BiomeScreen extends Screen {
-    protected final WorldScreen parent;    
-    protected final DynamicRegistryManager registryManager;
-    protected final NbtCompound parentProviderSettings;
-    protected final Consumer<NbtCompound> consumer;
-    
-    protected NbtCompound biomeProviderSettings;
-    
+public abstract class GUIScreen extends Screen {
+    protected final Screen parent;
+    protected final Consumer<WorldSettings> consumer;
+    protected final WorldSettings worldSettings;
+
     protected ButtonListWidget buttonList;
     
-    protected BiomeScreen(WorldScreen parent, Consumer<NbtCompound> consumer) {
-        super(new TranslatableText("createWorld.customize.biomeType.title"));
+    protected GUIScreen(String title, Screen parent, WorldSettings worldSettings, Consumer<WorldSettings> consumer) {
+        super(new TranslatableText(title));
         
         this.parent = parent;
-        this.registryManager = parent.getRegistryManager();
-        this.parentProviderSettings = parent.getWorldSettings().getSettings(WorldSetting.BIOME);
+        this.worldSettings = worldSettings;
         this.consumer = consumer;
-        
-        // Make copy as to not modify original biome settings (if cancelled)
-        this.biomeProviderSettings = new NbtCompound().copyFrom(parentProviderSettings);
     }
     
     @Override
     protected void init() {
         this.buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         this.addSelectableChild(this.buttonList);
-
+        
         ButtonWidget doneButton;
         ButtonWidget cancelButton;
         
         doneButton = new ButtonWidget(
             this.width / 2 - 155, this.height - 28, 150, 20, 
             ScreenTexts.DONE, 
-            (buttonWidget) -> {
-                this.consumer.accept(this.biomeProviderSettings);
+            buttonWidget -> {
+                // Apply all settings change only on done!
+                this.worldSettings.applyChanges();
+                
+                this.consumer.accept(this.worldSettings);
                 this.client.openScreen(this.parent);
             }
         );
@@ -56,7 +51,7 @@ public abstract class BiomeScreen extends Screen {
         cancelButton = new ButtonWidget(
             this.width / 2 + 5, this.height - 28, 150, 20, 
             ScreenTexts.CANCEL,
-            (buttonWidget) -> {
+            buttonWidget -> {
                 this.client.openScreen(this.parent);
             }
         );
@@ -74,6 +69,12 @@ public abstract class BiomeScreen extends Screen {
         
         super.render(matrixStack, mouseX, mouseY, tickDelta);
     }
-}   
-
-
+    
+    public void addOption(OptionWrapper option) {
+        this.buttonList.addSingleOptionEntry(option.create());
+    }
+    
+    public void addDualOption(OptionWrapper firstOption, OptionWrapper secondOption) {
+        this.buttonList.addOptionEntry(firstOption.create(), secondOption.create());
+    }
+}

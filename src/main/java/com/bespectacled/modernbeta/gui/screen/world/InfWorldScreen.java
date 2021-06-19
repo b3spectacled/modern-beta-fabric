@@ -3,14 +3,14 @@ package com.bespectacled.modernbeta.gui.screen.world;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gui.WorldScreen;
+import com.bespectacled.modernbeta.api.gui.screen.WorldScreen;
+import com.bespectacled.modernbeta.api.gui.wrapper.BooleanCyclingOptionWrapper;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.util.NBTUtil;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.option.CyclingOption;
 import net.minecraft.nbt.NbtByte;
 
 public class InfWorldScreen extends WorldScreen {
@@ -20,24 +20,22 @@ public class InfWorldScreen extends WorldScreen {
         Consumer<WorldSettings> consumer
     ) {
         super(parent, worldSettings, consumer);
-    }
+    } 
 
     @Override
     protected void init() {
         super.init();
         
-        String biomeType = NBTUtil.readStringOrThrow(WorldSettings.TAG_BIOME, this.worldSettings.getSettings(WorldSetting.BIOME));
+        String biomeType = NBTUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, WorldSettings.TAG_BIOME));
         
-        CyclingOption<Boolean> generateOceans = 
-            CyclingOption.create(
-                "createWorld.customize.inf.generateOceans",
-                (gameOptions) -> NBTUtil.readBoolean("generateOceans", this.worldSettings.getSettings(WorldSetting.CHUNK), ModernBeta.GEN_CONFIG.generateOceans), 
-                (gameOptions, option, value) -> this.worldSettings.putSetting(WorldSetting.CHUNK, "generateOceans", NbtByte.of(value))
-            );
+        BooleanCyclingOptionWrapper generateOceans = new BooleanCyclingOptionWrapper(
+            "createWorld.customize.inf.generateOceans",
+            () -> NBTUtil.toBoolean(this.worldSettings.getSetting(WorldSetting.CHUNK, "generateOceans"), ModernBeta.GEN_CONFIG.generateOceans),
+            value -> this.worldSettings.putChange(WorldSetting.CHUNK, "generateOceans", NbtByte.of(value))
+        );
         
         if (!biomeType.equals(BuiltInTypes.Biome.SINGLE.name)) {
-            buttonList.addSingleOptionEntry(generateOceans);
+            this.addOption(generateOceans);
         }
-
     }
 }

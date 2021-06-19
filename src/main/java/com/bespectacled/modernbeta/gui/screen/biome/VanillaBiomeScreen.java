@@ -3,8 +3,9 @@ package com.bespectacled.modernbeta.gui.screen.biome;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gui.BiomeScreen;
-import com.bespectacled.modernbeta.api.gui.WorldScreen;
+import com.bespectacled.modernbeta.api.gui.OldBiomeScreen;
+import com.bespectacled.modernbeta.api.gui.OldWorldScreen;
+import com.bespectacled.modernbeta.api.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.util.NBTUtil;
 import net.minecraft.client.option.DoubleOption;
@@ -12,7 +13,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-public class VanillaBiomeScreen extends BiomeScreen {
+public class VanillaBiomeScreen extends OldBiomeScreen {
     private VanillaBiomeScreen(WorldScreen parent, Consumer<NbtCompound> consumer) {
         super(parent, consumer);
     }
@@ -20,7 +21,8 @@ public class VanillaBiomeScreen extends BiomeScreen {
     public static VanillaBiomeScreen create(WorldScreen screenProvider) {
         return new VanillaBiomeScreen(
             screenProvider,
-            biomeProviderSettings -> screenProvider.getWorldSettings().copySettingsFrom(WorldSetting.BIOME, biomeProviderSettings)
+            //biomeProviderSettings -> screenProvider.getWorldSettings().copySettingsFrom(WorldSetting.BIOME, biomeProviderSettings)
+            biomeProviderSettings -> {}
         );
     }
     

@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.gui;
+package com.bespectacled.modernbeta.gui.option;
 
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -10,14 +10,14 @@ import net.minecraft.text.TranslatableText;
 /*
  * Option Wrapper for arbitrary actions (i.e. opening new screens)
  */
-public class ActionButtonOption extends Option {
+public class ActionOption extends Option {
     private final String key;
     private final String suffix;
     private final ButtonWidget.PressAction onPress;
     
     private ClickableWidget button;
     
-    public ActionButtonOption(String key, String suffix, ButtonWidget.PressAction onPress) {
+    public ActionOption(String key, String suffix, ButtonWidget.PressAction onPress) {
         super(key);
         
         this.key = key;

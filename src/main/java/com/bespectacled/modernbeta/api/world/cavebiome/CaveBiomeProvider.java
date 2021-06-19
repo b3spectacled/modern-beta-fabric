@@ -18,7 +18,7 @@ public abstract class CaveBiomeProvider {
      * Additional settings are supplied in NbtCompound parameter.
      * 
      * @param seed Seed to initialize biome provider.
-     * @param settings NbtCompound for additional settings.
+     * @param worldSettings NbtCompound for additional settings.
      */
     public CaveBiomeProvider(OldBiomeSource biomeSource) {
         this.seed = biomeSource.getWorldSeed();

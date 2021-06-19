@@ -39,7 +39,8 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
         Random random = featureContext.getRandom();
         Random treeRandom = new Random(random.nextLong());
         
-        TreeInfo treeInfo = new TreeInfo(5 + treeRandom.nextInt(TREE_MAX_HEIGHT), -1, null);
+        TreeInfo treeInfo = new TreeInfo();
+        treeInfo.setHeight(5 + treeRandom.nextInt(TREE_MAX_HEIGHT));
         
         if (this.canGenerate(world, pos, treeInfo)) {
             this.initializeTree(world, pos, treeRandom, treeInfo);
@@ -55,7 +56,7 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
     
     private boolean canGenerate(StructureWorldAccess world, BlockPos basePos, TreeInfo treeInfo) {
         int[] treeStartPos = { basePos.getX(), basePos.getY(), basePos.getZ() };
-        int[] treeEndPos = { basePos.getX(), basePos.getY() + treeInfo.height() - 1, basePos.getZ() };
+        int[] treeEndPos = { basePos.getX(), basePos.getY() + treeInfo.getHeight() - 1, basePos.getZ() };
 
         BlockPos treeBasePos = new BlockPos(basePos.getX(), basePos.getY() - 1, basePos.getZ());
         
@@ -84,25 +85,25 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
         }
         
         // Height of trunk section
-        treeInfo.treeHeight = (int) ((double) treeInfo.height() * 0.618); 
+        treeInfo.setTreeHeight((int) ((double) treeInfo.getHeight() * 0.618)); 
         
-        if (treeInfo.treeHeight() >= treeInfo.height()) {
-            treeInfo.treeHeight = treeInfo.height() - 1;
+        if (treeInfo.getTreeHeight() >= treeInfo.getHeight()) {
+            treeInfo.setTreeHeight(treeInfo.getHeight() - 1);
         }
     
         // Foliage blob count per y level
-        int foliageBlobCount = (int) (1.382D + Math.pow((double) treeInfo.height() / 13.0D, 2.0D));
+        int foliageBlobCount = (int) (1.382D + Math.pow((double) treeInfo.getHeight() / 13.0D, 2.0D));
         if (foliageBlobCount <= 0) {
             foliageBlobCount = 1;
         }
         
-        int foliageBaseY = basePos.getY() + treeInfo.height() - FOLIAGE_BLOB_HEIGHT;
+        int foliageBaseY = basePos.getY() + treeInfo.getHeight() - FOLIAGE_BLOB_HEIGHT;
         int treeTopY = basePos.getY() + treeInfo.treeHeight;
         int treeRelY = foliageBaseY - basePos.getY();
         int blobCount = 1;
         
         // Create and maintain list of foliage blob positions where position is [x, baseY, z, topY]
-        int[][] foliageBlobPositions = new int[foliageBlobCount * treeInfo.height()][4];
+        int[][] foliageBlobPositions = new int[foliageBlobCount * treeInfo.getHeight()][4];
         foliageBlobPositions[0][0] = basePos.getX();
         foliageBlobPositions[0][1] = foliageBaseY;
         foliageBlobPositions[0][2] = basePos.getZ();
@@ -159,17 +160,20 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
         }
     
         // Save foliage blob positions
-        treeInfo.foliageBlobPositions = new int[blobCount][4];
-        System.arraycopy(foliageBlobPositions, 0, treeInfo.foliageBlobPositions, 0, blobCount);
+        int[][] finalFoliageBlobPositions = new int[blobCount][4];
+        System.arraycopy(foliageBlobPositions, 0, finalFoliageBlobPositions, 0, blobCount);
+        
+        treeInfo.setFoliageBlobPositions(finalFoliageBlobPositions);
     }
 
     private void placeFoliageBlobs(StructureWorldAccess world, BlockPos basePos, TreeInfo treeInfo) {
         int curBlob = 0;
+        int[][] foliageBlobPositions = treeInfo.getFoliageBlobPositions();
     
-        while(curBlob < treeInfo.foliageBlobPositions().length) {
-            int x = treeInfo.foliageBlobPositions()[curBlob][0];
-            int y = treeInfo.foliageBlobPositions()[curBlob][1];
-            int z = treeInfo.foliageBlobPositions()[curBlob][2];
+        while(curBlob < foliageBlobPositions.length) {
+            int x = foliageBlobPositions[curBlob][0];
+            int y = foliageBlobPositions[curBlob][1];
+            int z = foliageBlobPositions[curBlob][2];
             
             this.placeFoliageBlob(world, x, y, z);
             
@@ -182,7 +186,7 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
         int z = basePos.getZ();
         
         int startY = basePos.getY();
-        int topY = basePos.getY() + treeInfo.treeHeight();
+        int topY = basePos.getY() + treeInfo.getTreeHeight();
         
         int[] startPos = {x, startY, z};
         int[] endPos = {x, topY, z};
@@ -191,18 +195,19 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
     }
 
     private void placeTreeBranches(StructureWorldAccess world, BlockPos basePos, TreeInfo treeInfo) {
-        int curBranch = 0 ;
+        int curBranch = 0;
         int[] branchStartPos = { basePos.getX(), basePos.getY(), basePos.getZ() };
+        int[][] foliageBlobPositions = treeInfo.getFoliageBlobPositions();
         
-        while (curBranch < treeInfo.foliageBlobPositions().length) {
-            int[] foliageBlobPos = treeInfo.foliageBlobPositions()[curBranch];
+        while (curBranch < foliageBlobPositions.length) {
+            int[] foliageBlobPos = foliageBlobPositions[curBranch];
             int[] branchEndPos = { foliageBlobPos[0], foliageBlobPos[1], foliageBlobPos[2] };
             
             // Set start y to bottom of foliage blob
             branchStartPos[1] = foliageBlobPos[3];
             
             int relY = branchStartPos[1] - basePos.getY();
-            if (relY >= treeInfo.height() * 0.2D) {
+            if (relY >= treeInfo.getHeight() * 0.2D) {
                 this.placeBranch(world, branchStartPos, branchEndPos, BlockStates.OAK_LOG);
             }
             
@@ -312,11 +317,11 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
         float distance;
         
         // Check to generate branch
-        if ((double) treeRelY < (double) ((float) treeInfo.height()) * 0.3D) {
+        if ((double) treeRelY < (double) ((float) treeInfo.getHeight()) * 0.3D) {
             distance = -1.618F;
             
         } else {
-            float treeRadius = (float) treeInfo.height() / 2.0F;
+            float treeRadius = (float) treeInfo.getHeight() / 2.0F;
             float distFromRadius = treeRadius - (float) treeRelY;
             
             if (distFromRadius == 0.0F) {
@@ -386,21 +391,35 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
     }
     
     /*
-     *  Tracks information about the tree during a single generation instance.
+     *  Tracks information about the tree during a single generation call.
      */
     private class TreeInfo {
-        private int height;
-        private int treeHeight;
-        private int[][] foliageBlobPositions;
+        private int height = -1;
+        private int treeHeight = -1;
+        private int[][] foliageBlobPositions = null;
         
-        private TreeInfo(int height, int treeHeight, int[][] foliageBlobPositions) {
-            this.height = height;
-            this.treeHeight = treeHeight;
-            this.foliageBlobPositions = foliageBlobPositions;
+        private int getHeight() { 
+            return this.height; 
         }
         
-        private int height() { return this.height; }
-        private int treeHeight() { return this.treeHeight; }
-        private int[][] foliageBlobPositions() { return this.foliageBlobPositions; }
+        private int getTreeHeight() { 
+            return this.treeHeight; 
+        }
+        
+        private int[][] getFoliageBlobPositions() { 
+            return this.foliageBlobPositions; 
+        }
+        
+        private void setHeight(int height) { 
+            this.height = height; 
+        }
+        
+        private void setTreeHeight(int treeHeight) { 
+            this.treeHeight = treeHeight; 
+        }
+        
+        private void setFoliageBlobPositions(int[][] foliageBlobPositions) { 
+            this.foliageBlobPositions = foliageBlobPositions; 
+        }
     }
 }

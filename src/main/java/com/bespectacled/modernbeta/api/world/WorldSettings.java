@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.api.world;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.bespectacled.modernbeta.gui.Settings;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 
@@ -21,6 +22,65 @@ public final class WorldSettings {
         CAVE_BIOME
     }
     
+    private final Map<WorldSetting, Settings> settings = new LinkedHashMap<>();
+    
+    public WorldSettings() {
+        for (WorldSetting w : WorldSetting.values()) {
+            this.settings.put(w, new Settings());
+        }
+    }
+    
+    public WorldSettings(WorldSettings worldSettings) {
+        for (WorldSetting w : WorldSetting.values()) {
+            this.settings.put(w, new Settings(worldSettings.getSettings(w)));
+        }
+    }
+    
+    public WorldSettings(NbtCompound chunkSettings, NbtCompound biomeSettings, NbtCompound caveBiomeSettings) {
+        this.settings.put(WorldSetting.CHUNK, new Settings(chunkSettings));
+        this.settings.put(WorldSetting.BIOME, new Settings(biomeSettings));
+        this.settings.put(WorldSetting.CAVE_BIOME, new Settings(caveBiomeSettings));
+    }
+    
+    public void putChange(WorldSetting settingsKey, String key, NbtElement element) {
+        this.settings.get(settingsKey).putChange(key, element);
+    }
+    
+    public void putChanges(WorldSetting settingsKey, NbtCompound compound) {
+        this.settings.get(settingsKey).putChanges(compound);
+    }
+    
+    public void putChanges(WorldProvider worldProvider) {
+        this.putChanges(WorldSetting.CHUNK, ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider()));
+        this.putChanges(WorldSetting.BIOME, BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome()));
+        this.putChanges(WorldSetting.CAVE_BIOME, new NbtCompound());
+    }
+    
+    public void clearChanges(WorldSetting settingsKey) {
+        this.settings.get(settingsKey).clearChanges();
+    }
+    
+    public void clearChanges() {
+        for (Settings s : this.settings.values()) {
+            s.clearChanges();
+        }
+    }
+    
+    public void applyChanges() {
+        for (Settings s : this.settings.values()) {
+            s.applyChanges();
+        }
+    }
+    
+    public NbtElement getSetting(WorldSetting settingsKey, String key) {
+        return this.settings.get(settingsKey).getSetting(key);
+    }
+    
+    public NbtCompound getSettings(WorldSetting settingsKey) {
+        return this.settings.get(settingsKey).getNbt();
+    }
+    
+    /*
     private final Map<WorldSetting, NbtCompound> settings;
     
     public WorldSettings() {
@@ -29,6 +89,14 @@ public final class WorldSettings {
         for (WorldSetting w : WorldSetting.values()) {
             this.settings.put(w, new NbtCompound());
         }
+    }
+    
+    public WorldSettings(WorldSettings worldSettings) {
+        this();
+        
+        this.settings.put(WorldSetting.CHUNK, new NbtCompound().copyFrom(worldSettings.getSettings(WorldSetting.CHUNK)));
+        this.settings.put(WorldSetting.BIOME, new NbtCompound().copyFrom(worldSettings.getSettings(WorldSetting.BIOME)));
+        this.settings.put(WorldSetting.CAVE_BIOME, new NbtCompound().copyFrom(worldSettings.getSettings(WorldSetting.CAVE_BIOME)));
     }
     
     public WorldSettings(
@@ -66,4 +134,5 @@ public final class WorldSettings {
     public void copySettingsFrom(WorldSetting settingsKey, NbtCompound settings) {
         this.settings.get(settingsKey).copyFrom(settings);
     }
+    */
 }
