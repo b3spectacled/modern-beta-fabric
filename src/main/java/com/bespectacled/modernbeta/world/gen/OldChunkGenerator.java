@@ -153,7 +153,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
         Biome biome = this.getBiomeAt(chunkPos.getStartX(), 0, chunkPos.getStartZ(), chunk);
         GenerationSettings genSettings = biome.getGenerationSettings();
-        CarverContext heightContext = new CarverContext(this);
+        CarverContext heightContext = new CarverContext(this, chunk);
         
         AquiferSampler aquiferSampler = this.createAquiferSampler(chunk);
         BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);

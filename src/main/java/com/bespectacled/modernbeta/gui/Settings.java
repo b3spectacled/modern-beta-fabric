@@ -4,10 +4,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.logging.log4j.Level;
+
+import com.bespectacled.modernbeta.ModernBeta;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
 public class Settings {
+    private static final boolean DEBUG = false;
+    
     private final NbtCompound compound;
     private final Map<String, NbtElement> changes;
     
@@ -16,18 +22,28 @@ public class Settings {
         this.changes = new LinkedHashMap<>();
     }
     
-    public Settings(NbtCompound initialStorage) {
-        this.compound = new NbtCompound().copyFrom(initialStorage);
+    public Settings(NbtCompound initial) {
+        this.compound = new NbtCompound().copyFrom(initial);
         this.changes = new LinkedHashMap<>();
     }
 
     public void putChange(String key, NbtElement element) {
         this.changes.put(key, element);
+        
+        if (DEBUG) {
+            ModernBeta.log(Level.INFO, "Queueing change for key '" + key + "'");
+            ModernBeta.log(Level.INFO, "Current queue:");
+            
+            for (Entry<String, NbtElement> change : this.changes.entrySet()) {
+                ModernBeta.log(Level.INFO, "* '" + change.getKey() + "'");
+            }
+            
+        }
     }
     
     public void putChanges(NbtCompound compound) {
         for (String key : compound.getKeys()) {
-            this.changes.put(key, compound.get(key));
+            this.putChange(key, compound.get(key));
         }
     }
     
@@ -38,9 +54,12 @@ public class Settings {
     public void applyChanges() {
         for (Entry<String, NbtElement> change : this.changes.entrySet()) {
             this.compound.put(change.getKey(), change.getValue());
+            
+            if (DEBUG)
+                ModernBeta.log(Level.INFO, "Applying change for key '" + change.getKey() + "'");
         }
         
-        this.changes.clear();
+        this.clearChanges();
     }
     
     public NbtElement getSetting(String key) {

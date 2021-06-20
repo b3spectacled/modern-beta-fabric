@@ -22,6 +22,7 @@ import net.minecraft.util.math.MathHelper;
 public class MixinBackgroundRenderer {
     @Unique private static ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
     @Unique private static int capturedRenderDistance = 16;
+    @Unique private static float oldFogWeight = calculateFogWeight(16);
     
     @ModifyVariable(
         method = "render",
@@ -33,8 +34,10 @@ public class MixinBackgroundRenderer {
     
     @Inject(method = "render", at = @At("HEAD"))
     private static void captureVars(Camera camera, float tickDelta, ClientWorld world, int renderDistance, float skyDarkness, CallbackInfo info) {
-        if (capturedRenderDistance != renderDistance)
+        if (capturedRenderDistance != renderDistance) {
             capturedRenderDistance = renderDistance;
+            oldFogWeight = calculateFogWeight(renderDistance);
+        }    
     }
     
     @ModifyVariable(
@@ -42,18 +45,25 @@ public class MixinBackgroundRenderer {
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;method_23777(Lnet/minecraft/util/math/Vec3d;F)Lnet/minecraft/util/math/Vec3d;"),
         index = 7
     )
-    private static float modifyFogWeighting(float weighting) {
-        // Old fog formula with old render distance: weighting = 1.0F / (float)(4 - renderDistance) 
-        // where renderDistance is 0-3, 0 being 'Far' and 3 being 'Very Short'
+    private static float modifyFogWeighting(float weight) {
         if (BETA_CONFIG.rendering_config.renderOldFogColor) {
-            int clampedDistance = MathHelper.clamp(capturedRenderDistance, 0, 16);
-            clampedDistance = (int)((16 - clampedDistance) / (float)16 * 3);
-            
-            weighting = 1.0F / (float)(4 - clampedDistance);
-            weighting = 1.0F - (float)Math.pow(weighting, 0.25);
+            weight = oldFogWeight;
         }
         
-        return weighting;
+        return weight;
     }
     
+    @Unique
+    private static float calculateFogWeight(int renderDistance) {
+        // Old fog formula with old render distance: weight = 1.0F / (float)(4 - renderDistance) 
+        // where renderDistance is 0-3, 0 being 'Far' and 3 being 'Very Short'
+        
+        int clampedDistance = MathHelper.clamp(renderDistance, 0, 16);
+        clampedDistance = (int)((16 - clampedDistance) / (float)16 * 3);
+        
+        float weight = 1.0F / (float)(4 - clampedDistance);
+        weight = 1.0F - (float)Math.pow(weight, 0.25);
+        
+        return weight;
+    }
 }

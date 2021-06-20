@@ -20,5 +20,4 @@ public class ActionOptionWrapper implements OptionWrapper {
     public Option create() {
         return new ActionOption(this.key, this.suffix, this.onPress);
     }
-
 }

@@ -10,19 +10,20 @@ import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public class BiomeScreen extends GUIScreen {
+public abstract class BiomeScreen extends GUIScreen {
     protected final WorldSettings worldSettings;
-    protected final DynamicRegistryManager registryManager;
     protected final Consumer<Settings> consumer;
     
+    protected final DynamicRegistryManager registryManager;
     protected final Settings biomeSettings;
     
     protected BiomeScreen(WorldScreen parent, Consumer<Settings> consumer) {
         super("createWorld.customize.biomeType.title", parent);
 
         this.worldSettings = parent.getWorldSettings();
-        this.registryManager = parent.getRegistryManager();
         this.consumer = consumer;
+        
+        this.registryManager = parent.getRegistryManager();
         
         // Create new settings independent of main world settings storage.
         // Will only be applied to main world settings when 'Done'.

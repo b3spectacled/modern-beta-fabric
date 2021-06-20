@@ -49,7 +49,7 @@ public class DoubleOptionWrapper<T extends Number> implements OptionWrapper {
                     new LiteralText(this.getter.get().toString());
                 
                 return new TranslatableText(
-                    "options.generic_value", 
+                    "options.generic_value",
                     new Object[] { 
                         new TranslatableText(this.key),
                         value.append(" ").append(this.suffix)
@@ -57,6 +57,5 @@ public class DoubleOptionWrapper<T extends Number> implements OptionWrapper {
             }
         );
     }
-    
 }
 

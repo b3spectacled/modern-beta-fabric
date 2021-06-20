@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.gui.wrapper.CyclingOptionWrapper;
 import com.bespectacled.modernbeta.api.gui.wrapper.DoubleOptionWrapper;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
@@ -21,7 +20,7 @@ import net.minecraft.nbt.NbtString;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public class IndevWorldScreen extends WorldScreen {
+public class IndevWorldScreen extends InfWorldScreen {
     public IndevWorldScreen(
         CreateWorldScreen parent,
         WorldSettings worldSettings,

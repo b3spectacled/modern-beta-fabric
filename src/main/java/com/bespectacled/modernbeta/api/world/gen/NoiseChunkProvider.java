@@ -369,8 +369,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                         double se = MathHelper.lerp(deltaY, lowerSE, upperSE);
                         
                         for (int subX = 0; subX < this.horizontalNoiseResolution; ++subX) {
-                            int x = subX + subChunkX * this.horizontalNoiseResolution;
-                            int absX = startX + x;
+                            int relX = subX + subChunkX * this.horizontalNoiseResolution;
+                            int x = startX + relX;
                             
                             double deltaX = subX / (double)this.horizontalNoiseResolution;
                             interpolatorList.forEach(noiseInterpolator -> noiseInterpolator.sampleNoiseX(deltaX));
@@ -379,8 +379,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                             double s = MathHelper.lerp(deltaX, sw, se);
                             
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; ++subZ) {
-                                int z = subZ + subChunkZ * this.horizontalNoiseResolution;
-                                int absZ = startZ + z;
+                                int relZ = subZ + subChunkZ * this.horizontalNoiseResolution;
+                                int z = startZ + relZ;
                                 
                                 double deltaZ = subZ / (double)this.horizontalNoiseResolution;
                                 
@@ -391,15 +391,15 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                     aquiferSampler, 
                                     oreVeinSampler.apply(deltaZ),
                                     noodleCaveSampler.apply(deltaZ),
-                                    absX, y, absZ, 
+                                    x, y, z, 
                                     density
                                 );
                                 
-                                chunk.setBlockState(mutable.set(x, y, z), blockToSet, false);
+                                chunk.setBlockState(mutable.set(relX, y, relZ), blockToSet, false);
                                 
-                                heightmapOCEAN.trackUpdate(x, y, z, blockToSet);
-                                heightmapSURFACE.trackUpdate(x, y, z, blockToSet);
-                                this.scheduleFluidTick(chunk, aquiferSampler, mutable.set(absX, y, absZ), blockToSet);
+                                heightmapOCEAN.trackUpdate(relX, y, relZ, blockToSet);
+                                heightmapSURFACE.trackUpdate(relX, y, relZ, blockToSet);
+                                this.scheduleFluidTick(chunk, aquiferSampler, mutable.set(x, y, z), blockToSet);
                             }
                         }
                     }
