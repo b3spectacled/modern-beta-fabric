@@ -32,7 +32,7 @@ public final class WorldSettings {
     
     public WorldSettings(WorldSettings worldSettings) {
         for (WorldSetting w : WorldSetting.values()) {
-            this.settings.put(w, new Settings(worldSettings.getStoredSettings(w)));
+            this.settings.put(w, new Settings(worldSettings.getNbt(w)));
         }
     }
     
@@ -66,79 +66,11 @@ public final class WorldSettings {
         }
     }
     
-    public void applyChanges() {
-        for (Settings s : this.settings.values()) {
-            s.applyChanges();
-        }
-        
-        this.clearChanges();
-    }
-    
     public NbtElement getSetting(WorldSetting settingsKey, String key) {
         return this.settings.get(settingsKey).getSetting(key);
     }
     
-    public NbtCompound getStoredSettings(WorldSetting settingsKey) {
-        return this.settings.get(settingsKey).getStored();
+    public NbtCompound getNbt(WorldSetting settingsKey) {
+        return this.settings.get(settingsKey).getNbt();
     }
-    
-    public NbtCompound getStoredAndQueuedSettings(WorldSetting settingsKey) {
-        return this.settings.get(settingsKey).getStoredAndQueued();
-    }
-    
-    /*
-    private final Map<WorldSetting, NbtCompound> settings;
-    
-    public WorldSettings() {
-        this.settings = new LinkedHashMap<WorldSetting, NbtCompound>();
-        
-        for (WorldSetting w : WorldSetting.values()) {
-            this.settings.put(w, new NbtCompound());
-        }
-    }
-    
-    public WorldSettings(WorldSettings worldSettings) {
-        this();
-        
-        this.settings.put(WorldSetting.CHUNK, new NbtCompound().copyFrom(worldSettings.getSettings(WorldSetting.CHUNK)));
-        this.settings.put(WorldSetting.BIOME, new NbtCompound().copyFrom(worldSettings.getSettings(WorldSetting.BIOME)));
-        this.settings.put(WorldSetting.CAVE_BIOME, new NbtCompound().copyFrom(worldSettings.getSettings(WorldSetting.CAVE_BIOME)));
-    }
-    
-    public WorldSettings(
-        NbtCompound chunkProviderSettings, 
-        NbtCompound biomeProviderSettings,
-        NbtCompound caveBiomeProviderSettings
-    ) {
-        this(); // Ensure settings are initialized with something.
-        
-        this.settings.put(WorldSetting.CHUNK, new NbtCompound().copyFrom(chunkProviderSettings));
-        this.settings.put(WorldSetting.BIOME, new NbtCompound().copyFrom(biomeProviderSettings));
-        this.settings.put(WorldSetting.CAVE_BIOME, new NbtCompound().copyFrom(caveBiomeProviderSettings));
-    }
-    
-    public WorldSettings(WorldProvider worldProvider) {
-        this();
-        
-        this.settings.put(WorldSetting.CHUNK, ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider()));
-        this.settings.put(WorldSetting.BIOME, BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome()));
-        this.settings.put(WorldSetting.CAVE_BIOME, new NbtCompound());
-    }
-    
-    public NbtCompound getSettings(WorldSetting settingsKey) {
-        return new NbtCompound().copyFrom(this.settings.get(settingsKey));
-    }
-    
-    public NbtElement getSetting(WorldSetting settingsKey, String key) {
-        return this.settings.get(settingsKey).get(key);
-    }
-    
-    public void putSetting(WorldSetting settingsKey, String key, NbtElement element) {
-        this.settings.get(settingsKey).put(key, element);
-    }
-    
-    public void copySettingsFrom(WorldSetting settingsKey, NbtCompound settings) {
-        this.settings.get(settingsKey).copyFrom(settings);
-    }
-    */
 }

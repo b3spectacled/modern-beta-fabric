@@ -25,13 +25,13 @@ public class BetaBiomeScreen extends BiomeScreen {
     private BetaBiomeScreen(WorldScreen parent, Consumer<Settings> consumer) {
         super(parent, consumer);
         
-        this.biomeSettingsMap = new BetaClimateMapCustomizable(this.biomeSettings.getStoredAndQueued()).getMap();
+        this.biomeSettingsMap = new BetaClimateMapCustomizable(this.biomeSettings.getNbt()).getMap();
     }
     
     public static BetaBiomeScreen create(WorldScreen worldScreen) {
         return new BetaBiomeScreen(
             worldScreen,
-            settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getStored())
+            settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getNbt())
         );
     }
     

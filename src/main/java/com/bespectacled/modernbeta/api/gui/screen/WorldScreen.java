@@ -48,9 +48,6 @@ public abstract class WorldScreen extends GUIScreen {
             this.width / 2 - 155, this.height - 28, 150, 20, 
             ScreenTexts.DONE, 
             buttonWidget -> {
-                // Apply all settings change only on done!
-                this.worldSettings.applyChanges();
-                
                 this.consumer.accept(this.worldSettings);
                 this.client.openScreen(this.parent);
             }
@@ -93,6 +90,7 @@ public abstract class WorldScreen extends GUIScreen {
             () -> NBTUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, WorldSettings.TAG_BIOME)),
             value -> {
                 // Queue biome settings changes
+                this.worldSettings.clearChanges(WorldSetting.BIOME);
                 this.worldSettings.putChanges(WorldSetting.BIOME, BiomeProviderSettings.createSettingsBase(value, this.worldProvider.getSingleBiome()));
                 
                 this.client.openScreen(

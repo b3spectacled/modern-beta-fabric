@@ -14,17 +14,16 @@ import net.minecraft.nbt.NbtElement;
 public class Settings {
     private static final boolean DEBUG = false;
     
-    private final NbtCompound compound;
     private final Map<String, NbtElement> changes;
     
     public Settings() {
-        this.compound = new NbtCompound();
         this.changes = new LinkedHashMap<>();
     }
     
     public Settings(NbtCompound initial) {
-        this.compound = new NbtCompound().copyFrom(initial);
         this.changes = new LinkedHashMap<>();
+        
+        this.readNbt(initial);
     }
 
     public void putChange(String key, NbtElement element) {
@@ -51,37 +50,28 @@ public class Settings {
         this.changes.clear();
     }
     
-    public void applyChanges() {
-        for (Entry<String, NbtElement> change : this.changes.entrySet()) {
-            this.compound.put(change.getKey(), change.getValue());
-            
-            if (DEBUG)
-                ModernBeta.log(Level.INFO, "Applying change for key '" + change.getKey() + "'");
-        }
-        
-        this.clearChanges();
-    }
-    
     public NbtElement getSetting(String key) {
         // If change to a setting is queued,
         // then get that as it is newer.
         if (this.changes.containsKey(key))
             return this.changes.get(key);
         
-        return this.compound.get(key);
+        return null;
     }
     
-    public NbtCompound getStored() {
-        return new NbtCompound().copyFrom(this.compound);
-    }
-    
-    public NbtCompound getStoredAndQueued() {
-        NbtCompound queued = this.getStored();
+    public NbtCompound getNbt() {
+        NbtCompound compound = new NbtCompound();
         
         for (Entry<String, NbtElement> change : this.changes.entrySet()) {
-            queued.put(change.getKey(), change.getValue());
+            compound.put(change.getKey(), change.getValue());
         }
         
-        return queued;
+        return compound;
+    }
+    
+    private void readNbt(NbtCompound compound) {
+        for (String key : compound.getKeys()) {
+            this.changes.put(key, compound.get(key));
+        }
     }
 }

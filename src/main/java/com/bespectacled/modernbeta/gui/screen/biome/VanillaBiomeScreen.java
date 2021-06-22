@@ -19,7 +19,7 @@ public class VanillaBiomeScreen extends BiomeScreen {
     public static VanillaBiomeScreen create(WorldScreen worldScreen) {
         return new VanillaBiomeScreen(
             worldScreen,
-            settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getStored())
+            settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getNbt())
         );
     }
     

@@ -46,8 +46,8 @@ public class OldGeneratorType {
         GeneratorOptions generatorOptions,
         WorldSettings worldSettings
     ) {
-        NbtCompound chunkProviderSettings = worldSettings.getStoredSettings(WorldSetting.CHUNK);
-        NbtCompound biomeProviderSettings = worldSettings.getStoredSettings(WorldSetting.BIOME);
+        NbtCompound chunkProviderSettings = worldSettings.getNbt(WorldSetting.CHUNK);
+        NbtCompound biomeProviderSettings = worldSettings.getNbt(WorldSetting.BIOME);
         
         String chunkProviderType = chunkProviderSettings.getString(WorldSettings.TAG_WORLD);
     
@@ -117,15 +117,13 @@ public class OldGeneratorType {
                         NbtCompound biomeProviderSettings = biomeSource instanceof OldBiomeSource oldBiomeSource ? 
                             oldBiomeSource.getProviderSettings() : 
                             BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome());
-                        
+
                         // TODO: Add functionality later
                         NbtCompound caveBiomeProviderSettings = CaveBiomeProviderSettings.createSettingsBase(worldProvider.getCaveBiomeProvider());
                         
-                        WorldSettings worldSettings = new WorldSettings(chunkProviderSettings, biomeProviderSettings, caveBiomeProviderSettings);
-                        
                         return Registries.WORLD.get(chunkProviderSettings.getString(WorldSettings.TAG_WORLD)).createWorldScreen(
                             screen,
-                            worldSettings,
+                            new WorldSettings(chunkProviderSettings, biomeProviderSettings, caveBiomeProviderSettings),
                             modifiedWorldSettings -> ((MixinMoreOptionsDialogInvoker)screen.moreOptionsDialog).invokeSetGeneratorOptions(
                                 createNewGeneratorOptions(
                                     screen.moreOptionsDialog.getRegistryManager(),

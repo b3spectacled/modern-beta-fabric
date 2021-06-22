@@ -27,7 +27,7 @@ public abstract class BiomeScreen extends GUIScreen {
         
         // Create new settings independent of main world settings storage.
         // Will only be applied to main world settings when 'Done'.
-        this.biomeSettings = new Settings(this.worldSettings.getStoredAndQueuedSettings(WorldSetting.BIOME));
+        this.biomeSettings = new Settings(this.worldSettings.getNbt(WorldSetting.BIOME));
     }
     
     @Override
@@ -41,9 +41,6 @@ public abstract class BiomeScreen extends GUIScreen {
             this.width / 2 - 155, this.height - 28, 150, 20, 
             ScreenTexts.DONE, 
             buttonWidget -> {
-                // Apply all settings change only on done!
-                this.biomeSettings.applyChanges();
-                
                 this.consumer.accept(this.biomeSettings);
                 this.client.openScreen(this.parent);
             }

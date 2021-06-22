@@ -75,7 +75,7 @@ public class MixinMinecraftServer {
         
         while (!chunkProvider.isSandAt(x, z, chunk)) {
             if (attempts > 10000) {
-                ModernBeta.log(Level.INFO, "Exceeded spawn attempts, spawning anyway..");
+                ModernBeta.log(Level.INFO, "Exceeded spawn attempts, spawning anyway at 0,0..");
                 
                 x = 0;
                 z = 0;
@@ -96,22 +96,18 @@ public class MixinMinecraftServer {
     @Unique
     private static void setIndevProperties(ServerWorld world, IndevTheme theme) {
         switch(theme) {
-            case HELL:
+            case HELL -> {
                 world.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(false, null); 
                 world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null); 
                 world.setTimeOfDay(18000);
-                break;
-            case WOODS:
-                world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null); 
-                world.setWeather(0, Integer.MAX_VALUE, true, false);
-                break;
-            case PARADISE:
+            } case PARADISE -> {
                 world.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(false, null); 
                 world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null); 
                 world.setTimeOfDay(6000);
-                break;
-            default:
-                break;
+            } case WOODS -> {
+                world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null); 
+                world.setWeather(0, Integer.MAX_VALUE, true, false);
+            } default -> {}
         }
     }
     
