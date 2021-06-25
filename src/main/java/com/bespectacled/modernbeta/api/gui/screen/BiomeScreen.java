@@ -57,5 +57,4 @@ public abstract class BiomeScreen extends GUIScreen {
         this.addDrawableChild(doneButton);
         this.addDrawableChild(cancelButton);
     }
-
 }

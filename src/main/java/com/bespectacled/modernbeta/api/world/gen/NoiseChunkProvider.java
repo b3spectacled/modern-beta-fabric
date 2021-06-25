@@ -290,6 +290,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                 
                 for (int nY = this.noiseMinY; nY < noiseResolutionY + this.noiseMinY; ++nY) {
                     noise[ndx] = this.generateNoise(noiseX + nX, nY, noiseZ + nZ, scaleDepth);
+                    
                     ndx++;
                 }
             }

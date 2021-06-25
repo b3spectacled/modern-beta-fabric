@@ -21,7 +21,7 @@ public class Settings {
     }
     
     public Settings(NbtCompound initial) {
-        this.changes = new LinkedHashMap<>();
+        this();
         
         this.readNbt(initial);
     }
@@ -30,7 +30,7 @@ public class Settings {
         this.changes.put(key, element);
         
         if (DEBUG) {
-            ModernBeta.log(Level.INFO, "Queueing change for key '" + key + "'");
+            ModernBeta.log(Level.INFO, "Queueing setting for key '" + key + "'");
             ModernBeta.log(Level.INFO, "Current queue:");
             
             for (Entry<String, NbtElement> change : this.changes.entrySet()) {
@@ -51,8 +51,6 @@ public class Settings {
     }
     
     public NbtElement getSetting(String key) {
-        // If change to a setting is queued,
-        // then get that as it is newer.
         if (this.changes.containsKey(key))
             return this.changes.get(key);
         
