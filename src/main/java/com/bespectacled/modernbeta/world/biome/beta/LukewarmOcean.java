@@ -74,7 +74,7 @@ public class LukewarmOcean {
             .effects((new BiomeEffects.Builder())
                 .skyColor(OldBiomeColors.BETA_WARM_SKY_COLOR)
                 .fogColor(OldBiomeColors.BETA_FOG_COLOR)
-                .waterColor(OldBiomeColors.VANILLA_LUKEWARM_WATER_COLOR)
+                .waterColor(OldBiomeColors.USE_DEBUG_OCEAN_COLOR ? 16777215 : OldBiomeColors.VANILLA_LUKEWARM_WATER_COLOR)
                 .waterFogColor(OldBiomeColors.VANILLA_LUKEWARM_WATER_FOG_COLOR)
                 .build())
             .spawnSettings(spawnSettings.build())

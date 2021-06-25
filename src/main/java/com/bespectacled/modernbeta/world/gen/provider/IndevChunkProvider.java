@@ -231,6 +231,10 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         return false;
     }
     
+    @Override
+    public int getSeaLevel() {
+        return this.waterLevel;
+    }
     
     public boolean inWorldBounds(int x, int z) {
         return IndevUtil.inIndevRegion(x, z, this.levelWidth, this.levelLength);

@@ -29,7 +29,7 @@
     "createWorld.customize.worldType.title": "Modern Beta World Configuration",
     "createWorld.customize.biomeType.title": "Modern Beta Biome Configuration",
     
-    "createWorld.customize.inf.generateOceans": "Generate Oceans",
+    "createWorld.customize.inf.generateOceans": "Assign Ocean Biomes",
     "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",
     "createWorld.customize.infdev.generateInfdevWall": "Generate Infdev Obsidian Wall",
     

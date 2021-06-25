@@ -225,6 +225,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.chunkProvider.getHeight(x, z, type, world);
     }
   
+    @Override
     public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
         int height = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world);
         int worldHeight = this.chunkProvider.getWorldHeight();
@@ -335,6 +336,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             MutableBiomeArray mutableBiomeArray = MutableBiomeArray.inject(chunk.getBiomeArray());
             
             ChunkPos chunkPos = chunk.getPos();
+            BlockPos.Mutable pos = new BlockPos.Mutable();
             
             int worldHeight = this.getWorldHeight();
             int minY = this.getMinimumY();
@@ -352,7 +354,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     int offsetX = absX + 2;
                     int offsetZ = absZ + 2;
                     
-                    if (GenUtil.getSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, this.defaultFluid) < seaLevel - OCEAN_MIN_DEPTH) {
+                    int height = GenUtil.getSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, this.defaultFluid);
+                    
+                    if (height < seaLevel - OCEAN_MIN_DEPTH && chunk.getBlockState(pos.set(offsetX, height + 1, offsetZ)).equals(this.defaultFluid)) {
                         Biome oceanBiome = oldBiomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);
                         
                         // Fill biome column
