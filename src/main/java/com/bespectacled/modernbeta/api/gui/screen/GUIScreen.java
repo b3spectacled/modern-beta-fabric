@@ -1,10 +1,14 @@
 package com.bespectacled.modernbeta.api.gui.screen;
 
+import java.util.List;
+
 import com.bespectacled.modernbeta.api.gui.wrapper.OptionWrapper;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
 
 public abstract class GUIScreen extends Screen {
@@ -32,6 +36,12 @@ public abstract class GUIScreen extends Screen {
         DrawableHelper.drawCenteredText(matrixStack, this.textRenderer, this.title, this.width / 2, 16, 16777215);
         
         super.render(matrixStack, mouseX, mouseY, tickDelta);
+        
+        // Render tooltips
+        List<OrderedText> tooltips = GameOptionsScreen.getHoveredButtonTooltip(this.buttonList, mouseX, mouseY);
+        if (tooltips != null) {
+            this.renderOrderedTooltip(matrixStack, tooltips, mouseX, mouseY);
+        }
     }
     
     public void addOption(OptionWrapper option) {

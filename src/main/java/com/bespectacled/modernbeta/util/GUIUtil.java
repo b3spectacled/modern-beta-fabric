@@ -9,6 +9,5 @@ public class GUIUtil {
     
     public static String createTranslatableBiomeStringFromId(Identifier biomeId) {
         return "biome." + biomeId.getNamespace() + "." + biomeId.getPath();
-                
     }
 }

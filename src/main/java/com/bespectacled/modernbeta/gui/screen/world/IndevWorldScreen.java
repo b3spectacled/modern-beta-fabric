@@ -17,10 +17,21 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtFloat;
 import net.minecraft.nbt.NbtInt;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class IndevWorldScreen extends InfWorldScreen {
+    private static final String LEVEL_THEME_DISPLAY_STRING = "createWorld.customize.indev.levelTheme";
+    private static final String LEVEL_TYPE_DISPLAY_STRING = "createWorld.customize.indev.levelType";
+    private static final String LEVEL_WIDTH_DISPLAY_STRING = "createWorld.customize.indev.levelWidth";
+    private static final String LEVEL_LENGTH_DISPLAY_STRING = "createWorld.customize.indev.levelLength";
+    private static final String LEVEL_HEIGHT_DISPLAY_STRING = "createWorld.customize.indev.levelHeight";
+    private static final String CAVE_RADIUS_DISPLAY_STRING = "createWorld.customize.indev.caveRadius";
+    
+    private static final String LEVEL_HEIGHT_TOOLTIP = "createWorld.customize.indev.levelHeight.tooltip";
+    private static final String CAVE_RADIUS_TOOLTIP = "createWorld.customize.indev.caveRadius.tooltip";
+    
     public IndevWorldScreen(
         CreateWorldScreen parent,
         WorldSettings worldSettings,
@@ -44,7 +55,7 @@ public class IndevWorldScreen extends InfWorldScreen {
         int topY = chunkGenSettings.get().getGenerationShapeConfig().getHeight() + chunkGenSettings.get().getGenerationShapeConfig().getMinimumY();
         
         CyclingOptionWrapper<IndevTheme> levelTheme = new CyclingOptionWrapper<>(
-            "createWorld.customize.indev.levelTheme",
+            LEVEL_THEME_DISPLAY_STRING,
             IndevTheme.values(),
             () -> IndevTheme.fromName(NBTUtil.toString(this.worldSettings.getSetting(WorldSetting.CHUNK, "levelTheme"), ModernBeta.GEN_CONFIG.indevLevelTheme)),
             value -> {
@@ -61,14 +72,14 @@ public class IndevWorldScreen extends InfWorldScreen {
         );
         
         CyclingOptionWrapper<IndevType> levelType = new CyclingOptionWrapper<>(
-            "createWorld.customize.indev.levelType", 
+            LEVEL_TYPE_DISPLAY_STRING, 
             IndevType.values(), 
             () -> IndevType.fromName(NBTUtil.toString(this.worldSettings.getSetting(WorldSetting.CHUNK, "levelType"), ModernBeta.GEN_CONFIG.indevLevelType)), 
             value -> this.worldSettings.putChange(WorldSetting.CHUNK, "levelType", NbtString.of(value.getName()))
         );
         
         DoubleOptionWrapper<Integer> levelWidth = new DoubleOptionWrapper<>(
-            "createWorld.customize.indev.levelWidth",
+            LEVEL_WIDTH_DISPLAY_STRING,
             "blocks",
             128D, 1024D, 128f,
             () -> NBTUtil.toInt(this.worldSettings.getSetting(WorldSetting.CHUNK, "levelWidth"), ModernBeta.GEN_CONFIG.indevLevelWidth),
@@ -76,7 +87,7 @@ public class IndevWorldScreen extends InfWorldScreen {
         );
         
         DoubleOptionWrapper<Integer> levelLength = new DoubleOptionWrapper<>(
-            "createWorld.customize.indev.levelLength",
+            LEVEL_LENGTH_DISPLAY_STRING,
             "blocks",
             128D, 1024D, 128f,
             () -> NBTUtil.toInt(this.worldSettings.getSetting(WorldSetting.CHUNK, "levelLength"), ModernBeta.GEN_CONFIG.indevLevelLength),
@@ -84,19 +95,21 @@ public class IndevWorldScreen extends InfWorldScreen {
         );
         
         DoubleOptionWrapper<Integer> levelHeight = new DoubleOptionWrapper<>(
-            "createWorld.customize.indev.levelHeight", 
+            LEVEL_HEIGHT_DISPLAY_STRING, 
             "blocks",
             64D, (double)topY, 64F,
             () -> NBTUtil.toInt(this.worldSettings.getSetting(WorldSetting.CHUNK, "levelHeight"), ModernBeta.GEN_CONFIG.indevLevelHeight),
-            value -> this.worldSettings.putChange(WorldSetting.CHUNK, "levelHeight", NbtInt.of(value.intValue()))
+            value -> this.worldSettings.putChange(WorldSetting.CHUNK, "levelHeight", NbtInt.of(value.intValue())),
+            this.client.textRenderer.wrapLines(new TranslatableText(LEVEL_HEIGHT_TOOLTIP), 200)
         );
         
         DoubleOptionWrapper<Float> caveRadius = new DoubleOptionWrapper<>(
-            "createWorld.customize.indev.caveRadius",
+            CAVE_RADIUS_DISPLAY_STRING,
             "",
             1D, 3D, 0.1f,
             () -> NBTUtil.toFloat(this.worldSettings.getSetting(WorldSetting.CHUNK, "caveRadius"), ModernBeta.GEN_CONFIG.indevCaveRadius),
-            value -> this.worldSettings.putChange(WorldSetting.CHUNK, "caveRadius", NbtFloat.of(value.floatValue()))
+            value -> this.worldSettings.putChange(WorldSetting.CHUNK, "caveRadius", NbtFloat.of(value.floatValue())),
+            this.client.textRenderer.wrapLines(new TranslatableText(CAVE_RADIUS_TOOLTIP), 200)
         );
         
         this.addOption(levelTheme);

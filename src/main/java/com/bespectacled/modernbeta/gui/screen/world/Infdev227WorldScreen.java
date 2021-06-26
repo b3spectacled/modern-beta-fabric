@@ -12,6 +12,9 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtByte;
 
 public class Infdev227WorldScreen extends InfWorldScreen {
+    private static final String INFDEV_PYRAMID_DISPLAY_STRING = "createWorld.customize.infdev.generateInfdevPyramid";
+    private static final String INFDEV_WALL_DISPLAY_STRING = "createWorld.customize.infdev.generateInfdevWall";
+    
     public Infdev227WorldScreen(
         CreateWorldScreen parent,
         WorldSettings worldSettings,
@@ -25,13 +28,13 @@ public class Infdev227WorldScreen extends InfWorldScreen {
         super.init();
         
         BooleanCyclingOptionWrapper generateInfdevPyramid = new BooleanCyclingOptionWrapper(
-            "createWorld.customize.infdev.generateInfdevPyramid",
+            INFDEV_PYRAMID_DISPLAY_STRING,
             () -> NBTUtil.toBoolean(this.worldSettings.getSetting(WorldSetting.CHUNK, "generateInfdevPyramid"), ModernBeta.GEN_CONFIG.generateInfdevPyramid),
             value -> this.worldSettings.putChange(WorldSetting.CHUNK, "generateInfdevPyramid",  NbtByte.of(value))
         );
         
         BooleanCyclingOptionWrapper generateInfdevWall = new BooleanCyclingOptionWrapper(
-            "createWorld.customize.infdev.generateInfdevWall", 
+            INFDEV_WALL_DISPLAY_STRING, 
             () -> NBTUtil.toBoolean(this.worldSettings.getSetting(WorldSetting.CHUNK, "generateInfdevWall"), ModernBeta.GEN_CONFIG.generateInfdevWall),
             value -> this.worldSettings.putChange(WorldSetting.CHUNK, "generateInfdevWall",  NbtByte.of(value))
         );

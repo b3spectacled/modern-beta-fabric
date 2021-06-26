@@ -12,8 +12,12 @@ import com.bespectacled.modernbeta.util.NBTUtil;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtByte;
+import net.minecraft.text.TranslatableText;
 
 public class InfWorldScreen extends WorldScreen {
+    private static final String GENERATE_OCEANS_DISPLAY_STRING = "createWorld.customize.inf.generateOceans";
+    private static final String GENERATE_OCEANS_TOOLTIP = "createWorld.customize.inf.generateOceans.tooltip";
+    
     public InfWorldScreen(
         CreateWorldScreen parent,
         WorldSettings worldSettings,
@@ -29,9 +33,10 @@ public class InfWorldScreen extends WorldScreen {
         String biomeType = NBTUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, WorldSettings.TAG_BIOME));
         
         BooleanCyclingOptionWrapper generateOceans = new BooleanCyclingOptionWrapper(
-            "createWorld.customize.inf.generateOceans",
+            GENERATE_OCEANS_DISPLAY_STRING,
             () -> NBTUtil.toBoolean(this.worldSettings.getSetting(WorldSetting.CHUNK, "generateOceans"), ModernBeta.GEN_CONFIG.generateOceans),
-            value -> this.worldSettings.putChange(WorldSetting.CHUNK, "generateOceans", NbtByte.of(value))
+            value -> this.worldSettings.putChange(WorldSetting.CHUNK, "generateOceans", NbtByte.of(value)),
+            this.client.textRenderer.wrapLines(new TranslatableText(GENERATE_OCEANS_TOOLTIP), 200)
         );
         
         if (!biomeType.equals(BuiltInTypes.Biome.SINGLE.name)) {

@@ -1,11 +1,15 @@
 package com.bespectacled.modernbeta.api.gui.wrapper;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.option.DoubleOption;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
 
 public class DoubleOptionWrapper<T extends Number> implements OptionWrapper {
@@ -18,6 +22,28 @@ public class DoubleOptionWrapper<T extends Number> implements OptionWrapper {
     private final Supplier<T> getter;
     private final Consumer<Double> setter;
     
+    private final List<OrderedText> tooltips;
+    
+    public DoubleOptionWrapper(
+        String key,
+        String suffix,
+        double min,
+        double max,
+        float step,
+        Supplier<T> getter,
+        Consumer<Double> setter,
+        List<OrderedText> tooltipsGetter
+    ) {
+        this.key = key;
+        this.suffix = suffix;
+        this.min = min;
+        this.max = max;
+        this.step = step;
+        this.getter = getter;
+        this.setter = setter;
+        this.tooltips = tooltipsGetter;
+    }
+    
     public DoubleOptionWrapper(
         String key,
         String suffix,
@@ -27,13 +53,7 @@ public class DoubleOptionWrapper<T extends Number> implements OptionWrapper {
         Supplier<T> getter,
         Consumer<Double> setter
     ) {
-        this.key = key;
-        this.suffix = suffix;
-        this.min = min;
-        this.max = max;
-        this.step = step;
-        this.getter = getter;
-        this.setter = setter;
+        this(key, suffix, min, max, step, getter, setter, ImmutableList.of());
     }
     
     @Override
@@ -54,7 +74,8 @@ public class DoubleOptionWrapper<T extends Number> implements OptionWrapper {
                         new TranslatableText(this.key),
                         value.append(" ").append(this.suffix)
                 });
-            }
+            },
+            client -> tooltips
         );
     }
 }
