@@ -1,9 +1,6 @@
 package com.bespectacled.modernbeta.api.world.biome;
 
-import java.util.HashSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import java.util.Set;
 import com.bespectacled.modernbeta.util.BlockStates;
 
 import net.minecraft.block.BlockState;
@@ -14,13 +11,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockRenderView;
 
 public enum BetaColorResolver {;
-    
-    private static final HashSet<BlockState> GRASS_BLOCKS = Stream.of(
+    private static final Set<BlockState> GRASS_BLOCKS = Set.of(
         BlockStates.GRASS,
         BlockStates.FERN,
         BlockStates.TALL_GRASS,
         BlockStates.TALL_FERN
-    ).collect(Collectors.toCollection(HashSet::new));
+    );
     
     public static void setSeed(long seed) {
         BetaClimateSampler.INSTANCE.setSeed(seed);

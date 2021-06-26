@@ -19,6 +19,6 @@ public interface MutableBiomeArray {
         return (MutableBiomeArray) biomeArray;
     }
 
-    void setBiome(int x, int y, int z, Biome biome);
-    Biome getBiome(int x, int y, int z);
+    void setBiome(int x, int y, int z, Biome biome, int worldBottomY, int worldHeight);
+    Biome getBiome(int x, int y, int z, int worldBottomY, int worldHeight);
 }

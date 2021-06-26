@@ -11,12 +11,9 @@ public class BiomeUtil {
     public static final int HORIZONTAL_BIT_MASK = (1 << HORIZONTAL_SECTION_COUNT) - 1;
     
     // Convert absolute coordinates to BiomeArray index
-    public static int computeBiomeIndex(int x, int y, int z) {
-        int minY = 0;
-        int maxY = 128;
-        
-        int biomeMinY = BiomeCoords.fromBlock(minY);
-        int biomeMaxY = BiomeCoords.fromBlock(maxY) - 1;
+    public static int computeBiomeIndex(int x, int y, int z, int worldBottomY, int worldHeight) {
+        int biomeMinY = BiomeCoords.fromBlock(worldBottomY);
+        int biomeMaxY = BiomeCoords.fromBlock(worldHeight) - 1;
         
         int l = (x >> 2) & HORIZONTAL_BIT_MASK;
         int m = MathHelper.clamp((y >> 2) - biomeMinY, 0, biomeMaxY);

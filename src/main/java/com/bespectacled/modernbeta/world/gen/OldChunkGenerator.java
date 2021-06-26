@@ -366,7 +366,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                             
                             // TODO: Remove true when cave biomes are in.
                             if (true || actualY >= OCEAN_Y_CUT_OFF)
-                                mutableBiomeArray.setBiome(absX, absY, absZ, oceanBiome);
+                                mutableBiomeArray.setBiome(absX, absY, absZ, oceanBiome, this.getMinimumY(), this.getWorldHeight());
                         }
                     }
                 }

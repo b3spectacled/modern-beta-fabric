@@ -16,12 +16,12 @@ public abstract class MixinBiomeArray implements MutableBiomeArray {
     @Shadow private Biome[] data;
 
     @Override
-    public void setBiome(int x, int y, int z, Biome biome) {
-        this.data[BiomeUtil.computeBiomeIndex(x, y, z)] = biome;
+    public void setBiome(int x, int y, int z, Biome biome, int worldBottomY, int worldHeight) {
+        this.data[BiomeUtil.computeBiomeIndex(x, y, z, worldBottomY, worldHeight)] = biome;
     }
 
     @Override
-    public Biome getBiome(int x, int y, int z) {
-        return this.data[BiomeUtil.computeBiomeIndex(x, y, z)];
+    public Biome getBiome(int x, int y, int z, int worldBottomY, int worldHeight) {
+        return this.data[BiomeUtil.computeBiomeIndex(x, y, z, worldBottomY, worldHeight)];
     }
 }
