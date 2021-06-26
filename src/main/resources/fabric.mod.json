@@ -4,13 +4,21 @@
   "version": "${version}",
 
   "name": "Modern Beta Fabric",
-  "description": "Modern Beta for Modern Minecraft.",
+  "description": "Old world generation for modern Minecraft!",
   "authors": [
     "bespectacled"
   ],
+  "contributors": [
+    "SuperCoder7979",
+    "Arenovas",
+    "Amb0s",
+    "PaulEvs",
+    "comp500"
+  ],
   "contact": {
     "homepage": "https://github.com/b3spectacled/",
-    "sources": "https://github.com/b3spectacled/modern-beta-fabric"
+    "sources": "https://github.com/b3spectacled/modern-beta-fabric",
+    "issues": "https://github.com/b3spectacled/modern-beta-fabric/issues"
   },
 
   "license": "LGPLv3",
@@ -36,5 +44,13 @@
     "fabric": "*",
     "minecraft": "1.17.x",
     "java": ">=16"
+  },
+  
+  "conflicts": {
+    "hydrogen": "*"
+  },
+  
+  "breaks": {
+    "tic_tacs": "*"
   }
 }

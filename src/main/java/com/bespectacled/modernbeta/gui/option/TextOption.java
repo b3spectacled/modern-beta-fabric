@@ -9,6 +9,7 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.Option;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 
 /*
@@ -16,19 +17,26 @@ import net.minecraft.util.math.MathHelper;
  */
 public class TextOption extends Option {
     private final String key;
+    private final Formatting formatting;
+    
     private ClickableWidget button;
-
-    public TextOption(String key) {
+    
+    public TextOption(String key, Formatting formatting) {
         super(key);
         
         this.key = key;
+        this.formatting = formatting;
+    }
+    
+    public TextOption(String key) {
+        this(key, Formatting.RESET);
     }
 
     @Override
     public ClickableWidget createButton(GameOptions options, int x, int y, int width) {
         this.button = new ButtonWidget(
             x, y, width, 20,
-            new TranslatableText(this.key),
+            new TranslatableText(this.key).formatted(this.formatting),
             (buttonWidget) -> {}
         ) {
             @Override

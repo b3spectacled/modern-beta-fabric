@@ -15,6 +15,7 @@ import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMapCustomizable;
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -45,7 +46,8 @@ public class BetaBiomeScreen extends BiomeScreen {
     }
     
     private void addBiomeButtonEntry(String key, String biomeText) {
-        TextOptionWrapper text = new TextOptionWrapper(GUIUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(key)));
+        TextOptionWrapper text = new TextOptionWrapper(GUIUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(key)), Formatting.GRAY);
+        
         ActionOptionWrapper singleBiomeScreen = new ActionOptionWrapper(
             GUIUtil.createTranslatableBiomeStringFromId(this.biomeSettingsMap.get(key)), 
             "",
