@@ -73,23 +73,25 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private static final int OCEAN_MIN_DEPTH = 4;
     
     private final BiomeSource biomeSource;
+    
     private final NbtCompound chunkProviderSettings;
-    
-    private final String chunkProviderType;
-    private final boolean generateOceans;
-    
     private final ChunkProvider chunkProvider;
+    private final String chunkProviderType;
+
+    private final boolean generateOceans;
+    private final boolean generateOceanShrines;
     
     public OldChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, NbtCompound providerSettings) {
         super(biomeSource, seed, settings);
         
         this.biomeSource = biomeSource;
-
+        
         this.chunkProviderSettings = providerSettings;
         this.chunkProviderType = NBTUtil.readStringOrThrow(WorldSettings.TAG_WORLD, providerSettings);
         this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
         
         this.generateOceans = NBTUtil.readBoolean("generateOceans", providerSettings, ModernBeta.GEN_CONFIG.generateOceans);
+        this.generateOceanShrines = NBTUtil.readBoolean("generateOceanShrines", providerSettings, ModernBeta.GEN_CONFIG.generateOceanShrines);
     }
 
     public static void register() {
@@ -306,6 +308,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     public NbtCompound getProviderSettings() {
         return new NbtCompound().copyFrom(this.chunkProviderSettings);
+    }
+    
+    public boolean generatesOceanShrines() {
+        return this.generateOceanShrines;
     }
     
     /*

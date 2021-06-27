@@ -50,7 +50,7 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
         DefaultFeatureConfig config, 
         HeightLimitView world
     ) {
-        if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
+        if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator && oldChunkGenerator.generatesOceanShrines()) {
             return true;
         }
         
