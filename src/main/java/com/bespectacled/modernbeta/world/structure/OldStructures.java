@@ -33,7 +33,8 @@ public class OldStructures {
             OCEAN_SHRINE_ID, 
             OCEAN_SHRINE_STRUCTURE)
             .step(GenerationStep.Feature.SURFACE_STRUCTURES)
-            .defaultConfig(64, 16, 357)
+            //.defaultConfig(64, 16, 357)
+            .defaultConfig(4, 1, 357)
             .adjustsSurface()
             .register();
         

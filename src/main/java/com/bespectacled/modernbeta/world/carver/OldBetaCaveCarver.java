@@ -287,8 +287,8 @@ public class OldBetaCaveCarver extends CaveCarver {
         if (minY < context.getMinY() + 1) {
             minY = context.getMinY() + 1;
         }
-        if (maxY > context.getMinY() + context.getMaxY() - 8) {
-            maxY = context.getMinY() + context.getMaxY() - 8;
+        if (maxY > context.getMinY() + context.getHeight() - 8) {
+            maxY = context.getMinY() + context.getHeight() - 8;
         }
 
         if (minZ < 0) {
@@ -388,7 +388,7 @@ public class OldBetaCaveCarver extends CaveCarver {
             for (int relZ = relMinZ; relZ < relMaxZ; relZ++) {
                 for (int relY = maxY + 1; relY >= minY - 1; relY--) {
 
-                    if (relY < context.getMinY() || relY >= context.getMinY() + context.getMaxY()) {
+                    if (relY < context.getMinY() || relY >= context.getMinY() + context.getHeight()) {
                         continue;
                     }
 

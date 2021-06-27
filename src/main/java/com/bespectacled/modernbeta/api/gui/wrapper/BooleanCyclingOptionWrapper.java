@@ -31,7 +31,7 @@ public class BooleanCyclingOptionWrapper implements OptionWrapper {
     
     @Override
     public CyclingOption<Boolean> create() {
-        CyclingOption<Boolean> cyclingOption = CyclingOption.create(
+        return CyclingOption.create(
             this.key,
             new TranslatableText(ScreenTexts.ON.getString()).formatted(Formatting.GREEN),
             new TranslatableText(ScreenTexts.OFF.getString()).formatted(Formatting.RED),
@@ -40,7 +40,5 @@ public class BooleanCyclingOptionWrapper implements OptionWrapper {
                 this.setter.accept(value);
             }
         ).tooltip(client -> value -> this.tooltips);
-        
-        return cyclingOption;
     }
 }

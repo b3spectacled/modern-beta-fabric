@@ -11,9 +11,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.bespectacled.modernbeta.world.biome.BiomeModifier;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.OldBiomes;
-import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeModifier;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.OldChunkGeneratorSettings;
 import com.bespectacled.modernbeta.world.gen.OldGeneratorType;
@@ -67,7 +67,7 @@ public class ModernBeta implements ModInitializer {
         OldChunkGeneratorSettings.register();
         
         // Add Ocean Shrine to vanilla oceans, when using vanilla biome type.
-        VanillaBiomeModifier.addShrineToOceans();
+        BiomeModifier.addShrineToOceans();
         
         // Set up mod compatibility
         Compat.setupCompat();

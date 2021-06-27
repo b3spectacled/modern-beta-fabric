@@ -7,8 +7,6 @@ import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
@@ -48,14 +46,12 @@ public class CyclingOptionWrapper<T> implements OptionWrapper {
     
     @Override
     public CyclingOption<T> create() {
-        CyclingOption<T> cyclingOption = CyclingOption.create(
+        return CyclingOption.create(
             this.key,
             this.collection,
             value -> new TranslatableText(this.key + "." + value.toString().toLowerCase()).formatted(this.formatting.apply(value)), 
             gameOptions -> this.getter.get(),
             (gameOptions, option, value) -> this.setter.accept(value)
         ).tooltip(client -> value -> this.tooltips);
-        
-        return cyclingOption;
     }
 }

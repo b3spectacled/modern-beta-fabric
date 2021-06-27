@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.world.biome.vanilla;
+package com.bespectacled.modernbeta.world.biome;
 
 import java.util.function.Predicate;
 
@@ -13,7 +13,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
 @SuppressWarnings("deprecation")
-public class VanillaBiomeModifier {
+public class BiomeModifier {
     private static ImmutableList<RegistryKey<Biome>> VANILLA_OCEANS = ImmutableList.of(
         BiomeKeys.OCEAN,
         BiomeKeys.COLD_OCEAN,

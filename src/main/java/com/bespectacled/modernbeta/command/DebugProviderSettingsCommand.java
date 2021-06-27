@@ -20,19 +20,30 @@ public class DebugProviderSettingsCommand {
     }
     
     private static int execute(ServerCommandSource source) {
+        boolean validWorld = false;
+        
         if (source.getWorld().getChunkManager().getChunkGenerator() instanceof OldChunkGenerator oldChunkGenerator) {
+            validWorld = true;
+            
             String chunkProviderSettings = oldChunkGenerator.getProviderSettings().asString();
-            String biomeProviderSettings = ((OldBiomeSource)oldChunkGenerator.getBiomeSource()).getProviderSettings().asString();
             
             source.sendFeedback(new LiteralText("Chunk Provider Settings:").formatted(Formatting.YELLOW), false);
             source.sendFeedback(new LiteralText(chunkProviderSettings), false);
+        }
+        
+        if (source.getWorld().getChunkManager().getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) {
+            validWorld = true;
+            
+            String biomeProviderSettings = oldBiomeSource.getProviderSettings().asString();
             
             source.sendFeedback(new LiteralText("Biome Provider Settings:").formatted(Formatting.YELLOW), false);
             source.sendFeedback(new LiteralText(biomeProviderSettings), false);
-            
-            return 0;
         }
-        
+
+        if (validWorld) {
+            return 0;
+        } 
+
         source.sendFeedback(new LiteralText("Not a Modern Beta world!").formatted(Formatting.RED), false);
         return -1;
     }

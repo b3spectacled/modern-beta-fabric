@@ -12,9 +12,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.HeightLimitView;
-import net.minecraft.world.Heightmap;
+import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.SpawnSettings;
+import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -36,6 +38,25 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
         return OceanShrineStructure.MONSTER_SPAWNS;
     }
     
+    @Override
+    protected boolean shouldStartAt(
+        ChunkGenerator chunkGenerator, 
+        BiomeSource biomeSource, 
+        long worldSeed, 
+        ChunkRandom random, 
+        ChunkPos pos, 
+        Biome biome, 
+        ChunkPos chunkPos, 
+        DefaultFeatureConfig config, 
+        HeightLimitView world
+    ) {
+        if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
+            return true;
+        }
+        
+        return false;
+    }
+    
     public static class Start extends StructureStart<DefaultFeatureConfig> {
         public Start(StructureFeature<DefaultFeatureConfig> structureFeature, ChunkPos chunkPos, int references, long seed) {
             super(structureFeature, chunkPos, references, seed);
@@ -50,19 +71,15 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
             Biome biome, 
             DefaultFeatureConfig config, 
             HeightLimitView heightLimitView
-        ) {
-            // Should only generate in Beta worlds
-            if (!(chunkGenerator instanceof OldChunkGenerator)) return;
-            
+        ) { 
             int x = chunkPos.getStartX();
             int z = chunkPos.getStartZ();
-            int y = chunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, heightLimitView);
+            int y = chunkGenerator.getHeight(x, z, Type.OCEAN_FLOOR_WG, heightLimitView);
             
             BlockPos pos = new BlockPos(x, y, z);
             BlockRotation rot = BlockRotation.random(this.random);
             
             OceanShrineGenerator.addPieces(manager, pos, rot, this, this.children);
-            this.setBoundingBoxFromChildren();
         }
     }
     
