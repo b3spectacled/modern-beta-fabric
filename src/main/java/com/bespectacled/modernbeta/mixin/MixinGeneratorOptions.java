@@ -46,7 +46,7 @@ public class MixinGeneratorOptions {
         String levelType = properties.get("level-type").toString().trim().toLowerCase();
         
         // Check for Modern Beta world type
-        if (Registries.CHUNK.contains(levelType)) {
+        if (Registries.CHUNK.containsExceptDefault(levelType)) {
             // get or generate seed
             String seedField = (String) MoreObjects.firstNonNull(properties.get("level-seed"), "");
             long seed = new Random().nextLong();
