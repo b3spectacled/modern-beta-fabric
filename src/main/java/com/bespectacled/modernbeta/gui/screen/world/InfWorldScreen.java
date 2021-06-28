@@ -75,6 +75,5 @@ public class InfWorldScreen extends WorldScreen {
         if (!isSingleBiome || hasOceanShrine) {
             this.addOption(generateOceanShrines);
         }
-        
     }
 }

@@ -116,14 +116,14 @@ public class NBTUtil {
     
     public static boolean toBooleanOrThrow(NbtElement element) {
         if (element instanceof NbtByte nbtByte) 
-            return nbtByte.byteValue() == 1 ? true : false;
+            return nbtByte.byteValue() == 1;
         
         throw new IllegalArgumentException("[Modern Beta] NBT Element is not an byte/boolean!"); 
     }
     
     public static boolean toBoolean(NbtElement element, boolean alternate) {
         if (element instanceof NbtByte nbtByte) 
-            return nbtByte.byteValue() == 1 ? true : false;
+            return nbtByte.byteValue() == 1;
         
         return alternate;
     }
