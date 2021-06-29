@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.api.world;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.bespectacled.modernbeta.gui.Settings;
+import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 

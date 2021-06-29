@@ -12,7 +12,6 @@
     "MixinBiomeSourceAccessor"
   ],
   "client": [
-    "client.MixinBlockColors",
     "client.MixinClientWorld",
     "client.MixinWorldRenderer",
     "client.MixinBackgroundRenderer",

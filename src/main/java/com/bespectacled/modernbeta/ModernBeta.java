@@ -4,7 +4,6 @@ import net.fabricmc.api.EnvType;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
 import org.apache.logging.log4j.Level;
@@ -23,11 +22,11 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 
+import com.bespectacled.modernbeta.client.color.BetaBlockColors;
+import com.bespectacled.modernbeta.client.color.BlockColors;
 import com.bespectacled.modernbeta.command.DebugProviderSettingsCommand;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.config.*;
-import com.bespectacled.modernbeta.util.mutable.MutableBlockColors;
-
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
     public static final String MOD_NAME = "Modern Beta";
@@ -42,8 +41,7 @@ public class ModernBeta implements ModInitializer {
     // Ehh...
     public static void setBlockColorsSeed(long seed, boolean useBetaColors) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            MutableBlockColors mutableBlockColors = MutableBlockColors.inject(MinecraftClient.getInstance().getBlockColors());
-            mutableBlockColors.setSeed(seed, useBetaColors);
+            BetaBlockColors.getInstance().setSeed(seed, useBetaColors);
         }
     }
     
@@ -84,6 +82,9 @@ public class ModernBeta implements ModInitializer {
             // Register default screen providers
             ModernBetaBuiltInProviders.registerWorldScreens();
             ModernBetaBuiltInProviders.registerBiomeScreens();
+            
+            // Override default biome grass/foliage colors
+            BlockColors.register();
         }
         
         if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
@@ -94,10 +95,9 @@ public class ModernBeta implements ModInitializer {
         // Serialize various world gen stuff to JSON
         //OldChunkGeneratorSettings.export();
         //OldChunkGenerator.export();
-
+        
         log(Level.INFO, "Initialized Modern Beta!");
 
         // Man, I am not good at this...
     }
-
 }

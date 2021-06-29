@@ -1,8 +1,8 @@
 package com.bespectacled.modernbeta;
 
 import com.bespectacled.modernbeta.api.registry.*;
-import com.bespectacled.modernbeta.gui.screen.world.*;
-import com.bespectacled.modernbeta.gui.screen.biome.*;
+import com.bespectacled.modernbeta.client.gui.screen.biome.*;
+import com.bespectacled.modernbeta.client.gui.screen.world.*;
 import com.bespectacled.modernbeta.world.BuiltInWorldProviders;
 import com.bespectacled.modernbeta.world.biome.provider.*;
 import com.bespectacled.modernbeta.world.cavebiome.provider.*;
