@@ -18,7 +18,7 @@ public class CyclingOptionWrapper<T> implements OptionWrapper {
     private final Supplier<T> getter;
     private final Consumer<T> setter;
     private final Function<T, Formatting> formatting;
-    private final List<OrderedText> tooltips;
+    private final Function<T, List<OrderedText>> tooltips;
     
     public CyclingOptionWrapper(
         String key, 
@@ -26,7 +26,7 @@ public class CyclingOptionWrapper<T> implements OptionWrapper {
         Supplier<T> getter, 
         Consumer<T> setter, 
         Function<T, Formatting> formatting,
-        List<OrderedText> tooltips
+        Function<T, List<OrderedText>> tooltips
     ) {
         this.key = key;
         this.collection = collection;
@@ -37,11 +37,11 @@ public class CyclingOptionWrapper<T> implements OptionWrapper {
     }
     
     public CyclingOptionWrapper(String key, T[] collection, Supplier<T> getter, Consumer<T> setter) {
-        this(key, collection, getter, setter, value -> Formatting.RESET, ImmutableList.of());
+        this(key, collection, getter, setter, value -> Formatting.RESET, value -> ImmutableList.of());
     }
     
     public CyclingOptionWrapper(String key, T[] collection, Supplier<T> getter, Consumer<T> setter, Function<T, Formatting> formatting) {
-        this(key, collection, getter, setter, formatting, ImmutableList.of());
+        this(key, collection, getter, setter, formatting, value -> ImmutableList.of());
     }
     
     @Override
@@ -52,6 +52,6 @@ public class CyclingOptionWrapper<T> implements OptionWrapper {
             value -> new TranslatableText(this.key + "." + value.toString().toLowerCase()).formatted(this.formatting.apply(value)), 
             gameOptions -> this.getter.get(),
             (gameOptions, option, value) -> this.setter.accept(value)
-        ).tooltip(client -> value -> this.tooltips);
+        ).tooltip(client -> value -> this.tooltips.apply(value));
     }
 }

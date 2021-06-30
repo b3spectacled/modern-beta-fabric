@@ -33,9 +33,6 @@ public class Taiga {
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnEntry(EntityType.LLAMA, 4, 4, 6));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnEntry(EntityType.FOX, 8, 2, 4));
         
-        // TODO: Move maybe later
-        spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnEntry(EntityType.GOAT, 10, 4, 6));
-        
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         

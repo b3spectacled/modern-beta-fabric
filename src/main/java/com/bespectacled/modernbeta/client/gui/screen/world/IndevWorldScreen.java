@@ -68,7 +68,8 @@ public class IndevWorldScreen extends InfWorldScreen {
                         this.consumer
                 ));
             },
-            value -> value.getColor()
+            value -> value.getColor(),
+            value -> this.client.textRenderer.wrapLines(new TranslatableText(value.getDescription()).formatted(value.getColor()), 250)
         );
         
         CyclingOptionWrapper<IndevType> levelType = new CyclingOptionWrapper<>(

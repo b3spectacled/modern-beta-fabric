@@ -208,8 +208,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             biome
         );
         
-        for (final Supplier<ConfiguredStructureFeature<?, ?>> supplier : biome.getGenerationSettings()
-                .getStructureFeatures()) {
+        for (final Supplier<ConfiguredStructureFeature<?, ?>> supplier : biome.getGenerationSettings().getStructureFeatures()) {
             ((MixinChunkGeneratorInvoker)this).invokeSetStructureStart(
                 supplier.get(),
                 dynamicRegistryManager, 
@@ -235,9 +234,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         BlockState[] column = new BlockState[worldHeight];
         
-        for (int y = worldHeight + minY - 1; y >= minY; --y) {
-            if (y > height) {
-                if (y > this.getSeaLevel())
+        for (int y = worldHeight - 1; y >= 0; --y) {
+            // Offset y by minY to get actual current height.
+            int actualY = y + minY;
+            
+            if (actualY > height) {
+                if (actualY > this.getSeaLevel())
                     column[y] = BlockStates.AIR;
                 else
                     column[y] = this.defaultFluid;

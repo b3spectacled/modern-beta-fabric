@@ -8,8 +8,13 @@ public final class BlockColors {
         // Grass blocks
         ColorProviderRegistry.BLOCK.register(
             (state, view, pos, tintNdx) -> BetaBlockColors.getInstance().getGrassColor(state, view, pos, tintNdx), 
-            Blocks.GRASS_BLOCK, 
-            Blocks.FERN, 
+            Blocks.GRASS_BLOCK
+        );
+        
+        // Tall grass blocks
+        ColorProviderRegistry.BLOCK.register(
+            (state, view, pos, tintNdx) -> BetaBlockColors.getInstance().getTallGrassColor(state, view, pos, tintNdx), 
+            Blocks.FERN,
             Blocks.GRASS,
             Blocks.POTTED_FERN
         );

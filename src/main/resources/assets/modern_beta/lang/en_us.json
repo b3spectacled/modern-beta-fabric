@@ -71,6 +71,11 @@
     "createWorld.customize.indev.levelTheme.woods": "Woods",
     "createWorld.customize.indev.levelTheme.snowy": "Snowy",
     
+    "createWorld.customize.indev.levelTheme.normal.description": "Normal weather, day/night cycle, water sea.",
+    "createWorld.customize.indev.levelTheme.hell.description": "Clear skies, perpetual darkness, lava sea.",
+    "createWorld.customize.indev.levelTheme.paradise.description": "Clear skies, perpetual sunlight, water sea.",
+    "createWorld.customize.indev.levelTheme.woods.description": "Overcast, day/night cycle, water sea.",
+    
     "createWorld.customize.indev.levelType.island": "Island",
     "createWorld.customize.indev.levelType.floating": "Floating",
     "createWorld.customize.indev.levelType.inland": "Inland",

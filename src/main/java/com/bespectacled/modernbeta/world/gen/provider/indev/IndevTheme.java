@@ -11,6 +11,8 @@ public enum IndevTheme {
     PARADISE(2, "paradise", IndevBiomes.INDEV_PARADISE_ID, Formatting.YELLOW),
     WOODS(3, "woods", IndevBiomes.INDEV_WOODS_ID, Formatting.AQUA);
     
+    private static final String PREFIX = "createWorld.customize.indev.levelTheme";
+    
     private final int id;
     private final String name;
     private final Identifier defaultBiome;
@@ -37,6 +39,10 @@ public enum IndevTheme {
     
     public Formatting getColor() {
         return this.color;
+    }
+    
+    public String getDescription() {
+        return String.format("%s.%s.description", PREFIX, this.name);
     }
     
     public static IndevTheme fromId(int id) {
