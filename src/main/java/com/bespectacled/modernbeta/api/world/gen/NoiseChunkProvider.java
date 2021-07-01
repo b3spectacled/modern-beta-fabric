@@ -7,7 +7,6 @@ import java.util.function.DoubleFunction;
 import java.util.stream.IntStream;
 
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
-import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.pool.DoubleArrayPool;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
@@ -66,9 +65,9 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final boolean generateOreVeins;
     protected final boolean generateNoodleCaves;
 
+    protected final NoiseChunkCache noiseChunkCache;
     protected Long2ObjectLinkedOpenHashMap<HeightmapChunk> heightmapCache;
     
-    protected final DoubleArrayPool heightNoisePool;
     protected final DoubleArrayPool surfaceNoisePool;
     
     protected final DoublePerlinNoiseSampler edgeDensityNoise;
@@ -90,6 +89,13 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getBedrockCeilingY(),
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
             chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
+            new DeepslateBlockSource(
+                chunkGenerator.getWorldSeed(), 
+                chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
+                ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasDeepslate() ? 
+                    Blocks.DEEPSLATE.getDefaultState() : 
+                    chunkGenerator.getGeneratorSettings().get().getDefaultBlock(), chunkGenerator.getGeneratorSettings().get()
+            ),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSizeVertical(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSizeHorizontal(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSampling().getXZScale(),
@@ -120,6 +126,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int bedrockCeiling,
         BlockState defaultBlock,
         BlockState defaultFluid,
+        BlockSource blockSource,
         int sizeVertical, 
         int sizeHorizontal,
         double xzScale, 
@@ -138,7 +145,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         boolean generateOreVeins,
         boolean generateNoodleCaves
     ) {
-        super(chunkGenerator, minY, worldHeight, seaLevel, minSurfaceY, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid);
+        super(chunkGenerator, minY, worldHeight, seaLevel, minSurfaceY, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid, blockSource);
         
         this.verticalNoiseResolution = sizeVertical * 4;
         this.horizontalNoiseResolution = sizeHorizontal * 4;
@@ -169,14 +176,14 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         this.generateOreVeins = generateOreVeins;
         this.generateNoodleCaves = generateNoodleCaves;
         
-        this.blockSource = new DeepslateBlockSource(seed, this.defaultBlock, this.generateDeepslate ? Blocks.DEEPSLATE.getDefaultState() : BlockStates.STONE, this.generatorSettings.get());
+        // Noise cache
+        this.noiseChunkCache = new NoiseChunkCache(1024, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1));
         
         // Heightmap cache
         this.heightmapCache = new Long2ObjectLinkedOpenHashMap<>(1024);
         
         // Noise array pools
-        this.heightNoisePool = new DoubleArrayPool(64, (this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1));
-        this.surfaceNoisePool = new DoubleArrayPool(64, 256);
+        this.surfaceNoisePool = new DoubleArrayPool(64, 256);      
         
         // Aquifer samplers
         ChunkRandom chunkRandom = new ChunkRandom(seed);
@@ -229,7 +236,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         
-        long hashedCoord = (long)chunkX & 0xffffffffL | ((long)chunkZ & 0xffffffffL) << 32;
+        long hashedCoord = ChunkPos.toLong(chunkX, chunkZ);
         
         HeightmapChunk cachedChunk = this.heightmapCache.get(hashedCoord);
         
@@ -322,13 +329,21 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int noiseMinY = MathHelper.floorDiv(minY, this.verticalNoiseResolution);
         int noiseTopY = MathHelper.floorDiv(topY - minY, this.verticalNoiseResolution);
         
+        
+        
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
         AquiferSampler aquiferSampler = this.createAquiferSampler(noiseMinY, noiseTopY, chunk.getPos());
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         // Get and populate primary noise array
-        double[] heightNoise = this.heightNoisePool.borrowArr();
-        this.generateNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
+        //double[] heightNoise = this.heightNoisePool.borrowArr();
+        //this.generateNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
+        
+        double[] heightNoise = this.noiseChunkCache.get(
+            chunkX, 
+            chunkZ, 
+            (cX, cZ, noise) -> this.generateNoiseArr(cX * this.noiseSizeX, cZ * this.noiseSizeZ, noise)
+        );
         
         // Create ore vein and noodle cave samplers
         List<NoiseInterpolator> interpolatorList = new ArrayList<>();
@@ -409,7 +424,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             interpolatorList.forEach(NoiseInterpolator::swapBuffers);
         }
         
-        this.heightNoisePool.returnArr(heightNoise);
+        //this.heightNoisePool.returnArr(heightNoise);
     }
     
     /**
@@ -429,8 +444,14 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int chunkX = sampleX >> 4;
         int chunkZ = sampleZ >> 4;
 
-        double[] heightNoise = this.heightNoisePool.borrowArr();
-        this.generateNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
+        //double[] heightNoise = this.heightNoisePool.borrowArr();
+        //this.generateNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ, heightNoise);
+
+        double[] heightNoise = this.noiseChunkCache.get(
+            chunkX, 
+            chunkZ, 
+            (cX, cZ, noise) -> this.generateNoiseArr(cX * this.noiseSizeX, cZ * this.noiseSizeZ, noise)
+        );
         
         int[] heightmap = new int[256];
         IntStream.range(0, heightmap.length).forEach(i -> heightmap[i] = 16);
@@ -483,7 +504,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                 }
             }
         }
-        this.heightNoisePool.returnArr(heightNoise);
+        //this.heightNoisePool.returnArr(heightNoise);
         
         // Construct new heightmap cache from generated heightmap array
         return new HeightmapChunk(heightmap);

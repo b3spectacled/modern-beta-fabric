@@ -39,7 +39,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     
     protected final NoiseSampler surfaceDepthNoise;
 
-    protected BlockSource blockSource;
+    protected final BlockSource blockSource;
 
     public BaseChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
@@ -51,7 +51,8 @@ public abstract class BaseChunkProvider extends ChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getBedrockFloorY(),
             chunkGenerator.getGeneratorSettings().get().getBedrockCeilingY(),
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
-            chunkGenerator.getGeneratorSettings().get().getDefaultFluid()
+            chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
+            new DefaultBlockSource(BlockStates.STONE)
         );
     }
     
@@ -64,7 +65,8 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         int bedrockFloor,
         int bedrockCeiling,
         BlockState defaultBlock,
-        BlockState defaultFluid
+        BlockState defaultFluid,
+        BlockSource blockSource
     ) {
         super(chunkGenerator);
         
@@ -79,7 +81,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         this.defaultBlock = defaultBlock;
         this.defaultFluid = defaultFluid;
         
-        this.blockSource = new DefaultBlockSource(BlockStates.STONE);
+        this.blockSource = blockSource;
         
         // Surface noise sampler
         this.surfaceDepthNoise = this.generatorSettings.get().getGenerationShapeConfig().hasSimplexSurfaceNoise() ? 

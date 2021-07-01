@@ -7,6 +7,7 @@ import java.util.function.BiFunction;
 import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 
 public enum BetaClimateSampler {
@@ -176,7 +177,7 @@ public enum BetaClimateSampler {
             int chunkX = x >> 4;
             int chunkZ = z >> 4;
             
-            long hashedCoord = (long)chunkX & 0xffffffffL | ((long)chunkZ & 0xffffffffL) << 32;
+            long hashedCoord = ChunkPos.toLong(chunkX, chunkZ);
             
             T cachedChunk;
             
