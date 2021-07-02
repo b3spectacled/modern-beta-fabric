@@ -177,8 +177,19 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         this.generateNoodleCaves = generateNoodleCaves;
         
         // Chunk caches
-        this.noiseChunkCache = new ChunkCache<>(1024, (cX, cZ) -> this.generateNoiseArr(cX * this.noiseSizeX, cZ * this.noiseSizeZ));
-        this.heightmapChunkCache = new ChunkCache<>(1024, this::sampleHeightmap);
+        this.noiseChunkCache = new ChunkCache<>(
+            "noise", 
+            1024, 
+            true, 
+            (cX, cZ) -> this.generateNoiseArr(cX * this.noiseSizeX, cZ * this.noiseSizeZ)
+        );
+        
+        this.heightmapChunkCache = new ChunkCache<>(
+            "heightmap", 
+            1024, 
+            true, 
+            this::sampleHeightmap
+        );
         
         // Noise array pools
         this.surfaceNoisePool = new DoubleArrayPool(64, arr -> arr.length == 256, 256);      
@@ -437,8 +448,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             }
             interpolatorList.forEach(NoiseInterpolator::swapBuffers);
         }
-        
-        //this.heightNoisePool.returnArr(noise);
     }
     
     /**

@@ -9,8 +9,8 @@ import net.minecraft.util.math.MathHelper;
 public enum BetaClimateSampler {
     INSTANCE;
     
-    private final ChunkCache<ClimateCacheChunk> climateCache = new ChunkCache<>(1024, false, ClimateCacheChunk::new);
-    private final ChunkCache<SkyCacheChunk> skyCache = new ChunkCache<>(128, false, SkyCacheChunk::new);
+    private final ChunkCache<ClimateCacheChunk> climateCache = new ChunkCache<>("climate", 1024, false, ClimateCacheChunk::new);
+    private final ChunkCache<SkyCacheChunk> skyCache = new ChunkCache<>("sky", 256, true, SkyCacheChunk::new);
     
     private SimplexOctaveNoise tempNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 9871L), 4);
     private SimplexOctaveNoise rainNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 39811L), 4);
