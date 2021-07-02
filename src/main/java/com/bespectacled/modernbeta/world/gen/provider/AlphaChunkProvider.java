@@ -58,9 +58,9 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
         ChunkRandom sandstoneRand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        double[] sandNoise = this.surfaceNoisePool.borrowArr();
-        double[] gravelNoise = this.surfaceNoisePool.borrowArr();
-        double[] surfaceNoise = this.surfaceNoisePool.borrowArr();
+        double[] sandNoise = this.surfaceNoisePool.borrowObj();
+        double[] gravelNoise = this.surfaceNoisePool.borrowObj();
+        double[] surfaceNoise = this.surfaceNoisePool.borrowObj();
 
         beachNoiseOctaves.sampleArr(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth, eighth, 1.0D);
         beachNoiseOctaves.sampleArr(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
@@ -174,9 +174,9 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
             }
         }
         
-        this.surfaceNoisePool.returnArr(sandNoise);
-        this.surfaceNoisePool.returnArr(gravelNoise);
-        this.surfaceNoisePool.returnArr(surfaceNoise);
+        this.surfaceNoisePool.returnObj(sandNoise);
+        this.surfaceNoisePool.returnObj(gravelNoise);
+        this.surfaceNoisePool.returnObj(surfaceNoise);
     }
     
     @Override

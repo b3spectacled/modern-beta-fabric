@@ -81,9 +81,9 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        double[] sandNoise = this.surfaceNoisePool.borrowArr();
-        double[] gravelNoise = this.surfaceNoisePool.borrowArr();
-        double[] surfaceNoise = this.surfaceNoisePool.borrowArr();
+        double[] sandNoise = this.surfaceNoisePool.borrowObj();
+        double[] gravelNoise = this.surfaceNoisePool.borrowObj();
+        double[] surfaceNoise = this.surfaceNoisePool.borrowObj();
 
         sandNoise = beachNoiseOctaves.sampleArrBeta(
             sandNoise, 
@@ -201,9 +201,9 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
             }
         }
         
-        this.surfaceNoisePool.returnArr(sandNoise);
-        this.surfaceNoisePool.returnArr(gravelNoise);
-        this.surfaceNoisePool.returnArr(surfaceNoise);
+        this.surfaceNoisePool.returnObj(sandNoise);
+        this.surfaceNoisePool.returnObj(gravelNoise);
+        this.surfaceNoisePool.returnObj(surfaceNoise);
     }
 
     @Override
