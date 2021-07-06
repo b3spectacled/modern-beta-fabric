@@ -7,12 +7,12 @@ import java.util.function.DoubleFunction;
 import java.util.stream.IntStream;
 
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
+import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.ChunkCache;
 import com.bespectacled.modernbeta.util.pool.DoubleArrayPool;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -93,7 +93,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                 chunkGenerator.getWorldSeed(), 
                 chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
                 ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasDeepslate() ? 
-                    Blocks.DEEPSLATE.getDefaultState() : 
+                    BlockStates.DEEPSLATE : 
                     chunkGenerator.getGeneratorSettings().get().getDefaultBlock(), chunkGenerator.getGeneratorSettings().get()
             ),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSizeVertical(),
@@ -179,14 +179,14 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         // Chunk caches
         this.noiseChunkCache = new ChunkCache<>(
             "noise", 
-            1024, 
+            1536, 
             true, 
-            (cX, cZ) -> this.generateNoiseArr(cX * this.noiseSizeX, cZ * this.noiseSizeZ)
+            (chunkX, chunkZ) -> this.generateNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ)
         );
         
         this.heightmapChunkCache = new ChunkCache<>(
             "heightmap", 
-            1024, 
+            1536, 
             true, 
             this::sampleHeightmap
         );
@@ -245,9 +245,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         
-        HeightmapChunk cachedChunk = this.heightmapChunkCache.get(chunkX, chunkZ);
-        
-        int groundHeight = cachedChunk.getHeight(x, z);
+        int groundHeight = this.heightmapChunkCache.get(chunkX, chunkZ).getHeight(x, z);
         
         // Not ideal
         if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)

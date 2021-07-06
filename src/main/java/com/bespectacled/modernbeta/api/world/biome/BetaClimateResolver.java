@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.api.world.biome;
 
+import com.bespectacled.modernbeta.api.world.biome.BetaClimateSampler.Clime;
+
 /**
  * Exposes Beta climate sampler as a 'trait' to be implemented by whatever needs it,
  * without exposing the climate sampler singleton completely.
@@ -20,6 +22,10 @@ public interface BetaClimateResolver {
     
     default double sampleRain(int x, int z) {
         return BetaClimateSampler.INSTANCE.sampleRain(x, z);
+    }
+    
+    default Clime sampleClime(int x, int z) {
+        return BetaClimateSampler.INSTANCE.sampleClime(x, z);
     }
     
     default double sampleSkyTemp(int x, int z) {

@@ -1,6 +1,8 @@
 package com.bespectacled.modernbeta.util;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.function.BiFunction;
 
 import org.apache.logging.log4j.Level;
@@ -19,8 +21,11 @@ public class ChunkCache<T> {
     private final int capacity;
     private final boolean evictOldChunks;
     private final BiFunction<Integer, Integer, T> chunkFunc;
-    private final Long2ObjectLinkedOpenHashMap<T> cache;
+    private final Long2ObjectLinkedOpenHashMap<T> chunkMap;
+    
     private final ReentrantReadWriteLock lock;
+    private final WriteLock writeLock;
+    private final ReadLock readLock;
 
     private int hits;
     private int misses;
@@ -31,8 +36,11 @@ public class ChunkCache<T> {
         this.capacity = capacity;
         this.evictOldChunks = evictOldChunks;
         this.chunkFunc = chunkFunc;
-        this.cache = new Long2ObjectLinkedOpenHashMap<>(capacity);
+        this.chunkMap = new Long2ObjectLinkedOpenHashMap<>(capacity);
+        
         this.lock = new ReentrantReadWriteLock();
+        this.writeLock = this.lock.writeLock();
+        this.readLock = this.lock.readLock();
         
         this.hits = 0;
         this.misses = 0;
@@ -48,12 +56,12 @@ public class ChunkCache<T> {
     }
     
     public void clear() {
-        this.lock.writeLock().lock();
+        this.writeLock.lock();
         try {
-            this.cache.clear();
-            this.cache.trim();
+            this.chunkMap.clear();
+            this.chunkMap.trim();
         } finally {
-            this.lock.writeLock().unlock();
+            this.writeLock.unlock();
         }
     }
     
@@ -61,26 +69,26 @@ public class ChunkCache<T> {
         long hashedCoord = ChunkPos.toLong(chunkX, chunkZ);
         T item;
         
-        this.lock.readLock().lock();
+        this.readLock.lock();
         try {
-            item = this.cache.get(hashedCoord);
+            item = this.chunkMap.get(hashedCoord);
         } finally {
-            this.lock.readLock().unlock();
+            this.readLock.unlock();
         }
         
         if (item == null) { 
-            this.lock.writeLock().lock();
+            this.writeLock.lock();
             try {
                 item = this.chunkFunc.apply(chunkX, chunkZ);
                 
                 // Ensure cache size remains below capacity
-                if (this.evictOldChunks && this.cache.size() >= this.capacity) {
-                    this.cache.removeFirst();
+                if (this.evictOldChunks && this.chunkMap.size() >= this.capacity) {
+                    this.chunkMap.removeFirst();
                 }
                 
-                this.cache.put(hashedCoord, item);
+                this.chunkMap.put(hashedCoord, item);
             } finally {
-                this.lock.writeLock().unlock();
+                this.writeLock.unlock();
             }
             
             misses++;
@@ -88,7 +96,7 @@ public class ChunkCache<T> {
             hits++;
         }
         
-        if (this.debug == true && hits != 0 && hits % 512 == 0) {
+        if (this.debug && hits % 512 == 0) {
             float hitMissRate = hits / (float)(hits + misses) * 100F;
             ModernBeta.log(Level.INFO, String.format("Cache '%s' hit/miss rate: %.2f", this.name, hitMissRate));
         }

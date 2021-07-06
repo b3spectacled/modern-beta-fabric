@@ -52,9 +52,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
         
         int bedrockFloor = this.minY + this.bedrockFloor;
         
-        // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
-        ChunkRandom sandstoneRand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         for (int x = 0; x < 16; ++x) {
@@ -143,12 +141,6 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
                         } else if (flag > 0) {
                             --flag;
                             chunk.setBlockState(mutable, fillerBlock, false);
-                            
-                            // Beta backport, adds layer of sandstone starting at lowest block of sand, of height 1 to 4.
-                            if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                                flag = sandstoneRand.nextInt(4);
-                                fillerBlock = BlockStates.SANDSTONE;
-                            }
                         }
                     }
                 }

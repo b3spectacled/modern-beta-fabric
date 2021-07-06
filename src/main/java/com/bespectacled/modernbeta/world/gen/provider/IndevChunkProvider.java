@@ -116,11 +116,12 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
             this.pregenerateTerrainOrWait();
             this.generateTerrain(chunk, structureAccessor);
      
-        } else if (this.levelType != IndevType.FLOATING) {
-            if (this.levelType == IndevType.ISLAND)
-                this.generateWaterBorder(chunk);
-            else {
-                this.generateWorldBorder(chunk);
+        } else {
+            switch(this.levelType) {
+                case ISLAND -> this.generateWaterBorder(chunk);
+                case INLAND -> this.generateWorldBorder(chunk);
+                case FLOATING -> {}
+                default -> {}
             }
         }
 
@@ -721,10 +722,10 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
             if (block == Blocks.AIR) {
                 blockArr[x][y][z] = toFill;
                 
-                if (y - 1 >= 0)          positions.add(new Vec3d(x, y - 1, z));
-                if (x - 1 >= 0)          positions.add(new Vec3d(x - 1, y, z));
+                if (y - 1 >= 0)               positions.add(new Vec3d(x, y - 1, z));
+                if (x - 1 >= 0)               positions.add(new Vec3d(x - 1, y, z));
                 if (x + 1 < this.levelWidth)  positions.add(new Vec3d(x + 1, y, z));
-                if (z - 1 >= 0)          positions.add(new Vec3d(x, y, z - 1));
+                if (z - 1 >= 0)               positions.add(new Vec3d(x, y, z - 1));
                 if (z + 1 < this.levelLength) positions.add(new Vec3d(x, y, z + 1));
             }
         }

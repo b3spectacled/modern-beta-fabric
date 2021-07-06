@@ -9,8 +9,10 @@ import net.minecraft.util.math.MathHelper;
 public enum BetaClimateSampler {
     INSTANCE;
     
-    private final ChunkCache<ClimateCacheChunk> climateCache = new ChunkCache<>("climate", 1024, false, ClimateCacheChunk::new);
-    private final ChunkCache<SkyCacheChunk> skyCache = new ChunkCache<>("sky", 256, true, SkyCacheChunk::new);
+    public record Clime(double temp, double rain) {}
+    
+    private final ChunkCache<ClimateChunk> climateCache = new ChunkCache<>("climate", 1536, false, ClimateChunk::new);
+    private final ChunkCache<SkyChunk> skyCache = new ChunkCache<>("sky", 256, true, SkyChunk::new);
     
     private SimplexOctaveNoise tempNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 9871L), 4);
     private SimplexOctaveNoise rainNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 39811L), 4);
@@ -49,6 +51,13 @@ public enum BetaClimateSampler {
         int chunkZ = z >> 4;
         
         this.climateCache.get(chunkX, chunkZ).sampleClime(arr, x, z);
+    }
+    
+    protected Clime sampleClime(int x, int z) {
+        int chunkX = x >> 4;
+        int chunkZ = z >> 4;
+        
+        return this.climateCache.get(chunkX, chunkZ).sampleClime(x, z);
     }
     
     protected double sampleSkyTemp(int x, int z) {
@@ -99,11 +108,11 @@ public enum BetaClimateSampler {
         this.noiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
     }
     
-    private class ClimateCacheChunk {
+    private class ClimateChunk {
         private final double temp[] = new double[256];
         private final double rain[] = new double [256];
         
-        private ClimateCacheChunk(int chunkX, int chunkZ) {
+        private ClimateChunk(int chunkX, int chunkZ) {
             int startX = chunkX << 4;
             int startZ = chunkZ << 4;
             double[] tempRain = new double[2];
@@ -130,15 +139,23 @@ public enum BetaClimateSampler {
         }
         
         private void sampleClime(double[] tempRain, int x, int z) {
-            tempRain[0] = temp[(z & 0xF) + (x & 0xF) * 16];
-            tempRain[1] = rain[(z & 0xF) + (x & 0xF) * 16];
+            int ndx = (z & 0xF) + (x & 0xF) * 16;
+            
+            tempRain[0] = temp[ndx];
+            tempRain[1] = rain[ndx];
+        }
+        
+        private Clime sampleClime(int x, int z) {
+            int ndx = (z & 0xF) + (x & 0xF) * 16;
+            
+            return new Clime(temp[ndx], rain[ndx]);
         }
     }
     
-    private class SkyCacheChunk {
+    private class SkyChunk {
         private final double temp[] = new double[256];
         
-        private SkyCacheChunk(int chunkX, int chunkZ) {
+        private SkyChunk(int chunkX, int chunkZ) {
             int startX = chunkX << 4;
             int startZ = chunkZ << 4;
             

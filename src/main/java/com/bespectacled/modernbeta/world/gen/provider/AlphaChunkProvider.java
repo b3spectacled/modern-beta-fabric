@@ -53,9 +53,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
         
         int bedrockFloor = this.minY + this.bedrockFloor;
         
-        // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
-        ChunkRandom sandstoneRand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         double[] sandNoise = this.surfaceNoisePool.borrowObj();
@@ -163,12 +161,6 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
                     if (flag > 0) { 
                         flag--;
                         chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
-                    }
-
-                    // Beta backport, adds layer of sandstone starting at lowest block of sand, of height 1 to 4.
-                    if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                        flag = sandstoneRand.nextInt(4);
-                        fillerBlock = BlockStates.SANDSTONE;
                     }
                 }
             }

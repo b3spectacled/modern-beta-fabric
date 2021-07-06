@@ -77,7 +77,6 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         
         int bedrockFloor = this.minY + this.bedrockFloor;
         
-        // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         

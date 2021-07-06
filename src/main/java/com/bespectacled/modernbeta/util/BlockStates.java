@@ -19,6 +19,7 @@ public class BlockStates {
     public static final BlockState SNOW = Blocks.SNOW.getDefaultState();
     public static final BlockState LAVA = Blocks.LAVA.getDefaultState();
     public static final BlockState BEDROCK = Blocks.BEDROCK.getDefaultState();
+    public static final BlockState DEEPSLATE = Blocks.DEEPSLATE.getDefaultState();
     
     public static final BlockState GRASS = Blocks.GRASS.getDefaultState();
     public static final BlockState FERN = Blocks.FERN.getDefaultState();
