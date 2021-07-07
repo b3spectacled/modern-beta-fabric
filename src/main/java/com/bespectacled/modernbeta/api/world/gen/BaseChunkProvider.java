@@ -80,6 +80,10 @@ public abstract class BaseChunkProvider extends ChunkProvider {
             new OctavePerlinNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
         
         this.rand = new Random(seed);
+        
+        // Handle bad height values
+        if (this.minY > this.worldHeight)
+            throw new IllegalStateException("[Modern Beta] Minimum height cannot be greater than world height!");
     }
     
     /**

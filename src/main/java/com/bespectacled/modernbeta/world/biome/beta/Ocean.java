@@ -72,7 +72,7 @@ public class Ocean {
             .effects((new BiomeEffects.Builder())
                 .skyColor(OldBiomeColors.BETA_TEMP_SKY_COLOR)
                 .fogColor(OldBiomeColors.BETA_FOG_COLOR)
-                .waterColor(OldBiomeColors.VANILLA_WATER_COLOR)
+                .waterColor(OldBiomeColors.USE_DEBUG_OCEAN_COLOR ? 16777215 : OldBiomeColors.VANILLA_WATER_COLOR)
                 .waterFogColor(OldBiomeColors.VANILLA_WATER_FOG_COLOR)
                 .build())
             .spawnSettings(spawnSettings.build())

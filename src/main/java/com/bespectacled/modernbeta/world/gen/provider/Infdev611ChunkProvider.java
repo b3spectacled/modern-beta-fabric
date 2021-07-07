@@ -27,8 +27,8 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
     private final PerlinOctaveNoise forestNoiseOctaves;
     
     public Infdev611ChunkProvider(OldChunkGenerator chunkGenerator) {
-        //super(seed, settings);
-        super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0);
+        super(chunkGenerator);
+        //super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
@@ -52,9 +52,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
         
         int bedrockFloor = this.minY + this.bedrockFloor;
         
-        // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
-        ChunkRandom sandstoneRand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         // Accurate beach/terrain patterns depend on z iterating before x,
@@ -85,7 +83,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
                 for (int y = this.worldTopY - 1; y >= this.minY; y--) {
 
                     // Randomly place bedrock from y=0 to y=5
-                    if (y <= bedrockFloor + sandstoneRand.nextInt(6) - 1) {
+                    if (y <= bedrockFloor + rand.nextInt(6) - 1) {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                         continue;
                     }
@@ -145,12 +143,6 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
                         } else if (flag > 0) { 
                             flag--;
                             chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
-                        }
-                        
-                        // Beta backport, adds layer of sandstone starting at lowest block of sand, of height 1 to 4.
-                        if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                            flag = sandstoneRand.nextInt(4);
-                            fillerBlock = BlockStates.SANDSTONE;
                         }
                     }
                 }

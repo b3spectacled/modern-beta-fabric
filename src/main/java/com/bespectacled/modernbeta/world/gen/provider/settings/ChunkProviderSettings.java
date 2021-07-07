@@ -4,23 +4,24 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.config.ModernBetaGenerationConfig;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public class ChunkProviderSettings {
     protected static final ModernBetaGenerationConfig CONFIG = ModernBeta.BETA_CONFIG.generation_config;
     
-    public static CompoundTag createSettingsBase(String worldType) {
-        CompoundTag settings = new CompoundTag();
+    public static NbtCompound createSettingsBase(String worldType) {
+        NbtCompound settings = new NbtCompound();
         
         settings.putString(WorldSettings.TAG_WORLD, worldType);
         
         return settings;
     }
     
-    public static CompoundTag createSettingsAll(String worldType) {
-        CompoundTag settings = createSettingsBase(worldType);
+    public static NbtCompound createSettingsAll(String worldType) {
+        NbtCompound settings = createSettingsBase(worldType);
         
         settings.putBoolean("generateOceans", CONFIG.generateOceans);
+        settings.putBoolean("generateOceanShrines", CONFIG.generateOceanShrines);
         
         settings.putBoolean("generateInfdevPyramid", CONFIG.generateInfdevPyramid);
         settings.putBoolean("generateInfdevWall", CONFIG.generateInfdevWall);

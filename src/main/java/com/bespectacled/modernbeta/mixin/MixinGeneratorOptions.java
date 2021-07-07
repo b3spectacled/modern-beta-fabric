@@ -8,7 +8,7 @@ import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSe
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 import com.google.common.base.MoreObjects;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -18,6 +18,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GeneratorOptions;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -32,18 +33,20 @@ import java.util.Random;
 @Mixin(GeneratorOptions.class)
 public class MixinGeneratorOptions {
     @Inject(method = "fromProperties", at = @At("HEAD"), cancellable = true)
-    private static void injectServerGeneratorType(DynamicRegistryManager dynamicRegistryManager, Properties properties,
-            CallbackInfoReturnable<GeneratorOptions> cir) {
-
-     // Exit if server.properties file not yet created
+    private static void injectServerGeneratorType(
+        DynamicRegistryManager dynamicRegistryManager, 
+        Properties properties,
+        CallbackInfoReturnable<GeneratorOptions> cir
+    ) {
+        // Exit if server.properties file not yet created
         if (properties.get("level-type") == null) {
             return;
         }
 
         String levelType = properties.get("level-type").toString().trim().toLowerCase();
         
-        // Check for 
-        if (Registries.CHUNK.getKeySet().contains(levelType)) {
+        // Check for Modern Beta world type
+        if (Registries.CHUNK.containsExceptDefault(levelType)) {
             // get or generate seed
             String seedField = (String) MoreObjects.firstNonNull(properties.get("level-seed"), "");
             long seed = new Random().nextLong();
@@ -55,7 +58,7 @@ public class MixinGeneratorOptions {
                     }
                 } catch (NumberFormatException var14) {
                     seed = seedField.hashCode();
-                }
+                } 
             }
 
             // get other misc data
@@ -74,8 +77,8 @@ public class MixinGeneratorOptions {
             boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
             
             WorldProvider worldProvider = Registries.WORLD.get(levelType);
-            CompoundTag chunkProviderSettings = ChunkProviderSettings.createSettingsAll(worldProvider.getChunkProvider());
-            CompoundTag biomeProviderSettings = BiomeProviderSettings.createSettingsAll(ModernBeta.BIOME_CONFIG.biomeType);
+            NbtCompound chunkProviderSettings = ChunkProviderSettings.createSettingsAll(worldProvider.getChunkProvider());
+            NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsAll(ModernBeta.BIOME_CONFIG.biomeType);
             
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 new OldBiomeSource(seed, registryBiome, biomeProviderSettings), 

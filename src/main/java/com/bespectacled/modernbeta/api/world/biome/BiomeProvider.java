@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Level;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -18,13 +18,13 @@ import net.minecraft.world.biome.Biome;
 
 public abstract class BiomeProvider {
     protected final long seed;
-    protected final CompoundTag settings;
+    protected final NbtCompound settings;
     
     private final Set<Identifier> missingBiomes;
     
     /**
      * Constructs a Modern Beta biome provider initialized with seed.
-     * Additional settings are supplied in CompoundTag parameter.
+     * Additional settings are supplied in NbtCompound parameter.
      * 
      * @param biomeSource Parent OldBiomeSource object used to initialize fields.
      */

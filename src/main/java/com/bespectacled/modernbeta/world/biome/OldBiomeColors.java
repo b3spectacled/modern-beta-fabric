@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.world.biome;
 
 public class OldBiomeColors {
     private static final boolean USE_OLD_WATER_COLORS = false;
+    public static final boolean USE_DEBUG_OCEAN_COLOR = false;
     
     public static final int OLD_GRASS_COLOR = 11272039;
     public static final int OLD_FOLIAGE_COLOR = 5242667;

@@ -15,9 +15,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryLookupCodec;
+import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
@@ -29,17 +29,17 @@ public class OldBiomeSource extends BiomeSource {
         .group(
             Codec.LONG.fieldOf("seed").stable().forGetter(biomeSource -> biomeSource.seed),
             RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(biomeSource -> biomeSource.biomeRegistry),
-            CompoundTag.CODEC.fieldOf("provider_settings").forGetter(biomeSource -> biomeSource.biomeProviderSettings)
+            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(biomeSource -> biomeSource.biomeProviderSettings)
         ).apply(instance, (instance).stable(OldBiomeSource::new)));
     
     private final long seed;
     private final Registry<Biome> biomeRegistry;
-    private final CompoundTag biomeProviderSettings;
-    //private final Optional<CompoundTag> caveBiomeProviderSettings;
+    private final NbtCompound biomeProviderSettings;
+    //private final Optional<NbtCompound> caveBiomeProviderSettings;
     
     private final BiomeProvider biomeProvider;
     
-    public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, CompoundTag settings) {
+    public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, NbtCompound settings) {
         super(new ArrayList<Biome>());
         
         this.seed = seed;
@@ -82,16 +82,12 @@ public class OldBiomeSource extends BiomeSource {
         return this.seed;
     }
     
-    public boolean isProviderInstanceOf(Class<?> c) {
-        return c.isInstance(this.biomeProvider);
-    }
-    
     public BiomeProvider getBiomeProvider() {
         return this.biomeProvider;
     }
     
-    public CompoundTag getProviderSettings() {
-        return new CompoundTag().copyFrom(this.biomeProviderSettings);
+    public NbtCompound getProviderSettings() {
+        return new NbtCompound().copyFrom(this.biomeProviderSettings);
     }
 
     @Environment(EnvType.CLIENT)

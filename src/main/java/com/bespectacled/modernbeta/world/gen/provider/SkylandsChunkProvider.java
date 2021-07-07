@@ -22,8 +22,8 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise forestNoiseOctaves;
     
     public SkylandsChunkProvider(OldChunkGenerator chunkGenerator) {
-        //super(seed, settings);
-        super(chunkGenerator, 0, 128, 0, 0, 0, -10, BlockStates.STONE, BlockStates.AIR, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0);
+        super(chunkGenerator);
+        //super(chunkGenerator, 0, 128, 0, 0, 0, -10, BlockStates.STONE, BlockStates.AIR, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0, false, false, false, false, false);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
@@ -45,11 +45,10 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
 
-        // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        double[] surfaceNoise = this.surfaceNoisePool.borrowArr();
+        double[] surfaceNoise = this.surfaceNoisePool.borrowObj();
         
         surfaceNoise = surfaceNoiseOctaves.sampleArrBeta(surfaceNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
 
@@ -122,7 +121,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             }
         }
         
-        this.surfaceNoisePool.returnArr(surfaceNoise);
+        this.surfaceNoisePool.returnObj(surfaceNoise);
     }
     
     @Override
@@ -163,7 +162,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         }
         
         // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
-        double densityWithOffset = density - densityOffset;
+        double densityWithOffset = density - densityOffset; 
         
         densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, this.noiseSizeY);
         densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -8);

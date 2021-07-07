@@ -3,12 +3,12 @@ package com.bespectacled.modernbeta.world.biome.provider.settings;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.biome.BiomeKeys;
 
 public class BiomeProviderSettings {
-    public static CompoundTag createSettingsBase(String biomeType, String singleBiome) {
-        CompoundTag settings = new CompoundTag();
+    public static NbtCompound createSettingsBase(String biomeType, String singleBiome) {
+        NbtCompound settings = new NbtCompound();
         
         settings.putString(WorldSettings.TAG_BIOME, biomeType);
         settings.putString(WorldSettings.TAG_SINGLE_BIOME, singleBiome);
@@ -16,8 +16,8 @@ public class BiomeProviderSettings {
         return settings;
     }
     
-    public static CompoundTag createSettingsAll(String biomeType) {
-        CompoundTag settings = createSettingsBase(biomeType, ModernBeta.BIOME_CONFIG.singleBiome);
+    public static NbtCompound createSettingsAll(String biomeType) {
+        NbtCompound settings = createSettingsBase(biomeType, ModernBeta.BIOME_CONFIG.singleBiome);
         
         settings.putString("desert", ModernBeta.BIOME_CONFIG.betaDesertBiome);
         settings.putString("forest", ModernBeta.BIOME_CONFIG.betaForestBiome);
@@ -45,12 +45,12 @@ public class BiomeProviderSettings {
     
     /* Beta Biome Presets */
     
-    public static CompoundTag createBetaSettingsBase() {
-        return new CompoundTag();
+    public static NbtCompound createBetaSettingsBase() {
+        return new NbtCompound();
     }
     
-    public static CompoundTag createBetaSettingsPlus() {
-        CompoundTag settings = createBetaSettingsBase();
+    public static NbtCompound createBetaSettingsPlus() {
+        NbtCompound settings = createBetaSettingsBase();
         
         settings.putString("desert", BiomeKeys.DESERT.getValue().toString());
         settings.putString("forest", BiomeKeys.FOREST.getValue().toString());

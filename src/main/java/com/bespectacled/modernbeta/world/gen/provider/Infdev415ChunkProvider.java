@@ -27,8 +27,8 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
     private final PerlinOctaveNoise forestNoiseOctaves;
     
     public Infdev415ChunkProvider(OldChunkGenerator chunkGenerator) {
-        //super(seed, settings);
-        super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 1, 1, 1.0, 1.0, 80, 400, -10, 3, 0, 15, 3, 0);
+        super(chunkGenerator);
+        //super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 1, 1, 1.0, 1.0, 80, 400, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
@@ -51,9 +51,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
         
         int bedrockFloor = this.minY + this.bedrockFloor;
         
-        // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
-        ChunkRandom sandstoneRand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         for (int x = 0; x < 16; ++x) {
@@ -142,12 +140,6 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
                         } else if (flag > 0) {
                             --flag;
                             chunk.setBlockState(mutable, fillerBlock, false);
-                            
-                            // Beta backport, adds layer of sandstone starting at lowest block of sand, of height 1 to 4.
-                            if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                                flag = sandstoneRand.nextInt(4);
-                                fillerBlock = BlockStates.SANDSTONE;
-                            }
                         }
                     }
                 }
@@ -209,7 +201,6 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
         } else {
             double minLimitVal = this.minLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
             double maxLimitVal = this.maxLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;     
-            
             minLimitVal = MathHelper.clamp(minLimitVal, -10D, 10D);
             maxLimitVal = MathHelper.clamp(maxLimitVal, -10D, 10D);
             

@@ -17,7 +17,7 @@ import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.client.world.GeneratorType;
 import net.minecraft.client.world.GeneratorType.ScreenProvider;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -45,8 +45,8 @@ public class OldGeneratorType {
         GeneratorOptions generatorOptions,
         WorldSettings worldSettings
     ) {
-        CompoundTag chunkProviderSettings = worldSettings.getSettings(WorldSetting.CHUNK);
-        CompoundTag biomeProviderSettings = worldSettings.getSettings(WorldSetting.BIOME);
+        NbtCompound chunkProviderSettings = worldSettings.getNbt(WorldSetting.CHUNK);
+        NbtCompound biomeProviderSettings = worldSettings.getNbt(WorldSetting.BIOME);
         
         String chunkProviderType = chunkProviderSettings.getString(WorldSettings.TAG_WORLD);
     
@@ -84,8 +84,8 @@ public class OldGeneratorType {
                     registryChunkGenSettings.get(new Identifier(Registries.WORLD.get(DEFAULT_WORLD_TYPE).getChunkGenSettings()));
                     
                 WorldProvider worldProvider = Registries.WORLD.get(DEFAULT_WORLD_TYPE);
-                CompoundTag chunkProviderSettings = ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider());
-                CompoundTag biomeProviderSettings = BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome());
+                NbtCompound chunkProviderSettings = ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider());
+                NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome());
                                 
                 return new OldChunkGenerator(
                     new OldBiomeSource(seed, biomes, biomeProviderSettings), 
@@ -109,19 +109,17 @@ public class OldGeneratorType {
                         // In the case that settings have been set, and the world edit screen is opened again:
                         // If settings already present, create new compound tag and copy from source,
                         // otherwise, not copying will modify original settings.
-                        CompoundTag chunkProviderSettings = chunkGenerator instanceof OldChunkGenerator ?
+                        NbtCompound chunkProviderSettings = chunkGenerator instanceof OldChunkGenerator ?
                             ((OldChunkGenerator)chunkGenerator).getProviderSettings() :
                             ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider());
                         
-                        CompoundTag biomeProviderSettings = biomeSource instanceof OldBiomeSource ? 
+                        NbtCompound biomeProviderSettings = biomeSource instanceof OldBiomeSource ? 
                             ((OldBiomeSource)biomeSource).getProviderSettings() : 
                             BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome());
                         
-                        WorldSettings worldSettings = new WorldSettings(chunkProviderSettings, biomeProviderSettings);
-                        
                         return Registries.WORLD.get(chunkProviderSettings.getString(WorldSettings.TAG_WORLD)).createWorldScreen(
                             screen,
-                            worldSettings,
+                            new WorldSettings(chunkProviderSettings, biomeProviderSettings),
                             modifiedWorldSettings -> ((MixinMoreOptionsDialogInvoker)screen.moreOptionsDialog).invokeSetGeneratorOptions(
                                 createNewGeneratorOptions(
                                     screen.moreOptionsDialog.getRegistryManager(),

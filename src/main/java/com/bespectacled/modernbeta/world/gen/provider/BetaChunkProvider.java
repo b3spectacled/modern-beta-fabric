@@ -29,8 +29,8 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
     private final PerlinOctaveNoise forestNoiseOctaves;
     
     public BetaChunkProvider(OldChunkGenerator chunkGenerator) {
-        //super(seed, settings);
-        super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0);
+        super(chunkGenerator);
+        //super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
@@ -55,13 +55,12 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
         
         int bedrockFloor = this.minY + this.bedrockFloor;
         
-        // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        double[] sandNoise = this.surfaceNoisePool.borrowArr();
-        double[] gravelNoise = this.surfaceNoisePool.borrowArr();
-        double[] surfaceNoise = this.surfaceNoisePool.borrowArr();
+        double[] sandNoise = this.surfaceNoisePool.borrowObj();
+        double[] gravelNoise = this.surfaceNoisePool.borrowObj();
+        double[] surfaceNoise = this.surfaceNoisePool.borrowObj();
 
         sandNoise = beachNoiseOctaves.sampleArrBeta(
             sandNoise, 
@@ -179,9 +178,9 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
             }
         }
         
-        this.surfaceNoisePool.returnArr(sandNoise);
-        this.surfaceNoisePool.returnArr(gravelNoise);
-        this.surfaceNoisePool.returnArr(surfaceNoise);
+        this.surfaceNoisePool.returnObj(sandNoise);
+        this.surfaceNoisePool.returnObj(gravelNoise);
+        this.surfaceNoisePool.returnObj(surfaceNoise);
     }
     
     @Override
@@ -313,8 +312,8 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
         }
         
         // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
-        double densityWithOffset = density - densityOffset; 
-        
+        double densityWithOffset = density - densityOffset;
+
         densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
         densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);
         

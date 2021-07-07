@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.world.gen.provider;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
-import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.SimplexNoise;
@@ -17,11 +16,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 
-public class BetaIslandsChunkProvider extends NoiseChunkProvider implements BetaClimateResolver, BeachSpawnable {
+public class BetaIslandsChunkProvider extends NoiseChunkProvider implements BetaClimateResolver {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
@@ -42,8 +40,8 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
     private final float outerIslandNoiseOffset;
     
     public BetaIslandsChunkProvider(OldChunkGenerator chunkGenerator) {
-        //super(seed, settings);
-        super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0);
+        super(chunkGenerator);
+        //super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
@@ -79,13 +77,12 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         
         int bedrockFloor = this.minY + this.bedrockFloor;
         
-        // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        double[] sandNoise = this.surfaceNoisePool.borrowArr();
-        double[] gravelNoise = this.surfaceNoisePool.borrowArr();
-        double[] surfaceNoise = this.surfaceNoisePool.borrowArr();
+        double[] sandNoise = this.surfaceNoisePool.borrowObj();
+        double[] gravelNoise = this.surfaceNoisePool.borrowObj();
+        double[] surfaceNoise = this.surfaceNoisePool.borrowObj();
 
         sandNoise = beachNoiseOctaves.sampleArrBeta(
             sandNoise, 
@@ -203,21 +200,9 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
             }
         }
         
-        this.surfaceNoisePool.returnArr(sandNoise);
-        this.surfaceNoisePool.returnArr(gravelNoise);
-        this.surfaceNoisePool.returnArr(surfaceNoise);
-    }
-    
-    @Override
-    public boolean isSandAt(int x, int z) {
-        double eighth = 0.03125D;
-        
-        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
-        
-        return 
-            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
-            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
+        this.surfaceNoisePool.returnObj(sandNoise);
+        this.surfaceNoisePool.returnObj(gravelNoise);
+        this.surfaceNoisePool.returnObj(surfaceNoise);
     }
 
     @Override

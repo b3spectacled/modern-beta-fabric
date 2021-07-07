@@ -81,8 +81,8 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
     private String phase;
     
     public IndevChunkProvider(OldChunkGenerator chunkGenerator) {
-        //super(seed, settings);
-        super(chunkGenerator, 0, 256, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
+        super(chunkGenerator);
+        //super(chunkGenerator, 0, 256, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
         this.levelType = IndevType.fromName(NBTUtil.readString("levelType", providerSettings, ModernBeta.GEN_CONFIG.indevLevelType));
         this.levelTheme = IndevTheme.fromName(NBTUtil.readString("levelTheme", providerSettings, ModernBeta.GEN_CONFIG.indevLevelTheme));
@@ -116,11 +116,18 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
             this.pregenerateTerrainOrWait();
             this.generateTerrain(chunk, structureAccessor);
      
-        } else if (this.levelType != IndevType.FLOATING) {
-            if (this.levelType == IndevType.ISLAND)
-                this.generateWaterBorder(chunk);
-            else {
-                this.generateWorldBorder(chunk);
+        } else {
+            switch(this.levelType) {
+                case ISLAND: 
+                    this.generateWaterBorder(chunk);
+                    break;
+                case INLAND:
+                    this.generateWorldBorder(chunk);
+                    break;
+                case FLOATING:
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -229,6 +236,10 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         return false;
     }
     
+    @Override
+    public int getSeaLevel() {
+        return this.waterLevel;
+    }
     
     public boolean inWorldBounds(int x, int z) {
         return IndevUtil.inIndevRegion(x, z, this.levelWidth, this.levelLength);
@@ -715,10 +726,10 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
             if (block == Blocks.AIR) {
                 blockArr[x][y][z] = toFill;
                 
-                if (y - 1 >= 0)          positions.add(new Vec3d(x, y - 1, z));
-                if (x - 1 >= 0)          positions.add(new Vec3d(x - 1, y, z));
+                if (y - 1 >= 0)               positions.add(new Vec3d(x, y - 1, z));
+                if (x - 1 >= 0)               positions.add(new Vec3d(x - 1, y, z));
                 if (x + 1 < this.levelWidth)  positions.add(new Vec3d(x + 1, y, z));
-                if (z - 1 >= 0)          positions.add(new Vec3d(x, y, z - 1));
+                if (z - 1 >= 0)               positions.add(new Vec3d(x, y, z - 1));
                 if (z + 1 < this.levelLength) positions.add(new Vec3d(x, y, z + 1));
             }
         }

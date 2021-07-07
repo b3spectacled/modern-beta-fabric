@@ -7,18 +7,18 @@ import java.util.Map;
 
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMap.BetaBiomeType;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
 public class BetaClimateMapCustomizable {
-    private final CompoundTag biomeProviderSettings;
+    private final NbtCompound biomeProviderSettings;
     
     private final Identifier LAND_BIOME_TABLE[] = new Identifier[4096];
     private final Identifier OCEAN_BIOME_TABLE[] = new Identifier[4096];
     
     private final Map<String, Identifier> biomeMap;
     
-    public BetaClimateMapCustomizable(CompoundTag biomeProviderSettings) {
+    public BetaClimateMapCustomizable(NbtCompound biomeProviderSettings) {
         this.biomeProviderSettings = biomeProviderSettings;
         this.biomeMap = new LinkedHashMap<String, Identifier>();
         

@@ -38,8 +38,8 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     private final PerlinOctaveNoise forestNoiseOctaves;
     
     public Infdev227ChunkProvider(OldChunkGenerator chunkGenerator) {
-        //super(seed, settings);
-        super(chunkGenerator, 0, 128, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
+        super(chunkGenerator);
+        //super(chunkGenerator, 0, 128, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
         // Noise Generators
         this.noiseOctavesA = new PerlinOctaveNoise(rand, 16, true); 
@@ -61,9 +61,9 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
 
     @Override
     public void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk) {
-        this.generateTerrain(chunk, structureAccessor);
+        this.generateTerrain(chunk, structureAccessor); 
     }
-    
+
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         ChunkRandom rand = this.createChunkRand(chunk.getPos().x, chunk.getPos().z);

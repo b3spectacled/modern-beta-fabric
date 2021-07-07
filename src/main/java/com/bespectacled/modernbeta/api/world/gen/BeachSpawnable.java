@@ -22,7 +22,6 @@ public interface BeachSpawnable {
      * @param x x-coordinate in block coordinates.
      * @param z z-coordinate in block coordinates.
      * @param type Vanilla heightmap type.
-     * @param world
      * 
      * @return The y-coordinate of top block at x/z.
      */

@@ -2,22 +2,27 @@ package com.bespectacled.modernbeta.world.gen.provider.indev;
 
 import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
 
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 public enum IndevTheme {
-    NORMAL(0, "normal", IndevBiomes.INDEV_NORMAL_ID),
-    HELL(1, "hell", IndevBiomes.INDEV_HELL_ID),
-    PARADISE(2, "paradise", IndevBiomes.INDEV_PARADISE_ID),
-    WOODS(3, "woods", IndevBiomes.INDEV_WOODS_ID);
+    NORMAL(0, "normal", IndevBiomes.INDEV_NORMAL_ID, Formatting.GREEN),
+    HELL(1, "hell", IndevBiomes.INDEV_HELL_ID, Formatting.RED),
+    PARADISE(2, "paradise", IndevBiomes.INDEV_PARADISE_ID, Formatting.YELLOW),
+    WOODS(3, "woods", IndevBiomes.INDEV_WOODS_ID, Formatting.AQUA);
+    
+    private static final String PREFIX = "createWorld.customize.indev.levelTheme";
     
     private final int id;
     private final String name;
     private final Identifier defaultBiome;
+    private final Formatting color;
     
-    private IndevTheme(int id, String name, Identifier defaultBiome) {
+    private IndevTheme(int id, String name, Identifier defaultBiome, Formatting color) {
         this.id = id;
         this.name = name;
         this.defaultBiome = defaultBiome;
+        this.color = color;
     }
     
     public int getId() {
@@ -30,6 +35,14 @@ public enum IndevTheme {
     
     public Identifier getDefaultBiome() {
         return this.defaultBiome;
+    }
+    
+    public Formatting getColor() {
+        return this.color;
+    }
+    
+    public String getDescription() {
+        return String.format("%s.%s.description", PREFIX, this.name);
     }
     
     public static IndevTheme fromId(int id) {

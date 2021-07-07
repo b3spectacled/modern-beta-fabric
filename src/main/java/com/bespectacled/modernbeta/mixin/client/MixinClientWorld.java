@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.mixin.client;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
@@ -52,7 +51,6 @@ public abstract class MixinClientWorld extends World implements BetaClimateResol
         long seed, 
         CallbackInfo ci
     ) {
-        
         boolean useBetaBiomeColors = ModernBeta.RENDER_CONFIG.useFixedSeed;
         long worldSeed = ModernBeta.RENDER_CONFIG.fixedSeed;
         
@@ -66,6 +64,7 @@ public abstract class MixinClientWorld extends World implements BetaClimateResol
            }
         }
         
+        // Check for null worldKey (Compat for Mobs Main Menu)
         this.isOverworld = worldKey != null ?
             worldKey.getValue().equals(DimensionType.OVERWORLD_REGISTRY_KEY.getValue()) :
             false;
@@ -100,3 +99,4 @@ public abstract class MixinClientWorld extends World implements BetaClimateResol
         return skyColor;
     }
 }
+

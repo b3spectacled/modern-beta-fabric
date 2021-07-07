@@ -62,6 +62,10 @@ public final class Registry<T> {
         return this.map.containsKey(key);
     }
     
+    public boolean containsExceptDefault(String key) {
+        return this.map.containsKey(key) && !key.equals(BuiltInTypes.DEFAULT_ID);
+    }
+    
     public Set<String> getKeySet() {
         return this.map.keySet()
             .stream()

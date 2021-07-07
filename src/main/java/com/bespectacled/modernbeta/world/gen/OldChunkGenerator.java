@@ -11,16 +11,17 @@ import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.util.NBTUtil;
+import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.mutable.MutableBiomeArray;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.feature.OldFeatures;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.util.crash.CrashException;
@@ -47,6 +48,7 @@ import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
+import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -57,29 +59,32 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
             Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
             ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(generator -> generator.settings),
-            CompoundTag.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings))
+            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings))
         .apply(instance, instance.stable(OldChunkGenerator::new)));
     
+    private static final int OCEAN_Y_CUT_OFF = 40;
     private static final int OCEAN_MIN_DEPTH = 4;
     
     private final BiomeSource biomeSource;
-    private final CompoundTag chunkProviderSettings;
     
-    private final String chunkProviderType;
-    private final boolean generateOceans;
-    
+    private final NbtCompound chunkProviderSettings;
     private final ChunkProvider chunkProvider;
+    private final String chunkProviderType;
+
+    private final boolean generateOceans;
+    private final boolean generateOceanShrines;
     
-    public OldChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, CompoundTag providerSettings) {
+    public OldChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, NbtCompound providerSettings) {
         super(biomeSource, seed, settings);
         
         this.biomeSource = biomeSource;
-
+        
         this.chunkProviderSettings = providerSettings;
         this.chunkProviderType = NBTUtil.readStringOrThrow(WorldSettings.TAG_WORLD, providerSettings);
         this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
         
         this.generateOceans = NBTUtil.readBoolean("generateOceans", providerSettings, ModernBeta.GEN_CONFIG.generateOceans);
+        this.generateOceanShrines = NBTUtil.readBoolean("generateOceanShrines", providerSettings, ModernBeta.GEN_CONFIG.generateOceanShrines);
     }
 
     public static void register() {
@@ -110,7 +115,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public void generateFeatures(ChunkRegion region, StructureAccessor accessor) {
-        OldFeatures.OLD_FANCY_OAK.chunkReset();
         if (this.chunkProvider.skipChunk(region.getCenterChunkX(), region.getCenterChunkZ(), ChunkStatus.FEATURES)) return;
         
         int ctrX = region.getCenterChunkX();
@@ -217,6 +221,31 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     public int getHeight(int x, int z, Heightmap.Type type) {
         return this.chunkProvider.getHeight(x, z, type);
     }
+  
+    @Override
+    public VerticalBlockSample getColumnSample(int x, int z) {
+        int height = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        int worldHeight = this.chunkProvider.getWorldHeight();
+        int minY = this.chunkProvider.getMinimumY();
+        
+        BlockState[] column = new BlockState[worldHeight];
+        
+        for (int y = worldHeight - 1; y >= 0; --y) {
+            // Offset y by minY to get actual current height.
+            int actualY = y + minY;
+            
+            if (actualY > height) {
+                if (actualY > this.getSeaLevel())
+                    column[y] = BlockStates.AIR;
+                else
+                    column[y] = this.defaultFluid;
+            } else {
+                column[y] = this.defaultBlock;
+            }
+        }
+        
+        return new VerticalBlockSample(column);
+    }
     
     @Override
     public BlockPos locateStructure(ServerWorld world, StructureFeature<?> feature, BlockPos center, int radius, boolean skipExistingChunks) {
@@ -241,8 +270,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
         return super.getEntitySpawnList(biome, structureAccessor, spawnGroup, blockPos);
     }
+
     @Override
     public int getWorldHeight() {
+        // TODO: Causes issue with YOffset.BelowTop decorator (i.e. ORE_COAL_UPPER), find some workaround.
         return this.chunkProvider.getWorldHeight();
     }
 
@@ -264,16 +295,16 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.settings;
     }
     
-    public boolean isProviderInstanceOf(Class<?> c) {
-        return c.isInstance(this.chunkProvider);
-    }
-    
     public ChunkProvider getChunkProvider() {
         return this.chunkProvider;
     }
     
-    public CompoundTag getProviderSettings() {
-        return new CompoundTag().copyFrom(this.chunkProviderSettings);
+    public NbtCompound getProviderSettings() {
+        return new NbtCompound().copyFrom(this.chunkProviderSettings);
+    }
+    
+    public boolean generatesOceanShrines() {
+        return this.generateOceanShrines;
     }
     
     /*
@@ -281,8 +312,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Path dir = Paths.get("..\\src\\main\\resources\\data\\modern_beta\\dimension");
         
-        CompoundTag chunkSettings = OldGeneratorSettings.createInfSettings(OldChunkProviderType.BETA);
-        CompoundTag biomeSettings = OldGeneratorSettings.createBiomeSettings(OldBiomeProviderType.BETA, CaveBiomeType.VANILLA, BetaBiomes.FOREST_ID);
+        NbtCompound chunkSettings = OldGeneratorSettings.createInfSettings(OldChunkProviderType.BETA);
+        NbtCompound biomeSettings = OldGeneratorSettings.createBiomeSettings(OldBiomeProviderType.BETA, CaveBiomeType.VANILLA, BetaBiomes.FOREST_ID);
         
         OldBiomeSource biomeSource = new OldBiomeSource(0, BuiltinRegistries.BIOME, biomeSettings);
         OldChunkGenerator chunkGenerator = new OldChunkGenerator(biomeSource, 0, () -> OldGeneratorSettings.BETA_GENERATOR_SETTINGS, chunkSettings);

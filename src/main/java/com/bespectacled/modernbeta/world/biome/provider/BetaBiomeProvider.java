@@ -11,7 +11,7 @@ import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMapCustomizable;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMap.BetaBiomeType;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -25,7 +25,7 @@ public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, B
         
         this.setSeed(seed);
         this.climateMap = new BetaClimateMapCustomizable(settings);
-        this.defaultClimateMap = new BetaClimateMapCustomizable(new CompoundTag());
+        this.defaultClimateMap = new BetaClimateMapCustomizable(new NbtCompound());
     }
 
     @Override

@@ -148,7 +148,7 @@ public class PerlinOctaveNoise extends Noise {
         
         return total;
     }
-    
+
     /*
      * Alpha/Beta 3D noise sampler.
      */
@@ -158,6 +158,7 @@ public class PerlinOctaveNoise extends Noise {
         
         for (int i = 0; i < this.octaves; ++i) {
             double frequencyY = scaleY * frequency;
+            
             total += this.generatorCollection[i].sample3D(
                 this.maintainPrecision(x * scaleX * frequency), 
                 this.maintainPrecision(y * scaleY * frequency), 
@@ -165,9 +166,10 @@ public class PerlinOctaveNoise extends Noise {
                 frequencyY, 
                 y * frequencyY
             ) / frequency;
+            
             frequency /= 2.0;
         }
-        
+
         return total;
     }
     

@@ -7,13 +7,15 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.At;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.render.WorldRenderer;
 
+@Environment(EnvType.CLIENT)
 @Mixin(value = WorldRenderer.class, priority = 1)
 public class MixinWorldRenderer {
-    
-    @Unique
-    private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
+    @Unique private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
 	
 	@ModifyVariable(
         method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;F)V",

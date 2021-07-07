@@ -2,7 +2,8 @@ package com.bespectacled.modernbeta.api.registry;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
-import com.bespectacled.modernbeta.api.gui.WorldScreen;
+
+import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;

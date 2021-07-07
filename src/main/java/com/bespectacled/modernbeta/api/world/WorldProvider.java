@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.api.world;
 
 import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.api.gui.WorldScreen;
+import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.registry.Registries;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -69,6 +69,10 @@ public final class WorldProvider {
     
     @Override
     public String toString() {
+        return this.chunkProvider;
+    }
+    
+    public String asString() {
         return String.format(
             "[World Provider]\n" +
                 "* Chunk Provider: %s\n" +

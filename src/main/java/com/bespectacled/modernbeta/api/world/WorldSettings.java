@@ -3,11 +3,12 @@ package com.bespectacled.modernbeta.api.world;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 
 public final class WorldSettings {
     public static final String TAG_WORLD = "worldType";
@@ -19,46 +20,53 @@ public final class WorldSettings {
         BIOME
     }
     
-    private final Map<WorldSetting, CompoundTag> settings;
+    private final Map<WorldSetting, Settings> settings = new LinkedHashMap<>();
     
     public WorldSettings() {
-        this.settings = new LinkedHashMap<WorldSetting, CompoundTag>();
-        
         for (WorldSetting w : WorldSetting.values()) {
-            this.settings.put(w, new CompoundTag());
+            this.settings.put(w, new Settings());
         }
     }
     
-    public WorldSettings(
-        CompoundTag chunkProviderSettings, 
-        CompoundTag biomeProviderSettings
-    ) {
-        this(); // Ensure settings are initialized with something.
-        
-        this.settings.put(WorldSetting.CHUNK, new CompoundTag().copyFrom(chunkProviderSettings));
-        this.settings.put(WorldSetting.BIOME, new CompoundTag().copyFrom(biomeProviderSettings));
+    public WorldSettings(WorldSettings worldSettings) {
+        for (WorldSetting w : WorldSetting.values()) {
+            this.settings.put(w, new Settings(worldSettings.getNbt(w)));
+        }
     }
     
-    public WorldSettings(WorldProvider worldProvider) {
-        this();
-        
-        this.settings.put(WorldSetting.CHUNK, ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider()));
-        this.settings.put(WorldSetting.BIOME, BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome()));
+    public WorldSettings(NbtCompound chunkSettings, NbtCompound biomeSettings) {
+        this.settings.put(WorldSetting.CHUNK, new Settings(chunkSettings));
+        this.settings.put(WorldSetting.BIOME, new Settings(biomeSettings));
     }
     
-    public CompoundTag getSettings(WorldSetting settingsKey) {
-        return new CompoundTag().copyFrom(this.settings.get(settingsKey));
+    public void putChange(WorldSetting settingsKey, String key, NbtElement element) {
+        this.settings.get(settingsKey).putChange(key, element);
     }
     
-    public Tag getSetting(WorldSetting settingsKey, String key) {
-        return this.settings.get(settingsKey).get(key);
+    public void putChanges(WorldSetting settingsKey, NbtCompound compound) {
+        this.settings.get(settingsKey).putChanges(compound);
     }
     
-    public void putSetting(WorldSetting settingsKey, String key, Tag element) {
-        this.settings.get(settingsKey).put(key, element);
+    public void putChanges(WorldProvider worldProvider) {
+        this.putChanges(WorldSetting.CHUNK, ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider()));
+        this.putChanges(WorldSetting.BIOME, BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome()));
     }
     
-    public void copySettingsFrom(WorldSetting settingsKey, CompoundTag settings) {
-        this.settings.get(settingsKey).copyFrom(settings);
+    public void clearChanges(WorldSetting settingsKey) {
+        this.settings.get(settingsKey).clearChanges();
+    }
+    
+    public void clearChanges() {
+        for (Settings s : this.settings.values()) {
+            s.clearChanges();
+        }
+    }
+    
+    public NbtElement getSetting(WorldSetting settingsKey, String key) {
+        return this.settings.get(settingsKey).getSetting(key);
+    }
+    
+    public NbtCompound getNbt(WorldSetting settingsKey) {
+        return this.settings.get(settingsKey).getNbt();
     }
 }

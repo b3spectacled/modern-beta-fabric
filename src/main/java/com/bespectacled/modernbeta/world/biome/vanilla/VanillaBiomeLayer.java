@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.world.biome.vanilla;
 import java.util.function.LongFunction;
 
 import net.minecraft.world.biome.layer.AddBambooJungleLayer;
+import net.minecraft.world.biome.layer.AddBaseBiomesLayer;
 import net.minecraft.world.biome.layer.AddClimateLayers;
 import net.minecraft.world.biome.layer.AddColdClimatesLayer;
 import net.minecraft.world.biome.layer.AddEdgeBiomesLayer;
@@ -11,7 +12,6 @@ import net.minecraft.world.biome.layer.AddSunflowerPlainsLayer;
 import net.minecraft.world.biome.layer.EaseBiomeEdgeLayer;
 import net.minecraft.world.biome.layer.IncreaseEdgeCurvatureLayer;
 import net.minecraft.world.biome.layer.ScaleLayer;
-import net.minecraft.world.biome.layer.SetBaseBiomesLayer;
 import net.minecraft.world.biome.layer.SimpleLandNoiseLayer;
 import net.minecraft.world.biome.layer.type.ParentedLayer;
 import net.minecraft.world.biome.layer.util.CachingLayerContext;
@@ -81,7 +81,7 @@ public class VanillaBiomeLayer {
         layerFactory2 = SimpleLandNoiseLayer.INSTANCE.<T>create(contextProvider.apply(100L), layerFactory2);
         
         LayerFactory<T> layerFactory3 = layerFactory;
-        layerFactory3 = new SetBaseBiomesLayer(old).<T>create(contextProvider.apply(200L), layerFactory3);
+        layerFactory3 = new AddBaseBiomesLayer(old).<T>create(contextProvider.apply(200L), layerFactory3);
         
         // Custom biome layer to re-add mushroom fields biome.
         layerFactory3 = VanillaAddOceanlessMushroomLayer.INSTANCE.<T>create(contextProvider.apply(5L), layerFactory3);

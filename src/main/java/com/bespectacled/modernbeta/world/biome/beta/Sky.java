@@ -31,6 +31,7 @@ public class Sky {
         DefaultBiomeFeatures.addDefaultUndergroundStructures(genSettings);
         DefaultBiomeFeatures.addDefaultLakes(genSettings);
         DefaultBiomeFeatures.addDungeons(genSettings);
+        //DefaultBiomeFeatures.addMineables(genSettings, false);
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);

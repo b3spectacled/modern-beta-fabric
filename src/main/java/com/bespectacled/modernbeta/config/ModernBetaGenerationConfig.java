@@ -9,10 +9,14 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
 @Config(name = "generation_config")
 public class ModernBetaGenerationConfig implements ConfigData {
+    
     /* Inf Generation */
     
     @ConfigEntry.Gui.Excluded
     public boolean generateOceans = true;
+    
+    @ConfigEntry.Gui.Excluded
+    public boolean generateOceanShrines = true;
     
     /* Old Infdev Generation */
     

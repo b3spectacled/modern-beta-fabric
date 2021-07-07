@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -24,6 +25,7 @@ public interface MixinGeneratorTypeAccessor {
         throw new AssertionError();
     }
     
+    @Mutable
     @Accessor("SCREEN_PROVIDERS")
     public static void setScreenProviders(Map<Optional<GeneratorType>, ScreenProvider> providers) {
         throw new AssertionError();

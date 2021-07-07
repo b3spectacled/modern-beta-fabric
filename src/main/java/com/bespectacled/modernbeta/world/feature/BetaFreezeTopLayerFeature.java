@@ -111,5 +111,4 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
         }
         return false;
     }
-
 }

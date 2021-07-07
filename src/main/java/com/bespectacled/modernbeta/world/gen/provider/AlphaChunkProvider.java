@@ -27,8 +27,8 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
     private final PerlinOctaveNoise forestNoiseOctaves;
     
     public AlphaChunkProvider(OldChunkGenerator chunkGenerator) {
-        //super(seed, settings);
-        super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0);
+        super(chunkGenerator);
+        //super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
@@ -52,14 +52,12 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
         
         int bedrockFloor = this.minY + this.bedrockFloor;
         
-        // TODO: Really should be pooled or something
         ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
-        ChunkRandom sandstoneRand = this.createChunkRand(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        double[] sandNoise = this.surfaceNoisePool.borrowArr();
-        double[] gravelNoise = this.surfaceNoisePool.borrowArr();
-        double[] surfaceNoise = this.surfaceNoisePool.borrowArr();
+        double[] sandNoise = this.surfaceNoisePool.borrowObj();
+        double[] gravelNoise = this.surfaceNoisePool.borrowObj();
+        double[] surfaceNoise = this.surfaceNoisePool.borrowObj();
 
         beachNoiseOctaves.sampleArr(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth, eighth, 1.0D);
         beachNoiseOctaves.sampleArr(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
@@ -163,19 +161,13 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
                         flag--;
                         chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
                     }
-
-                    // Beta backport, adds layer of sandstone starting at lowest block of sand, of height 1 to 4.
-                    if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                        flag = sandstoneRand.nextInt(4);
-                        fillerBlock = BlockStates.SANDSTONE;
-                    }
                 }
             }
         }
         
-        this.surfaceNoisePool.returnArr(sandNoise);
-        this.surfaceNoisePool.returnArr(gravelNoise);
-        this.surfaceNoisePool.returnArr(surfaceNoise);
+        this.surfaceNoisePool.returnObj(sandNoise);
+        this.surfaceNoisePool.returnObj(gravelNoise);
+        this.surfaceNoisePool.returnObj(surfaceNoise);
     }
     
     @Override
@@ -290,7 +282,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
         
         // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
         double densityWithOffset = density - densityOffset; 
-        
+
         densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
         densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);
         

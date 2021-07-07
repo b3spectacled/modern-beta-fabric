@@ -10,11 +10,14 @@ import com.bespectacled.modernbeta.ModernBeta;
 
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 
+@Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
     @Shadow private MinecraftClient client;
@@ -28,6 +31,7 @@ public class MixinInGameHud {
         }
     }
     
+    @Unique
     private void renderDebugVersion(MatrixStack matrices) {
         this.client.textRenderer.drawWithShadow(matrices, VERSION, 2f, 2f, 0xFFFFFF);
     }

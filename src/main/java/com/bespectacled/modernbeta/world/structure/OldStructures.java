@@ -23,7 +23,6 @@ public class OldStructures {
     public static final RegistryKey<ConfiguredStructureFeature<?, ?>> OCEAN_SHRINE_KEY = RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN, OCEAN_SHRINE_ID);
     
     public static void register() {
-        
         Registry.register(
             Registry.STRUCTURE_PIECE, 
             OCEAN_SHRINE_BASE_ID,
@@ -35,6 +34,7 @@ public class OldStructures {
             OCEAN_SHRINE_STRUCTURE)
             .step(GenerationStep.Feature.SURFACE_STRUCTURES)
             .defaultConfig(64, 16, 357)
+            //.defaultConfig(4, 2, 357) // Debug spacing
             .adjustsSurface()
             .register();
         
@@ -43,7 +43,5 @@ public class OldStructures {
             OCEAN_SHRINE_KEY.getValue(), 
             CONF_OCEAN_SHRINE_STRUCTURE
         );
-        
-        //ModernBeta.LOGGER.log(Level.INFO, "Registered structures.");
     }
 }

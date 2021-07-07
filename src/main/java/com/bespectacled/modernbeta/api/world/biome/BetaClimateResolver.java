@@ -6,6 +6,8 @@ package com.bespectacled.modernbeta.api.world.biome;
  * 
  * Most important motivation is to allow easy type check when implemented by biome provider
  * and checked by client world mixin to initialize biome colors.
+ * 
+ * There is probably a better way to do this.
  */
 public interface BetaClimateResolver {
     default void setSeed(long seed) {

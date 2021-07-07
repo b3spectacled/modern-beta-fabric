@@ -12,7 +12,6 @@ import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.ChunkSectionPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
@@ -86,9 +85,8 @@ public class StructureWeightSampler {
         this.junctionIterator = junctions.iterator();
     }
 
-    public double sample(int x, int y, int z, double density) {
-        double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
-        clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
+    public double getWeight(int x, int y, int z) {
+        double density = 0D;
         
         while (pieceIterator.hasNext()) {
             StructurePiece curStructurePiece = (StructurePiece) pieceIterator.next();
@@ -99,7 +97,7 @@ public class StructureWeightSampler {
                     ((PoolStructurePiece) curStructurePiece).getGroundLevelDelta() : 0));
             int sZ = Math.max(0, Math.max(blockBox.minZ - z, z - blockBox.maxZ));
 
-            clampedDensity += NoiseChunkGenerator.getNoiseWeight(sX, sY, sZ) * 0.8;
+            density += NoiseChunkGenerator.getNoiseWeight(sX, sY, sZ) * 0.8;
         }
         pieceIterator.back(this.pieces.size());
 
@@ -110,10 +108,10 @@ public class StructureWeightSampler {
             int jY = y - curJigsawJunction.getSourceGroundY();
             int jZ = z - curJigsawJunction.getSourceZ();
 
-            clampedDensity += NoiseChunkGenerator.getNoiseWeight(jX, jY, jZ) * 0.4;
+            density += NoiseChunkGenerator.getNoiseWeight(jX, jY, jZ) * 0.4;
         }
         junctionIterator.back(this.junctions.size());
         
-        return clampedDensity;
+        return density;
     }
 }

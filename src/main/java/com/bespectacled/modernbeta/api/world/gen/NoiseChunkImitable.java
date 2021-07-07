@@ -5,6 +5,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.math.MathHelper;
 
 public interface NoiseChunkImitable {
     /**
@@ -24,7 +25,9 @@ public interface NoiseChunkImitable {
         boolean isFluid = blockToSet == Blocks.AIR || blockToSet == defaultFluid;
         double simDensity = isFluid ? -25D : 25D;
         
-        double clampedDensity = weightSampler.sample(x, y, z, simDensity);
+        double clampedDensity = MathHelper.clamp(simDensity / 200.0, -1.0, 1.0);
+        clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
+        clampedDensity += weightSampler.getWeight(x, y, z);
         
         BlockState blockState = blockToSet.getDefaultState();
         if (clampedDensity > 0.0 && isFluid) {
@@ -35,4 +38,5 @@ public interface NoiseChunkImitable {
 
         return blockState;
     }
+    
 }

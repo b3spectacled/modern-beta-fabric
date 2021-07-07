@@ -45,12 +45,12 @@ public class MixinMinecraftServer {
             
             if (oldChunkGenerator.getChunkProvider() instanceof BeachSpawnable) { // Attempt to place a beach spawn if provider generates classic beaches.
                 ModernBeta.log(Level.INFO, "Setting a beach spawn..");
-                
                 BeachSpawnable chunkProvider = (BeachSpawnable)oldChunkGenerator.getChunkProvider();
+                
                 spawnPos = getInitialOldSpawn(world.getChunk(chunkPos.getStartPos()), oldChunkGenerator, chunkProvider, oldChunkGenerator.getSeaLevel());
             }
             
-            if (spawnPos != null && oldChunkGenerator.isProviderInstanceOf(IndevChunkProvider.class)) {
+            if (spawnPos != null && oldChunkGenerator.getChunkProvider() instanceof IndevChunkProvider) {
                 ModernBeta.log(Level.INFO, "[Indev] Spawning..");
                 IndevChunkProvider indevChunkProvider = (IndevChunkProvider)oldChunkGenerator.getChunkProvider();
                 
@@ -78,7 +78,10 @@ public class MixinMinecraftServer {
         
         while (!chunkProvider.isSandAt(x, z)) {
             if (attempts > 10000) {
-                ModernBeta.log(Level.INFO, "Exceeded spawn attempts, spawning anyway..");
+                ModernBeta.log(Level.INFO, "Exceeded spawn attempts, spawning anyway at 0,0..");
+                
+                x = 0;
+                z = 0;
                 break;
             }
             
@@ -101,14 +104,14 @@ public class MixinMinecraftServer {
                 world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null); 
                 world.setTimeOfDay(18000);
                 break;
-            case WOODS:
-                world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null); 
-                world.setWeather(0, Integer.MAX_VALUE, true, false);
-                break;
             case PARADISE:
                 world.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(false, null); 
                 world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null); 
                 world.setTimeOfDay(6000);
+                break;
+            case WOODS:
+                world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null); 
+                world.setWeather(0, Integer.MAX_VALUE, true, false);
                 break;
             default:
                 break;

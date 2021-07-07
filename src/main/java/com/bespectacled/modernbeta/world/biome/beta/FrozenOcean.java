@@ -42,7 +42,7 @@ public class FrozenOcean {
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
-        
+
         genSettings.structureFeature(ConfiguredStructureFeatures.BURIED_TREASURE);
         genSettings.structureFeature(ConfiguredStructureFeatures.OCEAN_RUIN_COLD);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_OCEAN);
@@ -71,7 +71,7 @@ public class FrozenOcean {
             .effects((new BiomeEffects.Builder())
                 .skyColor(OldBiomeColors.BETA_COLD_SKY_COLOR)
                 .fogColor(OldBiomeColors.BETA_FOG_COLOR)
-                .waterColor(OldBiomeColors.VANILLA_FROZEN_WATER_COLOR)
+                .waterColor(OldBiomeColors.USE_DEBUG_OCEAN_COLOR ? 16777215 : OldBiomeColors.VANILLA_FROZEN_WATER_COLOR)
                 .waterFogColor(OldBiomeColors.VANILLA_FROZEN_WATER_FOG_COLOR)
                 .build())
             .spawnSettings(spawnSettings.build())
