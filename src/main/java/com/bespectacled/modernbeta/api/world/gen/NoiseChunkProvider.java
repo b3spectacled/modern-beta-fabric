@@ -124,8 +124,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             "noise", 
             1536, 
             true, 
-            (chunkX, chunkZ) -> this.generateNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ),
-            true
+            (chunkX, chunkZ) -> this.generateNoiseArr(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ)
         );
         
         this.heightmapChunkCache = new ChunkCache<>(
