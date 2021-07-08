@@ -8,7 +8,8 @@ import java.util.stream.IntStream;
 
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.ChunkCache;
+import com.bespectacled.modernbeta.util.chunk.ChunkCache;
+import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.util.pool.DoubleArrayPool;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
@@ -674,24 +675,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     private void scheduleFluidTick(Chunk chunk, AquiferSampler aquiferSampler, BlockPos pos, BlockState blockState) {
         if (aquiferSampler.needsFluidTick() && !blockState.getFluidState().isEmpty()) {
             chunk.getFluidTickScheduler().schedule(pos, blockState.getFluidState().getFluid(), 0);
-        }
-    }
-
-    /**
-     * A simple container for an array to hold height values for entire chunk (256 blocks).
-     */
-    private class HeightmapChunk {
-        private final int heightmap[];
-        
-        private HeightmapChunk(int[] heightmap) {
-            if (heightmap.length != 256) 
-                throw new IllegalArgumentException("[Modern Beta] Heightmap is an invalid size!");
-            
-            this.heightmap = heightmap;
-        }
-        
-        private int getHeight(int x, int z) {
-            return this.heightmap[(z & 0xF) + (x & 0xF) * 16];
         }
     }
 }

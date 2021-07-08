@@ -118,8 +118,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             else
                 super.buildSurface(region, chunk);
         
-        if (this.generateOceans)
-            this.replaceOceansInChunk(chunk);
+        if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource)
+            this.replaceOceansInChunk(oldBiomeSource, chunk);
     }
 
     @Override
@@ -339,43 +339,41 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     */
     
     @SuppressWarnings("unused")
-    private void replaceOceansInChunk(Chunk chunk) {
-        if (this.biomeSource instanceof OldBiomeSource oldBiomeSource) {
-            MutableBiomeArray mutableBiomeArray = MutableBiomeArray.inject(chunk.getBiomeArray());
-            
-            ChunkPos chunkPos = chunk.getPos();
-            BlockPos.Mutable pos = new BlockPos.Mutable();
-            
-            int worldHeight = this.getWorldHeight();
-            int minY = this.getMinimumY();
-            int seaLevel = this.getSeaLevel();
-            
-            int biomeHeight = worldHeight >> 2;
-            
-            for (int biomeX = 0; biomeX < 4; ++biomeX) {
-                for (int biomeZ = 0; biomeZ < 4; ++biomeZ) {
-                    int absX = chunkPos.getStartX() + (biomeX << 2);
-                    int absZ = chunkPos.getStartZ() + (biomeZ << 2);
-                        
-                    // Offset by 2 to get center of biome coordinate section,
-                    // to sample overall ocean depth as accurately as possible.
-                    int offsetX = absX + 2;
-                    int offsetZ = absZ + 2;
+    private void replaceOceansInChunk(OldBiomeSource oldBiomeSource, Chunk chunk) {
+        MutableBiomeArray mutableBiomeArray = MutableBiomeArray.inject(chunk.getBiomeArray());
+        
+        ChunkPos chunkPos = chunk.getPos();
+        BlockPos.Mutable pos = new BlockPos.Mutable();
+        
+        int worldHeight = this.getWorldHeight();
+        int minY = this.getMinimumY();
+        int seaLevel = this.getSeaLevel();
+        
+        int biomeHeight = worldHeight >> 2;
+        
+        for (int biomeX = 0; biomeX < 4; ++biomeX) {
+            for (int biomeZ = 0; biomeZ < 4; ++biomeZ) {
+                int absX = chunkPos.getStartX() + (biomeX << 2);
+                int absZ = chunkPos.getStartZ() + (biomeZ << 2);
                     
-                    int height = GenUtil.getSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, this.defaultFluid);
+                // Offset by 2 to get center of biome coordinate section,
+                // to sample overall ocean depth as accurately as possible.
+                int offsetX = absX + 2;
+                int offsetZ = absZ + 2;
+                
+                int height = GenUtil.getSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, this.defaultFluid);
+                
+                if (height < seaLevel - OCEAN_MIN_DEPTH && chunk.getBlockState(pos.set(offsetX, height + 1, offsetZ)).equals(this.defaultFluid)) {
+                    Biome oceanBiome = oldBiomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);
                     
-                    if (height < seaLevel - OCEAN_MIN_DEPTH && chunk.getBlockState(pos.set(offsetX, height + 1, offsetZ)).equals(this.defaultFluid)) {
-                        Biome oceanBiome = oldBiomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);
+                    // Fill biome column
+                    for (int biomeY = 0; biomeY < biomeHeight; ++biomeY) {
+                        int absY = biomeY << 2;
+                        int actualY = absY + this.getMinimumY();
                         
-                        // Fill biome column
-                        for (int biomeY = 0; biomeY < biomeHeight; ++biomeY) {
-                            int absY = biomeY << 2;
-                            int actualY = absY + this.getMinimumY();
-                            
-                            // TODO: Remove true when cave biomes are in.
-                            if (true || actualY >= OCEAN_Y_CUT_OFF)
-                                mutableBiomeArray.setBiome(absX, absY, absZ, oceanBiome, this.getMinimumY(), this.getWorldHeight());
-                        }
+                        // TODO: Remove true when cave biomes are in.
+                        if (true || actualY >= OCEAN_Y_CUT_OFF)
+                            mutableBiomeArray.setBiome(absX, absY, absZ, oceanBiome, this.getMinimumY(), this.getWorldHeight());
                     }
                 }
             }

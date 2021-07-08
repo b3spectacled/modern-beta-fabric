@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.api.world.biome;
 
 import java.util.Random;
 import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
-import com.bespectacled.modernbeta.util.ChunkCache;
+import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 
 import net.minecraft.util.math.MathHelper;
 

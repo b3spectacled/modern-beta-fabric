@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.util;
+package com.bespectacled.modernbeta.util.chunk;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
