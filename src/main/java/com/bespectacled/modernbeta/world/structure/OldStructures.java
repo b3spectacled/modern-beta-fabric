@@ -19,7 +19,7 @@ public class OldStructures {
     
     public static final StructurePieceType OCEAN_SHRINE_PIECE = OceanShrineGenerator.Piece::new;
     public static final StructureFeature<DefaultFeatureConfig> OCEAN_SHRINE_STRUCTURE = new OceanShrineStructure(DefaultFeatureConfig.CODEC);
-    public static final ConfiguredStructureFeature<?, ?> CONF_OCEAN_SHRINE_STRUCTURE = OCEAN_SHRINE_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT);
+    public static final ConfiguredStructureFeature<DefaultFeatureConfig, ? extends StructureFeature<DefaultFeatureConfig>> CONF_OCEAN_SHRINE_STRUCTURE = OCEAN_SHRINE_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT);
     public static final RegistryKey<ConfiguredStructureFeature<?, ?>> OCEAN_SHRINE_KEY = RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, OCEAN_SHRINE_ID);
     
     public static void register() {
@@ -35,6 +35,7 @@ public class OldStructures {
             .step(GenerationStep.Feature.SURFACE_STRUCTURES)
             .defaultConfig(64, 16, 357)
             //.defaultConfig(4, 2, 357) // Debug spacing
+            .superflatFeature(CONF_OCEAN_SHRINE_STRUCTURE)
             .adjustsSurface()
             .register();
         
