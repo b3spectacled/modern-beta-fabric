@@ -33,7 +33,7 @@ public class VanillaBiomeScreen extends BiomeScreen {
             "",
             1D, 8D, 1F,
             () -> NbtUtil.toIntOrThrow(this.biomeSettings.getSetting(NbtTags.VANILLA_BIOME_SIZE)),
-            value -> this.biomeSettings.putChange(NbtTags.VANILLA_OCEAN_BIOME_SIZE, NbtInt.of(value.intValue()))
+            value -> this.biomeSettings.putChange(NbtTags.VANILLA_BIOME_SIZE, NbtInt.of(value.intValue()))
         );
         
         DoubleOptionWrapper<Integer> vanillaOceanBiomeSize = new DoubleOptionWrapper<>(
