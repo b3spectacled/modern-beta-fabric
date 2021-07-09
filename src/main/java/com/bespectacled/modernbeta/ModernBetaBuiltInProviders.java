@@ -5,8 +5,10 @@ import com.bespectacled.modernbeta.client.gui.screen.biome.*;
 import com.bespectacled.modernbeta.client.gui.screen.world.*;
 import com.bespectacled.modernbeta.world.BuiltInWorldProviders;
 import com.bespectacled.modernbeta.world.biome.provider.*;
+import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.*;
 import com.bespectacled.modernbeta.world.gen.provider.*;
+import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 
 /*
  * Registration of built-in providers for various things.
@@ -27,12 +29,33 @@ public class ModernBetaBuiltInProviders {
         Registries.CHUNK.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, BetaIslandsChunkProvider::new);
     }
     
+    // Register default chunk settings
+    public static void registerChunkSettings() {
+        Registries.CHUNK_SETTINGS.register(BuiltInTypes.DEFAULT_ID, ChunkProviderSettings::createSettingsBeta);
+        Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.BETA.name, ChunkProviderSettings::createSettingsBeta);
+        Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.SKYLANDS.name, ChunkProviderSettings::createSettingsSkylands);
+        Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.ALPHA.name, ChunkProviderSettings::createSettingsAlpha);
+        Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_611.name, ChunkProviderSettings::createSettingsInfdev611);
+        Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_415.name, ChunkProviderSettings::createSettingsInfdev415);
+        Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_227.name, ChunkProviderSettings::createSettingsInfdev227);
+        Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INDEV.name, ChunkProviderSettings::createSettingsIndev);
+        Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, ChunkProviderSettings::createSettingsIslands);
+    }
+    
     // Register default biome providers
     public static void registerBiomeProviders() {
         Registries.BIOME.register(BuiltInTypes.DEFAULT_ID, BetaBiomeProvider::new);
         Registries.BIOME.register(BuiltInTypes.Biome.BETA.name, BetaBiomeProvider::new);
         Registries.BIOME.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeProvider::new);
         Registries.BIOME.register(BuiltInTypes.Biome.VANILLA.name, VanillaBiomeProvider::new);
+    }
+    
+    // Register default biome settings
+    public static void registerBiomeSettings() {
+        Registries.BIOME_SETTINGS.register(BuiltInTypes.DEFAULT_ID, BiomeProviderSettings::createSettingsBeta);
+        Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.BETA.name, BiomeProviderSettings::createSettingsBeta);
+        Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.SINGLE.name, BiomeProviderSettings::createSettingsSingle);
+        Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.VANILLA.name, BiomeProviderSettings::createSettingsVanilla);
     }
     
     // Register default cave biome providers

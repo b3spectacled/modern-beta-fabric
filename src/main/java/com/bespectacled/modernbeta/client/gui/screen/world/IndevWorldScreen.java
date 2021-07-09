@@ -8,8 +8,8 @@ import com.bespectacled.modernbeta.api.client.gui.wrapper.CyclingOptionWrapper;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.DoubleOptionWrapper;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
-import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
-import com.bespectacled.modernbeta.util.NBTUtil;
+import com.bespectacled.modernbeta.util.NbtTags;
+import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
 
@@ -40,8 +40,8 @@ public class IndevWorldScreen extends InfWorldScreen {
         super(parent, worldSettings, consumer);
         
         // Set default single biome per level theme
-        String levelTheme = NBTUtil.toString(this.worldSettings.getSetting(WorldSetting.CHUNK, "levelTheme"), ModernBeta.GEN_CONFIG.indevLevelTheme);
-        this.setDefaultSingleBiome(IndevTheme.fromName(levelTheme).getDefaultBiome().toString());
+        String levelTheme = NbtUtil.toStringOrThrow(this.getChunkSetting(NbtTags.LEVEL_THEME));
+        this.setDefaultSingleBiome(IndevTheme.fromName(levelTheme).getDefaultBiome().toString());   
     }
     
     @Override
@@ -57,16 +57,10 @@ public class IndevWorldScreen extends InfWorldScreen {
         CyclingOptionWrapper<IndevTheme> levelTheme = new CyclingOptionWrapper<>(
             LEVEL_THEME_DISPLAY_STRING,
             IndevTheme.values(),
-            () -> IndevTheme.fromName(NBTUtil.toString(this.worldSettings.getSetting(WorldSetting.CHUNK, "levelTheme"), ModernBeta.GEN_CONFIG.indevLevelTheme)),
+            () -> IndevTheme.fromName(NbtUtil.toStringOrThrow(this.getChunkSetting(NbtTags.LEVEL_THEME))),
             value -> {
-                this.worldSettings.putChange(WorldSetting.CHUNK, "levelTheme", NbtString.of(value.getName()));
-                
-                this.client.openScreen(
-                    this.worldProvider.createWorldScreen(
-                        (CreateWorldScreen)this.parent,
-                        this.worldSettings,
-                        this.consumer
-                ));
+                this.putChunkSetting(NbtTags.LEVEL_THEME, NbtString.of(value.getName()));
+                this.resetWorldScreen();
             },
             value -> value.getColor(),
             value -> this.client.textRenderer.wrapLines(new TranslatableText(value.getDescription()).formatted(value.getColor()), 250)
@@ -75,32 +69,32 @@ public class IndevWorldScreen extends InfWorldScreen {
         CyclingOptionWrapper<IndevType> levelType = new CyclingOptionWrapper<>(
             LEVEL_TYPE_DISPLAY_STRING, 
             IndevType.values(), 
-            () -> IndevType.fromName(NBTUtil.toString(this.worldSettings.getSetting(WorldSetting.CHUNK, "levelType"), ModernBeta.GEN_CONFIG.indevLevelType)), 
-            value -> this.worldSettings.putChange(WorldSetting.CHUNK, "levelType", NbtString.of(value.getName()))
+            () -> IndevType.fromName(NbtUtil.toStringOrThrow(this.getChunkSetting(NbtTags.LEVEL_TYPE))), 
+            value -> this.putChunkSetting(NbtTags.LEVEL_TYPE, NbtString.of(value.getName()))
         );
         
         DoubleOptionWrapper<Integer> levelWidth = new DoubleOptionWrapper<>(
             LEVEL_WIDTH_DISPLAY_STRING,
             "blocks",
             128D, 1024D, 128f,
-            () -> NBTUtil.toInt(this.worldSettings.getSetting(WorldSetting.CHUNK, "levelWidth"), ModernBeta.GEN_CONFIG.indevLevelWidth),
-            value -> this.worldSettings.putChange(WorldSetting.CHUNK, "levelWidth", NbtInt.of(value.intValue()))
+            () -> NbtUtil.toIntOrThrow(this.getChunkSetting(NbtTags.LEVEL_WIDTH)),
+            value -> this.putChunkSetting(NbtTags.LEVEL_WIDTH, NbtInt.of(value.intValue()))
         );
         
         DoubleOptionWrapper<Integer> levelLength = new DoubleOptionWrapper<>(
             LEVEL_LENGTH_DISPLAY_STRING,
             "blocks",
             128D, 1024D, 128f,
-            () -> NBTUtil.toInt(this.worldSettings.getSetting(WorldSetting.CHUNK, "levelLength"), ModernBeta.GEN_CONFIG.indevLevelLength),
-            value -> this.worldSettings.putChange(WorldSetting.CHUNK, "levelLength", NbtInt.of(value.intValue()))
+            () -> NbtUtil.toIntOrThrow(this.getChunkSetting(NbtTags.LEVEL_LENGTH)),
+            value -> this.putChunkSetting(NbtTags.LEVEL_LENGTH, NbtInt.of(value.intValue()))
         );
         
         DoubleOptionWrapper<Integer> levelHeight = new DoubleOptionWrapper<>(
             LEVEL_HEIGHT_DISPLAY_STRING, 
             "blocks",
             64D, (double)topY, 64F,
-            () -> NBTUtil.toInt(this.worldSettings.getSetting(WorldSetting.CHUNK, "levelHeight"), ModernBeta.GEN_CONFIG.indevLevelHeight),
-            value -> this.worldSettings.putChange(WorldSetting.CHUNK, "levelHeight", NbtInt.of(value.intValue())),
+            () -> NbtUtil.toIntOrThrow(this.getChunkSetting(NbtTags.LEVEL_HEIGHT)),
+            value -> this.putChunkSetting(NbtTags.LEVEL_HEIGHT, NbtInt.of(value.intValue())),
             this.client.textRenderer.wrapLines(new TranslatableText(LEVEL_HEIGHT_TOOLTIP), 200)
         );
         
@@ -108,8 +102,8 @@ public class IndevWorldScreen extends InfWorldScreen {
             CAVE_RADIUS_DISPLAY_STRING,
             "",
             1D, 3D, 0.1f,
-            () -> NBTUtil.toFloat(this.worldSettings.getSetting(WorldSetting.CHUNK, "caveRadius"), ModernBeta.GEN_CONFIG.indevCaveRadius),
-            value -> this.worldSettings.putChange(WorldSetting.CHUNK, "caveRadius", NbtFloat.of(value.floatValue())),
+            () -> NbtUtil.toFloatOrThrow(this.getChunkSetting(NbtTags.LEVEL_CAVE_RADIUS)),
+            value -> this.putChunkSetting(NbtTags.LEVEL_CAVE_RADIUS, NbtFloat.of(value.floatValue())),
             this.client.textRenderer.wrapLines(new TranslatableText(CAVE_RADIUS_TOOLTIP), 200)
         );
         

@@ -7,7 +7,7 @@ import net.minecraft.nbt.NbtFloat;
 import net.minecraft.nbt.NbtInt;
 import net.minecraft.nbt.NbtString;
 
-public class NBTUtil {
+public class NbtUtil {
     /*
      * Helper methods for reading primitive values from NbtCompound objects
      */
@@ -76,7 +76,7 @@ public class NBTUtil {
         if (element instanceof NbtString nbtString)
             return nbtString.asString();
         
-        throw new IllegalArgumentException("[Modern Beta] NBT Element is not a string!");
+        throw new IllegalArgumentException("[Modern Beta] NBT Element is not a string! Type:" + element.getType());
     }
     
     public static String toString(NbtElement element, String alternate) {
@@ -90,7 +90,7 @@ public class NBTUtil {
         if (element instanceof NbtInt nbtInt)
             return nbtInt.intValue();
         
-        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an int!"); 
+        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an int! Type: " + element.getType()); 
     }
     
     public static int toInt(NbtElement element, int alternate) {
@@ -104,7 +104,7 @@ public class NBTUtil {
         if (element instanceof NbtFloat nbtFloat) 
             return nbtFloat.floatValue();
         
-        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an float!"); 
+        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an float! Type: " + element.getType()); 
     }
     
     public static float toFloat(NbtElement element, float alternate) {
@@ -118,7 +118,7 @@ public class NBTUtil {
         if (element instanceof NbtByte nbtByte) 
             return nbtByte.byteValue() == 1;
         
-        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an byte/boolean!"); 
+        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an byte/boolean! Type: " + element.getType()); 
     }
     
     public static boolean toBoolean(NbtElement element, boolean alternate) {

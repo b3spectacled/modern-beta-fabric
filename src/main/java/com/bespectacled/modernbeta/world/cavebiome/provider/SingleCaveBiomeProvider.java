@@ -3,9 +3,9 @@ package com.bespectacled.modernbeta.world.cavebiome.provider;
 import java.util.Arrays;
 import java.util.List;
 
-import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
-import com.bespectacled.modernbeta.util.NBTUtil;
+import com.bespectacled.modernbeta.util.NbtTags;
+import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
 import net.minecraft.util.Identifier;
@@ -19,7 +19,7 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider {
     public SingleCaveBiomeProvider(OldBiomeSource biomeSource) {
         super(biomeSource);
         
-        this.biomeId = new Identifier(NBTUtil.readString(WorldSettings.TAG_SINGLE_BIOME, settings, "lush_caves"));
+        this.biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, "lush_caves"));
     }
 
     @Override

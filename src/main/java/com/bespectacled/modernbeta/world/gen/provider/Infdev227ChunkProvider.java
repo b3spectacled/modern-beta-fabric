@@ -6,8 +6,9 @@ import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.NBTUtil;
+import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.GenUtil;
+import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
@@ -53,8 +54,8 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         new PerlinOctaveNoise(rand, 3, true);
         this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
         
-        this.generateInfdevPyramid = NBTUtil.readBoolean("generateInfdevPyramid", providerSettings, ModernBeta.GEN_CONFIG.generateInfdevPyramid);
-        this.generateInfdevWall = NBTUtil.readBoolean("generateInfdevWall", providerSettings, ModernBeta.GEN_CONFIG.generateInfdevWall);
+        this.generateInfdevPyramid = NbtUtil.readBoolean(NbtTags.GEN_INFDEV_PYRAMID, providerSettings, ModernBeta.GEN_CONFIG.generateInfdevPyramid);
+        this.generateInfdevWall = NbtUtil.readBoolean(NbtTags.GEN_INFDEV_WALL, providerSettings, ModernBeta.GEN_CONFIG.generateInfdevWall);
         
         setForestOctaves(forestNoiseOctaves);
     }

@@ -12,7 +12,8 @@ import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.NBTUtil;
+import com.bespectacled.modernbeta.util.NbtTags;
+import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
@@ -84,13 +85,13 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         super(chunkGenerator);
         //super(chunkGenerator, 0, 256, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
-        this.levelType = IndevType.fromName(NBTUtil.readString("levelType", providerSettings, ModernBeta.GEN_CONFIG.indevLevelType));
-        this.levelTheme = IndevTheme.fromName(NBTUtil.readString("levelTheme", providerSettings, ModernBeta.GEN_CONFIG.indevLevelTheme));
+        this.levelType = IndevType.fromName(NbtUtil.readString(NbtTags.LEVEL_TYPE, providerSettings, ModernBeta.GEN_CONFIG.indevLevelType));
+        this.levelTheme = IndevTheme.fromName(NbtUtil.readString(NbtTags.LEVEL_THEME, providerSettings, ModernBeta.GEN_CONFIG.indevLevelTheme));
         
-        this.levelWidth = NBTUtil.readInt("levelWidth", providerSettings, ModernBeta.GEN_CONFIG.indevLevelWidth);
-        this.levelLength = NBTUtil.readInt("levelLength", providerSettings, ModernBeta.GEN_CONFIG.indevLevelLength);
-        this.levelHeight = NBTUtil.readInt("levelHeight", providerSettings, ModernBeta.GEN_CONFIG.indevLevelHeight);
-        this.caveRadius = NBTUtil.readFloat("caveRadius", providerSettings, ModernBeta.GEN_CONFIG.indevCaveRadius);
+        this.levelWidth = NbtUtil.readInt(NbtTags.LEVEL_WIDTH, providerSettings, ModernBeta.GEN_CONFIG.indevLevelWidth);
+        this.levelLength = NbtUtil.readInt(NbtTags.LEVEL_LENGTH, providerSettings, ModernBeta.GEN_CONFIG.indevLevelLength);
+        this.levelHeight = NbtUtil.readInt(NbtTags.LEVEL_HEIGHT, providerSettings, ModernBeta.GEN_CONFIG.indevLevelHeight);
+        this.caveRadius = NbtUtil.readFloat(NbtTags.LEVEL_CAVE_RADIUS, providerSettings, ModernBeta.GEN_CONFIG.indevCaveRadius);
         
         this.fluidBlock = this.isFloating() ? BlockStates.AIR : (this.isHell() ? BlockStates.LAVA : this.defaultFluid);
         this.topsoilBlock = this.isHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;

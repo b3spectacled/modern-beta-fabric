@@ -29,6 +29,8 @@
     "createWorld.customize.worldType.title": "Modern Beta World Configuration",
     "createWorld.customize.biomeType.title": "Modern Beta Biome Configuration",
     
+    "createWorld.customize.hydrogenLoaded": "Hydrogen detected! 'Assign Ocean Biomes' option is disabled.",
+    
     "createWorld.customize.inf.generateOceans": "Assign Ocean Biomes",
     "createWorld.customize.inf.generateOceanShrines": "Generate Ocean Shrines",
     

@@ -50,6 +50,14 @@ public class BetaClimateMapCustomizable {
         return newBiomeMap;
     }
     
+    public NbtCompound asNbtCompound() {
+        NbtCompound compound = new NbtCompound();
+        
+        this.biomeMap.entrySet().forEach(e -> compound.putString(e.getKey(), e.getValue().toString()));
+        
+        return compound;
+    }
+    
     public Identifier getBiomeFromLookup(double temp, double humid, BetaBiomeType type) {
         int i = (int) (temp * 63D);
         int j = (int) (humid * 63D);

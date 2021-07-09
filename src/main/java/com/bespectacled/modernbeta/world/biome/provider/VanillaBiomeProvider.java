@@ -5,7 +5,8 @@ import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
-import com.bespectacled.modernbeta.util.NBTUtil;
+import com.bespectacled.modernbeta.util.NbtTags;
+import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeLayer;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaOceanLayer;
@@ -27,8 +28,8 @@ public class VanillaBiomeProvider extends BiomeProvider {
     public VanillaBiomeProvider(OldBiomeSource biomeSource) {
         super(biomeSource);
         
-        this.vanillaBiomeSize = NBTUtil.readInt("vanillaBiomeSize", settings, ModernBeta.BETA_CONFIG.biome_config.vanillaBiomeSize);
-        this.vanillaOceanBiomeSize = NBTUtil.readInt("vanillaOceanBiomeSize", settings, ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize);
+        this.vanillaBiomeSize = NbtUtil.readInt(NbtTags.VANILLA_BIOME_SIZE, settings, ModernBeta.BETA_CONFIG.biome_config.vanillaBiomeSize);
+        this.vanillaOceanBiomeSize = NbtUtil.readInt(NbtTags.VANILLA_OCEAN_BIOME_SIZE, settings, ModernBeta.BETA_CONFIG.biome_config.vanillaOceanBiomeSize);
         
         this.biomeSampler = VanillaBiomeLayer.build(seed, false, this.vanillaBiomeSize, -1);
         this.oceanSampler = VanillaOceanLayer.build(seed, false, this.vanillaOceanBiomeSize, -1);

@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.world.cavebiome.provider.settings;
 
-import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.util.NbtTags;
 
 import net.minecraft.nbt.NbtCompound;
 
@@ -8,7 +8,7 @@ public class CaveBiomeProviderSettings {
     public static NbtCompound createSettingsBase(String caveBiomeType) {
         NbtCompound settings = new NbtCompound();
         
-        settings.putString(WorldSettings.TAG_CAVE_BIOME, caveBiomeType);
+        settings.putString(NbtTags.CAVE_BIOME_TYPE, caveBiomeType);
         
         return settings;
     }

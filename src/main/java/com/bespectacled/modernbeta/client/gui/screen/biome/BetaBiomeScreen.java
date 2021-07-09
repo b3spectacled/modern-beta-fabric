@@ -11,7 +11,7 @@ import com.bespectacled.modernbeta.api.client.gui.wrapper.ActionOptionWrapper;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.Settings;
-import com.bespectacled.modernbeta.util.GUIUtil;
+import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMapCustomizable;
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.NbtString;
@@ -26,6 +26,7 @@ public class BetaBiomeScreen extends BiomeScreen {
     private BetaBiomeScreen(WorldScreen parent, Consumer<Settings> consumer) {
         super(parent, consumer);
         
+        // Create Beta biome map from existing biome settings
         this.biomeSettingsMap = new BetaClimateMapCustomizable(this.biomeSettings.getNbt()).getMap();
     }
     
@@ -41,15 +42,15 @@ public class BetaBiomeScreen extends BiomeScreen {
         super.init();
         
         for (Entry<String, Identifier> e : this.biomeSettingsMap.entrySet()) {
-            this.addBiomeButtonEntry(e.getKey(), GUIUtil.createTranslatableBiomeStringFromId(e.getValue()));
+            this.addBiomeButtonEntry(e.getKey(), GuiUtil.createTranslatableBiomeStringFromId(e.getValue()));
         }
     }
     
     private void addBiomeButtonEntry(String key, String biomeText) {
-        TextOptionWrapper text = new TextOptionWrapper(GUIUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(key)), Formatting.GRAY);
+        TextOptionWrapper text = new TextOptionWrapper(GuiUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(key)), Formatting.GRAY);
         
         ActionOptionWrapper singleBiomeScreen = new ActionOptionWrapper(
-            GUIUtil.createTranslatableBiomeStringFromId(this.biomeSettingsMap.get(key)), 
+            GuiUtil.createTranslatableBiomeStringFromId(this.biomeSettingsMap.get(key)), 
             "",
             buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
                 this,

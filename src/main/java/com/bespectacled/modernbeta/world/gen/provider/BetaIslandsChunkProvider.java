@@ -6,8 +6,9 @@ import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.SimplexNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.NBTUtil;
+import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.GenUtil;
+import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
@@ -56,13 +57,13 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         this.islandNoise = new SimplexNoise(rand);
         
         // Beta Islands settings
-        this.generateOuterIslands = NBTUtil.readBoolean("generateOuterIslands", providerSettings, ModernBeta.GEN_CONFIG.generateOuterIslands);
-        this.centerIslandRadius = NBTUtil.readInt("centerIslandRadius", providerSettings, ModernBeta.GEN_CONFIG.centerIslandRadius);
-        this.centerIslandFalloff = NBTUtil.readFloat("centerIslandFalloff", providerSettings, ModernBeta.GEN_CONFIG.centerIslandFalloff);
-        this.centerOceanLerpDistance = NBTUtil.readInt("centerOceanLerpDistance", providerSettings, ModernBeta.GEN_CONFIG.centerOceanLerpDistance);
-        this.centerOceanRadius = NBTUtil.readInt("centerOceanRadius", providerSettings, ModernBeta.GEN_CONFIG.centerOceanRadius);
-        this.outerIslandNoiseScale = NBTUtil.readFloat("outerIslandNoiseScale", providerSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseScale);
-        this.outerIslandNoiseOffset = NBTUtil.readFloat("outerIslandNoiseOffset", providerSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseOffset);
+        this.generateOuterIslands = NbtUtil.readBoolean(NbtTags.GEN_OUTER_ISLANDS, providerSettings, ModernBeta.GEN_CONFIG.generateOuterIslands);
+        this.centerIslandRadius = NbtUtil.readInt(NbtTags.CENTER_ISLAND_RADIUS, providerSettings, ModernBeta.GEN_CONFIG.centerIslandRadius);
+        this.centerIslandFalloff = NbtUtil.readFloat(NbtTags.CENTER_ISLAND_FALLOFF, providerSettings, ModernBeta.GEN_CONFIG.centerIslandFalloff);
+        this.centerOceanLerpDistance = NbtUtil.readInt(NbtTags.CENTER_OCEAN_LERP_DIST, providerSettings, ModernBeta.GEN_CONFIG.centerOceanLerpDistance);
+        this.centerOceanRadius = NbtUtil.readInt(NbtTags.CENTER_OCEAN_RADIUS, providerSettings, ModernBeta.GEN_CONFIG.centerOceanRadius);
+        this.outerIslandNoiseScale = NbtUtil.readFloat(NbtTags.OUTER_ISLAND_NOISE_SCALE, providerSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseScale);
+        this.outerIslandNoiseOffset = NbtUtil.readFloat(NbtTags.OUTER_ISLAND_NOISE_OFFSET, providerSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseOffset);
         
         this.setSeed(seed);
         setForestOctaves(forestNoiseOctaves);
