@@ -2,10 +2,12 @@ package com.bespectacled.modernbeta.mixin;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
+import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.google.common.base.MoreObjects;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -81,10 +83,12 @@ public class MixinGeneratorOptions {
             NbtCompound chunkProviderSettings = Registries.CHUNK_SETTINGS.get(ModernBeta.GEN_CONFIG.worldType).get();
             NbtCompound biomeProviderSettings = Registries.BIOME_SETTINGS.get(ModernBeta.BIOME_CONFIG.biomeType).get();
             
+            WorldProvider worldProvider = Registries.WORLD.get(ModernBeta.GEN_CONFIG.worldType);
+            
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 new OldBiomeSource(seed, registryBiome, biomeProviderSettings), 
                 seed,
-                () -> registryChunkGenSettings.get(ModernBeta.createId(levelType)), 
+                () -> registryChunkGenSettings.get(new Identifier(worldProvider.getChunkGenSettings())), 
                 chunkProviderSettings
             );
             

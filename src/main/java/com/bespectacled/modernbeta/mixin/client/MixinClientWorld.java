@@ -32,7 +32,6 @@ public abstract class MixinClientWorld extends World implements BetaClimateResol
     
     @Unique private Vec3d curPos = new Vec3d(0, 0, 0);
     @Unique private boolean useBetaBiomeColors;
-    @Unique private boolean isOverworld;
 
     private MixinClientWorld() {
         super(null, null, null, null, false, false, 0L);
@@ -51,27 +50,22 @@ public abstract class MixinClientWorld extends World implements BetaClimateResol
         long seed, 
         CallbackInfo ci
     ) {
-        boolean useBetaBiomeColors = ModernBeta.RENDER_CONFIG.useFixedSeed;
         long worldSeed = ModernBeta.RENDER_CONFIG.fixedSeed;
+        boolean useBetaBiomeColors = ModernBeta.RENDER_CONFIG.useFixedSeed;
         
-        if (this.isClient && this.client.getServer() != null) { // Server check
-           BiomeSource biomeSource = this.client.getServer().getOverworld().getChunkManager().getChunkGenerator().getBiomeSource();
-           boolean inBetaWorld = biomeSource instanceof OldBiomeSource oldBiomeSource && oldBiomeSource.getBiomeProvider() instanceof BetaClimateResolver;
-           
-           if (!ModernBeta.RENDER_CONFIG.useFixedSeed && inBetaWorld) {
-               useBetaBiomeColors = true;
-               worldSeed = this.client.getServer().getOverworld().getSeed();
-           }
+        if (this.isClient && this.client.getServer() != null && worldKey != null) { // Server check
+           BiomeSource biomeSource = this.client.getServer().getWorld(worldKey).getChunkManager().getChunkGenerator().getBiomeSource();
+
+           worldSeed = this.client.getServer().getWorld(worldKey).getSeed();
+           useBetaBiomeColors = 
+               biomeSource instanceof OldBiomeSource oldBiomeSource &&
+               oldBiomeSource.getBiomeProvider() instanceof BetaClimateResolver &&
+               !ModernBeta.RENDER_CONFIG.useFixedSeed;
         }
         
-        // Check for null worldKey (Compat for Mobs Main Menu)
-        this.isOverworld = worldKey != null ?
-            worldKey.getValue().equals(DimensionType.OVERWORLD_REGISTRY_KEY.getValue()) :
-            false;
+        ModernBeta.setBlockColorsSeed(worldSeed, useBetaBiomeColors);
         
         this.useBetaBiomeColors = useBetaBiomeColors;
-        
-        ModernBeta.setBlockColorsSeed(worldSeed, useBetaBiomeColors && this.isOverworld);
     }
     
     @ModifyVariable(
@@ -89,7 +83,7 @@ public abstract class MixinClientWorld extends World implements BetaClimateResol
         index = 6  
     )
     private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
-        if (ModernBeta.RENDER_CONFIG.renderBetaSkyColor && this.useBetaBiomeColors && this.isOverworld) {
+        if (this.useBetaBiomeColors && ModernBeta.RENDER_CONFIG.renderBetaSkyColor) {
             int x = (int)curPos.getX();
             int z = (int)curPos.getZ();
             

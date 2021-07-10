@@ -45,7 +45,7 @@ public class MixinMinecraftServer {
             if (oldChunkGenerator.getChunkProvider() instanceof BeachSpawnable chunkProvider) { // Attempt to place a beach spawn if provider generates classic beaches.
                 ModernBeta.log(Level.INFO, "Setting a beach spawn..");
                 
-                spawnPos = getInitialOldSpawn(world.getChunk(chunkPos.getStartPos()), oldChunkGenerator, chunkProvider, oldChunkGenerator.getSeaLevel());
+                spawnPos = getOldSpawn(world.getChunk(chunkPos.getStartPos()), oldChunkGenerator, chunkProvider, oldChunkGenerator.getSeaLevel());
             }
             
             if (spawnPos != null && oldChunkGenerator.getChunkProvider() instanceof IndevChunkProvider indevChunkProvider) {
@@ -68,7 +68,7 @@ public class MixinMinecraftServer {
     }
     
     @Unique
-    private static BlockPos getInitialOldSpawn(Chunk chunk, OldChunkGenerator chunkGenerator, BeachSpawnable chunkProvider, int seaLevel) {
+    private static BlockPos getOldSpawn(Chunk chunk, OldChunkGenerator chunkGenerator, BeachSpawnable chunkProvider, int seaLevel) {
         int x = 0;
         int z = 0;
         int attempts = 0;

@@ -10,6 +10,8 @@ import com.bespectacled.modernbeta.world.cavebiome.provider.*;
 import com.bespectacled.modernbeta.world.gen.provider.*;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 
+import net.minecraft.nbt.NbtCompound;
+
 /*
  * Registration of built-in providers for various things.
  *  
@@ -31,7 +33,7 @@ public class ModernBetaBuiltInProviders {
     
     // Register default chunk settings
     public static void registerChunkSettings() {
-        Registries.CHUNK_SETTINGS.register(BuiltInTypes.DEFAULT_ID, ChunkProviderSettings::createSettingsBeta);
+        Registries.CHUNK_SETTINGS.register(BuiltInTypes.DEFAULT_ID, () -> new NbtCompound());
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.BETA.name, ChunkProviderSettings::createSettingsBeta);
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.SKYLANDS.name, ChunkProviderSettings::createSettingsSkylands);
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.ALPHA.name, ChunkProviderSettings::createSettingsAlpha);
@@ -52,7 +54,7 @@ public class ModernBetaBuiltInProviders {
     
     // Register default biome settings
     public static void registerBiomeSettings() {
-        Registries.BIOME_SETTINGS.register(BuiltInTypes.DEFAULT_ID, BiomeProviderSettings::createSettingsBeta);
+        Registries.BIOME_SETTINGS.register(BuiltInTypes.DEFAULT_ID, () -> new NbtCompound());
         Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.BETA.name, BiomeProviderSettings::createSettingsBeta);
         Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.SINGLE.name, BiomeProviderSettings::createSettingsSingle);
         Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.VANILLA.name, BiomeProviderSettings::createSettingsVanilla);

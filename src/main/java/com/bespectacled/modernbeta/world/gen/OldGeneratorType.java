@@ -48,13 +48,13 @@ public class OldGeneratorType {
         NbtCompound chunkProviderSettings = worldSettings.getNbt(WorldSetting.CHUNK);
         NbtCompound biomeProviderSettings = worldSettings.getNbt(WorldSetting.BIOME);
         
-        String chunkProviderType = chunkProviderSettings.getString(NbtTags.WORLD_TYPE);
-    
+        WorldProvider worldProvider = Registries.WORLD.get(chunkProviderSettings.getString(NbtTags.WORLD_TYPE));
+        
         Registry<DimensionType> registryDimensionType = registryManager.<DimensionType>get(Registry.DIMENSION_TYPE_KEY);
         Registry<ChunkGeneratorSettings> registryChunkGenSettings = registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
         Registry<Biome> registryBiome = registryManager.<Biome>get(Registry.BIOME_KEY);
         
-        Optional<ChunkGeneratorSettings> chunkGenSettings = registryChunkGenSettings.getOrEmpty(new Identifier(Registries.WORLD.get(chunkProviderType).getChunkGenSettings()));
+        Optional<ChunkGeneratorSettings> chunkGenSettings = registryChunkGenSettings.getOrEmpty(new Identifier(worldProvider.getChunkGenSettings()));
         Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = chunkGenSettings.isPresent() ?
             () -> chunkGenSettings.get() :
             () -> registryChunkGenSettings.getOrThrow(ChunkGeneratorSettings.OVERWORLD);
