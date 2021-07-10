@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.config;
 
+import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
 
@@ -9,6 +10,9 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
 @Config(name = "generation_config")
 public class ModernBetaGenerationConfig implements ConfigData {
+    
+    @ConfigEntry.Gui.Excluded
+    public String worldType = BuiltInTypes.Chunk.BETA.name;
     
     /* Inf Generation */
     
