@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class MixinClientWorld extends World implements BetaClimateResolver {
     @Shadow private MinecraftClient client;
     
-    @Unique private Vec3d curPos = new Vec3d(0, 0, 0);
+    @Unique private Vec3d curPos;
     @Unique private boolean useBetaBiomeColors;
 
     private MixinClientWorld() {
