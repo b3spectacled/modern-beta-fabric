@@ -75,7 +75,7 @@ public class InfWorldScreen extends WorldScreen {
             this.addOption(generateOceans);
         }
         
-        if (!isHydrogenLoaded && (!isSingleBiome || isSingleBiomeAndHasOceanShrine)) {
+        if ((!isHydrogenLoaded && !isSingleBiome) || isSingleBiomeAndHasOceanShrine) {
             this.addOption(generateOceanShrines);
         }
     }

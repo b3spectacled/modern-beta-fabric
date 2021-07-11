@@ -7,7 +7,6 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
@@ -60,7 +59,7 @@ public abstract class MixinClientWorld extends World implements BetaClimateResol
            worldSeed = this.client.getServer().getWorld(worldKey).getSeed();
            useBetaBiomeColors = 
                biomeSource instanceof OldBiomeSource &&
-               (OldBiomeSource)biomeSource instanceof BetaClimateResolver &&
+               ((OldBiomeSource)biomeSource).getBiomeProvider() instanceof BetaClimateResolver &&
                !ModernBeta.RENDER_CONFIG.useFixedSeed;
         }
         
