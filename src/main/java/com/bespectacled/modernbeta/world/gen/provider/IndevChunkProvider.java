@@ -204,14 +204,15 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         for (int y = this.levelHeight - 1; y >= 0; --y) {
             Block block = this.blockArr[x][y][z];
             
-            if (!block.equals(Blocks.AIR)) {
+            if (!(block.equals(Blocks.AIR) || block.equals(this.fluidBlock.getBlock()))) {
                 break;
             }
             
             height = y;
         }
         
-        if (height <= this.waterLevel) height = this.waterLevel;
+        if (type == Heightmap.Type.WORLD_SURFACE_WG && height < this.waterLevel) 
+            height = this.waterLevel;
          
         return height;
     }
