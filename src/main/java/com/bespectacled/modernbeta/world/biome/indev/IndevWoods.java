@@ -38,7 +38,7 @@ public class IndevWoods {
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
-        
+
         genSettings.structureFeature(ConfiguredStructureFeatures.VILLAGE_PLAINS);
         genSettings.structureFeature(ConfiguredStructureFeatures.PILLAGER_OUTPOST);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);

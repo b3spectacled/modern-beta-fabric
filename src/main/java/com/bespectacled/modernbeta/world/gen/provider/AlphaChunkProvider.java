@@ -282,7 +282,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider implements BeachSpawn
         
         // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
         double densityWithOffset = density - densityOffset; 
-
+        
         densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
         densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);
         

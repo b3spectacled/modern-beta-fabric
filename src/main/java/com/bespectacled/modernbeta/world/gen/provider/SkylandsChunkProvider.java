@@ -163,7 +163,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         
         // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
         double densityWithOffset = density - densityOffset; 
-        
+
         densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, this.noiseSizeY);
         densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -8);
         

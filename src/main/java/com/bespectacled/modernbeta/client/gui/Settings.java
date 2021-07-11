@@ -57,6 +57,13 @@ public class Settings {
         return null;
     }
     
+    public boolean hasSetting(String key) {
+        if (this.changes.containsKey(key))
+            return true;
+        
+        return false;
+    }
+    
     public NbtCompound getNbt() {
         NbtCompound compound = new NbtCompound();
         

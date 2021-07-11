@@ -8,11 +8,12 @@ import com.bespectacled.modernbeta.client.gui.Settings;
 
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public abstract class BiomeScreen extends GUIScreen {
-    protected final WorldSettings worldSettings;
-    protected final Consumer<Settings> consumer;
+    private final WorldSettings worldSettings;
+    private final Consumer<Settings> consumer;
     
     protected final DynamicRegistryManager registryManager;
     protected final Settings biomeSettings;
@@ -56,5 +57,15 @@ public abstract class BiomeScreen extends GUIScreen {
         
         this.addButton(doneButton);
         this.addButton(cancelButton);
+    }
+    
+    /* Convenience methods */
+    
+    protected void putBiomeSetting(String key, NbtElement element) {
+        this.biomeSettings.putChange(key, element);
+    }
+    
+    protected boolean hasBiomeSetting(String key) {
+        return this.biomeSettings.hasSetting(key);
     }
 }

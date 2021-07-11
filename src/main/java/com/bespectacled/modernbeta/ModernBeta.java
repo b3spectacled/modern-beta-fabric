@@ -72,7 +72,9 @@ public class ModernBeta implements ModInitializer {
         
         // Register default providers
         ModernBetaBuiltInProviders.registerChunkProviders();
+        ModernBetaBuiltInProviders.registerChunkSettings();
         ModernBetaBuiltInProviders.registerBiomeProviders();
+        ModernBetaBuiltInProviders.registerBiomeSettings();
         ModernBetaBuiltInProviders.registerWorldProviders();
         
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {

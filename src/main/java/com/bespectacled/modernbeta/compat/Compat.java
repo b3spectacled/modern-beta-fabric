@@ -8,7 +8,8 @@ import net.fabricmc.loader.api.FabricLoader;
 public class Compat {
     public static void setupCompat() {
         try {
-            if (FabricLoader.getInstance().isModLoaded("techreborn")) CompatTechReborn.addCompat();
+            if (isLoaded("techreborn")) CompatTechReborn.addCompat();
+            if (isLoaded("hydrogen")) CompatHydrogen.addCompat();
             
         } catch (Exception e) {
             ModernBeta.log(Level.ERROR, "Something went wrong when attempting to add mod compatibility!");
@@ -16,4 +17,7 @@ public class Compat {
         }
     }
     
+    public static boolean isLoaded(String modid) {
+        return FabricLoader.getInstance().isModLoaded(modid);
+    }
 }

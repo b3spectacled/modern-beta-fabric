@@ -42,7 +42,7 @@ public class FrozenOcean {
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
         DefaultBiomeFeatures.addSprings(genSettings);
-
+        
         genSettings.structureFeature(ConfiguredStructureFeatures.BURIED_TREASURE);
         genSettings.structureFeature(ConfiguredStructureFeatures.OCEAN_RUIN_COLD);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_OCEAN);

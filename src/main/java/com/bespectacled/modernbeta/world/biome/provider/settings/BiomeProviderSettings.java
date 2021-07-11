@@ -1,23 +1,23 @@
 package com.bespectacled.modernbeta.world.biome.provider.settings;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.util.NbtTags;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.biome.BiomeKeys;
 
 public class BiomeProviderSettings {
-    public static NbtCompound createSettingsBase(String biomeType, String singleBiome) {
+    public static NbtCompound createSettingsBase(String biomeType) {
         NbtCompound settings = new NbtCompound();
         
-        settings.putString(WorldSettings.TAG_BIOME, biomeType);
-        settings.putString(WorldSettings.TAG_SINGLE_BIOME, singleBiome);
+        settings.putString(NbtTags.BIOME_TYPE, biomeType);
         
         return settings;
     }
     
-    public static NbtCompound createSettingsAll(String biomeType) {
-        NbtCompound settings = createSettingsBase(biomeType, ModernBeta.BIOME_CONFIG.singleBiome);
+    public static NbtCompound createSettingsBeta() {
+        NbtCompound settings = createSettingsBase(BuiltInTypes.Biome.BETA.name);
         
         settings.putString("desert", ModernBeta.BIOME_CONFIG.betaDesertBiome);
         settings.putString("forest", ModernBeta.BIOME_CONFIG.betaForestBiome);
@@ -37,8 +37,22 @@ public class BiomeProviderSettings {
         settings.putString("lukewarm_ocean", ModernBeta.BIOME_CONFIG.betaLukewarmOceanBiome);
         settings.putString("warm_ocean", ModernBeta.BIOME_CONFIG.betaWarmOceanBiome);
         
-        settings.putInt("vanillaBiomeSize", ModernBeta.BIOME_CONFIG.vanillaBiomeSize);
-        settings.putInt("vanillaOceanBiomeSize", ModernBeta.BIOME_CONFIG.vanillaOceanBiomeSize);
+        return settings;
+    }
+    
+    public static NbtCompound createSettingsVanilla() {
+        NbtCompound settings = createSettingsBase(BuiltInTypes.Biome.VANILLA.name);
+        
+        settings.putInt(NbtTags.VANILLA_BIOME_SIZE, ModernBeta.BIOME_CONFIG.vanillaBiomeSize);
+        settings.putInt(NbtTags.VANILLA_OCEAN_BIOME_SIZE, ModernBeta.BIOME_CONFIG.vanillaOceanBiomeSize);
+        
+        return settings;
+    }
+    
+    public static NbtCompound createSettingsSingle() {
+        NbtCompound settings = createSettingsBase(BuiltInTypes.Biome.SINGLE.name);
+
+        settings.putString(NbtTags.SINGLE_BIOME, ModernBeta.BIOME_CONFIG.singleBiome);
         
         return settings;
     }

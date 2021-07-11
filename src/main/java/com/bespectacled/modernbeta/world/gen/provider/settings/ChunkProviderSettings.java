@@ -1,8 +1,9 @@
 package com.bespectacled.modernbeta.world.gen.provider.settings;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.config.ModernBetaGenerationConfig;
+import com.bespectacled.modernbeta.util.NbtTags;
 
 import net.minecraft.nbt.NbtCompound;
 
@@ -12,34 +13,76 @@ public class ChunkProviderSettings {
     public static NbtCompound createSettingsBase(String worldType) {
         NbtCompound settings = new NbtCompound();
         
-        settings.putString(WorldSettings.TAG_WORLD, worldType);
+        settings.putString(NbtTags.WORLD_TYPE, worldType);
         
         return settings;
     }
     
-    public static NbtCompound createSettingsAll(String worldType) {
+    public static NbtCompound createSettingsInf(String worldType) {
         NbtCompound settings = createSettingsBase(worldType);
         
-        settings.putBoolean("generateOceans", CONFIG.generateOceans);
-        settings.putBoolean("generateOceanShrines", CONFIG.generateOceanShrines);
+        settings.putBoolean(NbtTags.GEN_OCEANS, CONFIG.generateOceans);
+        settings.putBoolean(NbtTags.GEN_OCEAN_SHRINES, CONFIG.generateOceanShrines);
         
-        settings.putBoolean("generateInfdevPyramid", CONFIG.generateInfdevPyramid);
-        settings.putBoolean("generateInfdevWall", CONFIG.generateInfdevWall);
+        return settings;
+    }
+    
+    public static NbtCompound createSettingsBeta() {
+        return createSettingsInf(BuiltInTypes.Chunk.BETA.name);
+    }
+    
+    public static NbtCompound createSettingsSkylands() {
+        NbtCompound settings = createSettingsBase(BuiltInTypes.Chunk.SKYLANDS.name);
         
-        settings.putString("levelType", CONFIG.indevLevelType);
-        settings.putString("levelTheme", CONFIG.indevLevelTheme);
-        settings.putInt("levelWidth", CONFIG.indevLevelWidth);
-        settings.putInt("levelLength", CONFIG.indevLevelLength);
-        settings.putInt("levelHeight", CONFIG.indevLevelHeight);
-        settings.putFloat("caveRadius", CONFIG.indevCaveRadius);
+        settings.putBoolean(NbtTags.GEN_OCEANS, false);
         
-        settings.putBoolean("generateOuterIslands", CONFIG.generateOuterIslands);
-        settings.putInt("centerIslandRadius", CONFIG.centerIslandRadius);
-        settings.putFloat("centerIslandFalloff", CONFIG.centerIslandFalloff);
-        settings.putInt("centerOceanLerpDistance", CONFIG.centerOceanLerpDistance);
-        settings.putInt("centerOceanRadius", CONFIG.centerOceanRadius);
-        settings.putFloat("outerIslandNoiseScale", CONFIG.outerIslandNoiseScale);
-        settings.putFloat("outerIslandNoiseOffset", CONFIG.outerIslandNoiseOffset);
+        return settings;
+    }
+    
+    public static NbtCompound createSettingsAlpha() {
+        return createSettingsInf(BuiltInTypes.Chunk.ALPHA.name);
+    }
+    
+    public static NbtCompound createSettingsInfdev611() {
+        return createSettingsInf(BuiltInTypes.Chunk.INFDEV_611.name);
+    }
+    
+    public static NbtCompound createSettingsInfdev415() {
+        return createSettingsInf(BuiltInTypes.Chunk.INFDEV_415.name);
+    }
+    
+    public static NbtCompound createSettingsInfdev227() {
+        NbtCompound settings = createSettingsInf(BuiltInTypes.Chunk.INFDEV_227.name);
+        
+        settings.putBoolean(NbtTags.GEN_INFDEV_PYRAMID, CONFIG.generateInfdevPyramid);
+        settings.putBoolean(NbtTags.GEN_INFDEV_WALL, CONFIG.generateInfdevWall);
+        
+        return settings;
+    }
+    
+    public static NbtCompound createSettingsIndev() {
+        NbtCompound settings = createSettingsInf(BuiltInTypes.Chunk.INDEV.name);
+        
+        settings.putString(NbtTags.LEVEL_TYPE, CONFIG.indevLevelType);
+        settings.putString(NbtTags.LEVEL_THEME, CONFIG.indevLevelTheme);
+        settings.putInt(NbtTags.LEVEL_WIDTH, CONFIG.indevLevelWidth);
+        settings.putInt(NbtTags.LEVEL_LENGTH, CONFIG.indevLevelLength);
+        settings.putInt(NbtTags.LEVEL_HEIGHT, CONFIG.indevLevelHeight);
+        settings.putFloat(NbtTags.LEVEL_CAVE_RADIUS, CONFIG.indevCaveRadius);
+        
+        return settings;
+    }
+    
+    public static NbtCompound createSettingsIslands() {
+        NbtCompound settings = createSettingsInf(BuiltInTypes.Chunk.BETA_ISLANDS.name);
+        
+        settings.putBoolean(NbtTags.GEN_OUTER_ISLANDS, CONFIG.generateOuterIslands);
+        settings.putInt(NbtTags.CENTER_ISLAND_RADIUS, CONFIG.centerIslandRadius);
+        settings.putFloat(NbtTags.CENTER_ISLAND_FALLOFF, CONFIG.centerIslandFalloff);
+        settings.putInt(NbtTags.CENTER_OCEAN_LERP_DIST, CONFIG.centerOceanLerpDistance);
+        settings.putInt(NbtTags.CENTER_OCEAN_RADIUS, CONFIG.centerOceanRadius);
+        settings.putFloat(NbtTags.OUTER_ISLAND_NOISE_SCALE, CONFIG.outerIslandNoiseScale);
+        settings.putFloat(NbtTags.OUTER_ISLAND_NOISE_OFFSET, CONFIG.outerIslandNoiseOffset);
         
         return settings;
     }

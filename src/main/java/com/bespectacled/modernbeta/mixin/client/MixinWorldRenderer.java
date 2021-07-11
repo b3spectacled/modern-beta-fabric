@@ -18,7 +18,7 @@ public class MixinWorldRenderer {
     @Unique private ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
 	
 	@ModifyVariable(
-        method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;F)V",
+        method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FLjava/lang/Runnable;)V",
         at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/SkyProperties;getFogColorOverride(FF)[F")
     )
     private float[] modifySkySunsetCols(float[] skyCols) {

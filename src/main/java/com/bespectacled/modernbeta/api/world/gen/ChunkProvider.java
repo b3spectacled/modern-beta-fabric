@@ -38,9 +38,9 @@ public abstract class ChunkProvider {
     /**
      * Generates base terrain for given chunk.
      * 
+     * @param worldAccess
      * @param structureAccessor
      * @param chunk
-     * @param biomeSource
      */
     public abstract void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk);
     

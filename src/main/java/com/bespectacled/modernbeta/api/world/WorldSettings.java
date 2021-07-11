@@ -4,17 +4,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.bespectacled.modernbeta.client.gui.Settings;
-import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
-import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
 public final class WorldSettings {
-    public static final String TAG_WORLD = "worldType";
-    public static final String TAG_BIOME = "biomeType";
-    public static final String TAG_SINGLE_BIOME = "singleBiome";
-    
     public enum WorldSetting {
         CHUNK,
         BIOME
@@ -47,11 +41,6 @@ public final class WorldSettings {
         this.settings.get(settingsKey).putChanges(compound);
     }
     
-    public void putChanges(WorldProvider worldProvider) {
-        this.putChanges(WorldSetting.CHUNK, ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider()));
-        this.putChanges(WorldSetting.BIOME, BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome()));
-    }
-    
     public void clearChanges(WorldSetting settingsKey) {
         this.settings.get(settingsKey).clearChanges();
     }
@@ -64,6 +53,10 @@ public final class WorldSettings {
     
     public NbtElement getSetting(WorldSetting settingsKey, String key) {
         return this.settings.get(settingsKey).getSetting(key);
+    }
+    
+    public boolean hasSetting(WorldSetting settingsKey, String key) {
+        return this.settings.get(settingsKey).hasSetting(key);
     }
     
     public NbtCompound getNbt(WorldSetting settingsKey) {
