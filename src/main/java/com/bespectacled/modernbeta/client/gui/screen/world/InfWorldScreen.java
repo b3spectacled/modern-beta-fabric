@@ -62,10 +62,7 @@ public class InfWorldScreen extends WorldScreen {
         BooleanCyclingOptionWrapper generateOceanShrines = new BooleanCyclingOptionWrapper(
             GENERATE_OCEAN_SHRINES_DISPLAY_STRING,
             () -> NbtUtil.toBooleanOrThrow(this.getChunkSetting(NbtTags.GEN_OCEAN_SHRINES)),
-            value -> { 
-                this.putChunkSetting(NbtTags.GEN_OCEAN_SHRINES, NbtByte.of(value));
-                this.resetWorldScreen();
-            }
+            value -> this.putChunkSetting(NbtTags.GEN_OCEAN_SHRINES, NbtByte.of(value))
         );
         
         TextOptionWrapper hydrogenText = new TextOptionWrapper(HYDROGEN_LOADED_STRING, Formatting.RED);
@@ -78,7 +75,7 @@ public class InfWorldScreen extends WorldScreen {
             this.addOption(generateOceans);
         }
         
-        if (!isHydrogenLoaded && !isSingleBiome || isSingleBiomeAndHasOceanShrine) {
+        if (!isHydrogenLoaded && (!isSingleBiome || isSingleBiomeAndHasOceanShrine)) {
             this.addOption(generateOceanShrines);
         }
     }
