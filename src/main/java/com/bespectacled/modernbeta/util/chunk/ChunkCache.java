@@ -1,8 +1,6 @@
 package com.bespectacled.modernbeta.util.chunk;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+import java.util.concurrent.locks.StampedLock;
 import java.util.function.BiFunction;
 
 import org.apache.logging.log4j.Level;
@@ -23,9 +21,7 @@ public class ChunkCache<T> {
     private final BiFunction<Integer, Integer, T> chunkFunc;
     private final Long2ObjectLinkedOpenHashMap<T> chunkMap;
     
-    private final ReentrantReadWriteLock lock;
-    private final WriteLock writeLock;
-    private final ReadLock readLock;
+    private final StampedLock lock;
 
     private int hits;
     private int misses;
@@ -38,9 +34,7 @@ public class ChunkCache<T> {
         this.chunkFunc = chunkFunc;
         this.chunkMap = new Long2ObjectLinkedOpenHashMap<>(capacity);
         
-        this.lock = new ReentrantReadWriteLock();
-        this.writeLock = this.lock.writeLock();
-        this.readLock = this.lock.readLock();
+        this.lock = new StampedLock();
         
         this.hits = 0;
         this.misses = 0;
@@ -56,28 +50,30 @@ public class ChunkCache<T> {
     }
     
     public void clear() {
-        this.writeLock.lock();
+        long stamp = this.lock.writeLock();
         try {
             this.chunkMap.clear();
             this.chunkMap.trim();
         } finally {
-            this.writeLock.unlock();
+            this.lock.unlock(stamp);
         }
     }
     
     public T get(int chunkX, int chunkZ) {
-        long hashedCoord = ChunkPos.toLong(chunkX, chunkZ);
         T item;
+        long stamp;
         
-        this.readLock.lock();
+        long hashedCoord = ChunkPos.toLong(chunkX, chunkZ);
+        
+        stamp = this.lock.readLock();
         try {
             item = this.chunkMap.get(hashedCoord);
         } finally {
-            this.readLock.unlock();
+            this.lock.unlockRead(stamp);
         }
         
         if (item == null) { 
-            this.writeLock.lock();
+            stamp = this.lock.writeLock();
             try {
                 item = this.chunkFunc.apply(chunkX, chunkZ);
                 
@@ -88,7 +84,7 @@ public class ChunkCache<T> {
                 
                 this.chunkMap.put(hashedCoord, item);
             } finally {
-                this.writeLock.unlock();
+                this.lock.unlockWrite(stamp);
             }
             
             misses++;
