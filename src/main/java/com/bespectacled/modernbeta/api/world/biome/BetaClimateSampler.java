@@ -47,6 +47,9 @@ public enum BetaClimateSampler {
     }
     
     protected void sampleClime(double[] arr, int x, int z) {
+        if (arr.length != 2) 
+            throw new IllegalArgumentException("[Modern Beta] Climate array size is not 2!");
+        
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         

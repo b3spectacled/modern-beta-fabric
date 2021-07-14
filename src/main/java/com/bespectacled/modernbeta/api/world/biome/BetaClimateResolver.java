@@ -24,6 +24,10 @@ public interface BetaClimateResolver {
         return BetaClimateSampler.INSTANCE.sampleRain(x, z);
     }
     
+    default void sampleClime(double[] arr, int x, int z) {
+        BetaClimateSampler.INSTANCE.sampleClime(arr, x, z);
+    }
+    
     default Clime sampleClime(int x, int z) {
         return BetaClimateSampler.INSTANCE.sampleClime(x, z);
     }

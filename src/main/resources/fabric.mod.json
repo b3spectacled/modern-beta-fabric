@@ -21,7 +21,7 @@
     "issues": "https://github.com/b3spectacled/modern-beta-fabric/issues"
   },
 
-  "license": "LGPLv3",
+  "license": "MIT",
   "icon": "assets/modern_beta/icon.png",
 
   "environment": "*",
