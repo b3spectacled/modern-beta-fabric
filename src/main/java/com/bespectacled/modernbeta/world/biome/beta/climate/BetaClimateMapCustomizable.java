@@ -1,11 +1,11 @@
-package com.bespectacled.modernbeta.world.biome.beta;
+package com.bespectacled.modernbeta.world.biome.beta.climate;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMap.BetaBiomeType;
+import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -13,8 +13,8 @@ import net.minecraft.util.Identifier;
 public class BetaClimateMapCustomizable {
     private final NbtCompound biomeProviderSettings;
     
-    private final Identifier LAND_BIOME_TABLE[] = new Identifier[4096];
-    private final Identifier OCEAN_BIOME_TABLE[] = new Identifier[4096];
+    private final Identifier landBiomeTable[] = new Identifier[4096];
+    private final Identifier oceanBiomeTable[] = new Identifier[4096];
     
     private final Map<String, Identifier> biomeMap;
     
@@ -50,26 +50,15 @@ public class BetaClimateMapCustomizable {
         return newBiomeMap;
     }
     
-    public NbtCompound asNbtCompound() {
-        NbtCompound compound = new NbtCompound();
-        
-        this.biomeMap.entrySet().forEach(e -> compound.putString(e.getKey(), e.getValue().toString()));
-        
-        return compound;
-    }
-    
-    public Identifier getBiomeFromLookup(double temp, double humid, BetaBiomeType type) {
-        int i = (int) (temp * 63D);
-        int j = (int) (humid * 63D);
+    public Identifier getBiome(double temp, double rain, BetaClimateType type) {
+        int t = (int) (temp * 63D);
+        int r = (int) (rain * 63D);
         
         Identifier biomeId;
 
         switch(type) {
-            case OCEAN:
-                biomeId = OCEAN_BIOME_TABLE[i + j * 64];
-                break;
-            default:
-                biomeId = LAND_BIOME_TABLE[i + j * 64];
+            case OCEAN -> biomeId = this.oceanBiomeTable[t + r * 64];
+            default -> biomeId = this.landBiomeTable[t + r * 64];
         }
 
         return biomeId;
@@ -80,22 +69,22 @@ public class BetaClimateMapCustomizable {
     }
     
     private void generateBiomeLookup() {
-        for (int i = 0; i < 64; i++) {
-            for (int j = 0; j < 64; j++) {
-                LAND_BIOME_TABLE[i + j * 64] = getBiome((float) i / 63F, (float) j / 63F);
-                OCEAN_BIOME_TABLE[i + j * 64] = getOceanBiome((float) i / 63F, (float) j / 63F);
+        for (int t = 0; t < 64; t++) {
+            for (int r = 0; r < 64; r++) {
+                this.landBiomeTable[t + r * 64] = getBiome((float) t / 63F, (float) r / 63F);
+                this.oceanBiomeTable[t + r * 64] = getOceanBiome((float) t / 63F, (float) r / 63F);
             }
         }
     }
     
-    private Identifier getBiome(float temp, float humid) {
-        humid *= temp;
+    private Identifier getBiome(float temp, float rain) {
+        rain *= temp;
 
         if (temp < 0.1F) {
             return biomeMap.get("ice_desert");
         }
 
-        if (humid < 0.2F) {
+        if (rain < 0.2F) {
             if (temp < 0.5F) {
                 return biomeMap.get("tundra");
             }
@@ -106,7 +95,7 @@ public class BetaClimateMapCustomizable {
             }
         }
 
-        if (humid > 0.5F && temp < 0.7F) {
+        if (rain > 0.5F && temp < 0.7F) {
             return biomeMap.get("swampland");
         }
 
@@ -115,18 +104,18 @@ public class BetaClimateMapCustomizable {
         }
 
         if (temp < 0.97F) {
-            if (humid < 0.35F) {
+            if (rain < 0.35F) {
                 return biomeMap.get("shrubland");
             } else {
                 return biomeMap.get("forest");
             }
         }
 
-        if (humid < 0.45F) {
+        if (rain < 0.45F) {
             return biomeMap.get("plains");
         }
 
-        if (humid < 0.9F) {
+        if (rain < 0.9F) {
             return biomeMap.get("seasonal_forest");
         } else {
             return biomeMap.get("rainforest");
@@ -134,14 +123,14 @@ public class BetaClimateMapCustomizable {
 
     }
 
-    private Identifier getOceanBiome(float temp, float humid) {
-        humid *= temp;
+    private Identifier getOceanBiome(float temp, float rain) {
+        rain *= temp;
 
         if (temp < 0.1F) {
             return biomeMap.get("frozen_ocean");
         }
 
-        if (humid < 0.2F) {
+        if (rain < 0.2F) {
             if (temp < 0.5F) {
                 return biomeMap.get("frozen_ocean");
             }
@@ -152,7 +141,7 @@ public class BetaClimateMapCustomizable {
             }
         }
 
-        if (humid > 0.5F && temp < 0.7F) {
+        if (rain > 0.5F && temp < 0.7F) {
             return biomeMap.get("cold_ocean");
         }
 
@@ -161,18 +150,18 @@ public class BetaClimateMapCustomizable {
         }
 
         if (temp < 0.97F) {
-            if (humid < 0.35F) {
+            if (rain < 0.35F) {
                 return biomeMap.get("ocean");
             } else {
                 return biomeMap.get("ocean");
             }
         }
 
-        if (humid < 0.45F) {
+        if (rain < 0.45F) {
             return biomeMap.get("ocean");
         }
 
-        if (humid < 0.9F) {
+        if (rain < 0.9F) {
             return biomeMap.get("lukewarm_ocean");
         } else {
             return biomeMap.get("warm_ocean");
@@ -181,7 +170,10 @@ public class BetaClimateMapCustomizable {
     }
     
     private Identifier loadBiomeId(String key, Identifier defaultId) {
-        Identifier biomeId = (this.biomeProviderSettings.contains(key)) ? new Identifier(this.biomeProviderSettings.getString(key)) : defaultId;
+        Identifier biomeId = (this.biomeProviderSettings.contains(key)) ? 
+            new Identifier(this.biomeProviderSettings.getString(key)) : 
+            defaultId;
+        
         this.biomeMap.put(key, biomeId);
         
         return biomeId;

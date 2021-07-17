@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.util.chunk;
 
 /**
- * A simple container for an array to hold height values for entire chunk (256 blocks).
+ * A simple container for an array to hold height values for an entire chunk (256 blocks).
  */
 public class HeightmapChunk {
     private final int heightmap[];

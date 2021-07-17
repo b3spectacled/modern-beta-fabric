@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
-import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMapCustomizable;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.beta.BetaClimateMap.BetaBiomeType;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMapCustomizable;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateType;
 
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -32,7 +32,7 @@ public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeRes
         double temp = this.sampleTemp(absX, absZ);
         double rain = this.sampleRain(absX, absZ);
         
-        return biomeRegistry.get(betaClimateMap.getBiomeFromLookup(temp, rain, BetaBiomeType.LAND));
+        return biomeRegistry.get(betaClimateMap.getBiome(temp, rain, BetaClimateType.LAND));
     }
 
     @Override
@@ -40,7 +40,7 @@ public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeRes
         double temp = this.sampleTemp(x, z);
         double rain = this.sampleRain(x, z);
         
-        return biomeRegistry.get(betaClimateMap.getBiomeFromLookup(temp, rain, BetaBiomeType.LAND));
+        return biomeRegistry.get(betaClimateMap.getBiome(temp, rain, BetaClimateType.LAND));
     }
 
     @Override

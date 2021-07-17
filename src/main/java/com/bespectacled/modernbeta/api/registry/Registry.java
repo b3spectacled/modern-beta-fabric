@@ -16,14 +16,13 @@ public final class Registry<T> {
     private final String name;
     private final Map<String, T> map; // Use LinkedHashMap so entries are displayed in order if retrieved as list.
     
-    protected Registry() {
-        this.name = "";
-        this.map = new LinkedHashMap<String, T>();
-    }
-    
     protected Registry(String name) {
         this.name = name;
         this.map = new LinkedHashMap<String, T>();
+    }
+    
+    protected Registry() {
+        this("");
     }
     
     public void register(String key, T entry) {

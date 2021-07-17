@@ -63,11 +63,11 @@ public class ChunkCache<T> {
         T item;
         long stamp;
         
-        long hashedCoord = ChunkPos.toLong(chunkX, chunkZ);
+        long key = ChunkPos.toLong(chunkX, chunkZ);
         
         stamp = this.lock.readLock();
         try {
-            item = this.chunkMap.get(hashedCoord);
+            item = this.chunkMap.get(key);
         } finally {
             this.lock.unlockRead(stamp);
         }
@@ -82,7 +82,7 @@ public class ChunkCache<T> {
                     this.chunkMap.removeFirst();
                 }
                 
-                this.chunkMap.put(hashedCoord, item);
+                this.chunkMap.put(key, item);
             } finally {
                 this.lock.unlockWrite(stamp);
             }

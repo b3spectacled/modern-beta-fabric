@@ -14,7 +14,7 @@ Classic old world generation with modern vanilla features and additions like the
 
 This project is licensed under MIT, after commit 55519d1.
 
-Commits up to and including 55519d1 are licensed under LGPLv3.
+This project is licensed under LGPLv3, up to and including commit 55519d1.
 
 ## Credits
 
