@@ -40,6 +40,7 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
@@ -70,7 +71,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings))
         .apply(instance, instance.stable(OldChunkGenerator::new)));
     
-    //private static final int OCEAN_Y_CUT_OFF = 40;
     private static final int OCEAN_MIN_DEPTH = 4;
     
     private final BiomeSource biomeSource;
@@ -368,11 +368,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     // Fill biome column
                     for (int biomeY = 0; biomeY < biomeHeight; ++biomeY) {
                         int absY = biomeY << 2;
-                        // int actualY = absY + this.getMinimumY();
                         
-                        // TODO: Remove true when cave biomes are in.
-                        // if (true || actualY >= OCEAN_Y_CUT_OFF)
-                        mutableBiomeArray.setBiome(absX, absY, absZ, oceanBiome, this.getMinimumY(), this.getWorldHeight());
+                        Biome biome = mutableBiomeArray.getBiome(absX, absY, absZ, this.getMinimumY(), this.getWorldHeight());
+                        
+                        // Do not replace if cave biome
+                        if (biome.getCategory() != Category.UNDERGROUND)
+                            mutableBiomeArray.setBiome(absX, absY, absZ, oceanBiome, this.getMinimumY(), this.getWorldHeight());
                     }
                 }
             }

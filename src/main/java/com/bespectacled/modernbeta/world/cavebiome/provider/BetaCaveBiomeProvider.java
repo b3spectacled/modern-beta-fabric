@@ -7,7 +7,7 @@ import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMapCustomizable;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMap;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateType;
 
 import net.minecraft.util.registry.Registry;
@@ -15,13 +15,13 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeResolver, BetaClimateResolver {
-    private final BetaClimateMapCustomizable betaClimateMap;
+    private final BetaClimateMap betaClimateMap;
     
     public BetaCaveBiomeProvider(OldBiomeSource biomeSource) {
         super(biomeSource);
         
         this.setSeed(this.seed);
-        this.betaClimateMap = new BetaClimateMapCustomizable(settings);
+        this.betaClimateMap = new BetaClimateMap(settings);
     }
 
     @Override

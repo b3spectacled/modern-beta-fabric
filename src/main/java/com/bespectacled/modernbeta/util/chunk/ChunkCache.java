@@ -18,6 +18,7 @@ public class ChunkCache<T> {
     private final String name;
     private final int capacity;
     private final boolean evictOldChunks;
+    
     private final BiFunction<Integer, Integer, T> chunkFunc;
     private final Long2ObjectLinkedOpenHashMap<T> chunkMap;
     
@@ -60,29 +61,29 @@ public class ChunkCache<T> {
     }
     
     public T get(int chunkX, int chunkZ) {
-        T item;
+        T chunk;
         long stamp;
         
         long key = ChunkPos.toLong(chunkX, chunkZ);
         
         stamp = this.lock.readLock();
         try {
-            item = this.chunkMap.get(key);
+            chunk = this.chunkMap.get(key);
         } finally {
             this.lock.unlockRead(stamp);
         }
         
-        if (item == null) { 
+        if (chunk == null) { 
             stamp = this.lock.writeLock();
             try {
-                item = this.chunkFunc.apply(chunkX, chunkZ);
+                chunk = this.chunkFunc.apply(chunkX, chunkZ);
                 
                 // Ensure cache size remains below capacity
                 if (this.evictOldChunks && this.chunkMap.size() >= this.capacity) {
                     this.chunkMap.removeFirst();
                 }
                 
-                this.chunkMap.put(key, item);
+                this.chunkMap.put(key, chunk);
             } finally {
                 this.lock.unlockWrite(stamp);
             }
@@ -97,6 +98,6 @@ public class ChunkCache<T> {
             ModernBeta.log(Level.INFO, String.format("Cache '%s' hit/miss rate: %.2f", this.name, hitMissRate));
         }
         
-        return item;
+        return chunk;
     }
 }

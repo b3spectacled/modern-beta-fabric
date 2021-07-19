@@ -56,7 +56,7 @@ public abstract class WorldScreen extends GUIScreen {
             ScreenTexts.DONE, 
             buttonWidget -> {
                 this.consumer.accept(this.worldSettings);
-                this.client.openScreen(this.parent);
+                this.client.setScreen(this.parent);
             }
         );
         
@@ -64,7 +64,7 @@ public abstract class WorldScreen extends GUIScreen {
             this.width / 2 + 5, this.height - 28, 150, 20, 
             ScreenTexts.CANCEL,
             buttonWidget -> {
-                this.client.openScreen(this.parent);
+                this.client.setScreen(this.parent);
             }
         );
         
@@ -84,7 +84,7 @@ public abstract class WorldScreen extends GUIScreen {
                 this.worldSettings.putChanges(WorldSetting.BIOME, Registries.BIOME_SETTINGS.get(value.getBiomeProvider()).get());
                 
                 // Create new world screen
-                this.client.openScreen(
+                this.client.setScreen(
                     value.createWorldScreen(
                         (CreateWorldScreen)this.parent,
                         this.worldSettings,
@@ -118,7 +118,7 @@ public abstract class WorldScreen extends GUIScreen {
                 GuiUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.SINGLE_BIOME))) : 
                 "",
             biomeSettingsScreen != null ? 
-                widget -> this.client.openScreen(biomeSettingsScreen) : 
+                widget -> this.client.setScreen(biomeSettingsScreen) : 
                 null
         );
         
@@ -168,7 +168,7 @@ public abstract class WorldScreen extends GUIScreen {
     }
     
     protected void resetWorldScreen() {
-        this.client.openScreen(
+        this.client.setScreen(
             this.worldProvider.createWorldScreen(
                 (CreateWorldScreen)this.parent,
                 this.worldSettings,

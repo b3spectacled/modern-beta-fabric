@@ -43,7 +43,7 @@ public abstract class BiomeScreen extends GUIScreen {
             ScreenTexts.DONE, 
             buttonWidget -> {
                 this.consumer.accept(this.biomeSettings);
-                this.client.openScreen(this.parent);
+                this.client.setScreen(this.parent);
             }
         );
         
@@ -51,7 +51,7 @@ public abstract class BiomeScreen extends GUIScreen {
             this.width / 2 + 5, this.height - 28, 150, 20, 
             ScreenTexts.CANCEL,
             buttonWidget -> {
-                this.client.openScreen(this.parent);
+                this.client.setScreen(this.parent);
             }
         );
         

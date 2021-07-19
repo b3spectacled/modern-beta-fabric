@@ -16,7 +16,7 @@ public enum BetaClimateSampler {
     
     private SimplexOctaveNoise tempNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 9871L), 4);
     private SimplexOctaveNoise rainNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 39811L), 4);
-    private SimplexOctaveNoise noiseOctaves = new SimplexOctaveNoise(new Random(1 * 543321L), 2);
+    private SimplexOctaveNoise detailNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 543321L), 2);
     
     private long seed;
     
@@ -79,12 +79,12 @@ public enum BetaClimateSampler {
         return MathHelper.hsvToRgb(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F);
     }
     
-    private void sampleClimeAt(double arr[], int x, int z) {
-        double temp  = this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.25D);
-        double humid = this.rainNoiseOctaves.sample(x, z, 0.05000000074505806D, 0.05000000074505806D, 0.33333333333333331D);
-        double noise = this.noiseOctaves.sample(x, z, 0.25D, 0.25D, 0.58823529411764708D);
+    private void sampleClimateNoise(double arr[], int x, int z) {
+        double temp = this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.25D);
+        double rain = this.rainNoiseOctaves.sample(x, z, 0.05000000074505806D, 0.05000000074505806D, 0.33333333333333331D);
+        double detail = this.detailNoiseOctaves.sample(x, z, 0.25D, 0.25D, 0.58823529411764708D);
 
-        double d = noise * 1.1000000000000001D + 0.5D;
+        double d = detail * 1.1000000000000001D + 0.5D;
         double d1 = 0.01D;
         double d2 = 1.0D - d1;
 
@@ -93,22 +93,22 @@ public enum BetaClimateSampler {
         d1 = 0.002D;
         d2 = 1.0D - d1;
 
-        humid = (humid * 0.14999999999999999D + 0.5D) * d2 + d * d1;
+        rain = (rain * 0.14999999999999999D + 0.5D) * d2 + d * d1;
 
         temp = 1.0D - (1.0D - temp) * (1.0D - temp);
 
         arr[0] = MathHelper.clamp(temp, 0.0, 1.0);
-        arr[1] = MathHelper.clamp(humid, 0.0, 1.0);
+        arr[1] = MathHelper.clamp(rain, 0.0, 1.0);
     }
     
-    private double sampleSkyTempAt(int x, int z) {
+    private double sampleSkyTempNoise(int x, int z) {
         return this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
     }
     
     private void initNoise(long seed) {
         this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
         this.rainNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
-        this.noiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
+        this.detailNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
     }
     
     private class ClimateChunk {
@@ -123,7 +123,7 @@ public enum BetaClimateSampler {
             int ndx = 0;
             for (int x = startX; x < startX + 16; ++x) {
                 for (int z = startZ; z < startZ + 16; ++z) {
-                    BetaClimateSampler.INSTANCE.sampleClimeAt(tempRain, x, z);
+                    BetaClimateSampler.INSTANCE.sampleClimateNoise(tempRain, x, z);
                     
                     this.temp[ndx] = tempRain[0];
                     this.rain[ndx] = tempRain[1];
@@ -165,7 +165,7 @@ public enum BetaClimateSampler {
             int ndx = 0;
             for (int x = startX; x < startX + 16; ++x) {
                 for (int z = startZ; z < startZ + 16; ++z) {    
-                    this.temp[ndx] = BetaClimateSampler.INSTANCE.sampleSkyTempAt(x, z);
+                    this.temp[ndx] = BetaClimateSampler.INSTANCE.sampleSkyTempNoise(x, z);
                     
                     ndx++;
                 }

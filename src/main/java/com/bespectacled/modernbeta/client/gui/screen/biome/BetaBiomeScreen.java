@@ -12,7 +12,7 @@ import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.util.GuiUtil;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMapCustomizable;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMap;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.NbtString;
@@ -28,7 +28,7 @@ public class BetaBiomeScreen extends BiomeScreen {
         super(parent, consumer);
         
         // Create Beta biome map from existing biome settings
-        this.biomeSettingsMap = new BetaClimateMapCustomizable(this.biomeSettings.getNbt()).getMap();
+        this.biomeSettingsMap = new BetaClimateMap(this.biomeSettings.getNbt()).getMap();
     }
     
     public static BetaBiomeScreen create(WorldScreen worldScreen) {
@@ -53,7 +53,7 @@ public class BetaBiomeScreen extends BiomeScreen {
         ActionOptionWrapper singleBiomeScreen = new ActionOptionWrapper(
             GuiUtil.createTranslatableBiomeStringFromId(this.biomeSettingsMap.get(key)), 
             "",
-            buttonWidget -> this.client.openScreen(new CustomizeBuffetLevelScreen(
+            buttonWidget -> this.client.setScreen(new CustomizeBuffetLevelScreen(
                 this,
                 this.registryManager,
                 biome -> {
