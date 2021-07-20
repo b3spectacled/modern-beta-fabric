@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMap;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateResolver;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateType;
 
 import net.minecraft.nbt.NbtCompound;

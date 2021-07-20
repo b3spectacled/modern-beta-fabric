@@ -8,7 +8,7 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import net.minecraft.nbt.NbtCompound;
 
 public class ChunkProviderSettings {
-    protected static final ModernBetaGenerationConfig CONFIG = ModernBeta.BETA_CONFIG.generation_config;
+    protected static final ModernBetaGenerationConfig CONFIG = ModernBeta.GEN_CONFIG;
     
     public static NbtCompound createSettingsBase(String worldType) {
         NbtCompound settings = new NbtCompound();

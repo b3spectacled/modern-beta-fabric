@@ -7,13 +7,13 @@ public final class BlockColors {
     public static void register() {
         // Grass blocks
         ColorProviderRegistry.BLOCK.register(
-            (state, view, pos, tintNdx) -> BetaBlockColors.getInstance().getGrassColor(state, view, pos, tintNdx), 
+            (state, view, pos, tintNdx) -> BetaBlockColors.INSTANCE.getGrassColor(state, view, pos, tintNdx), 
             Blocks.GRASS_BLOCK
         );
         
         // Tall grass blocks
         ColorProviderRegistry.BLOCK.register(
-            (state, view, pos, tintNdx) -> BetaBlockColors.getInstance().getTallGrassColor(state, view, pos, tintNdx), 
+            (state, view, pos, tintNdx) -> BetaBlockColors.INSTANCE.getTallGrassColor(state, view, pos, tintNdx), 
             Blocks.FERN,
             Blocks.GRASS,
             Blocks.POTTED_FERN
@@ -21,7 +21,7 @@ public final class BlockColors {
         
         // Foliage blocks
         ColorProviderRegistry.BLOCK.register(
-            (state, view, pos, tintNdx) -> BetaBlockColors.getInstance().getFoliageColor(state, view, pos, tintNdx),
+            (state, view, pos, tintNdx) -> BetaBlockColors.INSTANCE.getFoliageColor(state, view, pos, tintNdx),
             Blocks.OAK_LEAVES, 
             Blocks.JUNGLE_LEAVES, 
             Blocks.ACACIA_LEAVES, 
@@ -31,7 +31,7 @@ public final class BlockColors {
         
         // Reeds
         ColorProviderRegistry.BLOCK.register(
-            (state, view, pos, tintNdx) -> BetaBlockColors.getInstance().getReedColor(state, view, pos, tintNdx), 
+            (state, view, pos, tintNdx) -> BetaBlockColors.INSTANCE.getReedColor(state, view, pos, tintNdx), 
             Blocks.SUGAR_CANE
         );
     }

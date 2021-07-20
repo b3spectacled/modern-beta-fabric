@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.world.feature;
 
-import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
 import com.bespectacled.modernbeta.world.biome.*;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateResolver;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;

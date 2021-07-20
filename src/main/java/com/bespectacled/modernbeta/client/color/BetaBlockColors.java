@@ -3,7 +3,8 @@ package com.bespectacled.modernbeta.client.color;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateResolver;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.color.world.FoliageColors;
@@ -13,7 +14,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockRenderView;
 
 public final class BetaBlockColors implements BetaClimateResolver {
-    private static BetaBlockColors INSTANCE;
+    public static final BetaBlockColors INSTANCE = new BetaBlockColors();
     
     private final Supplier<Boolean> useBetaColorsConfigSupplier;
     private boolean useBetaColors;
@@ -21,13 +22,6 @@ public final class BetaBlockColors implements BetaClimateResolver {
     private BetaBlockColors() {
         this.useBetaColorsConfigSupplier = () -> ModernBeta.RENDER_CONFIG.renderBetaBiomeColor;
         this.useBetaColors = false;
-    }
-    
-    public static BetaBlockColors getInstance() {
-        if (INSTANCE == null)
-            INSTANCE = new BetaBlockColors();
-        
-        return INSTANCE;
     }
     
     public void setSeed(long seed, boolean useBetaColors) {

@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
@@ -13,8 +14,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.dimension.DimensionType;
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
+import com.bespectacled.modernbeta.client.color.BetaBlockColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateResolver;
+
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,15 +30,11 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Environment(EnvType.CLIENT)
 @Mixin(value = ClientWorld.class, priority = 1)
-public abstract class MixinClientWorld extends World implements BetaClimateResolver {
+public abstract class MixinClientWorld implements BetaClimateResolver {
     @Shadow private MinecraftClient client;
     
     @Unique private Vec3d curPos;
     @Unique private boolean useBetaBiomeColors;
-
-    private MixinClientWorld() {
-        super(null, null, null, null, false, false, 0L);
-    }
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(
@@ -53,7 +52,7 @@ public abstract class MixinClientWorld extends World implements BetaClimateResol
         long worldSeed = ModernBeta.RENDER_CONFIG.fixedSeed;
         boolean useBetaBiomeColors = ModernBeta.RENDER_CONFIG.useFixedSeed;
         
-        if (this.isClient && this.client.getServer() != null && worldKey != null) { // Server check
+        if (this.client.getServer() != null && worldKey != null) { // Server check
            BiomeSource biomeSource = this.client.getServer().getWorld(worldKey).getChunkManager().getChunkGenerator().getBiomeSource();
 
            worldSeed = this.client.getServer().getWorld(worldKey).getSeed();
@@ -63,7 +62,8 @@ public abstract class MixinClientWorld extends World implements BetaClimateResol
                !ModernBeta.RENDER_CONFIG.useFixedSeed;
         }
         
-        ModernBeta.setBlockColorsSeed(worldSeed, useBetaBiomeColors);
+        // Set Beta block colors seed.
+        BetaBlockColors.INSTANCE.setSeed(worldSeed, useBetaBiomeColors);
         
         this.useBetaBiomeColors = useBetaBiomeColors;
     }
@@ -87,10 +87,20 @@ public abstract class MixinClientWorld extends World implements BetaClimateResol
             int x = (int)curPos.getX();
             int z = (int)curPos.getZ();
             
-            skyColorVec = Vec3d.unpackRgb(this.sampleSkyColor(x, z));
+            skyColorVec = Vec3d.unpackRgb(this.sampleBetaSkyColor(x, z));
         }
         
         return skyColorVec;
+    }
+    
+    @Unique
+    private int sampleBetaSkyColor(int x, int z) {
+        float temp = (float)this.sampleSkyTemp(x, z);
+        
+        temp /= 3F;
+        temp = MathHelper.clamp(temp, -1F, 1F);
+        
+        return MathHelper.hsvToRgb(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F);
     }
 }
 

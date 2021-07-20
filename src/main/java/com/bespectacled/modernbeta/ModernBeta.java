@@ -22,28 +22,25 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 
-import com.bespectacled.modernbeta.client.color.BetaBlockColors;
 import com.bespectacled.modernbeta.client.color.BlockColors;
 import com.bespectacled.modernbeta.command.DebugProviderSettingsCommand;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.config.*;
+
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
     public static final String MOD_NAME = "Modern Beta";
     
-    public static final ModernBetaConfig BETA_CONFIG = AutoConfig.register(ModernBetaConfig.class, PartitioningSerializer.wrap(GsonConfigSerializer::new)).getConfig();
-    public static final ModernBetaGenerationConfig GEN_CONFIG = BETA_CONFIG.generation_config;
-    public static final ModernBetaBiomeConfig BIOME_CONFIG = BETA_CONFIG.biome_config;
-    public static final ModernBetaRenderingConfig RENDER_CONFIG = BETA_CONFIG.rendering_config;
+    public static final ModernBetaConfig CONFIG = AutoConfig.register(
+        ModernBetaConfig.class, 
+        PartitioningSerializer.wrap(GsonConfigSerializer::new)
+    ).getConfig();
+    
+    public static final ModernBetaGenerationConfig GEN_CONFIG = CONFIG.generation_config;
+    public static final ModernBetaBiomeConfig BIOME_CONFIG = CONFIG.biome_config;
+    public static final ModernBetaRenderingConfig RENDER_CONFIG = CONFIG.rendering_config;
 
     private static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-    
-    // Ehh...
-    public static void setBlockColorsSeed(long seed, boolean useBetaColors) {
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            BetaBlockColors.getInstance().setSeed(seed, useBetaColors);
-        }
-    }
     
     public static Identifier createId(String name) {
         return new Identifier(MOD_ID, name);
@@ -78,6 +75,7 @@ public class ModernBeta implements ModInitializer {
         ModernBetaBuiltInProviders.registerCaveBiomeProvider();
         ModernBetaBuiltInProviders.registerWorldProviders();
         
+        // Register client-only stuff, i.e. GUI, block colors, etc.
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             OldGeneratorType.register();
             
@@ -89,8 +87,8 @@ public class ModernBeta implements ModInitializer {
             BlockColors.register();
         }
         
+        // Register dev-only stuff, i.e. commands, etc.
         if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            // Register provider settings debug command
             DebugProviderSettingsCommand.register();
         }
         

@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api.world.biome;
+package com.bespectacled.modernbeta.world.biome.beta.climate;
 
 import java.util.Random;
 import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
@@ -9,18 +9,23 @@ import net.minecraft.util.math.MathHelper;
 public enum BetaClimateSampler {
     INSTANCE;
     
-    public record Clime(double temp, double rain) {}
+    private final ChunkCache<ClimateChunk> climateCache;
+    private final ChunkCache<SkyChunk> skyCache;
     
-    private final ChunkCache<ClimateChunk> climateCache = new ChunkCache<>("climate", 1536, false, ClimateChunk::new);
-    private final ChunkCache<SkyChunk> skyCache = new ChunkCache<>("sky", 256, true, SkyChunk::new);
-    
-    private SimplexOctaveNoise tempNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 9871L), 4);
-    private SimplexOctaveNoise rainNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 39811L), 4);
-    private SimplexOctaveNoise detailNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 543321L), 2);
+    private SimplexOctaveNoise tempNoiseOctaves;
+    private SimplexOctaveNoise rainNoiseOctaves;
+    private SimplexOctaveNoise detailNoiseOctaves;
     
     private long seed;
     
-    private BetaClimateSampler() {}
+    private BetaClimateSampler() {
+        this.climateCache = new ChunkCache<>("climate", 1536, true, ClimateChunk::new);
+        this.skyCache = new ChunkCache<>("sky", 256, true, SkyChunk::new);
+        
+        this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 9871L), 4);
+        this.rainNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 39811L), 4);
+        this.detailNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 543321L), 2);
+    }
     
     protected void setSeed(long seed) {
         if (this.seed == seed) return;
@@ -56,27 +61,11 @@ public enum BetaClimateSampler {
         this.climateCache.get(chunkX, chunkZ).sampleClime(arr, x, z);
     }
     
-    protected Clime sampleClime(int x, int z) {
-        int chunkX = x >> 4;
-        int chunkZ = z >> 4;
-        
-        return this.climateCache.get(chunkX, chunkZ).sampleClime(x, z);
-    }
-    
     protected double sampleSkyTemp(int x, int z) {
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         
         return this.skyCache.get(chunkX, chunkZ).sampleTemp(x, z);
-    }
-    
-    protected int sampleSkyColor(int x, int z) {
-        float temp = (float)sampleSkyTemp(x, z);
-        
-        temp /= 3F;
-        temp = MathHelper.clamp(temp, -1F, 1F);
-        
-        return MathHelper.hsvToRgb(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F);
     }
     
     private void sampleClimateNoise(double arr[], int x, int z) {
@@ -146,12 +135,6 @@ public enum BetaClimateSampler {
             
             tempRain[0] = temp[ndx];
             tempRain[1] = rain[ndx];
-        }
-        
-        private Clime sampleClime(int x, int z) {
-            int ndx = (z & 0xF) + (x & 0xF) * 16;
-            
-            return new Clime(temp[ndx], rain[ndx]);
         }
     }
     

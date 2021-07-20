@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.config.ModernBetaConfig;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,7 +19,6 @@ import net.minecraft.util.math.MathHelper;
 @Environment(EnvType.CLIENT)
 @Mixin(BackgroundRenderer.class)
 public class MixinBackgroundRenderer {
-    @Unique private static ModernBetaConfig BETA_CONFIG = ModernBeta.BETA_CONFIG;
     @Unique private static int capturedRenderDistance = 16;
     @Unique private static float oldFogWeight = calculateFogWeight(16);
     
@@ -29,7 +27,7 @@ public class MixinBackgroundRenderer {
         at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/SkyProperties;getFogColorOverride(FF)[F")
     )
     private static float[] modifyFogSunsetCols(float[] skyCols) {
-        return BETA_CONFIG.rendering_config.renderAlphaSunset ? null : skyCols;
+        return ModernBeta.RENDER_CONFIG.renderAlphaSunset ? null : skyCols;
     }
     
     @Inject(method = "render", at = @At("HEAD"))
@@ -46,7 +44,7 @@ public class MixinBackgroundRenderer {
         index = 7
     )
     private static float modifyFogWeighting(float weight) {
-        if (BETA_CONFIG.rendering_config.renderOldFogColor) {
+        if (ModernBeta.RENDER_CONFIG.renderOldFogColor) {
             weight = oldFogWeight;
         }
         
