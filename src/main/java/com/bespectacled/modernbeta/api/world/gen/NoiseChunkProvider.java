@@ -246,13 +246,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         
-        int groundHeight = this.heightmapChunkCache.get(chunkX, chunkZ).getHeight(x, z);
-        
-        // Not ideal
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
-            groundHeight = this.seaLevel;
-
-        return groundHeight;
+        return this.heightmapChunkCache.get(chunkX, chunkZ).getHeight(x, z, type);
     }
     
     /**
@@ -312,8 +306,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int startX = chunkPos.getStartX();
         int startZ = chunkPos.getStartZ();
         
-        Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
-        Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
+        Heightmap heightmapOcean = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
+        Heightmap heightmapSurface = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
         int minY = Math.max(this.minY, chunk.getBottomY());
         int topY = Math.min(this.minY + this.worldHeight, chunk.getTopY());
@@ -396,8 +390,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 
                                 chunk.setBlockState(mutable.set(relX, y, relZ), blockToSet, false);
                                 
-                                heightmapOCEAN.trackUpdate(relX, y, relZ, blockToSet);
-                                heightmapSURFACE.trackUpdate(relX, y, relZ, blockToSet);
+                                heightmapOcean.trackUpdate(relX, y, relZ, blockToSet);
+                                heightmapSurface.trackUpdate(relX, y, relZ, blockToSet);
                                 this.scheduleFluidTick(chunk, aquiferSampler, mutable.set(x, y, z), blockToSet);
                             }
                         }
@@ -421,12 +415,16 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected HeightmapChunk sampleHeightmap(int chunkX, int chunkZ) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
+        int minHeight = 16;
         
         double[] noise = this.noiseChunkCache.get(chunkX, chunkZ);
         
-        int[] heightmap = new int[256];
-        IntStream.range(0, heightmap.length).forEach(i -> heightmap[i] = 16);
+        int[] heightmapSurface = new int[256];
+        IntStream.range(0, heightmapSurface.length).forEach(i -> heightmapSurface[i] = minHeight);
 
+        int[] heightmapOcean = new int[256];
+        IntStream.range(0, heightmapOcean.length).forEach(i -> heightmapOcean[i] = minHeight);
+        
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++subChunkZ) {
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
@@ -466,8 +464,12 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 
                                 double density = MathHelper.lerp(deltaZ, n, s);
                                 
+                                if (y < this.seaLevel || density > 0.0) {
+                                    heightmapOcean[z + x * 16] = y + 1;
+                                }
+                                
                                 if (density > 0.0) {
-                                    heightmap[z + x * 16] = y + 1;
+                                    heightmapSurface[z + x * 16] = y + 1;
                                 }
                             }
                         }
@@ -477,7 +479,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         }
         
         // Construct new heightmap cache from generated heightmap array
-        return new HeightmapChunk(heightmap);
+        return new HeightmapChunk(heightmapSurface, heightmapOcean);
     }
     
     /**
