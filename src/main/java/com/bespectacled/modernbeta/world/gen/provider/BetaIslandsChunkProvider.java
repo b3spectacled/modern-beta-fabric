@@ -206,145 +206,6 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         this.surfaceNoisePool.returnObj(surfaceNoise);
     }
 
-    @Override
-    protected void generateScaleDepth(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ, double[] scaleDepth) {
-        int horizNoiseResolution = 16 / (this.noiseSizeX + 1);
-        int x = (startNoiseX / this.noiseSizeX * 16) + curNoiseX * horizNoiseResolution + horizNoiseResolution / 2;
-        int z = (startNoiseZ / this.noiseSizeZ * 16) + curNoiseZ * horizNoiseResolution + horizNoiseResolution / 2;
-        
-        int noiseX = startNoiseX + curNoiseX;
-        int noiseZ = startNoiseZ + curNoiseZ;
-        
-        double depthNoiseScaleX = 200D;
-        double depthNoiseScaleZ = 200D;
-        
-        //double baseSize = noiseResolutionY / 2D; // Or: 17 / 2D = 8.5
-        double baseSize = 8.5D;
-        
-        double temp = this.sampleTemp(x, z);
-        double rain = this.sampleRain(x, z) * temp;
-        
-        rain = 1.0D - rain;
-        rain *= rain;
-        rain *= rain;
-        rain = 1.0D - rain;
-
-        double scale = this.scaleNoiseOctaves.sample(noiseX, noiseZ, 1.121D, 1.121D);
-        scale = (scale + 256D) / 512D;
-        scale *= rain;
-        
-        if (scale > 1.0D) {
-            scale = 1.0D;
-        }
-        
-        double depth0 = this.depthNoiseOctaves.sample(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
-        depth0 /= 8000D;
-
-        if (depth0 < 0.0D) {
-            depth0 = -depth0 * 0.29999999999999999D;
-        }
-
-        depth0 = depth0 * 3D - 2D;
-
-        if (depth0 < 0.0D) {
-            depth0 /= 2D;
-
-            if (depth0 < -1D) {
-                depth0 = -1D;
-            }
-
-            depth0 /= 1.3999999999999999D;
-            depth0 /= 2D;
-
-            scale = 0.0D;
-
-        } else {
-            if (depth0 > 1.0D) {
-                depth0 = 1.0D;
-            }
-            depth0 /= 8D;
-        }
-
-        if (scale < 0.0D) {
-            scale = 0.0D;
-        }
-
-        scale += 0.5D;
-        //depthVal = (depthVal * (double) noiseResolutionY) / 16D;
-        //double depthVal2 = (double) noiseResolutionY / 2D + depthVal * 4D;
-        depth0 = depth0 * baseSize / 8D;
-        double depth1 = baseSize + depth0 * 4D;
-        
-        scaleDepth[0] = scale;
-        scaleDepth[1] = depth1;
-        scaleDepth[2] = this.generateIslandOffset(startNoiseX, startNoiseZ, curNoiseX, curNoiseZ);
-    }
-    
-    
-    @Override
-    protected double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth) {
-        double scale = scaleDepth[0];
-        double depth = scaleDepth[1];
-        double islandOffset = scaleDepth[2];
-        
-        // Var names taken from old customized preset names
-        double coordinateScale = 684.41200000000003D * this.xzScale; 
-        double heightScale = 684.41200000000003D * this.yScale;
-        
-        double mainNoiseScaleX = this.xzFactor; // Default: 80
-        double mainNoiseScaleY = this.yFactor;  // Default: 160
-        double mainNoiseScaleZ = this.xzFactor;
-
-        double lowerLimitScale = 512D;
-        double upperLimitScale = 512D;
-        
-        double heightStretch = 12D;
-        
-        double density = 0.0D;
-        double densityOffset = (((double)noiseY - depth) * heightStretch) / scale;
-        
-        if (densityOffset < 0.0D) {
-            densityOffset *= 4D;
-        }
-        
-        // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
-        double mainNoise = (this.mainNoiseOctaves.sample(
-            noiseX, noiseY, noiseZ, 
-            coordinateScale / mainNoiseScaleX, 
-            heightScale / mainNoiseScaleY, 
-            coordinateScale / mainNoiseScaleZ
-        ) / 10D + 1.0D) / 2D;
-        
-        if (mainNoise < 0.0D) {
-            density = this.minLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
-        } else if (mainNoise > 1.0D) {
-            density = this.maxLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
-        } else {
-            double minLimitNoise = this.minLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
-            double maxLimitNoise = this.maxLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
-            density = minLimitNoise + (maxLimitNoise - minLimitNoise) * mainNoise;
-        }
-        
-        // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
-        double densityWithOffset = density - densityOffset;
-        
-        // Add island offset
-        densityWithOffset += islandOffset;
-        
-        // Sample for noise caves
-        densityWithOffset = this.sampleNoiseCave(
-            densityWithOffset, 
-            noiseX * this.horizontalNoiseResolution, 
-            noiseY * this.verticalNoiseResolution,
-            noiseZ * this.horizontalNoiseResolution
-        );
-        
-        densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
-        densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);
-        
-        return densityWithOffset;
-    }
-
     private double generateIslandOffset(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ) {
         float noiseX = curNoiseX + startNoiseX;
         float noiseZ = curNoiseZ + startNoiseZ;
@@ -383,5 +244,140 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         }
         
         return islandOffset;
+    }
+
+    @Override
+    protected void generateNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
+        int horizNoiseResolution = 16 / (this.noiseSizeX + 1);
+        int x = (startNoiseX / this.noiseSizeX * 16) + localNoiseX * horizNoiseResolution + horizNoiseResolution / 2;
+        int z = (startNoiseZ / this.noiseSizeZ * 16) + localNoiseZ * horizNoiseResolution + horizNoiseResolution / 2;
+        
+        int noiseX = startNoiseX + localNoiseX;
+        int noiseZ = startNoiseZ + localNoiseZ;
+        
+        double depthNoiseScaleX = 200D;
+        double depthNoiseScaleZ = 200D;
+        
+        //double baseSize = noiseResolutionY / 2D; // Or: 17 / 2D = 8.5
+        double baseSize = 8.5D;
+        
+        double temp = this.sampleTemp(x, z);
+        double rain = this.sampleRain(x, z) * temp;
+        
+        rain = 1.0D - rain;
+        rain *= rain;
+        rain *= rain;
+        rain = 1.0D - rain;
+
+        double scaleNoise = this.scaleNoiseOctaves.sample(noiseX, noiseZ, 1.121D, 1.121D);
+        scaleNoise = (scaleNoise + 256D) / 512D;
+        scaleNoise *= rain;
+        
+        if (scaleNoise > 1.0D) {
+            scaleNoise = 1.0D;
+        }
+        
+        double depthNoise = this.depthNoiseOctaves.sample(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
+        depthNoise /= 8000D;
+
+        if (depthNoise < 0.0D) {
+            depthNoise = -depthNoise * 0.29999999999999999D;
+        }
+
+        depthNoise = depthNoise * 3D - 2D;
+
+        if (depthNoise < 0.0D) {
+            depthNoise /= 2D;
+
+            if (depthNoise < -1D) {
+                depthNoise = -1D;
+            }
+
+            depthNoise /= 1.3999999999999999D;
+            depthNoise /= 2D;
+
+            scaleNoise = 0.0D;
+
+        } else {
+            if (depthNoise > 1.0D) {
+                depthNoise = 1.0D;
+            }
+            depthNoise /= 8D;
+        }
+
+        if (scaleNoise < 0.0D) {
+            scaleNoise = 0.0D;
+        }
+
+        scaleNoise += 0.5D;
+        //depthVal = (depthVal * (double) noiseResolutionY) / 16D;
+        //double depthVal2 = (double) noiseResolutionY / 2D + depthVal * 4D;
+        depthNoise = depthNoise * baseSize / 8D;
+        depthNoise = baseSize + depthNoise * 4D;
+        
+        double scale = scaleNoise;
+        double depth = depthNoise;
+        double islandOffset = this.generateIslandOffset(startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
+        
+        for (int y = 0; y < buffer.length; ++y) {
+            int noiseY = y + this.noiseMinY;
+            
+            // Var names taken from old customized preset names
+            double coordinateScale = 684.41200000000003D * this.xzScale; 
+            double heightScale = 684.41200000000003D * this.yScale;
+            
+            double mainNoiseScaleX = this.xzFactor; // Default: 80
+            double mainNoiseScaleY = this.yFactor;  // Default: 160
+            double mainNoiseScaleZ = this.xzFactor;
+
+            double lowerLimitScale = 512D;
+            double upperLimitScale = 512D;
+            
+            double heightStretch = 12D;
+            
+            double density = 0.0D;
+            double densityOffset = (((double)noiseY - depth) * heightStretch) / scale;
+            
+            if (densityOffset < 0.0D) {
+                densityOffset *= 4D;
+            }
+            
+            // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
+            double mainNoise = (this.mainNoiseOctaves.sample(
+                noiseX, noiseY, noiseZ, 
+                coordinateScale / mainNoiseScaleX, 
+                heightScale / mainNoiseScaleY, 
+                coordinateScale / mainNoiseScaleZ
+            ) / 10D + 1.0D) / 2D;
+            
+            if (mainNoise < 0.0D) {
+                density = this.minLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
+            } else if (mainNoise > 1.0D) {
+                density = this.maxLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
+            } else {
+                double minLimitNoise = this.minLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
+                double maxLimitNoise = this.maxLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
+                density = minLimitNoise + (maxLimitNoise - minLimitNoise) * mainNoise;
+            }
+            
+            // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
+            double densityWithOffset = density - densityOffset;
+            
+            // Add island offset
+            densityWithOffset += islandOffset;
+            
+            // Sample for noise caves
+            densityWithOffset = this.sampleNoiseCave(
+                densityWithOffset, 
+                noiseX * this.horizontalNoiseResolution, 
+                noiseY * this.verticalNoiseResolution,
+                noiseZ * this.horizontalNoiseResolution
+            );
+            
+            densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
+            densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);
+            
+            buffer[y] = densityWithOffset;
+        }
     }
 }

@@ -161,68 +161,72 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
     }
     
     @Override
-    protected void generateScaleDepth(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ, double[] scaleDepth) {}
-
-    @Override
-    protected double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth) {
-        // Check if y (in scaled space) is below sealevel
-        // and increase density accordingly.
-        //double elevGrad = y * 4.0 - 64.0;
-        double densityOffset = noiseY * this.verticalNoiseResolution - (double)this.seaLevel;
-        if (densityOffset < 0.0) {
-            densityOffset *= 3.0;
-        }
+    protected void generateNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
+        int noiseX = startNoiseX + localNoiseX;
+        int noiseZ = startNoiseZ + localNoiseZ;
         
-        double coordinateScale = 684.412D * this.xzScale; 
-        double heightScale = 984.412D * this.yScale;
-        
-        double mainNoiseScaleX = this.xzFactor; // Default: 80
-        double mainNoiseScaleY = this.yFactor;  // Default: 400
-        double mainNoiseScaleZ = this.xzFactor;
-        
-        double limitScale = 512.0D;
-        
-        double density;
-        
-        // Default values: 8.55515, 1.71103, 8.55515
-        double mainNoiseVal = this.mainNoiseOctaves.sample(
-            noiseX * coordinateScale / mainNoiseScaleX, 
-            noiseY * coordinateScale / mainNoiseScaleY, 
-            noiseZ * coordinateScale / mainNoiseScaleZ) / 2.0;
-        
-        // Do not clamp noise if generating with noise caves!
-        if (mainNoiseVal < -1) {
-            density = this.minLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
-            if (!this.generateNoiseCaves) 
-                density = MathHelper.clamp(density, -10D, 10D);
+        for (int y = 0; y < buffer.length; ++y) {
+            int noiseY = y + this.noiseMinY;
             
-        } else if (mainNoiseVal > 1.0) {
-            density = this.maxLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
-            if (!this.generateNoiseCaves) 
-                density = MathHelper.clamp(density, -10D, 10D);
-            
-        } else {
-            double minLimitVal = this.minLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
-            double maxLimitVal = this.maxLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;     
-            if (!this.generateNoiseCaves) {
-                minLimitVal = MathHelper.clamp(minLimitVal, -10D, 10D);
-                maxLimitVal = MathHelper.clamp(maxLimitVal, -10D, 10D);
+            // Check if y (in scaled space) is below sealevel
+            // and increase density accordingly.
+            //double elevGrad = y * 4.0 - 64.0;
+            double densityOffset = noiseY * this.verticalNoiseResolution - (double)this.seaLevel;
+            if (densityOffset < 0.0) {
+                densityOffset *= 3.0;
             }
             
-            double mix = (mainNoiseVal + 1.0) / 2.0;
-            density = minLimitVal + (maxLimitVal - minLimitVal) * mix;
-        };
-        
-        // Sample for noise caves
-        density = this.sampleNoiseCave(
-            density,
-            noiseX * this.horizontalNoiseResolution,
-            noiseY * this.verticalNoiseResolution,
-            noiseZ * this.horizontalNoiseResolution
-        );
-        
-        density = this.applyBottomSlide(density, noiseY, -3);
-        
-        return density;
+            double coordinateScale = 684.412D * this.xzScale; 
+            double heightScale = 984.412D * this.yScale;
+            
+            double mainNoiseScaleX = this.xzFactor; // Default: 80
+            double mainNoiseScaleY = this.yFactor;  // Default: 400
+            double mainNoiseScaleZ = this.xzFactor;
+            
+            double limitScale = 512.0D;
+            
+            double density;
+            
+            // Default values: 8.55515, 1.71103, 8.55515
+            double mainNoiseVal = this.mainNoiseOctaves.sample(
+                noiseX * coordinateScale / mainNoiseScaleX, 
+                noiseY * coordinateScale / mainNoiseScaleY, 
+                noiseZ * coordinateScale / mainNoiseScaleZ) / 2.0;
+            
+            // Do not clamp noise if generating with noise caves!
+            if (mainNoiseVal < -1) {
+                density = this.minLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
+                if (!this.generateNoiseCaves) 
+                    density = MathHelper.clamp(density, -10D, 10D);
+                
+            } else if (mainNoiseVal > 1.0) {
+                density = this.maxLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
+                if (!this.generateNoiseCaves) 
+                    density = MathHelper.clamp(density, -10D, 10D);
+                
+            } else {
+                double minLimitVal = this.minLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
+                double maxLimitVal = this.maxLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;     
+                if (!this.generateNoiseCaves) {
+                    minLimitVal = MathHelper.clamp(minLimitVal, -10D, 10D);
+                    maxLimitVal = MathHelper.clamp(maxLimitVal, -10D, 10D);
+                }
+                
+                double mix = (mainNoiseVal + 1.0) / 2.0;
+                density = minLimitVal + (maxLimitVal - minLimitVal) * mix;
+            };
+            
+            // Sample for noise caves
+            density = this.sampleNoiseCave(
+                density,
+                noiseX * this.horizontalNoiseResolution,
+                noiseY * this.verticalNoiseResolution,
+                noiseZ * this.horizontalNoiseResolution
+            );
+            
+            density = this.applyBottomSlide(density, noiseY, -3);
+            
+            buffer[y] = density;
+        }
     }
 }

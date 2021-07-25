@@ -125,56 +125,60 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
     }
     
     @Override
-    protected void generateScaleDepth(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ, double[] scaleDepth) { }
+    protected void generateNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
+        int noiseX = startNoiseX + localNoiseX;
+        int noiseZ = startNoiseZ + localNoiseZ;
+        
+        for (int y = 0; y < buffer.length; ++y) {
+            int noiseY = y + this.noiseMinY;
+            
+            // Var names taken from old customized preset names
+            double coordinateScale = 684.41200000000003D * this.xzScale; 
+            double heightScale = 684.41200000000003D * this.yScale;
+            
+            double mainNoiseScaleX = this.xzFactor; // Default: 80
+            double mainNoiseScaleY = this.yFactor;  // Default: 160
+            double mainNoiseScaleZ = this.xzFactor;
 
-    @Override
-    protected double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth) {
-        // Var names taken from old customized preset names
-        double coordinateScale = 684.41200000000003D * this.xzScale; 
-        double heightScale = 684.41200000000003D * this.yScale;
-        
-        double mainNoiseScaleX = this.xzFactor; // Default: 80
-        double mainNoiseScaleY = this.yFactor;  // Default: 160
-        double mainNoiseScaleZ = this.xzFactor;
-
-        double lowerLimitScale = 512D;
-        double upperLimitScale = 512D;
-        
-        double density = 0.0D;
-        double densityOffset = 8D;
-        
-        // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
-        double mainNoise = (this.mainNoiseOctaves.sample(
-            noiseX, noiseY, noiseZ, 
-            coordinateScale / mainNoiseScaleX, 
-            heightScale / mainNoiseScaleY, 
-            coordinateScale / mainNoiseScaleZ
-        ) / 10D + 1.0D) / 2D;
-        
-        if (mainNoise < 0.0D) {
-            density = this.minLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
-        } else if (mainNoise > 1.0D) {
-            density = this.maxLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
-        } else {
-            double minLimitNoise = this.minLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
-            double maxLimitNoise = this.maxLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
-            density = minLimitNoise + (maxLimitNoise - minLimitNoise) * mainNoise;
+            double lowerLimitScale = 512D;
+            double upperLimitScale = 512D;
+            
+            double density = 0.0D;
+            double densityOffset = 8D;
+            
+            // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
+            double mainNoise = (this.mainNoiseOctaves.sample(
+                noiseX, noiseY, noiseZ, 
+                coordinateScale / mainNoiseScaleX, 
+                heightScale / mainNoiseScaleY, 
+                coordinateScale / mainNoiseScaleZ
+            ) / 10D + 1.0D) / 2D;
+            
+            if (mainNoise < 0.0D) {
+                density = this.minLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
+            } else if (mainNoise > 1.0D) {
+                density = this.maxLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
+            } else {
+                double minLimitNoise = this.minLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
+                double maxLimitNoise = this.maxLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
+                density = minLimitNoise + (maxLimitNoise - minLimitNoise) * mainNoise;
+            }
+            
+            // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
+            double densityWithOffset = density - densityOffset; 
+            
+            // Sample for noise caves
+            densityWithOffset = this.sampleNoiseCave(
+                densityWithOffset, 
+                noiseX * this.horizontalNoiseResolution, 
+                noiseY * this.verticalNoiseResolution,
+                noiseZ * this.horizontalNoiseResolution
+            );
+            
+            densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, this.noiseSizeY);
+            densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -8);
+            
+            buffer[y] = densityWithOffset;
         }
-        
-        // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
-        double densityWithOffset = density - densityOffset; 
-        
-        // Sample for noise caves
-        densityWithOffset = this.sampleNoiseCave(
-            densityWithOffset, 
-            noiseX * this.horizontalNoiseResolution, 
-            noiseY * this.verticalNoiseResolution,
-            noiseZ * this.horizontalNoiseResolution
-        );
-        
-        densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, this.noiseSizeY);
-        densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -8);
-        
-        return densityWithOffset;
     }
 }
