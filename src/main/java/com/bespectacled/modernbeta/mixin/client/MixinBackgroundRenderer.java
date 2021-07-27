@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.util.OldClientWorld;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -22,6 +23,8 @@ public class MixinBackgroundRenderer {
     @Unique private static int capturedRenderDistance = 16;
     @Unique private static float oldFogWeight = calculateFogWeight(16);
     
+    @Unique private static boolean isOldWorld = false;
+    
     @ModifyVariable(
         method = "render",
         at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/SkyProperties;getFogColorOverride(FF)[F")
@@ -35,20 +38,23 @@ public class MixinBackgroundRenderer {
         if (capturedRenderDistance != renderDistance) {
             capturedRenderDistance = renderDistance;
             oldFogWeight = calculateFogWeight(renderDistance);
-        }    
+        }
+        
+        // Track whether current client world is Modern Beta world,
+        // old fog weighting won't be used if not.
+        isOldWorld = world instanceof OldClientWorld oldClientWorld ? oldClientWorld.isOldWorld() : false;
     }
     
     @ModifyVariable(
         method = "render",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;method_23777(Lnet/minecraft/util/math/Vec3d;F)Lnet/minecraft/util/math/Vec3d;"),
+        at = @At(
+            value = "INVOKE", 
+            target = "Lnet/minecraft/client/world/ClientWorld;method_23777(Lnet/minecraft/util/math/Vec3d;F)Lnet/minecraft/util/math/Vec3d;"
+        ),
         index = 7
     )
     private static float modifyFogWeighting(float weight) {
-        if (ModernBeta.RENDER_CONFIG.renderOldFogColor) {
-            weight = oldFogWeight;
-        }
-        
-        return weight;
+        return isOldWorld && ModernBeta.RENDER_CONFIG.renderOldFogColor ? oldFogWeight : weight;
     }
     
     @Unique

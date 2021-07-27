@@ -33,8 +33,6 @@ public class FrozenOcean {
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
-        DefaultBiomeFeatures.addIcebergs(genSettings);
-        DefaultBiomeFeatures.addBlueIce(genSettings);
         DefaultBiomeFeatures.addOceanStructures(genSettings);
         DefaultBiomeFeatures.addDefaultLakes(genSettings);
         DefaultBiomeFeatures.addDungeons(genSettings);

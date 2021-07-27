@@ -6,7 +6,7 @@ import java.util.Random;
  * Used for additional reference: https://www.reddit.com/r/proceduralgeneration/comments/6eubj7/how_can_i_add_octaves_persistence_lacunarity/ 
  * 
  * */
-public class SimplexOctaveNoise extends Noise {
+public class SimplexOctaveNoise {
     private final SimplexNoise[] generators;
     private final int octaves;
     private final double scaleDivisor;

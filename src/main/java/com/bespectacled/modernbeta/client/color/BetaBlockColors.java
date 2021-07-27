@@ -16,17 +16,17 @@ import net.minecraft.world.BlockRenderView;
 public final class BetaBlockColors implements BetaClimateResolver {
     public static final BetaBlockColors INSTANCE = new BetaBlockColors();
     
-    private final Supplier<Boolean> useBetaColorsConfigSupplier;
-    private boolean useBetaColors;
+    private final Supplier<Boolean> renderBetaBiomeColor;
+    private boolean isBetaBiomeWorld;
     
     private BetaBlockColors() {
-        this.useBetaColorsConfigSupplier = () -> ModernBeta.RENDER_CONFIG.renderBetaBiomeColor;
-        this.useBetaColors = false;
+        this.renderBetaBiomeColor = () -> ModernBeta.RENDER_CONFIG.renderBetaBiomeColor;
+        this.isBetaBiomeWorld = false;
     }
     
-    public void setSeed(long seed, boolean useBetaColors) {
+    public void setSeed(long seed, boolean isBetaBiomeWorld) {
         this.setSeed(seed);
-        this.useBetaColors = useBetaColors;
+        this.isBetaBiomeWorld = isBetaBiomeWorld;
     }
     
     public int getGrassColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
@@ -34,7 +34,7 @@ public final class BetaBlockColors implements BetaClimateResolver {
             return 8174955; // Default tint, from wiki
         }
         
-        if (this.useBetaColors && this.useBetaColorsConfigSupplier.get()) {
+        if (this.isBetaBiomeWorld && this.renderBetaBiomeColor.get()) {
             int x = pos.getX();
             int z = pos.getZ();
 
@@ -52,7 +52,7 @@ public final class BetaBlockColors implements BetaClimateResolver {
             return 8174955; // Default tint, from wiki
         }
         
-        if (this.useBetaColors && this.useBetaColorsConfigSupplier.get()) {
+        if (this.isBetaBiomeWorld && this.renderBetaBiomeColor.get()) {
             int x = pos.getX();
             int y = pos.getY();
             int z = pos.getZ();
@@ -77,7 +77,7 @@ public final class BetaBlockColors implements BetaClimateResolver {
             return 4764952; // Default tint, from wiki
         }
         
-        if (this.useBetaColors && this.useBetaColorsConfigSupplier.get()) {
+        if (this.isBetaBiomeWorld && this.renderBetaBiomeColor.get()) {
             int x = pos.getX();
             int z = pos.getZ();
             
@@ -91,7 +91,7 @@ public final class BetaBlockColors implements BetaClimateResolver {
     }
     
     public int getReedColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
-        if (this.useBetaColors && this.useBetaColorsConfigSupplier.get()) {
+        if (this.isBetaBiomeWorld && this.renderBetaBiomeColor.get()) {
             return 0xFFFFFF;
         }
         

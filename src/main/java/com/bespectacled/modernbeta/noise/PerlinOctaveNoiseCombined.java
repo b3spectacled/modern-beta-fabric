@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.noise;
 
-public final class PerlinOctaveNoiseCombined extends Noise {
+public final class PerlinOctaveNoiseCombined {
     private PerlinOctaveNoise noiseGenerator0;
     private PerlinOctaveNoise noiseGenerator1;
     

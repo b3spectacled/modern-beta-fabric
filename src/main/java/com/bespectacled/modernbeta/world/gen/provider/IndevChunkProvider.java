@@ -286,6 +286,10 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         return this.levelTheme;
     }
     
+    public String getPhase() {
+        return this.phase;
+    }
+
     protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         if (this.blockArr == null)
             throw new IllegalStateException("[Modern Beta] Indev chunk provider is trying to set terrain before level has been generated!");
@@ -352,6 +356,18 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
     }
     
     
+    protected int sampleHeightmap(int sampleX, int sampleZ) {
+        for (int y = this.levelHeight - 1; y >= 0; --y) {
+            Block block = this.blockArr[sampleX][y][sampleZ];
+            
+            if (!block.equals(Blocks.AIR)) {
+                return y;
+            }
+        }
+        
+        return 0;
+    }
+
     private void pregenerateTerrainOrWait() {
         // Only one thread should enter pregeneration method,
         // others should funnel into awaiting for latch to count down.
@@ -455,18 +471,6 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                 heightmap[x + z * this.levelWidth] = (int)heightResult;
             }
         }
-    }
-    
-    protected int sampleHeightmap(int sampleX, int sampleZ) {
-        for (int y = this.levelHeight - 1; y >= 0; --y) {
-            Block block = this.blockArr[sampleX][y][sampleZ];
-            
-            if (!block.equals(Blocks.AIR)) {
-                return y;
-            }
-        }
-        
-        return 0;
     }
     
     private void erodeTerrain(int[] heightmap) {
@@ -818,9 +822,5 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         this.phase = phase;
 
         ModernBeta.log(Level.INFO, "[Indev] " + phase + "..");
-    }
-
-    public String getPhase() {
-        return this.phase;
     }
 }

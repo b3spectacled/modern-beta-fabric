@@ -4,7 +4,7 @@ import java.util.Random;
 
 import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
 
-public class PerlinOctaveNoise extends Noise {
+public class PerlinOctaveNoise {
     private final PerlinNoise generatorCollection[];
     private final int octaves;
     private final boolean maintainPrecision;
@@ -19,12 +19,6 @@ public class PerlinOctaveNoise extends Noise {
         }
     }
     
-    public final double testSample(double x, double z, double scaleX, double scaleZ) {
-        double frequency = 1.0;
-        
-        return this.generatorCollection[0].sample2D(x * scaleX * frequency, z * scaleZ * frequency, frequency);
-    }
-    
     /*
      * Beta 2D array noise sampler.
      */
@@ -35,13 +29,13 @@ public class PerlinOctaveNoise extends Noise {
         double scaleX, double scaleZ, 
         double unused
     ) {
-        return sampleArrBeta(arr, x, 10D, z, sizeX, 1, sizeZ, scaleX, 1.0D, scaleZ);
+        return sampleArrShelf(arr, x, 10D, z, sizeX, 1, sizeZ, scaleX, 1.0D, scaleZ);
     }
 
     /*
      * Beta 3D array noise sampler.
      */
-    public double[] sampleArrBeta(
+    public double[] sampleArrShelf(
         double arr[], 
         double x, double y, double z, 
         int sizeX, int sizeY, int sizeZ, 
@@ -56,7 +50,7 @@ public class PerlinOctaveNoise extends Noise {
 
         double frequency = 1.0;
         for (int i1 = 0; i1 < octaves; i1++) {
-            this.generatorCollection[i1].sampleArrBeta(
+            this.generatorCollection[i1].sampleArrShelf(
                 arr, 
                 x, y, z, 
                 sizeX, sizeY, sizeZ, 

@@ -13,10 +13,14 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.client.color.BetaBlockColors;
+import com.bespectacled.modernbeta.util.OldClientWorld;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateResolver;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import java.util.function.Supplier;
 
@@ -30,11 +34,22 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Environment(EnvType.CLIENT)
 @Mixin(value = ClientWorld.class, priority = 1)
-public abstract class MixinClientWorld implements BetaClimateResolver {
+public abstract class MixinClientWorld implements BetaClimateResolver, OldClientWorld {
     @Shadow private MinecraftClient client;
     
     @Unique private Vec3d curPos;
-    @Unique private boolean useBetaBiomeColors;
+    @Unique private boolean isBetaBiomeWorld;
+    @Unique private boolean isOldWorld;
+
+    @Override
+    public boolean isBetaBiomeWorld() {
+        return this.isBetaBiomeWorld;
+    }
+    
+    @Override
+    public boolean isOldWorld() {
+        return this.isOldWorld;
+    }
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(
@@ -50,22 +65,27 @@ public abstract class MixinClientWorld implements BetaClimateResolver {
         CallbackInfo ci
     ) {
         long worldSeed = ModernBeta.RENDER_CONFIG.fixedSeed;
-        boolean useBetaBiomeColors = ModernBeta.RENDER_CONFIG.useFixedSeed;
+        boolean isBetaBiomeWorld = ModernBeta.RENDER_CONFIG.useFixedSeed;
+        boolean isModernBetaWorld = false;
         
         if (this.client.getServer() != null && worldKey != null) { // Server check
-           BiomeSource biomeSource = this.client.getServer().getWorld(worldKey).getChunkManager().getChunkGenerator().getBiomeSource();
-
-           worldSeed = this.client.getServer().getWorld(worldKey).getSeed();
-           useBetaBiomeColors = 
+            ChunkGenerator chunkGenerator = this.client.getServer().getWorld(worldKey).getChunkManager().getChunkGenerator();
+            BiomeSource biomeSource = chunkGenerator.getBiomeSource();
+            
+            isModernBetaWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof OldBiomeSource;
+            
+            worldSeed = this.client.getServer().getWorld(worldKey).getSeed();
+            isBetaBiomeWorld = 
                biomeSource instanceof OldBiomeSource oldBiomeSource &&
                oldBiomeSource.getBiomeProvider() instanceof BetaClimateResolver &&
                !ModernBeta.RENDER_CONFIG.useFixedSeed;
         }
         
         // Set Beta block colors seed.
-        BetaBlockColors.INSTANCE.setSeed(worldSeed, useBetaBiomeColors);
+        BetaBlockColors.INSTANCE.setSeed(worldSeed, isBetaBiomeWorld);
         
-        this.useBetaBiomeColors = useBetaBiomeColors;
+        this.isBetaBiomeWorld = isBetaBiomeWorld;
+        this.isOldWorld = isModernBetaWorld;
     }
     
     @ModifyVariable(
@@ -83,7 +103,7 @@ public abstract class MixinClientWorld implements BetaClimateResolver {
         index = 6  
     )
     private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
-        if (this.useBetaBiomeColors && ModernBeta.RENDER_CONFIG.renderBetaSkyColor) {
+        if (this.isBetaBiomeWorld && ModernBeta.RENDER_CONFIG.renderBetaSkyColor) {
             int x = (int)curPos.getX();
             int z = (int)curPos.getZ();
             

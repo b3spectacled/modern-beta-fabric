@@ -107,12 +107,10 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                         continue;
                     }
                         
-                    if (soilDepth < 2) {
-                        if (soilDepth == 0) someBlock = (y >= this.seaLevel - 1) ? topBlock : fillerBlock;
-                        if (soilDepth == 1) someBlock = fillerBlock;
-                        
-                        soilDepth++;
-                    }
+                    if (soilDepth == 0) someBlock = (y >= this.seaLevel - 1) ? topBlock : fillerBlock;
+                    if (soilDepth == 1) someBlock = fillerBlock;
+                    
+                    soilDepth++;
 
                     chunk.setBlockState(mutable.set(x, y, z), someBlock, false);
                 }

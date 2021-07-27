@@ -30,8 +30,8 @@ public class HeightmapChunk {
         int ndx = (z & 0xF) + (x & 0xF) * 16;
         
         return switch(type) {
-            case MOTION_BLOCKING -> Math.max(this.heightmapSurface[ndx], this.heightmapOcean[ndx]);
-            case MOTION_BLOCKING_NO_LEAVES -> Math.max(this.heightmapSurface[ndx], this.heightmapOcean[ndx]);
+            case MOTION_BLOCKING -> this.heightmapOcean[ndx];
+            case MOTION_BLOCKING_NO_LEAVES -> this.heightmapOcean[ndx];
             case OCEAN_FLOOR -> this.heightmapSurface[ndx];
             case OCEAN_FLOOR_WG -> this.heightmapSurface[ndx];
             case WORLD_SURFACE -> this.heightmapOcean[ndx];

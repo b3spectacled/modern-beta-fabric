@@ -6,8 +6,7 @@ import net.minecraft.util.math.MathHelper;
 /*
  * Used for additional info: https://adrianb.io/2014/08/09/perlinnoise.html
  */
-public class PerlinNoise extends Noise {
-
+public class PerlinNoise {
     private int permutations[]; 
     
     public double xOrigin;
@@ -239,7 +238,7 @@ public class PerlinNoise extends Noise {
         }
     }
 
-    public void sampleArrBeta(
+    public void sampleArrShelf(
         double arr[], 
         double x, double y, double z, 
         int sizeX, int sizeY, int sizeZ, 

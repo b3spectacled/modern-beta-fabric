@@ -11,6 +11,7 @@ import net.minecraft.util.math.ChunkPos;
  * 
  */
 public class ChunkCache<T> {
+    @SuppressWarnings("unused")
     private final String name;
     private final int capacity;
     private final boolean evictOldChunks;

@@ -7,7 +7,7 @@ import java.util.Random;
  * 
  * Tested output range, on 100000 * 100000 sample: -0.885539/0.885539
  */
-public class SimplexNoise extends Noise {
+public class SimplexNoise {
     private static int[][] gradients;
     private int[] permutations;
     

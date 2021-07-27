@@ -63,19 +63,19 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
         double[] gravelNoise = this.surfaceNoisePool.borrowObj();
         double[] surfaceNoise = this.surfaceNoisePool.borrowObj();
 
-        sandNoise = beachNoiseOctaves.sampleArrBeta(
+        sandNoise = beachNoiseOctaves.sampleArrShelf(
             sandNoise, 
             chunkX * 16, chunkZ * 16, 0.0D, 
             16, 16, 1,
             eighth, eighth, 1.0D);
         
-        gravelNoise = beachNoiseOctaves.sampleArrBeta(
+        gravelNoise = beachNoiseOctaves.sampleArrShelf(
             gravelNoise, 
             chunkX * 16, 109.0134D, chunkZ * 16, 
             16, 1, 16, 
             eighth, 1.0D, eighth);
         
-        surfaceNoise = surfaceNoiseOctaves.sampleArrBeta(
+        surfaceNoise = surfaceNoiseOctaves.sampleArrShelf(
             surfaceNoise, 
             chunkX * 16, chunkZ * 16, 0.0D, 
             16, 16, 1,

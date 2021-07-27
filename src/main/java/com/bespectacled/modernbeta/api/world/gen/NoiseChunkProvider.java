@@ -1,10 +1,10 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.DoubleFunction;
-import java.util.stream.IntStream;
 
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -206,15 +206,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         this.oreVeinGenerator = new OreVeinGenerator(seed, this.defaultBlock, this.horizontalNoiseResolution, this.verticalNoiseResolution, this.generatorSettings.get().getGenerationShapeConfig().getMinimumY());
         this.noodleCaveGenerator = new NoodleCavesGenerator(seed);
     }
-    
-    /**
-     * 
-     * @return Number of blocks in a vertical subchunk.
-     */
-    public int getVerticalNoiseResolution() {
-        return this.verticalNoiseResolution;
-    }
-    
+
     /**
      * Generates base terrain for given chunk and returns it.
      * 
@@ -261,6 +253,86 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected abstract void generateNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ);
     
     /**
+     * Samples density for noise cave.
+     * @param noise Base density.
+     * @param noiseX x-coordinate in absolute noise coordinates.
+     * @param noiseY y-coordinate in absolute noise coordinates.
+     * @param noiseZ z-coordinate in absolute noise coordinates.
+     * 
+     * @return Modified noise density.
+     */
+    protected double sampleNoiseCave(double noise, int noiseX, int noiseY, int noiseZ) {
+        if (this.noiseCaveSampler != null) {
+            //return this.noiseCaveSampler.sample(noise, noiseX, noiseY, noiseZ);
+            return this.noiseCaveSampler.sample(noise, noiseY, noiseZ, noiseX); // ????
+        }
+        
+        return noise;
+    }
+    
+    /**
+     * Interpolates density to set terrain curve at bottom of the world.
+     * 
+     * @param density Base density.
+     * @param noiseY y-coordinate in noise coordinates.
+     * @param initialOffset Initial noise y-coordinate offset. Generator settings offset is subtracted from this.
+     * 
+     * @return Modified noise density.
+     */
+    protected double applyBottomSlide(double density, int noiseY, int initialOffset) {
+        int bottomSlideStart = this.noiseMinY - initialOffset - this.bottomSlideOffset;
+        if (noiseY < bottomSlideStart) {
+            double bottomSlideDelta = (float) (bottomSlideStart - noiseY) / ((float) this.bottomSlideSize);
+            density = MathHelper.lerp(bottomSlideDelta, density, this.bottomSlideTarget);
+        }
+        
+        return density;
+    }
+    
+    /**
+     * Interpolates density to set terrain curve at top of the world.
+     * 
+     * @param density Base density.
+     * @param noiseY y-coordinate in noise coordinates.
+     * @param initialOffset Initial noise y-coordinate offset. Generator settings offset is subtracted from this.
+     * 
+     * @return Modified noise density.
+     */
+    protected double applyTopSlide(double density, int noiseY, int initialOffset) {
+        int topSlideStart = (this.noiseSizeY + this.noiseMinY + 1) - initialOffset - this.topSlideOffset;
+        if (noiseY > topSlideStart) {
+            double topSlideDelta = (float) (noiseY - topSlideStart) / (float) this.topSlideSize;
+            density = MathHelper.lerp(topSlideDelta, density, this.topSlideTarget);
+        }
+        
+        return density;
+    }
+    
+    /**
+     * Interpolates density to set terrain curve at top of the world.
+     * Height target is provided to set curve at a lower world height than the actual.
+     * TODO: Check back later to see if this will work with new mountains.
+     * 
+     * @param density Base density.
+     * @param noiseY y-coordinate in noise coordinates.
+     * @param initialOffset Initial noise y-coordinate offset. Generator settings offset is subtracted from this.
+     * @param heightTarget The world height the curve should target.
+     * 
+     * @return Modified noise density.
+     */
+    protected double applyTopSlide(double density, int noiseY, int initialOffset, int heightTarget) {
+        int noiseSizeY = MathHelper.floorDiv(heightTarget, this.verticalNoiseResolution);
+        int topSlideStart = (noiseSizeY + 1) - initialOffset - this.topSlideOffset;
+        if (noiseY > topSlideStart) {
+            // Clamp delta since difference of noiseY and slideStart can exceed slideSize if real world height is larger than provided target "height"
+            double topSlideDelta = MathHelper.clamp((float) (noiseY - topSlideStart) / (float) this.topSlideSize, 0.0D, 1.0D);
+            density = MathHelper.lerp(topSlideDelta, density, this.topSlideTarget);
+        }
+        
+        return density;
+    }
+    
+    /**
      * Generates noise values for entire chunk starting at <code>noiseX</code> and <code>noiseZ</code>.
      * 
      * @param noiseX x-coordinate start of the chunk in noise coordinates.
@@ -268,7 +340,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * 
      * @returns Populated noise array.
      */
-    protected double[] generateNoiseArr(int noiseX, int noiseZ) {
+    private double[] generateNoiseArr(int noiseX, int noiseZ) {
         int noiseResolutionX = this.noiseSizeX + 1;
         int noiseResolutionZ = this.noiseSizeZ + 1;
         int noiseResolutionY = this.noiseSizeY + 1;
@@ -289,14 +361,14 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         return noise;
     }
-    
+
     /**
      * Generates the base terrain for a given chunk.
      * 
      * @param chunk
      * @param structureAccessor Collects structures within the chunk, so that terrain can be modified to accommodate them.
      */
-    protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
+    private void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
         
@@ -401,7 +473,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             interpolatorList.forEach(NoiseInterpolator::swapBuffers);
         }
     }
-    
+
     /**
      * Generates a heightmap for the chunk containing the given x/z coordinates
      * and returns to {@link #getHeight(int, int, net.minecraft.world.Heightmap.Type, HeightLimitView)} 
@@ -412,7 +484,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * 
      * @return A HeightmapChunk, containing an array of ints containing the heights for the entire chunk.
      */
-    protected HeightmapChunk sampleHeightmap(int chunkX, int chunkZ) {
+    private HeightmapChunk sampleHeightmap(int chunkX, int chunkZ) {
         int noiseResolutionY = this.noiseSizeY + 1;
         int noiseResolutionXZ = this.noiseSizeX + 1;
         int minHeight = 16;
@@ -420,10 +492,10 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         double[] noise = this.noiseChunkCache.get(chunkX, chunkZ);
         
         int[] heightmapSurface = new int[256];
-        IntStream.range(0, heightmapSurface.length).forEach(i -> heightmapSurface[i] = minHeight);
-
         int[] heightmapOcean = new int[256];
-        IntStream.range(0, heightmapOcean.length).forEach(i -> heightmapOcean[i] = minHeight);
+        
+        Arrays.fill(heightmapSurface, minHeight);
+        Arrays.fill(heightmapOcean, minHeight);
         
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++subChunkZ) {
@@ -481,7 +553,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         // Construct new heightmap cache from generated heightmap array
         return new HeightmapChunk(heightmapSurface, heightmapOcean);
     }
-    
+
     /**
      * Gets blockstate at block coordinates given noise density.
      * 
@@ -494,7 +566,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * 
      * @return A blockstate, usually air, stone, or water.
      */
-    protected BlockState getBlockState(StructureWeightSampler weightSampler, AquiferSampler aquiferSampler, BlockSource blockSource, WeightSampler noodleCaveSampler, int x, int y, int z, double density) {
+    private BlockState getBlockState(StructureWeightSampler weightSampler, AquiferSampler aquiferSampler, BlockSource blockSource, WeightSampler noodleCaveSampler, int x, int y, int z, double density) {
         double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
         clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
         clampedDensity = noodleCaveSampler.sample(clampedDensity, x, y, z);
@@ -502,87 +574,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         return aquiferSampler.apply(blockSource, x, y, z, clampedDensity);
     }
-    
-    /**
-     * Samples density for noise cave.
-     * @param noise Base density.
-     * @param noiseX x-coordinate in absolute noise coordinates.
-     * @param noiseY y-coordinate in absolute noise coordinates.
-     * @param noiseZ z-coordinate in absolute noise coordinates.
-     * 
-     * @return Modified noise density.
-     */
-    protected double sampleNoiseCave(double noise, int noiseX, int noiseY, int noiseZ) {
-        if (this.noiseCaveSampler != null) {
-            //return this.noiseCaveSampler.sample(noise, noiseX, noiseY, noiseZ);
-            return this.noiseCaveSampler.sample(noise, noiseY, noiseZ, noiseX); // ????
-        }
-        
-        return noise;
-    }
-    
-    /**
-     * Interpolates density to set terrain curve at bottom of the world.
-     * 
-     * @param density Base density.
-     * @param noiseY y-coordinate in noise coordinates.
-     * @param initialOffset Initial noise y-coordinate offset. Generator settings offset is subtracted from this.
-     * 
-     * @return Modified noise density.
-     */
-    protected double applyBottomSlide(double density, int noiseY, int initialOffset) {
-        int bottomSlideStart = this.noiseMinY - initialOffset - this.bottomSlideOffset;
-        if (noiseY < bottomSlideStart) {
-            double bottomSlideDelta = (float) (bottomSlideStart - noiseY) / ((float) this.bottomSlideSize);
-            density = MathHelper.lerp(bottomSlideDelta, density, this.bottomSlideTarget);
-        }
-        
-        return density;
-    }
-    
-    /**
-     * Interpolates density to set terrain curve at top of the world.
-     * 
-     * @param density Base density.
-     * @param noiseY y-coordinate in noise coordinates.
-     * @param initialOffset Initial noise y-coordinate offset. Generator settings offset is subtracted from this.
-     * 
-     * @return Modified noise density.
-     */
-    protected double applyTopSlide(double density, int noiseY, int initialOffset) {
-        int topSlideStart = (this.noiseSizeY + this.noiseMinY + 1) - initialOffset - this.topSlideOffset;
-        if (noiseY > topSlideStart) {
-            double topSlideDelta = (float) (noiseY - topSlideStart) / (float) this.topSlideSize;
-            density = MathHelper.lerp(topSlideDelta, density, this.topSlideTarget);
-        }
-        
-        return density;
-    }
-    
-    /**
-     * Interpolates density to set terrain curve at top of the world.
-     * Height target is provided to set curve at a lower world height than the actual.
-     * TODO: Check back later to see if this will work with new mountains.
-     * 
-     * @param density Base density.
-     * @param noiseY y-coordinate in noise coordinates.
-     * @param initialOffset Initial noise y-coordinate offset. Generator settings offset is subtracted from this.
-     * @param heightTarget The world height the curve should target.
-     * 
-     * @return Modified noise density.
-     */
-    protected double applyTopSlide(double density, int noiseY, int initialOffset, int heightTarget) {
-        int noiseSizeY = MathHelper.floorDiv(heightTarget, this.verticalNoiseResolution);
-        int topSlideStart = (noiseSizeY + 1) - initialOffset - this.topSlideOffset;
-        if (noiseY > topSlideStart) {
-            // Clamp delta since difference of noiseY and slideStart can exceed slideSize if real world height is larger than provided target "height"
-            double topSlideDelta = MathHelper.clamp((float) (noiseY - topSlideStart) / (float) this.topSlideSize, 0.0D, 1.0D);
-            density = MathHelper.lerp(topSlideDelta, density, this.topSlideTarget);
-        }
-        
-        return density;
-    }
-    
+
     private DoubleFunction<WeightSampler> createNoodleCaveSampler(int worldBottomNoiseY, ChunkPos chunkPos, Consumer<NoiseInterpolator> consumer) {
         if (!this.generateNoodleCaves) {
             return d -> WeightSampler.DEFAULT;
