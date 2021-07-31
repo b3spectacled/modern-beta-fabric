@@ -735,7 +735,6 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                 if (z + 1 < this.levelLength) positions.add(new Vec3d(x, y, z + 1));
             }
         }
-        
     }
     
     private void plantSurface(Block[][][] blockArr) {

@@ -42,7 +42,7 @@ public class IndevParadise {
         genSettings.structureFeature(ConfiguredStructureFeatures.PILLAGER_OUTPOST);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
         
-        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
+        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.OLD_ORE_CLAY);
         genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_EMERALD_Y95);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.FLOWER_PARADISE);
@@ -53,7 +53,7 @@ public class IndevParadise {
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_SUGAR_CANE);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);
         
-        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER);
+        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_CAVE_CARVER);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.NONE)

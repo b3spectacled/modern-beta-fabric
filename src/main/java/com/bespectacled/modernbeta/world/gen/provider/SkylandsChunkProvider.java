@@ -155,12 +155,36 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             ) / 10D + 1.0D) / 2D;
             
             if (mainNoise < 0.0D) {
-                density = this.minLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
+                density = this.minLimitNoiseOctaves.sample(
+                    noiseX, noiseY, noiseZ, 
+                    coordinateScale, 
+                    heightScale, 
+                    coordinateScale
+                ) / lowerLimitScale;
+                
             } else if (mainNoise > 1.0D) {
-                density = this.maxLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
+                density = this.maxLimitNoiseOctaves.sample(
+                    noiseX, noiseY, noiseZ, 
+                    coordinateScale, 
+                    heightScale, 
+                    coordinateScale
+                ) / upperLimitScale;
+                
             } else {
-                double minLimitNoise = this.minLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / lowerLimitScale;
-                double maxLimitNoise = this.maxLimitNoiseOctaves.sample(noiseX, noiseY, noiseZ, coordinateScale, heightScale, coordinateScale) / upperLimitScale;
+                double minLimitNoise = this.minLimitNoiseOctaves.sample(
+                    noiseX, noiseY, noiseZ, 
+                    coordinateScale, 
+                    heightScale, 
+                    coordinateScale
+                ) / lowerLimitScale;
+                
+                double maxLimitNoise = this.maxLimitNoiseOctaves.sample(
+                    noiseX, noiseY, noiseZ, 
+                    coordinateScale, 
+                    heightScale, 
+                    coordinateScale
+                ) / upperLimitScale;
+                
                 density = minLimitNoise + (maxLimitNoise - minLimitNoise) * mainNoise;
             }
             

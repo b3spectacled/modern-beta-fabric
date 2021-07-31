@@ -8,7 +8,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 public class ModernBetaRenderingConfig implements ConfigData {
     
     @ConfigEntry.Gui.Tooltip(count = 4)
-    public long fixedSeed = 0L;
+    public String fixedSeed = "";
     
     @ConfigEntry.Gui.Tooltip(count = 3)
     public boolean useFixedSeed = false;

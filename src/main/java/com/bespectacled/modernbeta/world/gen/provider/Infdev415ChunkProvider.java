@@ -191,29 +191,46 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
             double mainNoiseVal = this.mainNoiseOctaves.sample(
                 noiseX * coordinateScale / mainNoiseScaleX, 
                 noiseY * coordinateScale / mainNoiseScaleY, 
-                noiseZ * coordinateScale / mainNoiseScaleZ) / 2.0;
+                noiseZ * coordinateScale / mainNoiseScaleZ
+            ) / 2.0;
             
             // Do not clamp noise if generating with noise caves!
             if (mainNoiseVal < -1) {
-                density = this.minLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
-                if (!this.generateNoiseCaves) 
-                    density = MathHelper.clamp(density, -10D, 10D);
+                density = this.minLimitNoiseOctaves.sample(
+                    noiseX * coordinateScale, 
+                    noiseY * heightScale, 
+                    noiseZ * coordinateScale
+                ) / limitScale - densityOffset;
+                
+                density = this.clampNoise(density);
                 
             } else if (mainNoiseVal > 1.0) {
-                density = this.maxLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
-                if (!this.generateNoiseCaves) 
-                    density = MathHelper.clamp(density, -10D, 10D);
+                density = this.maxLimitNoiseOctaves.sample(
+                    noiseX * coordinateScale, 
+                    noiseY * heightScale, 
+                    noiseZ * coordinateScale
+                ) / limitScale - densityOffset;
+                
+                density = this.clampNoise(density);
                 
             } else {
-                double minLimitVal = this.minLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
-                double maxLimitVal = this.maxLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;     
-                if (!this.generateNoiseCaves) {
-                    minLimitVal = MathHelper.clamp(minLimitVal, -10D, 10D);
-                    maxLimitVal = MathHelper.clamp(maxLimitVal, -10D, 10D);
-                }
+                double minLimitVal = this.minLimitNoiseOctaves.sample(
+                    noiseX * coordinateScale, 
+                    noiseY * heightScale, 
+                    noiseZ * coordinateScale
+                ) / limitScale - densityOffset;
                 
-                double mix = (mainNoiseVal + 1.0) / 2.0;
-                density = minLimitVal + (maxLimitVal - minLimitVal) * mix;
+                double maxLimitVal = this.maxLimitNoiseOctaves.sample(
+                    noiseX * coordinateScale, 
+                    noiseY * heightScale, 
+                    noiseZ * coordinateScale
+                ) / limitScale - densityOffset;     
+
+                minLimitVal = this.clampNoise(minLimitVal);
+                maxLimitVal = this.clampNoise(maxLimitVal);
+                                
+                double delta = (mainNoiseVal + 1.0) / 2.0;
+                density = minLimitVal + (maxLimitVal - minLimitVal) * delta;
             };
             
             // Sample for noise caves
@@ -228,5 +245,12 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
             
             buffer[y] = density;
         }
+    }
+    
+    private double clampNoise(double density) {
+        if (!this.generateNoiseCaves)
+            density = MathHelper.clamp(density, -10D, 10D);
+        
+        return density;
     }
 }

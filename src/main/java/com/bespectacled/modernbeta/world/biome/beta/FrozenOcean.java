@@ -47,14 +47,14 @@ public class FrozenOcean {
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_OCEAN);
         genSettings.structureFeature(OldStructures.CONF_OCEAN_SHRINE_STRUCTURE);
         
-        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
+        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.OLD_ORE_CLAY);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_SUGAR_CANE);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);
         
-        genSettings.feature(Feature.TOP_LAYER_MODIFICATION, OldConfiguredFeatures.BETA_FREEZE_TOP_LAYER);
+        genSettings.feature(Feature.TOP_LAYER_MODIFICATION, OldConfiguredFeatures.OLD_FREEZE_TOP_LAYER);
         
-        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER);
+        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_CAVE_CARVER);
         genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
         
         genSettings.carver(GenerationStep.Carver.LIQUID, ConfiguredCarvers.UNDERWATER_CAVE);

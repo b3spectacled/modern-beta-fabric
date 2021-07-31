@@ -64,28 +64,27 @@ public abstract class MixinClientWorld implements BetaClimateResolver, OldClient
         long seed, 
         CallbackInfo ci
     ) {
-        long worldSeed = ModernBeta.RENDER_CONFIG.fixedSeed;
+        long worldSeed = this.parseFixedSeed(ModernBeta.RENDER_CONFIG.fixedSeed);
         boolean isBetaBiomeWorld = ModernBeta.RENDER_CONFIG.useFixedSeed;
-        boolean isModernBetaWorld = false;
+        boolean isOldWorld = false;
         
         if (this.client.getServer() != null && worldKey != null) { // Server check
             ChunkGenerator chunkGenerator = this.client.getServer().getWorld(worldKey).getChunkManager().getChunkGenerator();
             BiomeSource biomeSource = chunkGenerator.getBiomeSource();
             
-            isModernBetaWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof OldBiomeSource;
+            isOldWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof OldBiomeSource;
             
             worldSeed = this.client.getServer().getWorld(worldKey).getSeed();
             isBetaBiomeWorld = 
                biomeSource instanceof OldBiomeSource oldBiomeSource &&
-               oldBiomeSource.getBiomeProvider() instanceof BetaClimateResolver &&
-               !ModernBeta.RENDER_CONFIG.useFixedSeed;
+               oldBiomeSource.getBiomeProvider() instanceof BetaClimateResolver;
         }
         
         // Set Beta block colors seed.
         BetaBlockColors.INSTANCE.setSeed(worldSeed, isBetaBiomeWorld);
         
         this.isBetaBiomeWorld = isBetaBiomeWorld;
-        this.isOldWorld = isModernBetaWorld;
+        this.isOldWorld = isOldWorld;
     }
     
     @ModifyVariable(
@@ -93,7 +92,7 @@ public abstract class MixinClientWorld implements BetaClimateResolver, OldClient
         at = @At("HEAD"),
         index = 1
     )
-    private Vec3d captureBlockPos(Vec3d pos) {
+    private Vec3d capturePos(Vec3d pos) {
         return curPos = pos;
     }
     
@@ -121,6 +120,21 @@ public abstract class MixinClientWorld implements BetaClimateResolver, OldClient
         temp = MathHelper.clamp(temp, -1F, 1F);
         
         return MathHelper.hsvToRgb(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F);
+    }
+    
+    @Unique
+    private long parseFixedSeed(String stringSeed) {
+        long seed = 0L;
+        
+        if (!stringSeed.isEmpty()) {
+            try {
+                seed = Long.parseLong(stringSeed);
+            } catch (NumberFormatException e) {
+                seed = stringSeed.hashCode();
+            }
+        }
+        
+        return seed;
     }
 }
 

@@ -5,7 +5,6 @@ import java.util.stream.IntStream;
 
 import com.bespectacled.modernbeta.compat.CompatBiomes;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
-import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
@@ -52,7 +51,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getBedrockCeilingY(),
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
             chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
-            new DefaultBlockSource(BlockStates.STONE)
+            new DefaultBlockSource(chunkGenerator.getGeneratorSettings().get().getDefaultBlock())
         );
     }
     
