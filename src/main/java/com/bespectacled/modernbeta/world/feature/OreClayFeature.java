@@ -18,8 +18,8 @@ import net.minecraft.world.gen.feature.OreFeature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 
-public class OldOreClayFeature extends Feature<OreFeatureConfig> {
-    public OldOreClayFeature(Codec<OreFeatureConfig> configCodec) {
+public class OreClayFeature extends Feature<OreFeatureConfig> {
+    public OreClayFeature(Codec<OreFeatureConfig> configCodec) {
         super(configCodec);
     }
 

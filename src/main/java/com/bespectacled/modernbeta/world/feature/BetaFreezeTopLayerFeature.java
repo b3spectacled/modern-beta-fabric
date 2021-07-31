@@ -21,8 +21,8 @@ import net.minecraft.world.gen.feature.util.FeatureContext;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.LightType;
 
-public class OldFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
-    public OldFreezeTopLayerFeature(Codec<DefaultFeatureConfig> codec) {
+public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
+    public BetaFreezeTopLayerFeature(Codec<DefaultFeatureConfig> codec) {
         super(codec);
     }
 

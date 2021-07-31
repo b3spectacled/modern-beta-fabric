@@ -45,7 +45,7 @@ public class IndevSnowy {
         genSettings.structureFeature(ConfiguredStructureFeatures.PILLAGER_OUTPOST);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
         
-        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.OLD_ORE_CLAY);
+        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
         genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_EMERALD_Y95);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);

@@ -14,9 +14,9 @@ import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.heightprovider.BiasedToBottomHeightProvider;
 
 public class OldCarvers {
-    public static final Carver<CaveCarverConfig> OLD_CAVE_CARVER = register("old_cave", new OldCaveCarver(CaveCarverConfig.CAVE_CODEC));
+    public static final Carver<CaveCarverConfig> OLD_CAVE_CARVER = register("old_beta_cave", new OldCaveCarver(CaveCarverConfig.CAVE_CODEC));
     public static final ConfiguredCarver<?> CONF_OLD_CAVE_CARVER = register(
-        "old_cave", 
+        "old_beta_cave", 
         new ConfiguredCarver<CaveCarverConfig>(
             OLD_CAVE_CARVER, 
             new CaveCarverConfig(
