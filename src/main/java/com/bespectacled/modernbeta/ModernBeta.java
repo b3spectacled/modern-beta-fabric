@@ -97,7 +97,7 @@ public class ModernBeta implements ModInitializer {
         //OldChunkGenerator.export();
         
         log(Level.INFO, "Initialized Modern Beta!");
-
+        
         // Man, I am not good at this...
     }
 }

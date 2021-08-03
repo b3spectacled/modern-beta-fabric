@@ -14,11 +14,15 @@ import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.heightprovider.BiasedToBottomHeightProvider;
 
 public class OldCarvers {
-    public static final Carver<CaveCarverConfig> OLD_CAVE_CARVER = register("old_beta_cave", new OldCaveCarver(CaveCarverConfig.CAVE_CODEC));
-    public static final ConfiguredCarver<?> CONF_OLD_CAVE_CARVER = register(
+    public static final Carver<CaveCarverConfig> OLD_BETA_CAVE_CARVER = register(
+        "old_beta_cave", 
+        new OldCaveCarver(CaveCarverConfig.CAVE_CODEC)
+    );
+    
+    public static final ConfiguredCarver<?> CONF_OLD_BETA_CAVE_CARVER = register(
         "old_beta_cave", 
         new ConfiguredCarver<CaveCarverConfig>(
-            OLD_CAVE_CARVER, 
+            OLD_BETA_CAVE_CARVER, 
             new CaveCarverConfig(
                 0.14285715f, // Probability
                 BiasedToBottomHeightProvider.create(YOffset.fixed(0), YOffset.fixed(127), 8), // Y Level
