@@ -70,7 +70,7 @@ public class MersenneTwister {
      * Get double value by dividing by max unsigned int32 value.
      */
     public double genRandDouble() {
-        return this.genRandInt32() / MAX_UINT_32;
+        return Integer.toUnsignedLong(this.genRandInt32()) / MAX_UINT_32;
     }
     
     private void init(int seed) {
