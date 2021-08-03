@@ -1,67 +1,59 @@
 package com.bespectacled.modernbeta.world.biome.beta.climate;
 
 import java.util.Random;
+
+import com.bespectacled.modernbeta.api.world.biome.ClimateSampler;
 import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 
 import net.minecraft.util.math.MathHelper;
 
-public enum BetaClimateSampler {
-    INSTANCE;
+public class BetaClimateSampler implements ClimateSampler {
+    private final SimplexOctaveNoise tempNoiseOctaves;
+    private final SimplexOctaveNoise rainNoiseOctaves;
+    private final SimplexOctaveNoise detailNoiseOctaves;
     
     private final ChunkCache<ClimateChunk> climateCache;
     private final ChunkCache<SkyChunk> skyCache;
     
-    private SimplexOctaveNoise tempNoiseOctaves;
-    private SimplexOctaveNoise rainNoiseOctaves;
-    private SimplexOctaveNoise detailNoiseOctaves;
-    
-    private long seed;
-    
-    private BetaClimateSampler() {
-        this.climateCache = new ChunkCache<>("climate", 1536, true, ClimateChunk::new);
-        this.skyCache = new ChunkCache<>("sky", 256, true, SkyChunk::new);
+    public BetaClimateSampler(long seed) {
+        this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
+        this.rainNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
+        this.detailNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
         
-        this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 9871L), 4);
-        this.rainNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 39811L), 4);
-        this.detailNoiseOctaves = new SimplexOctaveNoise(new Random(1 * 543321L), 2);
+        this.climateCache = new ChunkCache<>(
+            "climate", 
+            1536, 
+            true, 
+            (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this)
+        );
+        
+        this.skyCache = new ChunkCache<>(
+            "sky", 
+            256, 
+            true, 
+            (chunkX, chunkZ) -> new SkyChunk(chunkX, chunkZ, this)
+        );
     }
-    
-    protected void setSeed(long seed) {
-        if (this.seed == seed) return;
-        
-        this.seed = seed;
-        this.initNoise(seed);
-        
-        this.climateCache.clear();
-        this.skyCache.clear();
-    }
-    
-    protected double sampleTemp(int x, int z) {
+
+    @Override
+    public double sampleTemp(int x, int z) {
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         
         return this.climateCache.get(chunkX, chunkZ).sampleTemp(x, z);
     }
-    
-    protected double sampleRain(int x, int z) {
+
+    @Override
+    public double sampleRain(int x, int z) {
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         
         return this.climateCache.get(chunkX, chunkZ).sampleRain(x, z);
     }
-    
-    protected void sampleClime(double[] arr, int x, int z) {
-        if (arr.length != 2) 
-            throw new IllegalArgumentException("[Modern Beta] Climate array size is not 2!");
-        
-        int chunkX = x >> 4;
-        int chunkZ = z >> 4;
-        
-        this.climateCache.get(chunkX, chunkZ).sampleClime(arr, x, z);
-    }
-    
-    protected double sampleSkyTemp(int x, int z) {
+
+    @Override
+    public double sampleSkyTemp(int x, int z) {
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         
@@ -93,18 +85,12 @@ public enum BetaClimateSampler {
     private double sampleSkyTempNoise(int x, int z) {
         return this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
     }
-    
-    private void initNoise(long seed) {
-        this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
-        this.rainNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
-        this.detailNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
-    }
-    
+
     private class ClimateChunk {
         private final double temp[] = new double[256];
         private final double rain[] = new double[256];
         
-        private ClimateChunk(int chunkX, int chunkZ) {
+        private ClimateChunk(int chunkX, int chunkZ, BetaClimateSampler climateSampler) {
             int startX = chunkX << 4;
             int startZ = chunkZ << 4;
             double[] tempRain = new double[2];
@@ -112,7 +98,7 @@ public enum BetaClimateSampler {
             int ndx = 0;
             for (int x = startX; x < startX + 16; ++x) {
                 for (int z = startZ; z < startZ + 16; ++z) {
-                    BetaClimateSampler.INSTANCE.sampleClimateNoise(tempRain, x, z);
+                    climateSampler.sampleClimateNoise(tempRain, x, z);
                     
                     this.temp[ndx] = tempRain[0];
                     this.rain[ndx] = tempRain[1];
@@ -129,26 +115,19 @@ public enum BetaClimateSampler {
         private double sampleRain(int x, int z) {
             return rain[(z & 0xF) + (x & 0xF) * 16];
         }
-        
-        private void sampleClime(double[] tempRain, int x, int z) {
-            int ndx = (z & 0xF) + (x & 0xF) * 16;
-            
-            tempRain[0] = temp[ndx];
-            tempRain[1] = rain[ndx];
-        }
     }
     
     private class SkyChunk {
         private final double temp[] = new double[256];
         
-        private SkyChunk(int chunkX, int chunkZ) {
+        private SkyChunk(int chunkX, int chunkZ, BetaClimateSampler climateSampler) {
             int startX = chunkX << 4;
             int startZ = chunkZ << 4;
             
             int ndx = 0;
             for (int x = startX; x < startX + 16; ++x) {
                 for (int z = startZ; z < startZ + 16; ++z) {    
-                    this.temp[ndx] = BetaClimateSampler.INSTANCE.sampleSkyTempNoise(x, z);
+                    this.temp[ndx] = climateSampler.sampleSkyTempNoise(x, z);
                     
                     ndx++;
                 }

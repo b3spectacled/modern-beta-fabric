@@ -16,12 +16,15 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.biome.ClimateSampler;
 import com.bespectacled.modernbeta.client.color.BetaBlockColors;
 import com.bespectacled.modernbeta.util.OldClientWorld;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateResolver;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
+import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,16 +37,16 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Environment(EnvType.CLIENT)
 @Mixin(value = ClientWorld.class, priority = 1)
-public abstract class MixinClientWorld implements BetaClimateResolver, OldClientWorld {
+public abstract class MixinClientWorld implements OldClientWorld {
     @Shadow private MinecraftClient client;
     
     @Unique private Vec3d curPos;
-    @Unique private boolean isBetaBiomeWorld;
     @Unique private boolean isOldWorld;
+    @Unique private Optional<ClimateSampler> climateSampler;
 
     @Override
     public boolean isBetaBiomeWorld() {
-        return this.isBetaBiomeWorld;
+        return this.climateSampler.isPresent();
     }
     
     @Override
@@ -65,26 +68,26 @@ public abstract class MixinClientWorld implements BetaClimateResolver, OldClient
         CallbackInfo ci
     ) {
         long worldSeed = this.parseFixedSeed(ModernBeta.RENDER_CONFIG.fixedSeed);
-        boolean isBetaBiomeWorld = ModernBeta.RENDER_CONFIG.useFixedSeed;
-        boolean isOldWorld = false;
+        
+        this.isOldWorld = false;
+        this.climateSampler = Optional.ofNullable(
+            ModernBeta.RENDER_CONFIG.useFixedSeed ? new BetaClimateSampler(worldSeed) : null
+        );
         
         if (this.client.getServer() != null && worldKey != null) { // Server check
             ChunkGenerator chunkGenerator = this.client.getServer().getWorld(worldKey).getChunkManager().getChunkGenerator();
             BiomeSource biomeSource = chunkGenerator.getBiomeSource();
             
-            isOldWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof OldBiomeSource;
-            
             worldSeed = this.client.getServer().getWorld(worldKey).getSeed();
-            isBetaBiomeWorld = 
-               biomeSource instanceof OldBiomeSource oldBiomeSource &&
-               oldBiomeSource.getBiomeProvider() instanceof BetaClimateResolver;
+            
+            this.isOldWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof OldBiomeSource;
+            if (biomeSource instanceof OldBiomeSource oldBiomeSource && oldBiomeSource.getBiomeProvider() instanceof BetaBiomeProvider betaBiomeProvider) {
+                this.climateSampler = Optional.of(betaBiomeProvider.getClimateSampler());
+            }
         }
         
         // Set Beta block colors seed.
-        BetaBlockColors.INSTANCE.setSeed(worldSeed, isBetaBiomeWorld);
-        
-        this.isBetaBiomeWorld = isBetaBiomeWorld;
-        this.isOldWorld = isOldWorld;
+        BetaBlockColors.INSTANCE.setSeed(worldSeed, climateSampler);
     }
     
     @ModifyVariable(
@@ -98,24 +101,27 @@ public abstract class MixinClientWorld implements BetaClimateResolver, OldClient
     
     @ModifyVariable(
         method = "method_23777",
-        at = @At(value = "INVOKE_ASSIGN",  target = "Lnet/minecraft/util/CubicSampler;sampleColor(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/CubicSampler$RgbFetcher;)Lnet/minecraft/util/math/Vec3d;"),
+        at = @At(
+            value = "INVOKE_ASSIGN",  
+            target = 
+                "Lnet/minecraft/util/CubicSampler;sampleColor(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/CubicSampler$RgbFetcher;)Lnet/minecraft/util/math/Vec3d;"
+        ),
         index = 6  
     )
     private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
-        if (this.isBetaBiomeWorld && ModernBeta.RENDER_CONFIG.renderBetaSkyColor) {
+        if (this.climateSampler.isPresent() && ModernBeta.RENDER_CONFIG.renderBetaSkyColor) {
             int x = (int)curPos.getX();
             int z = (int)curPos.getZ();
+            float temp = (float)this.climateSampler.get().sampleSkyTemp(x, z);
             
-            skyColorVec = Vec3d.unpackRgb(this.sampleBetaSkyColor(x, z));
+            skyColorVec = Vec3d.unpackRgb(this.sampleBetaSkyColor(temp));
         }
         
         return skyColorVec;
     }
     
     @Unique
-    private int sampleBetaSkyColor(int x, int z) {
-        float temp = (float)this.sampleSkyTemp(x, z);
-        
+    private int sampleBetaSkyColor(float temp) {
         temp /= 3F;
         temp = MathHelper.clamp(temp, -1F, 1F);
         

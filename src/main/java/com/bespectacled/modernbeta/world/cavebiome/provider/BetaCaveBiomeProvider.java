@@ -4,23 +4,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
+import com.bespectacled.modernbeta.api.world.biome.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.ClimateType;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMap;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateResolver;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateType;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
 
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
-public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeResolver, BetaClimateResolver {
+public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeResolver {
+    private final ClimateSampler climateSampler;
+    
     private final BetaClimateMap betaClimateMap;
     
     public BetaCaveBiomeProvider(OldBiomeSource biomeSource) {
         super(biomeSource);
         
-        this.setSeed(this.seed);
+        this.climateSampler = new BetaClimateSampler(biomeSource.getWorldSeed());
+        
         this.betaClimateMap = new BetaClimateMap(settings);
     }
 
@@ -29,18 +33,18 @@ public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeRes
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        double temp = this.sampleTemp(absX, absZ);
-        double rain = this.sampleRain(absX, absZ);
+        double temp = this.climateSampler.sampleTemp(absX, absZ);
+        double rain = this.climateSampler.sampleRain(absX, absZ);
         
-        return biomeRegistry.get(betaClimateMap.getBiome(temp, rain, BetaClimateType.LAND));
+        return biomeRegistry.get(betaClimateMap.getBiome(temp, rain, ClimateType.LAND));
     }
 
     @Override
     public Biome getBiome(Registry<Biome> biomeRegistry, int x, int y, int z) {
-        double temp = this.sampleTemp(x, z);
-        double rain = this.sampleRain(x, z);
+        double temp = this.climateSampler.sampleTemp(x, z);
+        double rain = this.climateSampler.sampleRain(x, z);
         
-        return biomeRegistry.get(betaClimateMap.getBiome(temp, rain, BetaClimateType.LAND));
+        return biomeRegistry.get(betaClimateMap.getBiome(temp, rain, ClimateType.LAND));
     }
 
     @Override

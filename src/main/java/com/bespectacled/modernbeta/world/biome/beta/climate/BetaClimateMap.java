@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.bespectacled.modernbeta.api.world.biome.ClimateType;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 
 import net.minecraft.nbt.NbtCompound;
@@ -53,7 +54,7 @@ public class BetaClimateMap {
         return newBiomeMap;
     }
     
-    public Identifier getBiome(double temp, double rain, BetaClimateType type) {
+    public Identifier getBiome(double temp, double rain, ClimateType type) {
         int t = (int) (temp * 63D);
         int r = (int) (rain * 63D);
         

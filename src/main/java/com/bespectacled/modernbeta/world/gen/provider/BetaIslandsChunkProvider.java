@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.biome.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.SimplexNoise;
@@ -11,7 +12,8 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateResolver;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
+import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
@@ -21,7 +23,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.chunk.Chunk;
 
-public class BetaIslandsChunkProvider extends NoiseChunkProvider implements BetaClimateResolver {
+public class BetaIslandsChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
@@ -40,6 +42,8 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
     private final int centerOceanRadius;
     private final float outerIslandNoiseScale;
     private final float outerIslandNoiseOffset;
+
+    private final ClimateSampler climateSampler;
     
     public BetaIslandsChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
@@ -54,8 +58,17 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         this.scaleNoiseOctaves = new PerlinOctaveNoise(rand, 10, true);
         this.depthNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
-        
         this.islandNoise = new SimplexNoise(rand);
+
+        setForestOctaves(forestNoiseOctaves);
+        
+        // Get climate sampler from biome provider if exists,
+        // else create new one.
+        this.climateSampler = 
+            chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource &&
+            oldBiomeSource.getBiomeProvider() instanceof BetaBiomeProvider betaBiomeProvider ?
+                betaBiomeProvider.getClimateSampler() :
+                new BetaClimateSampler(chunkGenerator.getWorldSeed());
         
         // Beta Islands settings
         this.generateOuterIslands = NbtUtil.readBoolean(NbtTags.GEN_OUTER_ISLANDS, providerSettings, ModernBeta.GEN_CONFIG.generateOuterIslands);
@@ -64,10 +77,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         this.centerOceanLerpDistance = NbtUtil.readInt(NbtTags.CENTER_OCEAN_LERP_DIST, providerSettings, ModernBeta.GEN_CONFIG.centerOceanLerpDistance);
         this.centerOceanRadius = NbtUtil.readInt(NbtTags.CENTER_OCEAN_RADIUS, providerSettings, ModernBeta.GEN_CONFIG.centerOceanRadius);
         this.outerIslandNoiseScale = NbtUtil.readFloat(NbtTags.OUTER_ISLAND_NOISE_SCALE, providerSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseScale);
-        this.outerIslandNoiseOffset = NbtUtil.readFloat(NbtTags.OUTER_ISLAND_NOISE_OFFSET, providerSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseOffset);
-        
-        this.setSeed(seed);
-        setForestOctaves(forestNoiseOctaves);
+        this.outerIslandNoiseOffset = NbtUtil.readFloat(NbtTags.OUTER_ISLAND_NOISE_OFFSET, providerSettings, ModernBeta.GEN_CONFIG.outerIslandNoiseOffset);     
     }
     
     @Override
@@ -262,8 +272,8 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         //double baseSize = noiseResolutionY / 2D; // Or: 17 / 2D = 8.5
         double baseSize = 8.5D;
         
-        double temp = this.sampleTemp(x, z);
-        double rain = this.sampleRain(x, z) * temp;
+        double temp = this.climateSampler.sampleTemp(x, z);
+        double rain = this.climateSampler.sampleRain(x, z) * temp;
         
         rain = 1.0D - rain;
         rain *= rain;

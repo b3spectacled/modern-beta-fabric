@@ -2,13 +2,15 @@ package com.bespectacled.modernbeta.world.gen.provider;
 
 import java.util.Random;
 
+import com.bespectacled.modernbeta.api.world.biome.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateResolver;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
+import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
@@ -20,7 +22,7 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 
-public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimateResolver, BeachSpawnable {
+public class BetaChunkProvider extends NoiseChunkProvider implements BeachSpawnable {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
@@ -29,6 +31,8 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
     private final PerlinOctaveNoise scaleNoiseOctaves;
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
+    
+    private final ClimateSampler climateSampler;
     
     public BetaChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
@@ -44,8 +48,15 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
         this.depthNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
         
-        this.setSeed(seed);
-        setForestOctaves(forestNoiseOctaves);
+        this.setForestOctaves(forestNoiseOctaves);
+        
+        // Get climate sampler from biome provider if exists,
+        // else create new one.
+        this.climateSampler = 
+            chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource &&
+            oldBiomeSource.getBiomeProvider() instanceof BetaBiomeProvider betaBiomeProvider ?
+                betaBiomeProvider.getClimateSampler() :
+                new BetaClimateSampler(chunkGenerator.getWorldSeed());
     }
     
     @Override
@@ -212,8 +223,8 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
         //double baseSize = noiseResolutionY / 2D; // Or: 17 / 2D = 8.5
         double baseSize = 8.5D;
         
-        double temp = this.sampleTemp(x, z);
-        double rain = this.sampleRain(x, z) * temp;
+        double temp = this.climateSampler.sampleTemp(x, z);
+        double rain = this.climateSampler.sampleRain(x, z) * temp;
         
         rain = 1.0D - rain;
         rain *= rain;

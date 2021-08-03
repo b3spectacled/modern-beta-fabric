@@ -1,31 +1,29 @@
 package com.bespectacled.modernbeta.world.biome.provider;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
+import com.bespectacled.modernbeta.api.world.biome.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.ClimateType;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMap;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateResolver;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateType;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
 
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
-public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, BetaClimateResolver {
+public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver {
+    private final ClimateSampler climateSampler;
     private final BetaClimateMap climateMap;
-    private final BetaClimateMap defaultClimateMap;
     
     public BetaBiomeProvider(OldBiomeSource biomeSource) {
         super(biomeSource);
         
-        this.setSeed(seed);
+        this.climateSampler = new BetaClimateSampler(biomeSource.getWorldSeed());
         this.climateMap = new BetaClimateMap(settings);
-        this.defaultClimateMap = new BetaClimateMap(new NbtCompound());
     }
 
     @Override
@@ -33,14 +31,10 @@ public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, B
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
-        double temp = this.sampleTemp(absX, absZ);
-        double rain = this.sampleRain(absX, absZ);
+        double temp = this.climateSampler.sampleTemp(absX, absZ);
+        double rain = this.climateSampler.sampleRain(absX, absZ);
         
-        return this.getBiomeOrElse(
-            biomeRegistry, 
-            this.climateMap.getBiome(temp, rain, BetaClimateType.LAND), 
-            this.defaultClimateMap.getBiome(temp, rain, BetaClimateType.LAND)
-        );
+        return biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
     }
  
     @Override
@@ -48,25 +42,18 @@ public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, B
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
 
-        double temp = this.sampleTemp(absX, absZ);
-        double rain = this.sampleRain(absX, absZ);
+        double temp = this.climateSampler.sampleTemp(absX, absZ);
+        double rain = this.climateSampler.sampleRain(absX, absZ);
         
-        return this.getBiomeOrElse(
-            biomeRegistry, 
-            this.climateMap.getBiome(temp, rain, BetaClimateType.OCEAN), 
-            this.defaultClimateMap.getBiome(temp, rain, BetaClimateType.OCEAN)
-        );
+        return biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.OCEAN));
     }
     
     @Override
     public Biome getBiome(Registry<Biome> biomeRegistry, int x, int y, int z) {
-        double temp = this.sampleTemp(x, z);
-        double rain = this.sampleRain(x, z);
+        double temp = this.climateSampler.sampleTemp(x, z);
+        double rain = this.climateSampler.sampleRain(x, z);
         
-        Optional<Biome> biome = biomeRegistry.getOrEmpty(this.climateMap.getBiome(temp, rain, BetaClimateType.LAND));
-
-        // If custom biome is not present for whatever reason, fetch the default for the climate range.
-        return biome.orElse(biomeRegistry.get(this.defaultClimateMap.getBiome(temp, rain, BetaClimateType.LAND)));
+        return biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
     }
 
     @Override
@@ -74,4 +61,7 @@ public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, B
         return this.climateMap.getBiomeIds().stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
     }
 
+    public ClimateSampler getClimateSampler() {
+        return this.climateSampler;
+    }
 }
