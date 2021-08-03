@@ -8,6 +8,7 @@ import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
 import com.bespectacled.modernbeta.world.gen.OldChunkGeneratorSettings;
 
 public class BuiltInWorldProviders {
+    public static final WorldProvider DEFAULT;
     public static final WorldProvider BETA;
     public static final WorldProvider SKYLANDS;
     public static final WorldProvider ALPHA;
@@ -18,6 +19,15 @@ public class BuiltInWorldProviders {
     public static final WorldProvider BETA_ISLANDS;
     
     static {
+        DEFAULT = new WorldProvider(
+            BuiltInTypes.Chunk.BETA.name, 
+            OldChunkGeneratorSettings.BETA.toString(), 
+            BuiltInTypes.Biome.BETA.name,
+            BuiltInTypes.CaveBiome.VANILLA.name, 
+            BetaBiomes.FOREST_ID.toString(), 
+            BuiltInTypes.WorldScreen.BASE.name    
+        );
+        
         BETA = new WorldProvider(
             BuiltInTypes.Chunk.BETA.name, 
             OldChunkGeneratorSettings.BETA.toString(), 

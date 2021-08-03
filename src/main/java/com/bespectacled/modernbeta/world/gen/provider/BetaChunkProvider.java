@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
+import java.util.Random;
+
 import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -17,7 +19,6 @@ import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.gen.ChunkRandom;
 
 public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimateResolver, BeachSpawnable {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -56,7 +57,7 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BetaClimate
         
         int bedrockFloor = this.minY + this.bedrockFloor;
         
-        ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
+        Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         double[] sandNoise = this.surfaceNoisePool.borrowObj();

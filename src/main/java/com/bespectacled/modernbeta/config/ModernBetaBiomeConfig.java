@@ -25,6 +25,8 @@ public class ModernBetaBiomeConfig implements ConfigData {
     @ConfigEntry.Gui.Excluded
     public int vanillaOceanBiomeSize = 6;
     
+    /* Beta Biomes */
+    
     @ConfigEntry.Gui.Excluded
     public String betaDesertBiome = BetaBiomes.DESERT_ID.toString();
     
@@ -72,5 +74,4 @@ public class ModernBetaBiomeConfig implements ConfigData {
     
     @ConfigEntry.Gui.Excluded
     public String betaWarmOceanBiome = BetaBiomes.WARM_OCEAN_ID.toString();
-    
 }

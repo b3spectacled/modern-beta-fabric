@@ -55,7 +55,10 @@ public class BetaBiomes {
         SKY_ID
     );
     
-    public static final List<RegistryKey<Biome>> BIOME_KEYS = BIOMES.stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
+    public static final List<RegistryKey<Biome>> BIOME_KEYS = BIOMES
+        .stream()
+        .map(i -> RegistryKey.of(Registry.BIOME_KEY, i))
+        .collect(Collectors.toList());
     
     public static void registerBiomes() {
         OldBiomes.register(FOREST_ID, Forest.BIOME);

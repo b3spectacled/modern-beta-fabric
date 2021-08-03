@@ -116,17 +116,17 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     }
     
     /**
-     * Get a new ChunkRandom object initialized with chunk coordinates for seed, for surface generation.
+     * Get a new Random object initialized with chunk coordinates for seed, for surface generation.
      * 
      * @param chunkX x-coordinate in chunk coordinates.
      * @param chunkZ z-coordinate in chunk coordinates.
      * 
-     * @return New ChunkRandom object initialized with chunk coordinates for seed.
+     * @return New Random object initialized with chunk coordinates for seed.
      */
-    protected ChunkRandom createChunkRand(int chunkX, int chunkZ) {
+    protected Random createSurfaceRandom(int chunkX, int chunkZ) {
         long seed = (long)chunkX * 0x4f9939f508L + (long)chunkZ * 0x1ef1565bd5L;
         
-        return new ChunkRandom(seed);
+        return new Random(seed);
     }
     
     /**
@@ -153,7 +153,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
      * 
      * @return True if biome is included in valid biomes set and has run surface builder. False if not included and not run.
      */
-    protected boolean useCustomSurfaceBuilder(Biome biome, Identifier biomeId, ChunkRegion region, Chunk chunk, ChunkRandom random, BlockPos.Mutable mutable) {
+    protected boolean useCustomSurfaceBuilder(Biome biome, Identifier biomeId, ChunkRegion region, Chunk chunk, Random random, BlockPos.Mutable mutable) {
         int x = mutable.getX();
         int y = mutable.getY();
         int z = mutable.getZ();

@@ -89,7 +89,7 @@ public class ModernBetaBuiltInProviders {
     
     // Register default world providers
     public static void registerWorldProviders() {
-        Registries.WORLD.register(BuiltInTypes.DEFAULT_ID, BuiltInWorldProviders.BETA);
+        Registries.WORLD.register(BuiltInTypes.DEFAULT_ID, BuiltInWorldProviders.DEFAULT);
         Registries.WORLD.register(BuiltInTypes.Chunk.BETA.name, BuiltInWorldProviders.BETA);
         Registries.WORLD.register(BuiltInTypes.Chunk.SKYLANDS.name, BuiltInWorldProviders.SKYLANDS);
         Registries.WORLD.register(BuiltInTypes.Chunk.ALPHA.name, BuiltInWorldProviders.ALPHA);

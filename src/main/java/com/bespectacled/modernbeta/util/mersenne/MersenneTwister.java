@@ -29,7 +29,7 @@ public class MersenneTwister {
         this.init(seed);
     }
     
-    public int genRandInt32() {
+    public synchronized int genRandInt32() {
         int y;
         
         if (this.mti >= N) {
@@ -69,11 +69,11 @@ public class MersenneTwister {
     /*
      * Get double value by dividing by max unsigned int32 value.
      */
-    public double genRandDouble() {
+    public synchronized double genRandDouble() {
         return Integer.toUnsignedLong(this.genRandInt32()) / MAX_UINT_32;
     }
     
-    private void init(int seed) {
+    private synchronized void init(int seed) {
         this.mt[0] = seed & 0xFFFFFFFF;
         for (this.mti = 1; this.mti < N; ++this.mti) {
             this.mt[this.mti] = (1812433253 * (this.mt[this.mti-1] ^ (this.mt[this.mti-1] >>> 30)) + this.mti);

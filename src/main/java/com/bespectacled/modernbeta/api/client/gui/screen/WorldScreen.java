@@ -12,6 +12,8 @@ import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
+import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
@@ -80,8 +82,20 @@ public abstract class WorldScreen extends GUIScreen {
             value -> {
                 // Queue world type changes
                 this.worldSettings.clearChanges();
-                this.worldSettings.putChanges(WorldSetting.CHUNK, Registries.CHUNK_SETTINGS.get(value.getChunkProvider()).get());
-                this.worldSettings.putChanges(WorldSetting.BIOME, Registries.BIOME_SETTINGS.get(value.getBiomeProvider()).get());
+                this.worldSettings.putChanges(
+                    WorldSetting.CHUNK, 
+                    Registries.CHUNK_SETTINGS.getOrElse(
+                        value.getChunkProvider(), 
+                        () -> ChunkProviderSettings.createSettingsBase(value.getChunkProvider())
+                    ).get()
+                );
+                this.worldSettings.putChanges(
+                    WorldSetting.BIOME, 
+                    Registries.BIOME_SETTINGS.getOrElse(
+                        value.getBiomeProvider(),
+                        () -> BiomeProviderSettings.createSettingsBase(value.getBiomeProvider())
+                    ).get()
+                );
                 
                 // Create new world screen
                 this.client.setScreen(
@@ -100,7 +114,13 @@ public abstract class WorldScreen extends GUIScreen {
             value -> {
                 // Queue biome settings changes
                 this.worldSettings.clearChanges(WorldSetting.BIOME);
-                this.worldSettings.putChanges(WorldSetting.BIOME, Registries.BIOME_SETTINGS.get(value).get());
+                this.worldSettings.putChanges(
+                    WorldSetting.BIOME,
+                    Registries.BIOME_SETTINGS.getOrElse(
+                        value,
+                        () -> BiomeProviderSettings.createSettingsBase(value)
+                    ).get()
+                );
                 
                 this.resetWorldScreen();
             }

@@ -26,7 +26,7 @@ public class OldBiomeColors {
     public static final int BETA_TEMP_SKY_COLOR = 7777023;
     public static final int BETA_COOL_SKY_COLOR = 8430079;
     public static final int BETA_COLD_SKY_COLOR = 10263039;
-
+    
     // All colors below extracted from respective original versions, so they should be accurate.
     
     public static final int BETA_FOG_COLOR = 12638463;

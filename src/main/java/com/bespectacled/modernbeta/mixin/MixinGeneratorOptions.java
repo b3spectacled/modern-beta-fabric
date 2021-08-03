@@ -4,7 +4,9 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 import com.google.common.base.MoreObjects;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -80,10 +82,20 @@ public class MixinGeneratorOptions {
             String generate_structures = (String) properties.get("generate-structures");
             boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
             
-            NbtCompound chunkProviderSettings = Registries.CHUNK_SETTINGS.get(ModernBeta.GEN_CONFIG.worldType).get();
-            NbtCompound biomeProviderSettings = Registries.BIOME_SETTINGS.get(ModernBeta.BIOME_CONFIG.biomeType).get();
+            String worldType = ModernBeta.GEN_CONFIG.worldType;
+            String biomeType = ModernBeta.BIOME_CONFIG.biomeType;
             
-            WorldProvider worldProvider = Registries.WORLD.get(ModernBeta.GEN_CONFIG.worldType);
+            NbtCompound chunkProviderSettings = Registries.CHUNK_SETTINGS.getOrElse(
+                worldType, 
+                () -> ChunkProviderSettings.createSettingsBase(worldType)
+            ).get();
+            
+            NbtCompound biomeProviderSettings = Registries.BIOME_SETTINGS.getOrElse(
+                biomeType, 
+                () -> BiomeProviderSettings.createSettingsBase(biomeType)
+            ).get();
+            
+            WorldProvider worldProvider = Registries.WORLD.getOrDefault(ModernBeta.GEN_CONFIG.worldType);
             
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 new OldBiomeSource(seed, registryBiome, biomeProviderSettings), 

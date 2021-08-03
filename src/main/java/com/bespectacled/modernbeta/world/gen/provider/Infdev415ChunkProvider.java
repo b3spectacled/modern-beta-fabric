@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
+import java.util.Random;
+
 import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -17,7 +19,6 @@ import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.ChunkRandom;
 
 public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachSpawnable {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -52,7 +53,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
         
         int bedrockFloor = this.minY + this.bedrockFloor;
         
-        ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
+        Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         for (int x = 0; x < 16; ++x) {

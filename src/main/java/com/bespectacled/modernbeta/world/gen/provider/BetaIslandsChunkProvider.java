@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
+import java.util.Random;
+
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -18,7 +20,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.ChunkRandom;
 
 public class BetaIslandsChunkProvider extends NoiseChunkProvider implements BetaClimateResolver {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -78,7 +79,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider implements Beta
         
         int bedrockFloor = this.minY + this.bedrockFloor;
         
-        ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
+        Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         double[] sandNoise = this.surfaceNoisePool.borrowObj();

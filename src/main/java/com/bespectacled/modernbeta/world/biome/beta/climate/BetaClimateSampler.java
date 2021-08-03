@@ -102,7 +102,7 @@ public enum BetaClimateSampler {
     
     private class ClimateChunk {
         private final double temp[] = new double[256];
-        private final double rain[] = new double [256];
+        private final double rain[] = new double[256];
         
         private ClimateChunk(int chunkX, int chunkZ) {
             int startX = chunkX << 4;

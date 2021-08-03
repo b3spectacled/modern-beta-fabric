@@ -22,7 +22,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 
@@ -68,7 +67,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
 
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-        ChunkRandom rand = this.createChunkRand(chunk.getPos().x, chunk.getPos().z);
+        Random rand = this.createSurfaceRandom(chunk.getPos().x, chunk.getPos().z);
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
@@ -130,7 +129,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     
     protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         Random rand = new Random();
-        Random chunkRand = this.createChunkRand(chunk.getPos().x, chunk.getPos().z);
+        Random chunkRand = this.createSurfaceRandom(chunk.getPos().x, chunk.getPos().z);
         
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
