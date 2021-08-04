@@ -16,12 +16,14 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateResolver;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateResolver;
+import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
 import com.bespectacled.modernbeta.client.color.BetaBlockColors;
 import com.bespectacled.modernbeta.util.OldClientWorld;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
-import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import java.util.Optional;
@@ -43,6 +45,7 @@ public abstract class MixinClientWorld implements OldClientWorld {
     @Unique private Vec3d curPos;
     @Unique private boolean isOldWorld;
     @Unique private Optional<ClimateSampler> climateSampler;
+    @Unique private Optional<SkyClimateSampler> skyClimateSampler;
 
     @Override
     public boolean isBetaBiomeWorld() {
@@ -68,11 +71,11 @@ public abstract class MixinClientWorld implements OldClientWorld {
         CallbackInfo ci
     ) {
         long worldSeed = this.parseFixedSeed(ModernBeta.RENDER_CONFIG.fixedSeed);
+        boolean useFixedSeed = ModernBeta.RENDER_CONFIG.useFixedSeed;
         
         this.isOldWorld = false;
-        this.climateSampler = Optional.ofNullable(
-            ModernBeta.RENDER_CONFIG.useFixedSeed ? new BetaClimateSampler(worldSeed) : null
-        );
+        this.climateSampler = Optional.ofNullable(useFixedSeed ? new BetaClimateSampler(worldSeed) : null);
+        this.skyClimateSampler = Optional.ofNullable(useFixedSeed ? new BetaClimateSampler(worldSeed) : null);
         
         if (this.client.getServer() != null && worldKey != null) { // Server check
             ChunkGenerator chunkGenerator = this.client.getServer().getWorld(worldKey).getChunkManager().getChunkGenerator();
@@ -81,13 +84,17 @@ public abstract class MixinClientWorld implements OldClientWorld {
             worldSeed = this.client.getServer().getWorld(worldKey).getSeed();
             
             this.isOldWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof OldBiomeSource;
-            if (biomeSource instanceof OldBiomeSource oldBiomeSource && oldBiomeSource.getBiomeProvider() instanceof BetaBiomeProvider betaBiomeProvider) {
-                this.climateSampler = Optional.of(betaBiomeProvider.getClimateSampler());
+            
+            if (biomeSource instanceof OldBiomeSource oldBiomeSource) {
+                if (oldBiomeSource.getBiomeProvider() instanceof ClimateResolver climateResolver)
+                    this.climateSampler = Optional.of(climateResolver.getClimateSampler());
+                if (oldBiomeSource.getBiomeProvider() instanceof SkyClimateResolver skyClimateResolver)
+                    this.skyClimateSampler = Optional.of(skyClimateResolver.getClimateSampler());
             }
         }
         
         // Set Beta block colors seed.
-        BetaBlockColors.INSTANCE.setSeed(worldSeed, climateSampler);
+        BetaBlockColors.INSTANCE.setSeed(worldSeed, this.climateSampler);
     }
     
     @ModifyVariable(
@@ -109,10 +116,10 @@ public abstract class MixinClientWorld implements OldClientWorld {
         index = 6  
     )
     private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
-        if (this.climateSampler.isPresent() && ModernBeta.RENDER_CONFIG.renderBetaSkyColor) {
+        if (this.skyClimateSampler.isPresent() && ModernBeta.RENDER_CONFIG.renderBetaSkyColor) {
             int x = (int)curPos.getX();
             int z = (int)curPos.getZ();
-            float temp = (float)this.climateSampler.get().sampleSkyTemp(x, z);
+            float temp = (float)this.skyClimateSampler.get().sampleSkyTemp(x, z);
             
             skyColorVec = Vec3d.unpackRgb(this.sampleBetaSkyColor(temp));
         }

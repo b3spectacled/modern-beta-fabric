@@ -3,7 +3,8 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateResolver;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.noise.SimplexNoise;
@@ -13,7 +14,6 @@ import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
-import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
@@ -63,11 +63,11 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         setForestOctaves(forestNoiseOctaves);
         
         // Get climate sampler from biome provider if exists,
-        // else create new one.
+        // else create new default Beta climate sampler.
         this.climateSampler = 
             chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource &&
-            oldBiomeSource.getBiomeProvider() instanceof BetaBiomeProvider betaBiomeProvider ?
-                betaBiomeProvider.getClimateSampler() :
+            oldBiomeSource.getBiomeProvider() instanceof ClimateResolver climateResolver ?
+                climateResolver.getClimateSampler() :
                 new BetaClimateSampler(chunkGenerator.getWorldSeed());
         
         // Beta Islands settings

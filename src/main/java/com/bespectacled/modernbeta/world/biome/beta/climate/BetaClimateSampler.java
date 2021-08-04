@@ -2,13 +2,14 @@ package com.bespectacled.modernbeta.world.biome.beta.climate;
 
 import java.util.Random;
 
-import com.bespectacled.modernbeta.api.world.biome.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
 import com.bespectacled.modernbeta.noise.SimplexOctaveNoise;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 
 import net.minecraft.util.math.MathHelper;
 
-public class BetaClimateSampler implements ClimateSampler {
+public class BetaClimateSampler implements ClimateSampler, SkyClimateSampler {
     private final SimplexOctaveNoise tempNoiseOctaves;
     private final SimplexOctaveNoise rainNoiseOctaves;
     private final SimplexOctaveNoise detailNoiseOctaves;

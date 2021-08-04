@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.bespectacled.modernbeta.api.world.biome.ClimateType;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 
 import net.minecraft.nbt.NbtCompound;

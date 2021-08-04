@@ -1,9 +1,7 @@
-package com.bespectacled.modernbeta.api.world.biome;
+package com.bespectacled.modernbeta.api.world.biome.climate;
 
 public interface ClimateSampler {
     double sampleTemp(int x, int z);
     
     double sampleRain(int x, int z);
-    
-    double sampleSkyTemp(int x, int z);
 }

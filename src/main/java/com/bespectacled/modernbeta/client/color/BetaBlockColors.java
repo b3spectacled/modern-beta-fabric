@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.world.BiomeColors;

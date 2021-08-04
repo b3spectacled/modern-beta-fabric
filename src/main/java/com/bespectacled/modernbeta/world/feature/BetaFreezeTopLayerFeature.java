@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.world.feature;
 
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateResolver;
 import com.bespectacled.modernbeta.world.biome.*;
-import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
@@ -46,9 +46,9 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 
                 double temp;
                 if (generator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource && 
-                    oldBiomeSource.getBiomeProvider() instanceof BetaBiomeProvider betaBiomeProvider
+                    oldBiomeSource.getBiomeProvider() instanceof ClimateResolver climateResolver
                 ) {
-                    temp = betaBiomeProvider.getClimateSampler().sampleTemp(absX, absZ);
+                    temp = climateResolver.getClimateSampler().sampleTemp(absX, absZ);
                 } else {
                     temp = world.getBiome(mutable).getTemperature();
                 }
