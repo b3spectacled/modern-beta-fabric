@@ -16,9 +16,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.climate.ClimateResolver;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
-import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateResolver;
 import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
 import com.bespectacled.modernbeta.client.color.BetaBlockColors;
 import com.bespectacled.modernbeta.util.OldClientWorld;
@@ -86,10 +84,10 @@ public abstract class MixinClientWorld implements OldClientWorld {
             this.isOldWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof OldBiomeSource;
             
             if (biomeSource instanceof OldBiomeSource oldBiomeSource) {
-                if (oldBiomeSource.getBiomeProvider() instanceof ClimateResolver climateResolver)
-                    this.climateSampler = Optional.of(climateResolver.getClimateSampler());
-                if (oldBiomeSource.getBiomeProvider() instanceof SkyClimateResolver skyClimateResolver)
-                    this.skyClimateSampler = Optional.of(skyClimateResolver.getClimateSampler());
+                if (oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler)
+                    this.climateSampler = Optional.of(climateSampler);
+                if (oldBiomeSource.getBiomeProvider() instanceof SkyClimateSampler skyClimateSampler)
+                    this.skyClimateSampler = Optional.of(skyClimateSampler);
             }
         }
         

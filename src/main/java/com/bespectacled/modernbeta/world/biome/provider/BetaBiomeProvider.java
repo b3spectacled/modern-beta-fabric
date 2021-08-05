@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
-import com.bespectacled.modernbeta.api.world.biome.climate.ClimateResolver;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
-import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateResolver;
+import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMap;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
@@ -16,7 +16,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
-public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, ClimateResolver, SkyClimateResolver {
+public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, ClimateSampler, SkyClimateSampler {
     private final BetaClimateSampler climateSampler;
     private final BetaClimateMap climateMap;
     
@@ -63,7 +63,17 @@ public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, C
     }
 
     @Override
-    public BetaClimateSampler getClimateSampler() {
-        return this.climateSampler;
+    public double sampleTemp(int x, int z) {
+        return this.climateSampler.sampleTemp(x, z);
+    }
+
+    @Override
+    public double sampleRain(int x, int z) {
+        return this.climateSampler.sampleRain(x, z);
+    }
+
+    @Override
+    public double sampleSkyTemp(int x, int z) {
+        return this.climateSampler.sampleSkyTemp(x, z);
     }
 }

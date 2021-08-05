@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.world.gen.provider;
 
 import java.util.Random;
 
-import com.bespectacled.modernbeta.api.world.biome.climate.ClimateResolver;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
@@ -54,8 +53,8 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BeachSpawna
         // else create new default Beta climate sampler.
         this.climateSampler = 
             chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource &&
-            oldBiomeSource.getBiomeProvider() instanceof ClimateResolver climateResolver ?
-                climateResolver.getClimateSampler() :
+            oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler ?
+                climateSampler :
                 new BetaClimateSampler(chunkGenerator.getWorldSeed());
     }
     
