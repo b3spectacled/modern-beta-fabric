@@ -20,6 +20,7 @@ public class OldGeneratorConfig {
     public static final NoiseSamplingConfig SKYLANDS_SAMPLING_CONFIG;
     public static final NoiseSamplingConfig INFDEV_611_SAMPLING_CONFIG;
     public static final NoiseSamplingConfig INFDEV_415_SAMPLING_CONFIG;
+    public static final NoiseSamplingConfig PE_SAMPLING_CONFIG;
     
     public static final GenerationShapeConfig BETA_SHAPE_CONFIG;
     public static final GenerationShapeConfig ALPHA_SHAPE_CONFIG;
@@ -27,6 +28,7 @@ public class OldGeneratorConfig {
     public static final GenerationShapeConfig INFDEV_611_SHAPE_CONFIG;
     public static final GenerationShapeConfig INFDEV_415_SHAPE_CONFIG;
     public static final GenerationShapeConfig INDEV_SHAPE_CONFIG;
+    public static final GenerationShapeConfig PE_SHAPE_CONFIG;
     
     static {
         STRUCTURES = new StructuresConfig(true);
@@ -38,6 +40,7 @@ public class OldGeneratorConfig {
         SKYLANDS_SAMPLING_CONFIG = new NoiseSamplingConfig(2.0, 1.0, 80.0, 160.0);
         INFDEV_611_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
         INFDEV_415_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 400.0);
+        PE_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0); 
         
         BETA_SHAPE_CONFIG = GenerationShapeConfig.create(
             0,
@@ -131,6 +134,22 @@ public class OldGeneratorConfig {
             -0.46875, 
             true, 
             false, 
+            false, 
+            false
+        );
+        
+        PE_SHAPE_CONFIG = GenerationShapeConfig.create(
+            0,
+            128,
+            PE_SAMPLING_CONFIG, 
+            new SlideConfig(-10, 3, 0), 
+            new SlideConfig(15, 3, 0),
+            1, 
+            2, 
+            1, 
+            -0.46875, 
+            true, 
+            false,
             false, 
             false
         );

@@ -134,8 +134,8 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             int noiseY = y + this.noiseMinY;
             
             // Var names taken from old customized preset names
-            double coordinateScale = 684.41200000000003D * this.xzScale; 
-            double heightScale = 684.41200000000003D * this.yScale;
+            double coordinateScale = 684.412D * this.xzScale; 
+            double heightScale = 684.412D * this.yScale;
             
             double mainNoiseScaleX = this.xzFactor; // Default: 80
             double mainNoiseScaleY = this.yFactor;  // Default: 160

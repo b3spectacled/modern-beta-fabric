@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.world.biome.provider;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
@@ -75,5 +76,15 @@ public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, C
     @Override
     public double sampleSkyTemp(int x, int z) {
         return this.climateSampler.sampleSkyTemp(x, z);
+    }
+    
+    @Override
+    public boolean sampleBiomeColor() {
+        return ModernBeta.RENDER_CONFIG.biomeColorConfig.renderBetaBiomeColor;
+    }
+    
+    @Override
+    public boolean sampleSkyColor() {
+        return ModernBeta.RENDER_CONFIG.biomeColorConfig.renderBetaSkyColor;
     }
 }

@@ -1,12 +1,13 @@
 package com.bespectacled.modernbeta.mixin;
 
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeArray;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import com.bespectacled.modernbeta.util.BiomeUtil;
 import com.bespectacled.modernbeta.util.mutable.MutableBiomeArray;
+
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeArray;
 
 /**
  * @Author WorldEdit

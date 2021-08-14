@@ -1,9 +1,9 @@
 package com.bespectacled.modernbeta.mixin.client;
 
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -36,7 +36,7 @@ public class MixinBackgroundRenderer {
         at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/SkyProperties;getFogColorOverride(FF)[F")
     )
     private static float[] modifyFogSunsetCols(float[] skyCols) {
-        return ModernBeta.RENDER_CONFIG.renderAlphaSunset ? null : skyCols;
+        return ModernBeta.RENDER_CONFIG.otherConfig.renderAlphaSunset ? null : skyCols;
     }
     
     /* Mostly for better Colormatic interaction, otherwise not needed right now.
@@ -86,7 +86,7 @@ public class MixinBackgroundRenderer {
         index = 7
     )
     private static float modifyFogWeighting(float weight) {
-        return isOldWorld && ModernBeta.RENDER_CONFIG.renderOldFogColor ? oldFogWeight : weight;
+        return isOldWorld && ModernBeta.RENDER_CONFIG.biomeColorConfig.renderOldFogColor ? oldFogWeight : weight;
     }
     
     @Unique

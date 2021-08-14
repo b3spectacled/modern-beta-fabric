@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.api.client.gui.screen;
 import java.util.List;
 
 import com.bespectacled.modernbeta.api.client.gui.wrapper.OptionWrapper;
+
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;

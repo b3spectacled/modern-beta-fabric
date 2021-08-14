@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.compat;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
+
 import net.fabricmc.loader.api.FabricLoader;
 
 public class Compat {

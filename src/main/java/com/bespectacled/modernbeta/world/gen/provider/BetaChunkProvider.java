@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
-import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -11,17 +10,15 @@ import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.HeightLimitView;
-import net.minecraft.world.Heightmap;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
 
-public class BetaChunkProvider extends NoiseChunkProvider implements BeachSpawnable {
+public class BetaChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
@@ -56,6 +53,7 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BeachSpawna
             oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler ?
                 climateSampler :
                 new BetaClimateSampler(chunkGenerator.getWorldSeed());
+        this.spawnLocator = new BeachSpawnLocator(this, this.beachNoiseOctaves);
     }
     
     @Override
@@ -196,18 +194,6 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BeachSpawna
     }
     
     @Override
-    public boolean isSandAt(int x, int z, HeightLimitView world) {
-        double eighth = 0.03125D;
-        
-        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world);
-        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
-        
-        return 
-            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
-            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
-    }
-    
-    @Override
     protected void generateNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
         int horizNoiseResolution = 16 / (this.noiseSizeX + 1);
         int x = (startNoiseX / this.noiseSizeX * 16) + localNoiseX * horizNoiseResolution + horizNoiseResolution / 2;
@@ -242,7 +228,7 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BeachSpawna
         depthNoise /= 8000D;
 
         if (depthNoise < 0.0D) {
-            depthNoise = -depthNoise * 0.29999999999999999D;
+            depthNoise = -depthNoise * 0.3D;
         }
 
         depthNoise = depthNoise * 3D - 2D;
@@ -254,7 +240,7 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BeachSpawna
                 depthNoise = -1D;
             }
 
-            depthNoise /= 1.3999999999999999D;
+            depthNoise /= 1.4D;
             depthNoise /= 2D;
 
             scaleNoise = 0.0D;
@@ -283,8 +269,8 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BeachSpawna
             int noiseY = y + this.noiseMinY;
             
             // Var names taken from old customized preset names
-            double coordinateScale = 684.41200000000003D * this.xzScale; 
-            double heightScale = 684.41200000000003D * this.yScale;
+            double coordinateScale = 684.412D * this.xzScale; 
+            double heightScale = 684.412D * this.yScale;
             
             double mainNoiseScaleX = this.xzFactor; // Default: 80
             double mainNoiseScaleY = this.yFactor;  // Default: 160
@@ -360,16 +346,5 @@ public class BetaChunkProvider extends NoiseChunkProvider implements BeachSpawna
             
             buffer[y] = densityWithOffset;
         }
-    }
-    
-    @Override
-    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus status) {
-        /*
-        if (status == ChunkStatus.CARVERS || status == ChunkStatus.LIQUID_CARVERS) {
-            return true;
-        }
-        */
-        
-        return false;
     }
 } 

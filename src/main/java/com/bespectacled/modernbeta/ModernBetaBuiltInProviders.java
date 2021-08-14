@@ -1,13 +1,34 @@
 package com.bespectacled.modernbeta;
 
-import com.bespectacled.modernbeta.api.registry.*;
-import com.bespectacled.modernbeta.client.gui.screen.biome.*;
-import com.bespectacled.modernbeta.client.gui.screen.world.*;
+import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.api.registry.Registries;
+import com.bespectacled.modernbeta.client.gui.screen.biome.BetaBiomeScreen;
+import com.bespectacled.modernbeta.client.gui.screen.biome.SingleBiomeScreen;
+import com.bespectacled.modernbeta.client.gui.screen.biome.VanillaBiomeScreen;
+import com.bespectacled.modernbeta.client.gui.screen.world.BaseWorldScreen;
+import com.bespectacled.modernbeta.client.gui.screen.world.IndevWorldScreen;
+import com.bespectacled.modernbeta.client.gui.screen.world.InfWorldScreen;
+import com.bespectacled.modernbeta.client.gui.screen.world.Infdev227WorldScreen;
+import com.bespectacled.modernbeta.client.gui.screen.world.IslandWorldScreen;
 import com.bespectacled.modernbeta.world.BuiltInWorldProviders;
-import com.bespectacled.modernbeta.world.biome.provider.*;
+import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
+import com.bespectacled.modernbeta.world.biome.provider.PEBiomeProvider;
+import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
+import com.bespectacled.modernbeta.world.biome.provider.VanillaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
-import com.bespectacled.modernbeta.world.cavebiome.provider.*;
-import com.bespectacled.modernbeta.world.gen.provider.*;
+import com.bespectacled.modernbeta.world.cavebiome.provider.BetaCaveBiomeProvider;
+import com.bespectacled.modernbeta.world.cavebiome.provider.NoCaveBiomeProvider;
+import com.bespectacled.modernbeta.world.cavebiome.provider.SingleCaveBiomeProvider;
+import com.bespectacled.modernbeta.world.cavebiome.provider.VanillaCaveBiomeProvider;
+import com.bespectacled.modernbeta.world.gen.provider.AlphaChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.BetaChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.BetaIslandsChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.IndevChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.Infdev227ChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.Infdev415ChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.Infdev611ChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.PEChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.SkylandsChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 
 import net.minecraft.nbt.NbtCompound;
@@ -29,6 +50,7 @@ public class ModernBetaBuiltInProviders {
         Registries.CHUNK.register(BuiltInTypes.Chunk.INFDEV_227.name, Infdev227ChunkProvider::new);
         Registries.CHUNK.register(BuiltInTypes.Chunk.INDEV.name, IndevChunkProvider::new);
         Registries.CHUNK.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, BetaIslandsChunkProvider::new);
+        Registries.CHUNK.register(BuiltInTypes.Chunk.PE.name, PEChunkProvider::new);
     }
     
     // Register default chunk settings
@@ -42,6 +64,7 @@ public class ModernBetaBuiltInProviders {
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_227.name, ChunkProviderSettings::createSettingsInfdev227);
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INDEV.name, ChunkProviderSettings::createSettingsIndev);
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, ChunkProviderSettings::createSettingsIslands);
+        Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.PE.name, ChunkProviderSettings::createSettingsPE);
     }
     
     // Register default biome providers
@@ -50,6 +73,7 @@ public class ModernBetaBuiltInProviders {
         Registries.BIOME.register(BuiltInTypes.Biome.BETA.name, BetaBiomeProvider::new);
         Registries.BIOME.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeProvider::new);
         Registries.BIOME.register(BuiltInTypes.Biome.VANILLA.name, VanillaBiomeProvider::new);
+        Registries.BIOME.register(BuiltInTypes.Biome.PE.name, PEBiomeProvider::new);
     }
     
     // Register default biome settings
@@ -58,6 +82,7 @@ public class ModernBetaBuiltInProviders {
         Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.BETA.name, BiomeProviderSettings::createSettingsBeta);
         Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.SINGLE.name, BiomeProviderSettings::createSettingsSingle);
         Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.VANILLA.name, BiomeProviderSettings::createSettingsVanilla);
+        Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.PE.name, BiomeProviderSettings::createSettingsPE);
     }
     
     // Register default cave biome providers
@@ -85,6 +110,7 @@ public class ModernBetaBuiltInProviders {
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.BETA.name, BetaBiomeScreen::create);
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeScreen::create);
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.VANILLA.name, VanillaBiomeScreen::create);
+        Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.PE.name, BetaBiomeScreen::create);
     }
     
     // Register default world providers
@@ -98,5 +124,6 @@ public class ModernBetaBuiltInProviders {
         Registries.WORLD.register(BuiltInTypes.Chunk.INFDEV_227.name, BuiltInWorldProviders.INFDEV_227);
         Registries.WORLD.register(BuiltInTypes.Chunk.INDEV.name, BuiltInWorldProviders.INDEV);
         Registries.WORLD.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, BuiltInWorldProviders.BETA_ISLANDS);
+        Registries.WORLD.register(BuiltInTypes.Chunk.PE.name, BuiltInWorldProviders.PE);
     }
 }

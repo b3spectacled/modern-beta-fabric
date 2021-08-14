@@ -27,4 +27,13 @@ public interface ClimateSampler {
      * @return A rainfall value in range [0.0, 1.0] sampled at position.
      */
     double sampleRain(int x, int z);
+    
+    /**
+     * Indicate to block colors whether to sample climate values for biome tinting.
+     * 
+     * @return Supplier for whether to use climate values for biome tinting.
+     */
+    default boolean sampleBiomeColor() {
+        return false;
+    }
 }

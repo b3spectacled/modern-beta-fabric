@@ -1,5 +1,25 @@
 package com.bespectacled.modernbeta.mixin.client;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
+import com.bespectacled.modernbeta.client.color.BetaBlockColors;
+import com.bespectacled.modernbeta.util.OldClientWorld;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -14,26 +34,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-
-import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
-import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
-import com.bespectacled.modernbeta.client.color.BetaBlockColors;
-import com.bespectacled.modernbeta.util.OldClientWorld;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-
-import java.util.Optional;
-import java.util.function.Supplier;
-
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.At;
 
 @Environment(EnvType.CLIENT)
 @Mixin(value = ClientWorld.class, priority = 1)
@@ -68,8 +68,8 @@ public abstract class MixinClientWorld implements OldClientWorld {
         long seed, 
         CallbackInfo ci
     ) {
-        long worldSeed = this.parseFixedSeed(ModernBeta.RENDER_CONFIG.fixedSeed);
-        boolean useFixedSeed = ModernBeta.RENDER_CONFIG.useFixedSeed;
+        long worldSeed = this.parseFixedSeed(ModernBeta.RENDER_CONFIG.fixedSeedConfig.fixedSeed);
+        boolean useFixedSeed = ModernBeta.RENDER_CONFIG.fixedSeedConfig.useFixedSeed;
         
         this.isOldWorld = false;
         this.climateSampler = Optional.ofNullable(useFixedSeed ? new BetaClimateSampler(worldSeed) : null);
@@ -114,7 +114,7 @@ public abstract class MixinClientWorld implements OldClientWorld {
         index = 6  
     )
     private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
-        if (this.skyClimateSampler.isPresent() && ModernBeta.RENDER_CONFIG.renderBetaSkyColor) {
+        if (this.skyClimateSampler.isPresent() && this.skyClimateSampler.get().sampleSkyColor()) {
             int x = (int)curPos.getX();
             int z = (int)curPos.getZ();
             float temp = (float)this.skyClimateSampler.get().sampleSkyTemp(x, z);

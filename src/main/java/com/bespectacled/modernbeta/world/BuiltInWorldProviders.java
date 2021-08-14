@@ -5,6 +5,7 @@ import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.world.biome.classic.ClassicBiomes;
 import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
+import com.bespectacled.modernbeta.world.biome.pe.PEBiomes;
 import com.bespectacled.modernbeta.world.gen.OldChunkGeneratorSettings;
 
 public class BuiltInWorldProviders {
@@ -17,6 +18,7 @@ public class BuiltInWorldProviders {
     public static final WorldProvider INFDEV_227;
     public static final WorldProvider INDEV;
     public static final WorldProvider BETA_ISLANDS;
+    public static final WorldProvider PE;
     
     static {
         DEFAULT = new WorldProvider(
@@ -99,6 +101,15 @@ public class BuiltInWorldProviders {
             BuiltInTypes.CaveBiome.VANILLA.name,
             BetaBiomes.FOREST_ID.toString(),
             BuiltInTypes.WorldScreen.ISLAND.name
+        );
+        
+        PE = new WorldProvider(
+            BuiltInTypes.Chunk.PE.name,
+            OldChunkGeneratorSettings.PE.toString(),
+            BuiltInTypes.Biome.PE.name,
+            BuiltInTypes.CaveBiome.NONE.name,
+            PEBiomes.PE_FOREST_ID.toString(),
+            BuiltInTypes.WorldScreen.INF.name
         );
     }
 }

@@ -28,8 +28,8 @@ public class VanillaBiomeProvider extends BiomeProvider {
     public VanillaBiomeProvider(OldBiomeSource biomeSource) {
         super(biomeSource);
         
-        this.vanillaBiomeSize = NbtUtil.readInt(NbtTags.VANILLA_BIOME_SIZE, settings, ModernBeta.BIOME_CONFIG.vanillaBiomeSize);
-        this.vanillaOceanBiomeSize = NbtUtil.readInt(NbtTags.VANILLA_OCEAN_BIOME_SIZE, settings, ModernBeta.BIOME_CONFIG.vanillaOceanBiomeSize);
+        this.vanillaBiomeSize = NbtUtil.readInt(NbtTags.VANILLA_BIOME_SIZE, settings, ModernBeta.BIOME_CONFIG.vanillaBiomeConfig.vanillaBiomeSize);
+        this.vanillaOceanBiomeSize = NbtUtil.readInt(NbtTags.VANILLA_OCEAN_BIOME_SIZE, settings, ModernBeta.BIOME_CONFIG.vanillaBiomeConfig.vanillaOceanBiomeSize);
         
         this.biomeSampler = VanillaBiomeLayer.build(seed, false, this.vanillaBiomeSize, -1);
         this.oceanSampler = VanillaOceanLayer.build(seed, false, this.vanillaOceanBiomeSize, -1);

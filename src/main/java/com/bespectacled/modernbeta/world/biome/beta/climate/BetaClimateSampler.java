@@ -69,16 +69,10 @@ public class BetaClimateSampler implements ClimateSampler, SkyClimateSampler {
         double rain = this.rainNoiseOctaves.sample(x, z, 0.05000000074505806D, 0.05000000074505806D, 0.33333333333333331D);
         double detail = this.detailNoiseOctaves.sample(x, z, 0.25D, 0.25D, 0.58823529411764708D);
 
-        double d = detail * 1.1000000000000001D + 0.5D;
-        double d1 = 0.01D;
-        double d2 = 1.0D - d1;
+        detail = detail * 1.1D + 0.5D;
 
-        temp = (temp * 0.14999999999999999D + 0.69999999999999996D) * d2 + d * d1;
-
-        d1 = 0.002D;
-        d2 = 1.0D - d1;
-
-        rain = (rain * 0.14999999999999999D + 0.5D) * d2 + d * d1;
+        temp = (temp * 0.15D + 0.7D) * 0.99D + detail * 0.01D;
+        rain = (rain * 0.15D + 0.5D) * 0.998D + detail * 0.002D;
 
         temp = 1.0D - (1.0D - temp) * (1.0D - temp);
         

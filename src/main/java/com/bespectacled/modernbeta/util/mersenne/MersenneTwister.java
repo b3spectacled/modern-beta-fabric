@@ -17,10 +17,13 @@ public class MersenneTwister {
     private static final int LOWER_MASK = 0x7fffffff;
     private static final int DEFAULT_SEED = 4357;
     private static final int[] MAG_01 = { 0x0, MATRIX_A };
-    private static final double MAX_UINT_32 = 4294967296D; 
     
     private final int mt[];
     private int mti;
+    
+    public MersenneTwister() {
+        this(DEFAULT_SEED);
+    }
     
     public MersenneTwister(int seed) {
         this.mt = new int[N];
@@ -64,13 +67,6 @@ public class MersenneTwister {
         y ^= (y >>> 18);
         
         return y;
-    }
-    
-    /*
-     * Get double value by dividing by max unsigned int32 value.
-     */
-    public synchronized double genRandDouble() {
-        return Integer.toUnsignedLong(this.genRandInt32()) / MAX_UINT_32;
     }
     
     private synchronized void init(int seed) {

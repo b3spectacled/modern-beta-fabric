@@ -2,23 +2,21 @@ package com.bespectacled.modernbeta.world.gen.provider;
 
 import java.util.Random;
 
-import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.HeightLimitView;
-import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 
-public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachSpawnable {
+public class Infdev611ChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
@@ -43,6 +41,8 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
         this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
 
         setForestOctaves(forestNoiseOctaves);
+        
+        this.spawnLocator = new BeachSpawnLocator(this, this.beachNoiseOctaves);
     }
 
     @Override
@@ -153,18 +153,6 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
     }
 
     @Override
-    public boolean isSandAt(int x, int z, HeightLimitView world) {
-        double eighth = 0.03125D;
-        
-        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world);
-        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
-        
-        return 
-            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
-            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
-    }
-
-    @Override
     protected void generateNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
@@ -197,7 +185,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
                 depthNoise = -1D;
             }
 
-            depthNoise /= 1.3999999999999999D;
+            depthNoise /= 1.4D;
             //depthNoise /= 2D; // Omitting this creates the Infdev 20100611 generator.
 
             scaleNoise = 0.0D;
@@ -222,8 +210,8 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider implements BeachS
             int noiseY = y + this.noiseMinY;
             
             // Var names taken from old customized preset names
-            double coordinateScale = 684.41200000000003D * this.xzScale; 
-            double heightScale = 684.41200000000003D * this.yScale;
+            double coordinateScale = 684.412D * this.xzScale; 
+            double heightScale = 684.412D * this.yScale;
             
             double mainNoiseScaleX = this.xzFactor; // Default: 80
             double mainNoiseScaleY = this.yFactor;  // Default: 160

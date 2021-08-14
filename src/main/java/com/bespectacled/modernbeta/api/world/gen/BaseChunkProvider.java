@@ -1,9 +1,11 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.IntStream;
 
-import com.bespectacled.modernbeta.compat.CompatBiomes;
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
@@ -22,6 +24,12 @@ import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.DefaultBlockSource;
 
 public abstract class BaseChunkProvider extends ChunkProvider {
+    // Set for specifying which biomes should use their vanilla surface builders.
+    // Done on per-biome basis for best mod compatibility.
+    private static final Set<Identifier> BIOMES_WITH_CUSTOM_SURFACES = new HashSet<Identifier>(
+        ModernBeta.COMPAT_CONFIG.biomesWithCustomSurfaces.stream().map(b -> new Identifier(b)).toList()
+    );
+    
     protected final Random rand;
     
     protected final int minY;
@@ -158,7 +166,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         int y = mutable.getY();
         int z = mutable.getZ();
         
-        if (CompatBiomes.hasCustomSurface(biomeId)) {
+        if (BIOMES_WITH_CUSTOM_SURFACES.contains(biomeId)) {
             double surfaceNoise = this.surfaceDepthNoise.sample(x * 0.0625, z * 0.0625, 0.0625, (x & 0xF) * 0.0625) * 15.0;
             biome.buildSurface(
                 random, 

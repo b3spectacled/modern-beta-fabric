@@ -11,4 +11,13 @@ public interface SkyClimateSampler {
      * @return A temperature value in range [0.0, 1.0] sampled at position.
      */
     double sampleSkyTemp(int x, int z);
+    
+    /**
+     * Indicate to client world mixin whether to sample climate values for sky color.
+     * 
+     * @return Supplier for whether to use climate values for biome tinting.
+     */
+    default boolean sampleSkyColor() {
+        return false;
+    }
 }

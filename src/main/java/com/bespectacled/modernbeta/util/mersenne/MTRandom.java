@@ -4,7 +4,13 @@ import java.util.Random;
 
 @SuppressWarnings("serial")
 public class MTRandom extends Random {
+    private static final double MAX_UINT_32 = 4294967296D;
+    
     private final MersenneTwister mt;
+    
+    public MTRandom() {
+        this.mt = new MersenneTwister();
+    }
     
     public MTRandom(long seed) {
         this.mt = new MersenneTwister((int)seed);
@@ -17,15 +23,25 @@ public class MTRandom extends Random {
     
     /*
      * Used by noise generators
+     * Get double value by dividing by max unsigned int32 value.
      */
     @Override
     public synchronized double nextDouble() {
-        return this.mt.genRandDouble();
+        return Integer.toUnsignedLong(this.mt.genRandInt32()) / MAX_UINT_32;
+    }
+    
+    /*
+     * Used by surface builder
+     * Get float value by dividing by max unsigned int32 value.
+     */
+    @Override
+    public synchronized float nextFloat() {
+        return (float)(Integer.toUnsignedLong(this.mt.genRandInt32()) / MAX_UINT_32);
     }
 
     /*
      * Used when populating noise generator permutation array
-     * See: __aeabi_uidivmod(unsigned numerator, unsigned denominator) for PE equivalent
+     * See: __aeabi_uidivmod(unsigned numerator, unsigned denominator) for Arm equivalent
      */
     @Override
     public synchronized int nextInt(int bound) {

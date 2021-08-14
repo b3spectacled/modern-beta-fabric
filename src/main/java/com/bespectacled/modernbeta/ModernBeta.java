@@ -1,15 +1,17 @@
 package com.bespectacled.modernbeta;
 
-import net.fabricmc.api.EnvType;
-
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.Identifier;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.bespectacled.modernbeta.client.color.BlockColors;
+import com.bespectacled.modernbeta.command.DebugProviderSettingsCommand;
+import com.bespectacled.modernbeta.compat.Compat;
+import com.bespectacled.modernbeta.config.ConfigBiome;
+import com.bespectacled.modernbeta.config.ConfigCompat;
+import com.bespectacled.modernbeta.config.ConfigGeneration;
+import com.bespectacled.modernbeta.config.ConfigRendering;
+import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.world.biome.OldBiomeModifier;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.OldBiomes;
@@ -21,11 +23,10 @@ import com.bespectacled.modernbeta.world.structure.OldStructures;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
-
-import com.bespectacled.modernbeta.client.color.BlockColors;
-import com.bespectacled.modernbeta.command.DebugProviderSettingsCommand;
-import com.bespectacled.modernbeta.compat.Compat;
-import com.bespectacled.modernbeta.config.*;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.util.Identifier;
 
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
@@ -36,9 +37,10 @@ public class ModernBeta implements ModInitializer {
         PartitioningSerializer.wrap(GsonConfigSerializer::new)
     ).getConfig();
     
-    public static final ModernBetaGenerationConfig GEN_CONFIG = CONFIG.generation_config;
-    public static final ModernBetaBiomeConfig BIOME_CONFIG = CONFIG.biome_config;
-    public static final ModernBetaRenderingConfig RENDER_CONFIG = CONFIG.rendering_config;
+    public static final ConfigGeneration GEN_CONFIG = CONFIG.generationConfig;
+    public static final ConfigBiome BIOME_CONFIG = CONFIG.biomeConfig;
+    public static final ConfigRendering RENDER_CONFIG = CONFIG.renderingConfig;
+    public static final ConfigCompat COMPAT_CONFIG = CONFIG.compatConfig;
 
     private static final Logger LOGGER = LogManager.getLogger(MOD_ID);
     

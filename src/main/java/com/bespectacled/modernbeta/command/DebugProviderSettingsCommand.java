@@ -1,14 +1,14 @@
 package com.bespectacled.modernbeta.command;
 
+import static net.minecraft.server.command.CommandManager.literal;
+
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
-
-import static net.minecraft.server.command.CommandManager.*;
-
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 public class DebugProviderSettingsCommand {
     public static void register() {

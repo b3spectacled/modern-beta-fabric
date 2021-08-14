@@ -1,9 +1,7 @@
 package com.bespectacled.modernbeta.client.color;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 
 import net.minecraft.block.BlockState;
@@ -17,11 +15,9 @@ import net.minecraft.world.BlockRenderView;
 public final class BetaBlockColors {
     public static final BetaBlockColors INSTANCE = new BetaBlockColors();
     
-    private final Supplier<Boolean> renderBetaBiomeColor;
     private Optional<ClimateSampler> climateSampler;
     
     private BetaBlockColors() {
-        this.renderBetaBiomeColor = () -> ModernBeta.RENDER_CONFIG.renderBetaBiomeColor;
         this.climateSampler = Optional.empty();
     }
     
@@ -34,7 +30,7 @@ public final class BetaBlockColors {
             return 8174955; // Default tint, from wiki
         }
         
-        if (this.climateSampler.isPresent() && this.renderBetaBiomeColor.get()) {
+        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor()) {
             int x = pos.getX();
             int z = pos.getZ();
 
@@ -52,7 +48,7 @@ public final class BetaBlockColors {
             return 8174955; // Default tint, from wiki
         }
         
-        if (this.climateSampler.isPresent() && this.renderBetaBiomeColor.get()) {
+        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor()) {
             int x = pos.getX();
             int y = pos.getY();
             int z = pos.getZ();
@@ -77,7 +73,7 @@ public final class BetaBlockColors {
             return 4764952; // Default tint, from wiki
         }
         
-        if (this.climateSampler.isPresent() && this.renderBetaBiomeColor.get()) {
+        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor()) {
             int x = pos.getX();
             int z = pos.getZ();
             
@@ -91,7 +87,7 @@ public final class BetaBlockColors {
     }
     
     public int getReedColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
-        if (this.climateSampler.isPresent() && this.renderBetaBiomeColor.get()) {
+        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor()) {
             return 0xFFFFFF;
         }
         

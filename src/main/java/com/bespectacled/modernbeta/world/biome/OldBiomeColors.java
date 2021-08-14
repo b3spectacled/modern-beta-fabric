@@ -1,13 +1,16 @@
 package com.bespectacled.modernbeta.world.biome;
 
-public class OldBiomeColors {
+public final class OldBiomeColors {
     private static final boolean USE_OLD_WATER_COLORS = false;
     public static final boolean USE_DEBUG_OCEAN_COLOR = false;
     
     public static final int OLD_GRASS_COLOR = 11272039;
     public static final int OLD_FOLIAGE_COLOR = 5242667;
-    public static final int OLD_WATER_COLOR = 2838783;
+    public static final int OLD_WATER_COLOR = 3625215;
     public static final int OLD_WATER_FOG_COLOR = 329011; // Vanilla color is apparently the same as original water fog color
+    
+    public static final int PE_GRASS_COLOR = 3709744;
+    public static final int PE_FOLIAGE_COLOR = 3207444;
 
     public static final int VANILLA_WATER_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_COLOR : 4159204;
     public static final int VANILLA_COLD_WATER_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_COLOR : 4020182;
@@ -30,6 +33,9 @@ public class OldBiomeColors {
     // All colors below extracted from respective original versions, so they should be accurate.
     
     public static final int BETA_FOG_COLOR = 12638463;
+    
+    public static final int PE_SKY_COLOR = 2380991;
+    public static final int PE_FOG_COLOR = 8444671;
     
     public static final int SKYLANDS_SKY_COLOR = 12632319;
     public static final int SKYLANDS_FOG_COLOR = 8421536;

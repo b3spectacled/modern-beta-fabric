@@ -8,8 +8,10 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.client.gui.screen.BiomeScreen;
 import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.ActionOptionWrapper;
+import com.bespectacled.modernbeta.api.client.gui.wrapper.CyclingOptionWrapper;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMap;
@@ -22,19 +24,26 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 public class BetaBiomeScreen extends BiomeScreen {
+    private final ClimateType climateType;
     private final Map<String, Identifier> biomeSettingsMap;
     
-    private BetaBiomeScreen(WorldScreen parent, Consumer<Settings> consumer) {
-        super(parent, consumer);
+    private BetaBiomeScreen(WorldScreen parent, Consumer<Settings> consumer, Settings biomeSettings, ClimateType climateType) {
+        super(parent, consumer, biomeSettings);
         
         // Create Beta biome map from existing biome settings
-        this.biomeSettingsMap = new BetaClimateMap(this.biomeSettings.getNbt()).getMap();
+        this.climateType = climateType;
+        this.biomeSettingsMap = new BetaClimateMap(this.biomeSettings.getNbt()).getMap(climateType);
+    }
+    
+    private BetaBiomeScreen(WorldScreen parent, Consumer<Settings> consumer, ClimateType climateType) {
+        this(parent, consumer, new Settings(parent.getWorldSettings().getNbt(WorldSetting.BIOME)), climateType);
     }
     
     public static BetaBiomeScreen create(WorldScreen worldScreen) {
         return new BetaBiomeScreen(
             worldScreen,
-            settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getNbt())
+            settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getNbt()),
+            ClimateType.LAND
         );
     }
     
@@ -42,6 +51,23 @@ public class BetaBiomeScreen extends BiomeScreen {
     protected void init() {
         super.init();
         
+        CyclingOptionWrapper<ClimateType> climateTypeOption = new CyclingOptionWrapper<>(
+            "createWorld.customize.climateType",
+            ClimateType.values(),
+            () -> this.climateType,
+            value -> {
+                this.client.setScreen(
+                    new BetaBiomeScreen(
+                        (WorldScreen)this.parent,
+                        this.consumer,
+                        this.biomeSettings,
+                        value
+                    )    
+                );
+            }
+        );
+        
+        this.addOption(climateTypeOption);
         for (Entry<String, Identifier> e : this.biomeSettingsMap.entrySet()) {
             this.addBiomeButtonEntry(e.getKey(), GuiUtil.createTranslatableBiomeStringFromId(e.getValue()));
         }

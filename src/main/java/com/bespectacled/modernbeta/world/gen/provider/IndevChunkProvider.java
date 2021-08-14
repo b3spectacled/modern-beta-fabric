@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.ArrayDeque;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
@@ -19,17 +20,18 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevUtil;
+import com.bespectacled.modernbeta.world.spawn.IndevSpawnLocator;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SnowyBlock;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
@@ -79,19 +81,19 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
     private final AtomicBoolean generated;
     private final CountDownLatch generatedLatch;
     
-    private String phase;
+    private String levelPhase;
     
     public IndevChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         //super(chunkGenerator, 0, 256, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
-        this.levelType = IndevType.fromName(NbtUtil.readString(NbtTags.LEVEL_TYPE, providerSettings, ModernBeta.GEN_CONFIG.indevLevelType));
-        this.levelTheme = IndevTheme.fromName(NbtUtil.readString(NbtTags.LEVEL_THEME, providerSettings, ModernBeta.GEN_CONFIG.indevLevelTheme));
+        this.levelType = IndevType.fromName(NbtUtil.readString(NbtTags.LEVEL_TYPE, providerSettings, ModernBeta.GEN_CONFIG.indevGenConfig.indevLevelType));
+        this.levelTheme = IndevTheme.fromName(NbtUtil.readString(NbtTags.LEVEL_THEME, providerSettings, ModernBeta.GEN_CONFIG.indevGenConfig.indevLevelTheme));
         
-        this.levelWidth = NbtUtil.readInt(NbtTags.LEVEL_WIDTH, providerSettings, ModernBeta.GEN_CONFIG.indevLevelWidth);
-        this.levelLength = NbtUtil.readInt(NbtTags.LEVEL_LENGTH, providerSettings, ModernBeta.GEN_CONFIG.indevLevelLength);
-        this.levelHeight = NbtUtil.readInt(NbtTags.LEVEL_HEIGHT, providerSettings, ModernBeta.GEN_CONFIG.indevLevelHeight);
-        this.caveRadius = NbtUtil.readFloat(NbtTags.LEVEL_CAVE_RADIUS, providerSettings, ModernBeta.GEN_CONFIG.indevCaveRadius);
+        this.levelWidth = NbtUtil.readInt(NbtTags.LEVEL_WIDTH, providerSettings, ModernBeta.GEN_CONFIG.indevGenConfig.indevLevelWidth);
+        this.levelLength = NbtUtil.readInt(NbtTags.LEVEL_LENGTH, providerSettings, ModernBeta.GEN_CONFIG.indevGenConfig.indevLevelLength);
+        this.levelHeight = NbtUtil.readInt(NbtTags.LEVEL_HEIGHT, providerSettings, ModernBeta.GEN_CONFIG.indevGenConfig.indevLevelHeight);
+        this.caveRadius = NbtUtil.readFloat(NbtTags.LEVEL_CAVE_RADIUS, providerSettings, ModernBeta.GEN_CONFIG.indevGenConfig.indevCaveRadius);
         
         this.fluidBlock = this.isFloating() ? BlockStates.AIR : (this.isHell() ? BlockStates.LAVA : this.defaultFluid);
         this.topsoilBlock = this.isHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;
@@ -103,7 +105,9 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         this.generated = new AtomicBoolean(false);
         this.generatedLatch = new CountDownLatch(1);
         
-        this.phase = "";
+        this.spawnLocator = new IndevSpawnLocator(this);
+        
+        this.levelPhase = "";
     }
 
     /**
@@ -200,16 +204,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         if (x < 0 || x >= this.levelWidth || z < 0 || z >= this.levelLength) return waterLevel;
         
         this.pregenerateTerrainOrWait();
-        
-        for (int y = this.levelHeight - 1; y >= 0; --y) {
-            Block block = this.blockArr[x][y][z];
-            
-            if (!(block.equals(Blocks.AIR) || block.equals(this.fluidBlock.getBlock()))) {
-                break;
-            }
-            
-            height = y;
-        }
+        height = this.getLevelHighestBlock(x, z);
         
         if (type == Heightmap.Type.WORLD_SURFACE_WG && height < this.waterLevel) 
             height = this.waterLevel;
@@ -278,16 +273,51 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         world.setBlockState(mutable.set(spawnX + 3 - 1, spawnY, spawnZ), Blocks.WALL_TORCH.getDefaultState().rotate(BlockRotation.COUNTERCLOCKWISE_90));
     }
     
-    public IndevType getType() {
+    public IndevType getLevelType() {
         return this.levelType;
     }
     
-    public IndevTheme getTheme() {
+    public IndevTheme getLevelTheme() {
         return this.levelTheme;
     }
     
-    public String getPhase() {
-        return this.phase;
+    public int getLevelWidth() {
+        return this.levelWidth;
+    }
+    
+    public int getLevelLength() {
+        return this.levelLength;
+    }
+    
+    public int getLevelHeight() {
+        return this.levelHeight;
+    }
+
+    public String getLevelPhase() {
+        return this.levelPhase;
+    }
+    
+    public Block getLevelBlock(int x, int y, int z) {
+        x = MathHelper.clamp(x, 0, this.levelWidth - 1);
+        y = MathHelper.clamp(y, 0, this.levelHeight - 1);
+        z = MathHelper.clamp(z, 0, this.levelLength - 1);
+        
+        return this.blockArr[x][y][z];
+    }
+    
+    public Block getLevelFluidBlock() {
+        return this.fluidBlock.getBlock();
+    }
+    
+    public int getLevelHighestBlock(int x, int z) {
+        x = MathHelper.clamp(x, 0, this.levelWidth - 1);
+        z = MathHelper.clamp(z, 0, this.levelLength - 1);
+        
+        int y;
+        
+        for (y = this.levelHeight; this.getLevelBlock(x, y - 1, z) == Blocks.AIR && y > 0; --y);
+        
+        return y;
     }
 
     protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
@@ -818,7 +848,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
     }
     
     private void setPhase(String phase) {
-        this.phase = phase;
+        this.levelPhase = phase;
 
         ModernBeta.log(Level.INFO, "[Indev] " + phase + "..");
     }

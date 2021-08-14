@@ -1,11 +1,14 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
@@ -22,6 +25,8 @@ public abstract class ChunkProvider {
     protected final Supplier<ChunkGeneratorSettings> generatorSettings;
     protected final NbtCompound providerSettings;
     
+    protected SpawnLocator spawnLocator;
+    
     /**
      * Construct a Modern Beta chunk provider with seed and settings.
      * 
@@ -33,6 +38,8 @@ public abstract class ChunkProvider {
         this.seed = chunkGenerator.getWorldSeed();
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
         this.providerSettings = chunkGenerator.getProviderSettings();
+        
+        this.spawnLocator = SpawnLocator.DEFAULT;
     }
     
     /**
@@ -106,6 +113,16 @@ public abstract class ChunkProvider {
     }
     
     /**
+     * Locate initial spawn position for players.
+     * If optional left empty, then vanilla spawn position is used.
+     * 
+     * @return Optional BlockPos player spawn position.
+     */
+    public Optional<BlockPos> locateSpawn() {
+        return this.spawnLocator.locateSpawn();
+    }
+    
+    /**
      * Samples biome at given biome coordinates.
      * 
      * @param biomeX x-coordinate in biome coordinates.
@@ -114,7 +131,7 @@ public abstract class ChunkProvider {
      * 
      * @return A biome.
      */
-    protected Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.chunkGenerator.getBiomeSource().getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
 }

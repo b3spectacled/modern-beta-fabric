@@ -11,7 +11,8 @@ public final class BuiltInTypes {
         INFDEV_415("infdev_415"),
         INFDEV_227("infdev_227"),
         INDEV("indev"),
-        BETA_ISLANDS("beta_islands")
+        BETA_ISLANDS("beta_islands"),
+        PE("pe")
         ;
         
         public final String name;
@@ -22,7 +23,8 @@ public final class BuiltInTypes {
     public enum Biome {
         BETA("beta"),
         SINGLE("single"),
-        VANILLA("vanilla")
+        VANILLA("vanilla"),
+        PE("pe")
         ;
         
         public final String name;

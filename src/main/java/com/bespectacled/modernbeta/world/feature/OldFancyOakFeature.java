@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.world.feature;
 
 import java.util.Random;
 import java.util.Set;
+
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.mojang.serialization.Codec;
 

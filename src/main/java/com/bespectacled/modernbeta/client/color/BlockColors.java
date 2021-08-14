@@ -16,7 +16,9 @@ public final class BlockColors {
             (state, view, pos, tintNdx) -> BetaBlockColors.INSTANCE.getTallGrassColor(state, view, pos, tintNdx), 
             Blocks.FERN,
             Blocks.GRASS,
-            Blocks.POTTED_FERN
+            Blocks.POTTED_FERN,
+            Blocks.TALL_GRASS,
+            Blocks.LARGE_FERN
         );
         
         // Foliage blocks

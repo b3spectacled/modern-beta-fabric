@@ -1,9 +1,10 @@
 package com.bespectacled.modernbeta.mixin.client;
 
 import org.spongepowered.asm.mixin.Mixin;
-import com.bespectacled.modernbeta.ModernBeta;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
+import com.bespectacled.modernbeta.ModernBeta;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -17,6 +18,6 @@ public class MixinWorldRenderer {
         at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/SkyProperties;getFogColorOverride(FF)[F")
     )
     private float[] modifySkySunsetCols(float[] skyCols) {
-	    return ModernBeta.RENDER_CONFIG.renderAlphaSunset ? null : skyCols;
+	    return ModernBeta.RENDER_CONFIG.otherConfig.renderAlphaSunset ? null : skyCols;
     }
 }
