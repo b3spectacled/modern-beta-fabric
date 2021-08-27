@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.api.world.gen;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.bespectacled.modernbeta.api.world.biome.BiomeHeightSampler;
 import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
@@ -18,7 +19,7 @@ import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public abstract class ChunkProvider {
+public abstract class ChunkProvider implements BiomeHeightSampler {
     protected final OldChunkGenerator chunkGenerator;
     
     protected final long seed;
