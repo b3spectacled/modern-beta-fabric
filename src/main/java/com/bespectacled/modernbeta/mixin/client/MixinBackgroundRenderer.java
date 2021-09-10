@@ -25,11 +25,7 @@ public class MixinBackgroundRenderer {
     
     @Unique private static int capturedRenderDistance = 16;
     @Unique private static float oldFogWeight = calculateFogWeight(16);
-    
-    //@Unique private static ClientWorld capturedClientWorld = null;
     @Unique private static boolean isOldWorld = false;
-    
-    //@Unique private static float capturedTickDelta = 0F;
     
     @ModifyVariable(
         method = "render",
@@ -39,38 +35,12 @@ public class MixinBackgroundRenderer {
         return ModernBeta.RENDER_CONFIG.otherConfig.renderAlphaSunset ? null : skyCols;
     }
     
-    /* Mostly for better Colormatic interaction, otherwise not needed right now.
-    @Redirect(
-        method = "render",
-        at = @At(
-            value = "INVOKE", 
-            target = "Lnet/minecraft/util/CubicSampler;sampleColor(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/CubicSampler$RgbFetcher;)Lnet/minecraft/util/math/Vec3d;"
-        )
-    )
-    private static Vec3d modifyFogColor(Vec3d cameraPos, CubicSampler.RgbFetcher rgbFetcher) {
-        float skyAngle = MathHelper.clamp(MathHelper.cos(capturedClientWorld.getSkyAngle(capturedTickDelta) * ((float)Math.PI * 2)) * 2.0f + 0.5f, 0.0f, 1.0f);
-        
-        if (isOldWorld && ModernBeta.RENDER_CONFIG.renderOldFogColor)
-            return CubicSampler.sampleColor(cameraPos, (x, y, z) -> capturedClientWorld.getSkyProperties().adjustFogColor(OLD_FOG_COLOR, skyAngle));
-        else 
-            return CubicSampler.sampleColor(cameraPos, rgbFetcher);
-    }
-    */
-    
     @Inject(method = "render", at = @At("HEAD"))
     private static void captureVars(Camera camera, float tickDelta, ClientWorld world, int renderDistance, float skyDarkness, CallbackInfo info) {
         if (capturedRenderDistance != renderDistance) {
             capturedRenderDistance = renderDistance;
             oldFogWeight = calculateFogWeight(renderDistance);
         }
-        
-        /*
-        if (capturedClientWorld != world) {
-            capturedClientWorld = world;
-        }
-        
-        capturedTickDelta = tickDelta;
-        */
         
         // Track whether current client world is Modern Beta world,
         // old fog weighting won't be used if not.

@@ -223,11 +223,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             double heightStretch = 12D;
             
             double density = 0.0D;
-            double densityOffset = (((double)noiseY - depth) * heightStretch) / scale;
-            
-            if (densityOffset < 0.0D) {
-                densityOffset *= 4D;
-            }
+            double densityOffset = this.getOffset(noiseY, heightStretch, depth, scale);
             
             // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
             double mainNoise = (this.mainNoiseOctaves.sample(
@@ -287,5 +283,14 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             
             buffer[y] = densityWithOffset;
         }
+    }
+    
+    private double getOffset(int noiseY, double heightStretch, double depth, double scale) {
+        double offset = (((double)noiseY - depth) * heightStretch) / scale;
+        
+        if (offset < 0D)
+            offset *= 4D;
+        
+        return offset;
     }
 }

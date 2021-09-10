@@ -157,13 +157,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
         for (int y = 0; y < buffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
             
-            // Check if y (in scaled space) is below sealevel
-            // and increase density accordingly.
-            //double elevGrad = y * 4.0 - 64.0;
-            double densityOffset = noiseY * this.verticalNoiseResolution - (double)this.seaLevel;
-            if (densityOffset < 0.0) {
-                densityOffset *= 3.0;
-            }
+            double densityOffset = this.getOffset(noiseY);
             
             double coordinateScale = 684.412D * this.xzScale; 
             double heightScale = 984.412D * this.yScale;
@@ -241,5 +235,17 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             density = MathHelper.clamp(density, -10D, 10D);
         
         return density;
+    }
+    
+    private double getOffset(int noiseY) {
+        // Check if y (in scaled space) is below sealevel
+        // and increase density accordingly.
+        //double offset = y * 4.0 - 64.0;
+        double offset = noiseY * this.verticalNoiseResolution - (double)this.seaLevel;
+        
+        if (offset < 0.0)
+            offset *= 3.0;
+        
+        return offset;
     }
 }

@@ -145,7 +145,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             double upperLimitScale = 512D;
             
             double density = 0.0D;
-            double densityOffset = 8D;
+            double densityOffset = this.getOffset();
             
             // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
             double mainNoise = (this.mainNoiseOctaves.sample(
@@ -205,5 +205,9 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             
             buffer[y] = densityWithOffset;
         }
+    }
+    
+    private double getOffset() {
+        return 8D;
     }
 }
