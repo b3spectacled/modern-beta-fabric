@@ -12,11 +12,10 @@ import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 
 public class OldBiomeFeatures {
     public static void addDefaultFeatures(GenerationSettings.Builder genSettings, boolean isOcean, boolean addLakes, boolean addSprings) {
-        if (isOcean) {
+        if (isOcean)
             DefaultBiomeFeatures.addOceanStructures(genSettings);
-        } else {
+        else
             DefaultBiomeFeatures.addDefaultUndergroundStructures(genSettings);
-        }
         
         if (addLakes) DefaultBiomeFeatures.addDefaultLakes(genSettings);
         DefaultBiomeFeatures.addDungeons(genSettings);
@@ -36,6 +35,7 @@ public class OldBiomeFeatures {
         genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
         
         if (addNewMineables) {
+            genSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, ConfiguredFeatures.GLOW_LICHEN);
             genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_TUFF);
             genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_DEEPSLATE);
             genSettings.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, ConfiguredFeatures.RARE_DRIPSTONE_CLUSTER);
