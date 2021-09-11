@@ -33,8 +33,8 @@ public class PESwampland {
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.SWAMP);
         
         DefaultBiomeFeatures.addFossils(genSettings);
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false);
-        OldBiomeFeatures.addMineables(genSettings);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, false, false, true);
+        OldBiomeFeatures.addMineables(genSettings, true);
         OldBiomeFeatures.addOres(genSettings);
         
         genSettings.structureFeature(ConfiguredStructureFeatures.SWAMP_HUT);

@@ -34,8 +34,8 @@ public class Swampland {
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.SWAMP);
         
         DefaultBiomeFeatures.addFossils(genSettings);
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false);
-        OldBiomeFeatures.addMineables(genSettings);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, false, true, true);
+        OldBiomeFeatures.addMineables(genSettings, true);
         OldBiomeFeatures.addOres(genSettings);
         
         genSettings.structureFeature(ConfiguredStructureFeatures.SWAMP_HUT);

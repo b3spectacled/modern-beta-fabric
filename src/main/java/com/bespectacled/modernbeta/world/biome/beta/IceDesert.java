@@ -30,8 +30,8 @@ public class IceDesert {
         
         DefaultBiomeFeatures.addDesertFeatures(genSettings);
         DefaultBiomeFeatures.addFossils(genSettings);
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false);
-        OldBiomeFeatures.addMineables(genSettings);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, false, true, true);
+        OldBiomeFeatures.addMineables(genSettings, true);
         OldBiomeFeatures.addOres(genSettings);
         
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_DESERT);

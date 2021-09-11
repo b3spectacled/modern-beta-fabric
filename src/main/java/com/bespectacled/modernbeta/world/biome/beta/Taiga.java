@@ -34,8 +34,8 @@ public class Taiga {
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
         DefaultBiomeFeatures.addSweetBerryBushes(genSettings);
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false);
-        OldBiomeFeatures.addMineables(genSettings);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, false, true, true);
+        OldBiomeFeatures.addMineables(genSettings, true);
         OldBiomeFeatures.addOres(genSettings);
         
         genSettings.structureFeature(ConfiguredStructureFeatures.VILLAGE_TAIGA);

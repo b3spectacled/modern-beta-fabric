@@ -11,18 +11,18 @@ import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 
 public class OldBiomeFeatures {
-    public static void addDefaultFeatures(GenerationSettings.Builder genSettings, boolean isOcean) {
+    public static void addDefaultFeatures(GenerationSettings.Builder genSettings, boolean isOcean, boolean addLakes, boolean addSprings) {
         if (isOcean) {
             DefaultBiomeFeatures.addOceanStructures(genSettings);
         } else {
             DefaultBiomeFeatures.addDefaultUndergroundStructures(genSettings);
         }
         
-        DefaultBiomeFeatures.addDefaultLakes(genSettings);
+        if (addLakes) DefaultBiomeFeatures.addDefaultLakes(genSettings);
         DefaultBiomeFeatures.addDungeons(genSettings);
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addSprings(genSettings);
+        if (addSprings) DefaultBiomeFeatures.addSprings(genSettings);
         DefaultBiomeFeatures.addAmethystGeodes(genSettings);
     }
     
@@ -30,10 +30,17 @@ public class OldBiomeFeatures {
         genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_EMERALD_Y95);
     }
 
-    public static void addMineables(GenerationSettings.Builder genSettings) {
+    public static void addMineables(GenerationSettings.Builder genSettings, boolean addNewMineables) {
         genSettings.feature(Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_DIRT);
         genSettings.feature(Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_GRAVEL);
         genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
+        
+        if (addNewMineables) {
+            genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_TUFF);
+            genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_DEEPSLATE);
+            genSettings.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, ConfiguredFeatures.RARE_DRIPSTONE_CLUSTER);
+            genSettings.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, ConfiguredFeatures.RARE_SMALL_DRIPSTONE);
+        }
     }
 
     public static void addCarvers(GenerationSettings.Builder genSettings, boolean addCanyons) {

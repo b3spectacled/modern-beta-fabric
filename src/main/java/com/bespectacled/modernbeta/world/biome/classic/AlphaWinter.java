@@ -30,8 +30,8 @@ public class AlphaWinter {
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false);
-        OldBiomeFeatures.addMineables(genSettings);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, false, false, true);
+        OldBiomeFeatures.addMineables(genSettings, false);
         OldBiomeFeatures.addOres(genSettings);
         DefaultBiomeFeatures.addFrozenTopLayer(genSettings);
         

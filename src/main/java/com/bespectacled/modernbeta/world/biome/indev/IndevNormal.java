@@ -32,7 +32,7 @@ public class IndevNormal {
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, false, false, false);
         OldBiomeFeatures.addOres(genSettings);
         
         genSettings.structureFeature(ConfiguredStructureFeatures.VILLAGE_PLAINS);
