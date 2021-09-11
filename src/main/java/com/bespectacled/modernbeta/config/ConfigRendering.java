@@ -46,5 +46,8 @@ public class ConfigRendering implements ConfigData {
 
         @ConfigEntry.Gui.Tooltip(count = 1)
         public boolean renderGameVersion = false;
+        
+        @ConfigEntry.Gui.Tooltip(count = 1)
+        public boolean renderLowClouds = false;
     }
 }
