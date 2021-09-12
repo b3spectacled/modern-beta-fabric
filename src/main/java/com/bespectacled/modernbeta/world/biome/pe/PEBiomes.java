@@ -13,6 +13,12 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class PEBiomes {
+    protected static final boolean ADD_LAKES = false;
+    protected static final boolean ADD_SPRINGS = true;
+    
+    protected static final boolean ADD_ALTERNATE_STONES = false;
+    protected static final boolean ADD_NEW_MINEABLES = true;
+    
     public static final Identifier PE_FOREST_ID = ModernBeta.createId("pe_forest");
     public static final Identifier PE_SHRUBLAND_ID = ModernBeta.createId("pe_shrubland");
     public static final Identifier PE_DESERT_ID = ModernBeta.createId("pe_desert");

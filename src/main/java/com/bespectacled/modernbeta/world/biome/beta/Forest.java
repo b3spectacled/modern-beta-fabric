@@ -32,8 +32,8 @@ public class Forest {
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, true, true);
-        OldBiomeFeatures.addMineables(genSettings, true);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, false, BetaBiomes.ADD_LAKES, BetaBiomes.ADD_SPRINGS);
+        OldBiomeFeatures.addMineables(genSettings, BetaBiomes.ADD_ALTERNATE_STONES, BetaBiomes.ADD_NEW_MINEABLES);
         OldBiomeFeatures.addOres(genSettings);
         
         genSettings.structureFeature(ConfiguredStructureFeatures.MANSION);

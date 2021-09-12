@@ -29,8 +29,8 @@ public class Ocean {
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
-        OldBiomeFeatures.addDefaultFeatures(genSettings, true, true, true);
-        OldBiomeFeatures.addMineables(genSettings, true);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, true, BetaBiomes.ADD_LAKES, BetaBiomes.ADD_SPRINGS);
+        OldBiomeFeatures.addMineables(genSettings, BetaBiomes.ADD_ALTERNATE_STONES, BetaBiomes.ADD_NEW_MINEABLES);
         OldBiomeFeatures.addOres(genSettings);
         
         genSettings.structureFeature(ConfiguredStructureFeatures.BURIED_TREASURE);

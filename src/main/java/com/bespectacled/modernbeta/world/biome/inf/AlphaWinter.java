@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.world.biome.classic;
+package com.bespectacled.modernbeta.world.biome.inf;
 
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
@@ -16,7 +16,7 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
-public class Alpha {
+public class AlphaWinter {
     public static final Biome BIOME = create();
     
     private static Biome create() {
@@ -30,8 +30,8 @@ public class Alpha {
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, false, true);
-        OldBiomeFeatures.addMineables(genSettings, false);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, false, InfBiomes.ADD_LAKES_ALPHA, InfBiomes.ADD_SPRINGS_ALPHA);
+        OldBiomeFeatures.addMineables(genSettings, InfBiomes.ADD_ALTERNATE_STONES_ALPHA, InfBiomes.ADD_NEW_MINEABLES_ALPHA);
         OldBiomeFeatures.addOres(genSettings);
         DefaultBiomeFeatures.addFrozenTopLayer(genSettings);
         
@@ -50,12 +50,12 @@ public class Alpha {
         OldBiomeFeatures.addCarvers(genSettings, false);
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.RAIN)
+            .precipitation(Biome.Precipitation.SNOW)
             .category(Biome.Category.FOREST)
             .depth(0.37F)
             .scale(0.4F)
-            .temperature(0.6F)
-            .downfall(0.6F)
+            .temperature(0.0F)
+            .downfall(0.0F)
             .effects((new BiomeEffects.Builder())
                 .grassColor(OldBiomeColors.OLD_GRASS_COLOR)
                 .foliageColor(OldBiomeColors.OLD_FOLIAGE_COLOR)

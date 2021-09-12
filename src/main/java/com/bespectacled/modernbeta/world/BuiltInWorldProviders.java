@@ -3,8 +3,8 @@ package com.bespectacled.modernbeta.world;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
-import com.bespectacled.modernbeta.world.biome.classic.ClassicBiomes;
 import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
+import com.bespectacled.modernbeta.world.biome.inf.InfBiomes;
 import com.bespectacled.modernbeta.world.biome.pe.PEBiomes;
 import com.bespectacled.modernbeta.world.gen.OldChunkGeneratorSettings;
 
@@ -54,7 +54,7 @@ public class BuiltInWorldProviders {
             OldChunkGeneratorSettings.ALPHA.toString(), 
             BuiltInTypes.Biome.SINGLE.name, 
             BuiltInTypes.CaveBiome.NONE.name, 
-            ClassicBiomes.ALPHA_ID.toString(), 
+            InfBiomes.ALPHA_ID.toString(), 
             BuiltInTypes.WorldScreen.INF.name
         );
         
@@ -63,7 +63,7 @@ public class BuiltInWorldProviders {
             OldChunkGeneratorSettings.INFDEV_611.toString(),
             BuiltInTypes.Biome.SINGLE.name,
             BuiltInTypes.CaveBiome.NONE.name,
-            ClassicBiomes.ALPHA_ID.toString(),
+            InfBiomes.ALPHA_ID.toString(),
             BuiltInTypes.WorldScreen.INF.name
         );
         
@@ -72,7 +72,7 @@ public class BuiltInWorldProviders {
             OldChunkGeneratorSettings.INFDEV_415.toString(), 
             BuiltInTypes.Biome.SINGLE.name, 
             BuiltInTypes.CaveBiome.NONE.name, 
-            ClassicBiomes.INFDEV_415_ID.toString(), 
+            InfBiomes.INFDEV_415_ID.toString(), 
             BuiltInTypes.WorldScreen.INF.name
         );
         
@@ -81,7 +81,7 @@ public class BuiltInWorldProviders {
             OldChunkGeneratorSettings.INFDEV_227.toString(), 
             BuiltInTypes.Biome.SINGLE.name, 
             BuiltInTypes.CaveBiome.NONE.name, 
-            ClassicBiomes.INFDEV_227_ID.toString(), 
+            InfBiomes.INFDEV_227_ID.toString(), 
             BuiltInTypes.WorldScreen.INFDEV_227.name
         );
         

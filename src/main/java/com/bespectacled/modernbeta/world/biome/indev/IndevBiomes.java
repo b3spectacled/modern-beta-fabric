@@ -6,6 +6,9 @@ import com.bespectacled.modernbeta.world.biome.OldBiomes;
 import net.minecraft.util.Identifier;
 
 public class IndevBiomes {
+    protected static final boolean ADD_LAKES = false;
+    protected static final boolean ADD_SPRINGS = false;
+    
     public static final Identifier INDEV_NORMAL_ID = ModernBeta.createId("indev_normal");
     public static final Identifier INDEV_HELL_ID = ModernBeta.createId("indev_hell");
     public static final Identifier INDEV_PARADISE_ID = ModernBeta.createId("indev_paradise");

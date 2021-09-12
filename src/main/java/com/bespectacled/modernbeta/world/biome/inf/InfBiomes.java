@@ -1,11 +1,23 @@
-package com.bespectacled.modernbeta.world.biome.classic;
+package com.bespectacled.modernbeta.world.biome.inf;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.world.biome.OldBiomes;
 
 import net.minecraft.util.Identifier;
 
-public class ClassicBiomes {
+public class InfBiomes {
+    protected static final boolean ADD_LAKES_ALPHA = false;
+    protected static final boolean ADD_SPRINGS_ALPHA = true;
+    
+    protected static final boolean ADD_ALTERNATE_STONES_ALPHA = false;
+    protected static final boolean ADD_NEW_MINEABLES_ALPHA = false;
+    
+    protected static final boolean ADD_LAKES_INF_415 = false;
+    protected static final boolean ADD_SPRINGS_INF_415 = false;
+    
+    protected static final boolean ADD_LAKES_INF_227 = false;
+    protected static final boolean ADD_SPRINGS_INF_227 = false;
+    
     public static final Identifier ALPHA_ID = ModernBeta.createId("alpha");
     public static final Identifier ALPHA_WINTER_ID = ModernBeta.createId("alpha_winter");
     

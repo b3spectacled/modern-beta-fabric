@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.world.biome.classic;
+package com.bespectacled.modernbeta.world.biome.inf;
 
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
@@ -30,7 +30,7 @@ public class Infdev415 {
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, false, false);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, false, InfBiomes.ADD_LAKES_INF_415, InfBiomes.ADD_SPRINGS_INF_415);
         OldBiomeFeatures.addOres(genSettings);
         DefaultBiomeFeatures.addFrozenTopLayer(genSettings);
         

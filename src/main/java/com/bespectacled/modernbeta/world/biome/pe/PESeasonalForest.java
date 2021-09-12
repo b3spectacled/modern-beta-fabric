@@ -31,8 +31,8 @@ public class PESeasonalForest {
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, false, true);
-        OldBiomeFeatures.addMineables(genSettings, true);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, false, PEBiomes.ADD_LAKES, PEBiomes.ADD_SPRINGS);
+        OldBiomeFeatures.addMineables(genSettings, PEBiomes.ADD_ALTERNATE_STONES, PEBiomes.ADD_NEW_MINEABLES);
         OldBiomeFeatures.addOres(genSettings);
         
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);

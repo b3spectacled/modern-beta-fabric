@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.world.biome.classic;
+package com.bespectacled.modernbeta.world.biome.inf;
 
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
@@ -16,7 +16,7 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
-public class AlphaWinter {
+public class Infdev227Winter {
     public static final Biome BIOME = create();
     
     private static Biome create() {
@@ -30,8 +30,7 @@ public class AlphaWinter {
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, false, true);
-        OldBiomeFeatures.addMineables(genSettings, false);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, false, InfBiomes.ADD_LAKES_INF_227, InfBiomes.ADD_SPRINGS_INF_227);
         OldBiomeFeatures.addOres(genSettings);
         DefaultBiomeFeatures.addFrozenTopLayer(genSettings);
         
@@ -39,11 +38,10 @@ public class AlphaWinter {
         genSettings.structureFeature(ConfiguredStructureFeatures.PILLAGER_OUTPOST);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_CACTUS_ALPHA);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_ALPHA_BEES);
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
+        
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.FLOWER_INFDEV_227);
         
         OldBiomeFeatures.addVegetalPatches(genSettings);
         
@@ -59,8 +57,8 @@ public class AlphaWinter {
             .effects((new BiomeEffects.Builder())
                 .grassColor(OldBiomeColors.OLD_GRASS_COLOR)
                 .foliageColor(OldBiomeColors.OLD_FOLIAGE_COLOR)
-                .skyColor(OldBiomeColors.ALPHA_SKY_COLOR)
-                .fogColor(OldBiomeColors.ALPHA_FOG_COLOR)
+                .skyColor(OldBiomeColors.INFDEV_227_SKY_COLOR)
+                .fogColor(OldBiomeColors.INFDEV_227_FOG_COLOR)
                 .waterColor(OldBiomeColors.OLD_WATER_COLOR)
                 .waterFogColor(OldBiomeColors.OLD_WATER_FOG_COLOR)
                 .build())

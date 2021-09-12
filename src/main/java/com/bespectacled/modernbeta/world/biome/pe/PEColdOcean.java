@@ -31,8 +31,8 @@ public class PEColdOcean {
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
-        OldBiomeFeatures.addDefaultFeatures(genSettings, true, false, true);
-        OldBiomeFeatures.addMineables(genSettings, true);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, true, PEBiomes.ADD_LAKES, PEBiomes.ADD_SPRINGS);
+        OldBiomeFeatures.addMineables(genSettings, PEBiomes.ADD_ALTERNATE_STONES, PEBiomes.ADD_NEW_MINEABLES);
         OldBiomeFeatures.addOres(genSettings);
         
         genSettings.structureFeature(ConfiguredStructureFeatures.BURIED_TREASURE);

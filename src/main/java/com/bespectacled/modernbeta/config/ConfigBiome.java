@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.config;
 
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
-import com.bespectacled.modernbeta.world.biome.classic.ClassicBiomes;
+import com.bespectacled.modernbeta.world.biome.inf.InfBiomes;
 import com.bespectacled.modernbeta.world.biome.pe.PEBiomes;
 
 import me.shedaniel.autoconfig.ConfigData;
@@ -65,7 +65,7 @@ public class ConfigBiome implements ConfigData {
     }
     
     public static class SingleBiomeConfig {
-        public String singleBiome = ClassicBiomes.ALPHA_ID.toString();
+        public String singleBiome = InfBiomes.ALPHA_ID.toString();
     }
     
     public static class VanillaBiomeConfig {
