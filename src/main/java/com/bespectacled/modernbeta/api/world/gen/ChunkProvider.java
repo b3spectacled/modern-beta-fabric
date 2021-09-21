@@ -124,6 +124,13 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
     }
     
     /**
+     * @return Parent OldChunkGenerator.
+     */
+    public OldChunkGenerator getChunkGenerator() {
+        return this.chunkGenerator;
+    }
+    
+    /**
      * Samples biome at given biome coordinates.
      * 
      * @param biomeX x-coordinate in biome coordinates.

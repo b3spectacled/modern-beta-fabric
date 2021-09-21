@@ -67,6 +67,14 @@ public class OldBiomeSource extends BiomeSource {
         return this.biomeProvider.getOceanBiomeForNoiseGen(this.biomeRegistry, biomeX, biomeY, biomeZ);
     }
     
+    public Biome getBiomeForSurfaceGen(int x, int y, int z) {
+        if (this.biomeProvider instanceof BiomeResolver biomeResolver) {
+            return biomeResolver.getBiome(this.biomeRegistry, x, y, z);
+        }
+        
+        return this.biomeProvider.getBiomeForNoiseGen(this.biomeRegistry, x >> 2, y >> 2, z >> 2);
+    }
+    
     public Biome getBiomeForSurfaceGen(ChunkRegion region, BlockPos pos) {
         if (this.biomeProvider instanceof BiomeResolver biomeResolver)
             return biomeResolver.getBiome(this.biomeRegistry, pos.getX(), pos.getY(), pos.getZ());

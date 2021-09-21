@@ -10,6 +10,7 @@ import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.mersenne.MTRandom;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.HeightLimitView;
@@ -73,7 +74,10 @@ public class PESpawnLocator implements SpawnLocator {
         int seaLevel = this.chunkProvider.getSeaLevel();
         
         int y = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world);
-        Biome biome = this.chunkProvider.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
+        
+        Biome biome = (this.chunkProvider.getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) ? 
+            oldBiomeSource.getBiomeForSurfaceGen(x, y, z) :
+            this.chunkProvider.getBiomeForNoiseGen(x >> 2, y >> 2, z >> 2);
         
         return 
             (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial().equals(BlockStates.SAND) && y >= seaLevel - 1) || 
