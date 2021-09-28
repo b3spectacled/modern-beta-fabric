@@ -1,13 +1,11 @@
 package com.bespectacled.modernbeta.world.biome;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
-import com.bespectacled.modernbeta.mixin.MixinBiomeSourceAccessor;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.mojang.serialization.Codec;
@@ -40,22 +38,19 @@ public class OldBiomeSource extends BiomeSource {
     private final BiomeProvider biomeProvider;
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, NbtCompound settings) {
-        super(List.of());
+        super(Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings))
+            .apply(seed, settings)
+            .getBiomesForRegistry()
+            .stream()
+            .map((registryKey) -> (Biome) biomeRegistry.get(registryKey))
+            .collect(Collectors.toList())
+        );
         
         this.seed = seed;
         this.biomeRegistry = biomeRegistry;
         this.biomeProviderSettings = settings;
         
-        this.biomeProvider = Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings)).apply(this);
-        
-        // Set biomes list here, instead of constructor.
-        ((MixinBiomeSourceAccessor)this).setBiomes(
-            this.biomeProvider
-                .getBiomesForRegistry()
-                .stream()
-                .map((registryKey) -> (Biome) biomeRegistry.get(registryKey))
-                .collect(Collectors.toList())
-        );
+        this.biomeProvider = Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings)).apply(seed, settings);
     }
 
     @Override

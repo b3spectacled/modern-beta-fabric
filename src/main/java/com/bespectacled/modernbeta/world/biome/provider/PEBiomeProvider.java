@@ -9,10 +9,10 @@ import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
 import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMap;
 import com.bespectacled.modernbeta.world.biome.pe.climate.PEClimateSampler;
 
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -21,10 +21,10 @@ public class PEBiomeProvider extends BiomeProvider implements BiomeResolver, Cli
     private final PEClimateSampler climateSampler;
     private final BetaClimateMap climateMap;
     
-    public PEBiomeProvider(OldBiomeSource biomeSource) {
-        super(biomeSource);
+    public PEBiomeProvider(long seed, NbtCompound settings) {
+        super(seed, settings);
         
-        this.climateSampler = new PEClimateSampler(biomeSource.getWorldSeed());
+        this.climateSampler = new PEClimateSampler(seed);
         this.climateMap = new BetaClimateMap(settings);
     }
 

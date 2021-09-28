@@ -7,10 +7,10 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeLayer;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaOceanLayer;
 
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -25,8 +25,8 @@ public class VanillaBiomeProvider extends BiomeProvider {
     private final BiomeLayerSampler biomeSampler;
     private final BiomeLayerSampler oceanSampler;
     
-    public VanillaBiomeProvider(OldBiomeSource biomeSource) {
-        super(biomeSource);
+    public VanillaBiomeProvider(long seed, NbtCompound settings) {
+        super(seed, settings);
         
         this.vanillaBiomeSize = NbtUtil.readInt(NbtTags.VANILLA_BIOME_SIZE, settings, ModernBeta.BIOME_CONFIG.vanillaBiomeConfig.vanillaBiomeSize);
         this.vanillaOceanBiomeSize = NbtUtil.readInt(NbtTags.VANILLA_OCEAN_BIOME_SIZE, settings, ModernBeta.BIOME_CONFIG.vanillaBiomeConfig.vanillaOceanBiomeSize);

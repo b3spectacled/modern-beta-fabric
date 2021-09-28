@@ -6,8 +6,8 @@ import java.util.List;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -18,8 +18,8 @@ public class SingleBiomeProvider extends BiomeProvider {
     
     private final Identifier biomeId;
     
-    public SingleBiomeProvider(OldBiomeSource biomeSource) {
-        super(biomeSource);
+    public SingleBiomeProvider(long seed, NbtCompound settings) {
+        super(seed, settings);
         
         this.biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
     }
