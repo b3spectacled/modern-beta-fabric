@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.util.chunk;
 
+import java.util.Arrays;
+
 import net.minecraft.world.Heightmap;
 
 /**
@@ -15,6 +17,11 @@ import net.minecraft.world.Heightmap;
  * 
  */
 public class HeightmapChunk {
+    public enum Type {
+        SURFACE,
+        OCEAN
+    }
+    
     private final int heightmapSurface[];
     private final int heightmapOcean[];
 
@@ -24,6 +31,14 @@ public class HeightmapChunk {
 
         this.heightmapSurface = heightmapSurface;
         this.heightmapOcean = heightmapOcean;
+    }
+    
+    public HeightmapChunk(int minHeight) {
+        this.heightmapSurface = new int[256];
+        this.heightmapOcean = new int[256];
+        
+        Arrays.fill(this.heightmapSurface, minHeight);
+        Arrays.fill(this.heightmapOcean, minHeight);
     }
     
     public int getHeight(int x, int z, Heightmap.Type type) {
@@ -38,5 +53,14 @@ public class HeightmapChunk {
             case WORLD_SURFACE_WG -> this.heightmapOcean[ndx];
             default -> this.heightmapSurface[ndx];
         };
+    }
+    
+    public void updateHeightmap(int x, int z, int height, HeightmapChunk.Type type) {
+        int ndx = (z & 0xF) + (x & 0xF) * 16;
+        
+        switch(type) {
+            case SURFACE -> this.heightmapSurface[ndx] = height;
+            case OCEAN -> this.heightmapOcean[ndx] = height;
+        }
     }
 }

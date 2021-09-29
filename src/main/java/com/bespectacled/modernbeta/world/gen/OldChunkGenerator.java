@@ -320,28 +320,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.generateOceanShrines;
     }
     
-    /*
-    public static void export() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Path dir = Paths.get("..\\src\\main\\resources\\data\\modern_beta\\dimension");
-        
-        NbtCompound chunkSettings = OldGeneratorSettings.createInfSettings(OldChunkProviderType.BETA);
-        NbtCompound biomeSettings = OldGeneratorSettings.createBiomeSettings(OldBiomeProviderType.BETA, CaveBiomeType.VANILLA, BetaBiomes.FOREST_ID);
-        
-        OldBiomeSource biomeSource = new OldBiomeSource(0, BuiltinRegistries.BIOME, biomeSettings);
-        OldChunkGenerator chunkGenerator = new OldChunkGenerator(biomeSource, 0, () -> OldGeneratorSettings.BETA_GENERATOR_SETTINGS, chunkSettings);
-        Function<OldChunkGenerator, DataResult<JsonElement>> toJson = JsonOps.INSTANCE.withEncoder(OldChunkGenerator.CODEC);
-        
-        try {
-            JsonElement json = toJson.apply(chunkGenerator).result().get();
-            Files.write(dir.resolve(ModernBeta.createId("old").getPath() + ".json"), gson.toJson(json).getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            ModernBeta.LOGGER.error("[Modern Beta] Couldn't serialize old chunk generator!");
-            e.printStackTrace();
-        }
-    }
-    */
-    
     private void replaceOceansInChunk(OldBiomeSource oldBiomeSource, Chunk chunk) {
         MutableBiomeArray mutableBiomeArray = MutableBiomeArray.inject(chunk.getBiomeArray());
         
