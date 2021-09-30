@@ -24,7 +24,7 @@ public class Sky {
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
         OldBiomeFeatures.addDefaultFeatures(genSettings, false, BetaBiomes.ADD_LAKES, BetaBiomes.ADD_SPRINGS);
-        OldBiomeFeatures.addMineables(genSettings, BetaBiomes.ADD_ALTERNATE_STONES, BetaBiomes.ADD_NEW_MINEABLES);
+        OldBiomeFeatures.addMineables(genSettings, false, false);
         OldBiomeFeatures.addOres(genSettings);
         
         OldBiomeStructures.addCommonStructures(genSettings);

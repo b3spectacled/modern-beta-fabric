@@ -1,32 +1,38 @@
 package com.bespectacled.modernbeta.api.world.gen.noise;
 
-public class BaseNoiseProvider extends NoiseProvider {
-    private final BaseColumnSampler bufferSampler;
+public class OreVeinNoiseProvider extends NoiseProvider {
+    private final int noiseMinY;
+    private final OreVeinColumnSampler bufferSampler;
     
-    public BaseNoiseProvider(
+    public OreVeinNoiseProvider(
         int noiseSizeX, 
         int noiseSizeY, 
         int noiseSizeZ, 
         int noiseX, 
         int noiseZ,
-        BaseColumnSampler bufferSampler
+        int noiseMinY,
+        OreVeinColumnSampler bufferSampler
+        
     ) {
         super(noiseSizeX, noiseSizeY, noiseSizeZ, noiseX, noiseZ);
         
+        this.noiseMinY = noiseMinY;
         this.bufferSampler = bufferSampler;
         
         this.noise = this.generateNoise(noiseX, noiseZ);
     }
-
-    @Override
+    
     public double[] generateNoise(int startNoiseX, int startNoiseZ) {
         double[] buffer = new double[this.noiseResY];
-        double[] noise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
+        double[] noise = new double[this.noiseSize];
         
         int ndx = 0;
         for (int localNoiseX = 0; localNoiseX < this.noiseResX; ++localNoiseX) {
             for (int localNoiseZ = 0; localNoiseZ < this.noiseResZ; ++localNoiseZ) {
-                this.bufferSampler.sampleColumn(buffer, startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
+                int noiseX = startNoiseX + localNoiseX;
+                int noiseZ = startNoiseZ + localNoiseZ;
+                
+                this.bufferSampler.sampleColumn(buffer, noiseX, noiseZ, this.noiseMinY, this.noiseResY);
                 
                 for (int nY = 0; nY < this.noiseResY; ++nY) {
                     noise[ndx++] = buffer[nY];
@@ -38,7 +44,7 @@ public class BaseNoiseProvider extends NoiseProvider {
     }
     
     @FunctionalInterface
-    public static interface BaseColumnSampler {
-        public void sampleColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ);
+    public static interface OreVeinColumnSampler {
+        public void sampleColumn(double[] buffer, int x, int z, int minY, int noiseSizeY);
     }
 }

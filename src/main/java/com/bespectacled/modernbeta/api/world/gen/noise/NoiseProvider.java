@@ -1,7 +1,5 @@
 package com.bespectacled.modernbeta.api.world.gen.noise;
 
-import java.util.function.BiFunction;
-
 import net.minecraft.util.math.MathHelper;
 
 /*
@@ -17,7 +15,9 @@ public abstract class NoiseProvider {
     protected final int noiseResY;
     protected final int noiseResZ;
     
-    private final double[] noise;
+    protected final int noiseSize;
+    
+    protected double[] noise;
 
     private double lowerNW;
     private double lowerSW;
@@ -37,15 +37,14 @@ public abstract class NoiseProvider {
     private double n;
     private double s;
     
-    private double density;
+    private double sample;
     
     public NoiseProvider(
         int noiseSizeX, 
         int noiseSizeY, 
         int noiseSizeZ, 
         int noiseX, 
-        int noiseZ, 
-        BiFunction<Integer, Integer, double[]> noiseFunc
+        int noiseZ
     ) {
         this.noiseSizeX = noiseSizeX;
         this.noiseSizeY = noiseSizeY;
@@ -55,12 +54,10 @@ public abstract class NoiseProvider {
         this.noiseResY = noiseSizeY + 1;
         this.noiseResZ = noiseSizeZ + 1;
         
-        this.noise = noiseFunc.apply(noiseX, noiseZ);
-
-        double noiseSize = this.noiseResX * this.noiseResY * this.noiseResZ;
-        if (noiseSize != this.noise.length)
-            throw new IllegalStateException("[Modern Beta] Noise array is an invalid size!");
+        this.noiseSize = this.noiseResX * this.noiseResY * this.noiseResZ;
     }
+    
+    public abstract double[] generateNoise(int startNoiseX, int startNoiseZ);
     
     public void sampleNoiseCorners(int subChunkX, int subChunkY, int subChunkZ) {
         this.lowerNW = noise[((subChunkX + 0) * this.noiseResX + (subChunkZ + 0)) * this.noiseResY + (subChunkY + 0)];
@@ -87,10 +84,10 @@ public abstract class NoiseProvider {
     }
     
     public void sampleDensity(double deltaZ) {
-        this.density = MathHelper.lerp(deltaZ, this.n, this.s);
+        this.sample = MathHelper.lerp(deltaZ, this.n, this.s);
     }
     
-    public double getDensity() {
-        return this.density;
+    public double sample() {
+        return this.sample;
     }
 }

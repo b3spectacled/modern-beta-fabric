@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.DoubleFunction;
-
 import com.bespectacled.modernbeta.api.world.gen.noise.BaseNoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoiseProvider;
+import com.bespectacled.modernbeta.api.world.gen.noise.NoodleCaveNoiseProvider;
+import com.bespectacled.modernbeta.api.world.gen.noise.OreVeinNoiseProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
@@ -27,14 +27,11 @@ import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.DeepslateBlockSource;
 import net.minecraft.world.gen.NoiseCaveSampler;
-import net.minecraft.world.gen.NoiseInterpolator;
 import net.minecraft.world.gen.OreVeinGenerator;
 import net.minecraft.world.gen.SimpleRandom;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler;
-import net.minecraft.world.gen.chunk.NoiseChunkGenerator.NoodleCavesSampler;
-import net.minecraft.world.gen.chunk.NoiseChunkGenerator.OreVeinSource;
 import net.minecraft.world.gen.chunk.NoodleCavesGenerator;
 import net.minecraft.world.gen.chunk.WeightSampler;
 
@@ -189,7 +186,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                 this.noiseSizeZ,
                 chunkX * this.noiseSizeX,
                 chunkZ * this.noiseSizeZ,
-                this::generateNoiseArr
+                this::generateNoiseColumn
             )
         );
         
@@ -315,36 +312,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         return density;
     }
-    
-    /**
-     * Generates noise values for entire chunk starting at <code>noiseX</code> and <code>noiseZ</code>.
-     * 
-     * @param noiseX x-coordinate start of the chunk in noise coordinates.
-     * @param noiseZ z-coordinate start of the chunk in noise coordinates.
-     * 
-     * @returns Populated noise array.
-     */
-    private double[] generateNoiseArr(int noiseX, int noiseZ) {
-        int noiseResolutionX = this.noiseSizeX + 1;
-        int noiseResolutionZ = this.noiseSizeZ + 1;
-        int noiseResolutionY = this.noiseSizeY + 1;
-        
-        double[] buffer = new double[this.noiseSizeY + 1];
-        double[] noise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
-        
-        int ndx = 0;
-        for (int localNoiseX = 0; localNoiseX < noiseResolutionX; ++localNoiseX) {
-            for (int localNoiseZ = 0; localNoiseZ < noiseResolutionZ; ++localNoiseZ) {
-                this.generateNoiseColumn(buffer, noiseX, noiseZ, localNoiseX, localNoiseZ);
-                
-                for (int nY = 0; nY < noiseResolutionY; ++nY) {
-                    noise[ndx++] = buffer[nY];
-                }
-            }
-        }
-        
-        return noise;
-    }
 
     /**
      * Generates the base terrain for a given chunk.
@@ -375,15 +342,13 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         // Get and populate primary noise array
         NoiseProvider baseNoiseProvider = this.noiseProviderCache.get(chunkX, chunkZ);
         
-        // Create ore vein and noodle cave samplers
-        List<NoiseInterpolator> interpolatorList = new ArrayList<>();
-        DoubleFunction<BlockSource> oreVeinSampler = this.createOreVeinSamplers(this.noiseMinY, chunkPos, interpolatorList::add);
-        DoubleFunction<WeightSampler> noodleCaveSampler = this.createNoodleCaveSampler(this.noiseMinY, chunkPos, interpolatorList::add);
+        List<NoiseProvider> noiseProviders = new ArrayList<>();
+        noiseProviders.add(baseNoiseProvider);
+        WeightSampler noodleCaveSampler = this.createNoodleCaveNoiseProviders(chunkPos, noiseProviders::add);
+        BlockSource oreVeinSampler = this.createOreVeinProviders(chunkPos, noiseProviders::add);
 
-        interpolatorList.forEach(NoiseInterpolator::sampleStartNoise);
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
             int noiseX = subChunkX;
-            interpolatorList.forEach(noiseInterpolator -> noiseInterpolator.sampleEndNoise(noiseX));
             
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++ subChunkZ) {
                 int noiseZ = subChunkZ;
@@ -391,41 +356,36 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
                     int noiseY = subChunkY;
                     
-                    interpolatorList.forEach(noiseInterpolator -> noiseInterpolator.sampleNoiseCorners(noiseY, noiseZ));
-                    baseNoiseProvider.sampleNoiseCorners(subChunkX, subChunkY, subChunkZ);
+                    noiseProviders.forEach(noiseProvider -> noiseProvider.sampleNoiseCorners(noiseX, noiseY, noiseZ));
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
                         int y = subChunkY * this.verticalNoiseResolution + subY;
                         y += this.minY;
                         
                         double deltaY = subY / (double)this.verticalNoiseResolution;
-                        
-                        interpolatorList.forEach(noiseInterpolator -> noiseInterpolator.sampleNoiseY(deltaY));
-                        baseNoiseProvider.sampleNoiseY(deltaY);
+                        noiseProviders.forEach(noiseProvider -> noiseProvider.sampleNoiseY(deltaY));
                         
                         for (int subX = 0; subX < this.horizontalNoiseResolution; ++subX) {
                             int localX = subX + subChunkX * this.horizontalNoiseResolution;
                             int x = startX + localX;
                             
                             double deltaX = subX / (double)this.horizontalNoiseResolution;
-                            
-                            interpolatorList.forEach(noiseInterpolator -> noiseInterpolator.sampleNoiseX(deltaX));
-                            baseNoiseProvider.sampleNoiseX(deltaX);
+                            noiseProviders.forEach(noiseProvider -> noiseProvider.sampleNoiseX(deltaX));
                             
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; ++subZ) {
                                 int localZ = subZ + subChunkZ * this.horizontalNoiseResolution;
                                 int z = startZ + localZ;
                                 
                                 double deltaZ = subZ / (double)this.horizontalNoiseResolution;
+                                noiseProviders.forEach(noiseProvider -> noiseProvider.sampleDensity(deltaZ));
                                 
-                                baseNoiseProvider.sampleDensity(deltaZ);
-                                double density = baseNoiseProvider.getDensity();
+                                double density = baseNoiseProvider.sample();
                                 
                                 BlockState blockToSet = this.getBlockState(
                                     structureWeightSampler, 
                                     aquiferSampler, 
-                                    oreVeinSampler.apply(deltaZ),
-                                    noodleCaveSampler.apply(deltaZ),
+                                    oreVeinSampler,
+                                    noodleCaveSampler,
                                     x, y, z, 
                                     density
                                 );
@@ -441,7 +401,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                     }
                 }
             }
-            interpolatorList.forEach(NoiseInterpolator::swapBuffers);
         }
     }
     
@@ -486,7 +445,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 int z = subZ + subChunkZ * this.horizontalNoiseResolution;
                                 
                                 baseNoiseProvider.sampleDensity(subZ / (double)this.horizontalNoiseResolution);
-                                double density = baseNoiseProvider.getDensity();
+                                double density = baseNoiseProvider.sample();
                                 
                                 if (y < this.seaLevel || density > 0.0) {
                                     heightmapOcean[z + x * 16] = y + 1;
@@ -527,41 +486,151 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         return aquiferSampler.apply(blockSource, x, y, z, clampedDensity);
     }
 
-    private DoubleFunction<WeightSampler> createNoodleCaveSampler(int worldBottomNoiseY, ChunkPos chunkPos, Consumer<NoiseInterpolator> consumer) {
-        if (!this.generateNoodleCaves) {
-            return d -> WeightSampler.DEFAULT;
-        }
+    /**
+     * Creates noise providers to interpolate noodle cave noise and adds to interpolator list. 
+     * 
+     * @param chunkPos
+     * @param consumer
+     * 
+     * @return WeightSampler to sample density addition at x/y/z block coordinates.
+     */
+    private WeightSampler createNoodleCaveNoiseProviders(ChunkPos chunkPos, Consumer<NoodleCaveNoiseProvider> consumer) {
+        int chunkX = chunkPos.x;
+        int chunkZ = chunkPos.z;
         
-        NoodleCavesSampler noodleCaveSampler = this.chunkGenerator.new NoodleCavesSampler(chunkPos, worldBottomNoiseY);
-        noodleCaveSampler.feed(consumer);
+        if (!this.generateNoodleCaves)
+            return (weight, x, y, z) -> 0;
         
-        return noodleCaveSampler::setDeltaZ;
+        NoodleCaveNoiseProvider frequencyNoiseProvider = new NoodleCaveNoiseProvider(
+            this.noiseSizeX,
+            this.noiseSizeY,
+            this.noiseSizeZ,
+            chunkX * this.noiseSizeX,
+            chunkZ * this.noiseSizeZ,
+            this.noiseMinY,
+            this.noodleCaveGenerator::sampleFrequencyNoise
+        );
+        
+        NoodleCaveNoiseProvider reducingNoiseProvider = new NoodleCaveNoiseProvider(
+            this.noiseSizeX,
+            this.noiseSizeY,
+            this.noiseSizeZ,
+            chunkX * this.noiseSizeX,
+            chunkZ * this.noiseSizeZ,
+            this.noiseMinY,
+            this.noodleCaveGenerator::sampleWeightReducingNoise
+        );
+        
+        NoodleCaveNoiseProvider firstNoiseProvider = new NoodleCaveNoiseProvider(
+            this.noiseSizeX,
+            this.noiseSizeY,
+            this.noiseSizeZ,
+            chunkX * this.noiseSizeX,
+            chunkZ * this.noiseSizeZ,
+            this.noiseMinY,
+            this.noodleCaveGenerator::sampleFirstWeightNoise
+        );
+        
+        NoodleCaveNoiseProvider secondNoiseProvider = new NoodleCaveNoiseProvider(
+            this.noiseSizeX,
+            this.noiseSizeY,
+            this.noiseSizeZ,
+            chunkX * this.noiseSizeX,
+            chunkZ * this.noiseSizeZ,
+            this.noiseMinY,
+            this.noodleCaveGenerator::sampleSecondWeightNoise
+        );
+        
+        consumer.accept(frequencyNoiseProvider);
+        consumer.accept(reducingNoiseProvider);
+        consumer.accept(firstNoiseProvider);
+        consumer.accept(secondNoiseProvider);
+        
+        return (weight, x, y, z) -> {
+            double frequencyNoise = frequencyNoiseProvider.sample();
+            double reducingNoise = reducingNoiseProvider.sample();
+            double firstNoise = firstNoiseProvider.sample();
+            double secondNoise = secondNoiseProvider.sample();
+            
+            return this.noodleCaveGenerator.sampleWeight(weight, x, y, z, frequencyNoise, reducingNoise, firstNoise, secondNoise, this.minY);
+        };
     }
-
-    private DoubleFunction<BlockSource> createOreVeinSamplers(int worldBottomNoiseY, ChunkPos chunkPos, Consumer<NoiseInterpolator> consumer) {
-        if (!this.generateOreVeins) {
-            return noisePoint -> this.blockSource;
-        }
+    
+    /**
+     * Creates noise providers to interpolate ore vein noise and adds to interpolator list. 
+     * 
+     * @param chunkPos
+     * @param consumer
+     * 
+     * @return BlockSource to sample alternate blockstate at x/y/z block coordinates.
+     */
+    private BlockSource createOreVeinProviders(ChunkPos chunkPos, Consumer<OreVeinNoiseProvider> consumer) {
+        int chunkX = chunkPos.x;
+        int chunkZ = chunkPos.z;
         
-        OreVeinSource oreVeinSampler = this.chunkGenerator.new OreVeinSource(chunkPos, worldBottomNoiseY, this.seed + 1L);
-        oreVeinSampler.feed(consumer);
+        if (!this.generateOreVeins)
+            return (x, y, z) -> this.blockSource.sample(x, y, z);
         
-        BlockSource blockSource = (x, y, z) -> {
-            BlockState blockState = oreVeinSampler.sample(x, y, z);
-            if (blockState != this.defaultBlock) {
+        OreVeinNoiseProvider frequencyNoiseProvider = new OreVeinNoiseProvider(
+            this.noiseSizeX,
+            this.noiseSizeY,
+            this.noiseSizeZ,
+            chunkX * this.noiseSizeX,
+            chunkZ * this.noiseSizeZ,
+            this.noiseMinY,
+            this.oreVeinGenerator::sampleOreFrequencyNoise
+        );
+        
+        OreVeinNoiseProvider firstOreNoiseProvider = new OreVeinNoiseProvider(
+            this.noiseSizeX,
+            this.noiseSizeY,
+            this.noiseSizeZ,
+            chunkX * this.noiseSizeX,
+            chunkZ * this.noiseSizeZ,
+            this.noiseMinY,
+            this.oreVeinGenerator::sampleFirstOrePlacementNoise
+        );
+        
+        OreVeinNoiseProvider secondOreNoiseProvider = new OreVeinNoiseProvider(
+            this.noiseSizeX,
+            this.noiseSizeY,
+            this.noiseSizeZ,
+            chunkX * this.noiseSizeX,
+            chunkZ * this.noiseSizeZ,
+            this.noiseMinY,
+            this.oreVeinGenerator::sampleSecondOrePlacementNoise
+        );
+        
+        consumer.accept(frequencyNoiseProvider);
+        consumer.accept(firstOreNoiseProvider);
+        consumer.accept(secondOreNoiseProvider);
+        
+        return (x, y, z) -> {
+            double frequencyNoise = frequencyNoiseProvider.sample();
+            double firstOreNoise = firstOreNoiseProvider.sample();
+            double secondOreNoise = secondOreNoiseProvider.sample();
+            
+            ChunkRandom random = new ChunkRandom();
+            random.setDeepslateSeed(this.seed, x, y, z);
+            
+            BlockState blockState = this.oreVeinGenerator.sample(random, z, y, z, frequencyNoise, firstOreNoise, secondOreNoise);
+            
+            if (blockState != this.defaultBlock)
                 return blockState;
-            }
             
             return this.blockSource.sample(x, y, z);
-            //return BlockStates.AIR;
-        };
-    
-        return noisePoint -> {
-            oreVeinSampler.setDeltaZ(noisePoint);
-            return blockSource;
         };
     }
 
+    /**
+     * Creates aquifer sampler.
+     * 
+     * @param noiseMinY
+     * @param noiseTopY
+     * @param chunkPos
+     * 
+     * @return
+     */
     private AquiferSampler createAquiferSampler(int noiseMinY, int noiseTopY, ChunkPos chunkPos) {
         if (!this.generateAquifers) {
             return AquiferSampler.seaLevel(this.getSeaLevel(), this.defaultFluid);
