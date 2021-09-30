@@ -57,9 +57,9 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        double[] sandNoise = this.surfaceNoisePool.borrowObj();
-        double[] gravelNoise = this.surfaceNoisePool.borrowObj();
-        double[] surfaceNoise = this.surfaceNoisePool.borrowObj();
+        double[] sandNoise = this.createSurfaceArray();
+        double[] gravelNoise = this.createSurfaceArray();
+        double[] surfaceNoise = this.createSurfaceArray();
 
         beachNoiseOctaves.sampleArr(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth, eighth, 1.0D);
         beachNoiseOctaves.sampleArr(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
@@ -166,10 +166,6 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                 }
             }
         }
-        
-        this.surfaceNoisePool.returnObj(sandNoise);
-        this.surfaceNoisePool.returnObj(gravelNoise);
-        this.surfaceNoisePool.returnObj(surfaceNoise);
     }
     
     @Override

@@ -12,6 +12,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public abstract class BiomeScreen extends GUIScreen {
+    @SuppressWarnings("unused")
     private final WorldSettings worldSettings;
     protected final Consumer<Settings> consumer;
     

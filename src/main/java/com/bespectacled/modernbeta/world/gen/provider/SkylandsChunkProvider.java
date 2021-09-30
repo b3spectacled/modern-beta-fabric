@@ -49,7 +49,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        double[] surfaceNoise = this.surfaceNoisePool.borrowObj();
+        double[] surfaceNoise = this.createSurfaceArray();
         
         surfaceNoise = surfaceNoiseOctaves.sampleArrShelf(surfaceNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
 
@@ -121,8 +121,6 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                 }
             }
         }
-        
-        this.surfaceNoisePool.returnObj(surfaceNoise);
     }
     
     @Override

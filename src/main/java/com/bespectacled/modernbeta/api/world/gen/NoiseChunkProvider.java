@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+
 import com.bespectacled.modernbeta.api.world.gen.noise.BaseNoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoodleCaveNoiseProvider;
@@ -12,7 +13,6 @@ import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
-import com.bespectacled.modernbeta.util.pool.DoubleArrayPool;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
@@ -67,8 +67,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
 
     protected final ChunkCache<NoiseProvider> noiseProviderCache;
     protected final ChunkCache<HeightmapChunk> heightmapChunkCache;
-    
-    protected final DoubleArrayPool surfaceNoisePool;
     
     protected final DoublePerlinNoiseSampler edgeDensityNoise;
     protected final DoublePerlinNoiseSampler waterLevelNoise;
@@ -195,10 +193,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             1536, 
             true, 
             this::sampleHeightmap
-        );
-        
-        // Noise array pools
-        this.surfaceNoisePool = new DoubleArrayPool(64, arr -> arr.length == 256, 256);      
+        ); 
         
         // Aquifer samplers
         ChunkRandom chunkRandom = new ChunkRandom(seed);

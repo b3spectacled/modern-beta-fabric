@@ -71,9 +71,9 @@ public class PEChunkProvider extends NoiseChunkProvider {
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        double[] sandNoise = this.surfaceNoisePool.borrowObj();
-        double[] gravelNoise = this.surfaceNoisePool.borrowObj();
-        double[] surfaceNoise = this.surfaceNoisePool.borrowObj();
+        double[] sandNoise = this.createSurfaceArray();
+        double[] gravelNoise = this.createSurfaceArray();
+        double[] surfaceNoise = this.createSurfaceArray();
 
         sandNoise = beachNoiseOctaves.sampleArrShelf(
             sandNoise, 
@@ -191,10 +191,6 @@ public class PEChunkProvider extends NoiseChunkProvider {
                 }
             }
         }
-        
-        this.surfaceNoisePool.returnObj(sandNoise);
-        this.surfaceNoisePool.returnObj(gravelNoise);
-        this.surfaceNoisePool.returnObj(surfaceNoise);
     }
     
     @Override
