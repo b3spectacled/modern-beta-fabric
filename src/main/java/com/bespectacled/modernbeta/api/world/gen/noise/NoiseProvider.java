@@ -37,7 +37,7 @@ public abstract class NoiseProvider {
     private double n;
     private double s;
     
-    private double sample;
+    private double density;
     
     public NoiseProvider(
         int noiseSizeX, 
@@ -83,11 +83,11 @@ public abstract class NoiseProvider {
         this.s = MathHelper.lerp(deltaX, this.sw, this.se);
     }
     
-    public void sampleDensity(double deltaZ) {
-        this.sample = MathHelper.lerp(deltaZ, this.n, this.s);
+    public void sampleNoiseZ(double deltaZ) {
+        this.density = MathHelper.lerp(deltaZ, this.n, this.s);
     }
     
     public double sample() {
-        return this.sample;
+        return this.density;
     }
 }

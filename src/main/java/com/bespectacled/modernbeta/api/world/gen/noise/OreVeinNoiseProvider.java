@@ -12,7 +12,6 @@ public class OreVeinNoiseProvider extends NoiseProvider {
         int noiseZ,
         int noiseMinY,
         OreVeinColumnSampler bufferSampler
-        
     ) {
         super(noiseSizeX, noiseSizeY, noiseSizeZ, noiseX, noiseZ);
         

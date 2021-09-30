@@ -377,7 +377,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 int z = startZ + localZ;
                                 
                                 double deltaZ = subZ / (double)this.horizontalNoiseResolution;
-                                noiseProviders.forEach(noiseProvider -> noiseProvider.sampleDensity(deltaZ));
+                                noiseProviders.forEach(noiseProvider -> noiseProvider.sampleNoiseZ(deltaZ));
                                 
                                 double density = baseNoiseProvider.sample();
                                 
@@ -434,17 +434,21 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                         int y = subChunkY * this.verticalNoiseResolution + subY;
                         y += this.minY;
                         
-                        baseNoiseProvider.sampleNoiseY(subY / (double)this.verticalNoiseResolution);
+                        double deltaY = subY / (double)this.verticalNoiseResolution;
+                        baseNoiseProvider.sampleNoiseY(deltaY);
                         
                         for (int subX = 0; subX < this.horizontalNoiseResolution; ++subX) {
                             int x = subX + subChunkX * this.horizontalNoiseResolution;
                             
-                            baseNoiseProvider.sampleNoiseX(subX / (double)this.horizontalNoiseResolution);
+                            double deltaX = subX / (double)this.horizontalNoiseResolution;
+                            baseNoiseProvider.sampleNoiseX(deltaX);
                             
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; ++subZ) {
                                 int z = subZ + subChunkZ * this.horizontalNoiseResolution;
                                 
-                                baseNoiseProvider.sampleDensity(subZ / (double)this.horizontalNoiseResolution);
+                                double deltaZ = subZ / (double)this.horizontalNoiseResolution;
+                                baseNoiseProvider.sampleNoiseZ(deltaZ);
+                                
                                 double density = baseNoiseProvider.sample();
                                 
                                 if (y < this.seaLevel || density > 0.0) {
@@ -499,7 +503,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int chunkZ = chunkPos.z;
         
         if (!this.generateNoodleCaves)
-            return (weight, x, y, z) -> 0;
+            return (weight, x, y, z) -> weight;
         
         NoodleCaveNoiseProvider frequencyNoiseProvider = new NoodleCaveNoiseProvider(
             this.noiseSizeX,
