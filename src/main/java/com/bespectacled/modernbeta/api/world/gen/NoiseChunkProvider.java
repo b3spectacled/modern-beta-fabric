@@ -566,8 +566,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * @return BlockSource to sample alternate blockstate at x/y/z block coordinates.
      */
     private BlockSource createOreVeinProviders(ChunkPos chunkPos, Consumer<OreVeinNoiseProvider> consumer) {
-        //if (!this.generateOreVeins)
-        //    return (x, y, z) -> null;
+        if (!this.generateOreVeins)
+            return (x, y, z) -> null;
 
         OreVeinNoiseProvider frequencyNoiseProvider = new OreVeinNoiseProvider(
             this.noiseSizeX,
