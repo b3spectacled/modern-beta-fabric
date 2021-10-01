@@ -19,9 +19,7 @@ import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.ChunkRandom;
-import net.minecraft.world.gen.DefaultBlockSource;
 
 public abstract class BaseChunkProvider extends ChunkProvider {
     // Set for specifying which biomes should use their vanilla surface builders.
@@ -46,8 +44,6 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     
     protected final NoiseSampler surfaceDepthNoise;
 
-    protected final BlockSource blockSource;
-
     public BaseChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
             chunkGenerator,
@@ -58,8 +54,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getBedrockFloorY(),
             chunkGenerator.getGeneratorSettings().get().getBedrockCeilingY(),
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
-            chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
-            new DefaultBlockSource(chunkGenerator.getGeneratorSettings().get().getDefaultBlock())
+            chunkGenerator.getGeneratorSettings().get().getDefaultFluid()
         );
     }
     
@@ -72,8 +67,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         int bedrockFloor,
         int bedrockCeiling,
         BlockState defaultBlock,
-        BlockState defaultFluid,
-        BlockSource blockSource
+        BlockState defaultFluid
     ) {
         super(chunkGenerator);
         
@@ -87,8 +81,6 @@ public abstract class BaseChunkProvider extends ChunkProvider {
 
         this.defaultBlock = defaultBlock;
         this.defaultFluid = defaultFluid;
-        
-        this.blockSource = blockSource;
         
         // Surface noise sampler
         this.surfaceDepthNoise = this.generatorSettings.get().getGenerationShapeConfig().hasSimplexSurfaceNoise() ? 

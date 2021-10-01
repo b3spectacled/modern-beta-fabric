@@ -39,6 +39,8 @@ import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.gen.BlockSource;
+import net.minecraft.world.gen.DefaultBlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 
@@ -333,6 +335,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
+        BlockSource blockSource = new DefaultBlockSource(this.defaultBlock);
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
@@ -349,7 +352,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                     Block blockToSet = this.blockArr[offsetX + x][y][offsetZ + z];
                     
                     BlockState originalBlockStateToSet = blockToSet.getDefaultState();
-                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, this.blockSource, absX, y, absZ, blockToSet, this.fluidBlock.getBlock());
+                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, blockSource, absX, y, absZ, blockToSet, this.fluidBlock.getBlock());
                     
                     boolean inFluid = blockstateToSet.equals(BlockStates.AIR) || blockstateToSet.equals(this.fluidBlock);
                     

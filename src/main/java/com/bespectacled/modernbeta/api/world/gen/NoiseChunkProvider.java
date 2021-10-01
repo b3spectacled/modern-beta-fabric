@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.api.world.gen.blocksource.BlockSources;
+import com.bespectacled.modernbeta.api.world.gen.blocksource.DeepslateSourceNullable;
 import com.bespectacled.modernbeta.api.world.gen.noise.BaseNoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoodleCaveNoiseProvider;
@@ -26,7 +27,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.ChunkRandom;
-import net.minecraft.world.gen.DeepslateBlockSource;
 import net.minecraft.world.gen.NoiseCaveSampler;
 import net.minecraft.world.gen.OreVeinGenerator;
 import net.minecraft.world.gen.SimpleRandom;
@@ -76,6 +76,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final WeightSampler noiseCaveSampler;
     protected final OreVeinGenerator oreVeinGenerator;
     protected final NoodleCavesGenerator noodleCaveGenerator;
+    
+    protected final BlockSource deepslateSource;
 
     public NoiseChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
@@ -88,13 +90,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getBedrockCeilingY(),
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
             chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
-            new DeepslateBlockSource(
-                chunkGenerator.getWorldSeed(), 
-                chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
-                ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasDeepslate() ? 
-                    BlockStates.DEEPSLATE : 
-                    chunkGenerator.getGeneratorSettings().get().getDefaultBlock(), chunkGenerator.getGeneratorSettings().get()
-            ),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSizeVertical(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSizeHorizontal(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSampling().getXZScale(),
@@ -125,7 +120,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int bedrockCeiling,
         BlockState defaultBlock,
         BlockState defaultFluid,
-        BlockSource blockSource,
         int sizeVertical, 
         int sizeHorizontal,
         double xzScale, 
@@ -144,7 +138,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         boolean generateOreVeins,
         boolean generateNoodleCaves
     ) {
-        super(chunkGenerator, minY, worldHeight, seaLevel, minSurfaceY, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid, blockSource);
+        super(chunkGenerator, minY, worldHeight, seaLevel, minSurfaceY, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid);
         
         this.verticalNoiseResolution = sizeVertical * 4;
         this.horizontalNoiseResolution = sizeHorizontal * 4;
@@ -210,6 +204,9 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         this.noiseCaveSampler = this.generateNoiseCaves ? new NoiseCaveSampler(chunkRandom, this.noiseMinY) : WeightSampler.DEFAULT;
         this.oreVeinGenerator = new OreVeinGenerator(seed, this.defaultBlock, this.horizontalNoiseResolution, this.verticalNoiseResolution, this.generatorSettings.get().getGenerationShapeConfig().getMinimumY());
         this.noodleCaveGenerator = new NoodleCavesGenerator(seed);
+        
+        // Block Source
+        this.deepslateSource = new DeepslateSourceNullable(seed, BlockStates.DEEPSLATE);
     }
 
     /**
@@ -345,13 +342,14 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         NoiseProvider baseNoiseProvider = this.noiseProviderCache.get(chunkX, chunkZ);
         WeightSampler noodleCaveSampler = this.createNoodleCaveNoiseProviders(chunkPos, noiseProviders::add);
         BlockSource oreVeinBlockSource = this.createOreVeinProviders(chunkPos, noiseProviders::add);
-        BlockSource baseBlockSource = this.getBaseBlockSource(baseNoiseProvider, structureWeightSampler, aquiferSampler, this.blockSource, noodleCaveSampler);
+        BlockSource baseBlockSource = this.getBaseBlockSource(baseNoiseProvider, structureWeightSampler, aquiferSampler, noodleCaveSampler);
         
         // Create and populate block sources
         BlockSources blockSources = new BlockSources.Builder()
-            .add(oreVeinBlockSource)
             .add(baseBlockSource)
-            .build();
+            .add(oreVeinBlockSource)
+            .add(this.deepslateSource)
+            .build(this.defaultBlock);
 
         // Sample initial noise.
         // Base noise should be added after this,
@@ -483,10 +481,9 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * @return BlockSource to sample blockstate at x/y/z block coordinates.
      */
     private BlockSource getBaseBlockSource(
-        NoiseProvider baseNoiseProvider, 
-        StructureWeightSampler weightSampler, 
-        AquiferSampler aquiferSampler, 
-        BlockSource blockSource, 
+        NoiseProvider baseNoiseProvider,
+        StructureWeightSampler weightSampler,
+        AquiferSampler aquiferSampler,
         WeightSampler noodleCaveSampler
     ) {
         return (x, y, z) -> {
@@ -497,7 +494,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             clampedDensity = noodleCaveSampler.sample(clampedDensity, x, y, z);
             clampedDensity += weightSampler.getWeight(x, y, z);
             
-            return aquiferSampler.apply(blockSource, x, y, z, clampedDensity);
+            return aquiferSampler.apply((u, v, w) -> null, x, y, z, clampedDensity);
         };
     }
 
@@ -569,8 +566,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * @return BlockSource to sample alternate blockstate at x/y/z block coordinates.
      */
     private BlockSource createOreVeinProviders(ChunkPos chunkPos, Consumer<OreVeinNoiseProvider> consumer) {
-        if (!this.generateOreVeins)
-            return (x, y, z) -> null;
+        //if (!this.generateOreVeins)
+        //    return (x, y, z) -> null;
 
         OreVeinNoiseProvider frequencyNoiseProvider = new OreVeinNoiseProvider(
             this.noiseSizeX,

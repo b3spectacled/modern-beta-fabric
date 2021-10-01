@@ -23,6 +23,8 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.BlockSource;
+import net.minecraft.world.gen.DefaultBlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 
@@ -135,7 +137,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
-        //BlockStructureWeightSampler blockWeightSampler = new BlockStructureWeightSampler(structureAccessor, chunk);
+        BlockSource blockSource = new DefaultBlockSource(this.defaultBlock);
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
@@ -239,7 +241,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                     //blockToSet = blockWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
                     //BlockState blockstateToSet = this.getBlockState(absX, y, absZ, blockToSet);
                     
-                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, this.blockSource, absX, y, absZ, blockToSet, this.defaultFluid.getBlock());
+                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, blockSource, absX, y, absZ, blockToSet, this.defaultFluid.getBlock());
                     
                     chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
                     

@@ -3,16 +3,16 @@ package com.bespectacled.modernbeta.api.world.gen.blocksource;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bespectacled.modernbeta.util.BlockStates;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.world.gen.BlockSource;
 
 public class BlockSources implements BlockSource {
     private final List<BlockSource> blockSources;
+    private final BlockState defaultBlock;
     
-    private BlockSources(List<BlockSource> blockSources) {
+    private BlockSources(List<BlockSource> blockSources, BlockState defaultBlock) {
         this.blockSources = blockSources;
+        this.defaultBlock = defaultBlock;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class BlockSources implements BlockSource {
             return blockState;
         }
         
-        return BlockStates.AIR;
+        return this.defaultBlock;
     }
     
     public static class Builder {
@@ -41,8 +41,8 @@ public class BlockSources implements BlockSource {
             return this;
         }
         
-        public BlockSources build() {
-            return new BlockSources(this.blockSources);
+        public BlockSources build(BlockState defaultBlock) {
+            return new BlockSources(this.blockSources, defaultBlock);
         }
     }
 }
