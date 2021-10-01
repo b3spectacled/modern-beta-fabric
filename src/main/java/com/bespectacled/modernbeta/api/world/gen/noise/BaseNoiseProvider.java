@@ -14,12 +14,10 @@ public class BaseNoiseProvider extends NoiseProvider {
         super(noiseSizeX, noiseSizeY, noiseSizeZ, noiseX, noiseZ);
         
         this.bufferSampler = bufferSampler;
-        
-        this.noise = this.generateNoise(noiseX, noiseZ);
     }
 
     @Override
-    public double[] generateNoise(int startNoiseX, int startNoiseZ) {
+    public double[] sampleNoise(int startNoiseX, int startNoiseZ) {
         double[] buffer = new double[this.noiseResY];
         double[] noise = new double[(this.noiseSizeX + 1) * (this.noiseSizeZ + 1) * (this.noiseSizeY + 1)];
         

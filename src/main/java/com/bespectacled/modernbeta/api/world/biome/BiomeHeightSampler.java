@@ -11,7 +11,7 @@ public interface BiomeHeightSampler {
 	public static final BiomeHeightSampler DEFAULT = new BiomeHeightSampler() {
 		@Override
 		public int getHeight(int x, int z, Heightmap.Type heightmap, HeightLimitView world) {
-			return 0;
+			return 64;
 		}
 		
 		@Override

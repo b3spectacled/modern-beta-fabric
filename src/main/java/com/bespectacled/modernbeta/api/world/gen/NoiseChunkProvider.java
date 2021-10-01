@@ -179,14 +179,20 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             "noise_provider",
             1536,
             true,
-            (chunkX, chunkZ) -> new BaseNoiseProvider(
-                this.noiseSizeX,
-                this.noiseSizeY,
-                this.noiseSizeZ,
-                chunkX * this.noiseSizeX,
-                chunkZ * this.noiseSizeZ,
-                this::generateNoiseColumn
-            )
+            (chunkX, chunkZ) -> {
+                NoiseProvider baseNoiseProvider = new BaseNoiseProvider(
+                    this.noiseSizeX,
+                    this.noiseSizeY,
+                    this.noiseSizeZ,
+                    chunkX * this.noiseSizeX,
+                    chunkZ * this.noiseSizeZ,
+                    this::generateNoiseColumn
+                );
+                
+                baseNoiseProvider.sampleInitialNoise(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ);
+                
+                return baseNoiseProvider;
+            }
         );
         
         this.heightmapChunkCache = new ChunkCache<>(
@@ -339,8 +345,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         List<NoiseProvider> noiseProviders = new ArrayList<>();
         
         NoiseProvider baseNoiseProvider = this.noiseProviderCache.get(chunkX, chunkZ);
-        noiseProviders.add(baseNoiseProvider);
-        
         WeightSampler noodleCaveSampler = this.createNoodleCaveNoiseProviders(chunkPos, noiseProviders::add);
         BlockSource oreVeinBlockSource = this.createOreVeinProviders(chunkPos, noiseProviders::add);
         BlockSource baseBlockSource = this.getBaseBlockSource(baseNoiseProvider, structureWeightSampler, aquiferSampler, this.blockSource, noodleCaveSampler);
@@ -351,6 +355,12 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             .add(baseBlockSource)
             .build();
 
+        // Sample initial noise.
+        // Base noise should be added after this,
+        // since base noise is sampled when fetched from cache.
+        noiseProviders.forEach(noiseProvider -> noiseProvider.sampleInitialNoise(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ));
+        noiseProviders.add(baseNoiseProvider);
+        
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
             int noiseX = subChunkX;
             
@@ -383,13 +393,13 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 double deltaZ = subZ / (double)this.horizontalNoiseResolution;
                                 noiseProviders.forEach(noiseProvider -> noiseProvider.sampleNoiseZ(deltaZ));
                                 
-                                BlockState blockToSet = blockSources.sample(x, y, z);
-                                chunk.setBlockState(mutable.set(localX, y, localZ), blockToSet, false);
+                                BlockState blockState = blockSources.sample(x, y, z);
+                                chunk.setBlockState(mutable.set(localX, y, localZ), blockState, false);
 
-                                heightmapOcean.trackUpdate(localX, y, localZ, blockToSet);
-                                heightmapSurface.trackUpdate(localX, y, localZ, blockToSet);
+                                heightmapOcean.trackUpdate(localX, y, localZ, blockState);
+                                heightmapSurface.trackUpdate(localX, y, localZ, blockState);
                                 
-                                this.scheduleFluidTick(chunk, aquiferSampler, mutable.set(x, y, z), blockToSet);
+                                this.scheduleFluidTick(chunk, aquiferSampler, mutable.set(x, y, z), blockState);
                             }
                         }
                     }

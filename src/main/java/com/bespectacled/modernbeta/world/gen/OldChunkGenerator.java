@@ -71,9 +71,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings))
         .apply(instance, instance.stable(OldChunkGenerator::new)));
     
-    private static final int OCEAN_MIN_DEPTH = 4;
-    
-    private final BiomeSource biomeSource;
+    public static final int OCEAN_MIN_DEPTH = 4;
     
     private final NbtCompound chunkProviderSettings;
     private final ChunkProvider chunkProvider;
@@ -84,8 +82,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     public OldChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, NbtCompound providerSettings) {
         super(biomeSource, seed, settings);
-        
-        this.biomeSource = biomeSource;
         
         this.chunkProviderSettings = providerSettings;
         this.chunkProviderType = NbtUtil.readStringOrThrow(NbtTags.WORLD_TYPE, providerSettings);
@@ -125,7 +121,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource)
             this.replaceOceansInChunk(oldBiomeSource, chunk);
     }
-
+    
     @Override
     public void generateFeatures(ChunkRegion region, StructureAccessor accessor) {
         if (this.chunkProvider.skipChunk(region.getCenterPos().x, region.getCenterPos().z, ChunkStatus.FEATURES)) return;

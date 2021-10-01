@@ -57,18 +57,23 @@ public abstract class NoiseProvider {
         this.noiseSize = this.noiseResX * this.noiseResY * this.noiseResZ;
     }
     
-    public abstract double[] generateNoise(int startNoiseX, int startNoiseZ);
+    public void sampleInitialNoise(int startNoiseX, int startNoiseZ) {
+        this.noise = this.sampleNoise(startNoiseX, startNoiseZ);
+        
+        if (this.noise.length != this.noiseSize)
+            throw new IllegalStateException("[Modern Beta] Noise array length is invalid!");
+    }
     
     public void sampleNoiseCorners(int subChunkX, int subChunkY, int subChunkZ) {
-        this.lowerNW = noise[((subChunkX + 0) * this.noiseResX + (subChunkZ + 0)) * this.noiseResY + (subChunkY + 0)];
-        this.lowerSW = noise[((subChunkX + 0) * this.noiseResX + (subChunkZ + 1)) * this.noiseResY + (subChunkY + 0)];
-        this.lowerNE = noise[((subChunkX + 1) * this.noiseResX + (subChunkZ + 0)) * this.noiseResY + (subChunkY + 0)];
-        this.lowerSE = noise[((subChunkX + 1) * this.noiseResX + (subChunkZ + 1)) * this.noiseResY + (subChunkY + 0)];
+        this.lowerNW = this.noise[((subChunkX + 0) * this.noiseResX + (subChunkZ + 0)) * this.noiseResY + (subChunkY + 0)];
+        this.lowerSW = this.noise[((subChunkX + 0) * this.noiseResX + (subChunkZ + 1)) * this.noiseResY + (subChunkY + 0)];
+        this.lowerNE = this.noise[((subChunkX + 1) * this.noiseResX + (subChunkZ + 0)) * this.noiseResY + (subChunkY + 0)];
+        this.lowerSE = this.noise[((subChunkX + 1) * this.noiseResX + (subChunkZ + 1)) * this.noiseResY + (subChunkY + 0)];
         
-        this.upperNW = noise[((subChunkX + 0) * this.noiseResX + (subChunkZ + 0)) * this.noiseResY + (subChunkY + 1)]; 
-        this.upperSW = noise[((subChunkX + 0) * this.noiseResX + (subChunkZ + 1)) * this.noiseResY + (subChunkY + 1)];
-        this.upperNE = noise[((subChunkX + 1) * this.noiseResX + (subChunkZ + 0)) * this.noiseResY + (subChunkY + 1)];
-        this.upperSE = noise[((subChunkX + 1) * this.noiseResX + (subChunkZ + 1)) * this.noiseResY + (subChunkY + 1)];
+        this.upperNW = this.noise[((subChunkX + 0) * this.noiseResX + (subChunkZ + 0)) * this.noiseResY + (subChunkY + 1)]; 
+        this.upperSW = this.noise[((subChunkX + 0) * this.noiseResX + (subChunkZ + 1)) * this.noiseResY + (subChunkY + 1)];
+        this.upperNE = this.noise[((subChunkX + 1) * this.noiseResX + (subChunkZ + 0)) * this.noiseResY + (subChunkY + 1)];
+        this.upperSE = this.noise[((subChunkX + 1) * this.noiseResX + (subChunkZ + 1)) * this.noiseResY + (subChunkY + 1)];
     }
     
     public void sampleNoiseY(double deltaY) {
@@ -90,4 +95,6 @@ public abstract class NoiseProvider {
     public double sample() {
         return this.density;
     }
+    
+    protected abstract double[] sampleNoise(int startNoiseX, int startNoiseZ);
 }

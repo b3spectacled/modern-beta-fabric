@@ -4,10 +4,12 @@ import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
+import com.bespectacled.modernbeta.api.world.biome.BiomeHeightSampler;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -18,11 +20,11 @@ import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 
 public class OldBiomeSource extends BiomeSource {
-    
     public static final Codec<OldBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance
         .group(
             Codec.LONG.fieldOf("seed").stable().forGetter(biomeSource -> biomeSource.seed),
@@ -36,6 +38,8 @@ public class OldBiomeSource extends BiomeSource {
     //private final Optional<NbtCompound> caveBiomeProviderSettings;
     
     private final BiomeProvider biomeProvider;
+    @SuppressWarnings("unused")
+    private BiomeHeightSampler biomeHeightSampler;
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, NbtCompound settings) {
         super(Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings))
@@ -51,10 +55,15 @@ public class OldBiomeSource extends BiomeSource {
         this.biomeProviderSettings = settings;
         
         this.biomeProvider = Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings)).apply(seed, settings);
+        this.biomeHeightSampler = BiomeHeightSampler.DEFAULT;
+    }
+    
+    public void setBiomeHeightSampler(BiomeHeightSampler biomeHeightSampler) {
+        this.biomeHeightSampler = biomeHeightSampler;
     }
 
     @Override
-    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {    
         return this.biomeProvider.getBiomeForNoiseGen(this.biomeRegistry, biomeX, biomeY, biomeZ);
     }
 

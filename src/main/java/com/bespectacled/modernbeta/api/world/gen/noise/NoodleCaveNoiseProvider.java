@@ -18,11 +18,9 @@ public class NoodleCaveNoiseProvider extends NoiseProvider {
         
         this.noiseMinY = noiseMinY;
         this.bufferSampler = bufferSampler;
-        
-        this.noise = this.generateNoise(noiseX, noiseZ);
     }
     
-    public double[] generateNoise(int startNoiseX, int startNoiseZ) {
+    public double[] sampleNoise(int startNoiseX, int startNoiseZ) {
         double[] buffer = new double[this.noiseResY];
         double[] noise = new double[this.noiseSize];
         
