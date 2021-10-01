@@ -7,11 +7,9 @@ public class BaseNoiseProvider extends NoiseProvider {
         int noiseSizeX, 
         int noiseSizeY, 
         int noiseSizeZ, 
-        int noiseX, 
-        int noiseZ,
         BaseColumnSampler bufferSampler
     ) {
-        super(noiseSizeX, noiseSizeY, noiseSizeZ, noiseX, noiseZ);
+        super(noiseSizeX, noiseSizeY, noiseSizeZ);
         
         this.bufferSampler = bufferSampler;
     }

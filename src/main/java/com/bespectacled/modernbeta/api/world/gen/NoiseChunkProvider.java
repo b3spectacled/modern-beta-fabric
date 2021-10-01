@@ -184,8 +184,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                     this.noiseSizeX,
                     this.noiseSizeY,
                     this.noiseSizeZ,
-                    chunkX * this.noiseSizeX,
-                    chunkZ * this.noiseSizeZ,
                     this::generateNoiseColumn
                 );
                 
@@ -512,9 +510,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * @return WeightSampler to sample density addition at x/y/z block coordinates.
      */
     private WeightSampler createNoodleCaveNoiseProviders(ChunkPos chunkPos, Consumer<NoodleCaveNoiseProvider> consumer) {
-        int chunkX = chunkPos.x;
-        int chunkZ = chunkPos.z;
-        
         if (!this.generateNoodleCaves)
             return (weight, x, y, z) -> weight;
         
@@ -522,8 +517,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
-            chunkX * this.noiseSizeX,
-            chunkZ * this.noiseSizeZ,
             this.noiseMinY,
             this.noodleCaveGenerator::sampleFrequencyNoise
         );
@@ -532,8 +525,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
-            chunkX * this.noiseSizeX,
-            chunkZ * this.noiseSizeZ,
             this.noiseMinY,
             this.noodleCaveGenerator::sampleWeightReducingNoise
         );
@@ -542,8 +533,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
-            chunkX * this.noiseSizeX,
-            chunkZ * this.noiseSizeZ,
             this.noiseMinY,
             this.noodleCaveGenerator::sampleFirstWeightNoise
         );
@@ -552,8 +541,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
-            chunkX * this.noiseSizeX,
-            chunkZ * this.noiseSizeZ,
             this.noiseMinY,
             this.noodleCaveGenerator::sampleSecondWeightNoise
         );
@@ -582,9 +569,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * @return BlockSource to sample alternate blockstate at x/y/z block coordinates.
      */
     private BlockSource createOreVeinProviders(ChunkPos chunkPos, Consumer<OreVeinNoiseProvider> consumer) {
-        int chunkX = chunkPos.x;
-        int chunkZ = chunkPos.z;
-        
         if (!this.generateOreVeins)
             return (x, y, z) -> null;
 
@@ -592,8 +576,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
-            chunkX * this.noiseSizeX,
-            chunkZ * this.noiseSizeZ,
             this.noiseMinY,
             this.oreVeinGenerator::sampleOreFrequencyNoise
         );
@@ -602,8 +584,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
-            chunkX * this.noiseSizeX,
-            chunkZ * this.noiseSizeZ,
             this.noiseMinY,
             this.oreVeinGenerator::sampleFirstOrePlacementNoise
         );
@@ -612,8 +592,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
-            chunkX * this.noiseSizeX,
-            chunkZ * this.noiseSizeZ,
             this.noiseMinY,
             this.oreVeinGenerator::sampleSecondOrePlacementNoise
         );

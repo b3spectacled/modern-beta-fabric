@@ -42,9 +42,7 @@ public abstract class NoiseProvider {
     public NoiseProvider(
         int noiseSizeX, 
         int noiseSizeY, 
-        int noiseSizeZ, 
-        int noiseX, 
-        int noiseZ
+        int noiseSizeZ
     ) {
         this.noiseSizeX = noiseSizeX;
         this.noiseSizeY = noiseSizeY;
