@@ -257,19 +257,19 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         for (int x = spawnX - 3; x <= spawnX + 3; ++x) {
             for (int y = spawnY - 2; y <= spawnY + 2; ++y) {
                 for (int z = spawnZ - 3; z <= spawnZ + 3; ++z) {
-                    Block blockToSet = (y < spawnY - 1) ? Blocks.OBSIDIAN : Blocks.AIR;
+                    Block block = (y < spawnY - 1) ? Blocks.OBSIDIAN : Blocks.AIR;
                     
                     if (x == spawnX - 3 || z == spawnZ - 3 || x == spawnX + 3 || z == spawnZ + 3 || y == spawnY - 2 || y == spawnY + 2) {
-                        blockToSet = floorBlock;
+                        block = floorBlock;
                         if (y >= spawnY - 1) {
-                            blockToSet = wallBlock;
+                            block = wallBlock;
                         }
                     }
                     if (z == spawnZ + 3 && x == spawnX && y >= spawnY - 1 && y <= spawnY) {
-                        blockToSet = Blocks.AIR;
+                        block = Blocks.AIR;
                     }
                     
-                    world.setBlockState(mutable.set(x, y, z), blockToSet.getDefaultState());
+                    world.setBlockState(mutable.set(x, y, z), block.getDefaultState());
                 }
             }
         }
@@ -354,7 +354,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                     Block block = this.blockArr[offsetX + x][y][offsetZ + z];
                     
                     BlockState originalBlockState = block.getDefaultState();
-                    //BlockState blockState = this.getBlockState(structureWeightSampler, blockSource, absX, y, absZ, blockToSet, this.fluidBlock.getBlock());
+                    //BlockState blockState = this.getBlockState(structureWeightSampler, blockSource, absX, y, absZ, block, this.fluidBlock.getBlock());
                     BlockState blockState = originalBlockState;
                     
                     boolean inFluid = blockState.equals(BlockStates.AIR) || blockState.equals(this.fluidBlock);
@@ -562,21 +562,21 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                 }
                  
                 for (int y = 0; y < this.levelHeight; ++y) {
-                    Block blockToSet = Blocks.AIR;
+                    Block block = Blocks.AIR;
                      
                     if (y <= dirtThreshold)
-                        blockToSet = Blocks.DIRT;
+                        block = Blocks.DIRT;
                      
                     if (y <= stoneThreshold)
-                        blockToSet = Blocks.STONE;
+                        block = Blocks.STONE;
                      
                     if (this.levelType == IndevType.FLOATING && y < roundedHeight)
-                        blockToSet = Blocks.AIR;
+                        block = Blocks.AIR;
 
-                    Block block = blockArr[x][y][z];
+                    Block existingBlock = blockArr[x][y][z];
                      
-                    if (block.equals(Blocks.AIR)) {
-                        blockArr[x][y][z] = blockToSet;
+                    if (existingBlock.equals(Blocks.AIR)) {
+                        blockArr[x][y][z] = block;
                     }
                 }
             }

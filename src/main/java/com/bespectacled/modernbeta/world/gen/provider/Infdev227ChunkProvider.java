@@ -95,9 +95,9 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
                 
                 for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
-                    BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
+                    BlockState blockState = chunk.getBlockState(mutable.set(x, y, z));
                     
-                    boolean inFluid = someBlock.equals(BlockStates.AIR) || someBlock.equals(this.defaultFluid);
+                    boolean inFluid = blockState.equals(BlockStates.AIR) || blockState.equals(this.defaultFluid);
                     
                     // Skip if used custom surface generation or if below minimum surface level.
                     if (usedCustomSurface) {
@@ -109,16 +109,16 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                         continue;
                     }
                     
-                    if (!someBlock.equals(this.defaultBlock)) {
+                    if (!blockState.equals(this.defaultBlock)) {
                         continue;
                     }
                         
-                    if (soilDepth == 0) someBlock = (y >= this.seaLevel - 1) ? topBlock : fillerBlock;
-                    if (soilDepth == 1) someBlock = fillerBlock;
+                    if (soilDepth == 0) blockState = (y >= this.seaLevel - 1) ? topBlock : fillerBlock;
+                    if (soilDepth == 1) blockState = fillerBlock;
                     
                     soilDepth++;
 
-                    chunk.setBlockState(mutable.set(x, y, z), someBlock, false);
+                    chunk.setBlockState(mutable.set(x, y, z), blockState, false);
                 }
             }
         }
