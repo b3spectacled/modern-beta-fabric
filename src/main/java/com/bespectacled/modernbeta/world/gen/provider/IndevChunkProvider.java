@@ -163,34 +163,34 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                     BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                     BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
                     
-                    BlockState state = chunk.getBlockState(mutable.set(x, y, z));
+                    BlockState blockState = chunk.getBlockState(mutable.set(x, y, z));
 
                     // Skip replacing surface blocks if this is a Hell level and biome surface is standard grass/dirt.
                     if (this.isHell() && topBlock.equals(BlockStates.GRASS_BLOCK) && fillerBlock.equals(BlockStates.DIRT))
                         continue;
                     
-                    if (state.equals(this.topsoilBlock)) {
-                        state = topBlock;
-                    } else if (state.equals(BlockStates.DIRT)) {
-                        state = fillerBlock;
+                    if (blockState.equals(this.topsoilBlock)) {
+                        blockState = topBlock;
+                    } else if (blockState.equals(BlockStates.DIRT)) {
+                        blockState = fillerBlock;
                     } 
                     
                     // Set snow/ice
                     if (!this.inWorldBounds(absX, absZ)) {
                         if (y == this.seaLevel) {
-                            if (isCold && state.equals(topBlock)) {
-                                state = topBlock.with(SnowyBlock.SNOWY, true);
+                            if (isCold && blockState.equals(topBlock)) {
+                                blockState = topBlock.with(SnowyBlock.SNOWY, true);
                                 chunk.setBlockState(mutableUp.set(x, y + 1, z), BlockStates.SNOW, false);
                             }
                             
                         } else if (y == this.seaLevel - 1 && this.levelTheme != IndevTheme.HELL) {
-                            if (isCold && state.equals(BlockStates.WATER)) {
-                                state = BlockStates.ICE;
+                            if (isCold && blockState.equals(BlockStates.WATER)) {
+                                blockState = BlockStates.ICE;
                             }
                         }
                     }
 
-                    chunk.setBlockState(mutable.set(x, y, z), state, false);
+                    chunk.setBlockState(mutable.set(x, y, z), blockState, false);
                 }
             }
         }
@@ -254,19 +254,19 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         for (int x = spawnX - 3; x <= spawnX + 3; ++x) {
             for (int y = spawnY - 2; y <= spawnY + 2; ++y) {
                 for (int z = spawnZ - 3; z <= spawnZ + 3; ++z) {
-                    Block blockToSet = (y < spawnY - 1) ? Blocks.OBSIDIAN : Blocks.AIR;
+                    Block block = (y < spawnY - 1) ? Blocks.OBSIDIAN : Blocks.AIR;
                     
                     if (x == spawnX - 3 || z == spawnZ - 3 || x == spawnX + 3 || z == spawnZ + 3 || y == spawnY - 2 || y == spawnY + 2) {
-                        blockToSet = floorBlock;
+                        block = floorBlock;
                         if (y >= spawnY - 1) {
-                            blockToSet = wallBlock;
+                            block = wallBlock;
                         }
                     }
                     if (z == spawnZ + 3 && x == spawnX && y >= spawnY - 1 && y <= spawnY) {
-                        blockToSet = Blocks.AIR;
+                        block = Blocks.AIR;
                     }
                     
-                    world.setBlockState(mutable.set(x, y, z), blockToSet.getDefaultState());
+                    world.setBlockState(mutable.set(x, y, z), block.getDefaultState());
                 }
             }
         }
@@ -349,39 +349,39 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                 int soilDepth = 0;
                 
                 for (int y = this.levelHeight - 1; y >= 0; --y) {
-                    Block blockToSet = this.blockArr[offsetX + x][y][offsetZ + z];
+                    Block block = this.blockArr[offsetX + x][y][offsetZ + z];
                     
-                    BlockState originalBlockStateToSet = blockToSet.getDefaultState();
-                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, blockSource, absX, y, absZ, blockToSet, this.fluidBlock.getBlock());
+                    BlockState originalBlockState = block.getDefaultState();
+                    BlockState blockState = this.getBlockState(structureWeightSampler, blockSource, absX, y, absZ, block, this.fluidBlock.getBlock());
                     
-                    boolean inFluid = blockstateToSet.equals(BlockStates.AIR) || blockstateToSet.equals(this.fluidBlock);
+                    boolean inFluid = blockState.equals(BlockStates.AIR) || blockState.equals(this.fluidBlock);
                     
                     // Check to see if structure weight sampler modifies terrain.
-                    if (!originalBlockStateToSet.equals(blockstateToSet)) {
+                    if (!originalBlockState.equals(blockState)) {
                         terrainModified = true;
                     }
                     
                     // Replace default block set by structure sampling with topsoil blocks.
                     if (terrainModified && !inFluid) {
-                        if (soilDepth == 0) blockstateToSet = (this.isFloating() || y >= this.waterLevel - 1) ? this.topsoilBlock : BlockStates.DIRT;
-                        if (soilDepth == 1) blockstateToSet = BlockStates.DIRT;
+                        if (soilDepth == 0) blockState = (this.isFloating() || y >= this.waterLevel - 1) ? this.topsoilBlock : BlockStates.DIRT;
+                        if (soilDepth == 1) blockState = BlockStates.DIRT;
                         
                         soilDepth++;
                     }
                     
-                    chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
+                    chunk.setBlockState(mutable.set(x, y, z), blockState, false);
                     
                     if (this.levelType == IndevType.FLOATING) continue;
                      
-                    if (y <= 1 + this.bedrockFloor && blockToSet == Blocks.AIR) {
+                    if (y <= 1 + this.bedrockFloor && block == Blocks.AIR) {
                         //chunk.setBlockState(mutable.set(x, y, z), BlockStates.LAVA, false);
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                     } else if (y <= 1 + this.bedrockFloor) {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                     }
                     
-                    heightmapOCEAN.trackUpdate(x, y, z, blockToSet.getDefaultState());
-                    heightmapSURFACE.trackUpdate(x, y, z, blockToSet.getDefaultState());
+                    heightmapOCEAN.trackUpdate(x, y, z, block.getDefaultState());
+                    heightmapSURFACE.trackUpdate(x, y, z, block.getDefaultState());
                         
                 }
             }
@@ -559,21 +559,21 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                 }
                  
                 for (int y = 0; y < this.levelHeight; ++y) {
-                    Block blockToSet = Blocks.AIR;
+                    Block block = Blocks.AIR;
                      
                     if (y <= dirtThreshold)
-                        blockToSet = Blocks.DIRT;
+                        block = Blocks.DIRT;
                      
                     if (y <= stoneThreshold)
-                        blockToSet = Blocks.STONE;
+                        block = Blocks.STONE;
                      
                     if (this.levelType == IndevType.FLOATING && y < roundedHeight)
-                        blockToSet = Blocks.AIR;
+                        block = Blocks.AIR;
 
-                    Block block = blockArr[x][y][z];
+                    Block existingBlock = blockArr[x][y][z];
                      
-                    if (block.equals(Blocks.AIR)) {
-                        blockArr[x][y][z] = blockToSet;
+                    if (existingBlock.equals(Blocks.AIR)) {
+                        blockArr[x][y][z] = block;
                     }
                 }
             }

@@ -217,12 +217,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             };
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(
-                density,
-                noiseX * this.horizontalNoiseResolution,
-                noiseY * this.verticalNoiseResolution,
-                noiseZ * this.horizontalNoiseResolution
-            );
+            density = this.sampleNoiseCave(density, noiseX, noiseY, noiseZ);
             
             density = this.applyBottomSlide(density, noiseY, -3);
             

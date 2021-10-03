@@ -326,12 +326,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
             double densityWithOffset = density - densityOffset; 
             
             // Sample for noise caves
-            densityWithOffset = this.sampleNoiseCave(
-                densityWithOffset, 
-                noiseX * this.horizontalNoiseResolution, 
-                noiseY * this.verticalNoiseResolution,
-                noiseZ * this.horizontalNoiseResolution
-            );
+            densityWithOffset = this.sampleNoiseCave(densityWithOffset, noiseX, noiseY, noiseZ);
             
             densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
             densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);

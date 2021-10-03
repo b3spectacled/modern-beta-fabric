@@ -265,8 +265,12 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      */
     protected double sampleNoiseCave(double noise, int noiseX, int noiseY, int noiseZ) {
         if (this.noiseCaveSampler != null) {
-            //return this.noiseCaveSampler.sample(noise, noiseX, noiseY, noiseZ);
-            return this.noiseCaveSampler.sample(noise, noiseY, noiseZ, noiseX); // ????
+            return this.noiseCaveSampler.sample(
+                noise, 
+                noiseY * this.verticalNoiseResolution, 
+                noiseZ * this.horizontalNoiseResolution, 
+                noiseX * this.horizontalNoiseResolution
+            );
         }
         
         return noise;
@@ -627,7 +631,17 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         if (!this.generateAquifers) {
             return AquiferSampler.seaLevel(this.getSeaLevel(), this.defaultFluid);
         }
-        return AquiferSampler.aquifer(chunkPos, this.edgeDensityNoise, this.waterLevelNoise, this.lavaNoise, this.generatorSettings.get(), null, noiseMinY * this.verticalNoiseResolution, noiseTopY * this.verticalNoiseResolution);
+        
+        return AquiferSampler.aquifer(
+            chunkPos, 
+            this.edgeDensityNoise, 
+            this.waterLevelNoise, 
+            this.lavaNoise,
+            this.generatorSettings.get(),
+            null, 
+            noiseMinY * this.verticalNoiseResolution, 
+            noiseTopY * this.verticalNoiseResolution
+        );
     }
 
     /**
