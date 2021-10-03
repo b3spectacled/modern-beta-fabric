@@ -49,8 +49,6 @@ public class Swampland {
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.RAIN)
             .category(Biome.Category.SWAMP)
-            .depth(0.37F)
-            .scale(0.5F)
             .temperature(0.5F)
             .downfall(1.0F)
             .effects((new BiomeEffects.Builder())

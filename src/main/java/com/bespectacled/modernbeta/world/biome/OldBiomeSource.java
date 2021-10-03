@@ -21,6 +21,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 
 public class OldBiomeSource extends BiomeSource {
     public static final Codec<OldBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance
@@ -61,25 +62,25 @@ public class OldBiomeSource extends BiomeSource {
     }
 
     @Override
-    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {    
-        return this.biomeProvider.getBiomeForNoiseGen(this.biomeRegistry, biomeX, biomeY, biomeZ);
+    public Biome getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {    
+        return this.biomeProvider.getBiome(this.biomeRegistry, biomeX, biomeY, biomeZ);
     }
 
-    public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeProvider.getOceanBiomeForNoiseGen(this.biomeRegistry, biomeX, biomeY, biomeZ);
+    public Biome getOceanBiome(int biomeX, int biomeY, int biomeZ) {
+        return this.biomeProvider.getOceanBiome(this.biomeRegistry, biomeX, biomeY, biomeZ);
     }
     
     public Biome getBiomeForSurfaceGen(int x, int y, int z) {
         if (this.biomeProvider instanceof BiomeResolver biomeResolver) {
-            return biomeResolver.getBiome(this.biomeRegistry, x, y, z);
+            return biomeResolver.getBiomeAtBlock(this.biomeRegistry, x, y, z);
         }
         
-        return this.biomeProvider.getBiomeForNoiseGen(this.biomeRegistry, x >> 2, y >> 2, z >> 2);
+        return this.biomeProvider.getBiome(this.biomeRegistry, x >> 2, y >> 2, z >> 2);
     }
     
     public Biome getBiomeForSurfaceGen(ChunkRegion region, BlockPos pos) {
         if (this.biomeProvider instanceof BiomeResolver biomeResolver)
-            return biomeResolver.getBiome(this.biomeRegistry, pos.getX(), pos.getY(), pos.getZ());
+            return biomeResolver.getBiomeAtBlock(this.biomeRegistry, pos.getX(), pos.getY(), pos.getZ());
         
         return region.getBiome(pos);
     }

@@ -77,7 +77,7 @@ public class PESpawnLocator implements SpawnLocator {
         
         Biome biome = (this.chunkProvider.getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) ? 
             oldBiomeSource.getBiomeForSurfaceGen(x, y, z) :
-            this.chunkProvider.getBiomeForNoiseGen(x >> 2, y >> 2, z >> 2);
+            this.chunkProvider.getBiome(x >> 2, y >> 2, z >> 2, null);
         
         return 
             (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial().equals(BlockStates.SAND) && y >= seaLevel - 1) || 

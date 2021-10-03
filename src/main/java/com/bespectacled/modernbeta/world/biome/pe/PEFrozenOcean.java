@@ -43,8 +43,6 @@ public class PEFrozenOcean {
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.SNOW)
             .category(Biome.Category.OCEAN)
-            .depth(-1.0F)
-            .scale(0.1F)
             .temperature(0.0F)
             .downfall(0.5F)
             .effects((new BiomeEffects.Builder())

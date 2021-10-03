@@ -1,6 +1,5 @@
 package com.bespectacled.modernbeta.world.carver;
 
-import java.util.BitSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
@@ -8,6 +7,7 @@ import java.util.function.Function;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
 
+import net.minecraft.class_6643;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -41,8 +41,8 @@ public class OldCaveCarver extends CaveCarver {
         Function<BlockPos, Biome> posToBiome, 
         Random random, 
         AquiferSampler aquiferSampler, 
-        ChunkPos pos, 
-        BitSet carvingMask
+        ChunkPos pos,
+        class_6643 bitSet
     ) {
         int caveCount = random.nextInt(random.nextInt(random.nextInt(40) + 1) + 1);
         if (random.nextInt(getMaxCaveCount()) != 0) {

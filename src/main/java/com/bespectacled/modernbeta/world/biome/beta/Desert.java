@@ -48,8 +48,6 @@ public class Desert {
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.NONE)
             .category(Biome.Category.DESERT)
-            .depth(0.3F)
-            .scale(0.2F)
             .temperature(1.0F)
             .downfall(0.0F)
             .effects((new BiomeEffects.Builder())

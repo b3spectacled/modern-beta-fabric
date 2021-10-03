@@ -127,7 +127,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
                     }
                     
                     // Skip if used custom surface generation or if below minimum surface level.
-                    if (usedCustomSurface || y < this.minSurfaceY) {
+                    if (usedCustomSurface) {
                         continue;
                     }
 

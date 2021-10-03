@@ -42,8 +42,6 @@ public class LukewarmOcean {
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.RAIN)
             .category(Biome.Category.OCEAN)
-            .depth(-1.0F)
-            .scale(0.1F)
             .temperature(1.0F)
             .downfall(0.7F)
             .effects((new BiomeEffects.Builder())

@@ -40,7 +40,7 @@ public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeRes
     }
 
     @Override
-    public Biome getBiome(Registry<Biome> biomeRegistry, int x, int y, int z) {
+    public Biome getBiomeAtBlock(Registry<Biome> biomeRegistry, int x, int y, int z) {
         double temp = this.climateSampler.sampleTemp(x, z);
         double rain = this.climateSampler.sampleRain(x, z);
         

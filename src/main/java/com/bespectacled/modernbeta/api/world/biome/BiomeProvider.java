@@ -34,7 +34,7 @@ public abstract class BiomeProvider {
      * 
      * @return A biome at given biome coordinates.
      */
-    public abstract Biome getBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ);
+    public abstract Biome getBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ);
     
     /**
      * Gets a biome to overwrite the original biome at given biome coordinates and sufficient depth.
@@ -46,8 +46,8 @@ public abstract class BiomeProvider {
      * 
      * @return A biome at given biome coordinates.
      */
-    public Biome getOceanBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
-        return this.getBiomeForNoiseGen(biomeRegistry, biomeX, biomeY, biomeZ);
+    public Biome getOceanBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+        return this.getBiome(biomeRegistry, biomeX, biomeY, biomeZ);
     }
     
     /**

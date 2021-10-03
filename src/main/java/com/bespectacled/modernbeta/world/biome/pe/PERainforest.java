@@ -46,8 +46,6 @@ public class PERainforest {
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.RAIN)
             .category(Biome.Category.JUNGLE)
-            .depth(0.37F)
-            .scale(0.5F)
             .temperature(1.0F)
             .downfall(1.0F)
             .effects((new BiomeEffects.Builder())

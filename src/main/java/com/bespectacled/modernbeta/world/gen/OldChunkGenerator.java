@@ -1,12 +1,15 @@
 package com.bespectacled.modernbeta.world.gen;
 
 import java.util.BitSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
+
+import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
@@ -17,12 +20,14 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.util.mutable.MutableBiomeArray;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.structure.OceanShrineStructure;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
+import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.class_6643;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.nbt.NbtCompound;
@@ -34,6 +39,7 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
@@ -46,21 +52,26 @@ import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.PalettedContainer;
 import net.minecraft.world.chunk.ProtoChunk;
-import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
+import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.world.biome.source.BiomeCoords;
 
 public class OldChunkGenerator extends NoiseChunkGenerator {
     public static final Codec<OldChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
@@ -76,6 +87,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private final NbtCompound chunkProviderSettings;
     private final ChunkProvider chunkProvider;
     private final String chunkProviderType;
+    private final FluidLevelSampler carverFluidLevelSampler;
 
     private final boolean generateOceans;
     private final boolean generateOceanShrines;
@@ -86,6 +98,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.chunkProviderSettings = providerSettings;
         this.chunkProviderType = NbtUtil.readStringOrThrow(NbtTags.WORLD_TYPE, providerSettings);
         this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
+        this.carverFluidLevelSampler = (x, y, z) -> new FluidLevel(this.chunkProvider.getSeaLevel(), BlockStates.AIR);
         
         this.generateOceans = !Compat.isLoaded("hydrogen") ? 
             NbtUtil.readBoolean(NbtTags.GEN_OCEANS, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateOceans) : 
@@ -104,74 +117,63 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
-    public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {   
-        return CompletableFuture.<Chunk>supplyAsync(
-            () -> this.chunkProvider.provideChunk(accessor, chunk), Util.getMainWorkerExecutor()
-        );
+    public CompletableFuture<Chunk> populateBiomes(Executor executor, Registry<Biome> biomeRegistry, StructureAccessor accessor, Chunk chunk) {
+        return CompletableFuture.<Chunk>supplyAsync(Util.debugSupplier("init_biomes", () -> {
+            chunk.method_38257(this.biomeSource, this.getMultiNoiseSampler());
+            return chunk;
+        }), Util.getMainWorkerExecutor());
+    }
+    
+    @Override
+    public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {
+        return this.chunkProvider.provideChunk(executor, accessor, chunk);
     }
         
     @Override
-    public void buildSurface(ChunkRegion region, Chunk chunk) {
+    public void buildSurface(ChunkRegion region, StructureAccessor accessor, Chunk chunk) {
         if (!this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.SURFACE))  
             if (this.biomeSource instanceof OldBiomeSource oldBiomeSource)
                 this.chunkProvider.provideSurface(region, chunk, oldBiomeSource);
             else
-                super.buildSurface(region, chunk);
+                super.buildSurface(region, accessor, chunk);
         
         if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource)
             this.replaceOceansInChunk(oldBiomeSource, chunk);
     }
     
     @Override
-    public void generateFeatures(ChunkRegion region, StructureAccessor accessor) {
-        if (this.chunkProvider.skipChunk(region.getCenterPos().x, region.getCenterPos().z, ChunkStatus.FEATURES)) return;
-        
-        ChunkPos chunkPos = region.getCenterPos();
-        int startX = chunkPos.getStartX();
-        int startZ = chunkPos.getStartZ();
-        
-        Biome biome = this.getBiomeAt(startX, 0, startZ, region.getChunk(chunkPos.x, chunkPos.z));
-        
-        // TODO: Remove chunkRandom at some point
-        ChunkRandom chunkRandom = new ChunkRandom();
-        long popSeed = chunkRandom.setPopulationSeed(region.getSeed(), startX, startZ);
-
-        try {
-            biome.generateFeatureStep(accessor, this, region, popSeed, chunkRandom, new BlockPos(startX, region.getBottomY(), startZ));
-        } catch (Exception exception) {
-            CrashReport report = CrashReport.create(exception, "Biome decoration");
-            report.addElement("Generation").add("CenterX", chunkPos.x).add("CenterZ", chunkPos.z).add("Seed", popSeed).add("Biome", biome);
-            throw new CrashException(report);
-        }
-    }
-    
-    @Override
-    public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver genCarver) {
+    public void carve(ChunkRegion region, long seed, BiomeAccess access, StructureAccessor accessor, Chunk chunk, GenerationStep.Carver genCarver) {
         if (this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.CARVERS) || 
             this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.LIQUID_CARVERS)) return;
         
-        BiomeAccess biomeAcc = access.withSource(this.biomeSource);
+        BiomeAccess biomeAcc = access.withSource((biomeX, biomeY, biomeZ) -> this.biomeSource.getBiome(biomeX, biomeY, biomeZ, this.getMultiNoiseSampler()));
         ChunkPos chunkPos = chunk.getPos();
 
         int mainChunkX = chunkPos.x;
         int mainChunkZ = chunkPos.z;
-
-        Biome biome = this.getBiomeAt(chunkPos.getStartX(), 0, chunkPos.getStartZ(), chunk);
-        GenerationSettings genSettings = biome.getGenerationSettings();
-        CarverContext heightContext = new CarverContext(this, chunk);
         
-        AquiferSampler aquiferSampler = this.createAquiferSampler(chunk);
-        BitSet bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);
-
+        CarverContext heightContext = new CarverContext(this, chunk);
+        AquiferSampler aquiferSampler = AquiferSampler.seaLevel(this.carverFluidLevelSampler);
+        class_6643 bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);
+        
         Random random = new Random(seed);
         long l = (random.nextLong() / 2L) * 2L + 1L;
         long l1 = (random.nextLong() / 2L) * 2L + 1L;
 
         for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
             for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
+                ChunkPos pos = new ChunkPos(chunkX, chunkZ);
+                Chunk curChunk = region.getChunk(pos.x, pos.z);
+                GenerationSettings genSettings = curChunk.method_38258(
+                    () -> this.biomeSource.getBiome(
+                        BiomeCoords.fromBlock(pos.getStartX()), 
+                        0, 
+                        BiomeCoords.fromBlock(pos.getStartZ()), 
+                        this.getMultiNoiseSampler())
+                ).getGenerationSettings();
+                
                 List<Supplier<ConfiguredCarver<?>>> carverList = genSettings.getCarversForStep(genCarver);
                 ListIterator<Supplier<ConfiguredCarver<?>>> carverIterator = carverList.listIterator();
-                ChunkPos pos = new ChunkPos(chunkX, chunkZ);
 
                 while (carverIterator.hasNext()) {
                     ConfiguredCarver<?> configuredCarver = carverIterator.next().get();
@@ -185,6 +187,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             }
         }
     }
+    
+    /*
     
     @Override
     public void setStructureStarts(
@@ -221,6 +225,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         }
     }
     
+    */
+    
     @Override
     public int getHeight(int x, int z, Heightmap.Type type, HeightLimitView world) {
         return this.chunkProvider.getHeight(x, z, type, world);
@@ -242,7 +248,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 if (actualY > this.getSeaLevel())
                     column[y] = BlockStates.AIR;
                 else
-                    column[y] = this.defaultFluid;
+                    column[y] = this.settings.get().getDefaultFluid();
             } else {
                 column[y] = this.defaultBlock;
             }
@@ -267,8 +273,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public Pool<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {
         if (spawnGroup == SpawnGroup.MONSTER) {
-            if (structureAccessor.getStructureAt(blockPos, false, OldStructures.OCEAN_SHRINE_STRUCTURE).hasChildren()) {
-                return OldStructures.OCEAN_SHRINE_STRUCTURE.getMonsterSpawns();
+            if (structureAccessor.getStructureAt(blockPos, OldStructures.OCEAN_SHRINE_STRUCTURE).hasChildren()) {
+                return OceanShrineStructure.getMonsterSpawns();
             }
         }
 
@@ -278,7 +284,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public int getWorldHeight() {
         // TODO: Causes issue with YOffset.BelowTop decorator (i.e. ORE_COAL_UPPER), find some workaround.
-        return this.chunkProvider.getWorldHeight();
+        int height = this.chunkProvider.getWorldHeight();
+        
+        if (height >= 320)
+            return height;
+        
+        return 320;
+        
+        //return this.chunkProvider.getWorldHeight();
     }
     
     @Override
@@ -317,46 +330,71 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     private void replaceOceansInChunk(OldBiomeSource oldBiomeSource, Chunk chunk) {
-        MutableBiomeArray mutableBiomeArray = MutableBiomeArray.inject(chunk.getBiomeArray());
-        
         ChunkPos chunkPos = chunk.getPos();
         BlockPos.Mutable pos = new BlockPos.Mutable();
         
         int worldHeight = this.getWorldHeight();
         int minY = this.getMinimumY();
+        int containerLen = 4;
         
-        int biomeHeight = worldHeight >> 2;
+        BlockState defaultFluid = this.settings.get().getDefaultFluid();
+        Biome[] biomeArr = new Biome[16];
         
-        for (int biomeX = 0; biomeX < 4; ++biomeX) {
-            for (int biomeZ = 0; biomeZ < 4; ++biomeZ) {
-                int absX = chunkPos.getStartX() + (biomeX << 2);
-                int absZ = chunkPos.getStartZ() + (biomeZ << 2);
-                    
+        // Determine ocean biome positions
+        for (int biomeX = 0; biomeX < containerLen; ++biomeX) {
+            for (int biomeZ = 0; biomeZ < containerLen; ++biomeZ) {
+                Biome biome = null;
+                
+                int x = chunkPos.getStartX() + (biomeX << 2);
+                int z = chunkPos.getStartZ() + (biomeZ << 2);
+                
                 // Offset by 2 to get center of biome coordinate section,
                 // to sample overall ocean depth as accurately as possible.
-                int offsetX = absX + 2;
-                int offsetZ = absZ + 2;
+                int offsetX = x + 2;
+                int offsetZ = z + 2;
                 
-                int height = GenUtil.getSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, this.defaultFluid);
+                int height = GenUtil.getSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, defaultFluid);
                 
-                if (this.atOceanDepth(height) && chunk.getBlockState(pos.set(offsetX, height + 1, offsetZ)).equals(this.defaultFluid)) {
-                    Biome oceanBiome = oldBiomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);
-                    
-                    // Fill biome column
-                    for (int biomeY = 0; biomeY < biomeHeight; ++biomeY) {
-                        int absY = biomeY << 2;
+                if (this.atOceanDepth(height) && chunk.getBlockState(pos.set(offsetX, height + 1, offsetZ)).equals(defaultFluid)) {
+                    biome = oldBiomeSource.getOceanBiome(x >> 2, 0, z >> 2);
+                }
+                
+                biomeArr[biomeX + biomeZ * containerLen] = biome;
+            }
+        }
+        
+        // Replace biomes from biome array
+        for (int sectionY = 0; sectionY < chunk.countVerticalSections(); ++sectionY) {
+            ChunkSection section = chunk.getSection(sectionY);
+            PalettedContainer<Biome> container = section.method_38294();
+            
+            container.lock();
+            try {
+                int yOffset = section.getYOffset() >> 2;
+                
+                for (int biomeX = 0; biomeX < containerLen; ++biomeX) {
+                    for (int biomeZ = 0; biomeZ < containerLen; ++biomeZ) {
+                        Biome biome = biomeArr[biomeX + biomeZ * containerLen];
                         
-                        Biome biome = mutableBiomeArray.getBiome(absX, absY, absZ, this.getMinimumY(), this.getWorldHeight());
-                        
-                        // Do not replace if cave biome
-                        if (biome.getCategory() != Category.UNDERGROUND)
-                            mutableBiomeArray.setBiome(absX, absY, absZ, oceanBiome, this.getMinimumY(), this.getWorldHeight());
+                        for (int biomeY = 0; biomeY < containerLen; ++biomeY) {
+                            if (biome != null) {
+                                container.swapUnsafe(biomeX, biomeY, biomeZ, biome);
+                            }
+                        }   
                     }
                 }
+                
+            } catch (Exception e) {
+                ModernBeta.log(Level.ERROR, "Unable to replace biomes!");
+                e.printStackTrace();
+                
+            } finally {
+                container.unlock();
             }
         }
     }
     
+    /*
     private Biome getBiomeAt(int x, int y, int z, HeightLimitView world) {
         int biomeX = x >> 2;
         int biomeY = y >> 2;
@@ -365,11 +403,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int height = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world) - 1;
 
         if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource && this.atOceanDepth(height)) {
-            return oldBiomeSource.getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
+            return oldBiomeSource.getOceanBiome(biomeX, 0, biomeZ);
         } 
 
         return this.biomeSource.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
+    */
     
     private boolean atOceanDepth(int height) {
         return height < this.getSeaLevel() - OCEAN_MIN_DEPTH;

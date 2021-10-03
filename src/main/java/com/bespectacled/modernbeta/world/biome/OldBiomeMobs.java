@@ -91,7 +91,7 @@ public class OldBiomeMobs {
     }
     
     public static void addSkyMobs(SpawnSettings.Builder spawnSettings) {
-        DefaultBiomeFeatures.addMonsters(spawnSettings, 95, 5, 20);
+        DefaultBiomeFeatures.addMonsters(spawnSettings, 95, 5, 20, false);
         spawnSettings.spawn(SpawnGroup.CREATURE,  new SpawnSettings.SpawnEntry(EntityType.CHICKEN, 10, 4, 4));
     }
 }

@@ -13,6 +13,7 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 
 @Mixin(ChunkGenerator.class)
 public interface MixinChunkGeneratorInvoker {
+    /*
     @Invoker("setStructureStart")
     public void invokeSetStructureStart(
         ConfiguredStructureFeature<?, ?> configuredStructureFeature, 
@@ -23,4 +24,5 @@ public interface MixinChunkGeneratorInvoker {
         long seed,
         Biome biome
     );
+    */
 }

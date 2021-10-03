@@ -1,19 +1,17 @@
 package com.bespectacled.modernbeta.world.structure;
 
-import java.util.List;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.ModernBeta;
 
+import net.minecraft.class_6625;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.SimpleStructurePiece;
 import net.minecraft.structure.StructureManager;
-import net.minecraft.structure.StructurePiece;
 import net.minecraft.structure.StructurePiecesHolder;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.processor.BlockIgnoreStructureProcessor;
@@ -29,12 +27,26 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.feature.FeatureConfig;
 
 public class OceanShrineGenerator {
     private static final Identifier SHRINE_BASE = ModernBeta.createId("ocean_shrine/base");
     
+    /*
     public static void addPieces(StructureManager manager, BlockPos pos, BlockRotation rot, StructurePiecesHolder structurePiecesHolder, List<StructurePiece> pieces) {
         pieces.add(new Piece(manager, pos, structurePiecesHolder, SHRINE_BASE, rot));
+    }
+    */
+    
+    public static void addPieces(
+        StructureManager manager, 
+        BlockPos pos, 
+        BlockRotation rot, 
+        StructurePiecesHolder structurePiecesHolder, 
+        Random random, 
+        FeatureConfig config
+    ) {
+        structurePiecesHolder.addPiece(new Piece(manager, pos, structurePiecesHolder, SHRINE_BASE, rot));
     }
     
     public static class Piece extends SimpleStructurePiece {
@@ -42,16 +54,17 @@ public class OceanShrineGenerator {
             super(OldStructures.OCEAN_SHRINE_PIECE, 0, manager, template, template.toString(), getPlacementData(rot), pos);
         }
         
-        public Piece(ServerWorld serverWorld, NbtCompound tag) {
-            super(OldStructures.OCEAN_SHRINE_PIECE, tag, serverWorld, identifier -> getPlacementData(BlockRotation.valueOf(tag.getString("Rot"))));
+        public Piece(StructureManager manager, NbtCompound tag) {
+            super(OldStructures.OCEAN_SHRINE_PIECE, tag, manager, identifier -> getPlacementData(BlockRotation.valueOf(tag.getString("Rot"))));
         }
         
         private static StructurePlacementData getPlacementData(BlockRotation rotation) {
             return new StructurePlacementData().setRotation(rotation).setMirror(BlockMirror.NONE).addProcessor(BlockIgnoreStructureProcessor.IGNORE_AIR_AND_STRUCTURE_BLOCKS);
         }
         
-        protected void writeNbt(ServerWorld serverWorld, NbtCompound nbtCompound) {
-            super.writeNbt(serverWorld, nbtCompound);
+        @Override
+        protected void writeNbt(class_6625 world, NbtCompound nbtCompound) {
+            super.writeNbt(world, nbtCompound);
             nbtCompound.putString("Rot", this.placementData.getRotation().name());
         }
         
@@ -67,7 +80,7 @@ public class OceanShrineGenerator {
         }
         
         @Override
-        public boolean generate(
+        public void generate(
             StructureWorldAccess world, 
             StructureAccessor accessor, 
             ChunkGenerator chunkGenerator, 
@@ -78,7 +91,7 @@ public class OceanShrineGenerator {
         ) {
             this.placementData.clearProcessors().addProcessor(new BlockRotStructureProcessor(1.0f)).addProcessor(BlockIgnoreStructureProcessor.IGNORE_AIR_AND_STRUCTURE_BLOCKS);
             
-            return super.generate(world, accessor, chunkGenerator, random, blockBox, chunkPos, blockPos);
+            super.generate(world, accessor, chunkGenerator, random, blockBox, chunkPos, blockPos);
         }
     }
 }

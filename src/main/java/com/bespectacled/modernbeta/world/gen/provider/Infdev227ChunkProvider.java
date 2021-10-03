@@ -1,6 +1,8 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
@@ -16,6 +18,7 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
@@ -23,8 +26,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.BlockSource;
-import net.minecraft.world.gen.DefaultBlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 
@@ -63,9 +64,12 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     }
 
     @Override
-    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk) {
+    public CompletableFuture<Chunk> provideChunk(Executor executor, StructureAccessor structureAccessor, Chunk chunk) {
         this.generateTerrain(chunk, structureAccessor);  
-        return chunk;
+        
+        return CompletableFuture.<Chunk>supplyAsync(
+            () -> chunk, Util.getMainWorkerExecutor()
+        );
     }
 
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
@@ -96,7 +100,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                     boolean inFluid = someBlock.equals(BlockStates.AIR) || someBlock.equals(this.defaultFluid);
                     
                     // Skip if used custom surface generation or if below minimum surface level.
-                    if (usedCustomSurface || y < this.minSurfaceY) {
+                    if (usedCustomSurface) {
                         continue;
                     }
                     
@@ -137,7 +141,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
-        BlockSource blockSource = new DefaultBlockSource(this.defaultBlock);
+        //BlockSource blockSource = new DefaultBlockSource(this.defaultBlock);
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
@@ -179,10 +183,10 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                 }
                 
                 for (int y = this.minY; y < this.worldTopY; ++y) {
-                    Block blockToSet = Blocks.AIR;
+                    Block block = Blocks.AIR;
                     
                     if (this.generateInfdevWall && (absX == 0 || absZ == 0) && y <= heightVal + 2) {
-                        blockToSet = Blocks.OBSIDIAN;
+                        block = Blocks.OBSIDIAN;
                     }
                     
                     /* Original code for reference, but unused so conventional surface/feature generation can be used.
@@ -201,7 +205,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                     */
                     
                     else if (y <= heightVal) {
-                        blockToSet = defaultBlock;
+                        block = defaultBlock;
                     }
                     
                     /*
@@ -212,7 +216,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
 
                     // Subtract 1 to be more consistent with modern versions.
                     else if (y <= this.seaLevel - 1) {
-                        blockToSet = defaultFluid;
+                        block = defaultFluid;
                     }
                     
                     if (this.generateInfdevPyramid) {
@@ -230,23 +234,24 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                         if ((bX = 127 - bX) == 255) bX = 1;
                         if (bX < heightVal) bX = heightVal;
                         
-                        if (y <= bX && (blockToSet == Blocks.AIR || blockToSet == defaultFluid))
-                            blockToSet = Blocks.BRICKS;     
+                        if (y <= bX && (block == Blocks.AIR || block == defaultFluid))
+                            block = Blocks.BRICKS;     
                     }
                     
                     if (y <= bedrockFloor + chunkRand.nextInt(5)) {
-                        blockToSet = Blocks.BEDROCK;
+                        block = Blocks.BEDROCK;
                     }
                     
                     //blockToSet = blockWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
                     //BlockState blockstateToSet = this.getBlockState(absX, y, absZ, blockToSet);
                     
-                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, blockSource, absX, y, absZ, blockToSet, this.defaultFluid.getBlock());
+                    BlockState blockState = block.getDefaultState();
+                    //BlockState blockState = this.getBlockState(structureWeightSampler, blockSource, absX, y, absZ, blockToSet, this.defaultFluid.getBlock());
                     
-                    chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
+                    chunk.setBlockState(mutable.set(x, y, z), blockState, false);
                     
-                    heightmapOCEAN.trackUpdate(x, y, z, blockstateToSet);
-                    heightmapSURFACE.trackUpdate(x, y, z, blockstateToSet);
+                    heightmapOCEAN.trackUpdate(x, y, z, blockState);
+                    heightmapSURFACE.trackUpdate(x, y, z, blockState);
                 }
             }
         }

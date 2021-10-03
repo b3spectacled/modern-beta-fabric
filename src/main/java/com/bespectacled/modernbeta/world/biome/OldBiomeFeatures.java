@@ -12,11 +12,6 @@ import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 
 public class OldBiomeFeatures {
     public static void addDefaultFeatures(GenerationSettings.Builder genSettings, boolean isOcean, boolean addLakes, boolean addSprings) {
-        if (isOcean)
-            DefaultBiomeFeatures.addOceanStructures(genSettings);
-        else
-            DefaultBiomeFeatures.addDefaultUndergroundStructures(genSettings);
-        
         if (addLakes) DefaultBiomeFeatures.addDefaultLakes(genSettings);
         DefaultBiomeFeatures.addDungeons(genSettings);
         DefaultBiomeFeatures.addDefaultOres(genSettings);
@@ -35,31 +30,30 @@ public class OldBiomeFeatures {
         genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
         
         if (addAlternateStones) {
-            genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_GRANITE);
-            genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_DIORITE);
-            genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_ANDESITE);
+            genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_GRANITE_LOWER);
+            genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_DIORITE_LOWER);
+            genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_ANDESITE_LOWER);
         }
         
         if (addNewMineables) {
             genSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, ConfiguredFeatures.GLOW_LICHEN);
             genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_TUFF);
-            genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_DEEPSLATE);
-            genSettings.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, ConfiguredFeatures.RARE_DRIPSTONE_CLUSTER);
-            genSettings.feature(GenerationStep.Feature.UNDERGROUND_DECORATION, ConfiguredFeatures.RARE_SMALL_DRIPSTONE);
         }
     }
 
     public static void addCarvers(GenerationSettings.Builder genSettings, boolean addCanyons) {
         genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER);
+        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER_DEEP);
         
         if (addCanyons) {
-            genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
+            //genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
         }
     }
 
     public static void addOceanCarvers(GenerationSettings.Builder genSettings) {
-        genSettings.carver(GenerationStep.Carver.LIQUID, ConfiguredCarvers.UNDERWATER_CAVE);
-        genSettings.carver(GenerationStep.Carver.LIQUID, ConfiguredCarvers.UNDERWATER_CANYON);
+        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER);
+        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER_DEEP);
+        //genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
     }
 
     public static void addVegetalPatches(GenerationSettings.Builder genSettings) {

@@ -2,22 +2,33 @@ package com.bespectacled.modernbeta.api.world.gen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.api.world.gen.blocksource.BlockSources;
-import com.bespectacled.modernbeta.api.world.gen.blocksource.DeepslateSourceNullable;
 import com.bespectacled.modernbeta.api.world.gen.noise.BaseNoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoodleCaveNoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.OreVeinNoiseProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
+import com.bespectacled.modernbeta.mixin.MixinSlideConfig;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
+import com.bespectacled.modernbeta.world.gen.OldNoiseColumnSampler;
+import com.bespectacled.modernbeta.world.gen.sampler.NoiseCaveSampler;
+import com.bespectacled.modernbeta.world.gen.sampler.NoodleCaveSampler;
+import com.bespectacled.modernbeta.world.gen.sampler.OreVeinSampler;
+import com.bespectacled.modernbeta.world.gen.sampler.WeightSampler;
+import com.google.common.collect.Sets;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -25,16 +36,19 @@ import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.BlockSource;
-import net.minecraft.world.gen.ChunkRandom;
-import net.minecraft.world.gen.NoiseCaveSampler;
-import net.minecraft.world.gen.OreVeinGenerator;
-import net.minecraft.world.gen.SimpleRandom;
+import net.minecraft.world.gen.DeepslateBlockSource;
+import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler;
-import net.minecraft.world.gen.chunk.NoodleCavesGenerator;
-import net.minecraft.world.gen.chunk.WeightSampler;
+import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
+import net.minecraft.world.gen.chunk.GenerationShapeConfig;
+import net.minecraft.world.gen.random.AbstractRandom;
+import net.minecraft.world.gen.random.AtomicSimpleRandom;
+import net.minecraft.world.gen.random.BlockPosRandomDeriver;
 
 public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final int verticalNoiseResolution;   // Number of blocks in a vertical subchunk
@@ -52,11 +66,11 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final double xzFactor;
     protected final double yFactor;
     
-    protected final int topSlideTarget;
+    protected final double topSlideTarget;
     protected final int topSlideSize;
     protected final int topSlideOffset;
     
-    protected final int bottomSlideTarget;
+    protected final double bottomSlideTarget;
     protected final int bottomSlideSize;
     protected final int bottomSlideOffset;
 
@@ -70,14 +84,17 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final ChunkCache<HeightmapChunk> heightmapChunkCache;
     
     protected final DoublePerlinNoiseSampler edgeDensityNoise;
-    protected final DoublePerlinNoiseSampler waterLevelNoise;
-    protected final DoublePerlinNoiseSampler lavaNoise;
-
-    protected final WeightSampler noiseCaveSampler;
-    protected final OreVeinGenerator oreVeinGenerator;
-    protected final NoodleCavesGenerator noodleCaveGenerator;
+    protected final DoublePerlinNoiseSampler fluidLevelNoise;
+    protected final DoublePerlinNoiseSampler fluidTypeNoise;
+    protected final BlockPosRandomDeriver blockPosRandomDeriver;
     
+    protected final WeightSampler noiseCaveSampler;
+    protected final OreVeinSampler oreVeinSampler;
+    protected final NoodleCaveSampler noodleCaveSampler;
+    
+    protected final NoiseColumnSampler noiseColumnSampler;
     protected final BlockSource deepslateSource;
+    protected final ChunkNoiseSampler dummyNoiseChunkSampler;
 
     public NoiseChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
@@ -85,7 +102,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getMinimumY(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getHeight(),
             chunkGenerator.getGeneratorSettings().get().getSeaLevel(),
-            chunkGenerator.getGeneratorSettings().get().getMinSurfaceLevel(),
             chunkGenerator.getGeneratorSettings().get().getBedrockFloorY(),
             chunkGenerator.getGeneratorSettings().get().getBedrockCeilingY(),
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
@@ -96,12 +112,12 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSampling().getYScale(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSampling().getXZFactor(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getSampling().getYFactor(),
-            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getTopSlide().getTarget(),
-            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getTopSlide().getSize(),
-            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getTopSlide().getOffset(),
-            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getBottomSlide().getTarget(),
-            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getBottomSlide().getSize(),
-            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getBottomSlide().getOffset(),
+            ((MixinSlideConfig)chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getTopSlide()).getTarget(),
+            ((MixinSlideConfig)chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getTopSlide()).getSize(),
+            ((MixinSlideConfig)chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getTopSlide()).getOffset(),
+            ((MixinSlideConfig)chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getBottomSlide()).getTarget(),
+            ((MixinSlideConfig)chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getBottomSlide()).getSize(),
+            ((MixinSlideConfig)chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getBottomSlide()).getOffset(),
             ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasNoiseCaves(),
             ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasAquifers(),
             ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasDeepslate(),
@@ -115,7 +131,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int minY, 
         int worldHeight, 
         int seaLevel,
-        int minSurfaceY,
         int bedrockFloor,
         int bedrockCeiling,
         BlockState defaultBlock,
@@ -126,10 +141,10 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         double yScale,
         double xzFactor, 
         double yFactor,
-        int topSlideTarget,
+        double topSlideTarget,
         int topSlideSize,
         int topSlideOffset,
-        int bottomSlideTarget,
+        double bottomSlideTarget,
         int bottomSlideSize,
         int bottomSlideOffset,
         boolean generateNoiseCaves,
@@ -138,7 +153,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         boolean generateOreVeins,
         boolean generateNoodleCaves
     ) {
-        super(chunkGenerator, minY, worldHeight, seaLevel, minSurfaceY, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid);
+        super(chunkGenerator, minY, worldHeight, seaLevel, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid);
         
         this.verticalNoiseResolution = sizeVertical * 4;
         this.horizontalNoiseResolution = sizeHorizontal * 4;
@@ -194,19 +209,54 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this::sampleHeightmap
         ); 
         
-        // Aquifer samplers
-        ChunkRandom chunkRandom = new ChunkRandom(seed);
-        this.edgeDensityNoise = DoublePerlinNoiseSampler.create(new SimpleRandom(chunkRandom.nextLong()), -3, 1.0);
-        this.waterLevelNoise = DoublePerlinNoiseSampler.create(new SimpleRandom(chunkRandom.nextLong()), -3, 1.0, 0.0, 2.0);
-        this.lavaNoise = DoublePerlinNoiseSampler.create(new SimpleRandom(chunkRandom.nextLong()), -1, 1.0, 0.0);
+        // Randoms
+        boolean useLegacyRandom = this.generatorSettings.get().getGenerationShapeConfig().method_38413();
+        AtomicSimpleRandom simpleRandom = new AtomicSimpleRandom(seed);
+        AtomicSimpleRandom legacyRandom = new AtomicSimpleRandom(seed);
+        
+        AbstractRandom genRandom = useLegacyRandom ? legacyRandom : simpleRandom.derive();
+        
+        // Aquifer Samplers
+        this.edgeDensityNoise = DoublePerlinNoiseSampler.create(genRandom.derive(), -3, 1.0);
+        this.fluidLevelNoise = DoublePerlinNoiseSampler.create(genRandom.derive(), -3, 0.2, 2.0, 1.0);
+        this.fluidTypeNoise = DoublePerlinNoiseSampler.create(genRandom.derive(), -1, 1.0, 0.0);
+        this.blockPosRandomDeriver = genRandom.createBlockPosRandomDeriver();
+
+        // Modified NoiseColumnSampler
+        this.noiseColumnSampler = new OldNoiseColumnSampler(
+            this.horizontalNoiseResolution, 
+            this.verticalNoiseResolution, 
+            this.noiseSizeY,
+            this.chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig(),
+            this.chunkGenerator.getGeneratorSettings().get().getMultiNoiseParameters(),
+            this.generateNoiseCaves,
+            this.seed,
+            this
+        );
         
         // Samplers
-        this.noiseCaveSampler = this.generateNoiseCaves ? new NoiseCaveSampler(chunkRandom, this.noiseMinY) : WeightSampler.DEFAULT;
-        this.oreVeinGenerator = new OreVeinGenerator(seed, this.defaultBlock, this.horizontalNoiseResolution, this.verticalNoiseResolution, this.generatorSettings.get().getGenerationShapeConfig().getMinimumY());
-        this.noodleCaveGenerator = new NoodleCavesGenerator(seed);
+        this.noiseCaveSampler = this.generateNoiseCaves ? new NoiseCaveSampler(simpleRandom, this.noiseMinY) : WeightSampler.DEFAULT;
+        this.oreVeinSampler = new OreVeinSampler(simpleRandom, this.horizontalNoiseResolution, this.verticalNoiseResolution);
+        this.noodleCaveSampler = new NoodleCaveSampler(simpleRandom, this.horizontalNoiseResolution, this.verticalNoiseResolution);
         
         // Block Source
-        this.deepslateSource = new DeepslateSourceNullable(seed, BlockStates.DEEPSLATE);
+        AtomicSimpleRandom atomicSimpleRandom = new AtomicSimpleRandom(seed);
+        this.deepslateSource = new DeepslateBlockSource(atomicSimpleRandom.createBlockPosRandomDeriver(), BlockStates.DEEPSLATE);
+    
+        // Dummy ChunkNoiseSampler
+        this.dummyNoiseChunkSampler = new OldChunkNoiseSampler(
+            this.horizontalNoiseResolution,
+            this.verticalNoiseResolution,
+            16 / this.horizontalNoiseResolution,
+            this.noiseTopY,
+            this.minY,
+            this.noiseColumnSampler,
+            0, 
+            0,
+            null,
+            this.generatorSettings,
+            this.fluidLevelSampler
+        );
     }
 
     /**
@@ -219,9 +269,39 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * @return A completed chunk.
      */
     @Override
-    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk) {
+    public CompletableFuture<Chunk> provideChunk(Executor executor, StructureAccessor structureAccessor, Chunk chunk) {
+        GenerationShapeConfig shapeConfig = this.generatorSettings.get().getGenerationShapeConfig();
+        
+        int minY = Math.max(shapeConfig.getMinimumY(), chunk.getBottomY());
+        int topY = Math.min(shapeConfig.getMinimumY() + shapeConfig.getHeight(), chunk.getTopY());
+        
+        @SuppressWarnings("unused")
+        int noiseMinY = MathHelper.floorDiv(minY, this.verticalNoiseResolution);
+        int noiseTopY = MathHelper.floorDiv(topY - minY, this.verticalNoiseResolution);
+        
+        if (noiseTopY <= 0) {
+            return CompletableFuture.completedFuture(chunk);
+        }
+        
+        int sectionTopY = chunk.getSectionIndex(noiseTopY * verticalNoiseResolution - 1 + minY);
+        int sectionMinY = chunk.getSectionIndex(minY);
+        
+        HashSet<ChunkSection> sections = Sets.newHashSet();
+        for (int sectionNdx = sectionTopY; sectionNdx >= sectionMinY; --sectionNdx) {
+            ChunkSection section = chunk.getSection(sectionNdx);
+            
+            section.lock();
+            sections.add(section);
+        }
+        
         this.generateTerrain(chunk, structureAccessor);
-        return chunk;
+        
+        return CompletableFuture.supplyAsync(() -> chunk, Util.getMainWorkerExecutor())
+            .whenCompleteAsync((arg, throwable) -> {
+                for (ChunkSection section : sections) {
+                    section.unlock();
+            }
+        }, executor);
     }
     
     /**
@@ -265,8 +345,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      */
     protected double sampleNoiseCave(double noise, int noiseX, int noiseY, int noiseZ) {
         if (this.noiseCaveSampler != null) {
-            //return this.noiseCaveSampler.sample(noise, noiseX, noiseY, noiseZ);
-            return this.noiseCaveSampler.sample(noise, noiseY, noiseZ, noiseX); // ????
+            return this.noiseCaveSampler.sample(noise, noiseX, noiseY, noiseZ);
         }
         
         return noise;
@@ -335,6 +414,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
         AquiferSampler aquiferSampler = this.createAquiferSampler(noiseMinY, noiseTopY, chunk.getPos());
         BlockPos.Mutable mutable = new BlockPos.Mutable();
+        ChunkNoiseSampler chunkNoiseSampler = null;
         
         // Create and populate noise providers
         List<NoiseProvider> noiseProviders = new ArrayList<>();
@@ -360,8 +440,10 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
             int noiseX = subChunkX;
             
-            for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++ subChunkZ) {
+            for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++subChunkZ) {
                 int noiseZ = subChunkZ;
+                
+                ChunkSection section = chunk.getSection(chunk.countVerticalSections() - 1);
                 
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
                     int noiseY = subChunkY;
@@ -369,8 +451,13 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                     noiseProviders.forEach(noiseProvider -> noiseProvider.sampleNoiseCorners(noiseX, noiseY, noiseZ));
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
-                        int y = subY + subChunkY * this.verticalNoiseResolution;
-                        y += this.minY;
+                        int y = subY + (subChunkY + this.noiseMinY) * this.verticalNoiseResolution;
+                        int localY = y & 0xF;
+                        
+                        int sectionNdx = chunk.getSectionIndex(y);
+                        if (chunk.getSectionIndex(section.getYOffset()) != sectionNdx) {
+                            section = chunk.getSection(sectionNdx);
+                        }
                         
                         double deltaY = subY / (double)this.verticalNoiseResolution;
                         noiseProviders.forEach(noiseProvider -> noiseProvider.sampleNoiseY(deltaY));
@@ -389,13 +476,20 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 double deltaZ = subZ / (double)this.horizontalNoiseResolution;
                                 noiseProviders.forEach(noiseProvider -> noiseProvider.sampleNoiseZ(deltaZ));
                                 
-                                BlockState blockState = blockSources.sample(x, y, z);
-                                chunk.setBlockState(mutable.set(localX, y, localZ), blockState, false);
+                                BlockState blockState = blockSources.apply(chunkNoiseSampler, x, y, z);
+                                if (blockState.equals(BlockStates.AIR)) continue;
+                                
+                                if (blockState.getLuminance() != 0 && chunk instanceof ProtoChunk) {
+                                    mutable.set(x, y, z);
+                                    ((ProtoChunk)chunk).addLightSource(mutable);
+                                }
+                                
+                                section.setBlockState(localX, localY, localZ, blockState, false);
 
                                 heightmapOcean.trackUpdate(localX, y, localZ, blockState);
                                 heightmapSurface.trackUpdate(localX, y, localZ, blockState);
                                 
-                                this.scheduleFluidTick(chunk, aquiferSampler, mutable.set(x, y, z), blockState);
+                                this.scheduleFluidTick(chunk, aquiferSampler, mutable, blockState);
                             }
                         }
                     }
@@ -486,15 +580,15 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         AquiferSampler aquiferSampler,
         WeightSampler noodleCaveSampler
     ) {
-        return (x, y, z) -> {
+        return (noiseSampler, x, y, z) -> {
             double density = baseNoiseProvider.sample();
             double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
             
             clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
-            clampedDensity = noodleCaveSampler.sample(clampedDensity, x, y, z);
-            clampedDensity += weightSampler.getWeight(x, y, z);
+            clampedDensity = noodleCaveSampler.sample(clampedDensity, z, x, y);
+            clampedDensity += weightSampler.calculateNoise(x, y, z);
             
-            return aquiferSampler.apply((u, v, w) -> null, x, y, z, clampedDensity);
+            return aquiferSampler.apply(x, y, z, density, clampedDensity);
         };
     }
 
@@ -515,7 +609,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noiseSizeY,
             this.noiseSizeZ,
             this.noiseMinY,
-            this.noodleCaveGenerator::sampleFrequencyNoise
+            this.noodleCaveSampler::sampleFrequencyNoise
         );
         
         NoodleCaveNoiseProvider reducingNoiseProvider = new NoodleCaveNoiseProvider(
@@ -523,7 +617,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noiseSizeY,
             this.noiseSizeZ,
             this.noiseMinY,
-            this.noodleCaveGenerator::sampleWeightReducingNoise
+            this.noodleCaveSampler::sampleWeightReducingNoise
         );
         
         NoodleCaveNoiseProvider firstNoiseProvider = new NoodleCaveNoiseProvider(
@@ -531,7 +625,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noiseSizeY,
             this.noiseSizeZ,
             this.noiseMinY,
-            this.noodleCaveGenerator::sampleFirstWeightNoise
+            this.noodleCaveSampler::sampleFirstWeightNoise
         );
         
         NoodleCaveNoiseProvider secondNoiseProvider = new NoodleCaveNoiseProvider(
@@ -539,7 +633,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noiseSizeY,
             this.noiseSizeZ,
             this.noiseMinY,
-            this.noodleCaveGenerator::sampleSecondWeightNoise
+            this.noodleCaveSampler::sampleSecondWeightNoise
         );
         
         consumer.accept(frequencyNoiseProvider);
@@ -553,7 +647,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             double firstNoise = firstNoiseProvider.sample();
             double secondNoise = secondNoiseProvider.sample();
             
-            return this.noodleCaveGenerator.sampleWeight(weight, x, y, z, frequencyNoise, reducingNoise, firstNoise, secondNoise, this.minY);
+            return this.noodleCaveSampler.sampleWeight(weight, x, y, z, frequencyNoise, reducingNoise, firstNoise, secondNoise, this.minY);
         };
     }
     
@@ -567,14 +661,14 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      */
     private BlockSource createOreVeinProviders(ChunkPos chunkPos, Consumer<OreVeinNoiseProvider> consumer) {
         if (!this.generateOreVeins)
-            return (x, y, z) -> null;
+            return (noiseSampler, x, y, z) -> null;
 
         OreVeinNoiseProvider frequencyNoiseProvider = new OreVeinNoiseProvider(
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
             this.noiseMinY,
-            this.oreVeinGenerator::sampleOreFrequencyNoise
+            this.oreVeinSampler::sampleOreFrequencyNoise
         );
         
         OreVeinNoiseProvider firstOreNoiseProvider = new OreVeinNoiseProvider(
@@ -582,7 +676,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noiseSizeY,
             this.noiseSizeZ,
             this.noiseMinY,
-            this.oreVeinGenerator::sampleFirstOrePlacementNoise
+            this.oreVeinSampler::sampleFirstOrePlacementNoise
         );
         
         OreVeinNoiseProvider secondOreNoiseProvider = new OreVeinNoiseProvider(
@@ -590,27 +684,19 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noiseSizeY,
             this.noiseSizeZ,
             this.noiseMinY,
-            this.oreVeinGenerator::sampleSecondOrePlacementNoise
+            this.oreVeinSampler::sampleSecondOrePlacementNoise
         );
         
         consumer.accept(frequencyNoiseProvider);
         consumer.accept(firstOreNoiseProvider);
         consumer.accept(secondOreNoiseProvider);
         
-        return (x, y, z) -> {
+        return (noiseSampler, x, y, z) -> {
             double frequencyNoise = frequencyNoiseProvider.sample();
             double firstOreNoise = firstOreNoiseProvider.sample();
             double secondOreNoise = secondOreNoiseProvider.sample();
             
-            ChunkRandom random = new ChunkRandom();
-            random.setDeepslateSeed(this.seed, x, y, z);
-            
-            BlockState blockState = this.oreVeinGenerator.sample(random, z, y, z, frequencyNoise, firstOreNoise, secondOreNoise);
-            
-            if (blockState != this.defaultBlock)
-                return blockState;
-            
-            return null;
+            return this.oreVeinSampler.sample(x, y, z, frequencyNoise, firstOreNoise, secondOreNoise);
         };
     }
 
@@ -625,9 +711,25 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      */
     private AquiferSampler createAquiferSampler(int noiseMinY, int noiseTopY, ChunkPos chunkPos) {
         if (!this.generateAquifers) {
-            return AquiferSampler.seaLevel(this.getSeaLevel(), this.defaultFluid);
+            return AquiferSampler.seaLevel(this.fluidLevelSampler);
         }
-        return AquiferSampler.aquifer(chunkPos, this.edgeDensityNoise, this.waterLevelNoise, this.lavaNoise, this.generatorSettings.get(), null, noiseMinY * this.verticalNoiseResolution, noiseTopY * this.verticalNoiseResolution);
+        
+        /*
+        return AquiferSampler.aquifer(
+            this.dummyNoiseChunkSampler, 
+            chunkPos, 
+            this.edgeDensityNoise, 
+            this.fluidLevelNoise, 
+            this.fluidTypeNoise, 
+            this.blockPosRandomDeriver, 
+            this.noiseColumnSampler, 
+            noiseMinY * this.verticalNoiseResolution, 
+            noiseTopY * this.verticalNoiseResolution, 
+            this.fluidLevelSampler
+        );
+        */
+        
+        return AquiferSampler.seaLevel(this.fluidLevelSampler);
     }
 
     /**

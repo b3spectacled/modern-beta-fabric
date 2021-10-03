@@ -12,7 +12,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkSectionCache;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.chunk.ChunkSection;
-import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
@@ -84,7 +83,7 @@ public class OreClayFeature extends Feature<OreFeatureConfig> {
 
                             ChunkSection chunkSection = chunkSectionCache.getSection(mutablePos.set(x, y, z));
                             
-                            if (chunkSection != WorldChunk.EMPTY_SECTION) {
+                            if (!world.isOutOfHeightLimit(y) && chunkSection != null) {
                                 int localX = ChunkSectionPos.getLocalCoord(x); 
                                 int localY = ChunkSectionPos.getLocalCoord(y);
                                 int localZ = ChunkSectionPos.getLocalCoord(z);

@@ -1,6 +1,8 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.api.world.biome.BiomeHeightSampler;
@@ -14,6 +16,7 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
@@ -46,13 +49,13 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
     /**
      * Generates base terrain for given chunk and returns it.
      * 
+     * @param executor
      * @param structureAccessor
      * @param chunk
-     * @param biomeSource
      * 
      * @return A completed chunk.
      */
-    public abstract Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk);
+    public abstract CompletableFuture<Chunk> provideChunk(Executor executor, StructureAccessor structureAccessor, Chunk chunk);
     
     /**
      * Generates biome-specific surface for given chunk.
@@ -136,10 +139,11 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
      * @param biomeX x-coordinate in biome coordinates.
      * @param biomeY y-coordinate in biome coordinates.
      * @param biomeZ z-coordinate in biome coordinates.
+     * @param noiseSampler
      * 
      * @return A biome.
      */
-    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        return this.chunkGenerator.getBiomeSource().getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+    public Biome getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {
+        return this.chunkGenerator.getBiomeSource().getBiome(biomeX, biomeY, biomeZ, noiseSampler);
     }
 }

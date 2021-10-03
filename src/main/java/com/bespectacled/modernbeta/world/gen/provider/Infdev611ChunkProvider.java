@@ -102,7 +102,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                     
                     // Don't surface build below 50, per 1.17 default surface builder
                     // Skip if used custom surface generation or if below minimum surface level.
-                    if (usedCustomSurface || y < this.minSurfaceY) {
+                    if (usedCustomSurface) {
                         continue;
                     }
 

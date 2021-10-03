@@ -47,8 +47,6 @@ public class SeasonalForest {
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.RAIN)
             .category(Biome.Category.FOREST)
-            .depth(0.37F)
-            .scale(0.5F)
             .temperature(1.0F)
             .downfall(0.7F)
             .effects((new BiomeEffects.Builder())

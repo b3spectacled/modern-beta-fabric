@@ -14,7 +14,6 @@ import com.bespectacled.modernbeta.world.BuiltInWorldProviders;
 import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.PEBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
-import com.bespectacled.modernbeta.world.biome.provider.VanillaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.BetaCaveBiomeProvider;
 import com.bespectacled.modernbeta.world.cavebiome.provider.NoCaveBiomeProvider;
@@ -72,7 +71,6 @@ public class ModernBetaBuiltInProviders {
         Registries.BIOME.register(BuiltInTypes.DEFAULT_ID, BetaBiomeProvider::new);
         Registries.BIOME.register(BuiltInTypes.Biome.BETA.name, BetaBiomeProvider::new);
         Registries.BIOME.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeProvider::new);
-        Registries.BIOME.register(BuiltInTypes.Biome.VANILLA.name, VanillaBiomeProvider::new);
         Registries.BIOME.register(BuiltInTypes.Biome.PE.name, PEBiomeProvider::new);
     }
     

@@ -42,8 +42,6 @@ public class PETundra {
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.SNOW)
             .category(Biome.Category.ICY)
-            .depth(0.3F)
-            .scale(0.2F)
             .temperature(0.0F)
             .downfall(0.5F)
             .effects((new BiomeEffects.Builder())

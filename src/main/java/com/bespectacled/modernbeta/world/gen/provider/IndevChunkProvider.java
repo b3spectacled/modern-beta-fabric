@@ -1,7 +1,9 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
 import java.util.ArrayDeque;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.Level;
@@ -27,6 +29,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SnowyBlock;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Util;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -40,7 +43,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.BlockSource;
-import net.minecraft.world.gen.DefaultBlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 
@@ -116,7 +118,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
      * 1.17: Added AtomicBoolean + CountDownLatch
      */
     @Override
-    public Chunk provideChunk(StructureAccessor structureAccessor, Chunk chunk) {
+    public CompletableFuture<Chunk> provideChunk(Executor executor, StructureAccessor structureAccessor, Chunk chunk) {
         ChunkPos pos = chunk.getPos();
 
         if (this.inWorldBounds(pos.getStartX(), pos.getStartZ())) {
@@ -132,7 +134,9 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
             }
         }
 
-        return chunk;
+        return CompletableFuture.<Chunk>supplyAsync(
+            () -> chunk, Util.getMainWorkerExecutor()
+        );
     }
 
     @Override
@@ -335,7 +339,6 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
-        BlockSource blockSource = new DefaultBlockSource(this.defaultBlock);
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
@@ -349,39 +352,40 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                 int soilDepth = 0;
                 
                 for (int y = this.levelHeight - 1; y >= 0; --y) {
-                    Block blockToSet = this.blockArr[offsetX + x][y][offsetZ + z];
+                    Block block = this.blockArr[offsetX + x][y][offsetZ + z];
                     
-                    BlockState originalBlockStateToSet = blockToSet.getDefaultState();
-                    BlockState blockstateToSet = this.getBlockState(structureWeightSampler, blockSource, absX, y, absZ, blockToSet, this.fluidBlock.getBlock());
+                    BlockState originalBlockState = block.getDefaultState();
+                    //BlockState blockState = this.getBlockState(structureWeightSampler, blockSource, absX, y, absZ, blockToSet, this.fluidBlock.getBlock());
+                    BlockState blockState = originalBlockState;
                     
-                    boolean inFluid = blockstateToSet.equals(BlockStates.AIR) || blockstateToSet.equals(this.fluidBlock);
+                    boolean inFluid = blockState.equals(BlockStates.AIR) || blockState.equals(this.fluidBlock);
                     
                     // Check to see if structure weight sampler modifies terrain.
-                    if (!originalBlockStateToSet.equals(blockstateToSet)) {
+                    if (!originalBlockState.equals(blockState)) {
                         terrainModified = true;
                     }
                     
                     // Replace default block set by structure sampling with topsoil blocks.
                     if (terrainModified && !inFluid) {
-                        if (soilDepth == 0) blockstateToSet = (this.isFloating() || y >= this.waterLevel - 1) ? this.topsoilBlock : BlockStates.DIRT;
-                        if (soilDepth == 1) blockstateToSet = BlockStates.DIRT;
+                        if (soilDepth == 0) blockState = (this.isFloating() || y >= this.waterLevel - 1) ? this.topsoilBlock : BlockStates.DIRT;
+                        if (soilDepth == 1) blockState = BlockStates.DIRT;
                         
                         soilDepth++;
                     }
                     
-                    chunk.setBlockState(mutable.set(x, y, z), blockstateToSet, false);
+                    chunk.setBlockState(mutable.set(x, y, z), blockState, false);
                     
                     if (this.levelType == IndevType.FLOATING) continue;
                      
-                    if (y <= 1 + this.bedrockFloor && blockToSet == Blocks.AIR) {
+                    if (y <= 1 + this.bedrockFloor && block == Blocks.AIR) {
                         //chunk.setBlockState(mutable.set(x, y, z), BlockStates.LAVA, false);
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                     } else if (y <= 1 + this.bedrockFloor) {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                     }
                     
-                    heightmapOCEAN.trackUpdate(x, y, z, blockToSet.getDefaultState());
-                    heightmapSURFACE.trackUpdate(x, y, z, blockToSet.getDefaultState());
+                    heightmapOCEAN.trackUpdate(x, y, z, block.getDefaultState());
+                    heightmapSURFACE.trackUpdate(x, y, z, block.getDefaultState());
                         
                 }
             }

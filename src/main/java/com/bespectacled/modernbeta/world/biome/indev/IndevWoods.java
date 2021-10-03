@@ -44,8 +44,6 @@ public class IndevWoods {
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.NONE)
             .category(Biome.Category.FOREST)
-            .depth(0.37F)
-            .scale(0.4F)
             .temperature(0.6F)
             .downfall(0.6F)
             .effects((new BiomeEffects.Builder())

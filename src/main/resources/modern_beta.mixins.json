@@ -5,10 +5,13 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "MixinMinecraftServer",
-    "MixinBiomeArray",
     "MixinGeneratorOptions",
     "MixinChunkGeneratorInvoker",
-    "MixinChunkGeneratorSettingsInvoker"
+    "MixinChunkGeneratorSettingsInvoker",
+    "MixinConfiguredStructureFeatures",
+    "MixinSlideConfig",
+    "MixinVeinTypeAccessor",
+    "MixinAquiferSampler"
   ],
   "client": [
     "client.MixinClientWorld",

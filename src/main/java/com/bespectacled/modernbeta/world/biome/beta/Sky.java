@@ -41,8 +41,6 @@ public class Sky {
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.NONE)
             .category(Biome.Category.TAIGA)
-            .depth(0.37F)
-            .scale(0.5F)
             .temperature(0.5F)
             .downfall(0.0F)
             .effects((new BiomeEffects.Builder())

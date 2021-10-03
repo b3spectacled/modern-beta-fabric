@@ -29,11 +29,11 @@ public interface NoiseChunkImitable {
         
         double clampedDensity = MathHelper.clamp(simDensity / 200.0, -1.0, 1.0);
         clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
-        clampedDensity += weightSampler.getWeight(x, y, z);
+        clampedDensity += weightSampler.calculateNoise(x, y, z);
         
         BlockState blockState = blockToSet.getDefaultState();
         if (clampedDensity > 0.0 && isFluid) {
-            blockState = blockSource.sample(x, y, z);
+            blockState = blockSource.apply(null, x, y, z);
         } else if (clampedDensity < 0.0 && !isFluid) {
             blockState = BlockStates.AIR;
         }

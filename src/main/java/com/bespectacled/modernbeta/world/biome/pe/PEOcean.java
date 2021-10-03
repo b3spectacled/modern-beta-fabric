@@ -48,8 +48,6 @@ public class PEOcean {
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.RAIN)
             .category(Biome.Category.OCEAN)
-            .depth(-1.0F)
-            .scale(0.1F)
             .temperature(0.7F)
             .downfall(0.5F)
             .effects((new BiomeEffects.Builder())

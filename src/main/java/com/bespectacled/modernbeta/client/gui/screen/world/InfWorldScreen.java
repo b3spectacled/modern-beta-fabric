@@ -44,6 +44,7 @@ public class InfWorldScreen extends WorldScreen {
         
         boolean isHydrogenLoaded = Compat.isLoaded("hydrogen");
         boolean isSingleBiome = biomeType.equals(BuiltInTypes.Biome.SINGLE.name);
+        /*
         boolean isSingleBiomeAndHasOceanShrine = isSingleBiome ? 
             this.registryManager
             .<Biome>get(Registry.BIOME_KEY)
@@ -51,6 +52,7 @@ public class InfWorldScreen extends WorldScreen {
             .getGenerationSettings()
             .hasStructureFeature(OldStructures.OCEAN_SHRINE_STRUCTURE) : 
             false;
+            */
         
         BooleanCyclingOptionWrapper generateOceans = new BooleanCyclingOptionWrapper(
             GENERATE_OCEANS_DISPLAY_STRING,
@@ -75,7 +77,8 @@ public class InfWorldScreen extends WorldScreen {
             this.addOption(generateOceans);
         }
         
-        if ((!isHydrogenLoaded && !isSingleBiome) || isSingleBiomeAndHasOceanShrine) {
+        //if ((!isHydrogenLoaded && !isSingleBiome) || isSingleBiomeAndHasOceanShrine) {
+        if (!isHydrogenLoaded && !isSingleBiome) {
             this.addOption(generateOceanShrines);
         }
     }

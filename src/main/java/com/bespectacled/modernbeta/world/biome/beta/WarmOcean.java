@@ -43,8 +43,6 @@ public class WarmOcean {
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.RAIN)
             .category(Biome.Category.OCEAN)
-            .depth(-1.0F)
-            .scale(0.1F)
             .temperature(1.0F)
             .downfall(1.0F)
             .effects((new BiomeEffects.Builder())

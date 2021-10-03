@@ -43,8 +43,6 @@ public class Shrubland {
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.RAIN)
             .category(Biome.Category.PLAINS)
-            .depth(0.3F)
-            .scale(0.2F)
             .temperature(0.7F)
             .downfall(0.4F)
             .effects((new BiomeEffects.Builder())

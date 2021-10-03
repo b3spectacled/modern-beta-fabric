@@ -46,8 +46,6 @@ public class Plains {
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.RAIN)
             .category(Biome.Category.PLAINS)
-            .depth(0.2F)
-            .scale(0.3F)
             //.temperature(0.8F)
             .temperature(1.0F)
             .downfall(0.4F)

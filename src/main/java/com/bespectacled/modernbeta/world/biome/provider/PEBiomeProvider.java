@@ -29,7 +29,7 @@ public class PEBiomeProvider extends BiomeProvider implements BiomeResolver, Cli
     }
 
     @Override
-    public Biome getBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+    public Biome getBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         
@@ -40,7 +40,7 @@ public class PEBiomeProvider extends BiomeProvider implements BiomeResolver, Cli
     }
  
     @Override
-    public Biome getOceanBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+    public Biome getOceanBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
 
@@ -51,7 +51,7 @@ public class PEBiomeProvider extends BiomeProvider implements BiomeResolver, Cli
     }
     
     @Override
-    public Biome getBiome(Registry<Biome> biomeRegistry, int x, int y, int z) {
+    public Biome getBiomeAtBlock(Registry<Biome> biomeRegistry, int x, int y, int z) {
         double temp = this.climateSampler.sampleTemp(x, z);
         double rain = this.climateSampler.sampleRain(x, z);
         
