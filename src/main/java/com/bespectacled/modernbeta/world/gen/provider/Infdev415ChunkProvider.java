@@ -60,7 +60,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             for (int z = 0; z < 16; ++z) {
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
-                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
+                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(
                     absX * thirtysecond, 
@@ -217,12 +217,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             };
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(
-                density,
-                noiseX * this.horizontalNoiseResolution,
-                noiseY * this.verticalNoiseResolution,
-                noiseZ * this.horizontalNoiseResolution
-            );
+            density = this.sampleNoiseCave(density, noiseX, noiseY, noiseZ);
             
             density = this.applyBottomSlide(density, noiseY, -3);
             

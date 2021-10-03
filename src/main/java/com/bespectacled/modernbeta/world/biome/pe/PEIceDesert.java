@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.world.biome.pe;
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
 import com.bespectacled.modernbeta.world.biome.OldBiomeMobs;
-import com.bespectacled.modernbeta.world.biome.OldBiomeStructures;
 import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
 import net.minecraft.world.biome.Biome;
@@ -30,8 +29,6 @@ public class PEIceDesert {
         OldBiomeFeatures.addDefaultFeatures(genSettings, false, PEBiomes.ADD_LAKES, PEBiomes.ADD_SPRINGS);
         OldBiomeFeatures.addMineables(genSettings, PEBiomes.ADD_ALTERNATE_STONES, PEBiomes.ADD_NEW_MINEABLES);
         OldBiomeFeatures.addOres(genSettings);
-        
-        OldBiomeStructures.addDesertStructures(genSettings, false);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION);
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);

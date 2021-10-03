@@ -118,7 +118,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
             for (int x = 0; x < 16; x++) {
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
-                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
+                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
                 
                 boolean genSandBeach = sandNoise[z + x * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
                 boolean genGravelBeach = gravelNoise[z + x * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
@@ -353,12 +353,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
             densityWithOffset += islandOffset;
             
             // Sample for noise caves
-            densityWithOffset = this.sampleNoiseCave(
-                densityWithOffset, 
-                noiseX * this.horizontalNoiseResolution, 
-                noiseY * this.verticalNoiseResolution,
-                noiseZ * this.horizontalNoiseResolution
-            );
+            densityWithOffset = this.sampleNoiseCave(densityWithOffset, noiseX, noiseY, noiseZ);
             
             densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
             densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);

@@ -29,8 +29,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SnowyBlock;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Util;
 import net.minecraft.util.BlockRotation;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -42,7 +42,6 @@ import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 

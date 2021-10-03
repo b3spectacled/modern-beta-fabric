@@ -83,7 +83,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
             for (int z = 0; z < 16; ++z) {
                 int absX = startX + x;
                 int absZ = startZ + z;
-                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
+                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
                 
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, topY, absZ));
                 

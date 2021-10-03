@@ -98,8 +98,8 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         FluidLevel lavaFluidLevel = new FluidLevel(LAVA_LEVEL, BlockStates.LAVA); // Vanilla: -54
         FluidLevel seaFluidLevel = new FluidLevel(seaLevel, this.defaultFluid);
         
-        //this.fluidLevelSampler = (x, y, z) -> y < LAVA_LEVEL ? lavaFluidLevel : seaFluidLevel;
-        this.fluidLevelSampler = (x, y, z) -> y < LAVA_LEVEL ? seaFluidLevel : seaFluidLevel;
+        this.fluidLevelSampler = (x, y, z) -> y < LAVA_LEVEL ? lavaFluidLevel : seaFluidLevel;
+        //this.fluidLevelSampler = (x, y, z) -> y < LAVA_LEVEL ? seaFluidLevel : seaFluidLevel;
         this.lavalessFluidLevelSampler = (x, y, z) -> seaFluidLevel;
         
         // Handle bad height values

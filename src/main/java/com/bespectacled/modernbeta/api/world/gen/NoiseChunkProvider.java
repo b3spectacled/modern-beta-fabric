@@ -345,7 +345,12 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      */
     protected double sampleNoiseCave(double noise, int noiseX, int noiseY, int noiseZ) {
         if (this.noiseCaveSampler != null) {
-            return this.noiseCaveSampler.sample(noise, noiseX, noiseY, noiseZ);
+            return this.noiseCaveSampler.sample(
+                noise,
+                noiseX * this.horizontalNoiseResolution, 
+                noiseY * this.verticalNoiseResolution, 
+                noiseZ * this.horizontalNoiseResolution
+            );
         }
         
         return noise;
@@ -480,8 +485,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 if (blockState.equals(BlockStates.AIR)) continue;
                                 
                                 if (blockState.getLuminance() != 0 && chunk instanceof ProtoChunk) {
-                                    mutable.set(x, y, z);
-                                    ((ProtoChunk)chunk).addLightSource(mutable);
+                                    ((ProtoChunk)chunk).addLightSource(mutable.set(x, y, z));
                                 }
                                 
                                 section.setBlockState(localX, localY, localZ, blockState, false);
@@ -489,7 +493,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 heightmapOcean.trackUpdate(localX, y, localZ, blockState);
                                 heightmapSurface.trackUpdate(localX, y, localZ, blockState);
                                 
-                                this.scheduleFluidTick(chunk, aquiferSampler, mutable, blockState);
+                                this.scheduleFluidTick(chunk, aquiferSampler, mutable.set(x, y, z), blockState);
                             }
                         }
                     }
@@ -587,6 +591,9 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
             clampedDensity = noodleCaveSampler.sample(clampedDensity, z, x, y);
             clampedDensity += weightSampler.calculateNoise(x, y, z);
+            
+            // Clamp density to vanilla -64 to 64 range before sending to aquifer.
+            density = MathHelper.clamp(density / 200.0 * 64.0, -64.0, 64.0);
             
             return aquiferSampler.apply(x, y, z, density, clampedDensity);
         };
@@ -711,10 +718,10 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      */
     private AquiferSampler createAquiferSampler(int noiseMinY, int noiseTopY, ChunkPos chunkPos) {
         if (!this.generateAquifers) {
-            return AquiferSampler.seaLevel(this.fluidLevelSampler);
+            return AquiferSampler.seaLevel(this.lavalessFluidLevelSampler);
         }
         
-        /*
+        
         return AquiferSampler.aquifer(
             this.dummyNoiseChunkSampler, 
             chunkPos, 
@@ -727,9 +734,9 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             noiseTopY * this.verticalNoiseResolution, 
             this.fluidLevelSampler
         );
-        */
         
-        return AquiferSampler.seaLevel(this.fluidLevelSampler);
+        
+        //return AquiferSampler.seaLevel(this.fluidLevelSampler);
     }
 
     /**

@@ -9,6 +9,7 @@
     "MixinChunkGeneratorInvoker",
     "MixinChunkGeneratorSettingsInvoker",
     "MixinConfiguredStructureFeatures",
+    "MixinConfiguredStructureFeaturesAccessor",
     "MixinSlideConfig",
     "MixinVeinTypeAccessor",
     "MixinAquiferSampler"

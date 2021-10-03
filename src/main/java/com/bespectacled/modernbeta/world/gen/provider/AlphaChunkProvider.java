@@ -71,7 +71,8 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
             for (int z = 0; z < 16; z++) {
                 int absX = (chunkX << 4) + x;
                 int absZ = (chunkZ << 4) + z;
-                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
+                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
+                BlockState topFluidBlockState = GenUtil.getLowestFluidBlockState(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid);
                 
                 boolean genSandBeach = sandNoise[x + z * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
                 boolean genGravelBeach = gravelNoise[x + z * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
@@ -129,6 +130,20 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                             topBlock = BlockStates.AIR;
                             fillerBlock = this.defaultBlock;
                             
+                        } else if (topFluidBlockState.equals(BlockStates.AIR) && y <= this.seaLevel + 1) {
+                            topBlock = biomeTopBlock;
+                            fillerBlock = biomeFillerBlock;
+
+                            if (genGravelBeach) {
+                                topBlock = BlockStates.AIR; // This reduces gravel beach height by 1
+                                fillerBlock = BlockStates.GRAVEL;
+                            }
+
+                            if (genSandBeach) {
+                                topBlock = BlockStates.SAND;
+                                fillerBlock = BlockStates.SAND;
+                            }
+                            
                         } else if (y >= this.seaLevel - 4 && y <= this.seaLevel + 1) { // Generate beaches at this y range
                             topBlock = biomeTopBlock;
                             fillerBlock = biomeFillerBlock;
@@ -150,7 +165,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
 
                         // Main surface builder section
                         flag = surfaceDepth;
-                        if (y >= this.seaLevel - 1) {
+                        if (y >= this.seaLevel - 1 || topFluidBlockState.equals(BlockStates.AIR)) {
                             chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
                         } else {
                             chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
@@ -287,12 +302,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
             double densityWithOffset = density - densityOffset; 
             
             // Sample for noise caves
-            densityWithOffset = this.sampleNoiseCave(
-                densityWithOffset,
-                noiseX * this.horizontalNoiseResolution, 
-                noiseY * this.verticalNoiseResolution,
-                noiseZ * this.horizontalNoiseResolution
-            );
+            densityWithOffset = this.sampleNoiseCave(densityWithOffset, noiseX, noiseY, noiseZ);
             
             densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
             densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);

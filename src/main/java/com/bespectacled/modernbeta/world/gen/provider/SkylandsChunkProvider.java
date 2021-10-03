@@ -57,7 +57,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             for (int x = 0; x < 16; x++) {
                 int absX = (chunkX << 4) + x; 
                 int absZ = (chunkZ << 4) + z;
-                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
+                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
 
                 int surfaceDepth = (int) (surfaceNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
@@ -191,12 +191,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             double densityWithOffset = density - densityOffset; 
             
             // Sample for noise caves
-            densityWithOffset = this.sampleNoiseCave(
-                densityWithOffset, 
-                noiseX * this.horizontalNoiseResolution, 
-                noiseY * this.verticalNoiseResolution,
-                noiseZ * this.horizontalNoiseResolution
-            );
+            densityWithOffset = this.sampleNoiseCave(densityWithOffset, noiseX, noiseY, noiseZ);
             
             densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, this.noiseSizeY);
             densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -8);

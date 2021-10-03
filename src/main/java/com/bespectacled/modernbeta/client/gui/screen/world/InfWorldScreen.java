@@ -10,15 +10,11 @@ import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.world.structure.OldStructures;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtByte;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
 
 public class InfWorldScreen extends WorldScreen {
     private static final String HYDROGEN_LOADED_STRING = "createWorld.customize.hydrogenLoaded";

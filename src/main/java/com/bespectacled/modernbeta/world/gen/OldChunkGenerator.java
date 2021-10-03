@@ -1,7 +1,5 @@
 package com.bespectacled.modernbeta.world.gen;
 
-import java.util.BitSet;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
@@ -15,7 +13,6 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.compat.Compat;
-import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
@@ -23,7 +20,6 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.structure.OceanShrineStructure;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
-import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -31,25 +27,19 @@ import net.minecraft.class_6643;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.structure.StructureManager;
 import net.minecraft.util.Util;
 import net.minecraft.util.collection.Pool;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
+import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
@@ -65,13 +55,8 @@ import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
-import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
-import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.biome.source.BiomeCoords;
 
 public class OldChunkGenerator extends NoiseChunkGenerator {
     public static final Codec<OldChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
@@ -154,7 +139,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         CarverContext heightContext = new CarverContext(this, chunk);
         AquiferSampler aquiferSampler = AquiferSampler.seaLevel(this.carverFluidLevelSampler);
-        class_6643 bitSet = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);
+        class_6643 carvingMask = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);
         
         Random random = new Random(seed);
         long l = (random.nextLong() / 2L) * 2L + 1L;
@@ -180,7 +165,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
                     
                     if (configuredCarver.shouldCarve(random)) {
-                        configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, random, aquiferSampler, pos, bitSet);
+                        configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, random, aquiferSampler, pos, carvingMask);
 
                     }
                 }
@@ -257,6 +242,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return new VerticalBlockSample(minY, column);
     }
     
+    /*
     @Override
     public BlockPos locateStructure(ServerWorld world, StructureFeature<?> feature, BlockPos center, int radius, boolean skipExistingChunks) {
         if (!this.generateOceans)
@@ -269,6 +255,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
         return super.locateStructure(world, feature, center, radius, skipExistingChunks);
     }
+    */
     
     @Override
     public Pool<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {
@@ -290,8 +277,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             return height;
         
         return 320;
-        
-        //return this.chunkProvider.getWorldHeight();
     }
     
     @Override
@@ -353,7 +338,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 int offsetX = x + 2;
                 int offsetZ = z + 2;
                 
-                int height = GenUtil.getSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, defaultFluid);
+                int height = GenUtil.getLowestSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, defaultFluid);
                 
                 if (this.atOceanDepth(height) && chunk.getBlockState(pos.set(offsetX, height + 1, offsetZ)).equals(defaultFluid)) {
                     biome = oldBiomeSource.getOceanBiome(x >> 2, 0, z >> 2);
@@ -370,8 +355,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             
             container.lock();
             try {
-                int yOffset = section.getYOffset() >> 2;
-                
                 for (int biomeX = 0; biomeX < containerLen; ++biomeX) {
                     for (int biomeZ = 0; biomeZ < containerLen; ++biomeZ) {
                         Biome biome = biomeArr[biomeX + biomeZ * containerLen];

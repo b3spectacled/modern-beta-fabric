@@ -11,6 +11,7 @@ import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.HeightLimitView;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -19,7 +20,6 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.FeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.random.ChunkRandom;
-import net.minecraft.world.Heightmap;
 
 public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig> {
     public static final Pool<SpawnSettings.SpawnEntry> MONSTER_SPAWNS;

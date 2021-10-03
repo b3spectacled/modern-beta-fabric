@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.world.biome.inf;
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
 import com.bespectacled.modernbeta.world.biome.OldBiomeMobs;
-import com.bespectacled.modernbeta.world.biome.OldBiomeStructures;
 import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
 import net.minecraft.world.biome.Biome;
@@ -29,8 +28,6 @@ public class Infdev227 {
         OldBiomeFeatures.addDefaultFeatures(genSettings, false, InfBiomes.ADD_LAKES_INF_227, InfBiomes.ADD_SPRINGS_INF_227);
         OldBiomeFeatures.addOres(genSettings);
         DefaultBiomeFeatures.addFrozenTopLayer(genSettings);
-        
-        OldBiomeStructures.addCommonStructures(genSettings);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_CACTUS_ALPHA);
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);

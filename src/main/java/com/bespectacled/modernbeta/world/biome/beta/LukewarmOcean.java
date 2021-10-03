@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.world.biome.beta;
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
 import com.bespectacled.modernbeta.world.biome.OldBiomeMobs;
-import com.bespectacled.modernbeta.world.biome.OldBiomeStructures;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
@@ -26,8 +25,6 @@ public class LukewarmOcean {
         OldBiomeFeatures.addDefaultFeatures(genSettings, true, BetaBiomes.ADD_LAKES, BetaBiomes.ADD_SPRINGS);
         OldBiomeFeatures.addMineables(genSettings, BetaBiomes.ADD_ALTERNATE_STONES, BetaBiomes.ADD_NEW_MINEABLES);
         OldBiomeFeatures.addOres(genSettings);
-        
-        OldBiomeStructures.addOceanStructures(genSettings, true);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.KELP_WARM);
         genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_WARM);

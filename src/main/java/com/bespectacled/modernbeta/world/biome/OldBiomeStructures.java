@@ -1,78 +1,90 @@
 package com.bespectacled.modernbeta.world.biome;
 
+import java.util.function.BiConsumer;
+
+import com.bespectacled.modernbeta.mixin.MixinConfiguredStructureFeaturesAccessor;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
 
-import net.minecraft.world.biome.GenerationSettings;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 
 public class OldBiomeStructures {
-    public static void addCommonStructures(GenerationSettings.Builder genSettings) {
-        ////genSettings.structureFeature(ConfiguredStructureFeatures.VILLAGE_PLAINS);
-        ////genSettings.structureFeature(ConfiguredStructureFeatures.PILLAGER_OUTPOST);
-        ////genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
+    private static RegistryKey<Biome> biomeKeyOf(Identifier id) {
+        return RegistryKey.of(Registry.BIOME_KEY, id);
     }
     
-    public static void addOceanStructures(GenerationSettings.Builder genSettings, boolean warm) {
-        if (warm); 
-            //genSettings.structureFeature(ConfiguredStructureFeatures.OCEAN_RUIN_WARM);
-        else;
-            //genSettings.structureFeature(ConfiguredStructureFeatures.OCEAN_RUIN_COLD);
+    public static void addCommonStructures(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, Identifier id) {
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getVillagePlains(),biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getPillagerOutpost(), biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getRuinedPortal(), biomeKeyOf(id));
+    }
+    
+    public static void addOceanStructures(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, Identifier id, boolean warm) {
+        if (warm) {
+            consumer.accept(MixinConfiguredStructureFeaturesAccessor.getOceanRuinWarm(), biomeKeyOf(id));
+        } else {
+            consumer.accept(MixinConfiguredStructureFeaturesAccessor.getOceanRuinCold(), biomeKeyOf(id));
+        }
         
-        //genSettings.structureFeature(ConfiguredStructureFeatures.BURIED_TREASURE);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_OCEAN);
-        //genSettings.structureFeature(OldStructures.CONF_OCEAN_SHRINE_STRUCTURE);
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getBuriedTreasure(), biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getRuinedPortalOcean(), biomeKeyOf(id));
+        consumer.accept(OldStructures.CONF_OCEAN_SHRINE_STRUCTURE, biomeKeyOf(id));
     }
     
-    public static void addDesertStructures(GenerationSettings.Builder genSettings, boolean addVillages) {
-        if (addVillages);
-            //genSettings.structureFeature(ConfiguredStructureFeatures.VILLAGE_DESERT);
+    public static void addDesertStructures(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, Identifier id, boolean addVillages) {
+        if (addVillages) {
+            consumer.accept(MixinConfiguredStructureFeaturesAccessor.getVillageDesert(), biomeKeyOf(id));
+        }
         
-        //genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_DESERT);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.DESERT_PYRAMID);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.PILLAGER_OUTPOST);
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getRuinedPortalDesert(), biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getDesertPyramid(), biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getPillagerOutpost(), biomeKeyOf(id));
     }
     
-    public static void addForestStructures(GenerationSettings.Builder genSettings) {
-        //genSettings.structureFeature(ConfiguredStructureFeatures.MANSION);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
+    public static void addForestStructures(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, Identifier id) {
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getMansion(), biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getRuinedPortal(), biomeKeyOf(id));
     }
     
-    public static void addPlainsStructures(GenerationSettings.Builder genSettings) {
-        //genSettings.structureFeature(ConfiguredStructureFeatures.PILLAGER_OUTPOST);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
+    public static void addPlainsStructures(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, Identifier id) {
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getPillagerOutpost(), biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getRuinedPortal(), biomeKeyOf(id));
     }
     
-    public static void addRainforestStructures(GenerationSettings.Builder genSettings) {
-        //genSettings.structureFeature(ConfiguredStructureFeatures.JUNGLE_PYRAMID);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_JUNGLE);
+    public static void addRainforestStructures(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, Identifier id) {
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getJunglePyramid(), biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getRuinedPortalJungle(), biomeKeyOf(id));
     }
     
-    public static void addSeasonalForestStructures(GenerationSettings.Builder genSettings) {
-        //genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
+    public static void addSeasonalForest(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, Identifier id) {
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getRuinedPortal(), biomeKeyOf(id));
     }
     
-    public static void addLowlandStructures(GenerationSettings.Builder genSettings) {
-        //genSettings.structureFeature(ConfiguredStructureFeatures.VILLAGE_PLAINS);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.PILLAGER_OUTPOST);
+    public static void addLowlandStructures(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, Identifier id) {
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getVillagePlains(),biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getPillagerOutpost(), biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getRuinedPortal(), biomeKeyOf(id));
     }
     
-    public static void addSwamplandStructures(GenerationSettings.Builder genSettings) {
-        //genSettings.structureFeature(ConfiguredStructureFeatures.SWAMP_HUT);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_SWAMP);
+    public static void addSwamplandStructures(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, Identifier id) {
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getSwampHut(), biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getRuinedPortalSwamp(), biomeKeyOf(id));
     }
     
-    public static void addTaigaStructures(GenerationSettings.Builder genSettings) {
-        //genSettings.structureFeature(ConfiguredStructureFeatures.VILLAGE_TAIGA);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.IGLOO);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.PILLAGER_OUTPOST);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_MOUNTAIN);
+    public static void addTaigaStructures(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, Identifier id) {
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getVillageTaiga(), biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getIgloo(),biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getPillagerOutpost(), biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getRuinedPortalMountain(), biomeKeyOf(id));
     }
     
-    public static void addTundraStructures(GenerationSettings.Builder genSettings) {
-        //genSettings.structureFeature(ConfiguredStructureFeatures.VILLAGE_SNOWY);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.IGLOO);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.PILLAGER_OUTPOST);
-        //genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
+    public static void addTundraStructures(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, Identifier id) {
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getVillageSnowy(), biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getIgloo(),biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getPillagerOutpost(), biomeKeyOf(id));
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getRuinedPortal(), biomeKeyOf(id));
     }
 }

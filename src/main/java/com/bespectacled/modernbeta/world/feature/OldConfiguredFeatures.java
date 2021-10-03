@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.decorator.CountOldNoiseDecoratorConfig;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
 import com.google.common.collect.ImmutableList;

@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.world.biome.indev;
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
 import com.bespectacled.modernbeta.world.biome.OldBiomeMobs;
-import com.bespectacled.modernbeta.world.biome.OldBiomeStructures;
 import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
 import net.minecraft.world.biome.Biome;
@@ -27,8 +26,6 @@ public class IndevHell {
         
         OldBiomeFeatures.addDefaultFeatures(genSettings, false, IndevBiomes.ADD_LAKES, IndevBiomes.ADD_SPRINGS);
         OldBiomeFeatures.addOres(genSettings);
-        
-        OldBiomeStructures.addCommonStructures(genSettings);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);

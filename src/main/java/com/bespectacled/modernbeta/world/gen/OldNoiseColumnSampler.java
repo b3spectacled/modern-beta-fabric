@@ -1,6 +1,9 @@
 package com.bespectacled.modernbeta.world.gen;
 
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.AlphaChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.BetaChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.PEChunkProvider;
 
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.source.util.TerrainNoisePoint;
@@ -32,9 +35,17 @@ public class OldNoiseColumnSampler extends NoiseColumnSampler  {
      * 
      */
     @Override
-    protected int method_38383(int noiseX, int noiseZ, TerrainNoisePoint terrainNoisePoint) {
-        //return this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
-        //return this.chunkProvider.getSeaLevel();
-        return 100;
+    protected int method_38383(int x, int z, TerrainNoisePoint terrainNoisePoint) {
+        int height = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
+        
+        if (
+            this.chunkProvider instanceof BetaChunkProvider || 
+            this.chunkProvider instanceof AlphaChunkProvider || 
+            this.chunkProvider instanceof PEChunkProvider
+        ) {
+            height -= 4;
+        }
+        
+        return height;
     }
 }

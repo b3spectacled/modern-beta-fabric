@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.world.biome.inf;
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
 import com.bespectacled.modernbeta.world.biome.OldBiomeMobs;
-import com.bespectacled.modernbeta.world.biome.OldBiomeStructures;
 import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
 import net.minecraft.world.biome.Biome;
@@ -30,8 +29,6 @@ public class AlphaWinter {
         OldBiomeFeatures.addMineables(genSettings, InfBiomes.ADD_ALTERNATE_STONES_ALPHA, InfBiomes.ADD_NEW_MINEABLES_ALPHA);
         OldBiomeFeatures.addOres(genSettings);
         DefaultBiomeFeatures.addFrozenTopLayer(genSettings);
-        
-        OldBiomeStructures.addCommonStructures(genSettings);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);

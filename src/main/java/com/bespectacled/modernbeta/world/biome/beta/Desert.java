@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.world.biome.beta;
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
 import com.bespectacled.modernbeta.world.biome.OldBiomeMobs;
-import com.bespectacled.modernbeta.world.biome.OldBiomeStructures;
 import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
 import net.minecraft.world.biome.Biome;
@@ -31,8 +30,6 @@ public class Desert {
         OldBiomeFeatures.addDefaultFeatures(genSettings, false, BetaBiomes.ADD_LAKES, BetaBiomes.ADD_SPRINGS);
         OldBiomeFeatures.addMineables(genSettings, BetaBiomes.ADD_ALTERNATE_STONES, BetaBiomes.ADD_NEW_MINEABLES);
         OldBiomeFeatures.addOres(genSettings);
-        
-        OldBiomeStructures.addDesertStructures(genSettings, true);
         
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
         
