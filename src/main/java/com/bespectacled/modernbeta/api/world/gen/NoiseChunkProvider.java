@@ -609,7 +609,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             ChunkRandom random = new ChunkRandom();
             random.setDeepslateSeed(this.seed, x, y, z);
             
-            BlockState blockState = this.oreVeinGenerator.sample(random, z, y, z, frequencyNoise, firstOreNoise, secondOreNoise);
+            BlockState blockState = this.oreVeinGenerator.sample(random, x, y, z, frequencyNoise, firstOreNoise, secondOreNoise);
             
             if (blockState != this.defaultBlock)
                 return blockState;
