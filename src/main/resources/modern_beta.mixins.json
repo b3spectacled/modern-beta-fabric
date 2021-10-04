@@ -6,7 +6,6 @@
   "mixins": [
     "MixinMinecraftServer",
     "MixinGeneratorOptions",
-    "MixinChunkGeneratorInvoker",
     "MixinChunkGeneratorSettingsInvoker",
     "MixinConfiguredStructureFeatures",
     "MixinConfiguredStructureFeaturesAccessor",
