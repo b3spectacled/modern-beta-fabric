@@ -1,9 +1,6 @@
 package com.bespectacled.modernbeta.world.gen;
 
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
-import com.bespectacled.modernbeta.world.gen.provider.AlphaChunkProvider;
-import com.bespectacled.modernbeta.world.gen.provider.BetaChunkProvider;
-import com.bespectacled.modernbeta.world.gen.provider.PEChunkProvider;
 
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.source.util.TerrainNoisePoint;

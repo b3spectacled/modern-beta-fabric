@@ -39,7 +39,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
-import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
@@ -149,13 +148,16 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
                 ChunkPos pos = new ChunkPos(chunkX, chunkZ);
                 Chunk curChunk = region.getChunk(pos.x, pos.z);
+                
+                int startX = pos.getStartX();
+                int startZ = pos.getStartZ();
+                
                 GenerationSettings genSettings = curChunk.method_38258(
-                    () -> this.biomeSource.getBiome(
-                        BiomeCoords.fromBlock(pos.getStartX()), 
-                        0, 
-                        BiomeCoords.fromBlock(pos.getStartZ()), 
-                        this.getMultiNoiseSampler())
-                ).getGenerationSettings();
+                    () -> this.getInjectedBiomeAtBlock(
+                            startX,
+                            this.getHeight(startX, startZ, Heightmap.Type.OCEAN_FLOOR_WG, curChunk),
+                            startZ
+                )).getGenerationSettings();
                 
                 List<Supplier<ConfiguredCarver<?>>> carverList = genSettings.getCarversForStep(genCarver);
                 ListIterator<Supplier<ConfiguredCarver<?>>> carverIterator = carverList.listIterator();
@@ -172,45 +174,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             }
         }
     }
-    
-    /*
-    
-    @Override
-    public void setStructureStarts(
-        DynamicRegistryManager dynamicRegistryManager, 
-        StructureAccessor structureAccessor,   
-        Chunk chunk, 
-        StructureManager structureManager, 
-        long seed
-    ) {
-        if (this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.STRUCTURE_STARTS)) return;
-        
-        Biome biome = this.getBiomeAt(chunk.getPos().getStartX(), 0, chunk.getPos().getStartZ(), chunk);
-
-        ((MixinChunkGeneratorInvoker)this).invokeSetStructureStart(
-            ConfiguredStructureFeatures.STRONGHOLD, 
-            dynamicRegistryManager, 
-            structureAccessor, 
-            chunk,
-            structureManager, 
-            seed, 
-            biome
-        );
-        
-        for (final Supplier<ConfiguredStructureFeature<?, ?>> supplier : biome.getGenerationSettings().getStructureFeatures()) {
-            ((MixinChunkGeneratorInvoker)this).invokeSetStructureStart(
-                supplier.get(),
-                dynamicRegistryManager, 
-                structureAccessor,
-                chunk, 
-                structureManager,
-                seed,
-                biome
-            );
-        }
-    }
-    
-    */
     
     @Override
     public int getHeight(int x, int z, Heightmap.Type type, HeightLimitView world) {
@@ -241,21 +204,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         return new VerticalBlockSample(minY, column);
     }
-    
-    /*
-    @Override
-    public BlockPos locateStructure(ServerWorld world, StructureFeature<?> feature, BlockPos center, int radius, boolean skipExistingChunks) {
-        if (!this.generateOceans)
-            if (feature.equals(StructureFeature.OCEAN_RUIN) || 
-                feature.equals(StructureFeature.SHIPWRECK) || 
-                feature.equals(StructureFeature.BURIED_TREASURE) ||
-                feature.equals(OldStructures.OCEAN_SHRINE_STRUCTURE)) {
-                return null;
-            }
-
-        return super.locateStructure(world, feature, center, radius, skipExistingChunks);
-    }
-    */
     
     @Override
     public Pool<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {

@@ -1,8 +1,5 @@
 package com.bespectacled.modernbeta.api.world.gen.noise;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class NoiseBuffer {
     private double[] buffer;
     
