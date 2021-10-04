@@ -67,20 +67,19 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
 
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                int absX = (chunkX << 4) + x;
-                int absZ = (chunkZ << 4) + z;
-                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
-                BlockState topFluidBlockState = GenUtil.getLowestFluidBlockState(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid);
+        for (int localX = 0; localX < 16; localX++) {
+            for (int localZ = 0; localZ < 16; localZ++) {
+                int x = (chunkX << 4) + localX;
+                int z = (chunkZ << 4) + localZ;
+                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
                 
-                boolean genSandBeach = sandNoise[x + z * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
-                boolean genGravelBeach = gravelNoise[x + z * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
-                int surfaceDepth = (int) (surfaceNoise[x + z * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
+                boolean genSandBeach = sandNoise[localX + localZ * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
+                boolean genGravelBeach = gravelNoise[localX + localZ * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
+                int surfaceDepth = (int) (surfaceNoise[localX + localZ * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
 
                 int flag = -1;
                 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, topY, absZ));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(x, topY, z));
 
                 BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -95,7 +94,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
 
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= bedrockFloor + rand.nextInt(6) - 1) {
-                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable.set(localX, y, localZ), BlockStates.BEDROCK, false);
                         continue;
                     }
                     
@@ -105,7 +104,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                     // since the game checks all adjacent blocks for a particular position,
                     // even if the downward direction is below the world limit!!
                     if (y <= this.minY) {
-                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable.set(localX, y, localZ), BlockStates.BEDROCK, false);
                         continue;
                     }
                     
@@ -114,14 +113,14 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
 
-                    BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
+                    BlockState blockState = chunk.getBlockState(mutable.set(localX, y, localZ));
 
-                    if (someBlock.equals(BlockStates.AIR)) { // Skip if air block
+                    if (blockState.equals(BlockStates.AIR)) { // Skip if air block
                         flag = -1;
                         continue;
                     }
 
-                    if (!someBlock.equals(this.defaultBlock)) { // Skip if not stone
+                    if (!blockState.equals(this.defaultBlock)) { // Skip if not stone
                         continue;
                     }
 
@@ -129,20 +128,6 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                         if (surfaceDepth <= 0) { // Generate stone basin if noise permits
                             topBlock = BlockStates.AIR;
                             fillerBlock = this.defaultBlock;
-                            
-                        } else if (topFluidBlockState.equals(BlockStates.AIR) && y <= this.seaLevel + 1) {
-                            topBlock = biomeTopBlock;
-                            fillerBlock = biomeFillerBlock;
-
-                            if (genGravelBeach) {
-                                topBlock = BlockStates.AIR; // This reduces gravel beach height by 1
-                                fillerBlock = BlockStates.GRAVEL;
-                            }
-
-                            if (genSandBeach) {
-                                topBlock = BlockStates.SAND;
-                                fillerBlock = BlockStates.SAND;
-                            }
                             
                         } else if (y >= this.seaLevel - 4 && y <= this.seaLevel + 1) { // Generate beaches at this y range
                             topBlock = biomeTopBlock;
@@ -165,10 +150,10 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
 
                         // Main surface builder section
                         flag = surfaceDepth;
-                        if (y >= this.seaLevel - 1 || topFluidBlockState.equals(BlockStates.AIR)) {
-                            chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
+                        if (y >= this.seaLevel - 1) {
+                            chunk.setBlockState(mutable.set(localX, y, localZ), topBlock, false);
                         } else {
-                            chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
+                            chunk.setBlockState(mutable.set(localX, y, localZ), fillerBlock, false);
                         }
 
                         continue;
@@ -176,7 +161,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                     
                     if (flag > 0) { 
                         flag--;
-                        chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
+                        chunk.setBlockState(mutable.set(localX, y, localZ), fillerBlock, false);
                     }
                 }
             }

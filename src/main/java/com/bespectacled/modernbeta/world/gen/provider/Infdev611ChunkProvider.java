@@ -59,19 +59,19 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                int absX = (chunkX << 4) + x;
-                int absZ = (chunkZ << 4) + z;
-                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
+        for (int localX = 0; localX < 16; localX++) {
+            for (int localZ = 0; localZ < 16; localZ++) {
+                int x = (chunkX << 4) + localX;
+                int z = (chunkZ << 4) + localZ;
+                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
                 
-                boolean genSandBeach = this.beachNoiseOctaves.sample(absX * eighth, absZ * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0;
-                boolean genGravelBeach = this.beachNoiseOctaves.sample(absZ * eighth, 109.0134, absX * eighth) + rand.nextDouble() * 0.2 > 3.0;
-                int surfaceDepth = (int)(this.surfaceNoiseOctaves.sample(absX * eighth * 2.0, absX * eighth * 2.0) / 3.0 + 3.0 + rand.nextDouble() * 0.25);
+                boolean genSandBeach = this.beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0;
+                boolean genGravelBeach = this.beachNoiseOctaves.sample(z * eighth, 109.0134, x * eighth) + rand.nextDouble() * 0.2 > 3.0;
+                int surfaceDepth = (int)(this.surfaceNoiseOctaves.sample(x * eighth * 2.0, x * eighth * 2.0) / 3.0 + 3.0 + rand.nextDouble() * 0.25);
 
                 int flag = -1;
                 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, topY, absZ));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(x, topY, z));
 
                 BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -86,7 +86,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
 
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= bedrockFloor + rand.nextInt(6) - 1) {
-                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable.set(localX, y, localZ), BlockStates.BEDROCK, false);
                         continue;
                     }
                     
@@ -96,7 +96,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                     // since the game checks all adjacent blocks for a particular position,
                     // even if the downward direction is below the world limit!!
                     if (y <= this.minY) {
-                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable.set(localX, y, localZ), BlockStates.BEDROCK, false);
                         continue;
                     }
                     
@@ -106,11 +106,11 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
 
-                    BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
+                    BlockState blockState = chunk.getBlockState(mutable.set(localX, y, localZ));
 
-                    if (someBlock.equals(BlockStates.AIR)) { // Skip if air block
+                    if (blockState.equals(BlockStates.AIR)) { // Skip if air block
                         flag = -1;
-                    } else if (someBlock.equals(this.defaultBlock)) {
+                    } else if (blockState.equals(this.defaultBlock)) {
                         if (flag == -1) {
                             if (surfaceDepth <= 0) { // Generate stone basin if noise permits
                                 topBlock = BlockStates.AIR;
@@ -137,14 +137,14 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
 
                             flag = surfaceDepth;
                             if (y >= this.seaLevel - 1) {
-                                chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
+                                chunk.setBlockState(mutable.set(localX, y, localZ), topBlock, false);
                             } else {
-                                chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
+                                chunk.setBlockState(mutable.set(localX, y, localZ), fillerBlock, false);
                             }
                             
                         } else if (flag > 0) { 
                             flag--;
-                            chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
+                            chunk.setBlockState(mutable.set(localX, y, localZ), fillerBlock, false);
                         }
                     }
                 }

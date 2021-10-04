@@ -37,15 +37,8 @@ public class OldNoiseColumnSampler extends NoiseColumnSampler  {
     @Override
     protected int method_38383(int x, int z, TerrainNoisePoint terrainNoisePoint) {
         int height = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
+        int heightOffset = -4;
         
-        if (
-            this.chunkProvider instanceof BetaChunkProvider || 
-            this.chunkProvider instanceof AlphaChunkProvider || 
-            this.chunkProvider instanceof PEChunkProvider
-        ) {
-            height -= 4;
-        }
-        
-        return height;
+        return height + heightOffset;
     }
 }

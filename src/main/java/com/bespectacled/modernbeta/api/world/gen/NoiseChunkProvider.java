@@ -592,7 +592,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             clampedDensity = noodleCaveSampler.sample(clampedDensity, z, x, y);
             clampedDensity += weightSampler.calculateNoise(x, y, z);
             
-            // Clamp density to vanilla -64 to 64 range before sending to aquifer.
+            // Normalize and clamp density to vanilla -64 to 64 range before sending to aquifer.
             density = MathHelper.clamp(density / 200.0 * 64.0, -64.0, 64.0);
             
             return aquiferSampler.apply(x, y, z, density, clampedDensity);

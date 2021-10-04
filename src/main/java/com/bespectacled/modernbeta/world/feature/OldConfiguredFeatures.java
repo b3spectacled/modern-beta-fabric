@@ -20,6 +20,7 @@ import net.minecraft.world.gen.YOffset;
 import net.minecraft.world.gen.decorator.ConfiguredDecorator;
 import net.minecraft.world.gen.decorator.CountExtraDecoratorConfig;
 import net.minecraft.world.gen.decorator.Decorator;
+import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
 import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
@@ -36,7 +37,11 @@ import net.minecraft.world.gen.stateprovider.SimpleBlockStateProvider;
 import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider;
 
 public class OldConfiguredFeatures {
-    private static final class BetaRandomPatchConfigs {
+    private static final class OldConfiguredDecorators {
+        public static final ConfiguredDecorator<?> SPREAD_32_ABOVE = OldDecorators.SPREAD_32_ABOVE.configure(NopeDecoratorConfig.INSTANCE);
+    }
+    
+    private static final class OldRandomPatchConfigs {
         private static final int XZ_SPREAD = 7;
         private static final int Y_SPREAD = 3;
         private static final int TRIES = 64;
@@ -48,10 +53,6 @@ public class OldConfiguredFeatures {
         public static final RandomPatchFeatureConfig POPPY_CONFIG;
         
         public static final RandomPatchFeatureConfig MUSHROOM_HELL;
-        
-        public static DataPool.Builder<BlockState> pool() {
-            return DataPool.builder();
-        }
         
         public static RandomPatchFeatureConfig createRandomPatchConfig(BlockStateProvider blockStateProvider, int tries) {
             return new RandomPatchFeatureConfig(
@@ -94,21 +95,21 @@ public class OldConfiguredFeatures {
     // Shrubs
     public static final ConfiguredFeature<?, ?> PATCH_CACTUS_ALPHA = register("patch_cactus", ConfiguredFeatures.PATCH_CACTUS.decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(1));
     public static final ConfiguredFeature<?, ?> PATCH_CACTUS_PE = register("patch_cactus_pe", ConfiguredFeatures.PATCH_CACTUS.decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(5));
-    public static final ConfiguredFeature<?, ?> MUSHROOM_HELL = register("mushroom_hell", Feature.FLOWER.configure(BetaRandomPatchConfigs.MUSHROOM_HELL).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(2));
+    public static final ConfiguredFeature<?, ?> MUSHROOM_HELL = register("mushroom_hell", Feature.FLOWER.configure(OldRandomPatchConfigs.MUSHROOM_HELL).decorate(OldConfiguredDecorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(2));
 
     // Flowers
-    public static final ConfiguredFeature<?, ?> PATCH_DANDELION_2 = register("patch_dandelion_2", Feature.FLOWER.configure(BetaRandomPatchConfigs.DANDELION_CONFIG).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).applyChance(7).repeat(2));
-    public static final ConfiguredFeature<?, ?> PATCH_DANDELION_3 = register("patch_dandelion_3", Feature.FLOWER.configure(BetaRandomPatchConfigs.DANDELION_CONFIG).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).applyChance(7).repeat(3));
-    public static final ConfiguredFeature<?, ?> PATCH_DANDELION_4 = register("patch_dandelion_4", Feature.FLOWER.configure(BetaRandomPatchConfigs.DANDELION_CONFIG).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).applyChance(7).repeat(4));
-    public static final ConfiguredFeature<?, ?> PATCH_DANDELION = register("patch_dandelion", Feature.FLOWER.configure(BetaRandomPatchConfigs.DANDELION_CONFIG).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).applyChance(7).decorate(Decorator.COUNT_EXTRA.configure(new CountExtraDecoratorConfig(0, 0.5f, 1)))); 
-    public static final ConfiguredFeature<?, ?> PATCH_POPPY = register("patch_poppy", Feature.FLOWER.configure(BetaRandomPatchConfigs.POPPY_CONFIG).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).applyChance(7).decorate(Decorator.COUNT_EXTRA.configure(new CountExtraDecoratorConfig(0, 0.5f, 1))));
-    public static final ConfiguredFeature<?, ?> FLOWER_PARADISE = register("flower_paradise", Feature.FLOWER.configure(ConfiguredFeatures.Configs.DEFAULT_FLOWER_CONFIG).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(20));
+    public static final ConfiguredFeature<?, ?> PATCH_DANDELION_2 = register("patch_dandelion_2", Feature.FLOWER.configure(OldRandomPatchConfigs.DANDELION_CONFIG).decorate(OldConfiguredDecorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(2));
+    public static final ConfiguredFeature<?, ?> PATCH_DANDELION_3 = register("patch_dandelion_3", Feature.FLOWER.configure(OldRandomPatchConfigs.DANDELION_CONFIG).decorate(OldConfiguredDecorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(3));
+    public static final ConfiguredFeature<?, ?> PATCH_DANDELION_4 = register("patch_dandelion_4", Feature.FLOWER.configure(OldRandomPatchConfigs.DANDELION_CONFIG).decorate(OldConfiguredDecorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(4));
+    public static final ConfiguredFeature<?, ?> PATCH_DANDELION = register("patch_dandelion", Feature.FLOWER.configure(OldRandomPatchConfigs.DANDELION_CONFIG).decorate(OldConfiguredDecorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(Decorator.COUNT_EXTRA.configure(new CountExtraDecoratorConfig(0, 0.5f, 1)))); 
+    public static final ConfiguredFeature<?, ?> PATCH_POPPY = register("patch_poppy", Feature.FLOWER.configure(OldRandomPatchConfigs.POPPY_CONFIG).decorate(OldConfiguredDecorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).decorate(Decorator.COUNT_EXTRA.configure(new CountExtraDecoratorConfig(0, 0.5f, 1))));
+    public static final ConfiguredFeature<?, ?> FLOWER_PARADISE = register("flower_paradise", Feature.FLOWER.configure(ConfiguredFeatures.Configs.DEFAULT_FLOWER_CONFIG).decorate(OldConfiguredDecorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(20));
     
     // Grass
-    public static final ConfiguredFeature<?, ?> PATCH_GRASS_PLAINS_10 = register("patch_grass_plains_10", Feature.RANDOM_PATCH.configure(BetaRandomPatchConfigs.GRASS_CONFIG).decorate(OLD_HEIGHTMAP).repeat(10));
-    public static final ConfiguredFeature<?, ?> PATCH_GRASS_TAIGA_1 = register("patch_grass_taiga_1", Feature.RANDOM_PATCH.configure(BetaRandomPatchConfigs.GRASS_CONFIG).decorate(OLD_HEIGHTMAP).repeat(1));
-    public static final ConfiguredFeature<?, ?> PATCH_GRASS_RAINFOREST_10 = register("patch_grass_rainforest_10", Feature.RANDOM_PATCH.configure(BetaRandomPatchConfigs.LUSH_GRASS_CONFIG).decorate(OLD_HEIGHTMAP).repeat(10));
-    public static final ConfiguredFeature<?, ?> PATCH_GRASS_ALPHA_2 = register("patch_grass_alpha_2", Feature.RANDOM_PATCH.configure(ConfiguredFeatures.Configs.GRASS_CONFIG).repeat(1).decorate(Decorator.COUNT_EXTRA.configure(new CountExtraDecoratorConfig(0, 0.1f, 1))));
+    public static final ConfiguredFeature<?, ?> PATCH_GRASS_PLAINS_10 = register("patch_grass_plains_10", Feature.RANDOM_PATCH.configure(OldRandomPatchConfigs.GRASS_CONFIG).decorate(OLD_HEIGHTMAP).repeat(10));
+    public static final ConfiguredFeature<?, ?> PATCH_GRASS_TAIGA_1 = register("patch_grass_taiga_1", Feature.RANDOM_PATCH.configure(OldRandomPatchConfigs.GRASS_CONFIG).decorate(OLD_HEIGHTMAP).repeat(1));
+    public static final ConfiguredFeature<?, ?> PATCH_GRASS_RAINFOREST_10 = register("patch_grass_rainforest_10", Feature.RANDOM_PATCH.configure(OldRandomPatchConfigs.LUSH_GRASS_CONFIG).decorate(OLD_HEIGHTMAP).repeat(10));
+    public static final ConfiguredFeature<?, ?> PATCH_GRASS_ALPHA_2 = register("patch_grass_alpha_2", Feature.RANDOM_PATCH.configure(ConfiguredFeatures.Configs.GRASS_CONFIG).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(1).decorate(Decorator.COUNT_EXTRA.configure(new CountExtraDecoratorConfig(0, 0.1f, 1))));
     
     // Classic Trees
     public static final ConfiguredFeature<?, ?> TREES_ALPHA = register("trees_alpha", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(OLD_FANCY_OAK.withChance(0.1f)), ConfiguredFeatures.OAK_CHECKED)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP_OCEAN_FLOOR_NO_WATER).decorate(OldDecorators.COUNT_ALPHA_NOISE.configure(new CountOldNoiseDecoratorConfig(0, 0.1f, 1))));
@@ -160,7 +161,7 @@ public class OldConfiguredFeatures {
         return Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, ModernBeta.createId(id), feature);
     }
     
-    private static DataPool.Builder<BlockState> method_35926() {
+    private static DataPool.Builder<BlockState> pool() {
         return DataPool.<BlockState>builder();
     }
 }
