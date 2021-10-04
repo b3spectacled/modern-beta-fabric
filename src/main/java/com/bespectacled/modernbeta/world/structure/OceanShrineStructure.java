@@ -40,7 +40,7 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
         BlockPos pos = new BlockPos(x, y, z);
         BlockRotation rot = BlockRotation.random(arg3.random());
         
-        OceanShrineGenerator.addPieces(null, pos, rot, structureHolder, arg3.random(), config);
+        OceanShrineGenerator.addPieces(arg3.structureManager(), pos, rot, structureHolder, arg3.random(), config);
     }
     
     public static Pool<SpawnSettings.SpawnEntry> getMonsterSpawns() {

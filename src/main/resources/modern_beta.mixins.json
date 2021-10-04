@@ -12,7 +12,8 @@
     "MixinConfiguredStructureFeaturesAccessor",
     "MixinSlideConfig",
     "MixinVeinTypeAccessor",
-    "MixinAquiferSampler"
+    "MixinAquiferSampler",
+    "Mixin_class_6623"
   ],
   "client": [
     "client.MixinClientWorld",

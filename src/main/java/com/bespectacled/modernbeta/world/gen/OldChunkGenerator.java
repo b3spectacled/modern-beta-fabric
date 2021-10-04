@@ -314,6 +314,18 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.generateOceanShrines;
     }
     
+    public Biome getInjectedBiomeAtBlock(int x, int y, int z) {
+        int biomeX = x >> 2;
+        int biomeY = y >> 2;
+        int biomeZ = z >> 2;
+        
+        if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource && this.atOceanDepth(y)) {
+            return oldBiomeSource.getOceanBiome(biomeX, 0, biomeZ);
+        }
+        
+        return this.biomeSource.getBiome(biomeX, biomeY, biomeZ, this.getMultiNoiseSampler());
+    }
+
     private void replaceOceansInChunk(OldBiomeSource oldBiomeSource, Chunk chunk) {
         ChunkPos chunkPos = chunk.getPos();
         BlockPos.Mutable pos = new BlockPos.Mutable();
@@ -376,22 +388,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             }
         }
     }
-    
-    /*
-    private Biome getBiomeAt(int x, int y, int z, HeightLimitView world) {
-        int biomeX = x >> 2;
-        int biomeY = y >> 2;
-        int biomeZ = z >> 2;
-        
-        int height = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world) - 1;
-
-        if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource && this.atOceanDepth(height)) {
-            return oldBiomeSource.getOceanBiome(biomeX, 0, biomeZ);
-        } 
-
-        return this.biomeSource.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
-    }
-    */
     
     private boolean atOceanDepth(int height) {
         return height < this.getSeaLevel() - OCEAN_MIN_DEPTH;
