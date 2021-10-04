@@ -18,6 +18,7 @@ public class OldBiomeStructures {
         else
             genSettings.structureFeature(ConfiguredStructureFeatures.OCEAN_RUIN_COLD);
         
+        genSettings.structureFeature(ConfiguredStructureFeatures.MONUMENT);
         genSettings.structureFeature(ConfiguredStructureFeatures.BURIED_TREASURE);
         genSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL_OCEAN);
         genSettings.structureFeature(OldStructures.CONF_OCEAN_SHRINE_STRUCTURE);

@@ -8,7 +8,8 @@
     "MixinBiomeArray",
     "MixinGeneratorOptions",
     "MixinChunkGeneratorInvoker",
-    "MixinChunkGeneratorSettingsInvoker"
+    "MixinChunkGeneratorSettingsInvoker",
+    "MixinOceanMonumentFeature"
   ],
   "client": [
     "client.MixinClientWorld",

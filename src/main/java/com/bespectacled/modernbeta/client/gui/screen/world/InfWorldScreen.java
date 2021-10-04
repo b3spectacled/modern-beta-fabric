@@ -19,12 +19,14 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 public class InfWorldScreen extends WorldScreen {
     private static final String HYDROGEN_LOADED_STRING = "createWorld.customize.hydrogenLoaded";
     
     private static final String GENERATE_OCEANS_DISPLAY_STRING = "createWorld.customize.inf.generateOceans";
     private static final String GENERATE_OCEAN_SHRINES_DISPLAY_STRING = "createWorld.customize.inf.generateOceanShrines";
+    private static final String GENERATE_MONUMENTS_DISPLAY_STRING = "createWorld.customize.inf.generateMonuments";
     
     private static final String GENERATE_OCEANS_TOOLTIP = "createWorld.customize.inf.generateOceans.tooltip";
     
@@ -51,6 +53,13 @@ public class InfWorldScreen extends WorldScreen {
             .getGenerationSettings()
             .hasStructureFeature(OldStructures.OCEAN_SHRINE_STRUCTURE) : 
             false;
+        boolean isSingleBiomeAndHasMonument = isSingleBiome ? 
+            this.registryManager
+            .<Biome>get(Registry.BIOME_KEY)
+            .get(new Identifier(NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.SINGLE_BIOME))))
+            .getGenerationSettings()
+            .hasStructureFeature(StructureFeature.MONUMENT) : 
+            false;
         
         BooleanCyclingOptionWrapper generateOceans = new BooleanCyclingOptionWrapper(
             GENERATE_OCEANS_DISPLAY_STRING,
@@ -65,6 +74,12 @@ public class InfWorldScreen extends WorldScreen {
             value -> this.putChunkSetting(NbtTags.GEN_OCEAN_SHRINES, NbtByte.of(value))
         );
         
+        BooleanCyclingOptionWrapper generateMonuments = new BooleanCyclingOptionWrapper(
+            GENERATE_MONUMENTS_DISPLAY_STRING,
+            () -> NbtUtil.toBooleanOrThrow(this.getChunkSetting(NbtTags.GEN_MONUMENTS)),
+            value -> this.putChunkSetting(NbtTags.GEN_MONUMENTS, NbtByte.of(value))
+        );
+        
         TextOptionWrapper hydrogenText = new TextOptionWrapper(HYDROGEN_LOADED_STRING, Formatting.RED);
         
         if (isHydrogenLoaded && !isSingleBiome) {
@@ -77,6 +92,10 @@ public class InfWorldScreen extends WorldScreen {
         
         if ((!isHydrogenLoaded && !isSingleBiome) || isSingleBiomeAndHasOceanShrine) {
             this.addOption(generateOceanShrines);
+        }
+        
+        if ((!isHydrogenLoaded && !isSingleBiome) || isSingleBiomeAndHasMonument) {
+            this.addOption(generateMonuments);
         }
     }
 }
