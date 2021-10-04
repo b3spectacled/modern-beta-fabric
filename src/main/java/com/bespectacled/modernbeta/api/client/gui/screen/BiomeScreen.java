@@ -18,21 +18,23 @@ public abstract class BiomeScreen extends GUIScreen {
     
     protected final DynamicRegistryManager registryManager;
     protected final Settings biomeSettings;
+    protected final WorldSetting worldSetting;
     
-    protected BiomeScreen(WorldScreen parent, Consumer<Settings> consumer, Settings biomeSettings) {
+    protected BiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings biomeSettings) {
         super("createWorld.customize.biomeType.title", parent);
 
         this.worldSettings = parent.getWorldSettings();
+        this.worldSetting = worldSetting;
         this.consumer = consumer;
         this.biomeSettings = biomeSettings;
         
         this.registryManager = parent.getRegistryManager();
     }
     
-    protected BiomeScreen(WorldScreen parent, Consumer<Settings> consumer) {
+    protected BiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
         // Create new settings independent of main world settings storage.
         // Will only be applied to main world settings when 'Done'.
-        this(parent, consumer, new Settings(parent.getWorldSettings().getNbt(WorldSetting.BIOME)));
+        this(parent, worldSetting, consumer, new Settings(parent.getWorldSettings().getNbt(worldSetting)));
     }
     
     @Override

@@ -27,22 +27,23 @@ public class BetaBiomeScreen extends BiomeScreen {
     private final ClimateType climateType;
     private final Map<String, Identifier> biomeSettingsMap;
     
-    private BetaBiomeScreen(WorldScreen parent, Consumer<Settings> consumer, Settings biomeSettings, ClimateType climateType) {
-        super(parent, consumer, biomeSettings);
+    private BetaBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings biomeSettings, ClimateType climateType) {
+        super(parent, worldSetting, consumer, biomeSettings);
         
         // Create Beta biome map from existing biome settings
         this.climateType = climateType;
         this.biomeSettingsMap = new BetaClimateMap(this.biomeSettings.getNbt()).getMap(climateType);
     }
     
-    private BetaBiomeScreen(WorldScreen parent, Consumer<Settings> consumer, ClimateType climateType) {
-        this(parent, consumer, new Settings(parent.getWorldSettings().getNbt(WorldSetting.BIOME)), climateType);
+    private BetaBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, ClimateType climateType) {
+        this(parent, worldSetting, consumer, new Settings(parent.getWorldSettings().getNbt(worldSetting)), climateType);
     }
     
-    public static BetaBiomeScreen create(WorldScreen worldScreen) {
+    public static BetaBiomeScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
         return new BetaBiomeScreen(
             worldScreen,
-            settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getNbt()),
+            worldSetting,
+            settings -> worldScreen.getWorldSettings().putChanges(worldSetting, settings.getNbt()),
             ClimateType.LAND
         );
     }
@@ -59,6 +60,7 @@ public class BetaBiomeScreen extends BiomeScreen {
                 this.client.setScreen(
                     new BetaBiomeScreen(
                         (WorldScreen)this.parent,
+                        this.worldSetting,
                         this.consumer,
                         this.biomeSettings,
                         value

@@ -13,6 +13,7 @@ import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
+import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 
 import net.minecraft.client.gui.screen.Screen;
@@ -82,6 +83,7 @@ public abstract class WorldScreen extends GUIScreen {
         this.addDrawableChild(cancelButton);
         
         String biomeType = NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.BIOME_TYPE));
+        String caveBiomeType = NbtUtil.toStringOrThrow(this.getCaveBiomeSetting(NbtTags.CAVE_BIOME_TYPE));
         
         CyclingOptionWrapper<WorldProvider> worldTypeOption = new CyclingOptionWrapper<>(
             "createWorld.customize.worldType", 
@@ -102,6 +104,13 @@ public abstract class WorldScreen extends GUIScreen {
                     Registries.BIOME_SETTINGS.getOrElse(
                         value.getBiomeProvider(),
                         () -> BiomeProviderSettings.createSettingsBase(value.getBiomeProvider())
+                    ).get()
+                );
+                this.worldSettings.putChanges(
+                    WorldSetting.CAVE_BIOME, 
+                    Registries.CAVE_BIOME_SETTINGS.getOrElse(
+                        value.getCaveBiomeProvider(), 
+                        () -> CaveBiomeProviderSettings.createSettingsBase(value.getCaveBiomeProvider())
                     ).get()
                 );
                 
@@ -134,9 +143,28 @@ public abstract class WorldScreen extends GUIScreen {
             }
         );
         
+        CyclingOptionWrapper<String> caveBiomeTypeOption = new CyclingOptionWrapper<>(
+            "createWorld.customize.caveBiomeType",
+            Registries.CAVE_BIOME.getKeySet().stream().toArray(String[]::new),
+            () -> NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.CAVE_BIOME, NbtTags.CAVE_BIOME_TYPE)),
+            value -> {
+                // Queue cave biome settings changes
+                this.worldSettings.clearChanges(WorldSetting.CAVE_BIOME);
+                this.worldSettings.putChanges(
+                    WorldSetting.CAVE_BIOME, 
+                    Registries.CAVE_BIOME_SETTINGS.getOrElse(
+                        value, 
+                        () -> CaveBiomeProviderSettings.createSettingsBase(value)
+                    ).get()
+                );
+            
+                this.resetWorldScreen();
+            }
+        );
+        
         Screen biomeSettingsScreen = Registries.BIOME_SCREEN
             .getOrDefault(NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.BIOME_TYPE)))
-            .apply(this); 
+            .apply(this, WorldSetting.BIOME); 
         
         ActionOptionWrapper biomeSettingsOption = new ActionOptionWrapper(
             biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ?
@@ -150,8 +178,25 @@ public abstract class WorldScreen extends GUIScreen {
                 null
         );
         
+        Screen caveBiomeSettingsScreen = Registries.BIOME_SCREEN
+            .getOrDefault(NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.CAVE_BIOME, NbtTags.CAVE_BIOME_TYPE)))
+            .apply(this, WorldSetting.CAVE_BIOME);
+        
+        ActionOptionWrapper caveBiomeSettingsOption = new ActionOptionWrapper(
+            caveBiomeType.equals(BuiltInTypes.CaveBiome.SINGLE.name) ?
+                "createWorld.customize.biomeType.biome" :
+                "createWorld.customize.biomeType.settings",
+            caveBiomeType.equals(BuiltInTypes.CaveBiome.SINGLE.name) ?
+                GuiUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getCaveBiomeSetting(NbtTags.SINGLE_BIOME))) : 
+                "",
+            caveBiomeSettingsScreen != null ?
+                widget -> this.client.setScreen(caveBiomeSettingsScreen) :
+                null
+        );
+        
         this.addOption(worldTypeOption);
         this.addDualOption(biomeTypeOption, biomeSettingsOption);
+        this.addDualOption(caveBiomeTypeOption, caveBiomeSettingsOption);
     }
     
     public DynamicRegistryManager getRegistryManager() {
@@ -193,6 +238,18 @@ public abstract class WorldScreen extends GUIScreen {
     
     protected NbtElement getBiomeSetting(String key) {
         return this.worldSettings.getSetting(WorldSetting.BIOME, key);
+    }
+    
+    protected void putCaveBiomeSetting(String key, NbtElement element) {
+        this.worldSettings.putChange(WorldSetting.CAVE_BIOME, key, element); 
+     }
+    
+    protected boolean hasCaveBiomeSetting(String key) {
+        return this.worldSettings.hasSetting(WorldSetting.CAVE_BIOME, key);
+    }
+    
+    protected NbtElement getCaveBiomeSetting(String key) {
+        return this.worldSettings.getSetting(WorldSetting.CAVE_BIOME, key);
     }
     
     protected void resetWorldScreen() {

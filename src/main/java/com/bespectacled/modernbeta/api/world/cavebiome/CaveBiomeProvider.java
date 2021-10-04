@@ -17,12 +17,12 @@ public abstract class CaveBiomeProvider {
      * Constructs a Modern Beta cave biome provider initialized with seed.
      * Additional settings are supplied in NbtCompound parameter.
      * 
-     * @param seed Seed to initialize biome provider.
-     * @param worldSettings NbtCompound for additional settings.
+     * @param seed World seed.
+     * @param settings Biome settings.
      */
-    public CaveBiomeProvider(OldBiomeSource biomeSource) {
-        this.seed = biomeSource.getWorldSeed();
-        this.settings = biomeSource.getProviderSettings();
+    public CaveBiomeProvider(long seed, NbtCompound settings) {
+        this.seed = seed;
+        this.settings = settings;
     }
     
     /**
@@ -36,7 +36,7 @@ public abstract class CaveBiomeProvider {
      * 
      * @return A biome at given biome coordinates.
      */
-    public abstract Biome getBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ);
+    public abstract Biome getBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ);
     
     /**
      * Gets a list of biome registry keys for biome source, for the purpose of locating structures, etc.

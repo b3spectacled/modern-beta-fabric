@@ -23,7 +23,6 @@ public class ConfigBiome implements ConfigData {
     
     public static class GeneralBiomeConfig {
         public String biomeType = BuiltInTypes.Biome.BETA.name;
-        //public String caveBiomeType = BuiltInTypes.CaveBiome.VANILLA.name;
     }
     
     public static class BetaBiomeConfig {

@@ -43,5 +43,5 @@ public class NbtTags {
     
     
     /* Cave Biome Settings */
-    public static final String CAVE_BIOME_TYPE = "caveBiomeType";
+    public static final String CAVE_BIOME_TYPE = "biomeType";
 }

@@ -45,10 +45,11 @@ public class OldGeneratorType {
         GeneratorOptions generatorOptions,
         WorldSettings worldSettings
     ) {
-        NbtCompound chunkProviderSettings = worldSettings.getNbt(WorldSetting.CHUNK);
-        NbtCompound biomeProviderSettings = worldSettings.getNbt(WorldSetting.BIOME);
+        NbtCompound chunkSettings = worldSettings.getNbt(WorldSetting.CHUNK);
+        NbtCompound biomeSettings = worldSettings.getNbt(WorldSetting.BIOME);
+        NbtCompound caveBiomeSettings = worldSettings.getNbt(WorldSetting.CAVE_BIOME);
         
-        WorldProvider worldProvider = Registries.WORLD.get(chunkProviderSettings.getString(NbtTags.WORLD_TYPE));
+        WorldProvider worldProvider = Registries.WORLD.get(chunkSettings.getString(NbtTags.WORLD_TYPE));
         
         Registry<DimensionType> registryDimensionType = registryManager.<DimensionType>get(Registry.DIMENSION_TYPE_KEY);
         Registry<ChunkGeneratorSettings> registryChunkGenSettings = registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
@@ -67,10 +68,10 @@ public class OldGeneratorType {
                 registryDimensionType, 
                 generatorOptions.getDimensions(), 
                 new OldChunkGenerator(
-                    new OldBiomeSource(generatorOptions.getSeed(), registryBiome, biomeProviderSettings), 
+                    new OldBiomeSource(generatorOptions.getSeed(), registryBiome, biomeSettings, Optional.ofNullable(caveBiomeSettings)), 
                     generatorOptions.getSeed(), 
                     chunkGenSettingsSupplier, 
-                    chunkProviderSettings
+                    chunkSettings
                 )
             )
         );
@@ -84,17 +85,16 @@ public class OldGeneratorType {
                     registryChunkGenSettings.get(new Identifier(Registries.WORLD.get(DEFAULT_WORLD_TYPE).getChunkGenSettings()));
                     
                 WorldProvider worldProvider = Registries.WORLD.get(DEFAULT_WORLD_TYPE);
-                //NbtCompound chunkProviderSettings = ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider());
-                //NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome());
-                  
-                NbtCompound chunkProviderSettings = Registries.CHUNK_SETTINGS.get(worldProvider.getChunkProvider()).get();
-                NbtCompound biomeProviderSettings = Registries.BIOME_SETTINGS.get(worldProvider.getBiomeProvider()).get();
+                
+                NbtCompound chunkSettings = Registries.CHUNK_SETTINGS.get(worldProvider.getChunkProvider()).get();
+                NbtCompound biomeSettings = Registries.BIOME_SETTINGS.get(worldProvider.getBiomeProvider()).get();
+                NbtCompound caveBiomeSettings = Registries.CAVE_BIOME_SETTINGS.get(worldProvider.getCaveBiomeProvider()).get();
                 
                 return new OldChunkGenerator(
-                    new OldBiomeSource(seed, biomes, biomeProviderSettings), 
+                    new OldBiomeSource(seed, biomes, biomeSettings, Optional.ofNullable(caveBiomeSettings)), 
                     seed, 
                     chunkGenSettingsSupplier, 
-                    chunkProviderSettings
+                    chunkSettings
                 );
             }
         };
@@ -112,20 +112,21 @@ public class OldGeneratorType {
                         // In the case that settings have been set, and the world edit screen is opened again:
                         // If settings already present, create new compound tag and copy from source,
                         // otherwise, not copying will modify original settings.
-                        NbtCompound chunkProviderSettings = chunkGenerator instanceof OldChunkGenerator oldChunkGenerator ?
+                        NbtCompound chunkSettings = chunkGenerator instanceof OldChunkGenerator oldChunkGenerator ?
                             oldChunkGenerator.getProviderSettings() :
                             Registries.CHUNK_SETTINGS.get(worldProvider.getChunkProvider()).get();
                         
-                        NbtCompound biomeProviderSettings = biomeSource instanceof OldBiomeSource oldBiomeSource ? 
-                            oldBiomeSource.getProviderSettings() : 
+                        NbtCompound biomeSettings = biomeSource instanceof OldBiomeSource oldBiomeSource ? 
+                            oldBiomeSource.getBiomeSettings() : 
                             Registries.BIOME_SETTINGS.get(worldProvider.getBiomeProvider()).get();
 
-                        // TODO: Add functionality later
-                        NbtCompound caveBiomeProviderSettings = CaveBiomeProviderSettings.createSettingsBase(worldProvider.getCaveBiomeProvider());
+                        NbtCompound caveSettings = biomeSource instanceof OldBiomeSource oldBiomeSource ? 
+                            oldBiomeSource.getCaveBiomeSettings() :
+                            Registries.CAVE_BIOME_SETTINGS.get(worldProvider.getCaveBiomeProvider()).get();
                         
-                        return Registries.WORLD.get(chunkProviderSettings.getString(NbtTags.WORLD_TYPE)).createWorldScreen(
+                        return Registries.WORLD.get(chunkSettings.getString(NbtTags.WORLD_TYPE)).createWorldScreen(
                             screen,
-                            new WorldSettings(chunkProviderSettings, biomeProviderSettings, caveBiomeProviderSettings),
+                            new WorldSettings(chunkSettings, biomeSettings, caveSettings),
                             modifiedWorldSettings -> ((MixinMoreOptionsDialogInvoker)screen.moreOptionsDialog).invokeSetGeneratorOptions(
                                 createNewGeneratorOptions(
                                     screen.moreOptionsDialog.getRegistryManager(),

@@ -13,14 +13,15 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 import net.minecraft.nbt.NbtInt;
 
 public class VanillaBiomeScreen extends BiomeScreen {
-    private VanillaBiomeScreen(WorldScreen parent, Consumer<Settings> consumer) {
-        super(parent, consumer);
+    private VanillaBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
+        super(parent, worldSetting, consumer);
     }
 
-    public static VanillaBiomeScreen create(WorldScreen worldScreen) {
+    public static VanillaBiomeScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
         return new VanillaBiomeScreen(
             worldScreen,
-            settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getNbt())
+            worldSetting,
+            settings -> worldScreen.getWorldSettings().putChanges(worldSetting, settings.getNbt())
         );
     }
     

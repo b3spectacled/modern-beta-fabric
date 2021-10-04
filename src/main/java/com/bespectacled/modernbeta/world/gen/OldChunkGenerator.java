@@ -128,7 +128,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 super.buildSurface(region, accessor, chunk);
         
         if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource)
-            this.replaceOceansInChunk(oldBiomeSource, chunk);
+            this.injectBiomesInChunk(oldBiomeSource, chunk);
     }
     
     @Override
@@ -311,37 +311,70 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return set;
     } 
 
-    private void replaceOceansInChunk(OldBiomeSource oldBiomeSource, Chunk chunk) {
+    private void injectBiomesInChunk(OldBiomeSource oldBiomeSource, Chunk chunk) {
         ChunkPos chunkPos = chunk.getPos();
         BlockPos.Mutable pos = new BlockPos.Mutable();
         
+        int startX = chunkPos.getStartX();
+        int startZ = chunkPos.getStartZ();
+        
+        int biomeStartX = startX >> 2;
+        int biomeStartZ = startZ >> 2;
+        
         int worldHeight = this.getWorldHeight();
         int minY = this.getMinimumY();
+        int caveStartOffset = 8;
+        int caveLowerCutoff = this.getMinimumY() + 16;
+        
         int containerLen = 4;
         
         BlockState defaultFluid = this.settings.get().getDefaultFluid();
-        Biome[] biomeArr = new Biome[16];
         
-        // Determine ocean biome positions
+        int[] heights = new int[16];
+        boolean[] oceans = new boolean[16];
+        
+        // Collect height values at biome coordinates
         for (int biomeX = 0; biomeX < containerLen; ++biomeX) {
             for (int biomeZ = 0; biomeZ < containerLen; ++biomeZ) {
-                Biome biome = null;
-                
-                int x = chunkPos.getStartX() + (biomeX << 2);
-                int z = chunkPos.getStartZ() + (biomeZ << 2);
+                int x = startX + (biomeX << 2);
+                int z = startZ + (biomeZ << 2);
                 
                 // Offset by 2 to get center of biome coordinate section,
                 // to sample overall ocean depth as accurately as possible.
                 int offsetX = x + 2;
                 int offsetZ = z + 2;
                 
-                int height = GenUtil.getLowestSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, defaultFluid);
+                heights[biomeX + biomeZ * containerLen] = GenUtil.getLowestSolidHeight(
+                    chunk,
+                    worldHeight,
+                    minY,
+                    offsetX,
+                    offsetZ,
+                    defaultFluid
+                );
+            }
+        }
+        
+        // Determine ocean biome positions
+        for (int biomeX = 0; biomeX < containerLen; ++biomeX) {
+            for (int biomeZ = 0; biomeZ < containerLen; ++biomeZ) {
+                boolean hasOcean = false;
                 
-                if (this.atOceanDepth(height) && chunk.getBlockState(pos.set(offsetX, height + 1, offsetZ)).equals(defaultFluid)) {
-                    biome = oldBiomeSource.getOceanBiome(x >> 2, 0, z >> 2);
+                int x = startX + (biomeX << 2);
+                int z = startZ + (biomeZ << 2);
+                
+                // Offset by 2 to get center of biome coordinate section,
+                // to sample overall ocean depth as accurately as possible.
+                int offsetX = x + 2;
+                int offsetZ = z + 2;
+                int height = heights[biomeX + biomeZ * containerLen];
+                pos.set(offsetX, height + 1, offsetZ);
+                
+                if (this.atOceanDepth(height) && chunk.getBlockState(pos).equals(defaultFluid)) {
+                    hasOcean = true;
                 }
                 
-                biomeArr[biomeX + biomeZ * containerLen] = biome;
+                oceans[biomeX + biomeZ * containerLen] = hasOcean;
             }
         }
         
@@ -352,11 +385,28 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             
             container.lock();
             try {
+                int yOffset = section.getYOffset() >> 2;
+                
                 for (int biomeX = 0; biomeX < containerLen; ++biomeX) {
                     for (int biomeZ = 0; biomeZ < containerLen; ++biomeZ) {
-                        Biome biome = biomeArr[biomeX + biomeZ * containerLen];
-                        
+                        int topY = Math.min(heights[biomeX + biomeZ * containerLen], this.getSeaLevel());
+                        boolean hasOcean = oceans[biomeX + biomeZ * containerLen];
+                       
                         for (int biomeY = 0; biomeY < containerLen; ++biomeY) {
+                            int y = (biomeY + yOffset) << 2;
+                            
+                            Biome biome = null;
+                            
+                            // Replace with oceans
+                            if (hasOcean) {
+                                biome = oldBiomeSource.getOceanBiome(biomeX + biomeStartX, 0, biomeZ + biomeStartZ);
+                            }
+                            
+                            // Replace with cave biomes
+                            if (y + caveStartOffset < topY && y > caveLowerCutoff) {
+                                biome = oldBiomeSource.getCaveBiome(biomeX + biomeStartX, biomeY + yOffset, biomeZ + biomeStartZ);
+                            }
+                            
                             if (biome != null) {
                                 container.swapUnsafe(biomeX, biomeY, biomeZ, biome);
                             }

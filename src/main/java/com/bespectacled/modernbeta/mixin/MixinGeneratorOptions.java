@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.mixin;
 
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
 
@@ -14,6 +15,7 @@ import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
+import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 import com.google.common.base.MoreObjects;
@@ -85,24 +87,30 @@ public class MixinGeneratorOptions {
             
             String worldType = ModernBeta.GEN_CONFIG.generalGenConfig.worldType;
             String biomeType = ModernBeta.BIOME_CONFIG.generalBiomeConfig.biomeType;
+            String caveBiomeType = ModernBeta.CAVE_BIOME_CONFIG.generalBiomeConfig.caveBiomeType;
             
-            NbtCompound chunkProviderSettings = Registries.CHUNK_SETTINGS.getOrElse(
+            NbtCompound chunkSettings = Registries.CHUNK_SETTINGS.getOrElse(
                 worldType, 
                 () -> ChunkProviderSettings.createSettingsBase(worldType)
             ).get();
             
-            NbtCompound biomeProviderSettings = Registries.BIOME_SETTINGS.getOrElse(
+            NbtCompound biomeSettings = Registries.BIOME_SETTINGS.getOrElse(
                 biomeType, 
                 () -> BiomeProviderSettings.createSettingsBase(biomeType)
+            ).get();
+            
+            NbtCompound caveBiomeSettings = Registries.CAVE_BIOME_SETTINGS.getOrElse(
+                caveBiomeType, 
+                () -> CaveBiomeProviderSettings.createSettingsBase(caveBiomeType)
             ).get();
             
             WorldProvider worldProvider = Registries.WORLD.getOrDefault(ModernBeta.GEN_CONFIG.generalGenConfig.worldType);
             
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
-                new OldBiomeSource(seed, registryBiome, biomeProviderSettings), 
+                new OldBiomeSource(seed, registryBiome, biomeSettings, Optional.of(caveBiomeSettings)), 
                 seed,
                 () -> registryChunkGenSettings.get(new Identifier(worldProvider.getChunkGenSettings())), 
-                chunkProviderSettings
+                chunkSettings
             );
             
             // return our chunk generator

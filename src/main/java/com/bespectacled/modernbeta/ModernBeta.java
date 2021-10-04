@@ -8,6 +8,7 @@ import com.bespectacled.modernbeta.client.color.BlockColors;
 import com.bespectacled.modernbeta.command.DebugProviderSettingsCommand;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.config.ConfigBiome;
+import com.bespectacled.modernbeta.config.ConfigCaveBiome;
 import com.bespectacled.modernbeta.config.ConfigCompat;
 import com.bespectacled.modernbeta.config.ConfigGeneration;
 import com.bespectacled.modernbeta.config.ConfigRendering;
@@ -39,6 +40,8 @@ public class ModernBeta implements ModInitializer {
     
     public static final ConfigGeneration GEN_CONFIG = CONFIG.generationConfig;
     public static final ConfigBiome BIOME_CONFIG = CONFIG.biomeConfig;
+    public static final ConfigCaveBiome CAVE_BIOME_CONFIG = CONFIG.caveBiomeConfig;
+    
     public static final ConfigRendering RENDER_CONFIG = CONFIG.renderingConfig;
     public static final ConfigCompat COMPAT_CONFIG = CONFIG.compatConfig;
 
@@ -75,6 +78,7 @@ public class ModernBeta implements ModInitializer {
         ModernBetaBuiltInProviders.registerBiomeProviders();
         ModernBetaBuiltInProviders.registerBiomeSettings();
         ModernBetaBuiltInProviders.registerCaveBiomeProvider();
+        ModernBetaBuiltInProviders.registerCaveBiomeSettings();
         ModernBetaBuiltInProviders.registerWorldProviders();
         
         // Register client-only stuff, i.e. GUI, block colors, etc.

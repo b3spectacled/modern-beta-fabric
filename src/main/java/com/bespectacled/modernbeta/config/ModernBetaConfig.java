@@ -23,5 +23,9 @@ public class ModernBetaConfig extends PartitioningSerializer.GlobalData {
     
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Gui.Excluded
+    public ConfigCaveBiome caveBiomeConfig = new ConfigCaveBiome();
+    
+    @ConfigEntry.Gui.TransitiveObject
+    @ConfigEntry.Gui.Excluded
     public ConfigCompat compatConfig = new ConfigCompat();
 }

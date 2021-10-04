@@ -11,6 +11,7 @@ import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMap;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
 
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -20,16 +21,16 @@ public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeRes
     
     private final BetaClimateMap betaClimateMap;
     
-    public BetaCaveBiomeProvider(OldBiomeSource biomeSource) {
-        super(biomeSource);
+    public BetaCaveBiomeProvider(long seed, NbtCompound settings) {
+        super(seed, settings);
         
-        this.climateSampler = new BetaClimateSampler(biomeSource.getWorldSeed());
+        this.climateSampler = new BetaClimateSampler(seed);
         
         this.betaClimateMap = new BetaClimateMap(settings);
     }
 
     @Override
-    public Biome getBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+    public Biome getBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
         int absX = biomeX << 2;
         int absZ = biomeZ << 2;
         

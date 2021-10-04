@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
@@ -21,9 +22,10 @@ import net.minecraft.nbt.NbtCompound;
 
 public final class Registries {
     public static final Registry<BiFunction<Long, NbtCompound, BiomeProvider>> BIOME;
-    public static final Registry<Function<WorldScreen, Screen>> BIOME_SCREEN;
+    public static final Registry<BiFunction<WorldScreen, WorldSetting, Screen>> BIOME_SCREEN;
     public static final Registry<Supplier<NbtCompound>> BIOME_SETTINGS;
-    public static final Registry<Function<OldBiomeSource, CaveBiomeProvider>> CAVE_BIOME;
+    public static final Registry<BiFunction<Long, NbtCompound, CaveBiomeProvider>> CAVE_BIOME;
+    public static final Registry<Supplier<NbtCompound>> CAVE_BIOME_SETTINGS;
     public static final Registry<Function<OldChunkGenerator, ChunkProvider>> CHUNK;
     public static final Registry<Supplier<NbtCompound>> CHUNK_SETTINGS;
     public static final Registry<WorldProvider> WORLD;
@@ -34,6 +36,7 @@ public final class Registries {
         BIOME_SCREEN = new Registry<>("BIOME_SCREEN");
         BIOME_SETTINGS = new Registry<>("BIOME_SETTINGS");
         CAVE_BIOME = new Registry<>("CAVE_BIOME");
+        CAVE_BIOME_SETTINGS = new Registry<>("CAVE_BIOME_SETTINGS");
         CHUNK = new Registry<>("CHUNK");
         CHUNK_SETTINGS = new Registry<>("CHUNK_SETTINGS");
         WORLD = new Registry<>("WORLD");
