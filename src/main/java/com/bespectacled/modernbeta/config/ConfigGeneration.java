@@ -27,6 +27,7 @@ public class ConfigGeneration implements ConfigData {
     public static class InfGenConfig {
         public boolean generateOceans = true;
         public boolean generateOceanShrines = true;
+        public boolean generateMonuments = false;
     }
     
     public static class Inf227GenConfig {

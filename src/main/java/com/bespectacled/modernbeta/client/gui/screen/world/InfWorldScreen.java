@@ -21,6 +21,7 @@ public class InfWorldScreen extends WorldScreen {
     
     private static final String GENERATE_OCEANS_DISPLAY_STRING = "createWorld.customize.inf.generateOceans";
     private static final String GENERATE_OCEAN_SHRINES_DISPLAY_STRING = "createWorld.customize.inf.generateOceanShrines";
+    private static final String GENERATE_MONUMENTS_DISPLAY_STRING = "createWorld.customize.inf.generateMonuments";
     
     private static final String GENERATE_OCEANS_TOOLTIP = "createWorld.customize.inf.generateOceans.tooltip";
     
@@ -48,7 +49,7 @@ public class InfWorldScreen extends WorldScreen {
             .getGenerationSettings()
             .hasStructureFeature(OldStructures.OCEAN_SHRINE_STRUCTURE) : 
             false;
-            */
+        */
         
         BooleanCyclingOptionWrapper generateOceans = new BooleanCyclingOptionWrapper(
             GENERATE_OCEANS_DISPLAY_STRING,
@@ -61,6 +62,12 @@ public class InfWorldScreen extends WorldScreen {
             GENERATE_OCEAN_SHRINES_DISPLAY_STRING,
             () -> NbtUtil.toBooleanOrThrow(this.getChunkSetting(NbtTags.GEN_OCEAN_SHRINES)),
             value -> this.putChunkSetting(NbtTags.GEN_OCEAN_SHRINES, NbtByte.of(value))
+        );
+        
+        BooleanCyclingOptionWrapper generateMonuments = new BooleanCyclingOptionWrapper(
+            GENERATE_MONUMENTS_DISPLAY_STRING,
+            () -> NbtUtil.toBooleanOrThrow(this.getChunkSetting(NbtTags.GEN_MONUMENTS)),
+            value -> this.putChunkSetting(NbtTags.GEN_MONUMENTS, NbtByte.of(value))
         );
         
         TextOptionWrapper hydrogenText = new TextOptionWrapper(HYDROGEN_LOADED_STRING, Formatting.RED);
@@ -76,6 +83,7 @@ public class InfWorldScreen extends WorldScreen {
         //if ((!isHydrogenLoaded && !isSingleBiome) || isSingleBiomeAndHasOceanShrine) {
         if (!isHydrogenLoaded && !isSingleBiome) {
             this.addOption(generateOceanShrines);
+            this.addOption(generateMonuments);
         }
     }
 }

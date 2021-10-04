@@ -44,6 +44,7 @@ public class OldBiomeStructures {
         
         addDefaultOceanStructures(consumer, id);
         
+        consumer.accept(MixinConfiguredStructureFeaturesAccessor.getMonument(), biomeKeyOf(id));
         consumer.accept(MixinConfiguredStructureFeaturesAccessor.getBuriedTreasure(), biomeKeyOf(id));
         consumer.accept(MixinConfiguredStructureFeaturesAccessor.getRuinedPortalOcean(), biomeKeyOf(id));
         consumer.accept(OldStructures.CONF_OCEAN_SHRINE_STRUCTURE, biomeKeyOf(id));

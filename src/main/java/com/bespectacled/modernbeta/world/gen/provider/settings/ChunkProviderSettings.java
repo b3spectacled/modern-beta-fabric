@@ -23,6 +23,7 @@ public class ChunkProviderSettings {
         
         settings.putBoolean(NbtTags.GEN_OCEANS, CONFIG.infGenConfig.generateOceans);
         settings.putBoolean(NbtTags.GEN_OCEAN_SHRINES, CONFIG.infGenConfig.generateOceanShrines);
+        settings.putBoolean(NbtTags.GEN_MONUMENTS, CONFIG.infGenConfig.generateMonuments);
         
         return settings;
     }

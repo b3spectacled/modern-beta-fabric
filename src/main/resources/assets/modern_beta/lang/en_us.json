@@ -39,6 +39,7 @@
     
     "createWorld.customize.inf.generateOceans": "Assign Ocean Biomes",
     "createWorld.customize.inf.generateOceanShrines": "Generate Ocean Shrines",
+    "createWorld.customize.inf.generateMonuments": "Generate Monuments",
     
     "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",
     "createWorld.customize.infdev.generateInfdevWall": "Generate Infdev Obsidian Wall",

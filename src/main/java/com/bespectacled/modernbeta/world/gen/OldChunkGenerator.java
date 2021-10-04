@@ -1,8 +1,10 @@
 package com.bespectacled.modernbeta.world.gen;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
@@ -20,6 +22,7 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.structure.OceanShrineStructure;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
+import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -39,6 +42,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
+import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
@@ -75,6 +79,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
     private final boolean generateOceans;
     private final boolean generateOceanShrines;
+    private final boolean generateMonuments;
     
     public OldChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, NbtCompound providerSettings) {
         super(biomeSource, seed, settings);
@@ -89,6 +94,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             false;
         
         this.generateOceanShrines = NbtUtil.readBoolean(NbtTags.GEN_OCEAN_SHRINES, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateOceanShrines);
+        this.generateMonuments = NbtUtil.readBoolean(NbtTags.GEN_MONUMENTS, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateMonuments);
     }
 
     public static void register() {
@@ -262,6 +268,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.generateOceanShrines;
     }
     
+    public boolean generatesMonuments() {
+        return this.generateMonuments;
+    }
+    
     public Biome getInjectedBiomeAtBlock(int x, int y, int z) {
         int biomeX = x >> 2;
         int biomeY = y >> 2;
@@ -273,6 +283,33 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         return this.biomeSource.getBiome(biomeX, biomeY, biomeZ, this.getMultiNoiseSampler());
     }
+    
+    public Set<Biome> getBiomesInArea(int startX, int startY, int startZ, int radius) {
+        int minX = BiomeCoords.fromBlock(startX - radius);
+        int minZ = BiomeCoords.fromBlock(startZ - radius);
+        
+        int maxX = BiomeCoords.fromBlock(startX + radius);
+        int maxZ = BiomeCoords.fromBlock(startZ + radius);
+        
+        int rangeX = maxX - minX + 1;
+        int rangeZ = maxZ - minZ + 1;
+        
+        HashSet<Biome> set = Sets.newHashSet();
+        for (int localZ = 0; localZ < rangeZ; ++localZ) {
+            for (int localX = 0; localX < rangeX; ++localX) {
+                int biomeX = minX + localX;
+                int biomeZ = minZ + localZ;
+                
+                int x = biomeX << 2;
+                int z = biomeZ << 2;
+                int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
+                
+                set.add(this.getInjectedBiomeAtBlock(x, y, z));
+            }
+        }
+        
+        return set;
+    } 
 
     private void replaceOceansInChunk(OldBiomeSource oldBiomeSource, Chunk chunk) {
         ChunkPos chunkPos = chunk.getPos();

@@ -7,6 +7,7 @@ public class NbtTags {
     // Inf
     public static final String GEN_OCEANS = "generateOceans";
     public static final String GEN_OCEAN_SHRINES = "generateOceanShrines";
+    public static final String GEN_MONUMENTS = "generateMonuments";
     
     // Infdev 227
     public static final String GEN_INFDEV_PYRAMID = "generateInfdevPyramid";
