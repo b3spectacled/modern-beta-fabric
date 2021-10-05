@@ -20,3 +20,5 @@ accessible class net/minecraft/world/gen/feature/ConfiguredFeatures$Decorators
 accessible field net/minecraft/world/gen/carver/CaveCarverConfig floorLevel Lnet/minecraft/util/math/floatprovider/FloatProvider;
 
 accessible method net/minecraft/world/gen/stateprovider/SimpleBlockStateProvider <init>  (Lnet/minecraft/block/BlockState;)V
+
+accessible method net/minecraft/world/biome/source/MultiNoiseBiomeSource <init> (Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$Entries;Ljava/util/Optional;)V

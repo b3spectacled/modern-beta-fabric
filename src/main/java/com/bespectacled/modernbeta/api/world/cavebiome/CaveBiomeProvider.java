@@ -2,8 +2,6 @@ package com.bespectacled.modernbeta.api.world.cavebiome;
 
 import java.util.List;
 
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;

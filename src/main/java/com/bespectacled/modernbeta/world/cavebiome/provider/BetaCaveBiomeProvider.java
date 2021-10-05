@@ -7,7 +7,6 @@ import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMap;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
 
@@ -18,14 +17,12 @@ import net.minecraft.world.biome.Biome;
 
 public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeResolver {
     private final ClimateSampler climateSampler;
-    
     private final BetaClimateMap betaClimateMap;
     
     public BetaCaveBiomeProvider(long seed, NbtCompound settings) {
         super(seed, settings);
         
         this.climateSampler = new BetaClimateSampler(seed);
-        
         this.betaClimateMap = new BetaClimateMap(settings);
     }
 

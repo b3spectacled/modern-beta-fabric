@@ -63,7 +63,6 @@ public class BetaChunkProvider extends NoiseChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
-        int minY = 50;
         int bedrockFloor = this.minY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);

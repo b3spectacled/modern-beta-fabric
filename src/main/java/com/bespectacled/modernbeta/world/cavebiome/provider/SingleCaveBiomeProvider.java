@@ -6,7 +6,6 @@ import java.util.List;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;

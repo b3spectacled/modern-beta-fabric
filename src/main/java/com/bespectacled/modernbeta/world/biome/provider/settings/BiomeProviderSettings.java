@@ -40,15 +40,6 @@ public class BiomeProviderSettings {
         return settings;
     }
     
-    public static NbtCompound createSettingsVanilla() {
-        NbtCompound settings = createSettingsBase(BuiltInTypes.Biome.VANILLA.name);
-        
-        settings.putInt(NbtTags.VANILLA_BIOME_SIZE, ModernBeta.BIOME_CONFIG.vanillaBiomeConfig.vanillaBiomeSize);
-        settings.putInt(NbtTags.VANILLA_OCEAN_BIOME_SIZE, ModernBeta.BIOME_CONFIG.vanillaBiomeConfig.vanillaOceanBiomeSize);
-        
-        return settings;
-    }
-    
     public static NbtCompound createSettingsSingle() {
         NbtCompound settings = createSettingsBase(BuiltInTypes.Biome.SINGLE.name);
 
