@@ -127,14 +127,14 @@ public class BetaChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
 
-                    BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
+                    BlockState blockState = chunk.getBlockState(mutable.set(x, y, z));
 
-                    if (someBlock.equals(BlockStates.AIR)) { // Skip if air block
+                    if (blockState.equals(BlockStates.AIR)) { // Skip if air block
                         flag = -1;
                         continue;
                     }
 
-                    if (!someBlock.equals(this.defaultBlock)) { // Skip if not stone
+                    if (!blockState.equals(this.defaultBlock)) { // Skip if not stone
                         continue;
                     }
 

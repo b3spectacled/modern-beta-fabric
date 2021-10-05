@@ -101,12 +101,12 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                     }
                     
                     mutable.set(x, y, z);
-                    BlockState someBlock = chunk.getBlockState(mutable);
+                    BlockState blockState = chunk.getBlockState(mutable);
                     
-                    if (someBlock.equals(BlockStates.AIR)) {
+                    if (blockState.equals(BlockStates.AIR)) {
                         flag = -1;
                         
-                    } else if (someBlock.equals(this.defaultBlock)) {
+                    } else if (blockState.equals(this.defaultBlock)) {
                         if (flag == -1) {
                             if (surfaceDepth <= 0) {
                                 topBlock = BlockStates.AIR;

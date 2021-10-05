@@ -12,6 +12,7 @@ import com.bespectacled.modernbeta.world.gen.provider.IndevChunkProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Heightmap;
 
 /*
  * Port of Indev 20100223 player spawn locator.
@@ -43,11 +44,12 @@ public class IndevSpawnLocator implements SpawnLocator {
         while (true) {
             spawnX = random.nextInt(width / 2) + width / 4;
             spawnZ = random.nextInt(length / 2) + length / 4;
-            spawnY = this.chunkProvider.getLevelHighestBlock(spawnX, spawnZ) + 1;
+            //spawnY = this.chunkProvider.getLevelHighestBlock(spawnX, spawnZ) + 1;
+            spawnY = this.chunkProvider.getHeight(spawnX - width / 2, spawnZ - length / 2, Heightmap.Type.OCEAN_FLOOR_WG, null) + 1;
             
             if (attempts >= 1000000) {
                 ModernBeta.log(Level.INFO, "[Indev] Exceeded spawn attempts, spawning anyway..");
-                spawnY = height + 100;
+                //spawnY = height + 100; From original code, but tends to fail on small worlds
                 
                 break;
             }

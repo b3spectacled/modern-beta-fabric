@@ -479,7 +479,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                 double heightResult = Math.max(heightLow, heightHigh) / 2.0;
                 
                 if (this.levelType == IndevType.ISLAND) {
-                    double islandRadius = Math.sqrt(normalizedX * normalizedX + normalizedZ * normalizedZ) * 1.2000000476837158;
+                    double islandRadius = Math.sqrt(normalizedX * normalizedX + normalizedZ * normalizedZ) * 1.2;
                     islandRadius = Math.min(islandRadius, islandNoiseOctaves.sample(x * 0.05f, z * 0.05f) / 4.0 + 1.0);
                     islandRadius = Math.max(islandRadius, Math.max(normalizedX, normalizedZ));
                     
@@ -493,7 +493,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                     heightResult = heightResult * (1.0 - islandRadius) - islandRadius * 10.0 + 5.0;
                     
                     if (heightResult < 0.0) {
-                        heightResult -= heightResult * heightResult * 0.20000000298023224;
+                        heightResult -= heightResult * heightResult * 0.2;
                     }
                             
                             
@@ -520,6 +520,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                     
                     heightmap[x + z * this.levelWidth] = heightResult;
                 }
+                
             }
         }
     }

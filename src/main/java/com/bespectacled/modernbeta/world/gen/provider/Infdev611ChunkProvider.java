@@ -106,11 +106,11 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
 
-                    BlockState someBlock = chunk.getBlockState(mutable.set(x, y, z));
+                    BlockState blockState = chunk.getBlockState(mutable.set(x, y, z));
 
-                    if (someBlock.equals(BlockStates.AIR)) { // Skip if air block
+                    if (blockState.equals(BlockStates.AIR)) { // Skip if air block
                         flag = -1;
-                    } else if (someBlock.equals(this.defaultBlock)) {
+                    } else if (blockState.equals(this.defaultBlock)) {
                         if (flag == -1) {
                             if (surfaceDepth <= 0) { // Generate stone basin if noise permits
                                 topBlock = BlockStates.AIR;
