@@ -53,6 +53,8 @@ public class NoiseCaveSampler implements WeightSampler {
     }
 
     public double sample(double weight, int x, int y, int z) {
+        // Weight decreases at higher y, 
+        // so past a certain point, place only tunnels.
         boolean genTunnelsOnly = weight < 170.0;
         
         //weight = this.getCaveOpeningNoise(weight, x, y, z);
