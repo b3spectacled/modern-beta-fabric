@@ -16,7 +16,6 @@ import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
@@ -214,11 +213,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
     }
 
     @Override
-    protected void sampleNoiseColumn(Pair<double[], double[]> buffers, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
-        int bufferLen = buffers.getLeft().length;
-        double[] primaryBuffer = buffers.getLeft();
-        double[] heightmapBuffer = buffers.getRight();
-        
+    protected void sampleNoiseColumn(double[] primaryBuffer, double[] heightmapBuffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
         int horizNoiseResolution = 16 / (this.noiseSizeX + 1);
         int x = (startNoiseX / this.noiseSizeX * 16) + localNoiseX * horizNoiseResolution + horizNoiseResolution / 2;
         int z = (startNoiseZ / this.noiseSizeZ * 16) + localNoiseZ * horizNoiseResolution + horizNoiseResolution / 2;
@@ -290,7 +285,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         double depth = depthNoise;
         double islandOffset = this.generateIslandOffset(startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
         
-        for (int y = 0; y < bufferLen; ++y) {
+        for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
             
             // Var names taken from old customized preset names

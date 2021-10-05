@@ -11,7 +11,6 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
@@ -154,11 +153,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
     }
 
     @Override
-    protected void sampleNoiseColumn(Pair<double[], double[]> buffers, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
-        int bufferLen = buffers.getLeft().length;
-        double[] primaryBuffer = buffers.getLeft();
-        double[] heightmapBuffer = buffers.getRight();
-        
+    protected void sampleNoiseColumn(double[] primaryBuffer, double[] heightmapBuffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
 
@@ -211,7 +206,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         double scale = scaleNoise;
         double depth = depthNoise;
         
-        for (int y = 0; y < bufferLen; ++y) {
+        for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
             
             // Var names taken from old customized preset names

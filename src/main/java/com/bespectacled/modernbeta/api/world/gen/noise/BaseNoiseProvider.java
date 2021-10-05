@@ -1,6 +1,5 @@
 package com.bespectacled.modernbeta.api.world.gen.noise;
 
-import net.minecraft.util.Pair;
 import net.minecraft.util.math.MathHelper;
 
 public class BaseNoiseProvider extends NoiseProvider {
@@ -47,12 +46,10 @@ public class BaseNoiseProvider extends NoiseProvider {
         double[] noise = new double[this.noiseSize];
         double[] heightmapNoise = new double[this.noiseSize];
         
-        Pair<double[], double[]> buffers = new Pair<>(primaryBuffer, heightmapBuffer);
-        
         int ndx = 0;
         for (int localNoiseX = 0; localNoiseX < this.noiseResX; ++localNoiseX) {
             for (int localNoiseZ = 0; localNoiseZ < this.noiseResZ; ++localNoiseZ) {
-                this.bufferSampler.sampleColumn(buffers, startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
+                this.bufferSampler.sampleColumn(primaryBuffer, heightmapBuffer, startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
                 
                 for (int nY = 0; nY < this.noiseResY; ++nY) {
                     noise[ndx] = primaryBuffer[nY];
@@ -102,6 +99,6 @@ public class BaseNoiseProvider extends NoiseProvider {
     
     @FunctionalInterface
     public static interface BaseColumnSampler {
-        public void sampleColumn(Pair<double[], double[]> buffers, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ);
+        public void sampleColumn(double[] primaryBuffer, double[] heightmapBuffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ);
     }
 }

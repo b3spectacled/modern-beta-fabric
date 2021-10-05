@@ -333,7 +333,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int[] heights = new int[16];
         boolean[] oceans = new boolean[16];
         
-        // Collect height values at biome coordinates
+        // Calculate height values and determine ocean biome positions at biome coordinates
         for (int biomeX = 0; biomeX < containerLen; ++biomeX) {
             for (int biomeZ = 0; biomeZ < containerLen; ++biomeZ) {
                 int x = startX + (biomeX << 2);
@@ -344,7 +344,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 int offsetX = x + 2;
                 int offsetZ = z + 2;
                 
-                heights[biomeX + biomeZ * containerLen] = GenUtil.getLowestSolidHeight(
+                int height = GenUtil.getLowestSolidHeight(
                     chunk,
                     worldHeight,
                     minY,
@@ -352,29 +352,16 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     offsetZ,
                     defaultFluid
                 );
-            }
-        }
-        
-        // Determine ocean biome positions
-        for (int biomeX = 0; biomeX < containerLen; ++biomeX) {
-            for (int biomeZ = 0; biomeZ < containerLen; ++biomeZ) {
-                boolean hasOcean = false;
-                
-                int x = startX + (biomeX << 2);
-                int z = startZ + (biomeZ << 2);
-                
-                // Offset by 2 to get center of biome coordinate section,
-                // to sample overall ocean depth as accurately as possible.
-                int offsetX = x + 2;
-                int offsetZ = z + 2;
-                int height = heights[biomeX + biomeZ * containerLen];
                 pos.set(offsetX, height + 1, offsetZ);
-                
+
+                boolean hasOcean = false;
                 if (this.atOceanDepth(height) && chunk.getBlockState(pos).equals(defaultFluid)) {
                     hasOcean = true;
                 }
                 
-                oceans[biomeX + biomeZ * containerLen] = hasOcean;
+                int ndx = biomeX + biomeZ * containerLen;
+                oceans[ndx] = hasOcean;
+                heights[ndx] = height;
             }
         }
         
@@ -397,14 +384,11 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                             
                             Biome biome = null;
                             
-                            // Replace with oceans
-                            if (hasOcean) {
-                                biome = oldBiomeSource.getOceanBiome(biomeX + biomeStartX, 0, biomeZ + biomeStartZ);
-                            }
-                            
-                            // Replace with cave biomes
+                            // Replace with cave or ocean biomes
                             if (y + caveStartOffset < topY && y > caveLowerCutoff) {
                                 biome = oldBiomeSource.getCaveBiome(biomeX + biomeStartX, biomeY + yOffset, biomeZ + biomeStartZ);
+                            } else if (hasOcean) {
+                                biome = oldBiomeSource.getOceanBiome(biomeX + biomeStartX, 0, biomeZ + biomeStartZ);
                             }
                             
                             if (biome != null) {

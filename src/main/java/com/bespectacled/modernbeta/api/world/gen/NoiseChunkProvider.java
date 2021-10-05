@@ -28,7 +28,6 @@ import com.bespectacled.modernbeta.world.gen.sampler.WeightSampler;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.util.Pair;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -326,14 +325,14 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     
     /**
      * Generates noise for a column at startNoiseX + localNoiseX / startNoiseZ + localNoiseZ.
-     * 
-     * @param buffers Buffer of size noiseSizeY + 1 to store noise column
+     * @param primaryBuffer TODO
+     * @param heightmapBuffer TODO
      * @param startNoiseX x-coordinate start of chunk in noise coordinates.
      * @param startNoiseZ z-coordinate start of chunk in noise coordinates.
      * @param localNoiseX Current subchunk index along x-axis.
      * @param localNoiseZ Current subchunk index along z-axis.
      */
-    protected abstract void sampleNoiseColumn(Pair<double[], double[]> buffers, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ);
+    protected abstract void sampleNoiseColumn(double[] primaryBuffer, double[] heightmapBuffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ);
     
     /**
      * Samples density for noise cave.

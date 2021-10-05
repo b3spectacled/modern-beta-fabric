@@ -12,7 +12,6 @@ import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
@@ -151,15 +150,11 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
     }
     
     @Override
-    protected void sampleNoiseColumn(Pair<double[], double[]> buffers, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
-        int bufferLen = buffers.getLeft().length;
-        double[] primaryBuffer = buffers.getLeft();
-        double[] heightmapBuffer = buffers.getRight();
-        
+    protected void sampleNoiseColumn(double[] primaryBuffer, double[] heightmapBuffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
         
-        for (int y = 0; y < bufferLen; ++y) {
+        for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
             
             double densityOffset = this.getOffset(noiseY);
