@@ -12,6 +12,7 @@ import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
@@ -150,11 +151,15 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
     }
     
     @Override
-    protected void generateNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
+    protected void sampleNoiseColumn(Pair<double[], double[]> buffers, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
+        int bufferLen = buffers.getLeft().length;
+        double[] primaryBuffer = buffers.getLeft();
+        double[] heightmapBuffer = buffers.getRight();
+        
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
         
-        for (int y = 0; y < buffer.length; ++y) {
+        for (int y = 0; y < bufferLen; ++y) {
             int noiseY = y + this.noiseMinY;
             
             double densityOffset = this.getOffset(noiseY);
@@ -216,12 +221,18 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 density = minLimitVal + (maxLimitVal - minLimitVal) * delta;
             };
             
+            // Sample without noise caves
+            double heightmapDensity = density;
+            
             // Sample for noise caves
             density = this.sampleNoiseCave(density, noiseX, noiseY, noiseZ);
             
+            // Apply slides
             density = this.applyBottomSlide(density, noiseY, -3);
+            heightmapDensity = this.applyBottomSlide(heightmapDensity, noiseY, -3);
             
-            buffer[y] = density;
+            primaryBuffer[y] = density;
+            heightmapBuffer[y] = heightmapDensity;
         }
     }
     

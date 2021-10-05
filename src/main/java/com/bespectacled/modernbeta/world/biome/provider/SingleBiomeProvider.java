@@ -18,8 +18,8 @@ public class SingleBiomeProvider extends BiomeProvider {
     
     private final Identifier biomeId;
     
-    public SingleBiomeProvider(long seed, NbtCompound settings) {
-        super(seed, settings);
+    public SingleBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+        super(seed, settings, biomeRegistry);
         
         this.biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
     }

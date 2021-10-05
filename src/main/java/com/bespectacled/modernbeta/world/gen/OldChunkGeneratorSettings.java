@@ -28,13 +28,22 @@ import net.minecraft.world.gen.MultiNoiseParameters;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class OldChunkGeneratorSettings {
-    private static final MultiNoiseParameters DEFAULT_MN_PARAMS = new MultiNoiseParameters(
+    public static final MultiNoiseParameters DEFAULT_MN_PARAMS = new MultiNoiseParameters(
         new DoublePerlinNoiseSampler.NoiseParameters(0, 0.0), 
         new DoublePerlinNoiseSampler.NoiseParameters(0, 0.0), 
         new DoublePerlinNoiseSampler.NoiseParameters(0, 0.0), 
         new DoublePerlinNoiseSampler.NoiseParameters(0, 0.0), 
         new DoublePerlinNoiseSampler.NoiseParameters(0, 0.0), 
         new DoublePerlinNoiseSampler.NoiseParameters(0, 0.0)
+    );
+    
+    public static final MultiNoiseParameters VANILLA_MN_PARAMS = new MultiNoiseParameters(
+        new DoublePerlinNoiseSampler.NoiseParameters(-9, 1.5, 0.0, 1.0, 0.0, 0.0, 0.0), 
+        new DoublePerlinNoiseSampler.NoiseParameters(-7, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0), 
+        new DoublePerlinNoiseSampler.NoiseParameters(-9, 1.0, 1.0, 2.0, 2.0, 2.0, 1.0, 1.0, 1.0, 1.0), 
+        new DoublePerlinNoiseSampler.NoiseParameters(-9, 1.0, 1.0, 0.0, 1.0, 1.0), 
+        new DoublePerlinNoiseSampler.NoiseParameters(-7, 1.0, 2.0, 1.0, 0.0, 0.0, 0.0), 
+        new DoublePerlinNoiseSampler.NoiseParameters(-3, 1.0, 1.0, 1.0, 0.0)
     );
 
     public static final Identifier BETA;

@@ -13,7 +13,8 @@
     "MixinVeinTypeAccessor",
     "MixinAquiferSampler",
     "Mixin_class_6623",
-    "MixinOceanMonumentFeature"
+    "MixinOceanMonumentFeature",
+    "MixinVanillaBiomeParametersInvoker"
   ],
   "client": [
     "client.MixinClientWorld",

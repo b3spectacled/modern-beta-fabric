@@ -21,8 +21,8 @@ public class BetaBiomeProvider extends BiomeProvider implements BiomeResolver, C
     private final BetaClimateSampler climateSampler;
     private final BetaClimateMap climateMap;
     
-    public BetaBiomeProvider(long seed, NbtCompound settings) {
-        super(seed, settings);
+    public BetaBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+        super(seed, settings, biomeRegistry);
         
         this.climateSampler = new BetaClimateSampler(seed);
         this.climateMap = new BetaClimateMap(settings);

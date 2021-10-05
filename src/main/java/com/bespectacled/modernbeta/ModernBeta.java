@@ -32,6 +32,7 @@ import net.minecraft.util.Identifier;
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
     public static final String MOD_NAME = "Modern Beta";
+    public static final boolean DEV_ENV = FabricLoader.getInstance().isDevelopmentEnvironment();
     
     public static final ModernBetaConfig CONFIG = AutoConfig.register(
         ModernBetaConfig.class, 
@@ -94,7 +95,7 @@ public class ModernBeta implements ModInitializer {
         }
         
         // Register dev-only stuff, i.e. commands, etc.
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+        if (DEV_ENV) {
             DebugProviderSettingsCommand.register();
         }
         

@@ -28,6 +28,7 @@ import com.bespectacled.modernbeta.world.gen.sampler.WeightSampler;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.util.Pair;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -80,7 +81,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final boolean generateOreVeins;
     protected final boolean generateNoodleCaves;
 
-    protected final ChunkCache<NoiseProvider> noiseProviderCache;
+    protected final ChunkCache<BaseNoiseProvider> noiseProviderCache;
     protected final ChunkCache<HeightmapChunk> heightmapChunkCache;
     
     protected final DoublePerlinNoiseSampler edgeDensityNoise;
@@ -189,11 +190,11 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             1536,
             true,
             (chunkX, chunkZ) -> {
-                NoiseProvider baseNoiseProvider = new BaseNoiseProvider(
+                BaseNoiseProvider baseNoiseProvider = new BaseNoiseProvider(
                     this.noiseSizeX,
                     this.noiseSizeY,
                     this.noiseSizeZ,
-                    this::generateNoiseColumn
+                    this::sampleNoiseColumn
                 );
                 
                 baseNoiseProvider.sampleInitialNoise(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ);
@@ -326,13 +327,13 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     /**
      * Generates noise for a column at startNoiseX + localNoiseX / startNoiseZ + localNoiseZ.
      * 
-     * @param buffer Buffer of size noiseSizeY + 1 to store noise column
+     * @param buffers Buffer of size noiseSizeY + 1 to store noise column
      * @param startNoiseX x-coordinate start of chunk in noise coordinates.
      * @param startNoiseZ z-coordinate start of chunk in noise coordinates.
      * @param localNoiseX Current subchunk index along x-axis.
      * @param localNoiseZ Current subchunk index along z-axis.
      */
-    protected abstract void generateNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ);
+    protected abstract void sampleNoiseColumn(Pair<double[], double[]> buffers, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ);
     
     /**
      * Samples density for noise cave.
@@ -515,7 +516,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     private HeightmapChunk sampleHeightmap(int chunkX, int chunkZ) {
         int minHeight = 16;
         
-        NoiseProvider baseNoiseProvider = this.noiseProviderCache.get(chunkX, chunkZ);
+        BaseNoiseProvider baseNoiseProvider = this.noiseProviderCache.get(chunkX, chunkZ);
         
         int[] heightmapSurface = new int[256];
         int[] heightmapOcean = new int[256];
@@ -526,28 +527,28 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++subChunkZ) {
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
-                    baseNoiseProvider.sampleNoiseCorners(subChunkX, subChunkY, subChunkZ);
+                    baseNoiseProvider.sampleNoiseCornersHeightmap(subChunkX, subChunkY, subChunkZ);
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
                         int y = subY + subChunkY * this.verticalNoiseResolution;
                         y += this.minY;
                         
                         double deltaY = subY / (double)this.verticalNoiseResolution;
-                        baseNoiseProvider.sampleNoiseY(deltaY);
+                        baseNoiseProvider.sampleNoiseYHeightmap(deltaY);
                         
                         for (int subX = 0; subX < this.horizontalNoiseResolution; ++subX) {
                             int x = subX + subChunkX * this.horizontalNoiseResolution;
                             
                             double deltaX = subX / (double)this.horizontalNoiseResolution;
-                            baseNoiseProvider.sampleNoiseX(deltaX);
+                            baseNoiseProvider.sampleNoiseXHeightmap(deltaX);
                             
                             for (int subZ = 0; subZ < this.horizontalNoiseResolution; ++subZ) {
                                 int z = subZ + subChunkZ * this.horizontalNoiseResolution;
                                 
                                 double deltaZ = subZ / (double)this.horizontalNoiseResolution;
-                                baseNoiseProvider.sampleNoiseZ(deltaZ);
+                                baseNoiseProvider.sampleNoiseZHeightmap(deltaZ);
                                 
-                                double density = baseNoiseProvider.sample();
+                                double density = baseNoiseProvider.sampleHeightmap();
                                 
                                 if (y < this.seaLevel || density > 0.0) {
                                     heightmapOcean[z + x * 16] = y + 1;

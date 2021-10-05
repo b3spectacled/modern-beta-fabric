@@ -21,8 +21,8 @@ public class PEBiomeProvider extends BiomeProvider implements BiomeResolver, Cli
     private final PEClimateSampler climateSampler;
     private final BetaClimateMap climateMap;
     
-    public PEBiomeProvider(long seed, NbtCompound settings) {
-        super(seed, settings);
+    public PEBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+        super(seed, settings, biomeRegistry);
         
         this.climateSampler = new PEClimateSampler(seed);
         this.climateMap = new BetaClimateMap(settings);

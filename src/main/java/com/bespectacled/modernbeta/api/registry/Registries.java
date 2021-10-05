@@ -18,9 +18,10 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.biome.Biome;
 
 public final class Registries {
-    public static final Registry<BiFunction<Long, NbtCompound, BiomeProvider>> BIOME;
+    public static final Registry<TriFunction<Long, NbtCompound, net.minecraft.util.registry.Registry<Biome>, BiomeProvider>> BIOME;
     public static final Registry<BiFunction<WorldScreen, WorldSetting, Screen>> BIOME_SCREEN;
     public static final Registry<Supplier<NbtCompound>> BIOME_SETTINGS;
     public static final Registry<BiFunction<Long, NbtCompound, CaveBiomeProvider>> CAVE_BIOME;

@@ -11,6 +11,7 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
@@ -169,7 +170,11 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
     }
     
     @Override
-    protected void generateNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
+    protected void sampleNoiseColumn(Pair<double[], double[]> buffers, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
+        int bufferLen = buffers.getLeft().length;
+        double[] primaryBuffer = buffers.getLeft();
+        double[] heightmapBuffer = buffers.getRight();
+        
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
 
@@ -222,7 +227,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         double scale = scaleNoise;
         double depth = depthNoise;
         
-        for (int y = 0; y < buffer.length; ++y) {
+        for (int y = 0; y < bufferLen; ++y) {
             int noiseY = y + this.noiseMinY;
             
             // Var names taken from old customized preset names
@@ -284,15 +289,23 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
             }
             
             // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
-            double densityWithOffset = density - densityOffset; 
+            density -= densityOffset; 
+            
+            // Sample without noise caves
+            double heightmapDensity = density;
             
             // Sample for noise caves
-            densityWithOffset = this.sampleNoiseCave(densityWithOffset, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, noiseX, noiseY, noiseZ);
             
-            densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
-            densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);
+            // Apply slides
+            density = this.applyTopSlide(density, noiseY, 4);
+            density = this.applyBottomSlide(density, noiseY, -3);
             
-            buffer[y] = densityWithOffset;
+            heightmapDensity = this.applyTopSlide(heightmapDensity, noiseY, 4);
+            heightmapDensity = this.applyBottomSlide(heightmapDensity, noiseY, -3);
+            
+            primaryBuffer[y] = density;
+            heightmapBuffer[y] = heightmapDensity;
         }
     }
     

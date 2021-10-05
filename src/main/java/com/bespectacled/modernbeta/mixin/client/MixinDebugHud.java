@@ -7,8 +7,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -19,6 +22,7 @@ import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
@@ -40,19 +44,31 @@ public class MixinDebugHud {
             serverWorld = integratedServer.getWorld(this.client.world.getRegistryKey());
         }
         
-        if (serverWorld != null) {
+        if (serverWorld != null && ModernBeta.DEV_ENV) {
             ChunkGenerator chunkGenerator = serverWorld.getChunkManager().getChunkGenerator();
             BiomeSource biomeSource = chunkGenerator.getBiomeSource();
             
-            if (
-                biomeSource instanceof OldBiomeSource oldBiomeSource && 
+            if (biomeSource instanceof OldBiomeSource oldBiomeSource && 
                 oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler
             ) {
                 info.getReturnValue().add(
                     String.format(
-                        "Climate Temp: %.3f Rainfall: %.3f", 
+                        "[Modern Beta] Climate Temp: %.3f Rainfall: %.3f", 
                         climateSampler.sampleTemp(x, z), 
                         climateSampler.sampleRain(x, z)
+                    )
+                );
+            }
+            
+            if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
+                ChunkProvider chunkProvider = oldChunkGenerator.getChunkProvider();
+                
+                info.getReturnValue().add(
+                    String.format(
+                        "[Modern Beta] Chunk Provider WS height: %d OF height: %d Sea level: %d", 
+                        chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG, null),
+                        chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR, null),
+                        chunkProvider.getSeaLevel()
                     )
                 );
             }
