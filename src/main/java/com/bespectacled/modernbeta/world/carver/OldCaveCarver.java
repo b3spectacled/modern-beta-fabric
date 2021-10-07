@@ -392,10 +392,16 @@ public class OldCaveCarver extends CaveCarver {
                         continue;
                     }
 
+                    int lavaLevel = config.lavaLevel.getY(context);
                     Block block = chunk.getBlockState(blockPos.set(relX, relY, relZ)).getBlock();
 
                     // Second check is to avoid overlapping (and generating lava in) noise caves.
-                    if (block.equals(Blocks.WATER) || (block.equals(Blocks.AIR) && relY < config.lavaLevel.getY(context))) {
+                    if (block.equals(Blocks.WATER) || (block.equals(Blocks.AIR) && relY < lavaLevel)) {
+                        return true;
+                    }
+                    
+                    // Don't carve into lava aquifers that spawn above lava level.
+                    if (block.equals(Blocks.LAVA) && relY >= lavaLevel) {
                         return true;
                     }
 

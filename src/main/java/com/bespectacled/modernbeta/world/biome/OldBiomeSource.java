@@ -1,11 +1,8 @@
 package com.bespectacled.modernbeta.world.biome;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
@@ -28,7 +25,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 
@@ -143,6 +139,10 @@ public class OldBiomeSource extends BiomeSource {
     
     public BiomeProvider getBiomeProvider() {
         return this.biomeProvider;
+    }
+    
+    public CaveBiomeProvider getCaveBiomeProvider() {
+        return this.caveBiomeProvider;
     }
     
     public NbtCompound getBiomeSettings() {

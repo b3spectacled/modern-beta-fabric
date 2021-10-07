@@ -4,16 +4,16 @@ import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.biome.climate.CaveClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-
-import org.spongepowered.asm.mixin.injection.At;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -35,6 +35,7 @@ public class MixinDebugHud {
     private void injectGetLeftText(CallbackInfoReturnable<List<String>> info) {
         BlockPos pos = this.client.getCameraEntity().getBlockPos();
         int x = pos.getX();
+        int y = pos.getY();
         int z = pos.getZ();
         
         IntegratedServer integratedServer = this.client.getServer();
@@ -48,16 +49,23 @@ public class MixinDebugHud {
             ChunkGenerator chunkGenerator = serverWorld.getChunkManager().getChunkGenerator();
             BiomeSource biomeSource = chunkGenerator.getBiomeSource();
             
-            if (biomeSource instanceof OldBiomeSource oldBiomeSource && 
-                oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler
-            ) {
-                info.getReturnValue().add(
-                    String.format(
-                        "[Modern Beta] Climate Temp: %.3f Rainfall: %.3f", 
-                        climateSampler.sampleTemp(x, z), 
-                        climateSampler.sampleRain(x, z)
-                    )
-                );
+            if (biomeSource instanceof OldBiomeSource oldBiomeSource) {
+                if (oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler)
+                    info.getReturnValue().add(
+                        String.format(
+                            "[Modern Beta] Climate Temp: %.3f Rainfall: %.3f", 
+                            climateSampler.sampleTemp(x, z), 
+                            climateSampler.sampleRain(x, z)
+                        )
+                    );
+                
+                if (oldBiomeSource.getCaveBiomeProvider() instanceof CaveClimateSampler climateSampler)
+                    info.getReturnValue().add(
+                        String.format(
+                            "[Modern Beta] Cave Climate: %.3f", 
+                            climateSampler.sample(x >> 2, y >> 2, z >> 2)
+                        )
+                    );
             }
             
             if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {

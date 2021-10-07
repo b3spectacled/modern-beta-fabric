@@ -91,7 +91,7 @@ public class BiomeProviderSettings {
         settings.putString("seasonal_forest", BiomeKeys.DARK_FOREST.getValue().toString());
         settings.putString("swampland", BiomeKeys.SWAMP.getValue().toString());
         settings.putString("taiga", BiomeKeys.SNOWY_TAIGA.getValue().toString());
-        settings.putString("tundra", BiomeKeys.SNOWY_TUNDRA.getValue().toString());
+        settings.putString("tundra", BiomeKeys.SNOWY_PLAINS.getValue().toString());
         
         settings.putString("ocean", BiomeKeys.OCEAN.getValue().toString());
         settings.putString("cold_ocean", BiomeKeys.COLD_OCEAN.getValue().toString());

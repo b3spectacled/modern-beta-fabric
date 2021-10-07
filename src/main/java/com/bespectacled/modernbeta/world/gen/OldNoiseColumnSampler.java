@@ -7,6 +7,7 @@ import net.minecraft.world.biome.source.util.TerrainNoisePoint;
 import net.minecraft.world.gen.MultiNoiseParameters;
 import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
+import net.minecraft.world.gen.random.ChunkRandom;
 
 public class OldNoiseColumnSampler extends NoiseColumnSampler  {
     private static final int OCEAN_HEIGHT_OFFSET = -8;
@@ -21,9 +22,19 @@ public class OldNoiseColumnSampler extends NoiseColumnSampler  {
         MultiNoiseParameters multiNoiseParameters, 
         boolean hasNoiseCaves,
         long seed,
+        ChunkRandom.class_6675 randomType,
         ChunkProvider chunkProvider
     ) {
-        super(horizontalNoiseResolution, verticalNoiseResolution, noiseSizeY, generationShapeConfig, multiNoiseParameters, hasNoiseCaves, seed);
+        super(
+            horizontalNoiseResolution, 
+            verticalNoiseResolution, 
+            noiseSizeY, 
+            generationShapeConfig, 
+            multiNoiseParameters, 
+            hasNoiseCaves, 
+            seed,
+            randomType
+        );
         
         this.chunkProvider = chunkProvider;
     }

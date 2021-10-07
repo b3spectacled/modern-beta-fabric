@@ -26,6 +26,7 @@ import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.gen.MultiNoiseParameters;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.world.gen.random.ChunkRandom;
 
 public class OldChunkGeneratorSettings {
     public static final MultiNoiseParameters DEFAULT_MN_PARAMS = new MultiNoiseParameters(
@@ -45,6 +46,8 @@ public class OldChunkGeneratorSettings {
         new DoublePerlinNoiseSampler.NoiseParameters(-7, 1.0, 2.0, 1.0, 0.0, 0.0, 0.0), 
         new DoublePerlinNoiseSampler.NoiseParameters(-3, 1.0, 1.0, 1.0, 0.0)
     );
+    
+    public static final ChunkRandom.class_6675 RANDOM_TYPE = ChunkRandom.class_6675.LEGACY;
 
     public static final Identifier BETA;
     public static final Identifier ALPHA;
@@ -116,14 +119,14 @@ public class OldChunkGeneratorSettings {
         PE = ModernBeta.createId(BuiltInTypes.Chunk.PE.name);
 
         //BETA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, 0, false, true, true, true, true, true);
-        BETA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true);
-        ALPHA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.ALPHA_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true);
-        SKYLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.SKYLANDS_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.AIR, -10, -10, 0, false, false, false, false, true, true);
-        INFDEV_611_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_611_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true);
-        INFDEV_415_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_415_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true);
-        INFDEV_227_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 65, false, false, false, false, false, false);
-        INDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.INDEV_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, false, false, false, false, false);
-        BETA_ISLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true);
-        PE_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.PE_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true);
+        BETA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true, true);
+        ALPHA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.ALPHA_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true, true);
+        SKYLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.SKYLANDS_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.AIR, -10, -10, 0, false, false, false, false, true, true, true);
+        INFDEV_611_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_611_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true, true);
+        INFDEV_415_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_415_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true, true);
+        INFDEV_227_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 65, false, false, false, false, false, false, true);
+        INDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.INDEV_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, false, false, false, false, false, true);
+        BETA_ISLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true, true);
+        PE_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.PE_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true, true);
     }
 }

@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkStatus;
 
 public class BetaChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -329,7 +330,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
             double heightmapDensity = density;
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(density, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, 170.0, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applyTopSlide(density, noiseY, 4);
@@ -350,5 +351,13 @@ public class BetaChunkProvider extends NoiseChunkProvider {
             offset *= 4D;
         
         return offset;
+    }
+    
+    @Override
+    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
+        //if (chunkStatus == ChunkStatus.SURFACE)
+        //    return true;
+        
+        return false;
     }
 } 

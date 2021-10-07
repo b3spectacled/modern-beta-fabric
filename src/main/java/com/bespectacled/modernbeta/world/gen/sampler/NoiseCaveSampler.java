@@ -5,7 +5,7 @@ import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.world.gen.NoiseHelper;
 import net.minecraft.world.gen.random.AbstractRandom;
 
-public class NoiseCaveSampler implements WeightSampler {
+public class NoiseCaveSampler {
     private final int minY;
     private final DoublePerlinNoiseSampler terrainAdditionNoise;
     private final DoublePerlinNoiseSampler pillarNoise;
@@ -44,7 +44,7 @@ public class NoiseCaveSampler implements WeightSampler {
         this.offsetNoise = DoublePerlinNoiseSampler.create(random.derive(), -5, 1.0);
         this.offsetScaleNoise = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0);
         
-        this.caveOpeningNoise = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0, 1.0, 1.0);
+        this.caveOpeningNoise = DoublePerlinNoiseSampler.create(random.derive(), -7, 0.4, 0.5, 1.0);
         
         this.terrainAdditionNoise = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0);
         this.caveDensityNoise = DoublePerlinNoiseSampler.create(random.derive(), -8, 0.5, 1.0, 2.0, 1.0, 2.0, 1.0, 0.0, 2.0, 0.0);
@@ -52,17 +52,20 @@ public class NoiseCaveSampler implements WeightSampler {
         this.minY = minY;
     }
 
-    public double sample(double weight, int x, int y, int z) {
+    public double sample(double weight, double tunnelThreshold, int x, int y, int z) {
         // Weight decreases at higher y, 
         // so past a certain point, place only tunnels.
-        boolean genTunnelsOnly = weight < 170.0;
+        boolean genTunnelsOnly = weight < tunnelThreshold;
         
-        //weight = this.getCaveOpeningNoise(weight, x, y, z);
+        double caveOpeningNoise = this.getCaveOpeningNoise(x, y, z);
         double tunnelOffsetNoise = this.getTunnelOffsetNoise(x, y, z);
         double tunnelNoise = this.getTunnelNoise(x, y, z);
         
+        double openingNoise = Math.min(caveOpeningNoise, tunnelNoise + tunnelOffsetNoise);
+        //double openingNoise = tunnelNoise + tunnelOffsetNoise;
+        
         if (genTunnelsOnly) {
-            return Math.min(weight, (tunnelNoise + tunnelOffsetNoise) * 128.0 * 5.0);
+            return Math.max(Math.min(weight, openingNoise * 128.0 * 5.0), -200.0);
         }
         
         double caveDensityNoise = this.caveDensityNoise.sample(x, (double)y / 1.5, z);
@@ -81,15 +84,11 @@ public class NoiseCaveSampler implements WeightSampler {
         return 128.0 * MathHelper.clamp(caveOrPillerSelector, -1.0, 1.0);
     }
     
-    private double getCaveOpeningNoise(double weight, int x, int y, int z) {
-        double caveOpeningNoise = this.caveOpeningNoise.sample(x * 2, y, z * 2);
-        caveOpeningNoise = NoiseHelper.method_35479(caveOpeningNoise, 1.0);
-        double f = (double)(y - 0) / 40.0;
+    private double getCaveOpeningNoise(int x, int y, int z) {
+        double caveOpeningNoise = this.caveOpeningNoise.sample(x * 0.75, y * 0.5, z * 0.75) + 0.37;
+        double deltaY = (y + 10) / 40.0;
         
-        caveOpeningNoise += MathHelper.clampedLerp(0.5, weight, f);
-        caveOpeningNoise = 4.0 * caveOpeningNoise + 3.0;
-        
-        return Math.min(weight, caveOpeningNoise);
+        return caveOpeningNoise + MathHelper.clampedLerp(0.3, 0.0, deltaY);
     }
 
     private double getPillarNoise(int x, int y, int z) {

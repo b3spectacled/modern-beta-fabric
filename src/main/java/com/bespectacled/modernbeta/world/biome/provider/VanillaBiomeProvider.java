@@ -21,6 +21,7 @@ import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.biome.source.util.VanillaBiomeParameters;
 import net.minecraft.world.gen.NoiseColumnSampler;
+import net.minecraft.world.gen.random.ChunkRandom;
 
 public class VanillaBiomeProvider extends BiomeProvider {
     private MultiNoiseBiomeSource biomeSource;
@@ -58,8 +59,9 @@ public class VanillaBiomeProvider extends BiomeProvider {
             MathHelper.floorDiv(192, 8), 
             OldGeneratorConfig.BETA_SHAPE_CONFIG, 
             OldChunkGeneratorSettings.VANILLA_MN_PARAMS, 
-            false, 
-            seed
+            false,
+            seed,
+            ChunkRandom.class_6675.XOROSHIRO
         );
     }
 

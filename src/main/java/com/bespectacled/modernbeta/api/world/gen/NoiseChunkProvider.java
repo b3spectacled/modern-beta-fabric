@@ -87,8 +87,9 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final DoublePerlinNoiseSampler fluidLevelNoise;
     protected final DoublePerlinNoiseSampler fluidTypeNoise;
     protected final BlockPosRandomDeriver blockPosRandomDeriver;
+    protected final DoublePerlinNoiseSampler fluidTypeLevelNoise;
     
-    protected final WeightSampler noiseCaveSampler;
+    protected final NoiseCaveSampler noiseCaveSampler;
     protected final OreVeinSampler oreVeinSampler;
     protected final NoodleCaveSampler noodleCaveSampler;
     
@@ -218,9 +219,10 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         // Aquifer Samplers
         this.edgeDensityNoise = DoublePerlinNoiseSampler.create(genRandom.derive(), -3, 1.0);
-        this.fluidLevelNoise = DoublePerlinNoiseSampler.create(genRandom.derive(), -3, 0.2, 2.0, 1.0);
+        this.fluidLevelNoise = DoublePerlinNoiseSampler.create(genRandom.derive(), -7, 1.0);
         this.fluidTypeNoise = DoublePerlinNoiseSampler.create(genRandom.derive(), -1, 1.0, 0.0);
         this.blockPosRandomDeriver = genRandom.createBlockPosRandomDeriver();
+        this.fluidTypeLevelNoise = DoublePerlinNoiseSampler.create(genRandom.derive(), -4, 1.0);
 
         // Modified NoiseColumnSampler
         this.noiseColumnSampler = new OldNoiseColumnSampler(
@@ -231,17 +233,18 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.chunkGenerator.getGeneratorSettings().get().getMultiNoiseParameters(),
             this.generateNoiseCaves,
             this.seed,
+            this.generatorSettings.get().method_38999(),
             this
         );
         
         // Samplers
-        this.noiseCaveSampler = this.generateNoiseCaves ? new NoiseCaveSampler(simpleRandom, this.noiseMinY) : WeightSampler.DEFAULT;
+        this.noiseCaveSampler = new NoiseCaveSampler(simpleRandom, this.noiseMinY);
         this.oreVeinSampler = new OreVeinSampler(simpleRandom, this.horizontalNoiseResolution, this.verticalNoiseResolution);
         this.noodleCaveSampler = new NoodleCaveSampler(simpleRandom, this.horizontalNoiseResolution, this.verticalNoiseResolution);
         
         // Block Source
         AtomicSimpleRandom atomicSimpleRandom = new AtomicSimpleRandom(seed);
-        this.deepslateSource = new DeepslateBlockSource(atomicSimpleRandom.createBlockPosRandomDeriver(), BlockStates.DEEPSLATE);
+        this.deepslateSource = new DeepslateBlockSource(atomicSimpleRandom.createBlockPosRandomDeriver(), BlockStates.DEEPSLATE, null, -8, 0);
     
         // Dummy ChunkNoiseSampler
         this.dummyNoiseChunkSampler = new OldChunkNoiseSampler(
@@ -343,10 +346,11 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * 
      * @return Modified noise density.
      */
-    protected double sampleNoiseCave(double noise, int noiseX, int noiseY, int noiseZ) {
+    protected double sampleNoiseCave(double noise, double tunnelThreshold, int noiseX, int noiseY, int noiseZ) {
         if (this.noiseCaveSampler != null) {
             return this.noiseCaveSampler.sample(
                 noise,
+                tunnelThreshold,
                 noiseX * this.horizontalNoiseResolution, 
                 noiseY * this.verticalNoiseResolution, 
                 noiseZ * this.horizontalNoiseResolution
@@ -726,7 +730,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.dummyNoiseChunkSampler, 
             chunkPos, 
             this.edgeDensityNoise, 
-            this.fluidLevelNoise, 
+            this.fluidLevelNoise,
+            this.fluidTypeLevelNoise,
             this.fluidTypeNoise, 
             this.blockPosRandomDeriver, 
             this.noiseColumnSampler, 

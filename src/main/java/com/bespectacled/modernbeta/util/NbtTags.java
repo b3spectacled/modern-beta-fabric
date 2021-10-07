@@ -44,4 +44,7 @@ public class NbtTags {
     
     /* Cave Biome Settings */
     public static final String CAVE_BIOME_TYPE = "biomeType";
+    
+    // Cave Noise
+    public static final String USE_CAVE_NOISE = "useCaveNoise";
 }

@@ -14,30 +14,22 @@ public class ConfigCompat implements ConfigData {
     public List<String> biomesWithCustomSurfaces = Arrays.asList(
         // Badlands
         BiomeKeys.BADLANDS.getValue().toString(),
-        BiomeKeys.BADLANDS_PLATEAU.getValue().toString(),
+        BiomeKeys.WOODED_BADLANDS.getValue().toString(),
         BiomeKeys.ERODED_BADLANDS.getValue().toString(),
-        BiomeKeys.MODIFIED_BADLANDS_PLATEAU.getValue().toString(),
-        BiomeKeys.MODIFIED_WOODED_BADLANDS_PLATEAU.getValue().toString(),
-        BiomeKeys.WOODED_BADLANDS_PLATEAU.getValue().toString(),
         
         // Mountains
-        BiomeKeys.MOUNTAINS.getValue().toString(),
-        BiomeKeys.GRAVELLY_MOUNTAINS.getValue().toString(),
-        BiomeKeys.MODIFIED_GRAVELLY_MOUNTAINS.getValue().toString(),
+        BiomeKeys.WINDSWEPT_HILLS.getValue().toString(),
+        BiomeKeys.WINDSWEPT_GRAVELLY_HILLS.getValue().toString(),
         
         // Giant Taigas
-        BiomeKeys.GIANT_TREE_TAIGA.getValue().toString(),
-        BiomeKeys.GIANT_TREE_TAIGA_HILLS.getValue().toString(),
-        BiomeKeys.GIANT_SPRUCE_TAIGA.getValue().toString(),
-        BiomeKeys.GIANT_SPRUCE_TAIGA_HILLS.getValue().toString(),
+        BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA.getValue().toString(),
+        BiomeKeys.OLD_GROWTH_PINE_TAIGA.getValue().toString(),
         
         // Savanna
-        BiomeKeys.SHATTERED_SAVANNA.getValue().toString(),
-        BiomeKeys.SHATTERED_SAVANNA_PLATEAU.getValue().toString(),
+        BiomeKeys.WINDSWEPT_SAVANNA.getValue().toString(),
         
         // Swamp
         BiomeKeys.SWAMP.getValue().toString(),
-        BiomeKeys.SWAMP_HILLS.getValue().toString(),
         
         // Nether
         BiomeKeys.NETHER_WASTES.getValue().toString(),

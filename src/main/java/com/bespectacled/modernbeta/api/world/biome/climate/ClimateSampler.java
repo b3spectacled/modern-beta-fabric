@@ -31,7 +31,7 @@ public interface ClimateSampler {
     /**
      * Indicate to block colors whether to sample climate values for biome tinting.
      * 
-     * @return Supplier for whether to use climate values for biome tinting.
+     * @return Whether to use climate values for biome tinting.
      */
     default boolean sampleBiomeColor() {
         return false;

@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.config;
 
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import net.minecraft.world.biome.BiomeKeys;

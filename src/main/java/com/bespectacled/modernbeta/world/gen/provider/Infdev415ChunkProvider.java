@@ -13,7 +13,6 @@ import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -185,16 +184,12 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                     noiseZ * coordinateScale
                 ) / limitScale - densityOffset;
                 
-                density = this.clampNoise(density);
-                
             } else if (mainNoiseVal > 1.0) {
                 density = this.maxLimitNoiseOctaves.sample(
                     noiseX * coordinateScale, 
                     noiseY * heightScale, 
                     noiseZ * coordinateScale
                 ) / limitScale - densityOffset;
-                
-                density = this.clampNoise(density);
                 
             } else {
                 double minLimitVal = this.minLimitNoiseOctaves.sample(
@@ -207,10 +202,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                     noiseX * coordinateScale, 
                     noiseY * heightScale, 
                     noiseZ * coordinateScale
-                ) / limitScale - densityOffset;     
-
-                minLimitVal = this.clampNoise(minLimitVal);
-                maxLimitVal = this.clampNoise(maxLimitVal);
+                ) / limitScale - densityOffset;
                                 
                 double delta = (mainNoiseVal + 1.0) / 2.0;
                 density = minLimitVal + (maxLimitVal - minLimitVal) * delta;
@@ -220,7 +212,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             double heightmapDensity = density;
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(density, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, 8.5, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applyBottomSlide(density, noiseY, -3);
@@ -229,13 +221,6 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             primaryBuffer[y] = density;
             heightmapBuffer[y] = heightmapDensity;
         }
-    }
-    
-    private double clampNoise(double density) {
-        if (!this.generateNoiseCaves)
-            density = MathHelper.clamp(density, -10D, 10D);
-        
-        return density;
     }
     
     private double getOffset(int noiseY) {

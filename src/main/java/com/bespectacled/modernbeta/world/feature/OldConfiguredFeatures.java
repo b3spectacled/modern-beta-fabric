@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.world.feature;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.world.decorator.CountOldNoiseDecoratorConfig;
@@ -58,10 +57,7 @@ public class OldConfiguredFeatures {
             return new RandomPatchFeatureConfig(
                 tries, 
                 XZ_SPREAD, 
-                Y_SPREAD, 
-                Set.of(), 
-                Set.of(), 
-                false, 
+                Y_SPREAD,
                 () -> Feature.SIMPLE_BLOCK.configure(new SimpleBlockFeatureConfig(blockStateProvider)).method_38872()
             );
         }

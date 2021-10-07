@@ -26,15 +26,15 @@ public class PEClimateSampler implements ClimateSampler, SkyClimateSampler {
         
         this.climateCache = new ChunkCache<>(
             "climate", 
-            1536, 
-            true, 
+            1536,
+            true,
             (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::sampleClimateNoise)
         );
         
         this.skyClimateCache = new ChunkCache<>(
-            "sky", 
-            256, 
-            true, 
+            "sky",
+            256,
+            true,
             (chunkX, chunkZ) -> new SkyClimateChunk(chunkX, chunkZ, this::sampleSkyTempNoise)
         );
     }

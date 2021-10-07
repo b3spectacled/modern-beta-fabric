@@ -24,7 +24,8 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.BlockColumn;
-import net.minecraft.world.gen.random.ChunkRandom;
+import net.minecraft.world.gen.random.AbstractRandom;
+import net.minecraft.world.gen.random.AtomicSimpleRandom;
 
 public abstract class BaseChunkProvider extends ChunkProvider {
     // Set for specifying which biomes should use their vanilla surface builders.
@@ -88,10 +89,17 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         this.defaultBlock = defaultBlock;
         this.defaultFluid = defaultFluid;
         
+        // Randoms
+        boolean useLegacyRandom = this.generatorSettings.get().getGenerationShapeConfig().method_38413();
+        AtomicSimpleRandom simpleRandom = new AtomicSimpleRandom(seed);
+        AtomicSimpleRandom legacyRandom = new AtomicSimpleRandom(seed);
+        
+        AbstractRandom genRandom = useLegacyRandom ? legacyRandom : simpleRandom.derive();
+        
         // Surface noise sampler
         this.surfaceDepthNoise = this.generatorSettings.get().getGenerationShapeConfig().hasSimplexSurfaceNoise() ? 
-            new OctaveSimplexNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0)) : 
-            new OctavePerlinNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
+            new OctaveSimplexNoiseSampler(genRandom, IntStream.rangeClosed(-3, 0)) : 
+            new OctavePerlinNoiseSampler(genRandom, IntStream.rangeClosed(-3, 0));
         
         this.rand = new Random(seed);
         

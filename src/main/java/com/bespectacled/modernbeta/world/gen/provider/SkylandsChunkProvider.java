@@ -194,7 +194,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             double heightmapDensity = density;
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(density, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, 170.0, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applyTopSlide(density, noiseY, this.noiseSizeY);

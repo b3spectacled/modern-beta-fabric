@@ -38,6 +38,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
@@ -182,6 +183,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
+    public void generateFeatures(StructureWorldAccess world, ChunkPos pos, StructureAccessor structureAccessor) {
+        if (this.chunkProvider.skipChunk(pos.x, pos.z, ChunkStatus.FEATURES)) 
+            return;
+        
+        super.generateFeatures(world, pos, structureAccessor);
+    }
+    
+    @Override
     public int getHeight(int x, int z, Heightmap.Type type, HeightLimitView world) {
         return this.chunkProvider.getHeight(x, z, type, world);
     }
@@ -235,6 +244,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public int getMinimumY() {
+        if (this.chunkProvider == null)
+            return this.getGeneratorSettings().get().getGenerationShapeConfig().getMinimumY();
+        
         return this.chunkProvider.getMinimumY();
     }
 
@@ -387,7 +399,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                             // Replace with cave or ocean biomes
                             if (y + caveStartOffset < topY && y > caveLowerCutoff) {
                                 biome = oldBiomeSource.getCaveBiome(biomeX + biomeStartX, biomeY + yOffset, biomeZ + biomeStartZ);
-                            } else if (hasOcean) {
+                            } 
+                            
+                            if (biome == null && hasOcean) {
                                 biome = oldBiomeSource.getOceanBiome(biomeX + biomeStartX, 0, biomeZ + biomeStartZ);
                             }
                             

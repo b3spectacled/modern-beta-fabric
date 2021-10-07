@@ -8,7 +8,6 @@ import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.NoiseHelper;
 import net.minecraft.world.gen.random.AbstractRandom;
-import net.minecraft.world.gen.random.AtomicSimpleRandom;
 import net.minecraft.world.gen.random.BlockPosRandomDeriver;
 
 public class OreVeinSampler {
@@ -68,7 +67,7 @@ public class OreVeinSampler {
     
     @SuppressWarnings("unused")
     public BlockState sample(int x, int y, int z, double oreFrequencyNoise, double firstOrePlacementNoise, double secondOrePlacementNoise) {
-        AtomicSimpleRandom random = this.orePosRandomDeriver.createRandom(x, y, z);
+        AbstractRandom random = this.orePosRandomDeriver.createRandom(x, y, z);
         
         NoiseColumnSampler.VeinType veinType = this.getVeinType(oreFrequencyNoise, y);
         

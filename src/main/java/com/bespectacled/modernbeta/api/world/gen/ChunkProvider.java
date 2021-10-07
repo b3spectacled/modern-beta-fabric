@@ -103,17 +103,17 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
     }
     
     /**
-     * @return Minimum Y coordinate in block coordinates. 0 by default.
+     * @return Minimum Y coordinate in block coordinates.
      */
     public int getMinimumY() {
-        return 0;
+        return this.generatorSettings.get().getGenerationShapeConfig().getMinimumY();
     }
     
     /**
-     * @return World sea level in block coordinates. 64 by default.
+     * @return World sea level in block coordinates.
      */
     public int getSeaLevel() {
-        return 64;
+        return this.generatorSettings.get().getSeaLevel();
     }
     
     /**
