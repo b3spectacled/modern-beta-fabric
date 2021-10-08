@@ -19,6 +19,7 @@ import net.minecraft.world.gen.YOffset;
 import net.minecraft.world.gen.decorator.ConfiguredDecorator;
 import net.minecraft.world.gen.decorator.CountExtraDecoratorConfig;
 import net.minecraft.world.gen.decorator.Decorator;
+import net.minecraft.world.gen.decorator.HeightmapDecoratorConfig;
 import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
 import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -34,10 +35,14 @@ import net.minecraft.world.gen.heightprovider.UniformHeightProvider;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 import net.minecraft.world.gen.stateprovider.SimpleBlockStateProvider;
 import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider;
+import net.minecraft.world.Heightmap;
 
 public class OldConfiguredFeatures {
     private static final class OldConfiguredDecorators {
         public static final ConfiguredDecorator<?> SPREAD_32_ABOVE = OldDecorators.SPREAD_32_ABOVE.configure(NopeDecoratorConfig.INSTANCE);
+        
+        public static final ConfiguredDecorator<HeightmapDecoratorConfig> HEIGHTMAP_SPREAD_DOUBLE = OldDecorators.HEIGHTMAP_SPREAD_DOUBLE.configure(new HeightmapDecoratorConfig(Heightmap.Type.MOTION_BLOCKING));
+        public static final ConfiguredDecorator<?> SQUARE_HEIGHTMAP_SPREAD_DOUBLE = HEIGHTMAP_SPREAD_DOUBLE.spreadHorizontally();
     }
     
     private static final class OldRandomPatchConfigs {
@@ -89,8 +94,8 @@ public class OldConfiguredFeatures {
     public static final ConfiguredFeature<?, ?> ORE_EMERALD_Y95 = register("ore_emerald_y95", Feature.SCATTERED_ORE.configure(new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, Blocks.EMERALD_ORE.getDefaultState(), 8)).decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(UniformHeightProvider.create(YOffset.fixed(95), YOffset.fixed(256))))).spreadHorizontally().repeat(11));
     
     // Shrubs
-    public static final ConfiguredFeature<?, ?> PATCH_CACTUS_ALPHA = register("patch_cactus", ConfiguredFeatures.PATCH_CACTUS.decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(1));
-    public static final ConfiguredFeature<?, ?> PATCH_CACTUS_PE = register("patch_cactus_pe", ConfiguredFeatures.PATCH_CACTUS.decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(5));
+    public static final ConfiguredFeature<?, ?> PATCH_CACTUS_ALPHA = register("patch_cactus", ConfiguredFeatures.PATCH_CACTUS.decorate(OldConfiguredDecorators.SQUARE_HEIGHTMAP_SPREAD_DOUBLE).repeat(1));
+    public static final ConfiguredFeature<?, ?> PATCH_CACTUS_PE = register("patch_cactus_pe", ConfiguredFeatures.PATCH_CACTUS.decorate(OldConfiguredDecorators.SQUARE_HEIGHTMAP_SPREAD_DOUBLE).repeat(5));
     public static final ConfiguredFeature<?, ?> MUSHROOM_HELL = register("mushroom_hell", Feature.FLOWER.configure(OldRandomPatchConfigs.MUSHROOM_HELL).decorate(OldConfiguredDecorators.SPREAD_32_ABOVE).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(2));
 
     // Flowers
