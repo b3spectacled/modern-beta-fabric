@@ -1,6 +1,8 @@
 package com.bespectacled.modernbeta.world.gen;
 
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
+import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.source.util.TerrainNoisePoint;
@@ -49,7 +51,10 @@ public class OldNoiseColumnSampler extends NoiseColumnSampler  {
      */
     @Override
     protected int method_38383(int x, int z, TerrainNoisePoint terrainNoisePoint) {
-        int height = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
+        int height = (this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) ?
+            noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
+            this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
+        
         int seaLevel = this.chunkProvider.getSeaLevel();
         
         // Fudge deeper oceans when at a body of water

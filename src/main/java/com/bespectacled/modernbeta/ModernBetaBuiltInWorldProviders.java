@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.world;
+package com.bespectacled.modernbeta;
 
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
@@ -8,7 +8,7 @@ import com.bespectacled.modernbeta.world.biome.inf.InfBiomes;
 import com.bespectacled.modernbeta.world.biome.pe.PEBiomes;
 import com.bespectacled.modernbeta.world.gen.OldChunkGeneratorSettings;
 
-public class BuiltInWorldProviders {
+public class ModernBetaBuiltInWorldProviders {
     public static final WorldProvider DEFAULT;
     public static final WorldProvider BETA;
     public static final WorldProvider SKYLANDS;

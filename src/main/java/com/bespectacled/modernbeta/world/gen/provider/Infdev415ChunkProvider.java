@@ -60,6 +60,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
 
         AquiferSampler aquiferSampler = this.createAquiferSampler(this.noiseMinY, this.noiseTopY, chunkPos);
+        HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
         
         for (int localX = 0; localX < 16; ++localX) {
             for (int localZ = 0; localZ < 16; ++localZ) {
@@ -67,7 +68,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 int z = (chunkZ << 4) + localZ;
                 int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
                 int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 
-                    this.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
+                    heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
                     this.minY;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(
@@ -96,10 +97,11 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
                 
                 for (int y = this.worldTopY - 1; y >= this.minY; --y) {
+                    mutable.set(localX, y, localZ);
                     
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= bedrockFloor + rand.nextInt(5)) {
-                        chunk.setBlockState(mutable.set(localX, y, localZ), Blocks.BEDROCK.getDefaultState(), false);
+                        chunk.setBlockState(mutable, Blocks.BEDROCK.getDefaultState(), false);
                         continue;
                     }
                     
@@ -113,7 +115,6 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
                     
-                    mutable.set(localX, y, localZ);
                     BlockState blockState = chunk.getBlockState(mutable);
                     
                     if (blockState.equals(BlockStates.AIR)) {
@@ -140,19 +141,20 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                                 }
                             }
                             
-                            if (y < this.seaLevel && topBlock.equals(BlockStates.AIR)) {
-                                BlockState fluidBlock = aquiferSampler.apply(x, y, z, 0.0, 0.0);
-                                
-                                topBlock = fluidBlock == null ? BlockStates.AIR : fluidBlock;
-                            }
-                            
                             flag = surfaceDepth;
                             
-                            if (y >= this.seaLevel - 1) {
-                                chunk.setBlockState(mutable, topBlock, false);
-                            } else {
-                                chunk.setBlockState(mutable, fillerBlock, false);
+                            if (y < this.seaLevel && topBlock.isAir()) { // Generate water bodies
+                                BlockState fluidBlock = aquiferSampler.apply(x, y, z, 0.0, 0.0);
+                                
+                                boolean isAir = fluidBlock == null;
+                                topBlock = isAir ? BlockStates.AIR : fluidBlock;
                             }
+                            
+                            blockState = (y >= this.seaLevel - 1) ? 
+                                topBlock : 
+                                fillerBlock;
+                            
+                            chunk.setBlockState(mutable, blockState, false);
                             
                         } else if (flag > 0) {
                             --flag;

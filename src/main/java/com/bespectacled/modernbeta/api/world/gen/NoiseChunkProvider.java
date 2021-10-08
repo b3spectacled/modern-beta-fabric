@@ -443,6 +443,10 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.fluidLevelSampler
         );
     }
+    
+    protected HeightmapChunk getHeightmapChunk(int chunkX, int chunkZ) {
+        return this.heightmapChunkCache.get(chunkX, chunkZ);
+    }
 
     /**
      * Generates the base terrain for a given chunk.
@@ -616,7 +620,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 
                                 // Capture lowest solid block height.
                                 if (density <= 0.0 && heightmapSurfaceFloor[ndx] == Short.MIN_VALUE) {
-                                    heightmapSurfaceFloor[ndx] = height;
+                                    heightmapSurfaceFloor[ndx] = (short)(height - 1);
                                 }
                             }
                         }

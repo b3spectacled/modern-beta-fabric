@@ -9,13 +9,13 @@ import com.bespectacled.modernbeta.client.gui.screen.world.IndevWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.InfWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.Infdev227WorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.IslandWorldScreen;
-import com.bespectacled.modernbeta.world.BuiltInWorldProviders;
 import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.PEBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.NoCaveBiomeProvider;
 import com.bespectacled.modernbeta.world.cavebiome.provider.SingleCaveBiomeProvider;
+import com.bespectacled.modernbeta.world.cavebiome.provider.RangeCaveBiomeProvider;
 import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.provider.AlphaChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.BetaChunkProvider;
@@ -87,6 +87,7 @@ public class ModernBetaBuiltInProviders {
         Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.NONE.name, NoCaveBiomeProvider::new);
         //Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.BETA.name, BetaCaveBiomeProvider::new);
         Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.SINGLE.name, SingleCaveBiomeProvider::new);
+        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.RANGE.name, RangeCaveBiomeProvider::new);
         //Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.VANILLA.name, VanillaCaveBiomeProvider::new);
         
     }
@@ -119,15 +120,15 @@ public class ModernBetaBuiltInProviders {
     
     // Register default world providers
     public static void registerWorldProviders() {
-        Registries.WORLD.register(BuiltInTypes.DEFAULT_ID, BuiltInWorldProviders.DEFAULT);
-        Registries.WORLD.register(BuiltInTypes.Chunk.BETA.name, BuiltInWorldProviders.BETA);
-        Registries.WORLD.register(BuiltInTypes.Chunk.SKYLANDS.name, BuiltInWorldProviders.SKYLANDS);
-        Registries.WORLD.register(BuiltInTypes.Chunk.ALPHA.name, BuiltInWorldProviders.ALPHA);
-        Registries.WORLD.register(BuiltInTypes.Chunk.INFDEV_611.name, BuiltInWorldProviders.INFDEV_611);
-        Registries.WORLD.register(BuiltInTypes.Chunk.INFDEV_415.name, BuiltInWorldProviders.INFDEV_415);
-        Registries.WORLD.register(BuiltInTypes.Chunk.INFDEV_227.name, BuiltInWorldProviders.INFDEV_227);
-        Registries.WORLD.register(BuiltInTypes.Chunk.INDEV.name, BuiltInWorldProviders.INDEV);
-        Registries.WORLD.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, BuiltInWorldProviders.BETA_ISLANDS);
-        Registries.WORLD.register(BuiltInTypes.Chunk.PE.name, BuiltInWorldProviders.PE);
+        Registries.WORLD.register(BuiltInTypes.DEFAULT_ID, ModernBetaBuiltInWorldProviders.DEFAULT);
+        Registries.WORLD.register(BuiltInTypes.Chunk.BETA.name, ModernBetaBuiltInWorldProviders.BETA);
+        Registries.WORLD.register(BuiltInTypes.Chunk.SKYLANDS.name, ModernBetaBuiltInWorldProviders.SKYLANDS);
+        Registries.WORLD.register(BuiltInTypes.Chunk.ALPHA.name, ModernBetaBuiltInWorldProviders.ALPHA);
+        Registries.WORLD.register(BuiltInTypes.Chunk.INFDEV_611.name, ModernBetaBuiltInWorldProviders.INFDEV_611);
+        Registries.WORLD.register(BuiltInTypes.Chunk.INFDEV_415.name, ModernBetaBuiltInWorldProviders.INFDEV_415);
+        Registries.WORLD.register(BuiltInTypes.Chunk.INFDEV_227.name, ModernBetaBuiltInWorldProviders.INFDEV_227);
+        Registries.WORLD.register(BuiltInTypes.Chunk.INDEV.name, ModernBetaBuiltInWorldProviders.INDEV);
+        Registries.WORLD.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, ModernBetaBuiltInWorldProviders.BETA_ISLANDS);
+        Registries.WORLD.register(BuiltInTypes.Chunk.PE.name, ModernBetaBuiltInWorldProviders.PE);
     }
 }

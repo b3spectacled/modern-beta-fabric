@@ -70,6 +70,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         surfaceNoiseOctaves.sampleArr(surfaceNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
 
         AquiferSampler aquiferSampler = this.createAquiferSampler(this.noiseMinY, this.noiseTopY, chunkPos);
+        HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
         
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.
@@ -79,7 +80,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                 int z = (chunkZ << 4) + localZ;
                 int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
                 int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 
-                    this.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
+                    heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
                     this.minY;
                 
                 boolean genSandBeach = sandNoise[localX + localZ * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
@@ -100,10 +101,11 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.minY; y--) {
+                    mutable.set(localX, y, localZ);
 
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= bedrockFloor + rand.nextInt(6) - 1) {
-                        chunk.setBlockState(mutable.set(localX, y, localZ), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable, BlockStates.BEDROCK, false);
                         continue;
                     }
                     
@@ -113,7 +115,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                     // since the game checks all adjacent blocks for a particular position,
                     // even if the downward direction is below the world limit!!
                     if (y <= this.minY) {
-                        chunk.setBlockState(mutable.set(localX, y, localZ), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable, BlockStates.BEDROCK, false);
                         continue;
                     }
                     
@@ -127,7 +129,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
 
-                    BlockState blockState = chunk.getBlockState(mutable.set(localX, y, localZ));
+                    BlockState blockState = chunk.getBlockState(mutable);
 
                     if (blockState.equals(BlockStates.AIR)) { // Skip if air block
                         flag = -1;
@@ -158,26 +160,27 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                             }
                         }
 
-                        if (y < this.seaLevel && topBlock.equals(BlockStates.AIR)) {
+                        flag = surfaceDepth;
+                        
+                        if (y < this.seaLevel && topBlock.isAir()) { // Generate water bodies
                             BlockState fluidBlock = aquiferSampler.apply(x, y, z, 0.0, 0.0);
                             
-                            topBlock = fluidBlock == null ? BlockStates.AIR : fluidBlock;
+                            boolean isAir = fluidBlock == null;
+                            topBlock = isAir ? BlockStates.AIR : fluidBlock;
                         }
-
-                        // Main surface builder section
-                        flag = surfaceDepth;
-                        if (y >= this.seaLevel - 1) {
-                            chunk.setBlockState(mutable.set(localX, y, localZ), topBlock, false);
-                        } else {
-                            chunk.setBlockState(mutable.set(localX, y, localZ), fillerBlock, false);
-                        }
+                        
+                        blockState = (y >= this.seaLevel - 1) ? 
+                            topBlock : 
+                            fillerBlock;
+                        
+                        chunk.setBlockState(mutable, blockState, false); 
 
                         continue;
                     }
                     
                     if (flag > 0) { 
                         flag--;
-                        chunk.setBlockState(mutable.set(localX, y, localZ), fillerBlock, false);
+                        chunk.setBlockState(mutable, fillerBlock, false);
                     }
                 }
             }

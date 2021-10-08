@@ -76,12 +76,14 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.minY; y--) {
+                    mutable.set(localX, y, localZ);
+                    
                     // Skip if used custom surface generation or if below minimum surface level.
                     if (usedCustomSurface) {
                         continue;
                     }
                     
-                    BlockState blockState = chunk.getBlockState(mutable.set(localX, y, localZ));
+                    BlockState blockState = chunk.getBlockState(mutable);
                     
                     if (blockState.equals(BlockStates.AIR)) { // Skip if air block
                         flag = -1;
@@ -99,11 +101,12 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                         }
 
                         flag = surfaceDepth;
-                        if (y >= 0) {
-                            chunk.setBlockState(mutable.set(localX, y, localZ), topBlock, false);
-                        } else {
-                            chunk.setBlockState(mutable.set(localX, y, localZ), fillerBlock, false);
-                        }
+                        
+                        blockState = (y >= 0) ? 
+                            topBlock : 
+                            fillerBlock;
+                        
+                        chunk.setBlockState(mutable, blockState, false);
 
                         continue;
                     }
@@ -113,7 +116,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                     }
 
                     flag--;
-                    chunk.setBlockState(mutable.set(localX, y, localZ), fillerBlock, false);
+                    chunk.setBlockState(mutable, fillerBlock, false);
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
                     if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {

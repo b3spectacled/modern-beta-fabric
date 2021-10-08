@@ -12,6 +12,8 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.climate.CaveClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
+import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
@@ -79,6 +81,15 @@ public class MixinDebugHud {
                         chunkProvider.getSeaLevel()
                     )
                 );
+                
+                if (chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) {
+                    info.getReturnValue().add(
+                        String.format(
+                            "[Modern Beta] Noise Chunk Provider WSF height: %d", 
+                            noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR)
+                        )
+                    );
+                }
             }
         }
     }

@@ -17,6 +17,7 @@ import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -119,6 +120,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         );
         
         AquiferSampler aquiferSampler = this.createAquiferSampler(this.noiseMinY, this.noiseTopY, chunkPos);
+        HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
 
         for (int localZ = 0; localZ < 16; localZ++) {
             for (int localX = 0; localX < 16; localX++) {
@@ -126,7 +128,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
                 int z = (chunkZ << 4) + localZ;
                 int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
                 int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 
-                    this.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
+                    heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
                     this.minY;
                 
                 boolean genSandBeach = sandNoise[localZ + localX * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
@@ -144,13 +146,14 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
                 BlockState fillerBlock = biomeFillerBlock;
                 
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
-
+                
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.minY; y--) {
+                    mutable.set(localX, y, localZ);
 
                     // Randomly place bedrock from y=0 (or minHeight) to y=5
                     if (y <= bedrockFloor + rand.nextInt(5)) {
-                        chunk.setBlockState(mutable.set(localX, y, localZ), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable, BlockStates.BEDROCK, false);
                         continue;
                     }
                     
@@ -164,17 +167,18 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
 
-                    BlockState blockState = chunk.getBlockState(mutable.set(localX, y, localZ));
+                    BlockState blockState = chunk.getBlockState(mutable);
 
-                    if (blockState.equals(BlockStates.AIR)) { // Skip if air block
+                    if (blockState.isAir()) { // Skip if air block
                         flag = -1;
                         continue;
                     }
 
-                    if (!blockState.equals(this.defaultBlock)) { // Skip if not stone
+                    if (!blockState.isOf(this.defaultBlock.getBlock())) { // Skip if not stone
                         continue;
                     }
-
+                    
+                    // At the first default block
                     if (flag == -1) {
                         if (surfaceDepth <= 0) { // Generate stone basin if noise permits
                             topBlock = BlockStates.AIR;
@@ -195,18 +199,21 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
                             }
                         }
 
-                        if (y < this.seaLevel && topBlock.equals(BlockStates.AIR)) { // Generate water bodies
-                            BlockState fluidBlock = aquiferSampler.apply(x, y, z, 0.0, 0.0);
-                            
-                            topBlock = fluidBlock == null ? BlockStates.AIR : fluidBlock;
-                        }
 
                         flag = surfaceDepth;
-                        if (y >= this.seaLevel - 1) {
-                            chunk.setBlockState(mutable.set(localX, y, localZ), topBlock, false);
-                        } else {
-                            chunk.setBlockState(mutable.set(localX, y, localZ), fillerBlock, false);
+                        
+                        if (y < this.seaLevel && topBlock.isAir()) { // Generate water bodies
+                            BlockState fluidBlock = aquiferSampler.apply(x, y, z, 0.0, 0.0);
+                            
+                            boolean isAir = fluidBlock == null;
+                            topBlock = isAir ? BlockStates.AIR : fluidBlock;
                         }
+                        
+                        blockState = (y >= this.seaLevel - 1) ? 
+                            topBlock : 
+                            fillerBlock;
+                        
+                        chunk.setBlockState(mutable, blockState, false);
 
                         continue;
                     }
@@ -216,10 +223,10 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
                     }
 
                     flag--;
-                    chunk.setBlockState(mutable.set(localX, y, localZ), fillerBlock, false);
+                    chunk.setBlockState(mutable, fillerBlock, false);
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
-                    if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
+                    if (flag == 0 && fillerBlock.isOf(Blocks.SAND)) {
                         flag = rand.nextInt(4);
                         fillerBlock = BlockStates.SANDSTONE;
                     }

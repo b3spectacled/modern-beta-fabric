@@ -32,4 +32,10 @@ public class GenUtil {
         
         return blockState;
     }
+    
+    public static boolean isAirOrFluid(Chunk chunk, BlockPos pos) {
+        BlockState blockState = chunk.getBlockState(pos);
+        
+        return blockState.isAir() || !blockState.getFluidState().isEmpty();
+    }
 }
