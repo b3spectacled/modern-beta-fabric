@@ -18,27 +18,32 @@ import net.minecraft.world.Heightmap;
  */
 public class HeightmapChunk {
     public enum Type {
+        SURFACE_FLOOR,
         SURFACE,
         OCEAN
     }
     
-    private final int heightmapSurface[];
-    private final int heightmapOcean[];
+    private final short heightmapSurface[];
+    private final short heightmapOcean[];
+    private final short heightmapSurfaceFloor[];
 
-    public HeightmapChunk(int[] heightmapSurface, int[] heightmapOcean) {
+    public HeightmapChunk(short[] heightmapSurface, short[] heightmapOcean, short[] heightmapSurfaceFloor) {
         if (heightmapSurface.length != 256 || heightmapOcean.length != 256) 
             throw new IllegalArgumentException("[Modern Beta] Heightmap is an invalid size!");
 
         this.heightmapSurface = heightmapSurface;
         this.heightmapOcean = heightmapOcean;
+        this.heightmapSurfaceFloor = heightmapSurfaceFloor;
     }
     
     public HeightmapChunk(int minHeight) {
-        this.heightmapSurface = new int[256];
-        this.heightmapOcean = new int[256];
+        this.heightmapSurface = new short[256];
+        this.heightmapOcean = new short[256];
+        this.heightmapSurfaceFloor = new short[256];
         
-        Arrays.fill(this.heightmapSurface, minHeight);
-        Arrays.fill(this.heightmapOcean, minHeight);
+        Arrays.fill(this.heightmapSurface, (short)minHeight);
+        Arrays.fill(this.heightmapOcean, (short)minHeight);
+        Arrays.fill(this.heightmapSurfaceFloor, (short)0);
     }
     
     public int getHeight(int x, int z, Heightmap.Type type) {
@@ -55,7 +60,18 @@ public class HeightmapChunk {
         };
     }
     
-    public int[] getHeightmap(Heightmap.Type type) {
+    public int getHeight(int x, int z, HeightmapChunk.Type type) {
+        int ndx = (z & 0xF) + (x & 0xF) * 16;
+        
+        return switch(type) {
+            case SURFACE -> this.heightmapSurface[ndx];
+            case OCEAN -> this.heightmapOcean[ndx];
+            case SURFACE_FLOOR -> this.heightmapSurfaceFloor[ndx];
+            default -> this.heightmapSurface[ndx];
+        };
+    }
+    
+    public short[] getHeightmap(Heightmap.Type type) {
         return switch(type) {
             case MOTION_BLOCKING -> this.heightmapOcean;
             case MOTION_BLOCKING_NO_LEAVES -> this.heightmapOcean;
@@ -67,16 +83,12 @@ public class HeightmapChunk {
         };
     }
     
-    public void updateHeightmap(int x, int z, int height, HeightmapChunk.Type type) {
-        int ndx = (z & 0xF) + (x & 0xF) * 16;
-        
-        switch(type) {
-            case SURFACE -> this.heightmapSurface[ndx] = height;
-            case OCEAN -> this.heightmapOcean[ndx] = height;
-        }
-    }
-    
-    public static int getHeightFromHeightmap(int x, int z, int[] heightmap) {
-        return heightmap[(z & 0xF) + (x & 0xF) * 16];
+    public short[] getHeightmap(HeightmapChunk.Type type) {
+        return switch(type) {
+            case SURFACE -> this.heightmapSurface;
+            case OCEAN -> this.heightmapOcean;
+            case SURFACE_FLOOR -> this.heightmapSurfaceFloor;
+            default -> this.heightmapSurface;
+        };
     }
 }

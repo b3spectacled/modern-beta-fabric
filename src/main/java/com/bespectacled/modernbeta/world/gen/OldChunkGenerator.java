@@ -16,7 +16,6 @@ import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
@@ -333,8 +332,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int biomeStartX = startX >> 2;
         int biomeStartZ = startZ >> 2;
         
-        int worldHeight = this.getWorldHeight();
-        int minY = this.getMinimumY();
         int caveStartOffset = 8;
         int caveLowerCutoff = this.getMinimumY() + 16;
         

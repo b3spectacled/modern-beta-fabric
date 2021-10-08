@@ -6,6 +6,7 @@ import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
+import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
@@ -69,7 +70,9 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 int x = (chunkX << 4) + localX;
                 int z = (chunkZ << 4) + localZ;
                 int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
-                int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 50 : this.minY;
+                int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 
+                    this.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
+                    this.minY;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0;
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(z * eighth, 109.0134, x * eighth) + rand.nextDouble() * 0.2 > 3.0;

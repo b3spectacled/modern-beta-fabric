@@ -7,6 +7,7 @@ import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
+import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.util.mersenne.MTRandom;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.pe.climate.PEClimateSampler;
@@ -104,7 +105,9 @@ public class PEChunkProvider extends NoiseChunkProvider {
                 int x = (chunkX << 4) + localX;
                 int z = (chunkZ << 4) + localZ;
                 int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
-                int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 50 : this.minY;
+                int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 
+                    this.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
+                    this.minY;
                 
                 // MCPE uses nextFloat() instead of nextDouble()
                 boolean genSandBeach = sandNoise[localZ + localX * 16] + rand.nextFloat() * 0.2D > 0.0D;
