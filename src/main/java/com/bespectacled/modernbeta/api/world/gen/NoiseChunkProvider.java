@@ -326,6 +326,10 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         return this.heightmapChunkCache.get(chunkX, chunkZ).getHeight(x, z, type);
     }
     
+    protected int[] getHeightmap(int chunkX, int chunkZ, Heightmap.Type type) {
+        return this.heightmapChunkCache.get(chunkX, chunkZ).getHeightmap(type);
+    }
+    
     /**
      * Generates noise for a column at startNoiseX + localNoiseX / startNoiseZ + localNoiseZ.
      * @param primaryBuffer TODO
@@ -396,6 +400,35 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         }
         
         return density;
+    }
+
+    /**
+     * Creates aquifer sampler.
+     * 
+     * @param noiseMinY
+     * @param noiseTopY
+     * @param chunkPos
+     * 
+     * @return
+     */
+    protected AquiferSampler createAquiferSampler(int noiseMinY, int noiseTopY, ChunkPos chunkPos) {
+        if (!this.generateAquifers) {
+            return AquiferSampler.seaLevel(this.lavalessFluidLevelSampler);
+        }
+        
+        return AquiferSampler.aquifer(
+            this.dummyNoiseChunkSampler, 
+            chunkPos, 
+            this.edgeDensityNoise, 
+            this.fluidLevelNoise,
+            this.fluidTypeLevelNoise,
+            this.fluidTypeNoise, 
+            this.blockPosRandomDeriver, 
+            this.noiseColumnSampler, 
+            noiseMinY * this.verticalNoiseResolution, 
+            noiseTopY * this.verticalNoiseResolution, 
+            this.fluidLevelSampler
+        );
     }
 
     /**
@@ -709,39 +742,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             
             return this.oreVeinSampler.sample(x, y, z, frequencyNoise, firstOreNoise, secondOreNoise);
         };
-    }
-
-    /**
-     * Creates aquifer sampler.
-     * 
-     * @param noiseMinY
-     * @param noiseTopY
-     * @param chunkPos
-     * 
-     * @return
-     */
-    private AquiferSampler createAquiferSampler(int noiseMinY, int noiseTopY, ChunkPos chunkPos) {
-        if (!this.generateAquifers) {
-            return AquiferSampler.seaLevel(this.lavalessFluidLevelSampler);
-        }
-        
-        
-        return AquiferSampler.aquifer(
-            this.dummyNoiseChunkSampler, 
-            chunkPos, 
-            this.edgeDensityNoise, 
-            this.fluidLevelNoise,
-            this.fluidTypeLevelNoise,
-            this.fluidTypeNoise, 
-            this.blockPosRandomDeriver, 
-            this.noiseColumnSampler, 
-            noiseMinY * this.verticalNoiseResolution, 
-            noiseTopY * this.verticalNoiseResolution, 
-            this.fluidLevelSampler
-        );
-        
-        
-        //return AquiferSampler.seaLevel(this.fluidLevelSampler);
     }
 
     /**

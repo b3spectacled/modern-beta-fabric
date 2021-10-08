@@ -355,15 +355,17 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 // to sample overall ocean depth as accurately as possible.
                 int offsetX = x + 2;
                 int offsetZ = z + 2;
+                int height = this.getHeight(offsetX, offsetZ, Heightmap.Type.OCEAN_FLOOR_WG, chunk);
                 
-                int height = GenUtil.getLowestSolidHeight(
+                /*int height = GenUtil.getLowestSolidHeight(
                     chunk,
                     worldHeight,
                     minY,
                     offsetX,
                     offsetZ,
                     defaultFluid
-                );
+                );*/
+                
                 pos.set(offsetX, height + 1, offsetZ);
 
                 boolean hasOcean = false;

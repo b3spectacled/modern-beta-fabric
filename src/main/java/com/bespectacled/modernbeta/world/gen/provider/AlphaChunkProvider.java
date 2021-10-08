@@ -12,9 +12,11 @@ import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.chunk.AquiferSampler;
 
 public class AlphaChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -49,8 +51,9 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         double eighth = 0.03125D;
 
-        int chunkX = chunk.getPos().x;
-        int chunkZ = chunk.getPos().z;
+        ChunkPos chunkPos = chunk.getPos();
+        int chunkX = chunkPos.x;
+        int chunkZ = chunkPos.z;
         
         int bedrockFloor = this.minY + this.bedrockFloor;
         
@@ -65,6 +68,8 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         beachNoiseOctaves.sampleArr(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
         surfaceNoiseOctaves.sampleArr(surfaceNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
 
+        AquiferSampler aquiferSampler = this.createAquiferSampler(this.noiseMinY, this.noiseTopY, chunkPos);
+        
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.
         for (int localX = 0; localX < 16; localX++) {
@@ -72,6 +77,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                 int x = (chunkX << 4) + localX;
                 int z = (chunkZ << 4) + localZ;
                 int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 50 : this.minY;
                 
                 boolean genSandBeach = sandNoise[localX + localZ * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
                 boolean genGravelBeach = gravelNoise[localX + localZ * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
@@ -108,7 +114,12 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
                     
-                    // Skip if used custom surface generation or if below minimum surface level.
+                    // Skip if at surface min y
+                    if (y < surfaceMinY) {
+                        continue;
+                    }
+                    
+                    // Skip if used custom surface generation.
                     if (usedCustomSurface) {
                         continue;
                     }
@@ -145,7 +156,9 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                         }
 
                         if (y < this.seaLevel && topBlock.equals(BlockStates.AIR)) {
-                            topBlock = this.defaultFluid;
+                            BlockState fluidBlock = aquiferSampler.apply(x, y, z, 0.0, 0.0);
+                            
+                            topBlock = fluidBlock == null ? BlockStates.AIR : fluidBlock;
                         }
 
                         // Main surface builder section

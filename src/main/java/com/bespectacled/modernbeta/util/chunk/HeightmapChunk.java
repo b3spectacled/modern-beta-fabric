@@ -55,6 +55,18 @@ public class HeightmapChunk {
         };
     }
     
+    public int[] getHeightmap(Heightmap.Type type) {
+        return switch(type) {
+            case MOTION_BLOCKING -> this.heightmapOcean;
+            case MOTION_BLOCKING_NO_LEAVES -> this.heightmapOcean;
+            case OCEAN_FLOOR -> this.heightmapSurface;
+            case OCEAN_FLOOR_WG -> this.heightmapSurface;
+            case WORLD_SURFACE -> this.heightmapOcean;
+            case WORLD_SURFACE_WG -> this.heightmapOcean;
+            default -> this.heightmapSurface;
+        };
+    }
+    
     public void updateHeightmap(int x, int z, int height, HeightmapChunk.Type type) {
         int ndx = (z & 0xF) + (x & 0xF) * 16;
         
@@ -62,5 +74,9 @@ public class HeightmapChunk {
             case SURFACE -> this.heightmapSurface[ndx] = height;
             case OCEAN -> this.heightmapOcean[ndx] = height;
         }
+    }
+    
+    public static int getHeightFromHeightmap(int x, int z, int[] heightmap) {
+        return heightmap[(z & 0xF) + (x & 0xF) * 16];
     }
 }

@@ -12,9 +12,11 @@ import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.chunk.AquiferSampler;
 
 public class Infdev611ChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -49,13 +51,16 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         double eighth = 0.03125D;
 
-        int chunkX = chunk.getPos().x;
-        int chunkZ = chunk.getPos().z;
+        ChunkPos chunkPos = chunk.getPos();
+        int chunkX = chunkPos.x;
+        int chunkZ = chunkPos.z;
         
         int bedrockFloor = this.minY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
+
+        AquiferSampler aquiferSampler = this.createAquiferSampler(this.noiseMinY, this.noiseTopY, chunkPos);
         
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.
@@ -64,6 +69,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 int x = (chunkX << 4) + localX;
                 int z = (chunkZ << 4) + localZ;
                 int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 50 : this.minY;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0;
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(z * eighth, 109.0134, x * eighth) + rand.nextDouble() * 0.2 > 3.0;
@@ -100,8 +106,12 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
                     
-                    // Don't surface build below 50, per 1.17 default surface builder
-                    // Skip if used custom surface generation or if below minimum surface level.
+                    // Skip if at surface min y
+                    if (y < surfaceMinY) {
+                        continue;
+                    }
+                    
+                    // Skip if used custom surface generation.
                     if (usedCustomSurface) {
                         continue;
                     }
@@ -132,7 +142,9 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                             }
 
                             if (y < this.seaLevel && topBlock.equals(BlockStates.AIR)) {
-                                topBlock = this.defaultFluid;
+                                BlockState fluidBlock = aquiferSampler.apply(x, y, z, 0.0, 0.0);
+                                
+                                topBlock = fluidBlock == null ? BlockStates.AIR : fluidBlock;
                             }
 
                             flag = surfaceDepth;

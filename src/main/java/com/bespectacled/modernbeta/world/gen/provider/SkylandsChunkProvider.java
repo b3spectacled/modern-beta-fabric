@@ -11,6 +11,7 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -43,8 +44,9 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         double eighth = 0.03125D;
 
-        int chunkX = chunk.getPos().x;
-        int chunkZ = chunk.getPos().z;
+        ChunkPos chunkPos = chunk.getPos();
+        int chunkX = chunkPos.x;
+        int chunkZ = chunkPos.z;
 
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
