@@ -25,9 +25,8 @@ public class BlockSources implements BlockSource {
         for (BlockSource blockSource : this.blockSources) {
             BlockState blockState = blockSource.apply(chunkNoiseSampler, x, y, z);
             
-            if (blockState == null) continue;
-            
-            return blockState;
+            if (blockState != null)
+                return blockState;
         }
         
         return DEBUG ? BlockStates.AIR : this.defaultBlock;

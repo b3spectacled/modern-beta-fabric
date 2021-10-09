@@ -7,8 +7,6 @@ import com.bespectacled.modernbeta.api.world.biome.climate.CaveClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.NoiseRange;
 import com.bespectacled.modernbeta.api.world.biome.climate.NoiseRanges;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
-import com.bespectacled.modernbeta.util.NbtTags;
-import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.cavebiome.climate.BaseCaveClimateSampler;
 
 import net.minecraft.nbt.NbtCompound;
@@ -18,36 +16,36 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
-public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveClimateSampler {
-    private static final Identifier DEFAULT_BIOME_ID = BiomeKeys.LUSH_CAVES.getValue();
-    
-    private final boolean useCaveNoise;
+public class NoiseCaveBiomeProvider extends CaveBiomeProvider implements CaveClimateSampler {
+    private static final Identifier LUSH_CAVES = BiomeKeys.LUSH_CAVES.getValue();
+    private static final Identifier DRIPSTONE_CAVES = BiomeKeys.DRIPSTONE_CAVES.getValue();
     
     private final CaveClimateSampler climateSampler;
     private final NoiseRanges noiseRanges;
     
-    public SingleCaveBiomeProvider(long seed, NbtCompound settings) {
+    public NoiseCaveBiomeProvider(long seed, NbtCompound settings) {
         super(seed, settings);
         
-        Identifier biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
-        
-        this.useCaveNoise = NbtUtil.readBoolean(NbtTags.USE_CAVE_NOISE, settings, false);
         this.climateSampler = new BaseCaveClimateSampler(seed, 2, 8);
         this.noiseRanges = new NoiseRanges.Builder()
-            .add(new NoiseRange(0.0, 1.0, biomeId))
+            .add(new NoiseRange(0.2, 0.8, LUSH_CAVES))
+            .add(new NoiseRange(-0.8, -0.2, DRIPSTONE_CAVES))
             .build();
     }
 
     @Override
     public Biome getBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
-        return this.useCaveNoise ?
-            biomeRegistry.getOrEmpty(this.noiseRanges.sample(this.climateSampler.sample(biomeX, biomeY, biomeZ))).orElse(null) :
-            biomeRegistry.get(this.noiseRanges.sample(1.0));
+        double noise = this.climateSampler.sample(biomeX, biomeY, biomeZ);
+        
+        return biomeRegistry.getOrEmpty(this.noiseRanges.sample(noise)).orElse(null);
     }
     
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        return Arrays.asList(RegistryKey.of(Registry.BIOME_KEY, this.noiseRanges.sample(1.0)));
+        return Arrays.asList(
+            BiomeKeys.LUSH_CAVES,
+            BiomeKeys.DRIPSTONE_CAVES
+        );
     }
 
     @Override
