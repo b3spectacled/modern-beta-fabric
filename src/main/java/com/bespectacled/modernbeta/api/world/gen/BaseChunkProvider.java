@@ -7,7 +7,9 @@ import java.util.stream.IntStream;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
@@ -23,7 +25,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
-import net.minecraft.world.gen.chunk.BlockColumn;
 import net.minecraft.world.gen.random.AbstractRandom;
 import net.minecraft.world.gen.random.AtomicSimpleRandom;
 
@@ -170,41 +171,28 @@ public abstract class BaseChunkProvider extends ChunkProvider {
      * @param region
      * @param chunk
      * @param random
-     * @param mutable Mutable BlockPos at block coordinates position.
-     * 
+     * @param pos Mutable BlockPos at block coordinates position.
+     * @param blockColumn TODO
      * @return True if biome is included in valid biomes set and has run surface builder. False if not included and not run.
      */
-    protected boolean useCustomSurfaceBuilder(Biome biome, Identifier biomeId, ChunkRegion region, Chunk chunk, Random random, BlockPos.Mutable mutable) {
-        int x = mutable.getX();
-        int y = mutable.getY();
-        int z = mutable.getZ();
-        
-        final BlockPos.Mutable blockColumnPos = new BlockPos.Mutable();
-        BlockColumn blockColumn = new BlockColumn(){
-            @Override
-            public BlockState getState(int y) {
-                return chunk.getBlockState(blockColumnPos.setY(y));
-            }
-
-            @Override
-            public void setState(int y, BlockState state) {
-                chunk.setBlockState(blockColumnPos.setY(y), state, false);
-            }
-
-            public String toString() {
-                return "ChunkBlockColumn " + chunk.getPos();
-            }
-        };
+    protected boolean useCustomSurfaceBuilder(Biome biome, Identifier biomeId, ChunkRegion region, Chunk chunk, Random random, BlockPos pos, BlockColumnHolder blockColumn) {
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
         
         if (BIOMES_WITH_CUSTOM_SURFACES.contains(biomeId)) {
             double surfaceNoise = this.surfaceDepthNoise.sample(x * 0.0625, z * 0.0625, 0.0625, (x & 0xF) * 0.0625) * 15.0;
             
-            int height = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, chunk);
+            blockColumn.setPos(x, z);
+            
+            int height = (this instanceof NoiseChunkProvider noiseChunkProvider) ?
+                noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
+                this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, chunk);
             int bottom = height - 8;
             
             biome.buildSurface(
                 random,
-                blockColumn, 
+                blockColumn.getBlockColumn(), 
                 x, z, y, 
                 surfaceNoise, 
                 this.defaultBlock, 

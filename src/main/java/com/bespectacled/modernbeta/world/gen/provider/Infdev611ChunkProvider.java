@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
@@ -63,6 +64,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
 
         AquiferSampler aquiferSampler = this.createAquiferSampler(this.noiseMinY, this.noiseTopY, chunkPos);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
+        BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
         
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.
@@ -89,7 +91,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
 
-                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable, blockColumn);
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.minY; y--) {
@@ -123,9 +125,9 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
 
                     BlockState blockState = chunk.getBlockState(mutable);
 
-                    if (blockState.equals(BlockStates.AIR)) { // Skip if air block
+                    if (blockState.isAir()) { // Skip if air block
                         flag = -1;
-                    } else if (blockState.equals(this.defaultBlock)) {
+                    } else if (blockState.isOf(this.defaultBlock.getBlock())) {
                         if (flag == -1) {
                             if (surfaceDepth <= 0) { // Generate stone basin if noise permits
                                 topBlock = BlockStates.AIR;

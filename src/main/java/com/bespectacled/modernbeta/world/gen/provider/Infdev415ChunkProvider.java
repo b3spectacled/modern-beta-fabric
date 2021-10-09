@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
@@ -61,6 +62,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
 
         AquiferSampler aquiferSampler = this.createAquiferSampler(this.noiseMinY, this.noiseTopY, chunkPos);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
+        BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
         
         for (int localX = 0; localX < 16; ++localX) {
             for (int localZ = 0; localZ < 16; ++localZ) {
@@ -94,7 +96,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
                 
-                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable, blockColumn);
                 
                 for (int y = this.worldTopY - 1; y >= this.minY; --y) {
                     mutable.set(localX, y, localZ);
@@ -117,10 +119,10 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                     
                     BlockState blockState = chunk.getBlockState(mutable);
                     
-                    if (blockState.equals(BlockStates.AIR)) {
+                    if (blockState.isAir()) {
                         flag = -1;
                         
-                    } else if (blockState.equals(this.defaultBlock)) {
+                    } else if (blockState.isOf(this.defaultBlock.getBlock())) {
                         if (flag == -1) {
                             if (surfaceDepth <= 0) {
                                 topBlock = BlockStates.AIR;

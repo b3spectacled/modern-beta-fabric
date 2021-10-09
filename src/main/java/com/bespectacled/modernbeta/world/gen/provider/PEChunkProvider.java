@@ -5,6 +5,7 @@ import java.util.Random;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
@@ -100,6 +101,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
 
         AquiferSampler aquiferSampler = this.createAquiferSampler(this.noiseMinY, this.noiseTopY, chunkPos);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
+        BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
 
         for (int localZ = 0; localZ < 16; localZ++) {
             for (int localX = 0; localX < 16; localX++) {
@@ -125,7 +127,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
                 
-                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable, blockColumn);
 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.minY; y--) {
@@ -149,12 +151,12 @@ public class PEChunkProvider extends NoiseChunkProvider {
 
                     BlockState blockState = chunk.getBlockState(mutable);
 
-                    if (blockState.equals(BlockStates.AIR)) { // Skip if air block
+                    if (blockState.isAir()) { // Skip if air block
                         flag = -1;
                         continue;
                     }
 
-                    if (!blockState.equals(this.defaultBlock)) { // Skip if not stone
+                    if (!blockState.isOf(this.defaultBlock.getBlock())) { // Skip if not stone
                         continue;
                     }
 
@@ -204,7 +206,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
                     chunk.setBlockState(mutable, fillerBlock, false);
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
-                    if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
+                    if (flag == 0 && fillerBlock.isOf(BlockStates.SAND.getBlock())) {
                         flag = rand.nextInt(4);
                         fillerBlock = BlockStates.SANDSTONE;
                     }

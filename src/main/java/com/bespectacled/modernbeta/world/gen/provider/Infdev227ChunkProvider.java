@@ -92,7 +92,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
 
                 int soilDepth = 0;
 
-                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable, null);
                 
                 for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
                     BlockState blockState = chunk.getBlockState(mutable.set(localX, y, localZ));
