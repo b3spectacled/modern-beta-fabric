@@ -70,7 +70,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         beachNoiseOctaves.sampleArr(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
         surfaceNoiseOctaves.sampleArr(surfaceNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
 
-        AquiferSampler aquiferSampler = this.createAquiferSampler(this.noiseMinY, this.noiseTopY, chunkPos);
+        AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
         
@@ -169,6 +169,8 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                             
                             boolean isAir = fluidBlock == null;
                             topBlock = isAir ? BlockStates.AIR : fluidBlock;
+                            
+                            this.scheduleFluidTick(chunk, aquiferSampler, mutable, topBlock);
                         }
                         
                         blockState = (y >= this.seaLevel - 1) ? 

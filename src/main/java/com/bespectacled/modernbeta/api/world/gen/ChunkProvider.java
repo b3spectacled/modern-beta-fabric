@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.api.world.biome.BiomeHeightSampler;
 import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
+import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
@@ -20,6 +21,9 @@ import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
+import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public abstract class ChunkProvider implements BiomeHeightSampler {
@@ -28,8 +32,9 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
     protected final long seed;
     protected final Supplier<ChunkGeneratorSettings> generatorSettings;
     protected final NbtCompound providerSettings;
-    
     protected SpawnLocator spawnLocator;
+    
+    private final FluidLevelSampler carverFluidLevelSampler;
     
     /**
      * Construct a Modern Beta chunk provider with seed and settings.
@@ -42,8 +47,9 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
         this.seed = chunkGenerator.getWorldSeed();
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
         this.providerSettings = chunkGenerator.getProviderSettings();
-        
         this.spawnLocator = SpawnLocator.DEFAULT;
+
+        this.carverFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
     }
     
     /**
@@ -114,6 +120,15 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
      */
     public int getSeaLevel() {
         return this.generatorSettings.get().getSeaLevel();
+    }
+    
+    /**
+     * Get aquifer sampler, for carving for now.
+     * 
+     * @return An aquifer sampler.
+     */
+    public AquiferSampler getAquiferSampler(Chunk chunk) {
+        return AquiferSampler.seaLevel(this.carverFluidLevelSampler);
     }
     
     /**

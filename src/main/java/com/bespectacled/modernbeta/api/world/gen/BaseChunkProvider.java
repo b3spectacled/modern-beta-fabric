@@ -108,7 +108,6 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         FluidLevel seaFluidLevel = new FluidLevel(seaLevel, this.defaultFluid);
         
         this.fluidLevelSampler = (x, y, z) -> y < LAVA_LEVEL ? lavaFluidLevel : seaFluidLevel;
-        //this.fluidLevelSampler = (x, y, z) -> y < LAVA_LEVEL ? seaFluidLevel : seaFluidLevel;
         this.lavalessFluidLevelSampler = (x, y, z) -> seaFluidLevel;
         
         // Handle bad height values

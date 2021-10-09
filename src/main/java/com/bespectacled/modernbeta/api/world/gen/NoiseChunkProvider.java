@@ -343,6 +343,19 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         return this.heightmapChunkCache.get(chunkX, chunkZ).getHeight(x, z, type);
     }
     
+    @Override
+    public AquiferSampler getAquiferSampler(Chunk chunk) {
+        int minY = Math.max(this.minY, chunk.getBottomY());
+        int topY = Math.min(this.minY + this.worldHeight, chunk.getTopY());
+        
+        int noiseMinY = MathHelper.floorDiv(minY, this.verticalNoiseResolution);
+        int noiseTopY = MathHelper.floorDiv(topY - minY, this.verticalNoiseResolution);
+        
+        AquiferSampler aquiferSampler = this.createAquiferSampler(noiseMinY, noiseTopY, chunk.getPos());
+        
+        return aquiferSampler;
+    }
+    
     /**
      * Generates noise for a column at startNoiseX + localNoiseX / startNoiseZ + localNoiseZ.
      * @param primaryBuffer TODO
@@ -444,6 +457,20 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         );
     }
     
+    /**
+     * Schedules fluid tick for aquifer sampler, so water flows when generated.
+     * 
+     * @param chunk 
+     * @param aquiferSampler
+     * @param pos BlockPos in block coordinates.
+     * @param blockState Blockstate at pos.
+     */
+    protected void scheduleFluidTick(Chunk chunk, AquiferSampler aquiferSampler, BlockPos pos, BlockState blockState) {
+        if (aquiferSampler.needsFluidTick() && !blockState.getFluidState().isEmpty()) {
+            chunk.getFluidTickScheduler().schedule(pos, blockState.getFluidState().getFluid(), 0);
+        }
+    }
+
     protected HeightmapChunk getHeightmapChunk(int chunkX, int chunkZ) {
         return this.heightmapChunkCache.get(chunkX, chunkZ);
     }
@@ -464,14 +491,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         Heightmap heightmapOcean = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSurface = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
-        int minY = Math.max(this.minY, chunk.getBottomY());
-        int topY = Math.min(this.minY + this.worldHeight, chunk.getTopY());
-        
-        int noiseMinY = MathHelper.floorDiv(minY, this.verticalNoiseResolution);
-        int noiseTopY = MathHelper.floorDiv(topY - minY, this.verticalNoiseResolution);
-        
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
-        AquiferSampler aquiferSampler = this.createAquiferSampler(noiseMinY, noiseTopY, chunk.getPos());
+        AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         ChunkNoiseSampler chunkNoiseSampler = null;
         
@@ -771,20 +792,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             
             return this.oreVeinSampler.sample(x, y, z, frequencyNoise, firstOreNoise, secondOreNoise);
         };
-    }
-
-    /**
-     * Schedules fluid tick for aquifer sampler, so water flows when generated.
-     * 
-     * @param chunk 
-     * @param aquiferSampler
-     * @param pos BlockPos in block coordinates.
-     * @param blockState Blockstate at pos.
-     */
-    private void scheduleFluidTick(Chunk chunk, AquiferSampler aquiferSampler, BlockPos pos, BlockState blockState) {
-        if (aquiferSampler.needsFluidTick() && !blockState.getFluidState().isEmpty()) {
-            chunk.getFluidTickScheduler().schedule(pos, blockState.getFluidState().getFluid(), 0);
-        }
     }
 }
 

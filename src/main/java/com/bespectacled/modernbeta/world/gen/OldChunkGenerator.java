@@ -54,8 +54,6 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.AquiferSampler;
-import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
-import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
@@ -75,7 +73,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private final NbtCompound chunkProviderSettings;
     private final ChunkProvider chunkProvider;
     private final String chunkProviderType;
-    private final FluidLevelSampler carverFluidLevelSampler;
 
     private final boolean generateOceans;
     private final boolean generateOceanShrines;
@@ -87,7 +84,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.chunkProviderSettings = providerSettings;
         this.chunkProviderType = NbtUtil.readStringOrThrow(NbtTags.WORLD_TYPE, providerSettings);
         this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
-        this.carverFluidLevelSampler = (x, y, z) -> new FluidLevel(this.chunkProvider.getSeaLevel(), BlockStates.AIR);
         
         this.generateOceans = !Compat.isLoaded("hydrogen") ? 
             NbtUtil.readBoolean(NbtTags.GEN_OCEANS, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateOceans) : 
@@ -142,8 +138,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int mainChunkX = chunkPos.x;
         int mainChunkZ = chunkPos.z;
         
+        AquiferSampler aquiferSampler = this.chunkProvider.getAquiferSampler(chunk);
+        
         CarverContext heightContext = new CarverContext(this, chunk);
-        AquiferSampler aquiferSampler = AquiferSampler.seaLevel(this.carverFluidLevelSampler);
         class_6643 carvingMask = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);
         
         Random random = new Random(seed);

@@ -120,7 +120,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
             eighth * 2D, eighth * 2D, eighth * 2D
         );
         
-        AquiferSampler aquiferSampler = this.createAquiferSampler(this.noiseMinY, this.noiseTopY, chunkPos);
+        AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
 
@@ -208,6 +208,8 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
                             
                             boolean isAir = fluidBlock == null;
                             topBlock = isAir ? BlockStates.AIR : fluidBlock;
+                            
+                            this.scheduleFluidTick(chunk, aquiferSampler, mutable, topBlock);
                         }
                         
                         blockState = (y >= this.seaLevel - 1) ? 
