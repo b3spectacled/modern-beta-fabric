@@ -18,26 +18,45 @@ public interface NoiseChunkImitable {
      * @param x x-coordinate in absolute block coordinates.
      * @param y y-coordinate in absolute block coordinates.
      * @param z z-coordinate in absolute block coordinates.
-     * @param blockToSet Block to get blockstate for.
+     * @param block Block to get blockstate for.
+     * @param defaultBlock Default base block.
      * @oaran defaultFluid Default fluid block.
      * 
      * @return A blockstate.
      */
-    default BlockState getBlockState(StructureWeightSampler weightSampler, BlockSource blockSource, int x, int y, int z, Block blockToSet, Block defaultFluid) {
-        boolean isFluid = blockToSet == Blocks.AIR || blockToSet == defaultFluid;
+    default BlockState getBlockState(
+        StructureWeightSampler weightSampler, 
+        BlockSource blockSource, 
+        int x, int y, int z, 
+        Block block, 
+        Block defaultBlock,
+        Block defaultFluid
+    ) {
+        boolean isFluid = block == Blocks.AIR || block == defaultFluid;
         double simDensity = isFluid ? -25D : 25D;
         
         double clampedDensity = MathHelper.clamp(simDensity / 200.0, -1.0, 1.0);
         clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
         clampedDensity += weightSampler.calculateNoise(x, y, z);
         
-        BlockState blockState = blockToSet.getDefaultState();
-        if (clampedDensity > 0.0 && isFluid) {
+        BlockState blockState = block.getDefaultState();
+        
+        if (clampedDensity > 0.0) { 
             blockState = blockSource.apply(null, x, y, z);
-        } else if (clampedDensity < 0.0 && !isFluid) {
-            blockState = BlockStates.AIR;
+            
+            if (blockState == null)
+                blockState = block.getDefaultState();
+            
+            // Handle structures generating over water/air
+            if (isFluid)
+                blockState = defaultBlock.getDefaultState();
+            
+        } else if (clampedDensity <= 0.0) {
+            // Handle structures generating inside pre-existing terrain
+            if (!isFluid) 
+                blockState = BlockStates.AIR;
         }
-
+        
         return blockState;
     }
     

@@ -244,7 +244,9 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         // Block Source
         AtomicSimpleRandom atomicSimpleRandom = new AtomicSimpleRandom(seed);
-        this.deepslateSource = new DeepslateBlockSource(atomicSimpleRandom.createBlockPosRandomDeriver(), BlockStates.DEEPSLATE, null, -8, 0);
+        this.deepslateSource = this.generateDeepslate ? 
+            new DeepslateBlockSource(atomicSimpleRandom.createBlockPosRandomDeriver(), BlockStates.DEEPSLATE, null, -8, 0) :
+            (sampler, x, y, z) -> null;
     
         // Dummy ChunkNoiseSampler
         this.dummyNoiseChunkSampler = new OldChunkNoiseSampler(

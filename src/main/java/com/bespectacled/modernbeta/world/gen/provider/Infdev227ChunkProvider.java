@@ -7,6 +7,7 @@ import java.util.concurrent.Executor;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
+import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
@@ -26,8 +27,11 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.BlockSource;
+import net.minecraft.world.gen.DeepslateBlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
+import net.minecraft.world.gen.random.AtomicSimpleRandom;
 
 public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseChunkImitable {
     private final boolean generateInfdevPyramid;
@@ -40,6 +44,8 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     private final PerlinOctaveNoise noiseOctavesE;
     private final PerlinOctaveNoise noiseOctavesF;
     private final PerlinOctaveNoise forestNoiseOctaves;
+    
+    private final BlockSource deepslateSource;
     
     public Infdev227ChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
@@ -61,6 +67,13 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         this.generateInfdevWall = NbtUtil.readBoolean(NbtTags.GEN_INFDEV_WALL, providerSettings, ModernBeta.GEN_CONFIG.inf227GenConfig.generateInfdevWall);
         
         setForestOctaves(forestNoiseOctaves);
+        
+        // Block Source
+        boolean hasDeepslate = ((MixinChunkGeneratorSettingsInvoker)(Object)this.generatorSettings.get()).invokeHasDeepslate();
+        AtomicSimpleRandom atomicSimpleRandom = new AtomicSimpleRandom(seed);
+        this.deepslateSource = hasDeepslate ? 
+            new DeepslateBlockSource(atomicSimpleRandom.createBlockPosRandomDeriver(), BlockStates.DEEPSLATE, null, -8, 0) :
+            (sampler, x, y, z) -> null;
     }
 
     @Override
@@ -138,10 +151,9 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         Random rand = new Random();
         Random chunkRand = this.createSurfaceRandom(chunk.getPos().x, chunk.getPos().z);
         
-        Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
-        Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
-        
-        //BlockSource blockSource = new DefaultBlockSource(this.defaultBlock);
+        Heightmap heightmapOcean = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
+        Heightmap heightmapSurface = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
+
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
@@ -153,31 +165,31 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         Block defaultBlock = this.defaultBlock.getBlock();
         Block defaultFluid = this.defaultFluid.getBlock();
 
-        for (int x = 0; x < 16; ++x) {
-            int absX = startX + x;
-            int rX = absX / 1024;
+        for (int localX = 0; localX < 16; ++localX) {
+            int x = startX + localX;
+            int rX = x / 1024;
             
-            for (int z = 0; z < 16; ++z) {    
-                int absZ = startZ + z;
-                int rZ = absZ / 1024;
+            for (int localZ = 0; localZ < 16; ++localZ) {    
+                int z = startZ + localZ;
+                int rZ = z / 1024;
                 
                 float noiseA = (float)(
-                    this.noiseOctavesA.sample(absX / 0.03125f, 0.0, absZ / 0.03125f) - 
-                    this.noiseOctavesB.sample(absX / 0.015625f, 0.0, absZ / 0.015625f)) / 512.0f / 4.0f;
-                float noiseB = (float)this.noiseOctavesE.sample(absX / 4.0f, absZ / 4.0f);
-                float noiseC = (float)this.noiseOctavesF.sample(absX / 8.0f, absZ / 8.0f) / 8.0f;
+                    this.noiseOctavesA.sample(x / 0.03125f, 0.0, z / 0.03125f) - 
+                    this.noiseOctavesB.sample(x / 0.015625f, 0.0, z / 0.015625f)) / 512.0f / 4.0f;
+                float noiseB = (float)this.noiseOctavesE.sample(x / 4.0f, z / 4.0f);
+                float noiseC = (float)this.noiseOctavesF.sample(x / 8.0f, z / 8.0f) / 8.0f;
                 
                 noiseB = noiseB > 0.0f ? 
-                    ((float)(this.noiseOctavesC.sample(absX * 0.25714284f * 2.0f, absZ * 0.25714284f * 2.0f) * noiseC / 4.0)) :
-                    ((float)(this.noiseOctavesD.sample(absX * 0.25714284f, absZ * 0.25714284f) * noiseC));
+                    ((float)(this.noiseOctavesC.sample(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
+                    ((float)(this.noiseOctavesD.sample(x * 0.25714284f, z * 0.25714284f) * noiseC));
                 
                 //int heightVal = (int)(noiseA + this.seaLevel + noiseB);
 
                 // Subtract 1 to be more consistent with modern versions.
                 int heightVal = (int)(noiseA + (this.seaLevel - 1) + noiseB);
-                if ((float)this.noiseOctavesE.sample(absX, absZ) < 0.0f) {
+                if ((float)this.noiseOctavesE.sample(x, z) < 0.0f) {
                     heightVal = heightVal / 2 << 1;
-                    if ((float)this.noiseOctavesE.sample(absX / 5, absZ / 5) < 0.0f) {
+                    if ((float)this.noiseOctavesE.sample(x / 5, z / 5) < 0.0f) {
                         ++heightVal;
                     }
                 }
@@ -185,7 +197,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                 for (int y = this.minY; y < this.worldTopY; ++y) {
                     Block block = Blocks.AIR;
                     
-                    if (this.generateInfdevWall && (absX == 0 || absZ == 0) && y <= heightVal + 2) {
+                    if (this.generateInfdevWall && (x == 0 || z == 0) && y <= heightVal + 2) {
                         block = Blocks.OBSIDIAN;
                     }
                     
@@ -224,8 +236,8 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                         int bX = (rX << 10) + 128 + rand.nextInt(512);
                         int bZ = (rZ << 10) + 128 + rand.nextInt(512);
                         
-                        bX = absX - bX;
-                        bZ = absZ - bZ;
+                        bX = x - bX;
+                        bZ = z - bZ;
                         
                         if (bX < 0) bX = -bX;
                         if (bZ < 0) bZ = -bZ;
@@ -242,16 +254,19 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                         block = Blocks.BEDROCK;
                     }
                     
-                    //blockToSet = blockWeightSampler.getBlockWeight(absX, y, absZ, blockToSet);
-                    //BlockState blockstateToSet = this.getBlockState(absX, y, absZ, blockToSet);
+                    BlockState blockState = this.getBlockState(
+                        structureWeightSampler, 
+                        this.deepslateSource, 
+                        x, y, z, 
+                        block, 
+                        this.defaultBlock.getBlock(), 
+                        this.defaultFluid.getBlock()
+                    );
                     
-                    BlockState blockState = block.getDefaultState();
-                    //BlockState blockState = this.getBlockState(structureWeightSampler, blockSource, absX, y, absZ, blockToSet, this.defaultFluid.getBlock());
+                    chunk.setBlockState(mutable.set(localX, y, localZ), blockState, false);
                     
-                    chunk.setBlockState(mutable.set(x, y, z), blockState, false);
-                    
-                    heightmapOCEAN.trackUpdate(x, y, z, blockState);
-                    heightmapSURFACE.trackUpdate(x, y, z, blockState);
+                    heightmapOcean.trackUpdate(localX, y, localZ, blockState);
+                    heightmapSurface.trackUpdate(localX, y, localZ, blockState);
                 }
             }
         }

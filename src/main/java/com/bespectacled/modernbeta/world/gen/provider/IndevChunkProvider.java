@@ -42,6 +42,7 @@ import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 
@@ -335,32 +336,39 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         int offsetX = (chunkX + this.levelWidth / 16 / 2) * 16;
         int offsetZ = (chunkZ + this.levelLength / 16 / 2) * 16;
         
-        Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
-        Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
+        Heightmap heightmapOcean = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
+        Heightmap heightmapSurface = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
+        BlockSource blockSource = (sampler, x, y, z) -> null;
         StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
-        for (int x = 0; x < 16; ++x) {
-            for (int z = 0; z < 16; ++z) {
+        for (int localX = 0; localX < 16; ++localX) {
+            for (int localZ = 0; localZ < 16; ++localZ) {
                 
-                int absX = x + (chunkX << 4);
-                int absZ = z + (chunkZ << 4);
+                int x = localX + (chunkX << 4);
+                int z = localZ + (chunkZ << 4);
                 
                 boolean terrainModified = false;
                 int soilDepth = 0;
                 
                 for (int y = this.levelHeight - 1; y >= 0; --y) {
-                    Block block = this.blockArr[offsetX + x][y][offsetZ + z];
+                    Block block = this.blockArr[offsetX + localX][y][offsetZ + localZ];
                     
                     BlockState originalBlockState = block.getDefaultState();
-                    //BlockState blockState = this.getBlockState(structureWeightSampler, blockSource, absX, y, absZ, block, this.fluidBlock.getBlock());
-                    BlockState blockState = originalBlockState;
+                    BlockState blockState = this.getBlockState(
+                        structureWeightSampler, 
+                        blockSource, 
+                        x, y, z, 
+                        block, 
+                        this.defaultBlock.getBlock(), 
+                        this.fluidBlock.getBlock()
+                    );
                     
-                    boolean inFluid = blockState.equals(BlockStates.AIR) || blockState.equals(this.fluidBlock);
+                    boolean inFluid = blockState.isAir() || blockState.isOf(this.fluidBlock.getBlock());
                     
                     // Check to see if structure weight sampler modifies terrain.
-                    if (!originalBlockState.equals(blockState)) {
+                    if (!originalBlockState.isOf(blockState.getBlock())) {
                         terrainModified = true;
                     }
                     
@@ -372,19 +380,19 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                         soilDepth++;
                     }
                     
-                    chunk.setBlockState(mutable.set(x, y, z), blockState, false);
+                    chunk.setBlockState(mutable.set(localX, y, localZ), blockState, false);
                     
                     if (this.levelType == IndevType.FLOATING) continue;
                      
                     if (y <= 1 + this.bedrockFloor && block == Blocks.AIR) {
                         //chunk.setBlockState(mutable.set(x, y, z), BlockStates.LAVA, false);
-                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable.set(localX, y, localZ), BlockStates.BEDROCK, false);
                     } else if (y <= 1 + this.bedrockFloor) {
-                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(mutable.set(localX, y, localZ), BlockStates.BEDROCK, false);
                     }
                     
-                    heightmapOCEAN.trackUpdate(x, y, z, block.getDefaultState());
-                    heightmapSURFACE.trackUpdate(x, y, z, block.getDefaultState());
+                    heightmapOcean.trackUpdate(localX, y, localZ, block.getDefaultState());
+                    heightmapSurface.trackUpdate(localX, y, localZ, block.getDefaultState());
                         
                 }
             }
