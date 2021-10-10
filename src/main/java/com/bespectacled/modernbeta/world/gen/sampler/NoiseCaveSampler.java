@@ -70,7 +70,8 @@ public class NoiseCaveSampler {
         double caveDensityNoise = this.caveDensityNoise.sample(x, (double)y / 1.5, z);
         double clampedCaveDensityNoise = MathHelper.clamp(caveDensityNoise + 0.27, -1.0, 1.0);
         
-        double deltaY = weight * 1.28;
+        //double deltaY = weight * 1.28;
+        double deltaY = (float)(50 - y) / 8.0f;
         double lerpedCaveDensityNoise = clampedCaveDensityNoise + MathHelper.clampedLerp(0.5, 0.0, deltaY);
         double terrainAdditionNoise = this.getTerrainAdditionNoise(x, y, z);
         double terrainAddition = lerpedCaveDensityNoise + terrainAdditionNoise;

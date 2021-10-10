@@ -16,6 +16,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -206,12 +207,16 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                     noiseZ * coordinateScale
                 ) / limitScale - densityOffset;
                 
+                density = this.clampNoise(density);
+                
             } else if (mainNoiseVal > 1.0) {
                 density = this.maxLimitNoiseOctaves.sample(
                     noiseX * coordinateScale, 
                     noiseY * heightScale, 
                     noiseZ * coordinateScale
                 ) / limitScale - densityOffset;
+
+                density = this.clampNoise(density);
                 
             } else {
                 double minLimitVal = this.minLimitNoiseOctaves.sample(
@@ -225,6 +230,9 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                     noiseY * heightScale, 
                     noiseZ * coordinateScale
                 ) / limitScale - densityOffset;
+                
+                minLimitVal = this.clampNoise(minLimitVal);
+                maxLimitVal = this.clampNoise(maxLimitVal);
                                 
                 double delta = (mainNoiseVal + 1.0) / 2.0;
                 density = minLimitVal + (maxLimitVal - minLimitVal) * delta;
@@ -243,6 +251,10 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             primaryBuffer[y] = density;
             heightmapBuffer[y] = heightmapDensity;
         }
+    }
+    
+    private double clampNoise(double density) {
+        return MathHelper.clamp(density, -10D, 10D);
     }
     
     private double getOffset(int noiseY) {
