@@ -384,6 +384,8 @@ public class BetaChunkProvider extends NoiseChunkProvider {
     public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
         //if (chunkStatus == ChunkStatus.SURFACE)
         //    return true;
+        //if (chunkStatus == ChunkStatus.CARVERS)
+        //    return true;
         
         return false;
     }

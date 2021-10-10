@@ -62,26 +62,26 @@ public class NoiseCaveSampler {
         double tunnelNoise = this.getTunnelNoise(x, y, z);
         
         double openingNoise = Math.min(caveOpeningNoise, tunnelNoise + tunnelOffsetNoise);
-        //double openingNoise = tunnelNoise + tunnelOffsetNoise;
         
         if (genTunnelsOnly) {
             return Math.max(Math.min(weight, openingNoise * 128.0 * 5.0), -200.0);
         }
         
         double caveDensityNoise = this.caveDensityNoise.sample(x, (double)y / 1.5, z);
-        double clampedCaveDensityNoise = MathHelper.clamp(caveDensityNoise + 0.25, -1.0, 1.0);
+        double clampedCaveDensityNoise = MathHelper.clamp(caveDensityNoise + 0.27, -1.0, 1.0);
         
-        double deltaY = (float)(30 - y) / 8.0f;
+        double deltaY = weight * 1.28;
         double lerpedCaveDensityNoise = clampedCaveDensityNoise + MathHelper.clampedLerp(0.5, 0.0, deltaY);
-        
         double terrainAdditionNoise = this.getTerrainAdditionNoise(x, y, z);
+        double terrainAddition = lerpedCaveDensityNoise + terrainAdditionNoise;
+        
         double caveNoise = this.getCaveNoise(x, y, z);
         
-        double terrainAddition = lerpedCaveDensityNoise + terrainAdditionNoise;
-        double caveTypeSelector = Math.min(terrainAddition, Math.min(tunnelNoise, caveNoise) + tunnelOffsetNoise);
-        double caveOrPillerSelector = Math.max(caveTypeSelector, this.getPillarNoise(x, y, z));
+        double caveTypeNoise = Math.min(openingNoise, caveNoise + tunnelOffsetNoise);
+        double caveTypeSelector = Math.min(terrainAddition, caveTypeNoise);
+        double caveOrPillarSelector = Math.max(caveTypeSelector, this.getPillarNoise(x, y, z));
         
-        return 128.0 * MathHelper.clamp(caveOrPillerSelector, -1.0, 1.0);
+        return 128.0 * MathHelper.clamp(caveOrPillarSelector, -1.0, 1.0);
     }
     
     private double getCaveOpeningNoise(int x, int y, int z) {
