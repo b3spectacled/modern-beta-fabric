@@ -114,7 +114,7 @@ public class ModernBetaBuiltInWorldProviders {
             BuiltInTypes.Chunk.BETA_ISLANDS.name,
             OldChunkGeneratorSettings.BETA_ISLANDS.toString(),
             BuiltInTypes.Biome.BETA.name,
-            BuiltInTypes.CaveBiome.SINGLE.name,
+            BuiltInTypes.CaveBiome.NONE.name,
             BetaBiomes.FOREST_ID.toString(),
             BuiltInTypes.WorldScreen.ISLAND.name,
             false,

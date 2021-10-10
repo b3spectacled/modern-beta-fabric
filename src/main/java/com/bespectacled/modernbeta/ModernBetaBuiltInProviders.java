@@ -84,8 +84,8 @@ public class ModernBetaBuiltInProviders {
     public static void registerCaveBiomeProvider() {
         Registries.CAVE_BIOME.register(BuiltInTypes.DEFAULT_ID, NoCaveBiomeProvider::new);
         Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.NONE.name, NoCaveBiomeProvider::new);
-        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.SINGLE.name, SingleCaveBiomeProvider::new);
-        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.NOISE.name, NoiseCaveBiomeProvider::new);
+        //Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.SINGLE.name, SingleCaveBiomeProvider::new);
+        //Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.NOISE.name, NoiseCaveBiomeProvider::new);
         //Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.BETA.name, BetaCaveBiomeProvider::new);
     }
     
