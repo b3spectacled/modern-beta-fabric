@@ -133,10 +133,6 @@ public class OldBiomeSource extends BiomeSource {
         return this.biomeRegistry;
     }
     
-    public long getWorldSeed() {
-        return this.seed;
-    }
-    
     public BiomeProvider getBiomeProvider() {
         return this.biomeProvider;
     }

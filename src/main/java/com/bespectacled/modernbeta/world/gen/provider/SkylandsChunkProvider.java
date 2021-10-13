@@ -50,7 +50,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         int chunkZ = chunkPos.z;
 
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         
         double[] surfaceNoise = this.createSurfaceArray();
         surfaceNoise = surfaceNoiseOctaves.sampleArrShelf(surfaceNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
@@ -66,7 +66,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                 int surfaceDepth = (int) (surfaceNoise[localZ + localX * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(x, topY, z));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, topY, z));
                 
                 BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -74,18 +74,18 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
                 
-                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable, blockColumn);
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos, blockColumn);
 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.minY; y--) {
-                    mutable.set(localX, y, localZ);
+                    pos.set(localX, y, localZ);
                     
                     // Skip if used custom surface generation or if below minimum surface level.
                     if (usedCustomSurface) {
                         continue;
                     }
                     
-                    BlockState blockState = chunk.getBlockState(mutable);
+                    BlockState blockState = chunk.getBlockState(pos);
                     
                     if (blockState.isAir()) { // Skip if air block
                         flag = -1;
@@ -108,7 +108,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                             topBlock : 
                             fillerBlock;
                         
-                        chunk.setBlockState(mutable, blockState, false);
+                        chunk.setBlockState(pos, blockState, false);
 
                         continue;
                     }
@@ -118,7 +118,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                     }
 
                     flag--;
-                    chunk.setBlockState(mutable, fillerBlock, false);
+                    chunk.setBlockState(pos, fillerBlock, false);
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
                     if (flag == 0 && fillerBlock.isOf(BlockStates.SAND.getBlock())) {

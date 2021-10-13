@@ -60,7 +60,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         int bedrockFloor = this.minY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos.Mutable pos = new BlockPos.Mutable();
 
         AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
@@ -83,7 +83,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
 
                 int flag = -1;
                 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(x, topY, z));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, topY, z));
 
                 BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -91,15 +91,15 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
 
-                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable, blockColumn);
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos, blockColumn);
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.minY; y--) {
-                    mutable.set(localX, y, localZ);
+                    pos.set(localX, y, localZ);
 
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= bedrockFloor + rand.nextInt(6) - 1) {
-                        chunk.setBlockState(mutable, BlockStates.BEDROCK, false);
+                        chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
                     }
                     
@@ -109,7 +109,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                     // since the game checks all adjacent blocks for a particular position,
                     // even if the downward direction is below the world limit!!
                     if (y <= this.minY) {
-                        chunk.setBlockState(mutable, BlockStates.BEDROCK, false);
+                        chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
                     }
                     
@@ -123,7 +123,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
 
-                    BlockState blockState = chunk.getBlockState(mutable);
+                    BlockState blockState = chunk.getBlockState(pos);
 
                     if (blockState.isAir()) { // Skip if air block
                         flag = -1;
@@ -156,18 +156,18 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                                 boolean isAir = fluidBlock == null;
                                 topBlock = isAir ? BlockStates.AIR : fluidBlock;
                                 
-                                this.scheduleFluidTick(chunk, aquiferSampler, mutable, topBlock);
+                                this.scheduleFluidTick(chunk, aquiferSampler, pos, topBlock);
                             }
                             
-                            blockState = (y >= this.seaLevel - 1) ? 
+                            blockState = (y >= this.seaLevel - 1 || (y < this.seaLevel - 1 && chunk.getBlockState(pos.up()).isAir())) ? 
                                 topBlock : 
                                 fillerBlock;
                             
-                            chunk.setBlockState(mutable, blockState, false);
+                            chunk.setBlockState(pos, blockState, false);
                             
                         } else if (flag > 0) { 
                             flag--;
-                            chunk.setBlockState(mutable, fillerBlock, false);
+                            chunk.setBlockState(pos, fillerBlock, false);
                         }
                     }
                 }
