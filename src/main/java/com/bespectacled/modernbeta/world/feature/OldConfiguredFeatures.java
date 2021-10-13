@@ -49,6 +49,7 @@ public class OldConfiguredFeatures {
         private static final int XZ_SPREAD = 7;
         private static final int Y_SPREAD = 3;
         private static final int TRIES = 64;
+        private static final int GRASS_TRIES = 64;
         
         public static final RandomPatchFeatureConfig GRASS_CONFIG;
         public static final RandomPatchFeatureConfig LUSH_GRASS_CONFIG;
@@ -70,8 +71,8 @@ public class OldConfiguredFeatures {
         static {
             // # of tries in Beta equivalent is 128, but here it seems to generate too much grass,
             // so keep # of tries at 64 for now.
-            GRASS_CONFIG = createRandomPatchConfig(BlockStateProvider.of(Blocks.GRASS), TRIES);
-            LUSH_GRASS_CONFIG = createRandomPatchConfig(new WeightedBlockStateProvider(pool().add(Blocks.GRASS.getDefaultState(), 1).add(Blocks.FERN.getDefaultState(), 4)), 64);
+            GRASS_CONFIG = createRandomPatchConfig(BlockStateProvider.of(Blocks.GRASS), GRASS_TRIES);
+            LUSH_GRASS_CONFIG = createRandomPatchConfig(new WeightedBlockStateProvider(pool().add(Blocks.GRASS.getDefaultState(), 1).add(Blocks.FERN.getDefaultState(), 4)), GRASS_TRIES);
         
             DANDELION_CONFIG = createRandomPatchConfig(BlockStateProvider.of(Blocks.DANDELION), TRIES);
             POPPY_CONFIG = createRandomPatchConfig(BlockStateProvider.of(Blocks.POPPY), TRIES);
@@ -83,7 +84,8 @@ public class OldConfiguredFeatures {
     private static final Map<Identifier, ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = new HashMap<Identifier, ConfiguredFeature<?, ?>>();
     
     // Heightmap World Surface Decorator
-    private static final ConfiguredDecorator<?> OLD_HEIGHTMAP = Decorator.RANGE.configure(new RangeDecoratorConfig(UniformHeightProvider.create(YOffset.getBottom(), YOffset.getTop()))).spreadHorizontally();
+    //private static final ConfiguredDecorator<?> OLD_HEIGHTMAP = Decorator.RANGE.configure(new RangeDecoratorConfig(UniformHeightProvider.create(YOffset.fixed(0), YOffset.fixed(127)))).spreadHorizontally();
+    private static final ConfiguredDecorator<?> OLD_HEIGHTMAP = ConfiguredFeatures.Decorators.HEIGHTMAP_WORLD_SURFACE.spreadHorizontally();
     
     // Custom Features
     public static final ConfiguredFeature<?, ?> BETA_FREEZE_TOP_LAYER = register("beta_freeze_top_layer", OldFeatures.BETA_FREEZE_TOP_LAYER.configure(FeatureConfig.DEFAULT));
@@ -110,7 +112,7 @@ public class OldConfiguredFeatures {
     public static final ConfiguredFeature<?, ?> PATCH_GRASS_PLAINS_10 = register("patch_grass_plains_10", Feature.RANDOM_PATCH.configure(OldRandomPatchConfigs.GRASS_CONFIG).decorate(OLD_HEIGHTMAP).repeat(10));
     public static final ConfiguredFeature<?, ?> PATCH_GRASS_TAIGA_1 = register("patch_grass_taiga_1", Feature.RANDOM_PATCH.configure(OldRandomPatchConfigs.GRASS_CONFIG).decorate(OLD_HEIGHTMAP).repeat(1));
     public static final ConfiguredFeature<?, ?> PATCH_GRASS_RAINFOREST_10 = register("patch_grass_rainforest_10", Feature.RANDOM_PATCH.configure(OldRandomPatchConfigs.LUSH_GRASS_CONFIG).decorate(OLD_HEIGHTMAP).repeat(10));
-    public static final ConfiguredFeature<?, ?> PATCH_GRASS_ALPHA_2 = register("patch_grass_alpha_2", Feature.RANDOM_PATCH.configure(ConfiguredFeatures.Configs.GRASS_CONFIG).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP).repeat(1).decorate(Decorator.COUNT_EXTRA.configure(new CountExtraDecoratorConfig(0, 0.1f, 1))));
+    public static final ConfiguredFeature<?, ?> PATCH_GRASS_ALPHA_2 = register("patch_grass_alpha_2",Feature.RANDOM_PATCH.configure(OldRandomPatchConfigs.GRASS_CONFIG).decorate(OLD_HEIGHTMAP).repeat(1).decorate(Decorator.COUNT_EXTRA.configure(new CountExtraDecoratorConfig(0, 0.1f, 1))));
     
     // Classic Trees
     public static final ConfiguredFeature<?, ?> TREES_ALPHA = register("trees_alpha", Feature.RANDOM_SELECTOR.configure(new RandomFeatureConfig(ImmutableList.<RandomFeatureEntry>of(OLD_FANCY_OAK.withChance(0.1f)), ConfiguredFeatures.OAK_CHECKED)).decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP_OCEAN_FLOOR_NO_WATER).decorate(OldDecorators.COUNT_ALPHA_NOISE.configure(new CountOldNoiseDecoratorConfig(0, 0.1f, 1))));
