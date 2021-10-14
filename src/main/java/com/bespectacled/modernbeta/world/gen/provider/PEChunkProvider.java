@@ -70,14 +70,12 @@ public class PEChunkProvider extends NoiseChunkProvider {
         
         if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource) {
             BiomeProvider biomeProvider = oldBiomeSource.getBiomeProvider();
+            boolean isClimateSampler = biomeProvider instanceof ClimateSampler;
             
             // Use climate sampler if:
             // Biome provider is climate sampler and sampleClimate is enabled.
-            // Biome provider is BetaClimateSampler, even if sampleClimate is disabled, for reuse.
-            if (
-                biomeProvider instanceof ClimateSampler sampler && sampleClimate ||
-                biomeProvider instanceof ClimateSampler sampler && biomeProvider instanceof PEBiomeProvider
-            ) {
+            // Biome provider is BetaBiomeProvider, even if sampleClimate is disabled, for reuse.
+            if (isClimateSampler && sampleClimate || isClimateSampler && biomeProvider instanceof PEBiomeProvider) {
                 climateSampler = (ClimateSampler)biomeProvider;
             }
         }
