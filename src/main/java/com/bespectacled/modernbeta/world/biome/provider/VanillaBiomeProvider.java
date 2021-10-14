@@ -64,5 +64,4 @@ public class VanillaBiomeProvider extends BiomeProvider {
         
         return isValid;
     }
-
 }
