@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -152,8 +152,8 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, 0, absZ));
                 
                 boolean isCold;
-                if (biomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler) {
-                    isCold = climateSampler.sampleTemp(absX, absZ) < 0.5D;
+                if (biomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider) {
+                    isCold = climateBiomeProvider.getClimateSampler().sampleTemp(absX, absZ) < 0.5D;
                 } else {
                     isCold = biome.isCold(mutable);
                 }
