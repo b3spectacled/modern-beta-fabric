@@ -78,9 +78,9 @@ public class NoodleCaveSampler {
             return weight;
         }
         
-        double lerpedReducingNoise = MathHelper.clampedLerpFromProgress(weightReducingNoise, -1.0, 1.0, 0.05, 0.1);
-        double ridgedFirstNoise = Math.abs(1.5 * firstWeightNoise) - lerpedReducingNoise;
-        double ridgedSecondNoise = Math.abs(1.5 * secondWeightNoise) - lerpedReducingNoise;
+        double weightOffset = MathHelper.clampedLerpFromProgress(weightReducingNoise, -1.0, 1.0, 0.05, 0.1);
+        double ridgedFirstNoise = Math.abs(1.5 * firstWeightNoise) - weightOffset;
+        double ridgedSecondNoise = Math.abs(1.5 * secondWeightNoise) - weightOffset;
         double selectedNoise = Math.max(ridgedFirstNoise, ridgedSecondNoise);
         
         return Math.min(weight, selectedNoise);

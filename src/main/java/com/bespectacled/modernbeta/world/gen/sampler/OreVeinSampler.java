@@ -82,11 +82,12 @@ public class OreVeinSampler {
             return null;
         
         if (this.shouldPlaceOreBlock(firstOrePlacementNoise, secondOrePlacementNoise)) {
-            double lerpedFreqNoise = MathHelper.clampedLerpFromProgress(Math.abs(oreFrequencyNoise), 0.5, 0.6f, 0.1f, 0.3f);
+            double oreVeinSelector = MathHelper.clampedLerpFromProgress(Math.abs(oreFrequencyNoise), 0.5, 0.6f, 0.1f, 0.3f);
             
-            if (random.nextFloat() < lerpedFreqNoise && this.oreChanceNoiseSampler.sample(x, y, z) > -0.3) {
+            if (random.nextFloat() < oreVeinSelector && this.oreChanceNoiseSampler.sample(x, y, z) > -0.3) {
                 return random.nextFloat() < 0.02f ? rawBlock : oreBlock;
             }
+            
             return stoneBlock;
         }
         
