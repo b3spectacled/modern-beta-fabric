@@ -18,7 +18,7 @@ import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
 import com.bespectacled.modernbeta.client.color.BetaBlockColors;
 import com.bespectacled.modernbeta.util.OldClientWorld;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
+import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampler;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.fabricmc.api.EnvType;

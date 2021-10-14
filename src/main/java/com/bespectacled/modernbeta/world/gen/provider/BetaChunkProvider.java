@@ -14,7 +14,7 @@ import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
+import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampler;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 

@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.world.biome.beta.climate;
+package com.bespectacled.modernbeta.world.biome.provider.climate;
 
 import java.util.Random;
 

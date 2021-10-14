@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.world.biome.pe.climate;
+package com.bespectacled.modernbeta.world.biome.provider.climate;
 
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;

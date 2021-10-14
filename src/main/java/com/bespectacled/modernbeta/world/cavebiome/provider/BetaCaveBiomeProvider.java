@@ -7,9 +7,8 @@ import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMap;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
-
+import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
+import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;

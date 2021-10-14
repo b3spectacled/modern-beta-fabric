@@ -14,7 +14,7 @@ import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.util.GuiUtil;
-import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateMap;
+import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.NbtString;
