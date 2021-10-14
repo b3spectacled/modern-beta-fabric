@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtByte;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.registry.BuiltinRegistries;
 
 public class InfClimateWorldScreen extends InfWorldScreen {
     private static final String SAMPLE_CLIMATE_DISPLAY_STRING = "createWorld.customize.inf.sampleClimate";
@@ -32,7 +33,9 @@ public class InfClimateWorldScreen extends InfWorldScreen {
         super.init();
         
         String biomeType = NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.BIOME_TYPE));
-        boolean climateSampleable = Registries.BIOME.get(biomeType).apply(0L, new NbtCompound(), null) instanceof ClimateBiomeProvider;
+        boolean climateSampleable = Registries.BIOME
+            .get(biomeType)
+            .apply(0L, new NbtCompound(), BuiltinRegistries.BIOME) instanceof ClimateBiomeProvider;
         
         BooleanCyclingOptionWrapper sampleClimate = new BooleanCyclingOptionWrapper(
             SAMPLE_CLIMATE_DISPLAY_STRING,

@@ -22,17 +22,19 @@ public abstract class ClimateBiomeProvider extends BiomeProvider {
         this.skyClimateSampler = skyClimateSampler;
     }
     
-    public abstract boolean sampleBiomeColor();
-    
-    public boolean sampleSkyColor() {
-        return false;
-    }
-    
     public ClimateSampler getClimateSampler() {
         return this.climateSampler;
     }
     
     public SkyClimateSampler getSkyClimateSampler() {
         return this.skyClimateSampler;
+    }
+    
+    public boolean sampleBiomeColor() {
+        return false;
+    }
+    
+    public boolean sampleSkyColor() {
+        return false;
     }
 }
