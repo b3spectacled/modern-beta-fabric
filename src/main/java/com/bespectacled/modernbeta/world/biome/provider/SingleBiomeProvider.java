@@ -2,24 +2,27 @@ package com.bespectacled.modernbeta.world.biome.provider;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.world.biome.single.climate.SingleClimateSampler;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BuiltinBiomes;
 
-public class SingleBiomeProvider extends BiomeProvider {
+public class SingleBiomeProvider extends ClimateBiomeProvider {
     private static final Identifier DEFAULT_BIOME_ID = new Identifier("plains");
     
     private final Identifier biomeId;
     
     public SingleBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
-        super(seed, settings, biomeRegistry);
+        super(seed, settings, biomeRegistry, new SingleClimateSampler(getBiome(settings, biomeRegistry)));
         
         this.biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
     }
@@ -32,5 +35,12 @@ public class SingleBiomeProvider extends BiomeProvider {
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
         return Arrays.asList(RegistryKey.of(Registry.BIOME_KEY, this.biomeId));
+    }
+    
+    private static Biome getBiome(NbtCompound settings, Registry<Biome> biomeRegistry) {
+        Identifier biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
+        Optional<Biome> biome = biomeRegistry.getOrEmpty(biomeId);
+        
+        return biome.orElse(BuiltinBiomes.PLAINS);
     }
 }
