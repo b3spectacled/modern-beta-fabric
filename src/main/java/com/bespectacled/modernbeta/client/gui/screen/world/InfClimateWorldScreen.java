@@ -33,9 +33,11 @@ public class InfClimateWorldScreen extends InfWorldScreen {
         super.init();
         
         String biomeType = NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.BIOME_TYPE));
+        
         boolean climateSampleable = Registries.BIOME
             .get(biomeType)
             .apply(0L, new NbtCompound(), BuiltinRegistries.BIOME) instanceof ClimateBiomeProvider;
+        boolean isDifferentBiomeType = !this.worldProvider.getBiomeProvider().equals(biomeType); 
         
         BooleanCyclingOptionWrapper sampleClimate = new BooleanCyclingOptionWrapper(
             SAMPLE_CLIMATE_DISPLAY_STRING,
@@ -44,7 +46,9 @@ public class InfClimateWorldScreen extends InfWorldScreen {
             this.client.textRenderer.wrapLines(new TranslatableText(SAMPLE_CLIMATE_TOOLTIP), 200)
         );
         
-        if (climateSampleable) {
+        // Check if biome type is ClimateBiomeProvider
+        // and biome type is different from the default/base one.
+        if (climateSampleable && isDifferentBiomeType) {
             this.addOption(sampleClimate);
         }
     }
