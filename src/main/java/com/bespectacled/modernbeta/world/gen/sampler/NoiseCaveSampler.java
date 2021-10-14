@@ -94,12 +94,12 @@ public class NoiseCaveSampler {
     }
 
     private double getPillarNoise(int x, int y, int z) {
-        double pillarFalloffNoise = NoiseHelper.lerpFromProgress(this.pillarFalloffNoise, x, y, z, 0.0, 2.0);
-        double pillarScaleNoise = NoiseHelper.lerpFromProgress(this.pillarScaleNoise, x, y, z, 0.0, 1.1);
+        double pillarFalloff = NoiseHelper.lerpFromProgress(this.pillarFalloffNoise, x, y, z, 0.0, 2.0);
+        double pillarScale = NoiseHelper.lerpFromProgress(this.pillarScaleNoise, x, y, z, 0.0, 1.1);
         
-        pillarScaleNoise = Math.pow(pillarScaleNoise, 3.0);
+        pillarScale = Math.pow(pillarScale, 3.0);
         double pillarNoise = this.pillarNoise.sample((double)x * 25.0, (double)y * 0.3, (double)z * 25.0);
-        pillarNoise = pillarScaleNoise * (pillarNoise * 2.0 - pillarFalloffNoise);
+        pillarNoise = pillarScale * (pillarNoise * 2.0 - pillarFalloff);
         
         if (pillarNoise > 0.03) {
             return pillarNoise;
@@ -116,15 +116,15 @@ public class NoiseCaveSampler {
 
     private double getTunnelNoise(int x, int y, int z) {
         double tunnelScaleNoise = this.tunnelScaleNoise.sample(x * 2, y, z * 2);
-        double tunnelNoise = NoiseCaveSampler.CaveScaler.scaleTunnels(tunnelScaleNoise);
+        double tunnelScale = NoiseCaveSampler.CaveScaler.scaleTunnels(tunnelScaleNoise);
         
-        double lerpedTunnelFalloffNoise = NoiseHelper.lerpFromProgress(this.tunnelFalloffNoise, x, y, z, 0.065, 0.088);
+        double tunnelFallOff = NoiseHelper.lerpFromProgress(this.tunnelFalloffNoise, x, y, z, 0.065, 0.088);
         
-        double tunnelNoise1 = sample(this.tunnelNoise1, x, y, z, tunnelNoise);
-        double ridgedTunnelNoise1 = Math.abs(tunnelNoise * tunnelNoise1) - lerpedTunnelFalloffNoise;
+        double tunnelNoise1 = sample(this.tunnelNoise1, x, y, z, tunnelScale);
+        double ridgedTunnelNoise1 = Math.abs(tunnelScale * tunnelNoise1) - tunnelFallOff;
         
-        double tunnelNoise2 = sample(this.tunnelNoise2, x, y, z, tunnelNoise);
-        double ridgedTunnelNoise2 = Math.abs(tunnelNoise * tunnelNoise2) - lerpedTunnelFalloffNoise;
+        double tunnelNoise2 = sample(this.tunnelNoise2, x, y, z, tunnelScale);
+        double ridgedTunnelNoise2 = Math.abs(tunnelScale * tunnelNoise2) - tunnelFallOff;
         
         return clamp(Math.max(ridgedTunnelNoise1, ridgedTunnelNoise2));
     }
@@ -133,12 +133,12 @@ public class NoiseCaveSampler {
         double caveScaleNoise = this.caveScaleNoise.sample(x * 2, y, z * 2);
         double caveScale = CaveScaler.scaleCaves(caveScaleNoise);
         
-        double caveFalloffNoise = NoiseHelper.lerpFromProgress(this.caveFalloffNoise, x * 2, y, z * 2, 0.6, 1.3);
+        double caveFalloff = NoiseHelper.lerpFromProgress(this.caveFalloffNoise, x * 2, y, z * 2, 0.6, 1.3);
         double scaledCaveScaleNoise = NoiseCaveSampler.sample(this.scaledCaveScaleNoise, x, y, z, caveScale);
         
-        double ridgedCaveScaleNoise = Math.abs(caveScale * scaledCaveScaleNoise) - 0.083 * caveFalloffNoise;
+        double ridgedCaveScaleNoise = Math.abs(caveScale * scaledCaveScaleNoise) - 0.083 * caveFalloff;
         double lerpedHorizCaveNoise = NoiseHelper.lerpFromProgress(this.horizontalCaveNoise, x, 0.0, z, this.minY, 8.0);
-        double ridgedHorizCaveNoise = Math.abs(lerpedHorizCaveNoise - (double)y / 8.0) - 1.0 * caveFalloffNoise;
+        double ridgedHorizCaveNoise = Math.abs(lerpedHorizCaveNoise - (double)y / 8.0) - 1.0 * caveFalloff;
         
         ridgedHorizCaveNoise = ridgedHorizCaveNoise * ridgedHorizCaveNoise * ridgedHorizCaveNoise;
         
@@ -146,9 +146,9 @@ public class NoiseCaveSampler {
     }
 
     private double getTunnelOffsetNoise(int x, int y, int z) {
-        double offsetScaleNoise = NoiseHelper.lerpFromProgress(this.offsetScaleNoise, x, y, z, 0.0, 0.1);
+        double offsetScale = NoiseHelper.lerpFromProgress(this.offsetScaleNoise, x, y, z, 0.0, 0.1);
         
-        return (0.4 - Math.abs(this.offsetNoise.sample(x, y, z))) * offsetScaleNoise;
+        return (0.4 - Math.abs(this.offsetNoise.sample(x, y, z))) * offsetScale;
     }
 
     private static double clamp(double value) {
