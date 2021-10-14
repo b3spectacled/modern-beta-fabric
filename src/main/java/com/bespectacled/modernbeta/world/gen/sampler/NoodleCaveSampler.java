@@ -8,7 +8,7 @@ import net.minecraft.world.gen.random.AbstractRandom;
 public class NoodleCaveSampler {
     private final DoublePerlinNoiseSampler frequencyNoiseSampler;
     private final DoublePerlinNoiseSampler weightReducingNoiseSampler;
-    private final DoublePerlinNoiseSampler firstWeightNoiseSampelr;
+    private final DoublePerlinNoiseSampler firstWeightNoiseSampler;
     private final DoublePerlinNoiseSampler secondWeightNoiseSampler;
     
     private final int horizontalNoiseResolution;
@@ -17,7 +17,7 @@ public class NoodleCaveSampler {
     public NoodleCaveSampler(AbstractRandom random, int horizontalNoiseResolution, int verticalNoiseResolution) {
         this.frequencyNoiseSampler = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0);
         this.weightReducingNoiseSampler = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0);
-        this.firstWeightNoiseSampelr = DoublePerlinNoiseSampler.create(random.derive(), -7, 1.0);
+        this.firstWeightNoiseSampler = DoublePerlinNoiseSampler.create(random.derive(), -7, 1.0);
         this.secondWeightNoiseSampler = DoublePerlinNoiseSampler.create(random.derive(), -7, 1.0);
         
         this.horizontalNoiseResolution = horizontalNoiseResolution;
@@ -33,7 +33,7 @@ public class NoodleCaveSampler {
     }
 
     public void sampleFirstWeightNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
-        this.sample(buffer, x, z, minY, noiseSizeY, this.firstWeightNoiseSampelr, 2.6666666666666665, 2.6666666666666665);
+        this.sample(buffer, x, z, minY, noiseSizeY, this.firstWeightNoiseSampler, 2.6666666666666665, 2.6666666666666665);
     }
 
     public void sampleSecondWeightNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {

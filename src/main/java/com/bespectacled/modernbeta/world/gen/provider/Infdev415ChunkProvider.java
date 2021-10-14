@@ -20,6 +20,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 
 public class Infdev415ChunkProvider extends NoiseChunkProvider {
@@ -200,7 +201,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             ) / 2.0;
             
             // Do not clamp noise if generating with noise caves!
-            if (mainNoiseVal < -1) {
+            if (mainNoiseVal < -1.0) {
                 density = this.minLimitNoiseOctaves.sample(
                     noiseX * coordinateScale, 
                     noiseY * heightScale, 
@@ -242,7 +243,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             double heightmapDensity = density;
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(density, 8.5, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, 50.0, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applyBottomSlide(density, noiseY, -3);
@@ -254,7 +255,10 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
     }
     
     private double clampNoise(double density) {
-        return MathHelper.clamp(density, -10D, 10D);
+        if (!this.generateNoiseCaves)
+            density = MathHelper.clamp(density, -10D, 10D);
+        
+        return density;
     }
     
     private double getOffset(int noiseY) {
@@ -267,5 +271,15 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             offset *= 3.0;
         
         return offset;
+    }
+    
+    @Override
+    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
+        //if (chunkStatus == ChunkStatus.SURFACE)
+        //    return true;
+        //if (chunkStatus == ChunkStatus.CARVERS)
+        //    return true;
+        
+        return false;
     }
 }
