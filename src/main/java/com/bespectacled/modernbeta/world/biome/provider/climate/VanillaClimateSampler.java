@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.world.biome.provider.climate;
 
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeAccess;
@@ -21,12 +22,16 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
     
     @Override
     public double sampleTemp(int x, int z) {
-        return HorizontalVoronoiBiomeAccessType.INSTANCE.getBiome(this.seed, x, 0, z, this).getTemperature();
+        double temp = HorizontalVoronoiBiomeAccessType.INSTANCE.getBiome(this.seed, x, 0, z, this).getTemperature();
+        
+        return MathHelper.clamp(temp, 0.0, 1.0);
     }
 
     @Override
     public double sampleRain(int x, int z) {
-        return HorizontalVoronoiBiomeAccessType.INSTANCE.getBiome(this.seed, x, 0, z, this).getDownfall();
+        double rain = HorizontalVoronoiBiomeAccessType.INSTANCE.getBiome(this.seed, x, 0, z, this).getDownfall();
+        
+        return MathHelper.clamp(rain, 0.0, 1.0);
     }
 
     @Override
