@@ -17,8 +17,9 @@ public abstract class BiomeProvider {
      * 
      * @param seed World seed.
      * @param settings Biome settings.
+     * @param biomeRegistry TODO
      */
-    public BiomeProvider(long seed, NbtCompound settings) {
+    public BiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         this.seed = seed;
         this.settings = settings;
     }

@@ -32,7 +32,7 @@ public class InfClimateWorldScreen extends InfWorldScreen {
         super.init();
         
         String biomeType = NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.BIOME_TYPE));
-        boolean climateSampleable = Registries.BIOME.get(biomeType).apply(0L, new NbtCompound()) instanceof ClimateSampler;
+        boolean climateSampleable = Registries.BIOME.get(biomeType).apply(0L, new NbtCompound(), null) instanceof ClimateSampler;
         
         BooleanCyclingOptionWrapper sampleClimate = new BooleanCyclingOptionWrapper(
             SAMPLE_CLIMATE_DISPLAY_STRING,

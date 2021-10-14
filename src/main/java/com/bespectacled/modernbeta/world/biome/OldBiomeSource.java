@@ -41,7 +41,7 @@ public class OldBiomeSource extends BiomeSource {
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, NbtCompound settings) {
         super(Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings))
-            .apply(seed, settings)
+            .apply(seed, settings, biomeRegistry)
             .getBiomesForRegistry()
             .stream()
             .map((registryKey) -> (Biome) biomeRegistry.get(registryKey))
@@ -52,7 +52,7 @@ public class OldBiomeSource extends BiomeSource {
         this.biomeRegistry = biomeRegistry;
         this.biomeProviderSettings = settings;
         
-        this.biomeProvider = Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings)).apply(seed, settings);
+        this.biomeProvider = Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings)).apply(seed, settings, biomeRegistry);
         this.biomeHeightSampler = BiomeHeightSampler.DEFAULT;
     }
     
