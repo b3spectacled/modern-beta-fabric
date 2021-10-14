@@ -13,7 +13,7 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.mersenne.MTRandom;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.pe.climate.PEClimateSampler;
+import com.bespectacled.modernbeta.world.biome.provider.climate.PEClimateSampler;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.PESpawnLocator;
 

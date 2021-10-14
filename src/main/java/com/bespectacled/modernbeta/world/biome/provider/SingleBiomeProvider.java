@@ -7,7 +7,7 @@ import java.util.Optional;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.world.biome.single.climate.SingleClimateSampler;
+import com.bespectacled.modernbeta.world.biome.provider.climate.SingleClimateSampler;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
