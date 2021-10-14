@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -15,7 +15,6 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
-import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
@@ -67,15 +66,16 @@ public class BetaChunkProvider extends NoiseChunkProvider {
 
         ClimateSampler climateSampler = new BetaClimateSampler(chunkGenerator.getWorldSeed());
         
-        if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource) {
-            BiomeProvider biomeProvider = oldBiomeSource.getBiomeProvider();
-            boolean isClimateSampler = biomeProvider instanceof ClimateSampler;
+        if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource && 
+            oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider
+        ) {
+            ClimateSampler biomeProviderSampler = climateBiomeProvider.getClimateSampler();
             
             // Use climate sampler if:
-            // Biome provider is climate sampler and sampleClimate is enabled.
-            // Biome provider is BetaBiomeProvider, even if sampleClimate is disabled, for reuse.
-            if (isClimateSampler && sampleClimate || isClimateSampler && biomeProvider instanceof BetaBiomeProvider) {
-                climateSampler = (ClimateSampler)biomeProvider;
+            // sampleClimate is enabled, or
+            // Climate sampler is BetaClimateSampler, even if sampleClimate is disabled, for reuse.
+            if (sampleClimate || biomeProviderSampler instanceof BetaClimateSampler) {
+                climateSampler = biomeProviderSampler;
             }
         }
         

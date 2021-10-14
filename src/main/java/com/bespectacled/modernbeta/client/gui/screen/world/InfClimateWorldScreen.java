@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.BooleanCyclingOptionWrapper;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
-import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 
@@ -32,7 +32,7 @@ public class InfClimateWorldScreen extends InfWorldScreen {
         super.init();
         
         String biomeType = NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.BIOME_TYPE));
-        boolean climateSampleable = Registries.BIOME.get(biomeType).apply(0L, new NbtCompound(), null) instanceof ClimateSampler;
+        boolean climateSampleable = Registries.BIOME.get(biomeType).apply(0L, new NbtCompound(), null) instanceof ClimateBiomeProvider;
         
         BooleanCyclingOptionWrapper sampleClimate = new BooleanCyclingOptionWrapper(
             SAMPLE_CLIMATE_DISPLAY_STRING,
