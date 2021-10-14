@@ -9,6 +9,9 @@ public class NbtTags {
     public static final String GEN_OCEAN_SHRINES = "generateOceanShrines";
     public static final String GEN_MONUMENTS = "generateMonuments";
     
+    // Beta/PE Climate
+    public static final String SAMPLE_CLIMATE = "sampleClimate";
+    
     // Infdev 227
     public static final String GEN_INFDEV_PYRAMID = "generateInfdevPyramid";
     public static final String GEN_INFDEV_WALL = "generateInfdevWall";

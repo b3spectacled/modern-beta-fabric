@@ -29,7 +29,11 @@ public class ChunkProviderSettings {
     }
     
     public static NbtCompound createSettingsBeta() {
-        return createSettingsInf(BuiltInTypes.Chunk.BETA.name);
+        NbtCompound settings = createSettingsInf(BuiltInTypes.Chunk.BETA.name);
+        
+        settings.putBoolean(NbtTags.SAMPLE_CLIMATE, CONFIG.infGenConfig.sampleClimate);
+        
+        return settings;
     }
     
     public static NbtCompound createSettingsSkylands() {
@@ -77,6 +81,7 @@ public class ChunkProviderSettings {
     public static NbtCompound createSettingsIslands() {
         NbtCompound settings = createSettingsInf(BuiltInTypes.Chunk.BETA_ISLANDS.name);
         
+        settings.putBoolean(NbtTags.SAMPLE_CLIMATE, CONFIG.infGenConfig.sampleClimate);
         settings.putBoolean(NbtTags.GEN_OUTER_ISLANDS, CONFIG.islandGenConfig.generateOuterIslands);
         settings.putInt(NbtTags.CENTER_ISLAND_RADIUS, CONFIG.islandGenConfig.centerIslandRadius);
         settings.putFloat(NbtTags.CENTER_ISLAND_FALLOFF, CONFIG.islandGenConfig.centerIslandFalloff);
@@ -89,6 +94,10 @@ public class ChunkProviderSettings {
     }
     
     public static NbtCompound createSettingsPE() {
-        return createSettingsInf(BuiltInTypes.Chunk.PE.name);
+        NbtCompound settings = createSettingsInf(BuiltInTypes.Chunk.PE.name);
+        
+        settings.putBoolean(NbtTags.SAMPLE_CLIMATE, CONFIG.infGenConfig.sampleClimate);
+        
+        return settings;
     }
 }

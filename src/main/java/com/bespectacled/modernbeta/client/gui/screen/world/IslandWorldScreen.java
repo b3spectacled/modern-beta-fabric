@@ -14,7 +14,7 @@ import net.minecraft.nbt.NbtFloat;
 import net.minecraft.nbt.NbtInt;
 import net.minecraft.text.TranslatableText;
 
-public class IslandWorldScreen extends InfWorldScreen {
+public class IslandWorldScreen extends InfClimateWorldScreen {
     private static final String GENERATE_OUTER_ISLANDS_DISPLAY_STRING = "createWorld.customize.island.generateOuterIslands";
     private static final String CENTER_ISLAND_RADIUS_DISPLAY_STRING = "createWorld.customize.island.centerIslandRadius";
     private static final String CENTER_ISLAND_FALLOFF_DISPLAY_STRING = "createWorld.customize.island.centerIslandFalloff";

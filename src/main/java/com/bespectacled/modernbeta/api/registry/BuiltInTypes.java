@@ -49,7 +49,8 @@ public final class BuiltInTypes {
         INF("inf"),
         INFDEV_227("infdev_227"),
         INDEV("indev"),
-        ISLAND("island")
+        ISLAND("island"),
+        INF_CLIMATE("inf_climate")
         ;
         
         public final String name;

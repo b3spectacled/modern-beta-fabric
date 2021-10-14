@@ -2,6 +2,8 @@ package com.bespectacled.modernbeta.world.gen.provider;
 
 import java.util.Random;
 
+import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -9,8 +11,11 @@ import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
+import com.bespectacled.modernbeta.util.NbtTags;
+import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.beta.climate.BetaClimateSampler;
+import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
@@ -52,13 +57,31 @@ public class BetaChunkProvider extends NoiseChunkProvider {
         
         this.setForestOctaves(forestNoiseOctaves);
         
-        // Get climate sampler from biome provider if exists,
+        // Get climate sampler from biome provider if exists and enabled,
         // else create new default Beta climate sampler.
-        this.climateSampler = 
-            chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource &&
-            oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler ?
-                climateSampler :
-                new BetaClimateSampler(chunkGenerator.getWorldSeed());
+        boolean sampleClimate = NbtUtil.readBoolean(
+            NbtTags.SAMPLE_CLIMATE, 
+            providerSettings, 
+            ModernBeta.GEN_CONFIG.infGenConfig.sampleClimate
+        );
+
+        ClimateSampler climateSampler = new BetaClimateSampler(chunkGenerator.getWorldSeed());
+        
+        if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource) {
+            BiomeProvider biomeProvider = oldBiomeSource.getBiomeProvider();
+            
+            // Use climate sampler if:
+            // Biome provider is climate sampler and sampleClimate is enabled.
+            // Biome provider is BetaBiomeProvider, even if sampleClimate is disabled, for reuse.
+            if (
+                biomeProvider instanceof ClimateSampler sampler && sampleClimate ||
+                biomeProvider instanceof ClimateSampler sampler && biomeProvider instanceof BetaBiomeProvider
+            ) {
+                climateSampler = (ClimateSampler)biomeProvider;
+            }
+        }
+        
+        this.climateSampler = climateSampler;
         this.spawnLocator = new BeachSpawnLocator(this, this.beachNoiseOctaves);
     }
     

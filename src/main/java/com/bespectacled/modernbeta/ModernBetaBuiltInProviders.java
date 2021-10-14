@@ -6,6 +6,7 @@ import com.bespectacled.modernbeta.client.gui.screen.biome.BetaBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.biome.SingleBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.BaseWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.IndevWorldScreen;
+import com.bespectacled.modernbeta.client.gui.screen.world.InfClimateWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.InfWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.Infdev227WorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.IslandWorldScreen;
@@ -104,6 +105,7 @@ public class ModernBetaBuiltInProviders {
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INFDEV_227.name, Infdev227WorldScreen::new);
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INDEV.name, IndevWorldScreen::new);
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.ISLAND.name, IslandWorldScreen::new);
+        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF_CLIMATE.name, InfClimateWorldScreen::new);
     }
     
     // Register default biome settings screens (Note: Match identifiers with biome ids!)

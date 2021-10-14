@@ -39,11 +39,13 @@
     "createWorld.customize.inf.generateOceans": "Assign Ocean Biomes",
     "createWorld.customize.inf.generateOceanShrines": "Generate Ocean Shrines",
     "createWorld.customize.inf.generateMonuments": "Generate Monuments",
+    "createWorld.customize.inf.sampleClimate": "Sample Climate",
     
     "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",
     "createWorld.customize.infdev.generateInfdevWall": "Generate Infdev Obsidian Wall",
     
     "createWorld.customize.inf.generateOceans.tooltip": "Replace biomes in bodies of water with ocean biomes.",
+    "createWorld.customize.inf.sampleClimate.tooltip": "Sample biome climate for terrain generation.",
     
     "createWorld.customize.vanilla.vanillaBiomeSize": "Biome Size",
     "createWorld.customize.vanilla.vanillaOceanBiomeSize": "Ocean Biome Size",

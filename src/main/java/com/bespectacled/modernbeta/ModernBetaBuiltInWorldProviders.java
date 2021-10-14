@@ -38,7 +38,7 @@ public class ModernBetaBuiltInWorldProviders {
             BuiltInTypes.Biome.BETA.name,
             BuiltInTypes.CaveBiome.NONE.name, 
             BetaBiomes.FOREST_ID.toString(), 
-            BuiltInTypes.WorldScreen.INF.name,
+            BuiltInTypes.WorldScreen.INF_CLIMATE.name,
             true,
             false
         );
@@ -127,7 +127,7 @@ public class ModernBetaBuiltInWorldProviders {
             BuiltInTypes.Biome.PE.name,
             BuiltInTypes.CaveBiome.NONE.name,
             PEBiomes.PE_FOREST_ID.toString(),
-            BuiltInTypes.WorldScreen.INF.name,
+            BuiltInTypes.WorldScreen.INF_CLIMATE.name,
             true,
             false
         );
