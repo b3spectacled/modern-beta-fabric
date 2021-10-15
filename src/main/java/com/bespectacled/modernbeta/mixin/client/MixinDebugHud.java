@@ -9,8 +9,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.climate.CaveClimateSampler;
-import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
@@ -52,14 +53,19 @@ public class MixinDebugHud {
             BiomeSource biomeSource = chunkGenerator.getBiomeSource();
             
             if (biomeSource instanceof OldBiomeSource oldBiomeSource) {
-                if (oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler)
+                if (oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider) {
+                    Clime clime = climateBiomeProvider.getClimateSampler().sampleClime(x, z);
+                    double temp = clime.temp();
+                    double rain = clime.rain();
+                    
                     info.getReturnValue().add(
                         String.format(
                             "[Modern Beta] Climate Temp: %.3f Rainfall: %.3f", 
-                            climateSampler.sampleTemp(x, z), 
-                            climateSampler.sampleRain(x, z)
+                            temp, 
+                            rain
                         )
                     );
+                }
                 
                 if (oldBiomeSource.getCaveBiomeProvider() instanceof CaveClimateSampler climateSampler)
                     info.getReturnValue().add(

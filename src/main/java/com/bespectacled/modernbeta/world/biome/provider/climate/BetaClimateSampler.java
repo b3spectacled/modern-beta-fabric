@@ -42,19 +42,11 @@ public class BetaClimateSampler implements ClimateSampler, SkyClimateSampler {
     }
     
     @Override
-    public double sampleTemp(int x, int z) {
+    public Clime sampleClime(int x, int z) {
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         
-        return this.climateCache.get(chunkX, chunkZ).sampleTemp(x, z);
-    }
-
-    @Override
-    public double sampleRain(int x, int z) {
-        int chunkX = x >> 4;
-        int chunkZ = z >> 4;
-        
-        return this.climateCache.get(chunkX, chunkZ).sampleRain(x, z);
+        return this.climateCache.get(chunkX, chunkZ).sampleClime(x, z);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.world.biome.provider.climate;
 
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
@@ -15,13 +16,8 @@ public class SingleClimateSampler implements ClimateSampler {
     }
 
     @Override
-    public double sampleTemp(int x, int z) {
-        return this.temp;
-    }
-
-    @Override
-    public double sampleRain(int x, int z) {
-        return this.rain;
+    public Clime sampleClime(int x, int z) {
+        return new Clime(temp, rain);
     }
 
 }

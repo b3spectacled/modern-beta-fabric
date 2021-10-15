@@ -149,15 +149,15 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         
         int worldTopY = this.worldHeight + this.minY;
         
-        for (int x = 0; x < 16; ++x) {
-            int absX = startX + x;
-            for (int z = 0; z < 16; ++z) {
-                int absZ = startZ + z;
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, 0, absZ));
+        for (int localX = 0; localX < 16; ++localX) {
+            int x = startX + localX;
+            for (int localZ = 0; localZ < 16; ++localZ) {
+                int z = startZ + localZ;
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(x, 0, z));
                 
                 boolean isCold;
                 if (biomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider) {
-                    isCold = climateBiomeProvider.getClimateSampler().sampleTemp(absX, absZ) < 0.5D;
+                    isCold = climateBiomeProvider.getClimateSampler().sampleClime(x, z).temp() < 0.5D;
                 } else {
                     isCold = biome.isCold(mutable);
                 }
@@ -167,7 +167,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                     BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                     BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
                     
-                    BlockState state = chunk.getBlockState(mutable.set(x, y, z));
+                    BlockState state = chunk.getBlockState(mutable.set(localX, y, localZ));
 
                     // Skip replacing surface blocks if this is a Hell level and biome surface is standard grass/dirt.
                     if (this.isHell() && topBlock.equals(BlockStates.GRASS_BLOCK) && fillerBlock.equals(BlockStates.DIRT))
@@ -180,11 +180,11 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                     } 
                     
                     // Set snow/ice
-                    if (!this.inWorldBounds(absX, absZ)) {
+                    if (!this.inWorldBounds(x, z)) {
                         if (y == this.seaLevel) {
                             if (isCold && state.equals(topBlock)) {
                                 state = topBlock.with(SnowyBlock.SNOWY, true);
-                                chunk.setBlockState(mutableUp.set(x, y + 1, z), BlockStates.SNOW, false);
+                                chunk.setBlockState(mutableUp.set(localX, y + 1, localZ), BlockStates.SNOW, false);
                             }
                             
                         } else if (y == this.seaLevel - 1 && this.levelTheme != IndevTheme.HELL) {
@@ -194,7 +194,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                         }
                     }
 
-                    chunk.setBlockState(mutable.set(x, y, z), state, false);
+                    chunk.setBlockState(mutable.set(localX, y, localZ), state, false);
                 }
             }
         }

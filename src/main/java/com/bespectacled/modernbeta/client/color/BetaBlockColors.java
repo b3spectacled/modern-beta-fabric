@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.client.color;
 import java.util.Optional;
 
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.world.BiomeColors;
@@ -34,8 +35,9 @@ public final class BetaBlockColors {
             int x = pos.getX();
             int z = pos.getZ();
 
-            double temp = this.climateSampler.get().sampleTemp(x, z);
-            double rain = this.climateSampler.get().sampleRain(x, z);
+            Clime clime = this.climateSampler.get().sampleClime(x, z);
+            double temp = clime.temp();
+            double rain = clime.rain();
 
             return GrassColors.getColor(temp, rain);
         }
@@ -59,8 +61,9 @@ public final class BetaBlockColors {
             y = (int) ((long) y + (shift >> 19 & 31L));
             z = (int) ((long) z + (shift >> 24 & 31L));
             
-            double temp = this.climateSampler.get().sampleTemp(x, z);
-            double rain = this.climateSampler.get().sampleRain(x, z);
+            Clime clime = this.climateSampler.get().sampleClime(x, z);
+            double temp = clime.temp();
+            double rain = clime.rain();
 
             return GrassColors.getColor(temp, rain);
         }
@@ -77,8 +80,9 @@ public final class BetaBlockColors {
             int x = pos.getX();
             int z = pos.getZ();
             
-            double temp = this.climateSampler.get().sampleTemp(x, z);
-            double rain = this.climateSampler.get().sampleRain(x, z);
+            Clime clime = this.climateSampler.get().sampleClime(x, z);
+            double temp = clime.temp();
+            double rain = clime.rain();
             
             return FoliageColors.getColor(temp, rain);
         }
