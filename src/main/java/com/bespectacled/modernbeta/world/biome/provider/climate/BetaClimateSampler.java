@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.world.biome.provider.climate;
 
 import java.util.Random;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
@@ -62,6 +63,16 @@ public class BetaClimateSampler implements ClimateSampler, SkyClimateSampler {
         int chunkZ = z >> 4;
         
         return this.skyClimateCache.get(chunkX, chunkZ).sampleTemp(x, z);
+    }
+    
+    @Override
+    public boolean sampleBiomeColor() {
+        return ModernBeta.RENDER_CONFIG.biomeColorConfig.renderBetaBiomeColor;
+    }
+    
+    @Override
+    public boolean sampleSkyColor() {
+        return ModernBeta.RENDER_CONFIG.biomeColorConfig.renderBetaSkyColor;
     }
     
     private Clime sampleClimateNoise(int x, int z) {
