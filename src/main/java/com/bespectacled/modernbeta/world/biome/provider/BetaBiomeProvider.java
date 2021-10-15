@@ -7,6 +7,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
+import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampler;
 
@@ -26,30 +27,33 @@ public class BetaBiomeProvider extends ClimateBiomeProvider implements BiomeReso
 
     @Override
     public Biome getBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
-        int absX = biomeX << 2;
-        int absZ = biomeZ << 2;
+        int x = biomeX << 2;
+        int z = biomeZ << 2;
         
-        double temp = this.getClimateSampler().sampleTemp(absX, absZ);
-        double rain = this.getClimateSampler().sampleRain(absX, absZ);
+        Clime clime = this.getClimateSampler().sampleClime(x, z);
+        double temp = clime.temp();
+        double rain = clime.rain();
         
         return biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
     }
  
     @Override
     public Biome getOceanBiomeForNoiseGen(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
-        int absX = biomeX << 2;
-        int absZ = biomeZ << 2;
-
-        double temp = this.getClimateSampler().sampleTemp(absX, absZ);
-        double rain = this.getClimateSampler().sampleRain(absX, absZ);
+        int x = biomeX << 2;
+        int z = biomeZ << 2;
+        
+        Clime clime = this.getClimateSampler().sampleClime(x, z);
+        double temp = clime.temp();
+        double rain = clime.rain();
         
         return biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.OCEAN));
     }
     
     @Override
     public Biome getBiome(Registry<Biome> biomeRegistry, int x, int y, int z) {
-        double temp = this.getClimateSampler().sampleTemp(x, z);
-        double rain = this.getClimateSampler().sampleRain(x, z);
+        Clime clime = this.getClimateSampler().sampleClime(x, z);
+        double temp = clime.temp();
+        double rain = clime.rain();
         
         return biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
     }

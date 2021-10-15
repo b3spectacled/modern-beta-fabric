@@ -35,20 +35,20 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutableDown = new BlockPos.Mutable();
         
-        for (int x = 0; x < 16; ++x) {
-            for (int z = 0; z < 16; ++z) {
-                int absX = pos.getX() + x;
-                int absZ = pos.getZ() + z;
-                int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING, absX, absZ);
+        for (int localX = 0; localX < 16; ++localX) {
+            for (int localZ = 0; localZ < 16; ++localZ) {
+                int x = pos.getX() + localX;
+                int z = pos.getZ() + localZ;
+                int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z);
                 
-                mutable.set(absX, y, absZ);
+                mutable.set(x, y, z);
                 mutableDown.set(mutable).move(Direction.DOWN, 1);
                 
                 double temp;
                 if (generator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource && 
                     oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider
                 ) {
-                    temp = climateBiomeProvider.getClimateSampler().sampleTemp(absX, absZ);
+                    temp = climateBiomeProvider.getClimateSampler().sampleClime(x, z).temp();
                 } else {
                     temp = world.getBiome(mutable).getTemperature();
                 }
