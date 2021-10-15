@@ -6,6 +6,7 @@ import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.GenerationStep.Feature;
+import net.minecraft.world.gen.carver.ConfiguredCarvers;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 
@@ -45,14 +46,14 @@ public class OldBiomeFeatures {
         genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER_DEEP);
         
         if (addCanyons) {
-            //genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
+            genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
         }
     }
 
     public static void addOceanCarvers(GenerationSettings.Builder genSettings) {
         genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER);
         genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER_DEEP);
-        //genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
+        genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
     }
 
     public static void addVegetalPatches(GenerationSettings.Builder genSettings) {

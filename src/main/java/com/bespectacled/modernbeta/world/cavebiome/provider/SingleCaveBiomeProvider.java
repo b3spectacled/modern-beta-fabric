@@ -9,7 +9,7 @@ import com.bespectacled.modernbeta.api.world.biome.climate.NoiseRanges;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.world.cavebiome.climate.BaseCaveClimateSampler;
+import com.bespectacled.modernbeta.world.cavebiome.provider.climate.BaseCaveClimateSampler;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
