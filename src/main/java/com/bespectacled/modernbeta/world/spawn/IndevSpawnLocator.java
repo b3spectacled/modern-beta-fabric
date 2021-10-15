@@ -38,7 +38,7 @@ public class IndevSpawnLocator implements SpawnLocator {
         
         int width = this.chunkProvider.getLevelWidth();
         int length = this.chunkProvider.getLevelLength();
-        int height = this.chunkProvider.getLevelHeight();
+        //int height = this.chunkProvider.getLevelHeight();
         
         // block0
         while (true) {

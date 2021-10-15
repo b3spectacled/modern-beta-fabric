@@ -12,7 +12,6 @@ public final class WorldSettings {
     public enum WorldSetting {
         CHUNK,
         BIOME,
-        CAVE_BIOME
     }
     
     private final Map<WorldSetting, Settings> settings = new LinkedHashMap<>();
@@ -29,10 +28,9 @@ public final class WorldSettings {
         }
     }
     
-    public WorldSettings(NbtCompound chunkSettings, NbtCompound biomeSettings, NbtCompound caveBiomeSettings) {
+    public WorldSettings(NbtCompound chunkSettings, NbtCompound biomeSettings) {
         this.settings.put(WorldSetting.CHUNK, new Settings(chunkSettings));
         this.settings.put(WorldSetting.BIOME, new Settings(biomeSettings));
-        this.settings.put(WorldSetting.CAVE_BIOME, new Settings(caveBiomeSettings));
     }
     
     public void putChange(WorldSetting settingsKey, String key, NbtElement element) {

@@ -51,7 +51,7 @@ public class ModernBeta implements ModInitializer {
     public static void log(Level level, String message) {
         LOGGER.log(level, "[" + MOD_NAME + "] {}", message);
     }
-
+    
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing Modern Beta...");
@@ -74,7 +74,6 @@ public class ModernBeta implements ModInitializer {
         ModernBetaBuiltInProviders.registerChunkSettings();
         ModernBetaBuiltInProviders.registerBiomeProviders();
         ModernBetaBuiltInProviders.registerBiomeSettings();
-        ModernBetaBuiltInProviders.registerCaveBiomeProvider();
         ModernBetaBuiltInProviders.registerWorldProviders();
         
         // Register client-only stuff, i.e. GUI, block colors, etc.

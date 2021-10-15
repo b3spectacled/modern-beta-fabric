@@ -12,7 +12,6 @@ import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.mixin.client.MixinMoreOptionsDialogInvoker;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.client.world.GeneratorType;
@@ -120,12 +119,9 @@ public class OldGeneratorType {
                             oldBiomeSource.getProviderSettings() : 
                             Registries.BIOME_SETTINGS.get(worldProvider.getBiomeProvider()).get();
 
-                        // TODO: Add functionality later
-                        NbtCompound caveBiomeProviderSettings = CaveBiomeProviderSettings.createSettingsBase(worldProvider.getCaveBiomeProvider());
-                        
                         return Registries.WORLD.get(chunkProviderSettings.getString(NbtTags.WORLD_TYPE)).createWorldScreen(
                             screen,
-                            new WorldSettings(chunkProviderSettings, biomeProviderSettings, caveBiomeProviderSettings),
+                            new WorldSettings(chunkProviderSettings, biomeProviderSettings),
                             modifiedWorldSettings -> ((MixinMoreOptionsDialogInvoker)screen.moreOptionsDialog).invokeSetGeneratorOptions(
                                 createNewGeneratorOptions(
                                     screen.moreOptionsDialog.getRegistryManager(),

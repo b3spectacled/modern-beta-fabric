@@ -13,7 +13,6 @@ public final class WorldProvider {
     private final String worldScreen;
 
     private final String biomeProvider;
-    private final String caveBiomeProvider;
     private final String singleBiome;
     
     private final boolean generateOceanShrines;
@@ -23,7 +22,6 @@ public final class WorldProvider {
         String chunkProvider,
         String chunkGenSettings,
         String biomeProvider,
-        String caveBiomeProvider,
         String singleBiome,
         String worldScreen,
         boolean generateOceanShrines,
@@ -34,7 +32,6 @@ public final class WorldProvider {
         this.worldScreen = worldScreen;
         
         this.biomeProvider = biomeProvider;
-        this.caveBiomeProvider = caveBiomeProvider;
         this.singleBiome = singleBiome;
         
         this.generateOceanShrines = generateOceanShrines;
@@ -52,11 +49,7 @@ public final class WorldProvider {
     public String getBiomeProvider() {
         return this.biomeProvider;
     }
-    
-    public String getCaveBiomeProvider() {
-        return this.caveBiomeProvider;
-    }
-    
+
     public String getSingleBiome() {
         return this.singleBiome;
     }
@@ -94,13 +87,11 @@ public final class WorldProvider {
                 "* Chunk Provider: %s\n" +
                 "* Chunk Generator Settings: %s\n" +
                 "* Biome Provider: %s\n" +
-                "* Cave Biome Provider: %s\n" +
                 "* Single Biome: %s\n" +
                 "* World Screen: %s",
             this.chunkProvider, 
             this.chunkGenSettings, 
-            this.biomeProvider, 
-            this.caveBiomeProvider, 
+            this.biomeProvider,
             this.singleBiome, 
             this.worldScreen
         );

@@ -32,18 +32,6 @@ public final class BuiltInTypes {
         private Biome(String name) { this.name = name; }
     }
     
-    public enum CaveBiome {
-        NONE("none"),
-        VANILLA("vanilla"),
-        BETA("beta"),
-        SINGLE("single")
-        ;
-        
-        public final String name;
-        
-        private CaveBiome(String name) { this.name = name; }
-    }
-    
     public enum WorldScreen {
         BASE("base"),
         INF("inf"),

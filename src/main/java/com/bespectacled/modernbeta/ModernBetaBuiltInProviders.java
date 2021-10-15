@@ -16,10 +16,6 @@ import com.bespectacled.modernbeta.world.biome.provider.PEBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.VanillaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
-import com.bespectacled.modernbeta.world.cavebiome.provider.BetaCaveBiomeProvider;
-import com.bespectacled.modernbeta.world.cavebiome.provider.NoCaveBiomeProvider;
-import com.bespectacled.modernbeta.world.cavebiome.provider.SingleCaveBiomeProvider;
-import com.bespectacled.modernbeta.world.cavebiome.provider.VanillaCaveBiomeProvider;
 import com.bespectacled.modernbeta.world.gen.provider.AlphaChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.BetaChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.BetaIslandsChunkProvider;
@@ -83,15 +79,6 @@ public class ModernBetaBuiltInProviders {
         Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.SINGLE.name, BiomeProviderSettings::createSettingsSingle);
         Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.VANILLA.name, BiomeProviderSettings::createSettingsVanilla);
         Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.PE.name, BiomeProviderSettings::createSettingsPE);
-    }
-    
-    // Register default cave biome providers
-    public static void registerCaveBiomeProvider() {
-        Registries.CAVE_BIOME.register(BuiltInTypes.DEFAULT_ID, VanillaCaveBiomeProvider::new);
-        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.NONE.name, NoCaveBiomeProvider::new);
-        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.BETA.name, BetaCaveBiomeProvider::new);
-        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.SINGLE.name, SingleCaveBiomeProvider::new);
-        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.VANILLA.name, VanillaCaveBiomeProvider::new);
     }
     
     // Register default world screens
