@@ -32,7 +32,7 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
 
     @Override
     public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeSampler.sample(biomeRegistry, biomeX, biomeZ);
+        return this.biomeSampler.sample(this.biomeRegistry, biomeX, biomeZ);
     }
     
     public BiomeLayerSampler getBiomeSampler() {
