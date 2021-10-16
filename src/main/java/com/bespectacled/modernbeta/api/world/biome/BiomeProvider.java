@@ -6,10 +6,12 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeAccess;
 
-public abstract class BiomeProvider {
+public abstract class BiomeProvider implements BiomeAccess.Storage {
     protected final long seed;
     protected final NbtCompound settings;
+    protected final Registry<Biome> biomeRegistry;
     
     /**
      * Constructs a Modern Beta biome provider initialized with seed.
@@ -22,6 +24,7 @@ public abstract class BiomeProvider {
     public BiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         this.seed = seed;
         this.settings = settings;
+        this.biomeRegistry = biomeRegistry;
     }
     
     /**
@@ -57,4 +60,17 @@ public abstract class BiomeProvider {
      * @return A list of biome registry keys.
      */
     public abstract List<RegistryKey<Biome>> getBiomesForRegistry();
+
+    /**
+     * Gets a biome at biome coordinates. Implementation of BiomeAccess.Storage interface.
+     * 
+     * @param biomeX x-coordinate in biome coordinates.
+     * @param biomeY y-coordinate in biome coordinates.
+     * @param biomeZ z-coordinate in biome coordinates.
+     *  
+     * @return A biome at given biome coordinates.
+     */
+    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+        return this.getBiomeForNoiseGen(this.biomeRegistry, biomeX, biomeY, biomeZ);
+    }
 }
