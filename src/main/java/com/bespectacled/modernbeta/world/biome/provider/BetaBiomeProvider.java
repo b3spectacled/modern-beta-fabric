@@ -26,7 +26,7 @@ public class BetaBiomeProvider extends ClimateBiomeProvider implements BiomeReso
     }
 
     @Override
-    public Biome getBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         int x = biomeX << 2;
         int z = biomeZ << 2;
         
@@ -34,11 +34,11 @@ public class BetaBiomeProvider extends ClimateBiomeProvider implements BiomeReso
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
+        return this.biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
     }
  
     @Override
-    public Biome getOceanBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+    public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         int x = biomeX << 2;
         int z = biomeZ << 2;
         
@@ -46,16 +46,16 @@ public class BetaBiomeProvider extends ClimateBiomeProvider implements BiomeReso
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.OCEAN));
+        return this.biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.OCEAN));
     }
     
     @Override
-    public Biome getBiomeAtBlock(Registry<Biome> biomeRegistry, int x, int y, int z) {
+    public Biome getBiomeAtBlock(int x, int y, int z) {
         Clime clime = this.getClimateSampler().sampleClime(x, z);
         double temp = clime.temp();
         double rain = clime.rain();
-
-        return biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
+        
+        return this.biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
     }
 
     @Override

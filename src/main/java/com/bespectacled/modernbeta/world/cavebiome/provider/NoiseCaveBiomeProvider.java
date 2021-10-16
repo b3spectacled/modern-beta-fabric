@@ -23,8 +23,8 @@ public class NoiseCaveBiomeProvider extends CaveBiomeProvider implements CaveCli
     private final CaveClimateSampler climateSampler;
     private final NoiseRanges noiseRanges;
     
-    public NoiseCaveBiomeProvider(long seed, NbtCompound settings) {
-        super(seed, settings);
+    public NoiseCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+        super(seed, settings, biomeRegistry);
         
         this.climateSampler = new BaseCaveClimateSampler(seed, 2, 8);
         this.noiseRanges = new NoiseRanges.Builder()

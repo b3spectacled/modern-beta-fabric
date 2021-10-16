@@ -20,8 +20,8 @@ public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeRes
     private final ClimateSampler climateSampler;
     private final BetaClimateMap betaClimateMap;
     
-    public BetaCaveBiomeProvider(long seed, NbtCompound settings) {
-        super(seed, settings);
+    public BetaCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+        super(seed, settings, biomeRegistry);
         
         this.climateSampler = new BetaClimateSampler(seed);
         this.betaClimateMap = new BetaClimateMap(settings);
@@ -40,12 +40,12 @@ public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeRes
     }
 
     @Override
-    public Biome getBiomeAtBlock(Registry<Biome> biomeRegistry, int x, int y, int z) {
+    public Biome getBiomeAtBlock(int x, int y, int z) {
         Clime clime = this.climateSampler.sampleClime(x, z);
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return biomeRegistry.get(betaClimateMap.getBiome(temp, rain, ClimateType.LAND));
+        return this.biomeRegistry.get(betaClimateMap.getBiome(temp, rain, ClimateType.LAND));
     }
 
     @Override

@@ -66,7 +66,7 @@ public class VanillaBiomeProvider extends BiomeProvider {
     }
 
     @Override
-    public Biome getBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.biomeSource.getBiome(biomeX, biomeY, biomeZ, this.noiseSampler);
     }
     

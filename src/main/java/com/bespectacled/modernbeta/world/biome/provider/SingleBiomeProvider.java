@@ -28,8 +28,8 @@ public class SingleBiomeProvider extends ClimateBiomeProvider {
     }
 
     @Override
-    public Biome getBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
-        return biomeRegistry.get(this.biomeId);
+    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+        return this.biomeRegistry.get(this.biomeId);
     }
     
     @Override

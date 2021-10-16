@@ -6,8 +6,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeAccess;
 
-public abstract class BiomeProvider {
+public abstract class BiomeProvider implements BiomeAccess.Storage {
     protected final long seed;
     protected final NbtCompound settings;
     protected final Registry<Biome> biomeRegistry;
@@ -30,14 +31,13 @@ public abstract class BiomeProvider {
      * Gets a biome for biome source at given biome coordinates.
      * Note that a single biome coordinate unit equals 4 blocks.
      * 
-     * @param biomeRegistry
      * @param biomeX x-coordinate in biome coordinates.
      * @param biomeY y-coordinate in biome coordinates.
      * @param biomeZ z-coordinate in biome coordinates.
      * 
      * @return A biome at given biome coordinates.
      */
-    public abstract Biome getBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ);
+    public abstract Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ);
     
     /**
      * Gets a biome to overwrite the original biome at given biome coordinates and sufficient depth.
@@ -49,8 +49,8 @@ public abstract class BiomeProvider {
      * 
      * @return A biome at given biome coordinates.
      */
-    public Biome getOceanBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
-        return this.getBiome(biomeRegistry, biomeX, biomeY, biomeZ);
+    public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+        return this.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
     /**

@@ -26,8 +26,8 @@ public class VanillaCaveBiomeProvider extends CaveBiomeProvider {
     private MultiNoiseBiomeSource biomeSource;
     private MultiNoiseUtil.MultiNoiseSampler noiseSampler;
     
-    public VanillaCaveBiomeProvider(long seed, NbtCompound settings) {
-        super(seed, settings);
+    public VanillaCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+        super(seed, settings, biomeRegistry);
         
         this.biomeSource = null;
         this.noiseSampler = new NoiseColumnSampler(

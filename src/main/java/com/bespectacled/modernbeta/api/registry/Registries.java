@@ -24,7 +24,7 @@ public final class Registries {
     public static final Registry<TriFunction<Long, NbtCompound, net.minecraft.util.registry.Registry<Biome>, BiomeProvider>> BIOME;
     public static final Registry<BiFunction<WorldScreen, WorldSetting, Screen>> BIOME_SCREEN;
     public static final Registry<Supplier<NbtCompound>> BIOME_SETTINGS;
-    public static final Registry<BiFunction<Long, NbtCompound, CaveBiomeProvider>> CAVE_BIOME;
+    public static final Registry<TriFunction<Long, NbtCompound, net.minecraft.util.registry.Registry<Biome>, CaveBiomeProvider>> CAVE_BIOME;
     public static final Registry<Supplier<NbtCompound>> CAVE_BIOME_SETTINGS;
     public static final Registry<Function<OldChunkGenerator, ChunkProvider>> CHUNK;
     public static final Registry<Supplier<NbtCompound>> CHUNK_SETTINGS;

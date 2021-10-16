@@ -10,8 +10,8 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class NoCaveBiomeProvider extends CaveBiomeProvider {
-    public NoCaveBiomeProvider(long seed, NbtCompound settings) {
-        super(seed, settings);
+    public NoCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+        super(seed, settings, biomeRegistry);
     }
 
     @Override

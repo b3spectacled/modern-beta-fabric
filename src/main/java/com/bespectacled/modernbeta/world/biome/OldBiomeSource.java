@@ -64,7 +64,7 @@ public class OldBiomeSource extends BiomeSource {
             .toList();
         
         List<Biome> caveBiomes = Registries.CAVE_BIOME.get(NbtUtil.readStringOrThrow(NbtTags.CAVE_BIOME_TYPE, caveSettings))
-            .apply(seed, caveSettings)
+            .apply(seed, caveSettings, biomeRegistry)
             .getBiomesForRegistry()
             .stream()
             .map(registryKey -> biomeRegistry.get(registryKey))
@@ -92,7 +92,7 @@ public class OldBiomeSource extends BiomeSource {
             .apply(seed, biomeSettings, biomeRegistry);
         this.caveBiomeProvider = Registries.CAVE_BIOME
             .get(NbtUtil.readStringOrThrow(NbtTags.CAVE_BIOME_TYPE, caveSettings))
-            .apply(seed, caveSettings);
+            .apply(seed, caveSettings, biomeRegistry);
         
         this.biomeHeightSampler = BiomeHeightSampler.DEFAULT;
     }
@@ -100,31 +100,31 @@ public class OldBiomeSource extends BiomeSource {
     public void setBiomeHeightSampler(BiomeHeightSampler biomeHeightSampler) {
         this.biomeHeightSampler = biomeHeightSampler;
     }
-
-    @Override
+    
     public Biome getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {    
-        return this.biomeProvider.getBiome(this.biomeRegistry, biomeX, biomeY, biomeZ);
+        return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
 
     public Biome getOceanBiome(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeProvider.getOceanBiome(this.biomeRegistry, biomeX, biomeY, biomeZ);
+        return this.biomeProvider.getOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
     public Biome getCaveBiome(int biomeX, int biomeY, int biomeZ) {
         return this.caveBiomeProvider.getBiome(this.biomeRegistry, biomeX, biomeY, biomeZ);
     }
+
     
     public Biome getBiomeForSurfaceGen(int x, int y, int z) {
         if (this.biomeProvider instanceof BiomeResolver biomeResolver) {
-            return biomeResolver.getBiomeAtBlock(this.biomeRegistry, x, y, z);
+            return biomeResolver.getBiomeAtBlock(x, y, z);
         }
         
-        return this.biomeProvider.getBiome(this.biomeRegistry, x >> 2, y >> 2, z >> 2);
+        return this.biomeProvider.getBiomeForNoiseGen(x >> 2, y >> 2, z >> 2);
     }
     
     public Biome getBiomeForSurfaceGen(ChunkRegion region, BlockPos pos) {
         if (this.biomeProvider instanceof BiomeResolver biomeResolver)
-            return biomeResolver.getBiomeAtBlock(this.biomeRegistry, pos.getX(), pos.getY(), pos.getZ());
+            return biomeResolver.getBiomeAtBlock(pos.getX(), pos.getY(), pos.getZ());
         
         return region.getBiome(pos);
     }

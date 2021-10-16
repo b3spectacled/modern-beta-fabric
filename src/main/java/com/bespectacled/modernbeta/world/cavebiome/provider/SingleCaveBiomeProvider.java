@@ -26,8 +26,8 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveCl
     private final CaveClimateSampler climateSampler;
     private final NoiseRanges noiseRanges;
     
-    public SingleCaveBiomeProvider(long seed, NbtCompound settings) {
-        super(seed, settings);
+    public SingleCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+        super(seed, settings, biomeRegistry);
         
         Identifier biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
         

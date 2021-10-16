@@ -10,6 +10,7 @@ import net.minecraft.world.biome.Biome;
 public abstract class CaveBiomeProvider {
     protected final long seed;
     protected final NbtCompound settings;
+    protected final Registry<Biome> biomeRegistry;
     
     /**
      * Constructs a Modern Beta cave biome provider initialized with seed.
@@ -18,9 +19,10 @@ public abstract class CaveBiomeProvider {
      * @param seed World seed.
      * @param settings Biome settings.
      */
-    public CaveBiomeProvider(long seed, NbtCompound settings) {
+    public CaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         this.seed = seed;
         this.settings = settings;
+        this.biomeRegistry = biomeRegistry;
     }
     
     /**
