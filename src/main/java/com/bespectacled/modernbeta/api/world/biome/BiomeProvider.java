@@ -71,6 +71,6 @@ public abstract class BiomeProvider implements BiomeAccess.Storage {
      * @return A biome at given biome coordinates.
      */
     public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        return this.getBiomeForNoiseGen(this.biomeRegistry, biomeX, biomeY, biomeZ);
+        return this.getBiome(this.biomeRegistry, biomeX, biomeY, biomeZ);
     }
 }
