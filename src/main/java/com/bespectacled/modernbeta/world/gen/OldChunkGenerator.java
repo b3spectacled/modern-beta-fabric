@@ -107,21 +107,26 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return CompletableFuture.<Chunk>supplyAsync(Util.debugSupplier("init_biomes", () -> {
             chunk.method_38257(this.biomeSource, this.getMultiNoiseSampler());
             return chunk;
+            
         }), Util.getMainWorkerExecutor());
     }
     
     @Override
     public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {
-        return this.chunkProvider.provideChunk(executor, accessor, chunk);
+        CompletableFuture<Chunk> completedChunk = this.chunkProvider.provideChunk(executor, accessor, chunk);
+        
+        return completedChunk;
     }
         
     @Override
     public void buildSurface(ChunkRegion region, StructureAccessor accessor, Chunk chunk) {
-        if (!this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.SURFACE))  
-            if (this.biomeSource instanceof OldBiomeSource oldBiomeSource)
+        if (!this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.SURFACE)) {
+            if (this.biomeSource instanceof OldBiomeSource oldBiomeSource) {
                 this.chunkProvider.provideSurface(region, chunk, oldBiomeSource);
-            else
+            } else {
                 super.buildSurface(region, accessor, chunk);
+            }
+        }
         
         if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource)
             this.injectBiomesInChunk(oldBiomeSource, chunk);
@@ -131,7 +136,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     public void carve(ChunkRegion region, long seed, BiomeAccess access, StructureAccessor accessor, Chunk chunk, GenerationStep.Carver genCarver) {
         if (this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.CARVERS) || 
             this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.LIQUID_CARVERS)) return;
-        
+
         BiomeAccess biomeAcc = access.withSource((biomeX, biomeY, biomeZ) -> this.biomeSource.getBiome(biomeX, biomeY, biomeZ, this.getMultiNoiseSampler()));
         ChunkPos chunkPos = chunk.getPos();
 
@@ -182,7 +187,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     public void generateFeatures(StructureWorldAccess world, ChunkPos pos, StructureAccessor structureAccessor) {
         if (this.chunkProvider.skipChunk(pos.x, pos.z, ChunkStatus.FEATURES)) 
             return;
-        
+
         super.generateFeatures(world, pos, structureAccessor);
     }
     

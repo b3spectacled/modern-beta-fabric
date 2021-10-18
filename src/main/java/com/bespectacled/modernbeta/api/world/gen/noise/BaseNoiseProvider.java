@@ -39,7 +39,7 @@ public class BaseNoiseProvider extends NoiseProvider {
     }
 
     @Override
-    public double[] sampleNoise(int startNoiseX, int startNoiseZ) {
+    protected double[] sampleNoise(int startNoiseX, int startNoiseZ) {
         double[] primaryBuffer = new double[this.noiseResY];
         double[] heightmapBuffer = new double[this.noiseResY];
         

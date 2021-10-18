@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api.world.biome.climate;
+package com.bespectacled.modernbeta.api.world.cavebiome.climate;
 
 public interface CaveClimateSampler {
     /**

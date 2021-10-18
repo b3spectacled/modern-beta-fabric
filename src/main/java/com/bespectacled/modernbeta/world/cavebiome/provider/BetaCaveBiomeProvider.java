@@ -28,7 +28,7 @@ public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeRes
     }
 
     @Override
-    public Biome getBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+    public Biome getBiome(int biomeX, int biomeY, int biomeZ) {
         int x = biomeX << 2;
         int z = biomeZ << 2;
         
@@ -36,7 +36,7 @@ public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeRes
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return biomeRegistry.get(betaClimateMap.getBiome(temp, rain, ClimateType.LAND));
+        return this.biomeRegistry.get(betaClimateMap.getBiome(temp, rain, ClimateType.LAND));
     }
 
     @Override

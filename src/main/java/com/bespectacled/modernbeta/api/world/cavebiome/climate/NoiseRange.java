@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api.world.biome.climate;
+package com.bespectacled.modernbeta.api.world.cavebiome.climate;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;

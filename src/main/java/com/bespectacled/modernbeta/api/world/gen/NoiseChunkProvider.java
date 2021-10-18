@@ -379,7 +379,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * @return Modified noise density.
      */
     protected double sampleNoiseCave(double noise, double tunnelThreshold, int noiseX, int noiseY, int noiseZ) {
-        if (this.noiseCaveSampler != null) {
+        if (this.generateNoiseCaves) {
             return this.noiseCaveSampler.sample(
                 noise,
                 tunnelThreshold,

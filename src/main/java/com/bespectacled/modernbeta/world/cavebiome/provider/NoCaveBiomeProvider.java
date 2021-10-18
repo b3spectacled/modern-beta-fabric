@@ -15,7 +15,7 @@ public class NoCaveBiomeProvider extends CaveBiomeProvider {
     }
 
     @Override
-    public Biome getBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+    public Biome getBiome(int biomeX, int biomeY, int biomeZ) {
         return null;
     }
 

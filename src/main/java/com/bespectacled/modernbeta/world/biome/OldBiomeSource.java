@@ -110,9 +110,8 @@ public class OldBiomeSource extends BiomeSource {
     }
     
     public Biome getCaveBiome(int biomeX, int biomeY, int biomeZ) {
-        return this.caveBiomeProvider.getBiome(this.biomeRegistry, biomeX, biomeY, biomeZ);
+        return this.caveBiomeProvider.getBiome(biomeX, biomeY, biomeZ);
     }
-
     
     public Biome getBiomeForSurfaceGen(int x, int y, int z) {
         if (this.biomeProvider instanceof BiomeResolver biomeResolver) {

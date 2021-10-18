@@ -3,10 +3,10 @@ package com.bespectacled.modernbeta.world.cavebiome.provider;
 import java.util.Arrays;
 import java.util.List;
 
-import com.bespectacled.modernbeta.api.world.biome.climate.CaveClimateSampler;
-import com.bespectacled.modernbeta.api.world.biome.climate.NoiseRange;
-import com.bespectacled.modernbeta.api.world.biome.climate.NoiseRanges;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
+import com.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
+import com.bespectacled.modernbeta.api.world.cavebiome.climate.NoiseRange;
+import com.bespectacled.modernbeta.api.world.cavebiome.climate.NoiseRanges;
 import com.bespectacled.modernbeta.world.cavebiome.provider.climate.BaseCaveClimateSampler;
 
 import net.minecraft.nbt.NbtCompound;
@@ -34,10 +34,10 @@ public class NoiseCaveBiomeProvider extends CaveBiomeProvider implements CaveCli
     }
 
     @Override
-    public Biome getBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+    public Biome getBiome(int biomeX, int biomeY, int biomeZ) {
         double noise = this.climateSampler.sample(biomeX, biomeY, biomeZ);
         
-        return biomeRegistry.getOrEmpty(this.noiseRanges.sample(noise)).orElse(null);
+        return this.biomeRegistry.getOrEmpty(this.noiseRanges.sample(noise)).orElse(null);
     }
     
     @Override

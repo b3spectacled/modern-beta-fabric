@@ -17,7 +17,8 @@ public class OreVeinNoiseProvider extends NoiseProvider {
         this.bufferSampler = bufferSampler;
     }
     
-    public double[] sampleNoise(int startNoiseX, int startNoiseZ) {
+    @Override
+    protected double[] sampleNoise(int startNoiseX, int startNoiseZ) {
         double[] buffer = new double[this.noiseResY];
         double[] noise = new double[this.noiseSize];
         

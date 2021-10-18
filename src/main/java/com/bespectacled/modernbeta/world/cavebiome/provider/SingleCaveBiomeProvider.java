@@ -3,10 +3,10 @@ package com.bespectacled.modernbeta.world.cavebiome.provider;
 import java.util.Arrays;
 import java.util.List;
 
-import com.bespectacled.modernbeta.api.world.biome.climate.CaveClimateSampler;
-import com.bespectacled.modernbeta.api.world.biome.climate.NoiseRange;
-import com.bespectacled.modernbeta.api.world.biome.climate.NoiseRanges;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
+import com.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
+import com.bespectacled.modernbeta.api.world.cavebiome.climate.NoiseRange;
+import com.bespectacled.modernbeta.api.world.cavebiome.climate.NoiseRanges;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.cavebiome.provider.climate.BaseCaveClimateSampler;
@@ -39,10 +39,10 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveCl
     }
 
     @Override
-    public Biome getBiome(Registry<Biome> biomeRegistry, int biomeX, int biomeY, int biomeZ) {
+    public Biome getBiome(int biomeX, int biomeY, int biomeZ) {
         return this.useCaveNoise ?
-            biomeRegistry.getOrEmpty(this.noiseRanges.sample(this.climateSampler.sample(biomeX, biomeY, biomeZ))).orElse(null) :
-            biomeRegistry.get(this.noiseRanges.sample(1.0));
+            this.biomeRegistry.getOrEmpty(this.noiseRanges.sample(this.climateSampler.sample(biomeX, biomeY, biomeZ))).orElse(null) :
+            this.biomeRegistry.get(this.noiseRanges.sample(0.0));
     }
     
     @Override
