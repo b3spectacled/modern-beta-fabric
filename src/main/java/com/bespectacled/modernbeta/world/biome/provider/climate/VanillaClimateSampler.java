@@ -13,7 +13,8 @@ import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.HorizontalVoronoiBiomeAccessType;
 
 public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storage {
-    private static final int BLEND_DIST = 5;
+    private static final int BLEND_DIST = 3;
+    private static final double BLEND_AREA = Math.pow(BLEND_DIST * 2 + 1, 2);
     
     private final long seed;
     private final BiomeLayerSampler biomeSampler;
@@ -70,8 +71,7 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
     private Clime blendBiomeClimate(int x, int z) {
         double temp = 0.0;
         double rain = 0.0;
-        int sum = 0;
-        
+
         // Sample surrounding blocks
         for (int localX = -BLEND_DIST; localX <= BLEND_DIST; ++localX) {
             for (int localZ = -BLEND_DIST; localZ <= BLEND_DIST; ++localZ) {
@@ -85,14 +85,12 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
                 
                 temp += clime.temp();
                 rain += clime.rain();
-                
-                sum++;
             }
         }
         
         // Take simple average of temperature/rainfall values of surrounding blocks.
-        temp /= (double)sum;
-        rain /= (double)sum;
+        temp /= BLEND_AREA;
+        rain /= BLEND_AREA;
         
         temp = MathHelper.clamp(temp, 0.0, 1.0);
         rain = MathHelper.clamp(rain, 0.0, 1.0);

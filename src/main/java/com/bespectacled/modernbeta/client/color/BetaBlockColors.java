@@ -30,7 +30,7 @@ public final class BetaBlockColors {
         if (view == null || pos == null) { // Appears to enter here when loading color for inventory block
             return 8174955; // Default tint, from wiki
         }
-        
+       
         if (this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor()) {
             int x = pos.getX();
             int z = pos.getZ();
