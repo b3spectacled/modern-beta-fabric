@@ -14,6 +14,7 @@ public class ModernBetaBuiltInWorldProviders {
     public static final WorldProvider SKYLANDS;
     public static final WorldProvider ALPHA;
     public static final WorldProvider INFDEV_611;
+    public static final WorldProvider INFDEV_420;
     public static final WorldProvider INFDEV_415;
     public static final WorldProvider INFDEV_227;
     public static final WorldProvider INDEV;
@@ -71,10 +72,21 @@ public class ModernBetaBuiltInWorldProviders {
             OldChunkGeneratorSettings.INFDEV_611.toString(),
             BuiltInTypes.Biome.SINGLE.name,
             BuiltInTypes.CaveBiome.NONE.name,
-            InfBiomes.ALPHA_ID.toString(),
+            InfBiomes.INFDEV_611_ID.toString(),
             BuiltInTypes.WorldScreen.INF.name,
             false,
             true
+        );
+        
+        INFDEV_420 = new WorldProvider(
+            BuiltInTypes.Chunk.INFDEV_420.name,
+            OldChunkGeneratorSettings.INFDEV_420.toString(), 
+            BuiltInTypes.Biome.SINGLE.name, 
+            BuiltInTypes.CaveBiome.NONE.name, 
+            InfBiomes.INFDEV_420_ID.toString(), 
+            BuiltInTypes.WorldScreen.INF.name,
+            true,
+            false
         );
         
         INFDEV_415 = new WorldProvider(

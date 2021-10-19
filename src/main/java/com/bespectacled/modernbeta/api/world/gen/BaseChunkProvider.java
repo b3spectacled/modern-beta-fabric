@@ -158,7 +158,9 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     protected void setForestOctaves(PerlinOctaveNoise forestOctaves) {
         OldDecorators.COUNT_BETA_NOISE.setOctaves(forestOctaves);
         OldDecorators.COUNT_ALPHA_NOISE.setOctaves(forestOctaves);
-        OldDecorators.COUNT_INFDEV_NOISE.setOctaves(forestOctaves);
+        OldDecorators.COUNT_INFDEV_415_NOISE.setOctaves(forestOctaves);
+        OldDecorators.COUNT_INFDEV_420_NOISE.setOctaves(forestOctaves);
+        OldDecorators.COUNT_INFDEV_611_NOISE.setOctaves(forestOctaves);
     }
     
     /**

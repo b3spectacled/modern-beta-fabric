@@ -22,6 +22,7 @@ import com.bespectacled.modernbeta.world.gen.provider.BetaIslandsChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.Infdev227ChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.Infdev415ChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.Infdev420ChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.Infdev611ChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.PEChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.SkylandsChunkProvider;
@@ -42,6 +43,7 @@ public class ModernBetaBuiltInProviders {
         Registries.CHUNK.register(BuiltInTypes.Chunk.SKYLANDS.name, SkylandsChunkProvider::new);
         Registries.CHUNK.register(BuiltInTypes.Chunk.ALPHA.name, AlphaChunkProvider::new);
         Registries.CHUNK.register(BuiltInTypes.Chunk.INFDEV_611.name, Infdev611ChunkProvider::new);
+        Registries.CHUNK.register(BuiltInTypes.Chunk.INFDEV_420.name, Infdev420ChunkProvider::new);
         Registries.CHUNK.register(BuiltInTypes.Chunk.INFDEV_415.name, Infdev415ChunkProvider::new);
         Registries.CHUNK.register(BuiltInTypes.Chunk.INFDEV_227.name, Infdev227ChunkProvider::new);
         Registries.CHUNK.register(BuiltInTypes.Chunk.INDEV.name, IndevChunkProvider::new);
@@ -56,6 +58,7 @@ public class ModernBetaBuiltInProviders {
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.SKYLANDS.name, ChunkProviderSettings::createSettingsSkylands);
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.ALPHA.name, ChunkProviderSettings::createSettingsAlpha);
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_611.name, ChunkProviderSettings::createSettingsInfdev611);
+        Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_420.name, ChunkProviderSettings::createSettingsInfdev420);
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_415.name, ChunkProviderSettings::createSettingsInfdev415);
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_227.name, ChunkProviderSettings::createSettingsInfdev227);
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INDEV.name, ChunkProviderSettings::createSettingsIndev);
@@ -122,6 +125,7 @@ public class ModernBetaBuiltInProviders {
         Registries.WORLD.register(BuiltInTypes.Chunk.SKYLANDS.name, ModernBetaBuiltInWorldProviders.SKYLANDS);
         Registries.WORLD.register(BuiltInTypes.Chunk.ALPHA.name, ModernBetaBuiltInWorldProviders.ALPHA);
         Registries.WORLD.register(BuiltInTypes.Chunk.INFDEV_611.name, ModernBetaBuiltInWorldProviders.INFDEV_611);
+        Registries.WORLD.register(BuiltInTypes.Chunk.INFDEV_420.name, ModernBetaBuiltInWorldProviders.INFDEV_420);
         Registries.WORLD.register(BuiltInTypes.Chunk.INFDEV_415.name, ModernBetaBuiltInWorldProviders.INFDEV_415);
         Registries.WORLD.register(BuiltInTypes.Chunk.INFDEV_227.name, ModernBetaBuiltInWorldProviders.INFDEV_227);
         Registries.WORLD.register(BuiltInTypes.Chunk.INDEV.name, ModernBetaBuiltInWorldProviders.INDEV);

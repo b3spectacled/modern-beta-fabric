@@ -8,6 +8,7 @@ public final class BuiltInTypes {
         SKYLANDS("skylands"),
         ALPHA("alpha"),
         INFDEV_611("infdev_611"),
+        INFDEV_420("infdev_420"),
         INFDEV_415("infdev_415"),
         INFDEV_227("infdev_227"),
         INDEV("indev"),

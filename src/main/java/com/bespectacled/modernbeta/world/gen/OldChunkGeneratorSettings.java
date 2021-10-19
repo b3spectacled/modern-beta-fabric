@@ -53,6 +53,7 @@ public class OldChunkGeneratorSettings {
     public static final Identifier ALPHA;
     public static final Identifier SKYLANDS;
     public static final Identifier INFDEV_611;
+    public static final Identifier INFDEV_420;
     public static final Identifier INFDEV_415;
     public static final Identifier INFDEV_227;
     public static final Identifier INDEV;
@@ -63,6 +64,7 @@ public class OldChunkGeneratorSettings {
     public static final ChunkGeneratorSettings ALPHA_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings SKYLANDS_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings INFDEV_611_GENERATOR_SETTINGS;
+    public static final ChunkGeneratorSettings INFDEV_420_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings INFDEV_415_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings INFDEV_227_GENERATOR_SETTINGS;
     public static final ChunkGeneratorSettings INDEV_GENERATOR_SETTINGS;
@@ -76,6 +78,7 @@ public class OldChunkGeneratorSettings {
         register(SKYLANDS, SKYLANDS_GENERATOR_SETTINGS);
         register(ALPHA, ALPHA_GENERATOR_SETTINGS);
         register(INFDEV_611, INFDEV_611_GENERATOR_SETTINGS);
+        register(INFDEV_420, INFDEV_420_GENERATOR_SETTINGS);
         register(INFDEV_415, INFDEV_415_GENERATOR_SETTINGS);
         register(INFDEV_227, INFDEV_227_GENERATOR_SETTINGS);
         register(INDEV, INDEV_GENERATOR_SETTINGS);
@@ -112,6 +115,7 @@ public class OldChunkGeneratorSettings {
         ALPHA = ModernBeta.createId(BuiltInTypes.Chunk.ALPHA.name);
         SKYLANDS = ModernBeta.createId(BuiltInTypes.Chunk.SKYLANDS.name);
         INFDEV_611 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_611.name);
+        INFDEV_420 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_420.name);
         INFDEV_415 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_415.name);
         INFDEV_227 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_227.name);
         INDEV = ModernBeta.createId(BuiltInTypes.Chunk.INDEV.name);
@@ -123,6 +127,7 @@ public class OldChunkGeneratorSettings {
         ALPHA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.ALPHA_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true, true);
         SKYLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.SKYLANDS_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.AIR, -10, -10, 0, false, false, false, false, true, true, true);
         INFDEV_611_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_611_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true, true);
+        INFDEV_420_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_420_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true, true);
         INFDEV_415_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_415_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, true, true, true, true, true, true);
         INFDEV_227_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 65, false, false, false, false, false, false, true);
         INDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.INDEV_SHAPE_CONFIG, DEFAULT_MN_PARAMS, BlockStates.STONE, BlockStates.WATER, -10, 0, 64, false, false, false, false, false, false, true);

@@ -561,8 +561,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 BlockState blockState = blockSources.apply(chunkNoiseSampler, x, y, z);
                                 if (blockState.equals(BlockStates.AIR)) continue;
                                 
-                                if (blockState.getLuminance() != 0 && chunk instanceof ProtoChunk) {
-                                    ((ProtoChunk)chunk).addLightSource(mutable.set(x, y, z));
+                                if (blockState.getLuminance() != 0 && chunk instanceof ProtoChunk protoChunk) {
+                                    protoChunk.addLightSource(mutable.set(x, y, z));
                                 }
                                 
                                 section.setBlockState(localX, localY, localZ, blockState, false);
