@@ -32,13 +32,8 @@ public class Infdev415Winter {
         
         OldBiomeStructures.addCommonStructures(genSettings);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_CACTUS_ALPHA);
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INFDEV_415_BEES);
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
-        
-        OldBiomeFeatures.addVegetalPatches(genSettings);
         
         OldBiomeFeatures.addCarvers(genSettings, false);
         

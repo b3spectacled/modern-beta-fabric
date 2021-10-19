@@ -43,6 +43,12 @@ public final class OldBiomeColors {
     public static final int ALPHA_SKY_COLOR = 8961023;
     public static final int ALPHA_FOG_COLOR = 12638463;
     
+    public static final int INFDEV_611_SKY_COLOR = 10079487;
+    public static final int INFDEV_611_FOG_COLOR = 11587839;
+    
+    public static final int INFDEV_420_SKY_COLOR = 10079487;
+    public static final int INFDEV_420_FOG_COLOR = 11587839;
+    
     public static final int INFDEV_415_SKY_COLOR = 10079487;
     public static final int INFDEV_415_FOG_COLOR = 11587839;
     

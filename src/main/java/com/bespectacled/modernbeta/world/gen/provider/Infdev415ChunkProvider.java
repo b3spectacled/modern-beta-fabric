@@ -150,14 +150,12 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
     }
     
     @Override
-    protected void generateNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
+    protected void sampleNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
         
         for (int y = 0; y < buffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
-            
-            double densityOffset = this.getOffset(noiseY);
             
             double coordinateScale = 684.412D * this.xzScale; 
             double heightScale = 984.412D * this.yScale;
@@ -169,6 +167,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             double limitScale = 512.0D;
             
             double density;
+            double densityOffset = this.getOffset(noiseY);
             
             // Default values: 8.55515, 1.71103, 8.55515
             double mainNoiseVal = this.mainNoiseOctaves.sample(

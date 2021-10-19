@@ -56,6 +56,10 @@ public class ChunkProviderSettings {
         return createSettingsInf(BuiltInTypes.Chunk.INFDEV_415.name);
     }
     
+    public static NbtCompound createSettingsInfdev420() {
+        return createSettingsInf(BuiltInTypes.Chunk.INFDEV_420.name);
+    }
+    
     public static NbtCompound createSettingsInfdev227() {
         NbtCompound settings = createSettingsInf(BuiltInTypes.Chunk.INFDEV_227.name);
         

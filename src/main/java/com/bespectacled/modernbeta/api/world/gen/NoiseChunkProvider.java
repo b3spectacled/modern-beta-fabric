@@ -178,7 +178,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                     this.noiseSizeX,
                     this.noiseSizeY,
                     this.noiseSizeZ,
-                    this::generateNoiseColumn
+                    this::sampleNoiseColumn
                 );
                 
                 baseNoiseProvider.sampleInitialNoise(chunkX * this.noiseSizeX, chunkZ * this.noiseSizeZ);
@@ -252,7 +252,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * @param localNoiseX Current subchunk index along x-axis.
      * @param localNoiseZ Current subchunk index along z-axis.
      */
-    protected abstract void generateNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ);
+    protected abstract void sampleNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ);
     
     /**
      * Samples density for noise cave.

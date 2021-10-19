@@ -14,7 +14,7 @@ import net.minecraft.world.gen.GenerationStep.Feature;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
-public class Infdev227 {
+public class Infdev420Winter {
     public static final Biome BIOME = create();
     
     private static Biome create() {
@@ -26,29 +26,29 @@ public class Infdev227 {
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, InfBiomes.ADD_LAKES_INF_227, InfBiomes.ADD_SPRINGS_INF_227);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, false, InfBiomes.ADD_LAKES_INF_420, InfBiomes.ADD_SPRINGS_INF_420);
         OldBiomeFeatures.addOres(genSettings);
         DefaultBiomeFeatures.addFrozenTopLayer(genSettings);
-        
+
         OldBiomeStructures.addCommonStructures(genSettings);
         
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INFDEV_420_BEES);
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.FLOWER_INFDEV_227);
         
         OldBiomeFeatures.addCarvers(genSettings, false);
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.RAIN)
+            .precipitation(Biome.Precipitation.SNOW)
             .category(Biome.Category.FOREST)
             .depth(0.37F)
             .scale(0.4F)
-            .temperature(0.6F)
-            .downfall(0.6F)
+            .temperature(0.0F)
+            .downfall(0.0F)
             .effects((new BiomeEffects.Builder())
                 .grassColor(OldBiomeColors.OLD_GRASS_COLOR)
                 .foliageColor(OldBiomeColors.OLD_FOLIAGE_COLOR)
-                .skyColor(OldBiomeColors.INFDEV_227_SKY_COLOR)
-                .fogColor(OldBiomeColors.INFDEV_227_FOG_COLOR)
+                .skyColor(OldBiomeColors.INFDEV_420_SKY_COLOR)
+                .fogColor(OldBiomeColors.INFDEV_420_FOG_COLOR)
                 .waterColor(OldBiomeColors.OLD_WATER_COLOR)
                 .waterFogColor(OldBiomeColors.OLD_WATER_FOG_COLOR)
                 .build())

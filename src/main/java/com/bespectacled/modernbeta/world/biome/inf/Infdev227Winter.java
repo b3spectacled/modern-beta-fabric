@@ -32,12 +32,8 @@ public class Infdev227Winter {
         
         OldBiomeStructures.addCommonStructures(genSettings);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_CACTUS_ALPHA);
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
-        
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.FLOWER_INFDEV_227);
-        
-        OldBiomeFeatures.addVegetalPatches(genSettings);
         
         OldBiomeFeatures.addCarvers(genSettings, false);
         

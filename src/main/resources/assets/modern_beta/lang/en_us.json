@@ -9,6 +9,7 @@
     "createWorld.customize.worldType.alpha": "Alpha 1.1.2_01",
     "createWorld.customize.worldType.indev": "Indev 20100223",
     "createWorld.customize.worldType.infdev_611": "Infdev 20100611",
+    "createWorld.customize.worldType.infdev_420": "Infdev 20100420",
     "createWorld.customize.worldType.infdev_415": "Infdev 20100415",
     "createWorld.customize.worldType.infdev_227": "Infdev 20100227",
     "createWorld.customize.worldType.beta_islands": "Beta Islands",
@@ -154,6 +155,12 @@
     
     "biome.modern_beta.alpha": "Alpha",
     "biome.modern_beta.alpha_winter": "Alpha Winter",
+    
+    "biome.modern_beta.infdev_611": "Infdev 611",
+    "biome.modern_beta.infdev_611_winter": "Infdev 611 Winter",
+    
+    "biome.modern_beta.infdev_420": "Infdev 420",
+    "biome.modern_beta.infdev_420_winter": "Infdev 420 Winter",
     
     "biome.modern_beta.infdev_415": "Infdev 415",
     "biome.modern_beta.infdev_415_winter": "Infdev 415 Winter",

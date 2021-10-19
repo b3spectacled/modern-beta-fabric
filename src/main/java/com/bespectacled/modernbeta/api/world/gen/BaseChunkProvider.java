@@ -135,10 +135,12 @@ public abstract class BaseChunkProvider extends ChunkProvider {
      * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
      */
     protected void setForestOctaves(PerlinOctaveNoise forestOctaves) {
-        OldDecorators.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestOctaves);
-        OldDecorators.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestOctaves);
-        OldDecorators.COUNT_INFDEV_NOISE_DECORATOR.setOctaves(forestOctaves);
-    }
+        OldDecorators.COUNT_BETA_NOISE.setOctaves(forestOctaves);
+        OldDecorators.COUNT_ALPHA_NOISE.setOctaves(forestOctaves);
+        OldDecorators.COUNT_INFDEV_415_NOISE.setOctaves(forestOctaves);
+        OldDecorators.COUNT_INFDEV_420_NOISE.setOctaves(forestOctaves);
+        OldDecorators.COUNT_INFDEV_611_NOISE.setOctaves(forestOctaves);
+        }
     
     /**
      * Use a biome-specific surface builder, at a given x/z-coordinate and topmost y-coordinate.

@@ -28,5 +28,7 @@ public class OldBiomes {
         InfBiomes.registerInfdev227Biomes();
         IndevBiomes.registerBiomes();
         PEBiomes.registerBiomes();
+        InfBiomes.registerInfdev611Biomes();
+        InfBiomes.registerInfdev420Biomes();
     }
 }

@@ -14,7 +14,7 @@ import net.minecraft.world.gen.GenerationStep.Feature;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
-public class Infdev227 {
+public class Infdev611 {
     public static final Biome BIOME = create();
     
     private static Biome create() {
@@ -26,14 +26,14 @@ public class Infdev227 {
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, InfBiomes.ADD_LAKES_INF_227, InfBiomes.ADD_SPRINGS_INF_227);
+        OldBiomeFeatures.addDefaultFeatures(genSettings, false, InfBiomes.ADD_LAKES_INF_611, InfBiomes.ADD_SPRINGS_INF_611);
         OldBiomeFeatures.addOres(genSettings);
         DefaultBiomeFeatures.addFrozenTopLayer(genSettings);
-        
+
         OldBiomeStructures.addCommonStructures(genSettings);
         
+        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INFDEV_611_BEES);
         genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.FLOWER_INFDEV_227);
         
         OldBiomeFeatures.addCarvers(genSettings, false);
         
@@ -47,8 +47,8 @@ public class Infdev227 {
             .effects((new BiomeEffects.Builder())
                 .grassColor(OldBiomeColors.OLD_GRASS_COLOR)
                 .foliageColor(OldBiomeColors.OLD_FOLIAGE_COLOR)
-                .skyColor(OldBiomeColors.INFDEV_227_SKY_COLOR)
-                .fogColor(OldBiomeColors.INFDEV_227_FOG_COLOR)
+                .skyColor(OldBiomeColors.INFDEV_611_SKY_COLOR)
+                .fogColor(OldBiomeColors.INFDEV_611_FOG_COLOR)
                 .waterColor(OldBiomeColors.OLD_WATER_COLOR)
                 .waterFogColor(OldBiomeColors.OLD_WATER_FOG_COLOR)
                 .build())
