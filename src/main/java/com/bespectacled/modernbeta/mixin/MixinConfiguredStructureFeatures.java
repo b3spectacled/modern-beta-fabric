@@ -69,6 +69,12 @@ public class MixinConfiguredStructureFeatures {
         
         OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("infdev_415"));
         OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("infdev_415_winter"));
+
+        OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("infdev_420"));
+        OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("infdev_420_winter"));
+
+        OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("infdev_611"));
+        OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("infdev_611_winter"));
         
         
         /* Indev Biomes */
