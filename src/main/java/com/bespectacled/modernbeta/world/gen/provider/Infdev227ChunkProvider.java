@@ -69,29 +69,29 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     }
 
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         Random rand = this.createSurfaceRandom(chunk.getPos().x, chunk.getPos().z);
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
         
-        for (int x = 0; x < 16; ++x) {
-            for (int z = 0; z < 16; ++z) {
-                int absX = startX + x;
-                int absZ = startZ + z;
-                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
+        for (int localX = 0; localX < 16; ++localX) {
+            for (int localZ = 0; localZ < 16; ++localZ) {
+                int x = startX + localX;
+                int z = startZ + localZ;
+                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
                 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, topY, absZ));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, topY, z));
                 
                 BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
 
                 int soilDepth = 0;
 
-                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos);
                 
                 for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
-                    BlockState blockState = chunk.getBlockState(mutable.set(x, y, z));
+                    BlockState blockState = chunk.getBlockState(pos.set(localX, y, localZ));
                     
                     boolean inFluid = blockState.equals(BlockStates.AIR) || blockState.equals(this.defaultFluid);
                     
@@ -114,7 +114,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                     
                     soilDepth++;
 
-                    chunk.setBlockState(mutable.set(x, y, z), blockState, false);
+                    chunk.setBlockState(pos.set(localX, y, localZ), blockState, false);
                 }
             }
         }

@@ -56,15 +56,13 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         
-        // Accurate beach/terrain patterns depend on z iterating before x,
-        // and array accesses changing accordingly.
-        for (int x = 0; x < 16; x++) {
-            for (int z = 0; z < 16; z++) {
-                int absX = (chunkX << 4) + x;
-                int absZ = (chunkZ << 4) + z;
-                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
+        for (int localX = 0; localX < 16; localX++) {
+            for (int localZ = 0; localZ < 16; localZ++) {
+                int absX = (chunkX << 4) + localX;
+                int absZ = (chunkZ << 4) + localZ;
+                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(absX * eighth, absZ * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0;
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(absZ * eighth, 109.0134, absX * eighth) + rand.nextDouble() * 0.2 > 3.0;
@@ -72,7 +70,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
 
                 int flag = -1;
                 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, topY, absZ));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(absX, topY, absZ));
 
                 BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -80,14 +78,14 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
 
-                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos);
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.minY; y--) {
 
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
-                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
+                        chunk.setBlockState(pos.set(localX, y, localZ), BlockStates.BEDROCK, false);
                         continue;
                     }
                     
@@ -97,7 +95,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
 
-                    BlockState blockState = chunk.getBlockState(mutable.set(x, y, z));
+                    BlockState blockState = chunk.getBlockState(pos.set(localX, y, localZ));
 
                     if (blockState.equals(BlockStates.AIR)) { // Skip if air block
                         flag = -1;
@@ -128,14 +126,14 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
 
                             flag = surfaceDepth;
                             if (y >= this.seaLevel - 1) {
-                                chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
+                                chunk.setBlockState(pos.set(localX, y, localZ), topBlock, false);
                             } else {
-                                chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
+                                chunk.setBlockState(pos.set(localX, y, localZ), fillerBlock, false);
                             }
                             
                         } else if (flag > 0) { 
                             flag--;
-                            chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
+                            chunk.setBlockState(pos.set(localX, y, localZ), fillerBlock, false);
                         }
                     }
                 }

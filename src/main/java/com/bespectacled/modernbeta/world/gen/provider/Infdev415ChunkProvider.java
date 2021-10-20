@@ -55,30 +55,30 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         
-        for (int x = 0; x < 16; ++x) {
-            for (int z = 0; z < 16; ++z) {
-                int absX = (chunkX << 4) + x;
-                int absZ = (chunkZ << 4) + z;
-                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
+        for (int localX = 0; localX < 16; ++localX) {
+            for (int localZ = 0; localZ < 16; ++localZ) {
+                int x = (chunkX << 4) + localX;
+                int z = (chunkZ << 4) + localZ;
+                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(
-                    absX * thirtysecond, 
-                    absZ * thirtysecond, 
+                    x * thirtysecond, 
+                    z * thirtysecond, 
                     0.0) + rand.nextDouble() * 0.2 > 0.0;
                 
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(
-                    absZ * thirtysecond, 
+                    z * thirtysecond, 
                     109.0134,
-                    absX * thirtysecond) + rand.nextDouble() * 0.2 > 3.0;
+                    x * thirtysecond) + rand.nextDouble() * 0.2 > 3.0;
                 
-                double surfaceNoise = this.surfaceNoiseOctaves.sample(absX * thirtysecond * 2.0, absZ * thirtysecond * 2.0);
+                double surfaceNoise = this.surfaceNoiseOctaves.sample(x * thirtysecond * 2.0, z * thirtysecond * 2.0);
                 int surfaceDepth = (int)(surfaceNoise / 3.0 + 3.0 + rand.nextDouble() * 0.25);
                 
                 int flag = -1;
                 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, topY, absZ));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, topY, z));
                 
                 BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -86,13 +86,13 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
                 
-                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos);
                 
                 for (int y = this.worldTopY - 1; y >= this.minY; --y) {
                     
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
-                        chunk.setBlockState(mutable.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
+                        chunk.setBlockState(pos.set(localX, y, localZ), Blocks.BEDROCK.getDefaultState(), false);
                         continue;
                     }
                     
@@ -101,8 +101,8 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
                     
-                    mutable.set(x, y, z);
-                    BlockState blockState = chunk.getBlockState(mutable);
+                    pos.set(localX, y, localZ);
+                    BlockState blockState = chunk.getBlockState(pos);
                     
                     if (blockState.equals(BlockStates.AIR)) {
                         flag = -1;
@@ -135,14 +135,14 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                             flag = surfaceDepth;
                             
                             if (y >= this.seaLevel - 1) {
-                                chunk.setBlockState(mutable, topBlock, false);
+                                chunk.setBlockState(pos, topBlock, false);
                             } else {
-                                chunk.setBlockState(mutable, fillerBlock, false);
+                                chunk.setBlockState(pos, fillerBlock, false);
                             }
                             
                         } else if (flag > 0) {
                             --flag;
-                            chunk.setBlockState(mutable, fillerBlock, false);
+                            chunk.setBlockState(pos, fillerBlock, false);
                         }
                     }
                 }

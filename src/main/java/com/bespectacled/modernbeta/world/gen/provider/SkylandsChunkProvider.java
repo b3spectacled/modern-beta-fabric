@@ -47,22 +47,22 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         int chunkZ = chunk.getPos().z;
 
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         
         double[] surfaceNoise = this.createSurfaceArray();
         
         surfaceNoise = surfaceNoiseOctaves.sampleArrShelf(surfaceNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
 
-        for (int z = 0; z < 16; z++) {
-            for (int x = 0; x < 16; x++) {
-                int absX = (chunkX << 4) + x; 
-                int absZ = (chunkZ << 4) + z;
-                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, x, z, this.defaultFluid) + 1;
+        for (int localZ = 0; localZ < 16; localZ++) {
+            for (int localX = 0; localX < 16; localX++) {
+                int x = (chunkX << 4) + localX; 
+                int z = (chunkZ << 4) + localZ;
+                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
 
-                int surfaceDepth = (int) (surfaceNoise[z + x * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
+                int surfaceDepth = (int) (surfaceNoise[localZ + localX * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, topY, absZ));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, topY, z));
                 
                 BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -70,7 +70,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
                 
-                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos);
 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.minY; y--) {
@@ -79,7 +79,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
                     
-                    BlockState blockState = chunk.getBlockState(mutable.set(x, y, z));
+                    BlockState blockState = chunk.getBlockState(pos.set(localX, y, localZ));
                     
                     if (blockState.equals(BlockStates.AIR)) { // Skip if air block
                         flag = -1;
@@ -98,9 +98,9 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
 
                         flag = surfaceDepth;
                         if (y >= 0) {
-                            chunk.setBlockState(mutable.set(x, y, z), topBlock, false);
+                            chunk.setBlockState(pos.set(localX, y, localZ), topBlock, false);
                         } else {
-                            chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
+                            chunk.setBlockState(pos.set(localX, y, localZ), fillerBlock, false);
                         }
 
                         continue;
@@ -111,7 +111,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                     }
 
                     flag--;
-                    chunk.setBlockState(mutable.set(x, y, z), fillerBlock, false);
+                    chunk.setBlockState(pos.set(localX, y, localZ), fillerBlock, false);
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
                     if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {

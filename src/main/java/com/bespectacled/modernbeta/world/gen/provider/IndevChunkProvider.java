@@ -137,8 +137,8 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
 
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        BlockPos.Mutable mutableUp = new BlockPos.Mutable();
+        BlockPos.Mutable pos = new BlockPos.Mutable();
+        BlockPos.Mutable posUp = new BlockPos.Mutable();
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
@@ -146,16 +146,16 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
         int worldTopY = this.worldHeight + this.minY;
         
         for (int localX = 0; localX < 16; ++localX) {
-            int x = startX + localX;
             for (int localZ = 0; localZ < 16; ++localZ) {
+                int x = startX + localX;
                 int z = startZ + localZ;
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(x, 0, z));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, 0, z));
                 
                 boolean isCold;
                 if (biomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider) {
                     isCold = climateBiomeProvider.getClimateSampler().sampleClime(x, z).temp() < 0.5D;
                 } else {
-                    isCold = biome.isCold(mutable);
+                    isCold = biome.isCold(pos);
                 }
                 
                 for (int y = worldTopY - 1; y >= this.minY; --y) {
@@ -163,7 +163,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                     BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                     BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
                     
-                    BlockState blockState = chunk.getBlockState(mutable.set(localX, y, localZ));
+                    BlockState blockState = chunk.getBlockState(pos.set(localX, y, localZ));
 
                     // Skip replacing surface blocks if this is a Hell level and biome surface is standard grass/dirt.
                     if (this.isHell() && topBlock.equals(BlockStates.GRASS_BLOCK) && fillerBlock.equals(BlockStates.DIRT))
@@ -180,7 +180,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                         if (y == this.seaLevel) {
                             if (isCold && blockState.equals(topBlock)) {
                                 blockState = topBlock.with(SnowyBlock.SNOWY, true);
-                                chunk.setBlockState(mutableUp.set(localX, y + 1, localZ), BlockStates.SNOW, false);
+                                chunk.setBlockState(posUp.set(localX, y + 1, localZ), BlockStates.SNOW, false);
                             }
                             
                         } else if (y == this.seaLevel - 1 && this.levelTheme != IndevTheme.HELL) {
@@ -190,7 +190,7 @@ public class IndevChunkProvider extends BaseChunkProvider implements NoiseChunkI
                         }
                     }
 
-                    chunk.setBlockState(mutable.set(localX, y, localZ), blockState, false);
+                    chunk.setBlockState(pos.set(localX, y, localZ), blockState, false);
                 }
             }
         }
