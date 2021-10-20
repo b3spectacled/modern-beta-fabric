@@ -1,5 +1,9 @@
 accessWidener v1 named
 
+extendable class net/minecraft/world/biome/source/util/VanillaBiomeParameters
+extendable method net/minecraft/world/biome/source/util/VanillaBiomeParameters writeOceanBiomes (Ljava/util/function/Consumer;)V
+extendable method net/minecraft/world/biome/source/util/VanillaBiomeParameters getShoreBiome (II)Lnet/minecraft/util/registry/RegistryKey;
+
 extendable class net/minecraft/world/gen/chunk/NoiseChunkGenerator
 accessible field net/minecraft/world/gen/chunk/NoiseChunkGenerator worldSeed J
 

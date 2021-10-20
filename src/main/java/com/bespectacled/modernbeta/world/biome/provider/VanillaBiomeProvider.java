@@ -13,6 +13,7 @@ import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 public class VanillaBiomeProvider extends BiomeProvider {
     private final VanillaBiomeSource vanillaBiomeSource;
     private final VanillaBiomeSource oceanBiomeSource;
+    private final VanillaBiomeSource deepOceanBiomeSource;
     
     public VanillaBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
@@ -32,6 +33,10 @@ public class VanillaBiomeProvider extends BiomeProvider {
         this.oceanBiomeSource = new VanillaBiomeSource.Builder(biomeRegistry, seed)
             .writeOceanBiomes()
             .build();
+        
+        this.deepOceanBiomeSource = new VanillaBiomeSource.Builder(biomeRegistry, seed)
+            .writeDeepOceanBiomes()
+            .build();
     }
 
     @Override
@@ -42,6 +47,13 @@ public class VanillaBiomeProvider extends BiomeProvider {
     @Override
     public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.oceanBiomeSource.getBiome(biomeX, biomeY, biomeZ);
+    }
+    
+    /*
+     * Extra function to inject deep oceans
+     */
+    public Biome getDeepOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+        return this.deepOceanBiomeSource.getBiome(biomeX, biomeY, biomeZ);
     }
     
     @Override

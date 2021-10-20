@@ -17,8 +17,8 @@ repositories {
 	maven { url 'https://jitpack.io' }
 }
 
-minecraft {
-	accessWidener = file("src/main/resources/modern_beta.accesswidener")
+loom {
+	accessWidenerPath = file("src/main/resources/modern_beta.accesswidener")
 }
 
 dependencies {

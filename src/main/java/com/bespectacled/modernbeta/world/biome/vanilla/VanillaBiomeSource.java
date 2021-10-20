@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.mixin.MixinVanillaBiomeParametersInvoker;
+import com.bespectacled.modernbeta.mixin.MixinVanillaBiomeParametersAccessor;
 import com.bespectacled.modernbeta.world.gen.OldChunkGeneratorSettings;
 import com.bespectacled.modernbeta.world.gen.OldGeneratorConfig;
 import com.google.common.collect.ImmutableList;
@@ -17,7 +17,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil.ParameterRange;
-import net.minecraft.world.biome.source.util.VanillaBiomeParameters;
 import net.minecraft.world.gen.MultiNoiseParameters;
 import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
@@ -63,41 +62,47 @@ public class VanillaBiomeSource {
     
     public static class Builder {
         private final ImmutableList.Builder<Pair<MultiNoiseUtil.NoiseHypercube, Supplier<Biome>>> builder;
-        private final VanillaBiomeParameters biomeParameters;
+        private final ExtendedVanillaBiomeParameters biomeParameters;
         private final Consumer<Pair<MultiNoiseUtil.NoiseHypercube, RegistryKey<Biome>>> parameters;
         private final long seed;
         
         public Builder(Registry<Biome> biomeRegistry, long seed) {
             this.builder = ImmutableList.builder(); 
-            this.biomeParameters = new VanillaBiomeParameters();
+            this.biomeParameters = new ExtendedVanillaBiomeParameters();
             this.parameters = pair -> this.builder.add(pair.mapSecond(key -> () -> biomeRegistry.getOrThrow(key)));
             this.seed = seed;
         }
         
         public Builder writeMixedBiomes(ParameterRange range) {
-            MixinVanillaBiomeParametersInvoker invoker = this.getInvoker();
+            MixinVanillaBiomeParametersAccessor invoker = this.getInvoker();
             invoker.invokeWriteMixedBiomes(this.parameters, range);
             
             return this;
         }
         
         public Builder writePlainsBiomes(ParameterRange range) {
-            MixinVanillaBiomeParametersInvoker invoker = this.getInvoker();
+            MixinVanillaBiomeParametersAccessor invoker = this.getInvoker();
             invoker.invokeWritePlainsBiomes(this.parameters, range);
             
             return this;
         }
         
         public Builder writeMountainousBiomes(ParameterRange range) {
-            MixinVanillaBiomeParametersInvoker invoker = this.getInvoker();
+            MixinVanillaBiomeParametersAccessor invoker = this.getInvoker();
             invoker.invokeWriteMountainousBiomes(this.parameters, range);
             
             return this;
         }
         
         public Builder writeOceanBiomes() {
-            MixinVanillaBiomeParametersInvoker invoker = this.getInvoker();
+            MixinVanillaBiomeParametersAccessor invoker = this.getInvoker();
             invoker.invokeWriteOceanBiomes(this.parameters);
+            
+            return this;
+        }
+        
+        public Builder writeDeepOceanBiomes() {
+            this.biomeParameters.writeDeepOceanBiomes(parameters);
             
             return this;
         }
@@ -106,8 +111,8 @@ public class VanillaBiomeSource {
             return new VanillaBiomeSource(this.builder.build(), this.seed);
         }
         
-        private MixinVanillaBiomeParametersInvoker getInvoker() {
-            return ((MixinVanillaBiomeParametersInvoker)(Object)this.biomeParameters);
+        private MixinVanillaBiomeParametersAccessor getInvoker() {
+            return ((MixinVanillaBiomeParametersAccessor)(Object)this.biomeParameters);
         }
     }
 }
