@@ -60,6 +60,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         int bedrockFloor = this.minY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
+        Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
 
         AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
@@ -98,17 +99,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                     pos.set(localX, y, localZ);
 
                     // Randomly place bedrock from y=0 to y=5
-                    if (y <= bedrockFloor + rand.nextInt(6) - 1) {
-                        chunk.setBlockState(pos, BlockStates.BEDROCK, false);
-                        continue;
-                    }
-                    
-                    // TODO: As of 21w08b.
-                    // Check to remove later, not accurate but temporary to ensure bottom layer of world is always bedrock.
-                    // Game breaks during ore decoration breaks if any block at yMin is stone/deepslate
-                    // since the game checks all adjacent blocks for a particular position,
-                    // even if the downward direction is below the world limit!!
-                    if (y <= this.minY) {
+                    if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
                         chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
                     }

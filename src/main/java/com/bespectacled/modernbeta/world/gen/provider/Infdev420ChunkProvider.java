@@ -13,7 +13,6 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ChunkRegion;
@@ -57,6 +56,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         int bedrockFloor = this.minY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
+        Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
 
         AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
@@ -101,8 +101,8 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                     pos.set(localX, y, localZ);
                     
                     // Randomly place bedrock from y=0 to y=5
-                    if (y <= bedrockFloor + rand.nextInt(5)) {
-                        chunk.setBlockState(pos, Blocks.BEDROCK.getDefaultState(), false);
+                    if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
+                        chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
                     }
                     
