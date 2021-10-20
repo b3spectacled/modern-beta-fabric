@@ -8,6 +8,7 @@ import com.bespectacled.modernbeta.util.chunk.ClimateChunk;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.HorizontalVoronoiBiomeAccessType;
@@ -62,8 +63,15 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
     
     private Clime sampleBiomeClimate(int x, int z) {
         Biome biome = HorizontalVoronoiBiomeAccessType.INSTANCE.getBiome(this.seed, x, 0, z, this);
+        
         double temp = biome.getTemperature();
         double rain = biome.getDownfall();
+
+        // Ensure tall or mountain biomes are scaled appropriately
+        if (biome.getCategory() == Category.EXTREME_HILLS) {
+            temp = 1.0;
+            rain = 1.0;
+        }
         
         return new Clime(temp, rain);
     }
