@@ -55,6 +55,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         int bedrockFloor = this.minY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
+        Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         // Accurate beach/terrain patterns depend on z iterating before x,
@@ -85,7 +86,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 for (int y = this.worldTopY - 1; y >= this.minY; y--) {
 
                     // Randomly place bedrock from y=0 to y=5
-                    if (y <= bedrockFloor + rand.nextInt(6) - 1) {
+                    if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
                         chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
                         continue;
                     }
