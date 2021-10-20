@@ -87,16 +87,6 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
                     
-                    // TODO: As of 21w08b.
-                    // Check to remove later, not accurate but temporary to ensure bottom layer of world is always bedrock.
-                    // Game breaks during ore decoration breaks if any block at yMin is stone/deepslate
-                    // since the game checks all adjacent blocks for a particular position,
-                    // even if the downward direction is below the world limit!!
-                    if (y <= this.minY) {
-                        chunk.setBlockState(mutable.set(x, y, z), BlockStates.BEDROCK, false);
-                        continue;
-                    }
-                    
                     // Don't surface build below 50, per 1.17 default surface builder
                     // Skip if used custom surface generation or if below minimum surface level.
                     if (usedCustomSurface || y < this.minSurfaceY) {
