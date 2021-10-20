@@ -36,6 +36,7 @@ public class VanillaBiomeSource {
     private final MultiNoiseUtil.Entries<Biome> biomeEntries;
     private final MultiNoiseBiomeSource biomeSource;
     private final NoiseColumnSampler columnSampler;
+    private final long seed;
     
     private VanillaBiomeSource(ImmutableList<Pair<MultiNoiseUtil.NoiseHypercube, Supplier<Biome>>> biomeList, long seed) {
         this.biomeEntries = new MultiNoiseUtil.Entries<Biome>(biomeList);
@@ -50,6 +51,7 @@ public class VanillaBiomeSource {
             seed,
             RANDOM_TYPE
         );
+        this.seed = seed;
     }
     
     public Biome getBiome(int biomeX, int biomeY, int biomeZ) {
@@ -58,6 +60,10 @@ public class VanillaBiomeSource {
     
     public MultiNoiseUtil.Entries<Biome> getBiomeEntries() {
         return this.biomeEntries;
+    }
+    
+    public long getSeed() {
+        return this.seed;
     }
     
     public static class Builder {
@@ -102,7 +108,7 @@ public class VanillaBiomeSource {
         }
         
         public Builder writeDeepOceanBiomes() {
-            this.biomeParameters.writeDeepOceanBiomes(parameters);
+            this.biomeParameters.writeDeepOceanBiomes(this.parameters);
             
             return this;
         }
