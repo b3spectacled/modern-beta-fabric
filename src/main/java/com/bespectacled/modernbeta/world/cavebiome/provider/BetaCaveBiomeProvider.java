@@ -13,18 +13,17 @@ import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampl
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeResolver {
     private final ClimateSampler climateSampler;
-    private final BetaClimateMap betaClimateMap;
+    private final BetaClimateMap climateMap;
     
     public BetaCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
         
         this.climateSampler = new BetaClimateSampler(seed);
-        this.betaClimateMap = new BetaClimateMap(settings);
+        this.climateMap = new BetaClimateMap(settings);
     }
 
     @Override
@@ -36,7 +35,7 @@ public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeRes
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return this.biomeRegistry.get(betaClimateMap.getBiome(temp, rain, ClimateType.LAND));
+        return this.biomeRegistry.get(climateMap.getBiome(temp, rain, ClimateType.LAND));
     }
 
     @Override
@@ -45,11 +44,11 @@ public class BetaCaveBiomeProvider extends CaveBiomeProvider implements BiomeRes
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return this.biomeRegistry.get(betaClimateMap.getBiome(temp, rain, ClimateType.LAND));
+        return this.biomeRegistry.get(climateMap.getBiome(temp, rain, ClimateType.LAND));
     }
 
     @Override
-    public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        return this.betaClimateMap.getBiomeIds().stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
+    public List<Biome> getBiomesForRegistry() {
+        return this.climateMap.getBiomeIds().stream().map(i -> this.biomeRegistry.get(i)).collect(Collectors.toList());
     }
 }

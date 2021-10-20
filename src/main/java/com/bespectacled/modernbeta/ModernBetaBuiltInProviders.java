@@ -13,6 +13,7 @@ import com.bespectacled.modernbeta.client.gui.screen.world.IslandWorldScreen;
 import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.PEBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
+import com.bespectacled.modernbeta.world.biome.provider.VanillaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.NoCaveBiomeProvider;
 import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
@@ -72,6 +73,7 @@ public class ModernBetaBuiltInProviders {
         Registries.BIOME.register(BuiltInTypes.Biome.BETA.name, BetaBiomeProvider::new);
         Registries.BIOME.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeProvider::new);
         Registries.BIOME.register(BuiltInTypes.Biome.PE.name, PEBiomeProvider::new);
+        Registries.BIOME.register(BuiltInTypes.Biome.VANILLA.name, VanillaBiomeProvider::new);
     }
     
     // Register default biome settings
@@ -80,6 +82,7 @@ public class ModernBetaBuiltInProviders {
         Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.BETA.name, BiomeProviderSettings::createSettingsBeta);
         Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.SINGLE.name, BiomeProviderSettings::createSettingsSingle);
         Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.PE.name, BiomeProviderSettings::createSettingsPE);
+        Registries.BIOME_SETTINGS.register(BuiltInTypes.Biome.VANILLA.name, BiomeProviderSettings::createSettingsVanilla);
     }
     
     // Register default cave biome providers

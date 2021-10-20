@@ -13,7 +13,6 @@ import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampl
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class BetaBiomeProvider extends ClimateBiomeProvider implements BiomeResolver {
@@ -59,8 +58,8 @@ public class BetaBiomeProvider extends ClimateBiomeProvider implements BiomeReso
     }
 
     @Override
-    public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        return this.climateMap.getBiomeIds().stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
+    public List<Biome> getBiomesForRegistry() {
+        return this.climateMap.getBiomeIds().stream().map(i -> this.biomeRegistry.get(i)).collect(Collectors.toList());
     }
     
     @Override

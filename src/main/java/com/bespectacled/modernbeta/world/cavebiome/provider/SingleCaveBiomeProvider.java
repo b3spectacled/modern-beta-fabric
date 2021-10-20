@@ -1,6 +1,5 @@
 package com.bespectacled.modernbeta.world.cavebiome.provider;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
@@ -14,7 +13,6 @@ import com.bespectacled.modernbeta.world.cavebiome.provider.climate.BaseCaveClim
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
@@ -23,15 +21,16 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveCl
     
     private final boolean useCaveNoise;
     
+    private final Identifier biomeId;
     private final CaveClimateSampler climateSampler;
     private final NoiseRanges noiseRanges;
     
     public SingleCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
         
-        Identifier biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
-        
         this.useCaveNoise = NbtUtil.readBoolean(NbtTags.USE_CAVE_NOISE, settings, false);
+        
+        this.biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
         this.climateSampler = new BaseCaveClimateSampler(seed, 2, 8);
         this.noiseRanges = new NoiseRanges.Builder()
             .add(new NoiseRange(0.0, 1.0, biomeId))
@@ -42,12 +41,12 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveCl
     public Biome getBiome(int biomeX, int biomeY, int biomeZ) {
         return this.useCaveNoise ?
             this.biomeRegistry.getOrEmpty(this.noiseRanges.sample(this.climateSampler.sample(biomeX, biomeY, biomeZ))).orElse(null) :
-            this.biomeRegistry.get(this.noiseRanges.sample(0.0));
+            this.biomeRegistry.get(this.biomeId);
     }
     
     @Override
-    public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        return Arrays.asList(RegistryKey.of(Registry.BIOME_KEY, this.noiseRanges.sample(1.0)));
+    public List<Biome> getBiomesForRegistry() {
+        return List.of(this.biomeRegistry.get(this.biomeId));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.bespectacled.modernbeta.world.cavebiome.provider;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
@@ -12,7 +11,6 @@ import com.bespectacled.modernbeta.world.cavebiome.provider.climate.BaseCaveClim
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
@@ -41,10 +39,10 @@ public class NoiseCaveBiomeProvider extends CaveBiomeProvider implements CaveCli
     }
     
     @Override
-    public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        return Arrays.asList(
-            BiomeKeys.LUSH_CAVES,
-            BiomeKeys.DRIPSTONE_CAVES
+    public List<Biome> getBiomesForRegistry() {
+        return List.of(
+            this.biomeRegistry.get(LUSH_CAVES),
+            this.biomeRegistry.get(DRIPSTONE_CAVES)
         );
     }
 

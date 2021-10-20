@@ -1,6 +1,5 @@
 package com.bespectacled.modernbeta.world.biome.provider;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +11,6 @@ import com.bespectacled.modernbeta.world.biome.provider.climate.SingleClimateSam
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BuiltinBiomes;
 
@@ -33,8 +31,8 @@ public class SingleBiomeProvider extends ClimateBiomeProvider {
     }
     
     @Override
-    public List<RegistryKey<Biome>> getBiomesForRegistry() {
-        return Arrays.asList(RegistryKey.of(Registry.BIOME_KEY, this.biomeId));
+    public List<Biome> getBiomesForRegistry() {
+        return List.of(this.biomeRegistry.get(this.biomeId));
     }
     
     private static Biome getBiome(NbtCompound settings, Registry<Biome> biomeRegistry) {

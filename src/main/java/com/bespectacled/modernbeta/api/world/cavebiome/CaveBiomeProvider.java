@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public abstract class CaveBiomeProvider {
@@ -38,9 +37,11 @@ public abstract class CaveBiomeProvider {
     public abstract Biome getBiome(int biomeX, int biomeY, int biomeZ);
     
     /**
-     * Gets a list of biome registry keys for biome source, for the purpose of locating structures, etc.
+     * Gets a list of biomes for biome source, for the purpose of locating structures, etc.
      * 
-     * @return A list of biome registry keys.
+     * @return A list of biomes.
      */
-    public abstract List<RegistryKey<Biome>> getBiomesForRegistry();
+    public List<Biome> getBiomesForRegistry() {
+        return List.of();
+    }
 }

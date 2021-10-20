@@ -29,4 +29,6 @@ public interface MixinVanillaBiomeParametersInvoker {
     @Invoker("writeBiomesNearRivers")
     public void invokeWriteBiomesNearRivers(Consumer<Pair<MultiNoiseUtil.NoiseHypercube, RegistryKey<Biome>>> parameters, MultiNoiseUtil.ParameterRange weirdness);
     
+    @Invoker("writeOceanBiomes")
+    public void invokeWriteOceanBiomes(Consumer<Pair<MultiNoiseUtil.NoiseHypercube, RegistryKey<Biome>>> parameters);
 }

@@ -58,17 +58,11 @@ public class OldBiomeSource extends BiomeSource {
         
         List<Biome> mainBiomes = Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, biomeSettings))
             .apply(seed, biomeSettings, biomeRegistry)
-            .getBiomesForRegistry()
-            .stream()
-            .map(registryKey -> biomeRegistry.get(registryKey))
-            .toList();
+            .getBiomesForRegistry();
         
         List<Biome> caveBiomes = Registries.CAVE_BIOME.get(NbtUtil.readStringOrThrow(NbtTags.CAVE_BIOME_TYPE, caveSettings))
             .apply(seed, caveSettings, biomeRegistry)
-            .getBiomesForRegistry()
-            .stream()
-            .map(registryKey -> biomeRegistry.get(registryKey))
-            .toList();
+            .getBiomesForRegistry();
         
         List<Biome> biomes = new ArrayList<>();
         biomes.addAll(mainBiomes);
