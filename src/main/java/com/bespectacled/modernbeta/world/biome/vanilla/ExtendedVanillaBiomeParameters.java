@@ -58,4 +58,24 @@ public class ExtendedVanillaBiomeParameters extends VanillaBiomeParameters {
         
         return BiomeKeys.PLAINS;
     }
+    
+    /*
+     * No-op on Stony Shore additions
+     */
+    @Override
+    protected void writeBiomeParameters(
+        Consumer<Pair<MultiNoiseUtil.NoiseHypercube, RegistryKey<Biome>>> parameters, 
+        MultiNoiseUtil.ParameterRange temperature, 
+        MultiNoiseUtil.ParameterRange humidity, 
+        MultiNoiseUtil.ParameterRange continentalness, 
+        MultiNoiseUtil.ParameterRange erosion, 
+        MultiNoiseUtil.ParameterRange weirdness, 
+        float offset, 
+        RegistryKey<Biome> biome
+    ) {
+        if (biome == BiomeKeys.STONY_SHORE)
+            return;
+        
+        super.writeBiomeParameters(parameters, temperature, humidity, continentalness, erosion, weirdness, offset, biome);
+    }
 }
