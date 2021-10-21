@@ -24,6 +24,8 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
     private final ChunkCache<ClimateChunk> baseClimateCache;
     private final ChunkCache<ClimateChunk> climateCache;
     
+    private final VanillaClimateRules climateRules;
+    
     public VanillaClimateSampler(long seed, BiomeLayerSampler biomeSampler, Registry<Biome> biomeRegistry) {
         this.seed = seed;
         this.biomeSampler = biomeSampler;
@@ -42,6 +44,10 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
             true, 
             (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::blendBiomeClimate)
         );
+        
+        this.climateRules = new VanillaClimateRules.Builder()
+            .add(biome -> biome.getCategory() == Category.EXTREME_HILLS, () -> new Clime(1.0, 1.0))
+            .build();
     }
     
     @Override
@@ -64,16 +70,7 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
     private Clime sampleBiomeClimate(int x, int z) {
         Biome biome = HorizontalVoronoiBiomeAccessType.INSTANCE.getBiome(this.seed, x, 0, z, this);
         
-        double temp = biome.getTemperature();
-        double rain = biome.getDownfall();
-
-        // Ensure tall or mountain biomes are scaled appropriately
-        if (biome.getCategory() == Category.EXTREME_HILLS) {
-            temp = 1.0;
-            rain = 1.0;
-        }
-        
-        return new Clime(temp, rain);
+        return this.climateRules.apply(biome);
     }
     
     private Clime blendBiomeClimate(int x, int z) {
