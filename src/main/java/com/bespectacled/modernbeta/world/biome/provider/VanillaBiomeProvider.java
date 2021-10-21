@@ -9,6 +9,7 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.provider.climate.VanillaClimateSampler;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeLayer;
+import com.bespectacled.modernbeta.world.biome.vanilla.VanillaDeepOceanLayer;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaOceanLayer;
 
 import net.minecraft.nbt.NbtCompound;
@@ -22,6 +23,7 @@ import net.minecraft.world.biome.source.BiomeLayerSampler;
 public class VanillaBiomeProvider extends ClimateBiomeProvider {
     private final BiomeLayerSampler biomeSampler;
     private final BiomeLayerSampler oceanSampler;
+    private final BiomeLayerSampler deepOceanSampler;
     
     public VanillaBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry, new VanillaClimateSampler(seed, buildBiomeLayers(seed, settings), biomeRegistry));
@@ -29,6 +31,7 @@ public class VanillaBiomeProvider extends ClimateBiomeProvider {
         // Pull biome sampler back out of VanillaClimateSampler
         this.biomeSampler = ((VanillaClimateSampler)this.getClimateSampler()).getBiomeSampler();
         this.oceanSampler = buildOceanLayers(seed, settings);
+        this.deepOceanSampler = buildDeepOceanLayers(seed, settings);
     }
 
     @Override
@@ -39,6 +42,11 @@ public class VanillaBiomeProvider extends ClimateBiomeProvider {
     @Override
     public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.oceanSampler.sample(this.biomeRegistry, biomeX, biomeZ); 
+    }
+    
+    @Override
+    public Biome getDeepOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+        return this.deepOceanSampler.sample(this.biomeRegistry, biomeX, biomeZ);
     }
 
     @Override
@@ -79,5 +87,15 @@ public class VanillaBiomeProvider extends ClimateBiomeProvider {
         );
      
         return VanillaOceanLayer.build(seed, false, vanillaOceanBiomeSize, -1);
+    }
+    
+    private static BiomeLayerSampler buildDeepOceanLayers(long seed, NbtCompound settings) {
+        int vanillaOceanBiomeSize = NbtUtil.readInt(
+            NbtTags.VANILLA_OCEAN_BIOME_SIZE, 
+            settings, 
+            ModernBeta.BIOME_CONFIG.vanillaBiomeConfig.vanillaOceanBiomeSize
+        );
+     
+        return VanillaDeepOceanLayer.build(seed, false, vanillaOceanBiomeSize, -1);
     }
 }

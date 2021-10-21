@@ -68,6 +68,10 @@ public class OldBiomeSource extends BiomeSource {
         return this.biomeProvider.getOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
+    public Biome getDeepOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+        return this.biomeProvider.getDeepOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+    }
+    
     public Biome getBiomeForSurfaceGen(int x, int y, int z) {
         if (this.biomeProvider instanceof BiomeResolver biomeResolver) {
             return biomeResolver.getBiome(x, y, z);

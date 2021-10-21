@@ -43,7 +43,6 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
@@ -76,6 +75,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         .apply(instance, instance.stable(OldChunkGenerator::new)));
     
     public static final int OCEAN_MIN_DEPTH = 4;
+    public static final int DEEP_OCEAN_MIN_DEPTH = 16;
     
     private final NbtCompound chunkProviderSettings;
     private final ChunkProvider chunkProvider;
@@ -386,28 +386,32 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         for (int biomeX = 0; biomeX < 4; ++biomeX) {
             for (int biomeZ = 0; biomeZ < 4; ++biomeZ) {
-                int absX = chunkPos.getStartX() + (biomeX << 2);
-                int absZ = chunkPos.getStartZ() + (biomeZ << 2);
+                int x = chunkPos.getStartX() + (biomeX << 2);
+                int z = chunkPos.getStartZ() + (biomeZ << 2);
                     
                 // Offset by 2 to get center of biome coordinate section,
                 // to sample overall ocean depth as accurately as possible.
-                int offsetX = absX + 2;
-                int offsetZ = absZ + 2;
+                int offsetX = x + 2;
+                int offsetZ = z + 2;
                 
                 int height = GenUtil.getSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, this.defaultFluid);
+                boolean inWater = chunk.getBlockState(pos.set(offsetX, height + 1, offsetZ)).isOf(this.defaultFluid.getBlock());
                 
-                if (this.atOceanDepth(height) && chunk.getBlockState(pos.set(offsetX, height + 1, offsetZ)).equals(this.defaultFluid)) {
-                    Biome oceanBiome = oldBiomeSource.getOceanBiomeForNoiseGen(absX >> 2, 0, absZ >> 2);
-                    
+                Biome biome = null;
+                
+                // Sample deep oceans
+                if (this.atOceanDepth(height, DEEP_OCEAN_MIN_DEPTH) && inWater) {
+                    biome = oldBiomeSource.getDeepOceanBiomeForNoiseGen(x >> 2, 0, z >> 2);
+                } else if (this.atOceanDepth(height, OCEAN_MIN_DEPTH) && inWater) {
+                    biome = oldBiomeSource.getOceanBiomeForNoiseGen(x >> 2, 0, z >> 2);
+                }
+                
+                if (biome != null) {
                     // Fill biome column
                     for (int biomeY = 0; biomeY < biomeHeight; ++biomeY) {
-                        int absY = biomeY << 2;
+                        int y = biomeY << 2;
                         
-                        Biome biome = mutableBiomeArray.getBiome(absX, absY, absZ, this.getMinimumY(), this.getWorldHeight());
-                        
-                        // Do not replace if cave biome
-                        if (biome.getCategory() != Category.UNDERGROUND)
-                            mutableBiomeArray.setBiome(absX, absY, absZ, oceanBiome, this.getMinimumY(), this.getWorldHeight());
+                        mutableBiomeArray.setBiome(x, y, z, biome, this.getMinimumY(), this.getWorldHeight());
                     }
                 }
             }
@@ -419,14 +423,18 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int biomeY = y >> 2;
         int biomeZ = z >> 2;
         
-        if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource && this.atOceanDepth(y)) {
-            return oldBiomeSource.getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
+        if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource) {
+            if (this.atOceanDepth(y, DEEP_OCEAN_MIN_DEPTH)) {
+                return oldBiomeSource.getDeepOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
+            } else if (this.atOceanDepth(y, OCEAN_MIN_DEPTH)) { 
+                return oldBiomeSource.getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
+            }
         }
         
         return this.biomeSource.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
 
-    private boolean atOceanDepth(int height) {
-        return height < this.getSeaLevel() - OCEAN_MIN_DEPTH;
+    private boolean atOceanDepth(int height, int oceanDepth) {
+        return height < this.getSeaLevel() - oceanDepth;
     }
 }
