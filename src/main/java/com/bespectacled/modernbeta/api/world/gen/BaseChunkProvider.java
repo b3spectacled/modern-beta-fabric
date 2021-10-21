@@ -4,8 +4,10 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.compat.CompatBiomes;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -32,7 +34,10 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     // Set for specifying which biomes should use their vanilla surface builders.
     // Done on per-biome basis for best mod compatibility.
     private static final Set<Identifier> BIOMES_WITH_CUSTOM_SURFACES = new HashSet<Identifier>(
-        ModernBeta.COMPAT_CONFIG.biomesWithCustomSurfaces.stream().map(b -> new Identifier(b)).toList()
+        Stream.concat(
+            CompatBiomes.BIOMES_WITH_CUSTOM_SURFACES.stream().map(b -> new Identifier(b)), 
+            ModernBeta.COMPAT_CONFIG.biomesWithCustomSurfaces.stream().map(b -> new Identifier(b))
+        ).toList()
     );
     
     private static final int LAVA_LEVEL = -53; // Vanilla: -54;

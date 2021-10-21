@@ -336,8 +336,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int startX = chunkPos.getStartX();
         int startZ = chunkPos.getStartZ();
         
-        int biomeStartX = startX >> 2;
-        int biomeStartZ = startZ >> 2;
+        int startBiomeX = startX >> 2;
+        int startBiomeZ = startZ >> 2;
         
         int caveStartOffset = 8;
         int caveLowerCutoff = this.getMinimumY() + 16;
@@ -350,10 +350,13 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         Biome[] biomes = new Biome[16];
         
         // Calculate height values and collect ocean biome at biome coordinates
-        for (int biomeX = 0; biomeX < containerLen; ++biomeX) {
-            for (int biomeZ = 0; biomeZ < containerLen; ++biomeZ) {
-                int x = startX + (biomeX << 2);
-                int z = startZ + (biomeZ << 2);
+        for (int localBiomeX = 0; localBiomeX < containerLen; ++localBiomeX) {
+            for (int localBiomeZ = 0; localBiomeZ < containerLen; ++localBiomeZ) {
+                int x = startX + (localBiomeX << 2);
+                int z = startZ + (localBiomeZ << 2);
+                
+                int biomeX = startBiomeX + localBiomeX;
+                int biomeZ = startBiomeZ + localBiomeZ;
                 
                 // Offset by 2 to get center of biome coordinate section,
                 // to sample overall ocean depth as accurately as possible.
@@ -371,7 +374,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     biome = oldBiomeSource.getOceanBiome(biomeX, 0, biomeZ);
                 }
                 
-                int ndx = biomeX + biomeZ * containerLen;
+                int ndx = localBiomeX + localBiomeZ * containerLen;
                 biomes[ndx] = biome;
                 heights[ndx] = height;
             }
@@ -386,21 +389,32 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             try {
                 int yOffset = section.getYOffset() >> 2;
                 
-                for (int biomeX = 0; biomeX < containerLen; ++biomeX) {
-                    for (int biomeZ = 0; biomeZ < containerLen; ++biomeZ) {
-                        int topY = Math.min(heights[biomeX + biomeZ * containerLen], this.getSeaLevel());
-                        Biome biome = biomes[biomeX + biomeZ * containerLen];
-                       
-                        for (int biomeY = 0; biomeY < containerLen; ++biomeY) {
-                            int y = (biomeY + yOffset) << 2;
+                for (int localBiomeX = 0; localBiomeX < containerLen; ++localBiomeX) {
+                    for (int localBiomeZ = 0; localBiomeZ < containerLen; ++localBiomeZ) {
+                        int topY = Math.min(heights[localBiomeX + localBiomeZ * containerLen], this.getSeaLevel());
+                        Biome oceanBiome = biomes[localBiomeX + localBiomeZ * containerLen];
+                        
+                        for (int localBiomeY = 0; localBiomeY < containerLen; ++localBiomeY) {
+                            int y = (localBiomeY + yOffset) << 2;
                             
-                            // Replace with cave or ocean biomes
+                            int biomeX = localBiomeX + startBiomeX;
+                            int biomeY = localBiomeY + yOffset;
+                            int biomeZ = localBiomeZ + startBiomeZ;
+                            
+                            Biome biome = null;
+                            
+                            // Replace with cave biomes
                             if (y + caveStartOffset < topY && y > caveLowerCutoff) {
-                                biome = oldBiomeSource.getCaveBiome(biomeX + biomeStartX, biomeY + yOffset, biomeZ + biomeStartZ);
+                                biome = oldBiomeSource.getCaveBiome(biomeX, biomeY, biomeZ);
+                            }
+                            
+                            // Replace with ocean biomes
+                            if (biome == null) {
+                                biome = oceanBiome;
                             }
                             
                             if (biome != null) {
-                                container.swapUnsafe(biomeX, biomeY, biomeZ, biome);
+                                container.swapUnsafe(localBiomeX, localBiomeY, localBiomeZ, biome);
                             }
                         }   
                     }
