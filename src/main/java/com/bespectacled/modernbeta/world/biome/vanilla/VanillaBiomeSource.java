@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.world.biome.vanilla;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -60,6 +61,10 @@ public class VanillaBiomeSource {
     
     public MultiNoiseUtil.Entries<Biome> getBiomeEntries() {
         return this.biomeEntries;
+    }
+    
+    public List<Biome> getBiomes() {
+        return this.biomeEntries.getEntries().stream().map(p -> p.getSecond().get()).toList();
     }
     
     public long getSeed() {

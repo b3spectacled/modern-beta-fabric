@@ -1,9 +1,9 @@
 package com.bespectacled.modernbeta.world.biome.provider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
-import com.bespectacled.modernbeta.api.world.biome.DeepOceanBiomeResolver;
 import com.bespectacled.modernbeta.world.biome.provider.climate.VanillaClimateSampler;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeSourceCreator;
@@ -12,7 +12,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class VanillaBiomeProvider extends ClimateBiomeProvider implements DeepOceanBiomeResolver {
+public class VanillaBiomeProvider extends ClimateBiomeProvider {
     private final VanillaBiomeSource vanillaBiomeSource;
     private final VanillaBiomeSource oceanBiomeSource;
     private final VanillaBiomeSource deepOceanBiomeSource;
@@ -42,6 +42,11 @@ public class VanillaBiomeProvider extends ClimateBiomeProvider implements DeepOc
     
     @Override
     public List<Biome> getBiomesForRegistry() {
-        return this.vanillaBiomeSource.getBiomeEntries().getEntries().stream().map(p -> p.getSecond().get()).toList();
+        List<Biome> biomes = new ArrayList<>();
+        biomes.addAll(this.vanillaBiomeSource.getBiomes());
+        biomes.addAll(this.oceanBiomeSource.getBiomes());
+        biomes.addAll(this.deepOceanBiomeSource.getBiomes());
+        
+        return biomes;
     }
 }
