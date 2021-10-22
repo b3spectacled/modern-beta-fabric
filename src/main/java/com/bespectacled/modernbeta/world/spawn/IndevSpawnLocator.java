@@ -6,8 +6,8 @@ import java.util.Random;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.gen.FiniteChunkProvider;
 import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
-import com.bespectacled.modernbeta.world.gen.provider.IndevChunkProvider;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -19,9 +19,9 @@ import net.minecraft.world.Heightmap;
  * 
  */
 public class IndevSpawnLocator implements SpawnLocator {
-    private final IndevChunkProvider chunkProvider;
+    private final FiniteChunkProvider chunkProvider;
     
-    public IndevSpawnLocator(IndevChunkProvider chunkProvider) {
+    public IndevSpawnLocator(FiniteChunkProvider chunkProvider) {
         this.chunkProvider = chunkProvider;
     }
 

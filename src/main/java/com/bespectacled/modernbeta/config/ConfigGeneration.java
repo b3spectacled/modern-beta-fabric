@@ -16,6 +16,8 @@ public class ConfigGeneration implements ConfigData {
     
     public Inf227GenConfig inf227GenConfig = new Inf227GenConfig();
     
+    public PreInfGenConfig preInfGenConfig = new PreInfGenConfig();
+    
     public IndevGenConfig indevGenConfig = new IndevGenConfig();
     
     public IslandGenConfig islandGenConfig = new IslandGenConfig();
@@ -36,13 +38,16 @@ public class ConfigGeneration implements ConfigData {
         public boolean generateInfdevWall = true;
     }
     
+    public static class PreInfGenConfig {
+        public int levelWidth = 256;
+        public int levelLength = 256;
+        public int levelHeight = 128;
+        public float caveRadius = 1.0f;
+    }
+    
     public static class IndevGenConfig {
         public String indevLevelType = IndevType.ISLAND.getName();
         public String indevLevelTheme = IndevTheme.NORMAL.getName();
-        public int indevLevelWidth = 256;
-        public int indevLevelLength = 256;
-        public int indevLevelHeight = 128;
-        public float indevCaveRadius = 1.0f;
     }
     
     public static class IslandGenConfig {

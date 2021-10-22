@@ -28,6 +28,17 @@ public class ChunkProviderSettings {
         return settings;
     }
     
+    public static NbtCompound createSettingsPreInf(String worldType) {
+        NbtCompound settings = createSettingsInf(worldType);
+        
+        settings.putInt(NbtTags.LEVEL_WIDTH, CONFIG.preInfGenConfig.levelWidth);
+        settings.putInt(NbtTags.LEVEL_LENGTH, CONFIG.preInfGenConfig.levelLength);
+        settings.putInt(NbtTags.LEVEL_HEIGHT, CONFIG.preInfGenConfig.levelHeight);
+        settings.putFloat(NbtTags.LEVEL_CAVE_RADIUS, CONFIG.preInfGenConfig.caveRadius);
+        
+        return settings;
+    }
+    
     public static NbtCompound createSettingsBeta() {
         NbtCompound settings = createSettingsInf(BuiltInTypes.Chunk.BETA.name);
         
@@ -70,14 +81,10 @@ public class ChunkProviderSettings {
     }
     
     public static NbtCompound createSettingsIndev() {
-        NbtCompound settings = createSettingsInf(BuiltInTypes.Chunk.INDEV.name);
+        NbtCompound settings = createSettingsPreInf(BuiltInTypes.Chunk.INDEV.name);
         
         settings.putString(NbtTags.LEVEL_TYPE, CONFIG.indevGenConfig.indevLevelType);
         settings.putString(NbtTags.LEVEL_THEME, CONFIG.indevGenConfig.indevLevelTheme);
-        settings.putInt(NbtTags.LEVEL_WIDTH, CONFIG.indevGenConfig.indevLevelWidth);
-        settings.putInt(NbtTags.LEVEL_LENGTH, CONFIG.indevGenConfig.indevLevelLength);
-        settings.putInt(NbtTags.LEVEL_HEIGHT, CONFIG.indevGenConfig.indevLevelHeight);
-        settings.putFloat(NbtTags.LEVEL_CAVE_RADIUS, CONFIG.indevGenConfig.indevCaveRadius);
         
         return settings;
     }

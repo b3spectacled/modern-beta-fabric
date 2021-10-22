@@ -16,13 +16,15 @@ public class NbtTags {
     public static final String GEN_INFDEV_PYRAMID = "generateInfdevPyramid";
     public static final String GEN_INFDEV_WALL = "generateInfdevWall";
     
-    // Indev
-    public static final String LEVEL_THEME = "levelTheme";
-    public static final String LEVEL_TYPE = "levelType";
+    // Pre-Inf
     public static final String LEVEL_WIDTH = "levelWidth";
     public static final String LEVEL_LENGTH = "levelLength";
     public static final String LEVEL_HEIGHT = "levelHeight";
     public static final String LEVEL_CAVE_RADIUS = "caveRadius";
+    
+    // Indev
+    public static final String LEVEL_THEME = "levelTheme";
+    public static final String LEVEL_TYPE = "levelType";
     
     // Islands
     public static final String GEN_OUTER_ISLANDS = "generateOuterIslands";
