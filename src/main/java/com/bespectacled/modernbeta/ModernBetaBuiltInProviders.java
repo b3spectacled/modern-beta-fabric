@@ -10,6 +10,7 @@ import com.bespectacled.modernbeta.client.gui.screen.world.InfClimateWorldScreen
 import com.bespectacled.modernbeta.client.gui.screen.world.InfWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.Infdev227WorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.IslandWorldScreen;
+import com.bespectacled.modernbeta.client.gui.screen.world.PreInfWorldScreen;
 import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.PEBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
@@ -20,6 +21,7 @@ import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomePr
 import com.bespectacled.modernbeta.world.gen.provider.AlphaChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.BetaChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.BetaIslandsChunkProvider;
+import com.bespectacled.modernbeta.world.gen.provider.Classic030ChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.Infdev227ChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.Infdev415ChunkProvider;
@@ -48,6 +50,7 @@ public class ModernBetaBuiltInProviders {
         Registries.CHUNK.register(BuiltInTypes.Chunk.INFDEV_415.name, Infdev415ChunkProvider::new);
         Registries.CHUNK.register(BuiltInTypes.Chunk.INFDEV_227.name, Infdev227ChunkProvider::new);
         Registries.CHUNK.register(BuiltInTypes.Chunk.INDEV.name, IndevChunkProvider::new);
+        Registries.CHUNK.register(BuiltInTypes.Chunk.CLASSIC_0_30.name, Classic030ChunkProvider::new);
         Registries.CHUNK.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, BetaIslandsChunkProvider::new);
         Registries.CHUNK.register(BuiltInTypes.Chunk.PE.name, PEChunkProvider::new);
     }
@@ -63,6 +66,7 @@ public class ModernBetaBuiltInProviders {
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_415.name, ChunkProviderSettings::createSettingsInfdev415);
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INFDEV_227.name, ChunkProviderSettings::createSettingsInfdev227);
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.INDEV.name, ChunkProviderSettings::createSettingsIndev);
+        Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.CLASSIC_0_30.name, ChunkProviderSettings::createSettingsClassic030);
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, ChunkProviderSettings::createSettingsIslands);
         Registries.CHUNK_SETTINGS.register(BuiltInTypes.Chunk.PE.name, ChunkProviderSettings::createSettingsPE);
     }
@@ -107,6 +111,7 @@ public class ModernBetaBuiltInProviders {
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.BASE.name, BaseWorldScreen::new);
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF.name, InfWorldScreen::new);
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INFDEV_227.name, Infdev227WorldScreen::new);
+        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.PRE_INF.name, PreInfWorldScreen::new);
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INDEV.name, IndevWorldScreen::new);
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.ISLAND.name, IslandWorldScreen::new);
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF_CLIMATE.name, InfClimateWorldScreen::new);
@@ -132,6 +137,7 @@ public class ModernBetaBuiltInProviders {
         Registries.WORLD.register(BuiltInTypes.Chunk.INFDEV_415.name, ModernBetaBuiltInWorldProviders.INFDEV_415);
         Registries.WORLD.register(BuiltInTypes.Chunk.INFDEV_227.name, ModernBetaBuiltInWorldProviders.INFDEV_227);
         Registries.WORLD.register(BuiltInTypes.Chunk.INDEV.name, ModernBetaBuiltInWorldProviders.INDEV);
+        Registries.WORLD.register(BuiltInTypes.Chunk.CLASSIC_0_30.name, ModernBetaBuiltInWorldProviders.CLASSIC_0_30);
         Registries.WORLD.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, ModernBetaBuiltInWorldProviders.BETA_ISLANDS);
         Registries.WORLD.register(BuiltInTypes.Chunk.PE.name, ModernBetaBuiltInWorldProviders.PE);
     }

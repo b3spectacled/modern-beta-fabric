@@ -89,6 +89,10 @@ public class ChunkProviderSettings {
         return settings;
     }
     
+    public static NbtCompound createSettingsClassic030() {
+        return createSettingsPreInf(BuiltInTypes.Chunk.CLASSIC_0_30.name);
+    }
+    
     public static NbtCompound createSettingsIslands() {
         NbtCompound settings = createSettingsInf(BuiltInTypes.Chunk.BETA_ISLANDS.name);
         

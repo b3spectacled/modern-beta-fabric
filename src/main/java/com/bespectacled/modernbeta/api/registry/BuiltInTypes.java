@@ -12,6 +12,7 @@ public final class BuiltInTypes {
         INFDEV_415("infdev_415"),
         INFDEV_227("infdev_227"),
         INDEV("indev"),
+        CLASSIC_0_30("classic_0_30"),
         BETA_ISLANDS("beta_islands"),
         PE("pe")
         ;
@@ -49,6 +50,7 @@ public final class BuiltInTypes {
         BASE("base"),
         INF("inf"),
         INFDEV_227("infdev_227"),
+        PRE_INF("pre_inf"),
         INDEV("indev"),
         ISLAND("island"),
         INF_CLIMATE("inf_climate")

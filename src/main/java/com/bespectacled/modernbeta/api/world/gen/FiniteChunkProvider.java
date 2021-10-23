@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.ArrayDeque;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -13,6 +14,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.provider.VanillaBiomeProvider;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.IndevSpawnLocator;
 
@@ -24,6 +26,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
@@ -113,7 +116,9 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, 0, z));
                 
                 boolean isCold;
-                if (biomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider) {
+                if (biomeSource.getBiomeProvider() instanceof VanillaBiomeProvider) {
+                    isCold = biome.isCold(pos);
+                } else if (biomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider) {
                     isCold = climateBiomeProvider.getClimateSampler().sampleClime(x, z).temp() < 0.5D;
                 } else {
                     isCold = biome.isCold(pos);
@@ -285,6 +290,52 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
 
     protected void setPhase(String phase) {
         ModernBeta.log(Level.INFO, phase + "..");
+    }
+    
+    protected void fillOblateSpheroid(float centerX, float centerY, float centerZ, float radius, Block fillBlock) {
+        for (int x = (int)(centerX - radius); x < (int)(centerX + radius); ++x) {
+            for (int y = (int)(centerY - radius); y < (int)(centerY + radius); ++y) {
+                for (int z = (int)(centerZ - radius); z < (int)(centerZ + radius); ++z) {
+                
+                    float dx = x - centerX;
+                    float dy = y - centerY;
+                    float dz = z - centerZ;
+                    
+                    if ((dx * dx + dy * dy * 2.0f + dz * dz) < radius * radius && inLevelBounds(x, y, z)) {
+                        Block block = this.blockArr[x][y][z];
+                        
+                        if (block == this.defaultBlock.getBlock()) {
+                            this.blockArr[x][y][z] = fillBlock;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    protected void flood(int x, int y, int z, Block fillBlock) {
+        ArrayDeque<Vec3d> positions = new ArrayDeque<Vec3d>();
+        
+        positions.add(new Vec3d(x, y, z));
+        
+        while (!positions.isEmpty()) {
+            Vec3d curPos = positions.poll();
+            x = (int)curPos.x;
+            y = (int)curPos.y;
+            z = (int)curPos.z;
+            
+            Block block = this.blockArr[x][y][z];
+    
+            if (block == Blocks.AIR) {
+                this.blockArr[x][y][z] = fillBlock;
+                
+                if (y - 1 >= 0)               positions.add(new Vec3d(x, y - 1, z));
+                if (x - 1 >= 0)               positions.add(new Vec3d(x - 1, y, z));
+                if (x + 1 < this.levelWidth)  positions.add(new Vec3d(x + 1, y, z));
+                if (z - 1 >= 0)               positions.add(new Vec3d(x, y, z - 1));
+                if (z + 1 < this.levelLength) positions.add(new Vec3d(x, y, z + 1));
+            }
+        }
     }
 
     private void pregenerateTerrainOrWait() {
