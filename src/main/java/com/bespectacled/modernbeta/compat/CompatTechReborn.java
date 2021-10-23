@@ -14,12 +14,11 @@ import net.minecraft.world.gen.GenerationStep;
 @SuppressWarnings("deprecation")
 public class CompatTechReborn {
     private static final String MOD_ID = "techreborn";
-    private static final String FEATURE_PREFIX = "techreborn/features/";
-    private static final String FEATURE_SUFFIX = ".json";
+    private static final String FEATURE_PREFIX = "";
+    private static final String FEATURE_SUFFIX = "";
     
     private static final String[] ORES = {
-        "bauxite_ore",      
-        "copper_ore",
+        "bauxite_ore",
         "galena_ore",
         "iridium_ore",
         "lead_ore",
