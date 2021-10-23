@@ -1,7 +1,5 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
-import java.util.ArrayDeque;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.FiniteChunkProvider;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
@@ -21,7 +19,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.BlockSource;
@@ -30,8 +27,8 @@ import net.minecraft.world.gen.StructureWeightSampler;
 public class IndevChunkProvider extends FiniteChunkProvider {
     private PerlinOctaveNoiseCombined minHeightNoiseOctaves;
     private PerlinOctaveNoiseCombined maxHeightNoiseOctaves;
-    
     private PerlinOctaveNoise mainHeightNoiseOctaves;
+    
     private PerlinOctaveNoise islandNoiseOctaves;
     
     private PerlinOctaveNoise dirtNoiseOctaves;
@@ -142,7 +139,7 @@ public class IndevChunkProvider extends FiniteChunkProvider {
             
             this.generateHeightmap();
             this.erodeTerrain();
-            this.soilSurface();
+            this.soilTerrain();
             this.growSurface();
         }
         
@@ -319,7 +316,7 @@ public class IndevChunkProvider extends FiniteChunkProvider {
         }
     }
     
-    private void soilSurface() {
+    private void soilTerrain() {
         this.setPhase("Soiling");
         int seaLevel = this.getSeaLevel();
         
@@ -329,11 +326,11 @@ public class IndevChunkProvider extends FiniteChunkProvider {
             for (int z = 0; z < this.levelLength; ++z) {
                 double normalizedZ = Math.max(normalizedX, Math.abs(z / (this.levelLength - 1.0) - 0.5) * 2.0);
                 normalizedZ = normalizedZ * normalizedZ * normalizedZ;
-             
-                int dirtThreshold = this.heightmap[x + z * this.levelWidth] + seaLevel;
+
                 int dirtThickness = (int)(dirtNoiseOctaves.sample(x, z) / 24.0) - 4;
+                int dirtThreshold = this.heightmap[x + z * this.levelWidth] + seaLevel;
          
-                int stoneThreshold = dirtThreshold + dirtThickness;
+                int stoneThreshold = dirtThickness + dirtThreshold;
                 this.heightmap[x + z * this.levelWidth] = Math.max(dirtThreshold, stoneThreshold);
              
                 if (this.heightmap[x + z * this.levelWidth] > this.levelHeight - 2) {
@@ -403,7 +400,7 @@ public class IndevChunkProvider extends FiniteChunkProvider {
                 Block block = this.blockArr[x][heightResult][z];
                 Block blockUp = this.blockArr[x][heightResult + 1][z];
                 
-                // TODO: this.getSeaLevel() - 1 might be wrong
+                // TODO: this.getSeaLevel() - 1 might be wrong, might be surfaceLevel instead
                 if ((blockUp == this.fluidBlock.getBlock() || blockUp == Blocks.AIR) && heightResult <= this.getSeaLevel() - 1 && genGravel) {
                     this.blockArr[x][heightResult][z] = Blocks.GRAVEL;
                 }
@@ -449,7 +446,7 @@ public class IndevChunkProvider extends FiniteChunkProvider {
                 
                 theta = theta + deltaTheta * 0.2f;
                 deltaTheta = (deltaTheta * 0.9f) + (rand.nextFloat() - rand.nextFloat());
-                phi = phi / 2 + deltaPhi / 4;
+                phi = phi * 0.5f + deltaPhi * 0.25f;
                 deltaPhi = (deltaPhi * 0.75f) + (rand.nextFloat() - rand.nextFloat());
                 
                 if (rand.nextFloat() >= 0.25f) {
@@ -487,14 +484,14 @@ public class IndevChunkProvider extends FiniteChunkProvider {
             flood(0, this.waterLevel - 1, z, fluid);
         }
         
-        int waterSourceCount = this.levelWidth * this.levelLength / 800;
+        int waterSourceCount = this.levelWidth * this.levelLength / 8000;
         
         for (int i = 0; i < waterSourceCount; ++i) {
             int randX = rand.nextInt(this.levelWidth);
             int randZ = rand.nextInt(this.levelLength);
-            int randY = rand.nextBoolean() ? waterLevel - 1 : waterLevel - 2;
+            int randY = (this.waterLevel - 1) - rand.nextInt(2);
             
-            flood(randX, randY, randZ, fluid);
+            this.flood(randX, randY, randZ, fluid);
         }
        
     }
@@ -512,9 +509,9 @@ public class IndevChunkProvider extends FiniteChunkProvider {
         for (int i = 0; i < lavaSourceCount; ++i) {
             int randX = rand.nextInt(this.levelWidth);
             int randZ = rand.nextInt(this.levelLength);
-            int randY = (int)((this.waterLevel - 3) * rand.nextFloat() * rand.nextFloat());
+            int randY = (int)((float)(this.waterLevel - 3) * rand.nextFloat() * rand.nextFloat());
             
-            flood(randX, randY, randZ, Blocks.LAVA);
+            this.flood(randX, randY, randZ, Blocks.LAVA);
         }
         
     }
@@ -534,52 +531,6 @@ public class IndevChunkProvider extends FiniteChunkProvider {
                         this.blockArr[x][y][z] = blockToPlant;
                     }
                 }
-            }
-        }
-    }
-
-    private void fillOblateSpheroid(float centerX, float centerY, float centerZ, float radius, Block fillBlock) {
-        for (int x = (int)(centerX - radius); x < (int)(centerX + radius); ++x) {
-            for (int y = (int)(centerY - radius); y < (int)(centerY + radius); ++y) {
-                for (int z = (int)(centerZ - radius); z < (int)(centerZ + radius); ++z) {
-                
-                    float dx = x - centerX;
-                    float dy = y - centerY;
-                    float dz = z - centerZ;
-                    
-                    if ((dx * dx + dy * dy * 2.0f + dz * dz) < radius * radius && inLevelBounds(x, y, z)) {
-                        Block block = this.blockArr[x][y][z];
-                        
-                        if (block == this.defaultBlock.getBlock()) {
-                            this.blockArr[x][y][z] = fillBlock;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void flood(int x, int y, int z, Block toFill) {
-        ArrayDeque<Vec3d> positions = new ArrayDeque<Vec3d>();
-        
-        positions.add(new Vec3d(x, y, z));
-        
-        while (!positions.isEmpty()) {
-            Vec3d curPos = positions.poll();
-            x = (int)curPos.x;
-            y = (int)curPos.y;
-            z = (int)curPos.z;
-            
-            Block block = this.blockArr[x][y][z];
-    
-            if (block == Blocks.AIR) {
-                this.blockArr[x][y][z] = toFill;
-                
-                if (y - 1 >= 0)               positions.add(new Vec3d(x, y - 1, z));
-                if (x - 1 >= 0)               positions.add(new Vec3d(x - 1, y, z));
-                if (x + 1 < this.levelWidth)  positions.add(new Vec3d(x + 1, y, z));
-                if (z - 1 >= 0)               positions.add(new Vec3d(x, y, z - 1));
-                if (z + 1 < this.levelLength) positions.add(new Vec3d(x, y, z + 1));
             }
         }
     }

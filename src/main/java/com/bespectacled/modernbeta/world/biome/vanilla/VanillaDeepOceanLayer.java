@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.world.biome.vanilla;
 
 import java.util.function.LongFunction;
 
-import net.minecraft.world.biome.layer.AddDeepOceanLayer;
 import net.minecraft.world.biome.layer.OceanTemperatureLayer;
 import net.minecraft.world.biome.layer.ScaleLayer;
 import net.minecraft.world.biome.layer.type.ParentedLayer;

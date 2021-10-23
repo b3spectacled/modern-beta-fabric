@@ -18,6 +18,7 @@ public class ModernBetaBuiltInWorldProviders {
     public static final WorldProvider INFDEV_415;
     public static final WorldProvider INFDEV_227;
     public static final WorldProvider INDEV;
+    public static final WorldProvider CLASSIC_0_30;
     public static final WorldProvider BETA_ISLANDS;
     public static final WorldProvider PE;
     
@@ -109,6 +110,16 @@ public class ModernBetaBuiltInWorldProviders {
             BuiltInTypes.Biome.SINGLE.name,
             IndevBiomes.INDEV_NORMAL_ID.toString(), 
             BuiltInTypes.WorldScreen.INDEV.name,
+            true,
+            false
+        );
+        
+        CLASSIC_0_30 = new WorldProvider(
+            BuiltInTypes.Chunk.CLASSIC_0_30.name,
+            OldChunkGeneratorSettings.CLASSIC_0_30.toString(), 
+            BuiltInTypes.Biome.SINGLE.name,
+            IndevBiomes.INDEV_NORMAL_ID.toString(), 
+            BuiltInTypes.WorldScreen.PRE_INF.name,
             true,
             false
         );
