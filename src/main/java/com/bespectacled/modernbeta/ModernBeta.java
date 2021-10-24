@@ -32,6 +32,8 @@ import net.minecraft.util.Identifier;
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
     public static final String MOD_NAME = "Modern Beta";
+    
+    public static final boolean CLIENT_ENV = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     public static final boolean DEV_ENV = FabricLoader.getInstance().isDevelopmentEnvironment();
     
     public static final ModernBetaConfig CONFIG = AutoConfig.register(
@@ -82,7 +84,7 @@ public class ModernBeta implements ModInitializer {
         ModernBetaBuiltInProviders.registerCaveBiomeSettings();
         
         // Register client-only stuff, i.e. GUI, block colors, etc.
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+        if (CLIENT_ENV) {
             OldGeneratorType.register();
             
             // Register clientside world providers
@@ -91,6 +93,7 @@ public class ModernBeta implements ModInitializer {
             // Register default screen providers
             ModernBetaBuiltInProviders.registerWorldScreens();
             ModernBetaBuiltInProviders.registerBiomeScreens();
+            ModernBetaBuiltInProviders.registerCaveBiomeScreens();
             
             // Override default biome grass/foliage colors
             BlockColors.register();
