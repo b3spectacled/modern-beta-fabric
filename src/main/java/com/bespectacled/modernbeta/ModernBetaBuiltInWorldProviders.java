@@ -6,7 +6,6 @@ import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
 import com.bespectacled.modernbeta.world.biome.inf.InfBiomes;
 import com.bespectacled.modernbeta.world.biome.pe.PEBiomes;
-import com.bespectacled.modernbeta.world.gen.OldChunkGeneratorSettings;
 
 public class ModernBetaBuiltInWorldProviders {
     public static final WorldProvider DEFAULT;
@@ -24,8 +23,7 @@ public class ModernBetaBuiltInWorldProviders {
     
     static {
         DEFAULT = new WorldProvider(
-            BuiltInTypes.Chunk.BETA.name, 
-            OldChunkGeneratorSettings.BETA.toString(), 
+            BuiltInTypes.Chunk.BETA.name,
             BuiltInTypes.Biome.BETA.name,
             BuiltInTypes.CaveBiome.NONE.name, 
             BetaBiomes.FOREST_ID.toString(), 
@@ -35,8 +33,7 @@ public class ModernBetaBuiltInWorldProviders {
         );
         
         BETA = new WorldProvider(
-            BuiltInTypes.Chunk.BETA.name, 
-            OldChunkGeneratorSettings.BETA.toString(), 
+            BuiltInTypes.Chunk.BETA.name,
             BuiltInTypes.Biome.BETA.name,
             BuiltInTypes.CaveBiome.NONE.name, 
             BetaBiomes.FOREST_ID.toString(), 
@@ -47,8 +44,7 @@ public class ModernBetaBuiltInWorldProviders {
         
         
         SKYLANDS = new WorldProvider(
-            BuiltInTypes.Chunk.SKYLANDS.name, 
-            OldChunkGeneratorSettings.SKYLANDS.toString(), 
+            BuiltInTypes.Chunk.SKYLANDS.name,
             BuiltInTypes.Biome.SINGLE.name, 
             BuiltInTypes.CaveBiome.NONE.name, 
             BetaBiomes.SKY_ID.toString(), 
@@ -59,7 +55,6 @@ public class ModernBetaBuiltInWorldProviders {
         
         ALPHA = new WorldProvider(
             BuiltInTypes.Chunk.ALPHA.name,
-            OldChunkGeneratorSettings.ALPHA.toString(), 
             BuiltInTypes.Biome.SINGLE.name, 
             BuiltInTypes.CaveBiome.NONE.name, 
             InfBiomes.ALPHA_ID.toString(), 
@@ -70,7 +65,6 @@ public class ModernBetaBuiltInWorldProviders {
         
         INFDEV_611 = new WorldProvider(
             BuiltInTypes.Chunk.INFDEV_611.name,
-            OldChunkGeneratorSettings.INFDEV_611.toString(),
             BuiltInTypes.Biome.SINGLE.name,
             BuiltInTypes.CaveBiome.NONE.name,
             InfBiomes.INFDEV_611_ID.toString(),
@@ -81,7 +75,6 @@ public class ModernBetaBuiltInWorldProviders {
         
         INFDEV_420 = new WorldProvider(
             BuiltInTypes.Chunk.INFDEV_420.name,
-            OldChunkGeneratorSettings.INFDEV_420.toString(), 
             BuiltInTypes.Biome.SINGLE.name, 
             BuiltInTypes.CaveBiome.NONE.name, 
             InfBiomes.INFDEV_420_ID.toString(), 
@@ -92,7 +85,6 @@ public class ModernBetaBuiltInWorldProviders {
         
         INFDEV_415 = new WorldProvider(
             BuiltInTypes.Chunk.INFDEV_415.name,
-            OldChunkGeneratorSettings.INFDEV_415.toString(), 
             BuiltInTypes.Biome.SINGLE.name, 
             BuiltInTypes.CaveBiome.NONE.name, 
             InfBiomes.INFDEV_415_ID.toString(), 
@@ -102,8 +94,7 @@ public class ModernBetaBuiltInWorldProviders {
         );
         
         INFDEV_227 = new WorldProvider(
-            BuiltInTypes.Chunk.INFDEV_227.name,
-            OldChunkGeneratorSettings.INFDEV_227.toString(), 
+            BuiltInTypes.Chunk.INFDEV_227.name, 
             BuiltInTypes.Biome.SINGLE.name, 
             BuiltInTypes.CaveBiome.NONE.name, 
             InfBiomes.INFDEV_227_ID.toString(), 
@@ -114,7 +105,6 @@ public class ModernBetaBuiltInWorldProviders {
         
         INDEV = new WorldProvider(
             BuiltInTypes.Chunk.INDEV.name,
-            OldChunkGeneratorSettings.INDEV.toString(), 
             BuiltInTypes.Biome.SINGLE.name, 
             BuiltInTypes.CaveBiome.NONE.name, 
             IndevBiomes.INDEV_NORMAL_ID.toString(), 
@@ -125,7 +115,6 @@ public class ModernBetaBuiltInWorldProviders {
         
         CLASSIC_0_30 = new WorldProvider(
             BuiltInTypes.Chunk.CLASSIC_0_30.name,
-            OldChunkGeneratorSettings.CLASSIC_0_30.toString(), 
             BuiltInTypes.Biome.SINGLE.name, 
             BuiltInTypes.CaveBiome.NONE.name,
             IndevBiomes.INDEV_NORMAL_ID.toString(), 
@@ -136,7 +125,6 @@ public class ModernBetaBuiltInWorldProviders {
         
         BETA_ISLANDS = new WorldProvider(
             BuiltInTypes.Chunk.BETA_ISLANDS.name,
-            OldChunkGeneratorSettings.BETA_ISLANDS.toString(),
             BuiltInTypes.Biome.BETA.name,
             BuiltInTypes.CaveBiome.NONE.name,
             BetaBiomes.FOREST_ID.toString(),
@@ -147,7 +135,6 @@ public class ModernBetaBuiltInWorldProviders {
         
         PE = new WorldProvider(
             BuiltInTypes.Chunk.PE.name,
-            OldChunkGeneratorSettings.PE.toString(),
             BuiltInTypes.Biome.PE.name,
             BuiltInTypes.CaveBiome.NONE.name,
             PEBiomes.PE_FOREST_ID.toString(),

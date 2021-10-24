@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 
 public final class WorldProvider {
     private final String chunkProvider;
-    private final String chunkGenSettings;
     private final String worldScreen;
 
     private final String biomeProvider;
@@ -21,7 +20,6 @@ public final class WorldProvider {
 
     public WorldProvider(
         String chunkProvider,
-        String chunkGenSettings,
         String biomeProvider,
         String caveBiomeProvider,
         String singleBiome,
@@ -30,7 +28,6 @@ public final class WorldProvider {
         boolean generateMonuments
     ) {
         this.chunkProvider = chunkProvider;
-        this.chunkGenSettings = chunkGenSettings;
         this.worldScreen = worldScreen;
         
         this.biomeProvider = biomeProvider;
@@ -44,11 +41,7 @@ public final class WorldProvider {
     public String getChunkProvider() {
         return this.chunkProvider;
     }
-    
-    public String getChunkGenSettings() {
-        return this.chunkGenSettings;
-    }
-    
+
     public String getBiomeProvider() {
         return this.biomeProvider;
     }
@@ -92,13 +85,11 @@ public final class WorldProvider {
         return String.format(
             "[World Provider]\n" +
                 "* Chunk Provider: %s\n" +
-                "* Chunk Generator Settings: %s\n" +
                 "* Biome Provider: %s\n" +
                 "* Cave Biome Provider: %s\n" +
                 "* Single Biome: %s\n" +
                 "* World Screen: %s",
-            this.chunkProvider, 
-            this.chunkGenSettings, 
+            this.chunkProvider,
             this.biomeProvider, 
             this.caveBiomeProvider, 
             this.singleBiome, 

@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
-import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
@@ -21,7 +20,6 @@ import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSett
 import com.google.common.base.MoreObjects;
 
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -104,12 +102,10 @@ public class MixinGeneratorOptions {
                 () -> CaveBiomeProviderSettings.createSettingsBase(caveBiomeType)
             ).get();
             
-            WorldProvider worldProvider = Registries.WORLD.getOrDefault(ModernBeta.GEN_CONFIG.generalGenConfig.worldType);
-            
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 new OldBiomeSource(seed, registryBiome, biomeSettings, Optional.of(caveBiomeSettings)), 
                 seed,
-                () -> registryChunkGenSettings.get(new Identifier(worldProvider.getChunkGenSettings())), 
+                () -> registryChunkGenSettings.get(ModernBeta.createId(worldType)), 
                 chunkSettings
             );
             
