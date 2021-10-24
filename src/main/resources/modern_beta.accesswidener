@@ -6,7 +6,7 @@ extendable method net/minecraft/world/biome/source/util/VanillaBiomeParameters g
 extendable method net/minecraft/world/biome/source/util/VanillaBiomeParameters writeBiomeParameters (Ljava/util/function/Consumer;Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$ParameterRange;Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$ParameterRange;Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$ParameterRange;Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$ParameterRange;Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$ParameterRange;FLnet/minecraft/util/registry/RegistryKey;)V
 
 extendable class net/minecraft/world/gen/chunk/NoiseChunkGenerator
-accessible field net/minecraft/world/gen/chunk/NoiseChunkGenerator worldSeed J
+accessible field net/minecraft/world/gen/chunk/NoiseChunkGenerator seed J
 
 extendable class net/minecraft/world/gen/chunk/ChunkGenerator
 accessible field net/minecraft/world/gen/chunk/ChunkGenerator worldSeed J
@@ -14,7 +14,6 @@ accessible field net/minecraft/world/gen/chunk/ChunkGenerator worldSeed J
 accessible method net/minecraft/world/gen/chunk/ChunkGeneratorSettings <init> (Lnet/minecraft/world/gen/chunk/StructuresConfig;Lnet/minecraft/world/gen/chunk/GenerationShapeConfig;Lnet/minecraft/world/gen/MultiNoiseParameters;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/BlockState;IIIZZZZZZZ)V
 
 accessible method net/minecraft/world/gen/StructureWeightSampler <init> (Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/world/chunk/Chunk;)V
-accessible method net/minecraft/world/gen/StructureWeightSampler getWeight (III)D
 
 extendable method net/minecraft/client/world/GeneratorType <init> (Ljava/lang/String;)V
 
