@@ -57,7 +57,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         int chunkX = chunkPos.x;
         int chunkZ = chunkPos.z;
         
-        int bedrockFloor = this.minY + this.bedrockFloor;
+        int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
@@ -80,10 +80,10 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
             for (int localZ = 0; localZ < 16; localZ++) {
                 int x = (chunkX << 4) + localX;
                 int z = (chunkZ << 4) + localZ;
-                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
                 int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 
                     heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
-                    this.minY;
+                    this.worldMinY;
                 
                 boolean genSandBeach = sandNoise[localX + localZ * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
                 boolean genGravelBeach = gravelNoise[localX + localZ * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
@@ -102,7 +102,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos, blockColumn);
                 
                 // Generate from top to bottom of world
-                for (int y = this.worldTopY - 1; y >= this.minY; y--) {
+                for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
                     pos.set(localX, y, localZ);
 
                     // Randomly place bedrock from y=0 to y=5
@@ -116,7 +116,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                     // Game breaks during ore decoration breaks if any block at yMin is stone/deepslate
                     // since the game checks all adjacent blocks for a particular position,
                     // even if the downward direction is below the world limit!!
-                    if (y <= this.minY) {
+                    if (y <= this.worldMinY) {
                         chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
                     }

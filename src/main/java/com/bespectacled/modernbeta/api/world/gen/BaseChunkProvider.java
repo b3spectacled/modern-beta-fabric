@@ -44,7 +44,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     
     protected final Random rand;
     
-    protected final int minY;
+    protected final int worldMinY;
     protected final int worldHeight;
     protected final int worldTopY;
     protected final int seaLevel;
@@ -75,7 +75,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     
     public BaseChunkProvider(
         OldChunkGenerator chunkGenerator,
-        int minY,
+        int worldMinY,
         int worldHeight,
         int seaLevel,
         int bedrockFloor,
@@ -85,9 +85,9 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     ) {
         super(chunkGenerator);
         
-        this.minY = minY;
+        this.worldMinY = worldMinY;
         this.worldHeight = worldHeight;
-        this.worldTopY = worldHeight + minY;
+        this.worldTopY = worldHeight + worldMinY;
         this.seaLevel = seaLevel;
         this.bedrockFloor = bedrockFloor;
         this.bedrockCeiling = bedrockCeiling;
@@ -116,7 +116,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         this.lavalessFluidLevelSampler = (x, y, z) -> seaFluidLevel;
         
         // Handle bad height values
-        if (this.minY > this.worldHeight)
+        if (this.worldMinY > this.worldHeight)
             throw new IllegalStateException("[Modern Beta] Minimum height cannot be greater than world height!");
     }
     
@@ -131,7 +131,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
      * @return Minimum Y coordinate in block coordinates.
      */
     public int getMinimumY() {
-        return this.minY;
+        return this.worldMinY;
     }
     
     /**

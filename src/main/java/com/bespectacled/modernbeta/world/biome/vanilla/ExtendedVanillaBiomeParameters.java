@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.world.biome.vanilla;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.mixin.MixinVanillaBiomeParametersAccessor;
-
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.registry.RegistryKey;

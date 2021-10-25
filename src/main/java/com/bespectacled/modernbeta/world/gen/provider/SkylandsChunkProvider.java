@@ -61,7 +61,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             for (int localX = 0; localX < 16; localX++) {
                 int x = (chunkX << 4) + localX; 
                 int z = (chunkZ << 4) + localZ;
-                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
 
                 int surfaceDepth = (int) (surfaceNoise[localZ + localX * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
@@ -77,7 +77,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos, blockColumn);
 
                 // Generate from top to bottom of world
-                for (int y = this.worldTopY - 1; y >= this.minY; y--) {
+                for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
                     pos.set(localX, y, localZ);
                     
                     // Skip if used custom surface generation or if below minimum surface level.

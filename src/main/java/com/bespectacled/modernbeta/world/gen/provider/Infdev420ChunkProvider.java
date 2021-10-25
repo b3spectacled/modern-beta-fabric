@@ -53,7 +53,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         int chunkX = chunkPos.x;
         int chunkZ = chunkPos.z;
         
-        int bedrockFloor = this.minY + this.bedrockFloor;
+        int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
@@ -67,10 +67,10 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             for (int localZ = 0; localZ < 16; ++localZ) {
                 int x = (chunkX << 4) + localX;
                 int z = (chunkZ << 4) + localZ;
-                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
                 int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 
                     heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
-                    this.minY;
+                    this.worldMinY;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(
                     x * eighth, 
@@ -97,7 +97,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                 
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos, blockColumn);
                 
-                for (int y = this.worldTopY - 1; y >= this.minY; --y) {
+                for (int y = this.worldTopY - 1; y >= this.worldMinY; --y) {
                     pos.set(localX, y, localZ);
                     
                     // Randomly place bedrock from y=0 to y=5

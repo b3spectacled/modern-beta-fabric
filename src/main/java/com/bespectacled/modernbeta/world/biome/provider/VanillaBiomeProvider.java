@@ -18,7 +18,7 @@ public class VanillaBiomeProvider extends ClimateBiomeProvider {
     private final VanillaBiomeSource deepOceanBiomeSource;
     
     public VanillaBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
-        super(seed, settings, biomeRegistry, new VanillaClimateSampler(VanillaBiomeSourceCreator.buildLandBiomeSource(biomeRegistry, seed)));
+        super(seed, settings, biomeRegistry, new VanillaClimateSampler(VanillaBiomeSourceCreator.buildLandBiomeSource(biomeRegistry, seed), biomeRegistry));
         
         this.vanillaBiomeSource = ((VanillaClimateSampler)this.getClimateSampler()).getBiomeSource();
         this.oceanBiomeSource = VanillaBiomeSourceCreator.buildOceanBiomeSource(biomeRegistry, seed);

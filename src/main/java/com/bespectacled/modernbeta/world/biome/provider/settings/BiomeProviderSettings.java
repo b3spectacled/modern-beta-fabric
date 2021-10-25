@@ -5,7 +5,6 @@ import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.util.NbtTags;
 
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.world.biome.BiomeKeys;
 
 public class BiomeProviderSettings {
     public static NbtCompound createSettingsBase(String biomeType) {

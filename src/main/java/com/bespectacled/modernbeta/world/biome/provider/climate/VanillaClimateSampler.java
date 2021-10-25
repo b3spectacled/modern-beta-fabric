@@ -8,6 +8,7 @@ import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeSource;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.source.BiomeAccess;
@@ -23,7 +24,7 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
     private final ChunkCache<ClimateChunk> climateCache;
     private final VanillaClimateRules climateRules;
     
-    public VanillaClimateSampler(VanillaBiomeSource biomeSource) {
+    public VanillaClimateSampler(VanillaBiomeSource biomeSource, Registry<Biome> biomeRegistry) {
         this.biomeSource = biomeSource;
         this.biomeAccess = new BiomeAccess(this, biomeSource.getSeed());
         
@@ -40,7 +41,7 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
             true, 
             (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::blendBiomeClimate)
         );
-        
+
         this.climateRules = new VanillaClimateRules.Builder()
             .add(biome -> biome.getCategory() == Category.EXTREME_HILLS, () -> new Clime(1.0, 1.0))
             .add(biome -> biome.getCategory() == Category.MOUNTAIN, () -> new Clime(1.0, 1.0))

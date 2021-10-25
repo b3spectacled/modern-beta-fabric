@@ -96,7 +96,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
             for (int localZ = 0; localZ < 16; ++localZ) {
                 int x = startX + localX;
                 int z = startZ + localZ;
-                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
                 
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(x, topY, z));
                 
@@ -107,7 +107,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
 
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable, null);
                 
-                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
+                for (int y = this.worldHeight - Math.abs(this.worldMinY) - 1; y >= this.worldMinY; --y) {
                     BlockState blockState = chunk.getBlockState(mutable.set(localX, y, localZ));
                     
                     boolean inFluid = blockState.equals(BlockStates.AIR) || blockState.equals(this.defaultFluid);
@@ -160,7 +160,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
         
-        int bedrockFloor = this.minY + this.bedrockFloor;
+        int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Block defaultBlock = this.defaultBlock.getBlock();
         Block defaultFluid = this.defaultFluid.getBlock();
@@ -194,7 +194,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                     }
                 }
                 
-                for (int y = this.minY; y < this.worldTopY; ++y) {
+                for (int y = this.worldMinY; y < this.worldTopY; ++y) {
                     Block block = Blocks.AIR;
                     
                     if (this.generateInfdevWall && (x == 0 || z == 0) && y <= heightVal + 2) {

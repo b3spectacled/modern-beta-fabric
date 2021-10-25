@@ -27,6 +27,8 @@ import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public abstract class ChunkProvider implements BiomeHeightSampler {
+    public static final int LAVA_LEVEL = -53; // Vanilla: -54;
+    
     protected final OldChunkGenerator chunkGenerator;
     
     protected final long seed;
