@@ -201,7 +201,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
         int height = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world);
         int worldHeight = this.chunkProvider.getWorldHeight();
-        int minY = this.chunkProvider.getMinimumY();
+        int minY = this.chunkProvider.getWorldMinY();
         
         BlockState[] column = new BlockState[worldHeight];
         
@@ -236,12 +236,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public int getWorldHeight() {
         // TODO: Causes issue with YOffset.BelowTop decorator (i.e. ORE_COAL_UPPER), find some workaround.
-        int height = this.chunkProvider.getWorldHeight();
         
-        if (height >= 320)
-            return height;
-        
-        return 320;
+        // Some features complain if the height is too low or high, so just return min/max
+        return Math.max(this.chunkProvider.getWorldHeight(), 384);
     }
     
     @Override
@@ -249,7 +246,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         if (this.chunkProvider == null)
             return this.getGeneratorSettings().get().getGenerationShapeConfig().getMinimumY();
         
-        return this.chunkProvider.getMinimumY();
+        // Some features complain if the height is too low or high, so just return min/max
+        return Math.min(this.chunkProvider.getWorldMinY(), -64);
     }
 
     @Override

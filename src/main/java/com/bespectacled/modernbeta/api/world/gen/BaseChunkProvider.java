@@ -130,7 +130,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     /**
      * @return Minimum Y coordinate in block coordinates.
      */
-    public int getMinimumY() {
+    public int getWorldMinY() {
         return this.worldMinY;
     }
     

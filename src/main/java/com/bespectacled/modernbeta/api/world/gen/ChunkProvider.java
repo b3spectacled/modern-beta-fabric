@@ -113,7 +113,7 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
     /**
      * @return Minimum Y coordinate in block coordinates.
      */
-    public int getMinimumY() {
+    public int getWorldMinY() {
         return this.generatorSettings.get().getGenerationShapeConfig().getMinimumY();
     }
     
