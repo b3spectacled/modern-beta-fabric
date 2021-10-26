@@ -19,7 +19,7 @@ import net.minecraft.world.biome.BiomeKeys;
 public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveClimateSampler {
     private static final Identifier DEFAULT_BIOME_ID = BiomeKeys.LUSH_CAVES.getValue();
     
-    private final boolean useCaveNoise;
+    private final boolean useNoise;
     
     private final Identifier biomeId;
     private final CaveClimateSampler climateSampler;
@@ -28,7 +28,7 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveCl
     public SingleCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
         
-        this.useCaveNoise = NbtUtil.readBoolean(NbtTags.USE_CAVE_NOISE, settings, false);
+        this.useNoise = NbtUtil.readBoolean(NbtTags.USE_NOISE, settings, false);
         
         this.biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
         this.climateSampler = new BaseCaveClimateSampler(seed, 2, 8);
@@ -39,7 +39,7 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveCl
 
     @Override
     public Biome getBiome(int biomeX, int biomeY, int biomeZ) {
-        return this.useCaveNoise ?
+        return this.useNoise ?
             this.biomeRegistry.getOrEmpty(this.noiseRanges.sample(this.climateSampler.sample(biomeX, biomeY, biomeZ))).orElse(null) :
             this.biomeRegistry.get(this.biomeId);
     }

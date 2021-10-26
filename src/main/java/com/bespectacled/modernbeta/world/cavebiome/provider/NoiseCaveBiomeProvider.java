@@ -24,10 +24,10 @@ public class NoiseCaveBiomeProvider extends CaveBiomeProvider implements CaveCli
     public NoiseCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
         
-        this.climateSampler = new BaseCaveClimateSampler(seed, 2, 8);
+        this.climateSampler = new BaseCaveClimateSampler(seed, 4, 32);
         this.noiseRanges = new NoiseRanges.Builder()
-            .add(new NoiseRange(0.2, 0.8, LUSH_CAVES))
-            .add(new NoiseRange(-0.8, -0.2, DRIPSTONE_CAVES))
+            .add(new NoiseRange(0.4, 0.8, LUSH_CAVES))
+            .add(new NoiseRange(-0.8, -0.4, DRIPSTONE_CAVES))
             .build();
     }
 

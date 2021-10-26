@@ -93,6 +93,9 @@
     "createWorld.customize.indev.levelType.floating": "Floating",
     "createWorld.customize.indev.levelType.inland": "Inland",
     
+    "createWorld.customize.caveBiome.single.useNoise": "Use Noise",
+    "createWorld.customize.caveBIome.single.useNoise.tooltip": "Use noise to vary biome placement.",
+    
     "text.autoconfig.modern_beta.title": "Modern Beta Configuration",
     
     "text.autoconfig.modern_beta.option.renderingConfig.fixedSeedConfig": "Fixed Seed Options",

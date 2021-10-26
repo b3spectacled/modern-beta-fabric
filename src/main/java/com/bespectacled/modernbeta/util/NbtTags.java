@@ -51,5 +51,5 @@ public class NbtTags {
     public static final String CAVE_BIOME_TYPE = "biomeType";
     
     // Cave Noise
-    public static final String USE_CAVE_NOISE = "useCaveNoise";
+    public static final String USE_NOISE = "useNoise";
 }

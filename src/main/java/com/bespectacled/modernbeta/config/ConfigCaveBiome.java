@@ -19,5 +19,6 @@ public class ConfigCaveBiome implements ConfigData {
     
     public static class SingleBiomeConfig {
         public String singleBiome = BiomeKeys.LUSH_CAVES.getValue().toString();
+        public boolean useNoise = true;
     }
 }

@@ -23,6 +23,7 @@ public class CaveBiomeProviderSettings {
         NbtCompound settings = createSettingsBase(BuiltInTypes.CaveBiome.SINGLE.name);
 
         settings.putString(NbtTags.SINGLE_BIOME, ModernBeta.CAVE_BIOME_CONFIG.singleBiomeConfig.singleBiome);
+        settings.putBoolean(NbtTags.USE_NOISE, ModernBeta.CAVE_BIOME_CONFIG.singleBiomeConfig.useNoise);
         
         return settings;
     }

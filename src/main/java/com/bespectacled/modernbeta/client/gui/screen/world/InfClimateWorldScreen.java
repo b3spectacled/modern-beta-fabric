@@ -17,7 +17,6 @@ import net.minecraft.util.registry.BuiltinRegistries;
 
 public class InfClimateWorldScreen extends InfWorldScreen {
     private static final String SAMPLE_CLIMATE_DISPLAY_STRING = "createWorld.customize.inf.sampleClimate";
-    
     private static final String SAMPLE_CLIMATE_TOOLTIP = "createWorld.customize.inf.sampleClimate.tooltip";
     
     public InfClimateWorldScreen(
