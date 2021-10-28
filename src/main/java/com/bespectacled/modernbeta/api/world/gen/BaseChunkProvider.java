@@ -1,19 +1,14 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.compat.CompatBiomes;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.OldNoiseColumnSampler;
+import com.bespectacled.modernbeta.world.gen.OldSurfaceBuilder;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
@@ -22,14 +17,7 @@ import net.minecraft.world.gen.random.ChunkRandom;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public abstract class BaseChunkProvider extends ChunkProvider {
-    // Set for specifying which biomes should use their vanilla surface builders.
-    // Done on per-biome basis for best mod compatibility.
-    private static final Set<Identifier> BIOMES_WITH_CUSTOM_SURFACES = new HashSet<Identifier>(
-        Stream.concat(
-            CompatBiomes.BIOMES_WITH_CUSTOM_SURFACES.stream().map(b -> new Identifier(b)), 
-            ModernBeta.COMPAT_CONFIG.biomesWithCustomSurfaces.stream().map(b -> new Identifier(b))
-        ).toList()
-    );
+    
     
     private static final int LAVA_LEVEL = -53; // Vanilla: -54;
     
@@ -53,7 +41,8 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     
     protected final ChunkRandom.RandomProvider randomProvider;
     
-    //protected final SurfaceBuilder surfaceBuilder;
+    protected final OldNoiseColumnSampler noiseColumnSampler;
+    protected final OldSurfaceBuilder surfaceBuilder;
 
     public BaseChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
@@ -107,6 +96,17 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         this.lavalessFluidLevelSampler = (x, y, z) -> seaFluidLevel;
         
         this.randomProvider = randomProvider;
+        
+        // Modified NoiseColumnSampler and SurfaceBuilder
+        this.noiseColumnSampler = new OldNoiseColumnSampler(this);
+        this.surfaceBuilder = new OldSurfaceBuilder(
+            this.noiseColumnSampler, 
+            noiseRegistry, 
+            this.defaultBlock, 
+            this.seaLevel, 
+            this.seed, 
+            this.randomProvider
+        );
         
         // Handle bad height values
         if (this.worldMinY > this.worldHeight)

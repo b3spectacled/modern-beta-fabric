@@ -20,7 +20,6 @@ import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
-import com.bespectacled.modernbeta.world.gen.OldNoiseColumnSampler;
 import com.bespectacled.modernbeta.world.gen.sampler.NoiseCaveSampler;
 import com.bespectacled.modernbeta.world.gen.sampler.NoodleCaveSampler;
 import com.bespectacled.modernbeta.world.gen.sampler.OreVeinSampler;
@@ -41,13 +40,12 @@ import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.LayerTransitionBlockSource;
-import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
-import net.minecraft.world.gen.random.AtomicSimpleRandom;
+import net.minecraft.world.gen.random.AbstractRandom;
 import net.minecraft.world.gen.random.ChunkRandom;
 import net.minecraft.world.gen.random.RandomDeriver;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
@@ -91,7 +89,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final OreVeinSampler oreVeinSampler;
     protected final NoodleCaveSampler noodleCaveSampler;
     
-    protected final NoiseColumnSampler noiseColumnSampler;
     protected final BlockSource deepslateSource;
     protected final ChunkNoiseSampler dummyNoiseChunkSampler;
 
@@ -226,9 +223,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this::sampleHeightmap
         );
 
-        // Modified NoiseColumnSampler
-        this.noiseColumnSampler = new OldNoiseColumnSampler(this);
-        
         // Dummy ChunkNoiseSampler
         this.dummyNoiseChunkSampler = new OldChunkNoiseSampler(
             this.horizontalNoiseResolution,
@@ -269,9 +263,9 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         this.noodleCaveSampler = new NoodleCaveSampler(noiseRegistry, randomDeriver, this.horizontalNoiseResolution, this.verticalNoiseResolution);
         
         // Block Source
-        AtomicSimpleRandom atomicSimpleRandom = new AtomicSimpleRandom(seed);
+        AbstractRandom blockSourceRandom = randomProvider.create(this.seed);
         this.deepslateSource = this.generateDeepslate ? 
-            new LayerTransitionBlockSource(atomicSimpleRandom.createBlockPosRandomDeriver(), BlockStates.DEEPSLATE, null, -8, 0) :
+            new LayerTransitionBlockSource(blockSourceRandom.createBlockPosRandomDeriver(), BlockStates.DEEPSLATE, null, -8, 0) :
             (sampler, x, y, z) -> null;
     }
 

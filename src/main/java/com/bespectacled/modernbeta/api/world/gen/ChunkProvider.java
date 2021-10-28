@@ -12,6 +12,7 @@ import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
@@ -184,13 +185,21 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
         }
         
         public static BiomeBlocks getBiomeBlocks(Biome biome) {
-            if (biome.getCategory() == Category.DESERT)
-                return DESERT;
+            Category category = biome.getCategory();
             
-            return DEFAULT;
+            return switch(category) {
+                case DESERT -> DESERT;
+                case MESA -> BADLANDS;
+                case NETHER -> NETHER;
+                case THEEND -> END;
+                default -> DEFAULT;
+            };
         }
         
-        public static final BiomeBlocks DESERT = new BiomeBlocks(BlockStates.SAND, BlockStates.SAND);
-        public static final BiomeBlocks DEFAULT = new BiomeBlocks(BlockStates.GRASS_BLOCK, BlockStates.DIRT);
+        private static final BiomeBlocks DESERT = new BiomeBlocks(BlockStates.SAND, BlockStates.SAND);
+        private static final BiomeBlocks DEFAULT = new BiomeBlocks(BlockStates.GRASS_BLOCK, BlockStates.DIRT);
+        private static final BiomeBlocks BADLANDS = new BiomeBlocks(Blocks.RED_SAND.getDefaultState(), Blocks.WHITE_TERRACOTTA.getDefaultState());
+        private static final BiomeBlocks NETHER = new BiomeBlocks(Blocks.NETHERRACK.getDefaultState(), Blocks.NETHERRACK.getDefaultState());
+        private static final BiomeBlocks END = new BiomeBlocks(Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState());
     }
 }
