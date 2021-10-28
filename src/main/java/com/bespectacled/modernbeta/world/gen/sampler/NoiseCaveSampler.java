@@ -2,52 +2,56 @@ package com.bespectacled.modernbeta.world.gen.sampler;
 
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.NoiseHelper;
-import net.minecraft.world.gen.random.AbstractRandom;
+import net.minecraft.world.gen.noise.NoiseParametersKeys;
+import net.minecraft.world.gen.random.RandomDeriver;
 
 public class NoiseCaveSampler {
     private final int minY;
-    private final DoublePerlinNoiseSampler terrainAdditionNoise;
     private final DoublePerlinNoiseSampler pillarNoise;
-    private final DoublePerlinNoiseSampler pillarFalloffNoise;
-    private final DoublePerlinNoiseSampler pillarScaleNoise;
-    private final DoublePerlinNoiseSampler scaledCaveScaleNoise;
-    private final DoublePerlinNoiseSampler horizontalCaveNoise;
-    private final DoublePerlinNoiseSampler caveScaleNoise;
-    private final DoublePerlinNoiseSampler caveFalloffNoise;
-    private final DoublePerlinNoiseSampler tunnelNoise1;
-    private final DoublePerlinNoiseSampler tunnelNoise2;
-    private final DoublePerlinNoiseSampler tunnelScaleNoise;
-    private final DoublePerlinNoiseSampler tunnelFalloffNoise;
-    private final DoublePerlinNoiseSampler offsetNoise;
-    private final DoublePerlinNoiseSampler offsetScaleNoise;
-    private final DoublePerlinNoiseSampler caveOpeningNoise;
-    private final DoublePerlinNoiseSampler caveDensityNoise;
+    private final DoublePerlinNoiseSampler pillarRarenessNoise;
+    private final DoublePerlinNoiseSampler pillarThicknessNoise;
+    
+    private final DoublePerlinNoiseSampler spaghetti2dNoise;
+    private final DoublePerlinNoiseSampler spaghetti2dElevationNoise;
+    private final DoublePerlinNoiseSampler spaghetti2dModulatorNoise;
+    private final DoublePerlinNoiseSampler spaghetti2dThicknessNoise;
+    
+    private final DoublePerlinNoiseSampler spaghetti3dFirstNoise;
+    private final DoublePerlinNoiseSampler spaghetti3dSecondNoise;
+    private final DoublePerlinNoiseSampler spaghetti3dRarityNoise;
+    private final DoublePerlinNoiseSampler spaghetti3dThicknessNoise;
+    
+    private final DoublePerlinNoiseSampler spaghettiRoughnessNoise;
+    private final DoublePerlinNoiseSampler spaghettiRoughnessModulatorNoise;
+    
+    private final DoublePerlinNoiseSampler caveEntranceNoise;
+    private final DoublePerlinNoiseSampler caveLayerNoise;
+    private final DoublePerlinNoiseSampler caveCheeseNoise;
 
-    public NoiseCaveSampler(AbstractRandom abstractRandom, int minY) {
-        AbstractRandom random = abstractRandom.derive();
+    public NoiseCaveSampler(Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry, RandomDeriver randomDeriver, int minY) {
         
-        this.pillarNoise = DoublePerlinNoiseSampler.create(random.derive(), -7, 1.0, 1.0);
-        this.pillarFalloffNoise = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0);
-        this.pillarScaleNoise = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0);
+        this.pillarNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.PILLAR);
+        this.pillarRarenessNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.PILLAR_RARENESS);
+        this.pillarThicknessNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.PILLAR_THICKNESS);
         
-        this.scaledCaveScaleNoise = DoublePerlinNoiseSampler.create(random.derive(), -7, 1.0);
-        this.horizontalCaveNoise = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0);
-        this.caveScaleNoise = DoublePerlinNoiseSampler.create(random.derive(), -11, 1.0);
-        this.caveFalloffNoise = DoublePerlinNoiseSampler.create(random.derive(), -11, 1.0);
+        this.spaghetti2dNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_2D);
+        this.spaghetti2dElevationNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_2D_ELEVATION);
+        this.spaghetti2dModulatorNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_2D_MODULATOR);
+        this.spaghetti2dThicknessNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_2D_THICKNESS);
         
-        this.tunnelNoise1 = DoublePerlinNoiseSampler.create(random.derive(), -7, 1.0);
-        this.tunnelNoise2 = DoublePerlinNoiseSampler.create(random.derive(), -7, 1.0);
-        this.tunnelScaleNoise = DoublePerlinNoiseSampler.create(random.derive(), -11, 1.0);
-        this.tunnelFalloffNoise = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0);
+        this.spaghetti3dFirstNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_3D_1);
+        this.spaghetti3dSecondNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_3D_2);
+        this.spaghetti3dRarityNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_3D_RARITY);
+        this.spaghetti3dThicknessNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_3D_THICKNESS);
         
-        this.offsetNoise = DoublePerlinNoiseSampler.create(random.derive(), -5, 1.0);
-        this.offsetScaleNoise = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0);
+        this.spaghettiRoughnessNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_ROUGHNESS);
+        this.spaghettiRoughnessModulatorNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_ROUGHNESS_MODULATOR);
         
-        this.caveOpeningNoise = DoublePerlinNoiseSampler.create(random.derive(), -7, 0.4, 0.5, 1.0);
-        
-        this.terrainAdditionNoise = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0);
-        this.caveDensityNoise = DoublePerlinNoiseSampler.create(random.derive(), -8, 0.5, 1.0, 2.0, 1.0, 2.0, 1.0, 0.0, 2.0, 0.0);
+        this.caveEntranceNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.CAVE_ENTRANCE);
+        this.caveLayerNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.CAVE_LAYER);
+        this.caveCheeseNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.CAVE_CHEESE);
         
         this.minY = minY;
     }
@@ -59,47 +63,47 @@ public class NoiseCaveSampler {
         // so past a certain point, place only tunnels.
         boolean genTunnelsOnly = weight < tunnelThreshold;
         
-        double caveOpeningNoise = this.getCaveOpeningNoise(x, y, z);
-        double tunnelOffsetNoise = this.getTunnelOffsetNoise(x, y, z);
-        double tunnelNoise = this.getTunnelNoise(x, y, z);
+        double caveEntranceNoise = this.sampleCaveEntranceNoise(x, y, z);
+        double spaghettiRoughnessNoise = this.sampleSpaghettiRoughnessNoise(x, y, z);
+        double spaghetti3dNoise = this.sampleSpaghetti3dNoise(x, y, z);
         
         if (genTunnelsOnly) {
-            double openingNoise = Math.min(caveOpeningNoise, tunnelNoise + tunnelOffsetNoise);
+            double entranceNoise = Math.min(caveEntranceNoise, spaghetti3dNoise + spaghettiRoughnessNoise);
             
-            return Math.min(weight, openingNoise * scale * 5.0);
+            return Math.min(weight, entranceNoise * scale * 5.0);
         }
         
-        double caveDensityNoise = this.caveDensityNoise.sample(x, y / 1.5D, z);
-        double clampedCaveDensityNoise = MathHelper.clamp(caveDensityNoise + 0.27, -1.0, 1.0);
+        double caveCheeseNoise = this.caveCheeseNoise.sample(x, y / 1.5D, z);
+        double clampedCaveCheeseNoise = MathHelper.clamp(caveCheeseNoise + 0.27, -1.0, 1.0);
         
         double deltaY = (weight - tunnelThreshold) / (tunnelThreshold * 0.5);
         
-        double lerpedCaveDensityNoise = clampedCaveDensityNoise + MathHelper.clampedLerp(0.5, 0.0, deltaY);
-        double terrainAdditionNoise = this.getTerrainAdditionNoise(x, y, z);
-        double terrainAddition = lerpedCaveDensityNoise + terrainAdditionNoise;
+        double offsetCaveCheeseNoise = clampedCaveCheeseNoise + MathHelper.clampedLerp(0.5, 0.0, deltaY);
+        double caveLayerNoise = this.sampleCaveLayerNoise(x, y, z);
+        double caveAdditionNoise = offsetCaveCheeseNoise + caveLayerNoise;
         
-        double caveNoise = this.getCaveNoise(x, y, z);
-        double caveTypeNoise = Math.min(tunnelNoise, caveNoise) + tunnelOffsetNoise;
-        double caveTypeSelector = Math.min(Math.min(terrainAddition, caveOpeningNoise), caveTypeNoise); 
+        double spaghetti2dNoise = this.sampleSpaghetti2dNoise(x, y, z);
+        double spaghettiTypeNoise = Math.min(spaghetti3dNoise, spaghetti2dNoise) + spaghettiRoughnessNoise;
+        double caveTypeSelector = Math.min(Math.min(caveAdditionNoise, caveEntranceNoise), spaghettiTypeNoise); 
         double caveOrPillarSelector = Math.max(caveTypeSelector, this.getPillarNoise(x, y, z));
         
         return scale * MathHelper.clamp(caveOrPillarSelector, -1.0, 1.0);
     }
     
-    private double getCaveOpeningNoise(int x, int y, int z) {
-        double caveOpeningNoise = this.caveOpeningNoise.sample(x * 0.75, y * 0.5, z * 0.75) + 0.37;
+    private double sampleCaveEntranceNoise(int x, int y, int z) {
+        double caveEntranceNoise = this.caveEntranceNoise.sample(x * 0.75, y * 0.5, z * 0.75) + 0.37;
         double deltaY = (y + 10) / 40.0;
         
-        return caveOpeningNoise + MathHelper.clampedLerp(0.3, 0.0, deltaY);
+        return caveEntranceNoise + MathHelper.clampedLerp(0.3, 0.0, deltaY);
     }
 
     private double getPillarNoise(int x, int y, int z) {
-        double pillarFalloff = NoiseHelper.lerpFromProgress(this.pillarFalloffNoise, x, y, z, 0.0, 2.0);
-        double pillarScale = NoiseHelper.lerpFromProgress(this.pillarScaleNoise, x, y, z, 0.0, 1.1);
+        double pillarRarenessNoise = NoiseHelper.lerpFromProgress(this.pillarRarenessNoise, x, y, z, 0.0, 2.0);
+        double pillarThicknessNoise = NoiseHelper.lerpFromProgress(this.pillarThicknessNoise, x, y, z, 0.0, 1.1);
         
-        pillarScale = Math.pow(pillarScale, 3.0);
+        pillarThicknessNoise = Math.pow(pillarThicknessNoise, 3.0);
         double pillarNoise = this.pillarNoise.sample((double)x * 25.0, (double)y * 0.3, (double)z * 25.0);
-        pillarNoise = pillarScale * (pillarNoise * 2.0 - pillarFalloff);
+        pillarNoise = pillarThicknessNoise * (pillarNoise * 2.0 - pillarRarenessNoise);
         
         if (pillarNoise > 0.03) {
             return pillarNoise;
@@ -108,47 +112,47 @@ public class NoiseCaveSampler {
         return Double.NEGATIVE_INFINITY;
     }
 
-    private double getTerrainAdditionNoise(int x, int y, int z) {
-        double terrainAdditionNoise = this.terrainAdditionNoise.sample(x, y * 8, z);
+    private double sampleCaveLayerNoise(int x, int y, int z) {
+        double caveLayerNoise = this.caveLayerNoise.sample(x, y * 8, z);
         
-        return MathHelper.square(terrainAdditionNoise) * 4.0;
+        return MathHelper.square(caveLayerNoise) * 4.0;
     }
 
-    private double getTunnelNoise(int x, int y, int z) {
-        double tunnelScaleNoise = this.tunnelScaleNoise.sample(x * 2, y, z * 2);
-        double tunnelScale = NoiseCaveSampler.CaveScaler.scaleTunnels(tunnelScaleNoise);
+    private double sampleSpaghetti3dNoise(int x, int y, int z) {
+        double spaghetti3dRarityNoise = this.spaghetti3dRarityNoise.sample(x * 2, y, z * 2);
+        double scaledRarityNoise = NoiseCaveSampler.CaveScaler.scaleTunnels(spaghetti3dRarityNoise);
         
-        double tunnelFallOff = NoiseHelper.lerpFromProgress(this.tunnelFalloffNoise, x, y, z, 0.065, 0.088);
+        double spaghetti3dThicknessNoise = NoiseHelper.lerpFromProgress(this.spaghetti3dThicknessNoise, x, y, z, 0.065, 0.088);
         
-        double tunnelNoise1 = sample(this.tunnelNoise1, x, y, z, tunnelScale);
-        double ridgedTunnelNoise1 = Math.abs(tunnelScale * tunnelNoise1) - tunnelFallOff;
+        double firstNoise = sample(this.spaghetti3dFirstNoise, x, y, z, scaledRarityNoise);
+        double ridgedFirstNoise = Math.abs(scaledRarityNoise * firstNoise) - spaghetti3dThicknessNoise;
         
-        double tunnelNoise2 = sample(this.tunnelNoise2, x, y, z, tunnelScale);
-        double ridgedTunnelNoise2 = Math.abs(tunnelScale * tunnelNoise2) - tunnelFallOff;
+        double secondNoise = sample(this.spaghetti3dSecondNoise, x, y, z, scaledRarityNoise);
+        double ridgedSecondNoise = Math.abs(scaledRarityNoise * secondNoise) - spaghetti3dThicknessNoise;
         
-        return clamp(Math.max(ridgedTunnelNoise1, ridgedTunnelNoise2));
+        return clamp(Math.max(ridgedFirstNoise, ridgedSecondNoise));
     }
 
-    private double getCaveNoise(int x, int y, int z) {
-        double caveScaleNoise = this.caveScaleNoise.sample(x * 2, y, z * 2);
-        double caveScale = CaveScaler.scaleCaves(caveScaleNoise);
+    private double sampleSpaghetti2dNoise(int x, int y, int z) {
+        double spaghetti2dModulatorNoise = this.spaghetti2dModulatorNoise.sample(x * 2, y, z * 2);
+        double scaledModulatorNoise = CaveScaler.scaleCaves(spaghetti2dModulatorNoise);
         
-        double caveFalloff = NoiseHelper.lerpFromProgress(this.caveFalloffNoise, x * 2, y, z * 2, 0.6, 1.3);
-        double scaledCaveScaleNoise = NoiseCaveSampler.sample(this.scaledCaveScaleNoise, x, y, z, caveScale);
+        double spaghetti2dThickness = NoiseHelper.lerpFromProgress(this.spaghetti2dThicknessNoise, x * 2, y, z * 2, 0.6, 1.3);
+        double spaghetti2dNoise = NoiseCaveSampler.sample(this.spaghetti2dNoise, x, y, z, scaledModulatorNoise);
         
-        double ridgedCaveScaleNoise = Math.abs(caveScale * scaledCaveScaleNoise) - 0.083 * caveFalloff;
-        double lerpedHorizCaveNoise = NoiseHelper.lerpFromProgress(this.horizontalCaveNoise, x, 0.0, z, this.minY, 8.0);
-        double ridgedHorizCaveNoise = Math.abs(lerpedHorizCaveNoise - (double)y / 8.0) - 1.0 * caveFalloff;
+        double ridgedSpaghetti2dNoise = Math.abs(scaledModulatorNoise * spaghetti2dNoise) - 0.083 * spaghetti2dThickness;
+        double spaghetti2dElevationNoise = NoiseHelper.lerpFromProgress(this.spaghetti2dElevationNoise, x, 0.0, z, this.minY, 8.0);
+        double ridgedspaghetti2dElevationNoise = Math.abs(spaghetti2dElevationNoise - (double)y / 8.0) - 1.0 * spaghetti2dThickness;
         
-        ridgedHorizCaveNoise = ridgedHorizCaveNoise * ridgedHorizCaveNoise * ridgedHorizCaveNoise;
+        ridgedspaghetti2dElevationNoise = ridgedspaghetti2dElevationNoise * ridgedspaghetti2dElevationNoise * ridgedspaghetti2dElevationNoise;
         
-        return clamp(Math.max(ridgedHorizCaveNoise, ridgedCaveScaleNoise));
+        return clamp(Math.max(ridgedspaghetti2dElevationNoise, ridgedSpaghetti2dNoise));
     }
 
-    private double getTunnelOffsetNoise(int x, int y, int z) {
-        double offsetScale = NoiseHelper.lerpFromProgress(this.offsetScaleNoise, x, y, z, 0.0, 0.1);
+    private double sampleSpaghettiRoughnessNoise(int x, int y, int z) {
+        double spaghettiRoughnessModulatorNoise = NoiseHelper.lerpFromProgress(this.spaghettiRoughnessModulatorNoise, x, y, z, 0.0, 0.1);
         
-        return (0.4 - Math.abs(this.offsetNoise.sample(x, y, z))) * offsetScale;
+        return (0.4 - Math.abs(this.spaghettiRoughnessNoise.sample(x, y, z))) * spaghettiRoughnessModulatorNoise;
     }
 
     private static double clamp(double value) {

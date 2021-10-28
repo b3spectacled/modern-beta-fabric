@@ -7,7 +7,6 @@ import java.util.function.Function;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.class_6643;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -17,6 +16,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.carver.Carver;
 import net.minecraft.world.gen.carver.CarverContext;
+import net.minecraft.world.gen.carver.CarvingMask;
 import net.minecraft.world.gen.carver.CaveCarver;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.chunk.AquiferSampler;
@@ -42,7 +42,7 @@ public class OldCaveCarver extends CaveCarver {
         Random random, 
         AquiferSampler aquiferSampler, 
         ChunkPos pos,
-        class_6643 bitSet
+        CarvingMask bitSet
     ) {
         int caveCount = random.nextInt(random.nextInt(random.nextInt(40) + 1) + 1);
         if (random.nextInt(getMaxCaveCount()) != 0) {

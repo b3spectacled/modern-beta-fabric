@@ -1,47 +1,51 @@
 package com.bespectacled.modernbeta.world.gen.sampler;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.mixin.MixinVeinTypeAccessor;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.NoiseHelper;
+import net.minecraft.world.gen.noise.NoiseParametersKeys;
 import net.minecraft.world.gen.random.AbstractRandom;
-import net.minecraft.world.gen.random.BlockPosRandomDeriver;
+import net.minecraft.world.gen.random.RandomDeriver;
 
 public class OreVeinSampler {
-    private final DoublePerlinNoiseSampler oreFrequencyNoiseSampler;
-    private final DoublePerlinNoiseSampler firstOrePlacementNoiseSampler;
-    private final DoublePerlinNoiseSampler secondOrePlacementNoiseSampler;
-    private final DoublePerlinNoiseSampler oreChanceNoiseSampler;
+    private final DoublePerlinNoiseSampler oreVeininessNoiseSampler;
+    private final DoublePerlinNoiseSampler oreVeinFirstNoiseSampler;
+    private final DoublePerlinNoiseSampler oreVeinSecondNoiseSampler;
+    private final DoublePerlinNoiseSampler oreGapNoiseSampler;
     
-    private final BlockPosRandomDeriver orePosRandomDeriver;
+    private final RandomDeriver orePosRandomDeriver;
     
     private final int horizontalNoiseResolution;
     private final int verticalNoiseResolution;
     
-    public OreVeinSampler(AbstractRandom random, int horizontalNoiseResolution, int verticalNoiseResolution) {
-        this.oreFrequencyNoiseSampler = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0);
-        this.firstOrePlacementNoiseSampler = DoublePerlinNoiseSampler.create(random.derive(), -7, 1.0);
-        this.secondOrePlacementNoiseSampler = DoublePerlinNoiseSampler.create(random.derive(), -7, 1.0);
-        this.oreChanceNoiseSampler = DoublePerlinNoiseSampler.create(random.derive(), -5, 1.0);
-        this.orePosRandomDeriver = random.createBlockPosRandomDeriver();
+    public OreVeinSampler(Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry, RandomDeriver randomDeriver, int horizontalNoiseResolution, int verticalNoiseResolution) {
+        this.oreVeininessNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEININESS);
+        this.oreVeinFirstNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEIN_A);
+        this.oreVeinSecondNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEIN_B);
+        this.oreGapNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_GAP);
+        
+        this.orePosRandomDeriver = randomDeriver.createRandom(ModernBeta.createId("ore")).createBlockPosRandomDeriver();
         
         this.horizontalNoiseResolution = horizontalNoiseResolution;
         this.verticalNoiseResolution = verticalNoiseResolution;
     }
     
     public void sampleOreFrequencyNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
-        this.sample(buffer, x, z, this.oreFrequencyNoiseSampler, 1.5, minY, noiseSizeY);
+        this.sample(buffer, x, z, this.oreVeininessNoiseSampler, 1.5, minY, noiseSizeY);
     }
 
     public void sampleFirstOrePlacementNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
-        this.sample(buffer, x, z, this.firstOrePlacementNoiseSampler, 4.0, minY, noiseSizeY);
+        this.sample(buffer, x, z, this.oreVeinFirstNoiseSampler, 4.0, minY, noiseSizeY);
     }
 
     public void sampleSecondOrePlacementNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
-        this.sample(buffer, x, z, this.secondOrePlacementNoiseSampler, 4.0, minY, noiseSizeY);
+        this.sample(buffer, x, z, this.oreVeinSecondNoiseSampler, 4.0, minY, noiseSizeY);
     }
 
     public void sample(double[] buffer, int x, int z, DoublePerlinNoiseSampler sampler, double scale, int minY, int noiseSizeY) {
@@ -82,9 +86,9 @@ public class OreVeinSampler {
             return null;
         
         if (this.shouldPlaceOreBlock(firstOrePlacementNoise, secondOrePlacementNoise)) {
-            double oreVeinSelector = MathHelper.clampedLerpFromProgress(Math.abs(oreFrequencyNoise), 0.5, 0.6f, 0.1f, 0.3f);
+            double oreVeinSelector = MathHelper.clampedLerpFromProgress(Math.abs(oreFrequencyNoise), 0.4f, 0.6f, 0.1f, 0.3f);
             
-            if (random.nextFloat() < oreVeinSelector && this.oreChanceNoiseSampler.sample(x, y, z) > -0.3) {
+            if (random.nextFloat() < oreVeinSelector && this.oreGapNoiseSampler.sample(x, y, z) > -0.3) {
                 return random.nextFloat() < 0.02f ? rawBlock : oreBlock;
             }
             

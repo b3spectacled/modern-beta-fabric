@@ -9,16 +9,16 @@ import com.bespectacled.modernbeta.ModernBeta;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.SkyProperties;
+import net.minecraft.client.render.DimensionEffects;
 
 @Environment(EnvType.CLIENT)
-@Mixin(SkyProperties.class)
-public class MixinSkyProperties {
+@Mixin(DimensionEffects.class)
+public class MixinDimensionEffects {
     @Inject(method = "getCloudsHeight", at = @At("HEAD"), cancellable = true)
     public void injectCloudsHeight(CallbackInfoReturnable<Float> info) {
-        SkyProperties skyProperties = (SkyProperties)(Object)this;
+        DimensionEffects skyProperties = (DimensionEffects)(Object)this;
         
-        if (skyProperties instanceof SkyProperties.Overworld && ModernBeta.RENDER_CONFIG.otherConfig.renderLowClouds) {
+        if (skyProperties instanceof DimensionEffects.Overworld && ModernBeta.RENDER_CONFIG.otherConfig.renderLowClouds) {
             info.setReturnValue(108F);
         }
     }

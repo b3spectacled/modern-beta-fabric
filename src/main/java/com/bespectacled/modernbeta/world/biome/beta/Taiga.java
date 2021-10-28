@@ -11,7 +11,6 @@ import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep.Feature;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 public class Taiga {
     public static final Biome BIOME = create();
@@ -23,7 +22,6 @@ public class Taiga {
         OldBiomeMobs.addTaigaMobs(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
         DefaultBiomeFeatures.addSweetBerryBushes(genSettings);
         OldBiomeFeatures.addDefaultFeatures(genSettings, false, BetaBiomes.ADD_LAKES, BetaBiomes.ADD_SPRINGS);

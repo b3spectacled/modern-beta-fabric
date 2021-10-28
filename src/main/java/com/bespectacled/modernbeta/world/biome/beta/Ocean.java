@@ -10,7 +10,6 @@ import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep.Feature;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 public class Ocean {
     public static final Biome BIOME = create();
@@ -20,7 +19,6 @@ public class Ocean {
         OldBiomeMobs.addOceanMobs(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
         OldBiomeFeatures.addDefaultFeatures(genSettings, true, BetaBiomes.ADD_LAKES, BetaBiomes.ADD_SPRINGS);
         OldBiomeFeatures.addMineables(genSettings, BetaBiomes.ADD_ALTERNATE_STONES, BetaBiomes.ADD_NEW_MINEABLES);

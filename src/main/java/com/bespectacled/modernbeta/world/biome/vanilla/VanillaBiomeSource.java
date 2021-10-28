@@ -6,19 +6,18 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.mixin.MixinVanillaBiomeParametersAccessor;
-import com.bespectacled.modernbeta.world.gen.OldChunkGeneratorSettings;
 import com.bespectacled.modernbeta.world.gen.OldGeneratorConfig;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil.ParameterRange;
-import net.minecraft.world.gen.MultiNoiseParameters;
 import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.random.ChunkRandom;
@@ -29,10 +28,9 @@ public class VanillaBiomeSource {
     private static final int WORLD_HEIGHT = 192; // (128 + 64)
     
     private static final GenerationShapeConfig SHAPE_CONFIG = OldGeneratorConfig.BETA_SHAPE_CONFIG;
-    private static final MultiNoiseParameters MN_PARAMETERS = OldChunkGeneratorSettings.VANILLA_MN_PARAMS;
     
     private static final boolean GEN_NOISE_CAVES = false;
-    private static final ChunkRandom.class_6675 RANDOM_TYPE = ChunkRandom.class_6675.XOROSHIRO;
+    private static final ChunkRandom.RandomProvider RANDOM_TYPE = ChunkRandom.RandomProvider.XOROSHIRO;
     
     private final MultiNoiseUtil.Entries<Biome> biomeEntries;
     private final MultiNoiseBiomeSource biomeSource;
@@ -47,9 +45,9 @@ public class VanillaBiomeSource {
             VERTICAL_NOISE_RES,
             MathHelper.floorDiv(WORLD_HEIGHT, VERTICAL_NOISE_RES),
             SHAPE_CONFIG,
-            MN_PARAMETERS,
             GEN_NOISE_CAVES,
             seed,
+            BuiltinRegistries.NOISE_PARAMETERS,
             RANDOM_TYPE
         );
         this.seed = seed;

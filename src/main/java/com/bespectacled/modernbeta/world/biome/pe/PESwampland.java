@@ -11,7 +11,6 @@ import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep.Feature;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 public class PESwampland {
     public static final Biome BIOME = create();
@@ -24,7 +23,6 @@ public class PESwampland {
         OldBiomeMobs.addTurtles(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.SWAMP);
         
         DefaultBiomeFeatures.addFossils(genSettings);
         OldBiomeFeatures.addDefaultFeatures(genSettings, false, PEBiomes.ADD_LAKES, PEBiomes.ADD_SPRINGS);

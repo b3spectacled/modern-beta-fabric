@@ -21,6 +21,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.world.GeneratorType;
 import net.minecraft.client.world.GeneratorType.ScreenProvider;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -48,30 +49,32 @@ public class OldGeneratorType {
         GeneratorOptions generatorOptions,
         WorldSettings worldSettings
     ) {
+        Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry = registryManager.get(Registry.NOISE_WORLDGEN);
+        Registry<DimensionType> dimensionRegistry = registryManager.get(Registry.DIMENSION_TYPE_KEY);
+        Registry<ChunkGeneratorSettings> chunkGenSettingsRegistry = registryManager.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
+        Registry<Biome> biomeRegistry = registryManager.get(Registry.BIOME_KEY);
+        
         NbtCompound chunkSettings = worldSettings.getNbt(WorldSetting.CHUNK);
         NbtCompound biomeSettings = worldSettings.getNbt(WorldSetting.BIOME);
         NbtCompound caveBiomeSettings = worldSettings.getNbt(WorldSetting.CAVE_BIOME);
         
         String worldType = NbtUtil.readStringOrThrow(NbtTags.WORLD_TYPE, chunkSettings);
         
-        Registry<DimensionType> registryDimensionType = registryManager.<DimensionType>get(Registry.DIMENSION_TYPE_KEY);
-        Registry<ChunkGeneratorSettings> registryChunkGenSettings = registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
-        Registry<Biome> registryBiome = registryManager.<Biome>get(Registry.BIOME_KEY);
-        
-        Optional<ChunkGeneratorSettings> chunkGenSettings = registryChunkGenSettings.getOrEmpty(ModernBeta.createId(worldType));
+        Optional<ChunkGeneratorSettings> chunkGenSettings = chunkGenSettingsRegistry.getOrEmpty(ModernBeta.createId(worldType));
         Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = chunkGenSettings.isPresent() ?
             () -> chunkGenSettings.get() :
-            () -> registryChunkGenSettings.getOrThrow(ChunkGeneratorSettings.OVERWORLD);
+            () -> chunkGenSettingsRegistry.getOrThrow(ChunkGeneratorSettings.OVERWORLD);
         
         return new GeneratorOptions(
             generatorOptions.getSeed(),
             generatorOptions.shouldGenerateStructures(),
             generatorOptions.hasBonusChest(),
             GeneratorOptions.getRegistryWithReplacedOverworldGenerator(
-                registryDimensionType, 
+                dimensionRegistry, 
                 generatorOptions.getDimensions(), 
                 new OldChunkGenerator(
-                    new OldBiomeSource(generatorOptions.getSeed(), registryBiome, biomeSettings, Optional.ofNullable(caveBiomeSettings)), 
+                    noiseRegistry,
+                    new OldBiomeSource(generatorOptions.getSeed(), biomeRegistry, biomeSettings, Optional.ofNullable(caveBiomeSettings)), 
                     generatorOptions.getSeed(), 
                     chunkGenSettingsSupplier, 
                     chunkSettings
@@ -83,9 +86,13 @@ public class OldGeneratorType {
     static {
         OLD = new GeneratorType("old") {
             @Override
-            protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> registryChunkGenSettings, long seed) {
+            protected ChunkGenerator getChunkGenerator(DynamicRegistryManager registryManager, long seed) {
+                Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry = registryManager.get(Registry.NOISE_WORLDGEN);
+                Registry<ChunkGeneratorSettings> chunkGenSettingsRegistry = registryManager.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
+                Registry<Biome> biomeRegistry = registryManager.get(Registry.BIOME_KEY);
+                
                 Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = () -> 
-                    registryChunkGenSettings.get(ModernBeta.createId(Registries.WORLD.get(DEFAULT_WORLD_TYPE).getChunkProvider()));
+                    chunkGenSettingsRegistry.get(ModernBeta.createId(Registries.WORLD.get(DEFAULT_WORLD_TYPE).getChunkProvider()));
                     
                 WorldProvider worldProvider = Registries.WORLD.get(DEFAULT_WORLD_TYPE);
                 
@@ -94,7 +101,8 @@ public class OldGeneratorType {
                 NbtCompound caveBiomeSettings = Registries.CAVE_BIOME_SETTINGS.get(worldProvider.getCaveBiomeProvider()).get();
                 
                 return new OldChunkGenerator(
-                    new OldBiomeSource(seed, biomes, biomeSettings, Optional.ofNullable(caveBiomeSettings)), 
+                    noiseRegistry,
+                    new OldBiomeSource(seed, biomeRegistry, biomeSettings, Optional.ofNullable(caveBiomeSettings)), 
                     seed, 
                     chunkGenSettingsSupplier, 
                     chunkSettings

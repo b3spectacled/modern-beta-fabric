@@ -10,7 +10,6 @@ import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep.Feature;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 public class Sky {
     public static final Biome BIOME = create();
@@ -20,7 +19,6 @@ public class Sky {
         OldBiomeMobs.addSkyMobs(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
         OldBiomeFeatures.addDefaultFeatures(genSettings, false, BetaBiomes.ADD_LAKES, BetaBiomes.ADD_SPRINGS);
         OldBiomeFeatures.addMineables(genSettings, false, false);

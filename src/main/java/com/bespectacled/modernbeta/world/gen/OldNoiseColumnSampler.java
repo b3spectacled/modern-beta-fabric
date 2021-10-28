@@ -4,9 +4,11 @@ import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 
+import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
+import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.source.util.TerrainNoisePoint;
-import net.minecraft.world.gen.MultiNoiseParameters;
 import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.random.ChunkRandom;
@@ -16,25 +18,39 @@ public class OldNoiseColumnSampler extends NoiseColumnSampler  {
     
     private final ChunkProvider chunkProvider;
     
+    public OldNoiseColumnSampler(ChunkProvider chunkProvider) {
+        this(
+            -1, 
+            -1, 
+            -1, 
+            OldGeneratorConfig.BETA_SHAPE_CONFIG, 
+            true, 
+            0L, 
+            BuiltinRegistries.NOISE_PARAMETERS, 
+            ChunkRandom.RandomProvider.XOROSHIRO, 
+            chunkProvider
+        );
+    }
+    
     public OldNoiseColumnSampler(
         int horizontalNoiseResolution, 
         int verticalNoiseResolution, 
         int noiseSizeY, 
         GenerationShapeConfig generationShapeConfig, 
-        MultiNoiseParameters multiNoiseParameters, 
         boolean hasNoiseCaves,
         long seed,
-        ChunkRandom.class_6675 randomType,
+        Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry,
+        ChunkRandom.RandomProvider randomType,
         ChunkProvider chunkProvider
     ) {
         super(
             horizontalNoiseResolution, 
             verticalNoiseResolution, 
             noiseSizeY, 
-            generationShapeConfig, 
-            multiNoiseParameters, 
-            hasNoiseCaves, 
+            generationShapeConfig,
+            hasNoiseCaves,
             seed,
+            noiseRegistry,
             randomType
         );
         

@@ -2,42 +2,44 @@ package com.bespectacled.modernbeta.world.gen.sampler;
 
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.NoiseHelper;
-import net.minecraft.world.gen.random.AbstractRandom;
+import net.minecraft.world.gen.noise.NoiseParametersKeys;
+import net.minecraft.world.gen.random.RandomDeriver;
 
 public class NoodleCaveSampler {
-    private final DoublePerlinNoiseSampler frequencyNoiseSampler;
-    private final DoublePerlinNoiseSampler weightReducingNoiseSampler;
-    private final DoublePerlinNoiseSampler firstWeightNoiseSampler;
-    private final DoublePerlinNoiseSampler secondWeightNoiseSampler;
+    private final DoublePerlinNoiseSampler noodleNoiseSampler;
+    private final DoublePerlinNoiseSampler noodleThicknessNoiseSampler;
+    private final DoublePerlinNoiseSampler noodleRidgeFirstNoiseSampler;
+    private final DoublePerlinNoiseSampler noodleRidgeSecondNoiseSampler;
     
     private final int horizontalNoiseResolution;
     private final int verticalNoiseResolution;
     
-    public NoodleCaveSampler(AbstractRandom random, int horizontalNoiseResolution, int verticalNoiseResolution) {
-        this.frequencyNoiseSampler = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0);
-        this.weightReducingNoiseSampler = DoublePerlinNoiseSampler.create(random.derive(), -8, 1.0);
-        this.firstWeightNoiseSampler = DoublePerlinNoiseSampler.create(random.derive(), -7, 1.0);
-        this.secondWeightNoiseSampler = DoublePerlinNoiseSampler.create(random.derive(), -7, 1.0);
+    public NoodleCaveSampler(Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry, RandomDeriver randomDeriver, int horizontalNoiseResolution, int verticalNoiseResolution) {
+        this.noodleNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE);
+        this.noodleThicknessNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE_THICKNESS);
+        this.noodleRidgeFirstNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE_RIDGE_A);
+        this.noodleRidgeSecondNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE_RIDGE_B);
         
         this.horizontalNoiseResolution = horizontalNoiseResolution;
         this.verticalNoiseResolution = verticalNoiseResolution;
     }
     
     public void sampleFrequencyNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
-        this.sample(buffer, x, z, minY, noiseSizeY, this.frequencyNoiseSampler, 1.0);
+        this.sample(buffer, x, z, minY, noiseSizeY, this.noodleNoiseSampler, 1.0);
     }
 
     public void sampleWeightReducingNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
-        this.sample(buffer, x, z, minY, noiseSizeY, this.weightReducingNoiseSampler, 1.0);
+        this.sample(buffer, x, z, minY, noiseSizeY, this.noodleThicknessNoiseSampler, 1.0);
     }
 
     public void sampleFirstWeightNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
-        this.sample(buffer, x, z, minY, noiseSizeY, this.firstWeightNoiseSampler, 2.6666666666666665, 2.6666666666666665);
+        this.sample(buffer, x, z, minY, noiseSizeY, this.noodleRidgeFirstNoiseSampler, 2.6666666666666665, 2.6666666666666665);
     }
 
     public void sampleSecondWeightNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
-        this.sample(buffer, x, z, minY, noiseSizeY, this.secondWeightNoiseSampler, 2.6666666666666665, 2.6666666666666665);
+        this.sample(buffer, x, z, minY, noiseSizeY, this.noodleRidgeSecondNoiseSampler, 2.6666666666666665, 2.6666666666666665);
     }
 
     public void sample(double[] buffer, int x, int z, int minY, int noiseSizeY, DoublePerlinNoiseSampler sampler, double scale) {

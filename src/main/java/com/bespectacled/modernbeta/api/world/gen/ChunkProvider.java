@@ -11,12 +11,14 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
@@ -114,7 +116,7 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
      * @return Minimum Y coordinate in block coordinates.
      */
     public int getWorldMinY() {
-        return this.generatorSettings.get().getGenerationShapeConfig().getMinimumY();
+        return this.generatorSettings.get().getGenerationShapeConfig().minimumY();
     }
     
     /**
@@ -162,5 +164,33 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
      */
     public Biome getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {
         return this.chunkGenerator.getBiomeSource().getBiome(biomeX, biomeY, biomeZ, noiseSampler);
+    }
+    
+    public static class BiomeBlocks {
+        private BlockState topBlock;
+        private BlockState fillerBlock;
+        
+        private BiomeBlocks(BlockState topBlock, BlockState fillerBlock) {
+            this.topBlock = topBlock;
+            this.fillerBlock = fillerBlock;
+        }
+        
+        public BlockState getTopBlock() {
+            return this.topBlock;
+        }
+        
+        public BlockState getFillerBlock() {
+            return this.fillerBlock;
+        }
+        
+        public static BiomeBlocks getBiomeBlocks(Biome biome) {
+            if (biome.getCategory() == Category.DESERT)
+                return DESERT;
+            
+            return DEFAULT;
+        }
+        
+        public static final BiomeBlocks DESERT = new BiomeBlocks(BlockStates.SAND, BlockStates.SAND);
+        public static final BiomeBlocks DEFAULT = new BiomeBlocks(BlockStates.GRASS_BLOCK, BlockStates.DIRT);
     }
 }

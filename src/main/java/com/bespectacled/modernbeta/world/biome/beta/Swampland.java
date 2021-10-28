@@ -12,7 +12,6 @@ import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep.Feature;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 public class Swampland {
     public static final Biome BIOME = create();
@@ -25,7 +24,6 @@ public class Swampland {
         OldBiomeMobs.addTurtles(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.SWAMP);
         
         DefaultBiomeFeatures.addFossils(genSettings);
         OldBiomeFeatures.addDefaultFeatures(genSettings, false, BetaBiomes.ADD_LAKES, BetaBiomes.ADD_SPRINGS);

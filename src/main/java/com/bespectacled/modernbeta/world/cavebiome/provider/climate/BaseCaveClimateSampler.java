@@ -44,7 +44,7 @@ public class BaseCaveClimateSampler implements CaveClimateSampler {
         );
         
         detailNoise /= 0.55D;
-        climateNoise = (climateNoise + 0.15D) / 1.4D;
+        climateNoise /= 1.4D;
         
         climateNoise = climateNoise * 0.99D + detailNoise * 0.01D;
         

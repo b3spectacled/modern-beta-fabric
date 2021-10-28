@@ -20,6 +20,7 @@ import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSett
 import com.google.common.base.MoreObjects;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -39,7 +40,7 @@ public class MixinGeneratorOptions {
     
     @Inject(method = "fromProperties", at = @At("HEAD"), cancellable = true)
     private static void injectServerGeneratorType(
-        DynamicRegistryManager dynamicRegistryManager, 
+        DynamicRegistryManager registryManager, 
         Properties properties,
         CallbackInfoReturnable<GeneratorOptions> cir
     ) {
@@ -67,18 +68,13 @@ public class MixinGeneratorOptions {
                     seed = seedField.hashCode();
                 } 
             }
-
-            // get other misc data
-            Registry<DimensionType> registryDimensionType = dynamicRegistryManager.get(Registry.DIMENSION_TYPE_KEY);
-            Registry<ChunkGeneratorSettings> registryChunkGenSettings = dynamicRegistryManager.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
-            Registry<Biome> registryBiome = dynamicRegistryManager.get(Registry.BIOME_KEY);
             
-            SimpleRegistry<DimensionOptions> dimensionOptions = DimensionType.createDefaultDimensionOptions(
-                registryDimensionType,
-                registryBiome, 
-                registryChunkGenSettings, 
-                seed
-            );
+            Registry<DimensionType> dimensionRegistry = registryManager.get(Registry.DIMENSION_TYPE_KEY);
+            Registry<ChunkGeneratorSettings> chunkGenSettingsRegistry = registryManager.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
+            Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry = registryManager.get(Registry.NOISE_WORLDGEN);
+            Registry<Biome> biomeRegistry = registryManager.get(Registry.BIOME_KEY);
+            
+            SimpleRegistry<DimensionOptions> dimensionOptions = DimensionType.createDefaultDimensionOptions(registryManager, seed);
 
             String generate_structures = (String) properties.get("generate-structures");
             boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
@@ -103,9 +99,10 @@ public class MixinGeneratorOptions {
             ).get();
             
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
-                new OldBiomeSource(seed, registryBiome, biomeSettings, Optional.of(caveBiomeSettings)), 
+                noiseRegistry,
+                new OldBiomeSource(seed, biomeRegistry, biomeSettings, Optional.of(caveBiomeSettings)), 
                 seed,
-                () -> registryChunkGenSettings.get(ModernBeta.createId(worldType)), 
+                () -> chunkGenSettingsRegistry.get(ModernBeta.createId(worldType)), 
                 chunkSettings
             );
             
@@ -114,7 +111,7 @@ public class MixinGeneratorOptions {
                 seed, 
                 generateStructures, 
                 false,
-                GeneratorOptions.getRegistryWithReplacedOverworldGenerator(registryDimensionType, dimensionOptions, chunkGenerator)));
+                GeneratorOptions.getRegistryWithReplacedOverworldGenerator(dimensionRegistry, dimensionOptions, chunkGenerator)));
         }
     }
 }

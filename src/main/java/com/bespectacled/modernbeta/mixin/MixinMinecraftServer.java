@@ -24,12 +24,12 @@ public class MixinMinecraftServer {
         method = "setupSpawn", 
         at = @At(
             value = "INVOKE", 
-            target = "Lnet/minecraft/server/network/SpawnLocating;findServerSpawnPoint(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/ChunkPos;Z)Lnet/minecraft/util/math/BlockPos;"
+            target = "Lnet/minecraft/server/network/SpawnLocating;findServerSpawnPoint(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/ChunkPos;)Lnet/minecraft/util/math/BlockPos;"
         )
     )
-    private static BlockPos redirectSpawnLocating(ServerWorld world, ChunkPos chunkPos, boolean validSpawnNeeded) {
+    private static BlockPos redirectSpawnLocating(ServerWorld world, ChunkPos chunkPos) {
         ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
-        BlockPos spawnPos = SpawnLocating.findServerSpawnPoint(world, chunkPos, validSpawnNeeded);
+        BlockPos spawnPos = SpawnLocating.findServerSpawnPoint(world, chunkPos);
         
         if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
             ((IntRuleAccessor)world.getGameRules().get(GameRules.SPAWN_RADIUS)).setValue(0); // Ensure a centered spawn

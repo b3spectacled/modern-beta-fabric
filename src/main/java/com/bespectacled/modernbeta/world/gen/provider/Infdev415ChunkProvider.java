@@ -92,13 +92,15 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, topY, z));
                 
-                BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
-                BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
-                
+                BiomeBlocks biomeBlocks = BiomeBlocks.getBiomeBlocks(biome);
+                BlockState biomeTopBlock = biomeBlocks.getTopBlock();
+                BlockState biomeFillerBlock = biomeBlocks.getFillerBlock();
+
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
-                
-                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos, blockColumn);
+
+                //boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos, blockColumn);
+                boolean usedCustomSurface = false;
                 
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; --y) {
                     pos.set(localX, y, localZ);

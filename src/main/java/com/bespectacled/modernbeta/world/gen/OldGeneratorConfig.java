@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.google.common.collect.Maps;
 
+import net.minecraft.class_6765;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.NoiseSamplingConfig;
 import net.minecraft.world.gen.chunk.SlideConfig;
@@ -57,9 +58,7 @@ public class OldGeneratorConfig {
             -0.46875, 
             true, 
             false,
-            false, 
-            false, 
-            true
+            class_6765.method_39421()
         );
         
         ALPHA_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -73,10 +72,8 @@ public class OldGeneratorConfig {
             1, 
             -0.46875, 
             true, 
-            false, 
-            false, 
             false,
-            true
+            class_6765.method_39421()
         );
         
         SKYLANDS_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -90,10 +87,8 @@ public class OldGeneratorConfig {
             1, 
             -0.46875, 
             true, 
-            false, 
-            false, 
             false,
-            true
+            class_6765.method_39421()
         );
         
         INFDEV_611_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -107,10 +102,8 @@ public class OldGeneratorConfig {
             1, 
             -0.46875, 
             true, 
-            false, 
-            false, 
             false,
-            true
+            class_6765.method_39421()
         );
         
         INFDEV_420_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -124,10 +117,8 @@ public class OldGeneratorConfig {
             1, 
             -0.46875, 
             true, 
-            false, 
-            false, 
             false,
-            true
+            class_6765.method_39421()
         );
         
         INFDEV_415_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -141,10 +132,8 @@ public class OldGeneratorConfig {
             1, 
             -0.46875, 
             true, 
-            false, 
-            false, 
             false,
-            true
+            class_6765.method_39421()
         );
         
         INDEV_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -158,10 +147,8 @@ public class OldGeneratorConfig {
             1, 
             -0.46875, 
             true, 
-            false, 
-            false, 
             false,
-            true
+            class_6765.method_39421()
         );
         
         PE_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -176,9 +163,7 @@ public class OldGeneratorConfig {
             -0.46875, 
             true, 
             false,
-            false, 
-            false,
-            true
+            class_6765.method_39421()
         );
     }
 }

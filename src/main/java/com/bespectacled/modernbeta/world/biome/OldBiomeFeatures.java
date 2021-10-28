@@ -12,7 +12,7 @@ import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 
 public class OldBiomeFeatures {
     public static void addDefaultFeatures(GenerationSettings.Builder genSettings, boolean isOcean, boolean addLakes, boolean addSprings) {
-        if (addLakes) DefaultBiomeFeatures.addDefaultLakes(genSettings);
+        //if (addLakes) DefaultBiomeFeatures.addDefaultLakes(genSettings);
         DefaultBiomeFeatures.addDungeons(genSettings);
         DefaultBiomeFeatures.addDefaultOres(genSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(genSettings);

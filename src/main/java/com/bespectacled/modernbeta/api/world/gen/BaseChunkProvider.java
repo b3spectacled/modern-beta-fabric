@@ -3,32 +3,23 @@ package com.bespectacled.modernbeta.api.world.gen;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.compat.CompatBiomes;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
-import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.noise.NoiseSampler;
-import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
-import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
-import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
-import net.minecraft.world.gen.random.AbstractRandom;
-import net.minecraft.world.gen.random.AtomicSimpleRandom;
+import net.minecraft.world.gen.random.ChunkRandom;
+import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public abstract class BaseChunkProvider extends ChunkProvider {
     // Set for specifying which biomes should use their vanilla surface builders.
@@ -44,6 +35,8 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     
     protected final Random rand;
     
+    protected final Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry;
+    
     protected final int worldMinY;
     protected final int worldHeight;
     protected final int worldTopY;
@@ -55,35 +48,45 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     protected final BlockState defaultBlock;
     protected final BlockState defaultFluid;
     
-    protected final NoiseSampler surfaceDepthNoise;
-    
     protected final FluidLevelSampler fluidLevelSampler;
     protected final FluidLevelSampler lavalessFluidLevelSampler;
+    
+    protected final ChunkRandom.RandomProvider randomProvider;
+    
+    //protected final SurfaceBuilder surfaceBuilder;
 
     public BaseChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
             chunkGenerator,
-            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getMinimumY(),
-            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().getHeight(),
+            chunkGenerator.getNoiseRegistry(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().minimumY(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().height(),
             chunkGenerator.getGeneratorSettings().get().getSeaLevel(),
             chunkGenerator.getGeneratorSettings().get().getBedrockFloorY(),
             chunkGenerator.getGeneratorSettings().get().getBedrockCeilingY(),
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
-            chunkGenerator.getGeneratorSettings().get().getDefaultFluid()
+            chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
+            chunkGenerator.getGeneratorSettings().get().getRandomProvider(),
+            chunkGenerator.getGeneratorSettings().get().getSurfaceRule()
         );
     }
     
     public BaseChunkProvider(
         OldChunkGenerator chunkGenerator,
+        Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry,
         int worldMinY,
         int worldHeight,
         int seaLevel,
         int bedrockFloor,
         int bedrockCeiling,
         BlockState defaultBlock,
-        BlockState defaultFluid
+        BlockState defaultFluid,
+        ChunkRandom.RandomProvider randomProvider,
+        MaterialRules.MaterialRule surfaceRule
     ) {
         super(chunkGenerator);
+        
+        this.noiseRegistry = noiseRegistry;
         
         this.worldMinY = worldMinY;
         this.worldHeight = worldHeight;
@@ -95,18 +98,6 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         this.defaultBlock = defaultBlock;
         this.defaultFluid = defaultFluid;
         
-        // Randoms
-        boolean useLegacyRandom = this.generatorSettings.get().getGenerationShapeConfig().method_38413();
-        AtomicSimpleRandom simpleRandom = new AtomicSimpleRandom(seed);
-        AtomicSimpleRandom legacyRandom = new AtomicSimpleRandom(seed);
-        
-        AbstractRandom genRandom = useLegacyRandom ? legacyRandom : simpleRandom.derive();
-        
-        // Surface noise sampler
-        this.surfaceDepthNoise = this.generatorSettings.get().getGenerationShapeConfig().hasSimplexSurfaceNoise() ? 
-            new OctaveSimplexNoiseSampler(genRandom, IntStream.rangeClosed(-3, 0)) : 
-            new OctavePerlinNoiseSampler(genRandom, IntStream.rangeClosed(-3, 0));
-        
         this.rand = new Random(seed);
         
         FluidLevel lavaFluidLevel = new FluidLevel(LAVA_LEVEL, BlockStates.LAVA); // Vanilla: -54
@@ -114,6 +105,8 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         
         this.fluidLevelSampler = (x, y, z) -> y < LAVA_LEVEL ? lavaFluidLevel : seaFluidLevel;
         this.lavalessFluidLevelSampler = (x, y, z) -> seaFluidLevel;
+        
+        this.randomProvider = randomProvider;
         
         // Handle bad height values
         if (this.worldMinY > this.worldHeight)
@@ -166,52 +159,6 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         OldDecorators.COUNT_INFDEV_415_NOISE.setOctaves(forestOctaves);
         OldDecorators.COUNT_INFDEV_420_NOISE.setOctaves(forestOctaves);
         OldDecorators.COUNT_INFDEV_611_NOISE.setOctaves(forestOctaves);
-    }
-    
-    /**
-     * Use a biome-specific surface builder, at a given x/z-coordinate and topmost y-coordinate.
-     * Valid biomes are checked on per-biome basis using identifier from BIOMES_WITH_CUSTOM_SURFACES set. 
-     * 
-     * @param biome Biome with surface builder to use.
-     * @param biomeId Biome identifier, used to check if it uses valid custom surface builder.
-     * @param region
-     * @param chunk
-     * @param random
-     * @param pos Mutable BlockPos at block coordinates position.
-     * @param blockColumn TODO
-     * @return True if biome is included in valid biomes set and has run surface builder. False if not included and not run.
-     */
-    protected boolean useCustomSurfaceBuilder(Biome biome, Identifier biomeId, ChunkRegion region, Chunk chunk, Random random, BlockPos pos, BlockColumnHolder blockColumn) {
-        int x = pos.getX();
-        int y = pos.getY();
-        int z = pos.getZ();
-        
-        if (BIOMES_WITH_CUSTOM_SURFACES.contains(biomeId)) {
-            double surfaceNoise = this.surfaceDepthNoise.sample(x * 0.0625, z * 0.0625, 0.0625, (x & 0xF) * 0.0625) * 15.0;
-            
-            blockColumn.setPos(x, z);
-            
-            int height = (this instanceof NoiseChunkProvider noiseChunkProvider) ?
-                noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
-                this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, chunk);
-            int bottom = height - 8;
-            
-            biome.buildSurface(
-                random,
-                blockColumn.getBlockColumn(), 
-                x, z, y, 
-                surfaceNoise, 
-                this.defaultBlock, 
-                this.defaultFluid,
-                this.seaLevel,
-                bottom,
-                region.getSeed()
-            );
-            
-            return true;
-        }
-        
-        return false;
     }
     
     /**

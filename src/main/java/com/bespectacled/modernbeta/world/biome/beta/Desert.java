@@ -12,7 +12,6 @@ import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep.Feature;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 public class Desert {
     public static final Biome BIOME = create();
@@ -23,7 +22,6 @@ public class Desert {
         OldBiomeMobs.addSquid(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.DESERT);
         
         DefaultBiomeFeatures.addDesertFeatures(genSettings);
         DefaultBiomeFeatures.addFossils(genSettings);

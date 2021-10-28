@@ -223,8 +223,9 @@ public class IndevChunkProvider extends FiniteChunkProvider {
 
     @Override
     protected BlockState postProcessSurfaceState(BlockState blockState, Biome biome, BlockPos pos, boolean isCold) {
-        BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
-        BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
+        BiomeBlocks biomeBlocks = BiomeBlocks.getBiomeBlocks(biome);
+        BlockState topBlock = biomeBlocks.getTopBlock();
+        BlockState fillerBlock = biomeBlocks.getFillerBlock();
         
         int x = pos.getX();
         int y = pos.getY();

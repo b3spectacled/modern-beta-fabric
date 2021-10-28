@@ -28,7 +28,7 @@ import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.BlockSource;
-import net.minecraft.world.gen.DeepslateBlockSource;
+import net.minecraft.world.gen.LayerTransitionBlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.random.AtomicSimpleRandom;
@@ -72,7 +72,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         boolean hasDeepslate = ((MixinChunkGeneratorSettingsInvoker)(Object)this.generatorSettings.get()).invokeHasDeepslate();
         AtomicSimpleRandom atomicSimpleRandom = new AtomicSimpleRandom(seed);
         this.deepslateSource = hasDeepslate ? 
-            new DeepslateBlockSource(atomicSimpleRandom.createBlockPosRandomDeriver(), BlockStates.DEEPSLATE, null, -8, 0) :
+            new LayerTransitionBlockSource(atomicSimpleRandom.createBlockPosRandomDeriver(), BlockStates.DEEPSLATE, null, -8, 0) :
             (sampler, x, y, z) -> null;
     }
 
@@ -100,13 +100,18 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                 
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(x, topY, z));
                 
-                BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
-                BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
+                BiomeBlocks biomeBlocks = BiomeBlocks.getBiomeBlocks(biome);
+                BlockState biomeTopBlock = biomeBlocks.getTopBlock();
+                BlockState biomeFillerBlock = biomeBlocks.getFillerBlock();
+
+                BlockState topBlock = biomeTopBlock;
+                BlockState fillerBlock = biomeFillerBlock;
+
+                //boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos, blockColumn);
+                boolean usedCustomSurface = false;
 
                 int soilDepth = 0;
 
-                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable, null);
-                
                 for (int y = this.worldHeight - Math.abs(this.worldMinY) - 1; y >= this.worldMinY; --y) {
                     BlockState blockState = chunk.getBlockState(mutable.set(localX, y, localZ));
                     

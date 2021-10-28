@@ -8,7 +8,6 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
-import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.mersenne.MTRandom;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
@@ -16,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.Category;
 
 /*
  * Port of MCPE v0.6.0 alpha player spawn locator.
@@ -80,7 +80,7 @@ public class PESpawnLocator implements SpawnLocator {
             this.chunkProvider.getBiome(x >> 2, y >> 2, z >> 2, null);
         
         return 
-            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial().equals(BlockStates.SAND) && y >= seaLevel - 1) || 
+            (biome.getCategory() == Category.DESERT && y >= seaLevel - 1) || 
             (this.beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
     }
 }

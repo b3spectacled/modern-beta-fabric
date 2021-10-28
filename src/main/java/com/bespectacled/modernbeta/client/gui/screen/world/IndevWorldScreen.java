@@ -52,7 +52,7 @@ public class IndevWorldScreen extends InfWorldScreen {
             .<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY)
             .get(ModernBeta.createId(BuiltInTypes.Chunk.INDEV.name));
             
-        int topY = chunkGenSettings.get().getGenerationShapeConfig().getHeight() + chunkGenSettings.get().getGenerationShapeConfig().getMinimumY();
+        int topY = chunkGenSettings.get().getGenerationShapeConfig().height() + chunkGenSettings.get().getGenerationShapeConfig().minimumY();
         
         CyclingOptionWrapper<IndevTheme> levelTheme = new CyclingOptionWrapper<>(
             LEVEL_THEME_DISPLAY_STRING,

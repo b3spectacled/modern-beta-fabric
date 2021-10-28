@@ -25,14 +25,16 @@ import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.class_6643;
+import net.minecraft.class_6748;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Util;
 import net.minecraft.util.collection.Pool;
+import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
@@ -52,6 +54,7 @@ import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.carver.CarverContext;
+import net.minecraft.world.gen.carver.CarvingMask;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -62,6 +65,7 @@ import net.minecraft.world.gen.chunk.VerticalBlockSample;
 public class OldChunkGenerator extends NoiseChunkGenerator {
     public static final Codec<OldChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
         .group(
+            RegistryLookupCodec.of(Registry.NOISE_WORLDGEN).forGetter(generator -> generator.noiseRegistry),
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
             Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
             ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(generator -> generator.settings),
@@ -71,6 +75,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     public static final int OCEAN_MIN_DEPTH = 4;
     public static final int DEEP_OCEAN_MIN_DEPTH = 16;
     
+    private final Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry;
     private final NbtCompound chunkProviderSettings;
     private final ChunkProvider chunkProvider;
     private final String chunkProviderType;
@@ -79,9 +84,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private final boolean generateOceanShrines;
     private final boolean generateMonuments;
     
-    public OldChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, NbtCompound providerSettings) {
-        super(biomeSource, seed, settings);
+    public OldChunkGenerator(Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry, BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, NbtCompound providerSettings) {
+        super(noiseRegistry, biomeSource, seed, settings);
         
+        this.noiseRegistry = noiseRegistry;
         this.chunkProviderSettings = providerSettings;
         this.chunkProviderType = NbtUtil.readStringOrThrow(NbtTags.WORLD_TYPE, providerSettings);
         this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
@@ -104,7 +110,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
-    public CompletableFuture<Chunk> populateBiomes(Executor executor, Registry<Biome> biomeRegistry, StructureAccessor accessor, Chunk chunk) {
+    public CompletableFuture<Chunk> populateBiomes(Executor executor, class_6748 blender, StructureAccessor accessor, Chunk chunk) {
         return CompletableFuture.<Chunk>supplyAsync(Util.debugSupplier("init_biomes", () -> {
             chunk.method_38257(this.biomeSource, this.getMultiNoiseSampler());
             return chunk;
@@ -113,7 +119,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
-    public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {
+    public CompletableFuture<Chunk> populateNoise(Executor executor, class_6748 blender, StructureAccessor accessor, Chunk chunk) {
         CompletableFuture<Chunk> completedChunk = this.chunkProvider.provideChunk(executor, accessor, chunk);
         
         return completedChunk;
@@ -146,8 +152,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         AquiferSampler aquiferSampler = this.chunkProvider.getAquiferSampler(chunk);
         
-        CarverContext heightContext = new CarverContext(this, chunk);
-        class_6643 carvingMask = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);
+        CarverContext heightContext = new CarverContext(this, region.getRegistryManager(), chunk);
+        CarvingMask carvingMask = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);
         
         Random random = new Random(seed);
         long l = (random.nextLong() / 2L) * 2L + 1L;
@@ -244,7 +250,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public int getMinimumY() {
         if (this.chunkProvider == null)
-            return this.getGeneratorSettings().get().getGenerationShapeConfig().getMinimumY();
+            return this.getGeneratorSettings().get().getGenerationShapeConfig().minimumY();
         
         // Some features complain if the height is too low or high, so just return min/max
         return Math.min(this.chunkProvider.getWorldMinY(), -64);
@@ -257,7 +263,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public ChunkGenerator withSeed(long seed) {
-        return new OldChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings, this.chunkProviderSettings);
+        return new OldChunkGenerator(this.noiseRegistry, this.biomeSource.withSeed(seed), seed, this.settings, this.chunkProviderSettings);
     }
     
     public long getWorldSeed() {
@@ -274,6 +280,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     public NbtCompound getProviderSettings() {
         return new NbtCompound().copyFrom(this.chunkProviderSettings);
+    }
+    
+    public Registry<DoublePerlinNoiseSampler.NoiseParameters> getNoiseRegistry() {
+        return this.noiseRegistry;
     }
     
     public boolean generatesOceanShrines() {
@@ -381,7 +391,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         // Replace biomes from biome array
         for (int sectionY = 0; sectionY < chunk.countVerticalSections(); ++sectionY) {
             ChunkSection section = chunk.getSection(sectionY);
-            PalettedContainer<Biome> container = section.method_38294();
+            PalettedContainer<Biome> container = section.getBiomeContainer();
             
             container.lock();
             try {

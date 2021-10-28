@@ -10,7 +10,6 @@ import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep.Feature;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 public class IndevParadise {
     public static final Biome BIOME = create();
@@ -23,8 +22,7 @@ public class IndevParadise {
         spawnSettings.playerSpawnFriendly();
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
-        
+
         OldBiomeFeatures.addDefaultFeatures(genSettings, false, IndevBiomes.ADD_LAKES, IndevBiomes.ADD_SPRINGS);
         OldBiomeFeatures.addOres(genSettings);
         

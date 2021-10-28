@@ -11,7 +11,6 @@ import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep.Feature;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 public class Alpha {
     public static final Biome BIOME = create();
@@ -23,7 +22,6 @@ public class Alpha {
         OldBiomeMobs.addWolves(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        genSettings.surfaceBuilder(ConfiguredSurfaceBuilders.GRASS);
         
         OldBiomeFeatures.addDefaultFeatures(genSettings, false, InfBiomes.ADD_LAKES_ALPHA, InfBiomes.ADD_SPRINGS_ALPHA);
         OldBiomeFeatures.addMineables(genSettings, InfBiomes.ADD_ALTERNATE_STONES_ALPHA, InfBiomes.ADD_NEW_MINEABLES_ALPHA);

@@ -29,7 +29,7 @@ public class MixinBackgroundRenderer {
     
     @ModifyVariable(
         method = "render",
-        at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/SkyProperties;getFogColorOverride(FF)[F")
+        at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/DimensionEffects;getFogColorOverride(FF)[F")
     )
     private static float[] modifyFogSunsetCols(float[] skyCols) {
         return ModernBeta.RENDER_CONFIG.otherConfig.renderAlphaSunset ? null : skyCols;

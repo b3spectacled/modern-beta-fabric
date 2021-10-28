@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.world.gen;
 
 import java.util.function.Supplier;
 
+import net.minecraft.class_6748;
 import net.minecraft.world.biome.source.util.TerrainNoisePoint;
 import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
@@ -20,7 +21,8 @@ public class OldChunkNoiseSampler extends ChunkNoiseSampler {
         int z, 
         ColumnSampler columnSampler, 
         Supplier<ChunkGeneratorSettings> supplier,
-        FluidLevelSampler fluidLevelSampler
+        FluidLevelSampler fluidLevelSampler,
+        class_6748 blender
     ) {
         super(
             horizontalNoiseResolution, 
@@ -33,7 +35,8 @@ public class OldChunkNoiseSampler extends ChunkNoiseSampler {
             z, 
             columnSampler, 
             supplier, 
-            fluidLevelSampler
+            fluidLevelSampler,
+            blender
         );
     }
     
