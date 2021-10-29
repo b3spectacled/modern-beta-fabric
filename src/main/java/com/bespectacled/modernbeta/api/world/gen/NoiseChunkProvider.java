@@ -26,6 +26,7 @@ import com.bespectacled.modernbeta.world.gen.sampler.OreVeinSampler;
 import com.bespectacled.modernbeta.world.gen.sampler.WeightSampler;
 import com.google.common.collect.Sets;
 
+import net.minecraft.class_6748;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
@@ -271,7 +272,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
 
     /**
      * Generates base terrain for given chunk and returns it.
-     * 
      * @param structureAccessor
      * @param chunk
      * @param biomeSource
@@ -279,7 +279,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * @return A completed chunk.
      */
     @Override
-    public CompletableFuture<Chunk> provideChunk(Executor executor, StructureAccessor structureAccessor, Chunk chunk) {
+    public CompletableFuture<Chunk> provideChunk(Executor executor, class_6748 blender, StructureAccessor structureAccessor, Chunk chunk) {
         GenerationShapeConfig shapeConfig = this.generatorSettings.get().getGenerationShapeConfig();
         
         int minY = Math.max(shapeConfig.minimumY(), chunk.getBottomY());
@@ -293,7 +293,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             return CompletableFuture.completedFuture(chunk);
         }
         
-        int sectionTopY = chunk.getSectionIndex(noiseTopY * verticalNoiseResolution - 1 + minY);
+        int sectionTopY = chunk.getSectionIndex(noiseTopY * this.verticalNoiseResolution - 1 + minY);
         int sectionMinY = chunk.getSectionIndex(minY);
         
         HashSet<ChunkSection> sections = Sets.newHashSet();
@@ -310,8 +310,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             .whenCompleteAsync((arg, throwable) -> {
                 for (ChunkSection section : sections) {
                     section.unlock();
-            }
-        }, executor);
+                }
+            }, executor);
     }
     
     /**
@@ -446,6 +446,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         if (aquiferSampler.needsFluidTick() && !blockState.getFluidState().isEmpty()) {
             // TODO: Fix later
             //chunk.getFluidTickScheduler().schedule(pos, blockState.getFluidState().getFluid(), 0);
+            //((class_6762<Fluid>)chunk.getFluidTickScheduler())
         }
     }
 

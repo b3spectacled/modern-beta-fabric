@@ -11,6 +11,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
+import net.minecraft.class_6748;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
@@ -61,12 +62,12 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
      * Generates base terrain for given chunk and returns it.
      * 
      * @param executor
+     * @param blender TODO
      * @param structureAccessor
      * @param chunk
-     * 
      * @return A completed chunk.
      */
-    public abstract CompletableFuture<Chunk> provideChunk(Executor executor, StructureAccessor structureAccessor, Chunk chunk);
+    public abstract CompletableFuture<Chunk> provideChunk(Executor executor, class_6748 blender, StructureAccessor structureAccessor, Chunk chunk);
     
     /**
      * Generates biome-specific surface for given chunk.

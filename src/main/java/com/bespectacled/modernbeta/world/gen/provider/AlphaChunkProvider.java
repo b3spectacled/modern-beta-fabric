@@ -15,10 +15,13 @@ import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.HeightContext;
 import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public class AlphaChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -72,7 +75,12 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
 
         AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
+
+        // Surface builder stuff
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
+        HeightContext context = new HeightContext(this.chunkGenerator, region);
+        MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(this.surfaceBuilder, context);
+        MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
         
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.
@@ -80,7 +88,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
             for (int localZ = 0; localZ < 16; localZ++) {
                 int x = (chunkX << 4) + localX;
                 int z = (chunkZ << 4) + localZ;
-                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceTopY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
                 int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 
                     heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
                     this.worldMinY;
@@ -91,7 +99,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
 
                 int flag = -1;
                 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, topY, z));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
                 
                 BiomeBlocks biomeBlocks = BiomeBlocks.getBiomeBlocks(biome);
                 BlockState biomeTopBlock = biomeBlocks.getTopBlock();
@@ -100,8 +108,18 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
 
-                //boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos, blockColumn);
-                boolean usedCustomSurface = false;
+                boolean usedCustomSurface = this.surfaceBuilder.buildSurfaceColumn(
+                    region.getRegistryManager().get(Registry.BIOME_KEY),
+                    region.getBiomeAccess(), 
+                    blockColumn, 
+                    chunk, 
+                    biome, 
+                    ruleContext, 
+                    blockStateRule,
+                    localX,
+                    localZ,
+                    surfaceTopY
+                );
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {

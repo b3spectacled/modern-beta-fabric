@@ -26,3 +26,11 @@ accessible field net/minecraft/world/gen/carver/CaveCarverConfig floorLevel Lnet
 accessible method net/minecraft/world/gen/stateprovider/SimpleBlockStateProvider <init>  (Lnet/minecraft/block/BlockState;)V
 
 accessible method net/minecraft/world/biome/source/MultiNoiseBiomeSource <init> (Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$Entries;Ljava/util/Optional;)V
+
+accessible class net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRule
+accessible class net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext
+accessible class net/minecraft/world/gen/surfacebuilder/MaterialRules$BlockStateRule
+
+accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext initWorldDependentPredicates (Lnet/minecraft/world/chunk/Chunk;III)V
+accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext initContextDependentPredicates (Lnet/minecraft/util/registry/RegistryKey;Lnet/minecraft/world/biome/Biome;IIIIIII)V
+accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext <init> (Lnet/minecraft/world/gen/surfacebuilder/SurfaceBuilder;Lnet/minecraft/world/gen/HeightContext;)V

@@ -3,12 +3,12 @@ package com.bespectacled.modernbeta.api.world.cavebiome.climate;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-public class NoiseRange {
+public class ClimateNoiseRule {
     private final double min;
     private final double max;
     private final Identifier id;
     
-    public NoiseRange(double min, double max, Identifier id) {
+    public ClimateNoiseRule(double min, double max, Identifier id) {
         this.min = MathHelper.clamp(min, -1.0, 1.0);
         this.max = MathHelper.clamp(max, -1.0, 1.0);
         this.id = id;

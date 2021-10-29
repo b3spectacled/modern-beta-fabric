@@ -9,6 +9,7 @@ import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
@@ -16,11 +17,13 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
+import net.minecraft.class_6748;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
@@ -28,10 +31,12 @@ import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.BlockSource;
+import net.minecraft.world.gen.HeightContext;
 import net.minecraft.world.gen.LayerTransitionBlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.random.AtomicSimpleRandom;
+import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseChunkImitable {
     private final boolean generateInfdevPyramid;
@@ -77,7 +82,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     }
 
     @Override
-    public CompletableFuture<Chunk> provideChunk(Executor executor, StructureAccessor structureAccessor, Chunk chunk) {
+    public CompletableFuture<Chunk> provideChunk(Executor executor, class_6748 blender, StructureAccessor structureAccessor, Chunk chunk) {
         this.generateTerrain(chunk, structureAccessor);  
         
         return CompletableFuture.<Chunk>supplyAsync(
@@ -87,18 +92,23 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
 
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-        Random rand = this.createSurfaceRandom(chunk.getPos().x, chunk.getPos().z);
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
+        
+        // Surface builder stuff
+        BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
+        HeightContext context = new HeightContext(this.chunkGenerator, region);
+        MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(this.surfaceBuilder, context);
+        MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
         
         for (int localX = 0; localX < 16; ++localX) {
             for (int localZ = 0; localZ < 16; ++localZ) {
                 int x = startX + localX;
                 int z = startZ + localZ;
-                int topY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceTopY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
                 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(x, topY, z));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(x, surfaceTopY, z));
                 
                 BiomeBlocks biomeBlocks = BiomeBlocks.getBiomeBlocks(biome);
                 BlockState biomeTopBlock = biomeBlocks.getTopBlock();
@@ -107,8 +117,18 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
 
-                //boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos, blockColumn);
-                boolean usedCustomSurface = false;
+                boolean usedCustomSurface = this.surfaceBuilder.buildSurfaceColumn(
+                    region.getRegistryManager().get(Registry.BIOME_KEY),
+                    region.getBiomeAccess(), 
+                    blockColumn, 
+                    chunk, 
+                    biome, 
+                    ruleContext, 
+                    blockStateRule,
+                    localX,
+                    localZ,
+                    surfaceTopY
+                );
 
                 int soilDepth = 0;
 

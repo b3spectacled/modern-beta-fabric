@@ -42,6 +42,8 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     protected final ChunkRandom.RandomProvider randomProvider;
     
     protected final OldNoiseColumnSampler noiseColumnSampler;
+    
+    protected final MaterialRules.MaterialRule surfaceRule;
     protected final OldSurfaceBuilder surfaceBuilder;
 
     public BaseChunkProvider(OldChunkGenerator chunkGenerator) {
@@ -96,6 +98,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         this.lavalessFluidLevelSampler = (x, y, z) -> seaFluidLevel;
         
         this.randomProvider = randomProvider;
+        this.surfaceRule = surfaceRule;
         
         // Modified NoiseColumnSampler and SurfaceBuilder
         this.noiseColumnSampler = new OldNoiseColumnSampler(this);
@@ -105,7 +108,8 @@ public abstract class BaseChunkProvider extends ChunkProvider {
             this.defaultBlock, 
             this.seaLevel, 
             this.seed, 
-            this.randomProvider
+            this.randomProvider,
+            this
         );
         
         // Handle bad height values

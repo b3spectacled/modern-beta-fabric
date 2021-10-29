@@ -120,7 +120,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public CompletableFuture<Chunk> populateNoise(Executor executor, class_6748 blender, StructureAccessor accessor, Chunk chunk) {
-        CompletableFuture<Chunk> completedChunk = this.chunkProvider.provideChunk(executor, accessor, chunk);
+        CompletableFuture<Chunk> completedChunk = this.chunkProvider.provideChunk(executor, class_6748.method_39336(), accessor, chunk);
         
         return completedChunk;
     }

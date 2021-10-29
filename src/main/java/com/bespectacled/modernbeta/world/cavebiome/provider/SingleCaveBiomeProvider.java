@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
-import com.bespectacled.modernbeta.api.world.cavebiome.climate.NoiseRange;
-import com.bespectacled.modernbeta.api.world.cavebiome.climate.NoiseRanges;
+import com.bespectacled.modernbeta.api.world.cavebiome.climate.ClimateNoiseRule;
+import com.bespectacled.modernbeta.api.world.cavebiome.climate.ClimateNoiseRules;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.cavebiome.provider.climate.BaseCaveClimateSampler;
@@ -23,7 +23,7 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveCl
     
     private final Identifier biomeId;
     private final CaveClimateSampler climateSampler;
-    private final NoiseRanges noiseRanges;
+    private final ClimateNoiseRules noiseRanges;
     
     public SingleCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
@@ -32,8 +32,8 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveCl
         
         this.biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
         this.climateSampler = new BaseCaveClimateSampler(seed, 2, 8);
-        this.noiseRanges = new NoiseRanges.Builder()
-            .add(new NoiseRange(0.0, 1.0, biomeId))
+        this.noiseRanges = new ClimateNoiseRules.Builder()
+            .add(new ClimateNoiseRule(0.0, 1.0, biomeId))
             .build();
     }
 
