@@ -57,12 +57,12 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             for (int localX = 0; localX < 16; localX++) {
                 int x = (chunkX << 4) + localX; 
                 int z = (chunkZ << 4) + localZ;
-                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
 
                 int surfaceDepth = (int) (surfaceNoise[localZ + localX * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 int flag = -1;
 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, topY, z));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
                 
                 BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();

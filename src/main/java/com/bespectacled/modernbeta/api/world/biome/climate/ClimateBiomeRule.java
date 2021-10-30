@@ -1,17 +1,15 @@
-package com.bespectacled.modernbeta.world.biome.provider.climate;
+package com.bespectacled.modernbeta.api.world.biome.climate;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
-
 import net.minecraft.world.biome.Biome;
 
-public class VanillaClimateRule {
+public class ClimateBiomeRule {
     private final Predicate<Biome> rule;
     private final Supplier<Clime> supplier;
     
-    public VanillaClimateRule(Predicate<Biome> rule, Supplier<Clime> supplier) {
+    public ClimateBiomeRule(Predicate<Biome> rule, Supplier<Clime> supplier) {
         this.rule = rule;
         this.supplier = supplier;
     }

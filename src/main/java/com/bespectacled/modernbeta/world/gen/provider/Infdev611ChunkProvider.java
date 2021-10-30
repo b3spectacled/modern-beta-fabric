@@ -62,7 +62,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             for (int localZ = 0; localZ < 16; localZ++) {
                 int absX = (chunkX << 4) + localX;
                 int absZ = (chunkZ << 4) + localZ;
-                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(absX * eighth, absZ * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0;
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(absZ * eighth, 109.0134, absX * eighth) + rand.nextDouble() * 0.2 > 3.0;
@@ -70,7 +70,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
 
                 int flag = -1;
                 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(absX, topY, absZ));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(absX, surfaceTopY, absZ));
 
                 BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();

@@ -1,24 +1,22 @@
-package com.bespectacled.modernbeta.world.biome.provider.climate;
+package com.bespectacled.modernbeta.api.world.biome.climate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
-
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
-public class VanillaClimateRules {
-    private final List<VanillaClimateRule> rules;
+public class ClimateBiomeRules {
+    private final List<ClimateBiomeRule> rules;
 
-    private VanillaClimateRules(List<VanillaClimateRule> rules) {
+    private ClimateBiomeRules(List<ClimateBiomeRule> rules) {
         this.rules = rules;
     }
     
     public Clime apply(Biome biome) {
-        for (VanillaClimateRule rule : this.rules) {
+        for (ClimateBiomeRule rule : this.rules) {
             Clime clime = rule.apply(biome);
             
             if (clime != null)
@@ -32,20 +30,20 @@ public class VanillaClimateRules {
     }
     
     public static class Builder {
-        private final List<VanillaClimateRule> rules;
+        private final List<ClimateBiomeRule> rules;
         
         public Builder() {
             this.rules = new ArrayList<>();
         }
         
         public Builder add(Predicate<Biome> rule, Supplier<Clime> supplier) {
-            this.rules.add(new VanillaClimateRule(rule, supplier));
+            this.rules.add(new ClimateBiomeRule(rule, supplier));
             
             return this;
         }
         
-        public VanillaClimateRules build() {
-            return new VanillaClimateRules(this.rules);
+        public ClimateBiomeRules build() {
+            return new ClimateBiomeRules(this.rules);
         }
     }
 }

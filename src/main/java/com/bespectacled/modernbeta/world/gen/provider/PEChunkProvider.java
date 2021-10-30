@@ -120,7 +120,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
             for (int localX = 0; localX < 16; localX++) {
                 int x = (chunkX << 4) + localX;
                 int z = (chunkZ << 4) + localZ;
-                int topY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
                 
                 // MCPE uses nextFloat() instead of nextDouble()
                 boolean genSandBeach = sandNoise[localZ + localX * 16] + rand.nextFloat() * 0.2D > 0.0D;
@@ -129,7 +129,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
                 
                 int flag = -1;
                 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, topY, z));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
 
                 BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();

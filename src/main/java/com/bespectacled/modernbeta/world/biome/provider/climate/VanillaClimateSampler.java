@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.world.biome.provider.climate;
 
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateBiomeRules;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.ClimateChunk;
 
@@ -24,7 +25,7 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
     private final ChunkCache<ClimateChunk> baseClimateCache;
     private final ChunkCache<ClimateChunk> climateCache;
     
-    private final VanillaClimateRules climateRules;
+    private final ClimateBiomeRules climateRules;
     
     public VanillaClimateSampler(long seed, BiomeLayerSampler biomeSampler, Registry<Biome> biomeRegistry) {
         this.seed = seed;
@@ -45,7 +46,7 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
             (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::blendBiomeClimate)
         );
         
-        this.climateRules = new VanillaClimateRules.Builder()
+        this.climateRules = new ClimateBiomeRules.Builder()
             .add(biome -> biome.getCategory() == Category.EXTREME_HILLS, () -> new Clime(1.0, 1.0))
             .build();
     }
