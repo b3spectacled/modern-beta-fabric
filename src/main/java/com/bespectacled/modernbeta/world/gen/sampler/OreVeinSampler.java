@@ -69,7 +69,6 @@ public class OreVeinSampler {
         }
     }
     
-    @SuppressWarnings("unused")
     public BlockState sample(int x, int y, int z, double oreFrequencyNoise, double firstOrePlacementNoise, double secondOrePlacementNoise) {
         AbstractRandom random = this.orePosRandomDeriver.createRandom(x, y, z);
         

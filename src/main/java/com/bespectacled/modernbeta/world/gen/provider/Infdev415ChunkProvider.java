@@ -20,7 +20,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.HeightContext;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
@@ -35,7 +34,6 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
     
     public Infdev415ChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        //super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 1, 1, 1.0, 1.0, 80, 400, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
@@ -197,24 +195,31 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
         
+        double coordinateScale = 684.412D * this.xzScale; 
+        double heightScale = 984.412D * this.yScale;
+        
+        double mainNoiseScaleX = this.xzFactor; // Default: 80
+        double mainNoiseScaleY = this.yFactor;  // Default: 400
+        double mainNoiseScaleZ = this.xzFactor;
+        
+        double limitScale = 512.0D;
+        
+        // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
+        // This affects terrain so only scale terrain when generating with noise caves.
+        double densityScale = this.generateNoiseCaves ? 128.0 : 1.0;
+        double tunnelThreshold = 50.0 / densityScale;
+        
         for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
             
-            double coordinateScale = 684.412D * this.xzScale; 
-            double heightScale = 984.412D * this.yScale;
-            
-            double mainNoiseScaleX = this.xzFactor; // Default: 80
-            double mainNoiseScaleY = this.yFactor;  // Default: 400
-            double mainNoiseScaleZ = this.xzFactor;
-            
-            double limitScale = 512.0D;
-            
             double density;
+            double heightmapDensity;
+            
             double densityOffset = this.getOffset(noiseY);
             
             // Default values: 8.55515, 1.71103, 8.55515
             double mainNoiseVal = this.mainNoiseOctaves.sample(
-                noiseX * coordinateScale / mainNoiseScaleX, 
+                noiseX * coordinateScale / mainNoiseScaleX,
                 noiseY * coordinateScale / mainNoiseScaleY, 
                 noiseZ * coordinateScale / mainNoiseScaleZ
             ) / 2.0;
@@ -225,7 +230,10 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                     noiseX * coordinateScale, 
                     noiseY * heightScale, 
                     noiseZ * coordinateScale
-                ) / limitScale - densityOffset;
+                ) / limitScale;
+                
+                density -= densityOffset;
+                density /= densityScale;
                 
                 density = this.clampNoise(density);
                 
@@ -234,8 +242,11 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                     noiseX * coordinateScale, 
                     noiseY * heightScale, 
                     noiseZ * coordinateScale
-                ) / limitScale - densityOffset;
+                ) / limitScale;
 
+                density -= densityOffset;
+                density /= densityScale;
+                
                 density = this.clampNoise(density);
                 
             } else {
@@ -243,13 +254,19 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                     noiseX * coordinateScale, 
                     noiseY * heightScale, 
                     noiseZ * coordinateScale
-                ) / limitScale - densityOffset;
+                ) / limitScale;
                 
                 double maxLimitVal = this.maxLimitNoiseOctaves.sample(
                     noiseX * coordinateScale, 
                     noiseY * heightScale, 
                     noiseZ * coordinateScale
-                ) / limitScale - densityOffset;
+                ) / limitScale;
+                
+                minLimitVal -= densityOffset;
+                maxLimitVal -= densityOffset;
+                
+                minLimitVal /= densityScale;
+                maxLimitVal /= densityScale;
                 
                 minLimitVal = this.clampNoise(minLimitVal);
                 maxLimitVal = this.clampNoise(maxLimitVal);
@@ -259,25 +276,25 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             };
             
             // Sample without noise caves
-            double heightmapDensity = density;
+            heightmapDensity = density;
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(density, 50.0, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applyBottomSlide(density, noiseY, -3);
             heightmapDensity = this.applyBottomSlide(heightmapDensity, noiseY, -3);
             
-            primaryBuffer[y] = density;
-            heightmapBuffer[y] = heightmapDensity;
+            primaryBuffer[y] = MathHelper.clamp(density, -64.0, 64.0);
+            heightmapBuffer[y] = MathHelper.clamp(heightmapDensity, -64.0, 64.0);
         }
     }
     
     private double clampNoise(double density) {
-        if (!this.generateNoiseCaves)
-            density = MathHelper.clamp(density, -10D, 10D);
+        if (this.generateNoiseCaves)
+            return density;
         
-        return density;
+        return MathHelper.clamp(density, -10D, 10D);
     }
     
     private double getOffset(int noiseY) {
@@ -290,15 +307,5 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             offset *= 3.0;
         
         return offset;
-    }
-    
-    @Override
-    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
-        //if (chunkStatus == ChunkStatus.SURFACE)
-        //    return true;
-        //if (chunkStatus == ChunkStatus.CARVERS)
-        //    return true;
-        
-        return false;
     }
 }

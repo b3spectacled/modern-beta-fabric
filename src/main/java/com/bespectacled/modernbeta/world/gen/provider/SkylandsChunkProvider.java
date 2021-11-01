@@ -13,6 +13,7 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
@@ -29,8 +30,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
     
     public SkylandsChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        //super(chunkGenerator, 0, 128, 0, 0, 0, -10, BlockStates.STONE, BlockStates.AIR, 1, 2, 2.0, 1.0, 80, 160, -30, 31, 0, -30, 7, 0, false, false, false, false, false);
-        
+
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
@@ -154,21 +154,26 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
         
+        double coordinateScale = 684.412D * this.xzScale; 
+        double heightScale = 684.412D * this.yScale;
+        
+        double mainNoiseScaleX = this.xzFactor; // Default: 80
+        double mainNoiseScaleY = this.yFactor;  // Default: 160
+        double mainNoiseScaleZ = this.xzFactor;
+
+        double lowerLimitScale = 512D;
+        double upperLimitScale = 512D;
+        
+        // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
+        double densityScale = 128.0;
+        double tunnelThreshold = 200.0 / densityScale;
+        
         for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
-            
-            // Var names taken from old customized preset names
-            double coordinateScale = 684.412D * this.xzScale; 
-            double heightScale = 684.412D * this.yScale;
-            
-            double mainNoiseScaleX = this.xzFactor; // Default: 80
-            double mainNoiseScaleY = this.yFactor;  // Default: 160
-            double mainNoiseScaleZ = this.xzFactor;
 
-            double lowerLimitScale = 512D;
-            double upperLimitScale = 512D;
+            double density;
+            double heightmapDensity;
             
-            double density = 0.0D;
             double densityOffset = this.getOffset();
             
             // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
@@ -214,13 +219,16 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             }
             
             // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
-            density -= densityOffset; 
+            density -= densityOffset;
+            
+            // Normalize density
+            density /= densityScale;
             
             // Sample without noise caves
-            double heightmapDensity = density;
+            heightmapDensity = density;
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(density, 200.0, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applyTopSlide(density, noiseY, this.noiseSizeY);
@@ -229,8 +237,8 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             heightmapDensity = this.applyTopSlide(heightmapDensity, noiseY, this.noiseSizeY);
             heightmapDensity = this.applyBottomSlide(heightmapDensity, noiseY, -8);
             
-            primaryBuffer[y] = density;
-            heightmapBuffer[y] = heightmapDensity;
+            primaryBuffer[y] = MathHelper.clamp(density, -64.0, 64.0);
+            heightmapBuffer[y] = MathHelper.clamp(heightmapDensity, -64.0, 64.0);
         }
     }
     

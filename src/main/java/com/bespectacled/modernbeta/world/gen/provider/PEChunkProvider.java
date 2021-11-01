@@ -23,6 +23,7 @@ import com.bespectacled.modernbeta.world.spawn.PESpawnLocator;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
@@ -270,9 +271,23 @@ public class PEChunkProvider extends NoiseChunkProvider {
         
         double depthNoiseScaleX = 200D;
         double depthNoiseScaleZ = 200D;
+
+        double coordinateScale = 684.412D * this.xzScale; 
+        double heightScale = 684.412D * this.yScale;
         
-        //double baseSize = noiseResolutionY / 2D; // Or: 17 / 2D = 8.5
+        double mainNoiseScaleX = this.xzFactor; // Default: 80
+        double mainNoiseScaleY = this.yFactor;  // Default: 160
+        double mainNoiseScaleZ = this.xzFactor;
+
+        double lowerLimitScale = 512D;
+        double upperLimitScale = 512D;
+
         double baseSize = 8.5D;
+        double heightStretch = 12D;
+        
+        // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
+        double densityScale = 128.0;
+        double tunnelThreshold = 200.0 / densityScale;
         
         Clime clime = this.climateSampler.sampleClime(x, z);
         double temp = clime.temp();
@@ -283,72 +298,56 @@ public class PEChunkProvider extends NoiseChunkProvider {
         rain *= rain;
         rain = 1.0D - rain;
 
-        double scaleNoise = this.scaleNoiseOctaves.sample(noiseX, noiseZ, 1.121D, 1.121D);
-        scaleNoise = (scaleNoise + 256D) / 512D;
-        scaleNoise *= rain;
+        double scale = this.scaleNoiseOctaves.sample(noiseX, noiseZ, 1.121D, 1.121D);
+        scale = (scale + 256D) / 512D;
+        scale *= rain;
         
-        if (scaleNoise > 1.0D) {
-            scaleNoise = 1.0D;
+        if (scale > 1.0D) {
+            scale = 1.0D;
         }
         
-        double depthNoise = this.depthNoiseOctaves.sample(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
-        depthNoise /= 8000D;
+        double depth = this.depthNoiseOctaves.sample(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
+        depth /= 8000D;
 
-        if (depthNoise < 0.0D) {
-            depthNoise = -depthNoise * 0.3D;
+        if (depth < 0.0D) {
+            depth = -depth * 0.3D;
         }
 
-        depthNoise = depthNoise * 3D - 2D;
+        depth = depth * 3D - 2D;
 
-        if (depthNoise < 0.0D) {
-            depthNoise /= 2D;
+        if (depth < 0.0D) {
+            depth /= 2D;
 
-            if (depthNoise < -1D) {
-                depthNoise = -1D;
+            if (depth < -1D) {
+                depth = -1D;
             }
 
-            depthNoise /= 1.4D;
-            depthNoise /= 2D;
+            depth /= 1.4D;
+            depth /= 2D;
 
-            scaleNoise = 0.0D;
+            scale = 0.0D;
 
         } else {
-            if (depthNoise > 1.0D) {
-                depthNoise = 1.0D;
+            if (depth > 1.0D) {
+                depth = 1.0D;
             }
-            depthNoise /= 8D;
+            depth /= 8D;
         }
 
-        if (scaleNoise < 0.0D) {
-            scaleNoise = 0.0D;
+        if (scale < 0.0D) {
+            scale = 0.0D;
         }
 
-        scaleNoise += 0.5D;
-        //depthVal = (depthVal * (double) noiseResolutionY) / 16D;
-        //double depthVal2 = (double) noiseResolutionY / 2D + depthVal * 4D;
-        depthNoise = depthNoise * baseSize / 8D;
-        depthNoise = baseSize + depthNoise * 4D;
-        
-        double scale = scaleNoise;
-        double depth = depthNoise;
+        scale += 0.5D;
+        depth = depth * baseSize / 8D;
+        depth = baseSize + depth * 4D;
         
         for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
             
-            // Var names taken from old customized preset names
-            double coordinateScale = 684.412D * this.xzScale; 
-            double heightScale = 684.412D * this.yScale;
+            double density;
+            double heightmapDensity;
             
-            double mainNoiseScaleX = this.xzFactor; // Default: 80
-            double mainNoiseScaleY = this.yFactor;  // Default: 160
-            double mainNoiseScaleZ = this.xzFactor;
-
-            double lowerLimitScale = 512D;
-            double upperLimitScale = 512D;
-            
-            double heightStretch = 12D;
-            
-            double density = 0.0D;
             double densityOffset = this.getOffset(noiseY, heightStretch, depth, scale);
             
             // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
@@ -392,15 +391,18 @@ public class PEChunkProvider extends NoiseChunkProvider {
                 
                 density = minLimitNoise + (maxLimitNoise - minLimitNoise) * mainNoise;
             }
-            
+
             // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
-            density -= densityOffset; 
+            density -= densityOffset;
+            
+            // Normalize density
+            density /= densityScale;
             
             // Sample without noise caves
-            double heightmapDensity = density;
+            heightmapDensity = density;
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(density, 200.0, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applyTopSlide(density, noiseY, 4);
@@ -409,8 +411,8 @@ public class PEChunkProvider extends NoiseChunkProvider {
             heightmapDensity = this.applyTopSlide(heightmapDensity, noiseY, 4);
             heightmapDensity = this.applyBottomSlide(heightmapDensity, noiseY, -3);
             
-            primaryBuffer[y] = density;
-            heightmapBuffer[y] = heightmapDensity;
+            primaryBuffer[y] = MathHelper.clamp(density, -64.0, 64.0);
+            heightmapBuffer[y] = MathHelper.clamp(heightmapDensity, -64.0, 64.0);
         }
     }
     

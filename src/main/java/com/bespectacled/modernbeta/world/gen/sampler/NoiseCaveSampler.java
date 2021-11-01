@@ -9,6 +9,7 @@ import net.minecraft.world.gen.random.RandomDeriver;
 
 public class NoiseCaveSampler {
     private final int minY;
+    
     private final DoublePerlinNoiseSampler pillarNoise;
     private final DoublePerlinNoiseSampler pillarRarenessNoise;
     private final DoublePerlinNoiseSampler pillarThicknessNoise;
@@ -55,39 +56,58 @@ public class NoiseCaveSampler {
         
         this.minY = minY;
     }
-
-    public double sample(double weight, double tunnelThreshold, int x, int y, int z) {
-        double scale = 128.0;
+    
+    public double sample(double weight, double tunnelOffset, int x, int y, int z) {
+        //double tunnelOffset = 1.5625; // 200.0 / 128.0
         
-        // Weight decreases at higher y, 
-        // so past a certain point, place only tunnels.
-        boolean genTunnelsOnly = weight < tunnelThreshold;
+        double offsetWeight;
+        double noise;
+        double minLimit;
+        double maxLimit;
         
-        double caveEntranceNoise = this.sampleCaveEntranceNoise(x, y, z);
-        double spaghettiRoughnessNoise = this.sampleSpaghettiRoughnessNoise(x, y, z);
-        double spaghetti3dNoise = this.sampleSpaghetti3dNoise(x, y, z);
-        
-        if (genTunnelsOnly) {
+        if (weight < -64.0) {
+            noise = weight;
+            maxLimit = 64.0;
+            minLimit = -64.0;
+        } else {
+            offsetWeight = weight - tunnelOffset;
+            boolean genTunnelsOnly = offsetWeight < 0.0;
+            
+            double caveEntranceNoise = this.sampleCaveEntranceNoise(x, y, z);
+            double spaghettiRoughnessNoise = this.sampleSpaghettiRoughnessNoise(x, y, z);
+            double spaghetti3dNoise = this.sampleSpaghetti3dNoise(x, y, z);
+            
             double entranceNoise = Math.min(caveEntranceNoise, spaghetti3dNoise + spaghettiRoughnessNoise);
             
-            return Math.min(weight, entranceNoise * scale * 5.0);
+            if (genTunnelsOnly) {
+                noise = weight;
+                maxLimit = entranceNoise * 5.0;
+                minLimit = -64.0;
+            } else {
+                double caveLayerNoise = this.sampleCaveLayerNoise(x, y, z);
+                
+                if (caveLayerNoise > 64.0) {
+                    noise = 64.0;
+                } else {
+                    double caveCheeseNoise = this.caveCheeseNoise.sample(x, y / 1.5D, z);
+                    double clampedCaveCheeseNoise = MathHelper.clamp(caveCheeseNoise + 0.27, -1.0, 1.0);
+                    
+                    double deltaY = offsetWeight * 1.28;
+                    double offsetCaveCheeseNoise = clampedCaveCheeseNoise + MathHelper.clampedLerp(0.5, 0.0, deltaY);
+                    
+                    noise = offsetCaveCheeseNoise + caveLayerNoise;
+                }
+                
+                double spaghetti2dNoise = this.sampleSpaghetti2dNoise(x, y, z);
+                
+                maxLimit = Math.min(entranceNoise, spaghetti2dNoise + spaghettiRoughnessNoise);
+                minLimit = this.samplePillarNoise(x, y, z);
+            }
         }
         
-        double caveCheeseNoise = this.caveCheeseNoise.sample(x, y / 1.5D, z);
-        double clampedCaveCheeseNoise = MathHelper.clamp(caveCheeseNoise + 0.27, -1.0, 1.0);
+        offsetWeight = Math.max(Math.min(noise, maxLimit), minLimit);
         
-        double deltaY = (weight - tunnelThreshold) / (tunnelThreshold * 0.5);
-        
-        double offsetCaveCheeseNoise = clampedCaveCheeseNoise + MathHelper.clampedLerp(0.5, 0.0, deltaY);
-        double caveLayerNoise = this.sampleCaveLayerNoise(x, y, z);
-        double caveAdditionNoise = offsetCaveCheeseNoise + caveLayerNoise;
-        
-        double spaghetti2dNoise = this.sampleSpaghetti2dNoise(x, y, z);
-        double spaghettiTypeNoise = Math.min(spaghetti3dNoise, spaghetti2dNoise) + spaghettiRoughnessNoise;
-        double caveTypeSelector = Math.min(Math.min(caveAdditionNoise, caveEntranceNoise), spaghettiTypeNoise); 
-        double caveOrPillarSelector = Math.max(caveTypeSelector, this.getPillarNoise(x, y, z));
-        
-        return scale * MathHelper.clamp(caveOrPillarSelector, -1.0, 1.0);
+        return offsetWeight;
     }
     
     private double sampleCaveEntranceNoise(int x, int y, int z) {
@@ -97,7 +117,7 @@ public class NoiseCaveSampler {
         return caveEntranceNoise + MathHelper.clampedLerp(0.3, 0.0, deltaY);
     }
 
-    private double getPillarNoise(int x, int y, int z) {
+    private double samplePillarNoise(int x, int y, int z) {
         double pillarRarenessNoise = NoiseHelper.lerpFromProgress(this.pillarRarenessNoise, x, y, z, 0.0, 2.0);
         double pillarThicknessNoise = NoiseHelper.lerpFromProgress(this.pillarThicknessNoise, x, y, z, 0.0, 1.1);
         

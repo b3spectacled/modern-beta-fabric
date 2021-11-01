@@ -15,6 +15,7 @@ import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
@@ -35,8 +36,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
     
     public Infdev611ChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        //super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
-        
+
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
@@ -194,69 +194,67 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         double depthNoiseScaleX = 100D;
         double depthNoiseScaleZ = 100D;
         
-        //double baseSize = noiseResolutionY / 2D; // Or: 17 / 2D = 8.5
+        double coordinateScale = 684.412D * this.xzScale; 
+        double heightScale = 684.412D * this.yScale;
+        
+        double mainNoiseScaleX = this.xzFactor; // Default: 80
+        double mainNoiseScaleY = this.yFactor;  // Default: 160
+        double mainNoiseScaleZ = this.xzFactor;
+
+        double lowerLimitScale = 512D;
+        double upperLimitScale = 512D;
+        
         double baseSize = 8.5D;
+        double heightStretch = 12D;
         
-        double scaleNoise = this.scaleNoiseOctaves.sample(noiseX, 0, noiseZ, 1.0D, 0.0D, 1.0D);
-        scaleNoise = (scaleNoise + 256D) / 512D;
+        // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
+        double densityScale = 128.0;
+        double tunnelThreshold = 200.0 / densityScale;
         
-        if (scaleNoise > 1.0D) {
-            scaleNoise = 1.0D; 
+        double scale = this.scaleNoiseOctaves.sample(noiseX, 0, noiseZ, 1.0D, 0.0D, 1.0D);
+        scale = (scale + 256D) / 512D;
+        
+        if (scale > 1.0D) {
+            scale = 1.0D; 
         }
 
-        double depthNoise = this.depthNoiseOctaves.sample(noiseX, 0, noiseZ, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
-        depthNoise /= 8000D;
+        double depth = this.depthNoiseOctaves.sample(noiseX, 0, noiseZ, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
+        depth /= 8000D;
         
-        if (depthNoise < 0.0D) {
-            depthNoise = -depthNoise;
+        if (depth < 0.0D) {
+            depth = -depth;
         }
 
-        depthNoise = depthNoise * 3D - 3D;
+        depth = depth * 3D - 3D;
 
-        if (depthNoise < 0.0D) {
-            depthNoise /= 2D;
-            if (depthNoise < -1D) {
-                depthNoise = -1D;
+        if (depth < 0.0D) {
+            depth /= 2D;
+            if (depth < -1D) {
+                depth = -1D;
             }
 
-            depthNoise /= 1.4D;
-            //depthNoise /= 2D; // Omitting this creates the Infdev 20100611 generator.
+            depth /= 1.4D;
+            //depth /= 2D; // Omitting this creates the Infdev 20100611 generator.
 
-            scaleNoise = 0.0D;
+            scale = 0.0D;
 
         } else {
-            if (depthNoise > 1.0D) {
-                depthNoise = 1.0D;
+            if (depth > 1.0D) {
+                depth = 1.0D;
             }
-            depthNoise /= 6D;
+            depth /= 6D;
         }
 
-        scaleNoise += 0.5D;
-        //depth0 = (depth0 * (double) noiseResolutionY) / 16D;
-        //double depth1 = (double) noiseResolutionY / 2D + depth0 * 4D;\
-        depthNoise = depthNoise * baseSize / 8D;
-        depthNoise = baseSize + depthNoise * 4D;
-        
-        double scale = scaleNoise;
-        double depth = depthNoise;
+        scale += 0.5D;
+        depth = depth * baseSize / 8D;
+        depth = baseSize + depth * 4D;
         
         for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
-            
-            // Var names taken from old customized preset names
-            double coordinateScale = 684.412D * this.xzScale; 
-            double heightScale = 684.412D * this.yScale;
-            
-            double mainNoiseScaleX = this.xzFactor; // Default: 80
-            double mainNoiseScaleY = this.yFactor;  // Default: 160
-            double mainNoiseScaleZ = this.xzFactor;
 
-            double lowerLimitScale = 512D;
-            double upperLimitScale = 512D;
+            double density;
+            double heightmapDensity;
             
-            double heightStretch = 12D;
-            
-            double density = 0.0D;
             double densityOffset = this.getOffset(noiseY, heightStretch, depth, scale);
             
             // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
@@ -300,15 +298,18 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 
                 density = minLimitNoise + (maxLimitNoise - minLimitNoise) * mainNoise;
             }
-            
+
             // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
-            density -= densityOffset; 
+            density -= densityOffset;
+            
+            // Normalize density
+            density /= densityScale;
             
             // Sample without noise caves
-            double heightmapDensity = density;
+            heightmapDensity = density;
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(density, 200.0, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applyTopSlide(density, noiseY, 4);
@@ -317,8 +318,8 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             heightmapDensity = this.applyTopSlide(heightmapDensity, noiseY, 4);
             heightmapDensity = this.applyBottomSlide(heightmapDensity, noiseY, -3);
             
-            primaryBuffer[y] = density;
-            heightmapBuffer[y] = heightmapDensity;
+            primaryBuffer[y] = MathHelper.clamp(density, -64.0, 64.0);
+            heightmapBuffer[y] = MathHelper.clamp(heightmapDensity, -64.0, 64.0);
         }
     }
     

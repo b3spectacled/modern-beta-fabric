@@ -13,6 +13,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 public class VanillaBiomeProvider extends ClimateBiomeProvider {
+    private final VanillaClimateSampler vanillaClimateSampler;
     private final VanillaBiomeSource vanillaBiomeSource;
     private final VanillaBiomeSource oceanBiomeSource;
     private final VanillaBiomeSource deepOceanBiomeSource;
@@ -20,7 +21,8 @@ public class VanillaBiomeProvider extends ClimateBiomeProvider {
     public VanillaBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry, new VanillaClimateSampler(VanillaBiomeSourceCreator.buildLandBiomeSource(biomeRegistry, seed), biomeRegistry));
         
-        this.vanillaBiomeSource = ((VanillaClimateSampler)this.getClimateSampler()).getBiomeSource();
+        this.vanillaClimateSampler = (VanillaClimateSampler)this.getClimateSampler();
+        this.vanillaBiomeSource = this.vanillaClimateSampler.getBiomeSource();
         this.oceanBiomeSource = VanillaBiomeSourceCreator.buildOceanBiomeSource(biomeRegistry, seed);
         this.deepOceanBiomeSource = VanillaBiomeSourceCreator.buildDeepOceanBiomeSource(biomeRegistry, seed);
     }

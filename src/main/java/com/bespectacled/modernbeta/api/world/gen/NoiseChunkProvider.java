@@ -38,6 +38,7 @@ import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.LayerTransitionBlockSource;
@@ -67,31 +68,31 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final double xzFactor;
     protected final double yFactor;
     
-    protected final double topSlideTarget;
-    protected final int topSlideSize;
-    protected final int topSlideOffset;
-    
-    protected final double bottomSlideTarget;
-    protected final int bottomSlideSize;
-    protected final int bottomSlideOffset;
-
     protected final boolean generateNoiseCaves;
     protected final boolean generateAquifers;
     protected final boolean generateDeepslate;
     protected final boolean generateOreVeins;
     protected final boolean generateNoodleCaves;
-
-    protected final ChunkCache<BaseNoiseProvider> noiseProviderCache;
-    protected final ChunkCache<HeightmapChunk> heightmapChunkCache;
     
-    protected final AquiferSamplerProvider aquiferSamplerProvider;
+    private final double topSlideTarget;
+    private final int topSlideSize;
+    private final int topSlideOffset;
     
-    protected final NoiseCaveSampler noiseCaveSampler;
-    protected final OreVeinSampler oreVeinSampler;
-    protected final NoodleCaveSampler noodleCaveSampler;
+    private final double bottomSlideTarget;
+    private final int bottomSlideSize;
+    private final int bottomSlideOffset;
     
-    protected final BlockSource deepslateSource;
-    protected final ChunkNoiseSampler dummyNoiseChunkSampler;
+    private final ChunkCache<BaseNoiseProvider> noiseProviderCache;
+    private final ChunkCache<HeightmapChunk> heightmapChunkCache;
+    
+    private final AquiferSamplerProvider aquiferSamplerProvider;
+    
+    private final NoiseCaveSampler noiseCaveSampler;
+    private final OreVeinSampler oreVeinSampler;
+    private final NoodleCaveSampler noodleCaveSampler;
+    
+    private final BlockSource deepslateSource;
+    private final ChunkNoiseSampler dummyNoiseChunkSampler;
 
     public NoiseChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
@@ -382,11 +383,11 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * 
      * @return Modified noise density.
      */
-    protected double sampleNoiseCave(double noise, double tunnelThreshold, int noiseX, int noiseY, int noiseZ) {
+    protected double sampleNoiseCave(double noise, double tunnelOffset, int noiseX, int noiseY, int noiseZ) {
         if (this.generateNoiseCaves) {
             return this.noiseCaveSampler.sample(
                 noise,
-                tunnelThreshold,
+                tunnelOffset,
                 noiseX * this.horizontalNoiseResolution, 
                 noiseY * this.verticalNoiseResolution, 
                 noiseZ * this.horizontalNoiseResolution
@@ -652,14 +653,11 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     ) {
         return (noiseSampler, x, y, z) -> {
             double density = baseNoiseProvider.sample();
-            double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
+            double clampedDensity = MathHelper.clamp(density * 0.64, -1.0, 1.0);
             
             clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
             clampedDensity = noodleCaveSampler.sample(clampedDensity, z, x, y);
             clampedDensity += weightSampler.calculateNoise(x, y, z);
-            
-            // Normalize and clamp density to vanilla -64 to 64 range before sending to aquifer.
-            density = MathHelper.clamp(density / 200.0 * 64.0, -64.0, 64.0);
             
             return aquiferSampler.apply(x, y, z, density, clampedDensity);
         };
@@ -771,6 +769,14 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             
             return this.oreVeinSampler.sample(x, y, z, frequencyNoise, firstOreNoise, secondOreNoise);
         };
+    }
+    
+    @Override
+    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
+        if (chunkStatus == ChunkStatus.CARVERS)
+            return true;
+        
+        return false;
     }
 }
 

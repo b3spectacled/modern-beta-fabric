@@ -54,7 +54,6 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     
     public Infdev227ChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        //super(chunkGenerator, 0, 128, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
         
         // Noise Generators
         this.noiseOctavesA = new PerlinOctaveNoise(rand, 16, true); 

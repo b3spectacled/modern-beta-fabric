@@ -31,7 +31,7 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
         
         this.baseClimateCache = new ChunkCache<>(
             "climate", 
-            512, 
+            1024, 
             true, 
             (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::sampleBiomeClimate)
         );
