@@ -16,7 +16,12 @@ public class NoodleCaveSampler {
     private final int horizontalNoiseResolution;
     private final int verticalNoiseResolution;
     
-    public NoodleCaveSampler(Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry, RandomDeriver randomDeriver, int horizontalNoiseResolution, int verticalNoiseResolution) {
+    public NoodleCaveSampler(
+        Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry,
+        RandomDeriver randomDeriver,
+        int horizontalNoiseResolution,
+        int verticalNoiseResolution
+    ) {
         this.noodleNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE);
         this.noodleThicknessNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE_THICKNESS);
         this.noodleRidgeFirstNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE_RIDGE_A);
@@ -27,11 +32,11 @@ public class NoodleCaveSampler {
     }
     
     public void sampleFrequencyNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
-        this.sample(buffer, x, z, minY, noiseSizeY, this.noodleNoiseSampler, 1.0);
+        this.sample(buffer, x, z, minY, noiseSizeY, this.noodleNoiseSampler, 1.0, 1.0);
     }
 
     public void sampleWeightReducingNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
-        this.sample(buffer, x, z, minY, noiseSizeY, this.noodleThicknessNoiseSampler, 1.0);
+        this.sample(buffer, x, z, minY, noiseSizeY, this.noodleThicknessNoiseSampler, 1.0, 1.0);
     }
 
     public void sampleFirstWeightNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
@@ -41,12 +46,8 @@ public class NoodleCaveSampler {
     public void sampleSecondWeightNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
         this.sample(buffer, x, z, minY, noiseSizeY, this.noodleRidgeSecondNoiseSampler, 2.6666666666666665, 2.6666666666666665);
     }
-
-    public void sample(double[] buffer, int x, int z, int minY, int noiseSizeY, DoublePerlinNoiseSampler sampler, double scale) {
-        this.sample(buffer, x, z, minY, noiseSizeY, sampler, scale, scale);
-    }
     
-    public void sample(double[] buffer, int x, int z, int minY, int noiseSizeY, DoublePerlinNoiseSampler sampler, double horizontalScale, double verticalScale) {
+    private void sample(double[] buffer, int x, int z, int minY, int noiseSizeY, DoublePerlinNoiseSampler sampler, double horizontalScale, double verticalScale) {
         for (int y = 0; y < noiseSizeY; ++y) {
             double noise;
             int actualY = y + minY;

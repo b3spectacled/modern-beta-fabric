@@ -108,10 +108,10 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
      * Get total world height in blocks, including minimum Y. 
      * (i.e. Returns 320 if bottomY is -64 and topY is 256.)
      * 
-     * @return Total world height in blocks. 256 by default. 
+     * @return Total world height in blocks.
      */
     public int getWorldHeight() {
-        return 256;
+        return this.generatorSettings.get().getGenerationShapeConfig().height();
     }
     
     /**
@@ -192,7 +192,7 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
                 case DESERT -> DESERT;
                 case MESA -> BADLANDS;
                 case NETHER -> NETHER;
-                case THEEND -> END;
+                case THEEND -> THEEND;
                 default -> DEFAULT;
             };
         }
@@ -201,6 +201,6 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
         private static final BiomeBlocks DEFAULT = new BiomeBlocks(BlockStates.GRASS_BLOCK, BlockStates.DIRT);
         private static final BiomeBlocks BADLANDS = new BiomeBlocks(Blocks.RED_SAND.getDefaultState(), Blocks.WHITE_TERRACOTTA.getDefaultState());
         private static final BiomeBlocks NETHER = new BiomeBlocks(Blocks.NETHERRACK.getDefaultState(), Blocks.NETHERRACK.getDefaultState());
-        private static final BiomeBlocks END = new BiomeBlocks(Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState());
+        private static final BiomeBlocks THEEND = new BiomeBlocks(Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState());
     }
 }

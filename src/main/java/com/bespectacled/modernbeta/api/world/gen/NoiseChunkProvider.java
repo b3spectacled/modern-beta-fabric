@@ -261,8 +261,20 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         // Samplers
         this.noiseCaveSampler = new NoiseCaveSampler(noiseRegistry, randomDeriver, this.noiseMinY);
-        this.oreVeinSampler = new OreVeinSampler(noiseRegistry, randomDeriver, this.horizontalNoiseResolution, this.verticalNoiseResolution);
-        this.noodleCaveSampler = new NoodleCaveSampler(noiseRegistry, randomDeriver, this.horizontalNoiseResolution, this.verticalNoiseResolution);
+        
+        this.oreVeinSampler = new OreVeinSampler(
+            noiseRegistry, 
+            randomDeriver,
+            this.horizontalNoiseResolution,
+            this.verticalNoiseResolution
+        );
+        
+        this.noodleCaveSampler = new NoodleCaveSampler(
+            noiseRegistry,
+            randomDeriver,
+            this.horizontalNoiseResolution,
+            this.verticalNoiseResolution
+        );
         
         // Block Source
         AbstractRandom blockSourceRandom = randomProvider.create(this.seed);

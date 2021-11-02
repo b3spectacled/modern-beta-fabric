@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
 import java.util.Random;
+
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;

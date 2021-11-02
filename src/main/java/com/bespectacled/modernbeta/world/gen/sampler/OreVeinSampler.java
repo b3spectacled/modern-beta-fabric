@@ -24,7 +24,12 @@ public class OreVeinSampler {
     private final int horizontalNoiseResolution;
     private final int verticalNoiseResolution;
     
-    public OreVeinSampler(Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry, RandomDeriver randomDeriver, int horizontalNoiseResolution, int verticalNoiseResolution) {
+    public OreVeinSampler(
+        Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry,
+        RandomDeriver randomDeriver,
+        int horizontalNoiseResolution,
+        int verticalNoiseResolution
+    ) {
         this.oreVeininessNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEININESS);
         this.oreVeinFirstNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEIN_A);
         this.oreVeinSecondNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEIN_B);
@@ -48,27 +53,6 @@ public class OreVeinSampler {
         this.sample(buffer, x, z, this.oreVeinSecondNoiseSampler, 4.0, minY, noiseSizeY);
     }
 
-    public void sample(double[] buffer, int x, int z, DoublePerlinNoiseSampler sampler, double scale, int minY, int noiseSizeY) {
-        for (int y = 0; y < noiseSizeY; ++y) {
-            double noise;
-            int actualY = y + minY;
-            
-            int noiseX = x * this.horizontalNoiseResolution;
-            int noiseY = actualY * this.verticalNoiseResolution;
-            int noiseZ = z * this.horizontalNoiseResolution;
-            
-            noise = NoiseHelper.lerpFromProgress(
-                sampler, 
-                (double)noiseX * scale, 
-                (double)noiseY * scale, 
-                (double)noiseZ * scale, 
-                -1.0, 1.0
-            );
-            
-            buffer[y] = noise;
-        }
-    }
-    
     public BlockState sample(int x, int y, int z, double oreFrequencyNoise, double firstOrePlacementNoise, double secondOrePlacementNoise) {
         AbstractRandom random = this.orePosRandomDeriver.createRandom(x, y, z);
         
@@ -98,6 +82,27 @@ public class OreVeinSampler {
         
     }
     
+    private void sample(double[] buffer, int x, int z, DoublePerlinNoiseSampler sampler, double scale, int minY, int noiseSizeY) {
+        for (int y = 0; y < noiseSizeY; ++y) {
+            double noise;
+            int actualY = y + minY;
+            
+            int noiseX = x * this.horizontalNoiseResolution;
+            int noiseY = actualY * this.verticalNoiseResolution;
+            int noiseZ = z * this.horizontalNoiseResolution;
+            
+            noise = NoiseHelper.lerpFromProgress(
+                sampler, 
+                (double)noiseX * scale, 
+                (double)noiseY * scale, 
+                (double)noiseZ * scale, 
+                -1.0, 1.0
+            );
+            
+            buffer[y] = noise;
+        }
+    }
+
     private NoiseColumnSampler.VeinType getVeinType(double oreFrequencyNoise, int y) {
         NoiseColumnSampler.VeinType veinType = oreFrequencyNoise > 0.0 ? NoiseColumnSampler.VeinType.COPPER : NoiseColumnSampler.VeinType.IRON;
         

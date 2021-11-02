@@ -242,7 +242,11 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public int getWorldHeight() {
         // TODO: Causes issue with YOffset.BelowTop decorator (i.e. ORE_COAL_UPPER), find some workaround.
-        
+        // Affects both getWorldHeight() and getMinimumY().
+        // See: MC-236933 and MC-236723
+        if (this.chunkProvider == null)
+            return this.getGeneratorSettings().get().getGenerationShapeConfig().height();
+            
         // Some features complain if the height is too low or high, so just return min/max
         return Math.max(this.chunkProvider.getWorldHeight(), 384);
     }
@@ -252,8 +256,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         if (this.chunkProvider == null)
             return this.getGeneratorSettings().get().getGenerationShapeConfig().minimumY();
         
-        // Some features complain if the height is too low or high, so just return min/max
-        return Math.min(this.chunkProvider.getWorldMinY(), -64);
+        return this.chunkProvider.getWorldMinY();
     }
 
     @Override
