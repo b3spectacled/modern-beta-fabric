@@ -52,4 +52,6 @@ public class NbtTags {
     
     // Cave Noise
     public static final String USE_NOISE = "useNoise";
+    public static final String HORIZONTAL_NOISE_SCALE = "horizontalNoiseScale";
+    public static final String VERTICAL_NOISE_SCALE = "verticalNoiseScale";
 }

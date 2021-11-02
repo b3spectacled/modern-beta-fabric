@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.world.cavebiome.provider;
 
 import java.util.List;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
 import com.bespectacled.modernbeta.api.world.cavebiome.climate.ClimateNoiseRule;
@@ -19,19 +20,31 @@ import net.minecraft.world.biome.BiomeKeys;
 public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveClimateSampler {
     private static final Identifier DEFAULT_BIOME_ID = BiomeKeys.LUSH_CAVES.getValue();
     
-    private final boolean useNoise;
-    
     private final Identifier biomeId;
+    
+    private final boolean useNoise;
     private final CaveClimateSampler climateSampler;
     private final ClimateNoiseRules noiseRanges;
     
     public SingleCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
         
-        this.useNoise = NbtUtil.readBoolean(NbtTags.USE_NOISE, settings, false);
+        int verticalNoiseScale = NbtUtil.readInt(
+            NbtTags.VERTICAL_NOISE_SCALE, 
+            settings, 
+            ModernBeta.CAVE_BIOME_CONFIG.singleBiomeConfig.verticalNoiseScale
+        );
         
+        int horizontalNoiseScale = NbtUtil.readInt(
+            NbtTags.HORIZONTAL_NOISE_SCALE, 
+            settings, 
+            ModernBeta.CAVE_BIOME_CONFIG.singleBiomeConfig.horizontalNoiseScale
+        );
+
         this.biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
-        this.climateSampler = new BaseCaveClimateSampler(seed, 2, 8);
+        
+        this.useNoise = NbtUtil.readBoolean(NbtTags.USE_NOISE, settings, false);
+        this.climateSampler = new BaseCaveClimateSampler(seed, verticalNoiseScale, horizontalNoiseScale);
         this.noiseRanges = new ClimateNoiseRules.Builder()
             .add(new ClimateNoiseRule(0.0, 1.0, biomeId))
             .build();

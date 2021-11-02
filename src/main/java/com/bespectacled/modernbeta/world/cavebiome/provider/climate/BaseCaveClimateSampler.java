@@ -8,6 +8,9 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import net.minecraft.util.math.MathHelper;
 
 public class BaseCaveClimateSampler implements CaveClimateSampler {
+    private static final int DEFAULT_VERTICAL_SCALE = 2;
+    private static final int DEFAULT_HORIZONTAL_SCALE = 8;
+    
     private final PerlinOctaveNoise climateNoiseOctaves;
     private final PerlinOctaveNoise detailNoiseOctaves;
     
@@ -15,7 +18,7 @@ public class BaseCaveClimateSampler implements CaveClimateSampler {
     private final int horizontalScale;
     
     public BaseCaveClimateSampler(long seed) {
-        this(seed, 2, 8);
+        this(seed, DEFAULT_VERTICAL_SCALE, DEFAULT_HORIZONTAL_SCALE);
     }
     
     public BaseCaveClimateSampler(long seed, int verticalScale, int horizontalScale) {
@@ -46,7 +49,7 @@ public class BaseCaveClimateSampler implements CaveClimateSampler {
         detailNoise /= 0.55D;
         climateNoise /= 1.4D;
         
-        climateNoise = climateNoise * 0.99D + detailNoise * 0.01D;
+        climateNoise = climateNoise * 0.98D + detailNoise * 0.02D;
         
         return MathHelper.clamp(climateNoise, -1.0, 1.0);
     }

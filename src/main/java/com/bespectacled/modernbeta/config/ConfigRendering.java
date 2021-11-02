@@ -6,6 +6,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
 @Config(name = "rendering_config")
 public class ConfigRendering implements ConfigData {
+    
     @ConfigEntry.Gui.CollapsibleObject
     public FixedSeedConfig fixedSeedConfig = new FixedSeedConfig();
     

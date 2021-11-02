@@ -25,14 +25,13 @@ public abstract class CaveBiomeProvider {
     }
     
     /**
-     * Gets a biome for biome source at given biome coordinates.
-     * Note that a single biome coordinate unit equals 4 blocks.
+     * Gets a cave biome to overwrite the original biome at given biome coordinates and sufficient depth.
      * 
      * @param biomeX x-coordinate in biome coordinates.
      * @param biomeY y-coordinate in biome coordinates.
      * @param biomeZ z-coordinate in biome coordinates.
      * 
-     * @return A biome at given biome coordinates.
+     * @return A biome at given biome coordinates. May return null, in which case original biome is not replaced.
      */
     public abstract Biome getBiome(int biomeX, int biomeY, int biomeZ);
     

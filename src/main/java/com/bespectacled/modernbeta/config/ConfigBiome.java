@@ -12,13 +12,9 @@ import me.shedaniel.autoconfig.annotation.Config;
 public class ConfigBiome implements ConfigData {
     
     public GeneralBiomeConfig generalBiomeConfig = new GeneralBiomeConfig();
-    
     public BetaBiomeConfig betaBiomeConfig = new BetaBiomeConfig();
-    
     public PEBiomeConfig peBiomeConfig = new PEBiomeConfig();
-    
     public SingleBiomeConfig singleBiomeConfig = new SingleBiomeConfig();
-    
     public VanillaBiomeConfig vanillaBiomeConfig = new VanillaBiomeConfig();
     
     public static class GeneralBiomeConfig {
@@ -67,8 +63,5 @@ public class ConfigBiome implements ConfigData {
         public String singleBiome = InfBiomes.ALPHA_ID.toString();
     }
     
-    public static class VanillaBiomeConfig {
-        public int vanillaBiomeSize = 4;
-        public int vanillaOceanBiomeSize = 6;
-    }
+    public static class VanillaBiomeConfig {}
 }

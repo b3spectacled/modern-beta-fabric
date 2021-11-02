@@ -45,7 +45,7 @@ public abstract class BiomeProvider implements BiomeAccess.Storage {
      * @param biomeY y-coordinate in biome coordinates.
      * @param biomeZ z-coordinate in biome coordinates.
      * 
-     * @return A biome at given biome coordinates.
+     * @return A biome at given biome coordinates. May return null, in which case original biome is not replaced.
      */
     public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
@@ -58,7 +58,7 @@ public abstract class BiomeProvider implements BiomeAccess.Storage {
      * @param biomeY y-coordinate in biome coordinates.
      * @param biomeZ z-coordinate in biome coordinates.
      * 
-     * @return A biome at given biome coordinates.
+     * @return A biome at given biome coordinates. May return null, in which case original biome is not replaced.
      */
     public Biome getDeepOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.getOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);

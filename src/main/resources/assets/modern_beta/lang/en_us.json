@@ -50,9 +50,6 @@
     "createWorld.customize.inf.generateOceans.tooltip": "Replace biomes in bodies of water with ocean biomes.",
     "createWorld.customize.inf.sampleClimate.tooltip": "Sample biome climate for terrain generation.",
     
-    "createWorld.customize.vanilla.vanillaBiomeSize": "Biome Size",
-    "createWorld.customize.vanilla.vanillaOceanBiomeSize": "Ocean Biome Size",
-    
     "createWorld.customize.island.generateOuterIslands": "Generate Outer Islands",
     "createWorld.customize.island.centerIslandRadius": "Center Island Radius",
     "createWorld.customize.island.centerIslandFalloff": "Center Island Falloff",
@@ -93,8 +90,11 @@
     "createWorld.customize.indev.levelType.floating": "Floating",
     "createWorld.customize.indev.levelType.inland": "Inland",
     
-    "createWorld.customize.caveBiome.single.useNoise": "Use Noise",
-    "createWorld.customize.caveBIome.single.useNoise.tooltip": "Use noise to vary biome placement.",
+    "createWorld.customize.caveBiome.useNoise": "Use Noise",
+    "createWorld.customize.caveBiome.verticalNoiseScale": "Vertical Noise Scale",
+    "createWorld.customize.caveBiome.horizontalNoiseScale": "Horizontal Noise Scale",
+    
+    "createWorld.customize.caveBiome.useNoise.tooltip": "Use noise to vary biome placement.",
     
     "text.autoconfig.modern_beta.title": "Modern Beta Configuration",
     

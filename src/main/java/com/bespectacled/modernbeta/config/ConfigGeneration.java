@@ -11,15 +11,10 @@ import me.shedaniel.autoconfig.annotation.Config;
 public class ConfigGeneration implements ConfigData {
     
     public GeneralGenConfig generalGenConfig = new GeneralGenConfig();
-    
     public InfGenConfig infGenConfig = new InfGenConfig();
-    
     public Inf227GenConfig inf227GenConfig = new Inf227GenConfig();
-    
     public PreInfGenConfig preInfGenConfig = new PreInfGenConfig();
-    
     public IndevGenConfig indevGenConfig = new IndevGenConfig();
-    
     public IslandGenConfig islandGenConfig = new IslandGenConfig();
     
     public static class GeneralGenConfig {

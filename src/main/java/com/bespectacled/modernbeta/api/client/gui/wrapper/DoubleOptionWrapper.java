@@ -56,6 +56,17 @@ public class DoubleOptionWrapper<T extends Number> implements OptionWrapper {
         this(key, suffix, min, max, step, getter, setter, ImmutableList.of());
     }
     
+    public DoubleOptionWrapper(
+        String key,
+        double min,
+        double max,
+        float step,
+        Supplier<T> getter,
+        Consumer<Double> setter
+    ) {
+        this(key, "", min, max, step, getter, setter, ImmutableList.of());
+    }
+
     @Override
     public DoubleOption create() {
         return new DoubleOption(
