@@ -69,7 +69,7 @@ public class NoodleCaveSampler {
     }
     
     public double sampleWeight(double weight, int x, int y, int z, double frequencyNoise, double weightReducingNoise, double firstWeightNoise, double secondWeightNoise, int minY) {
-        if (y > 130 && y < minY + 4) {
+        if (y > 130 || y < minY + 4) {
             return weight;
         }
         

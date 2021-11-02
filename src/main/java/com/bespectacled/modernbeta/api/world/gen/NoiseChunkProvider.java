@@ -668,7 +668,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             double clampedDensity = MathHelper.clamp(density * 0.64, -1.0, 1.0);
             
             clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
-            clampedDensity = noodleCaveSampler.sample(clampedDensity, z, x, y);
+            clampedDensity = noodleCaveSampler.sample(clampedDensity, x, y, z);
             clampedDensity += weightSampler.calculateNoise(x, y, z);
             
             return aquiferSampler.apply(x, y, z, density, clampedDensity);
@@ -744,7 +744,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      */
     private BlockSource createOreVeinProviders(ChunkPos chunkPos, Consumer<OreVeinNoiseProvider> consumer) {
         if (!this.generateOreVeins)
-            return (noiseSampler, x, y, z) -> null;
+            return (weight, x, y, z) -> null;
 
         OreVeinNoiseProvider frequencyNoiseProvider = new OreVeinNoiseProvider(
             this.noiseSizeX,
@@ -774,7 +774,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         consumer.accept(firstOreNoiseProvider);
         consumer.accept(secondOreNoiseProvider);
         
-        return (noiseSampler, x, y, z) -> {
+        return (weight, x, y, z) -> {
             double frequencyNoise = frequencyNoiseProvider.sample();
             double firstOreNoise = firstOreNoiseProvider.sample();
             double secondOreNoise = secondOreNoiseProvider.sample();
