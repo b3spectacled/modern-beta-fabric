@@ -39,6 +39,11 @@ public class Classic030ChunkProvider extends FiniteChunkProvider {
     }
 
     @Override
+    public int getSeaLevel() {
+        return this.waterLevel;
+    }
+    
+    @Override
     protected void pregenerateTerrain() {
         this.generateHeightmap();
         this.erodeTerrain();
