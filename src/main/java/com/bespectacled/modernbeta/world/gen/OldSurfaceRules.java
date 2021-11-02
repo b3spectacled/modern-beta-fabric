@@ -30,8 +30,12 @@ public class OldSurfaceRules {
             biomeKey(PEBiomes.PE_DESERT_ID),
             biomeKey(PEBiomes.PE_ICE_DESERT_ID)
         );
+        MaterialRules.MaterialRule desertRule = MaterialRules.condition(desertCondition, sandRule);
         
-        return MaterialRules.sequence(materialRules,  MaterialRules.condition(desertCondition, sandRule));
+        MaterialRules.MaterialRule desertWithDepthCondition = MaterialRules.condition(MaterialRules.waterWithStoneDepth(-6, -1), desertRule);
+        MaterialRules.MaterialRule runDepthCondition = MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR_WITH_RUN_DEPTH, desertWithDepthCondition);
+        
+        return MaterialRules.sequence(runDepthCondition, materialRules);
     }
     
     private static RegistryKey<Biome> biomeKey(Identifier id) {

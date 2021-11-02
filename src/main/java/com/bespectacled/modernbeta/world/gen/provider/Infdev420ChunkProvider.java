@@ -218,7 +218,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             double density;
             double heightmapDensity;
             
-            double densityOffset = this.getOffset(noiseY, baseSize, heightStretch) / densityScale;
+            double densityOffset = this.getOffset(noiseY, baseSize, heightStretch);
             
             double mainNoise = (this.mainNoiseOctaves.sample(
                 noiseX, noiseY, noiseZ, 
