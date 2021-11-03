@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 public class ClimateNoiseRules {
     private final List<ClimateNoiseRule> noiseRules;
@@ -30,8 +31,8 @@ public class ClimateNoiseRules {
             this.noiseRules = new ArrayList<>();
         }
         
-        public Builder add(ClimateNoiseRule noiseRange) {
-            this.noiseRules.add(noiseRange);
+        public Builder add(double min, double max, Identifier id) {
+            this.noiseRules.add(new ClimateNoiseRule(min, max, id));
             
             return this;
         }
@@ -41,4 +42,22 @@ public class ClimateNoiseRules {
         }
     }
 
+    private static class ClimateNoiseRule {
+        private final double min;
+        private final double max;
+        private final Identifier id;
+        
+        public ClimateNoiseRule(double min, double max, Identifier id) {
+            this.min = MathHelper.clamp(min, -1.0, 1.0);
+            this.max = MathHelper.clamp(max, -1.0, 1.0);
+            this.id = id;
+            
+            if (this.min > this.max)
+                throw new IllegalArgumentException("[Modern Beta] Invalid noise ranges for: " + this.id.toString());
+        }
+        
+        public Identifier getId(double noise) {
+            return min <= noise && noise <= max ? this.id : null;
+        }
+    }
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
-import com.bespectacled.modernbeta.api.world.cavebiome.climate.ClimateNoiseRule;
 import com.bespectacled.modernbeta.api.world.cavebiome.climate.ClimateNoiseRules;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
@@ -41,8 +40,8 @@ public class NoiseCaveBiomeProvider extends CaveBiomeProvider implements CaveCli
         
         this.climateSampler = new BaseCaveClimateSampler(seed, verticalNoiseScale, horizontalNoiseScale);
         this.noiseRanges = new ClimateNoiseRules.Builder()
-            .add(new ClimateNoiseRule(0.4, 0.8, LUSH_CAVES))
-            .add(new ClimateNoiseRule(-0.8, -0.4, DRIPSTONE_CAVES))
+            .add(0.4, 0.8, LUSH_CAVES)
+            .add(-0.8, -0.4, DRIPSTONE_CAVES)
             .build();
     }
 

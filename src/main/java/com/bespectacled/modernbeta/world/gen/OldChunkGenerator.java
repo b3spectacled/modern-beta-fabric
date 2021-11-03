@@ -9,8 +9,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.Level;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
@@ -18,6 +16,7 @@ import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.world.biome.OldBiomeInjector;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.structure.OceanShrineStructure;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
@@ -47,9 +46,7 @@ import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.PalettedContainer;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
@@ -71,15 +68,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(generator -> generator.settings),
             NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings))
         .apply(instance, instance.stable(OldChunkGenerator::new)));
-    
-    public static final int OCEAN_MIN_DEPTH = 4;
-    public static final int DEEP_OCEAN_MIN_DEPTH = 16;
-    
+
     private final Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry;
     private final NbtCompound chunkProviderSettings;
     private final ChunkProvider chunkProvider;
     private final String chunkProviderType;
 
+    private final OldBiomeInjector biomeInjector;
+    
     private final boolean generateOceans;
     private final boolean generateOceanShrines;
     private final boolean generateMonuments;
@@ -91,13 +87,17 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.chunkProviderSettings = providerSettings;
         this.chunkProviderType = NbtUtil.readStringOrThrow(NbtTags.WORLD_TYPE, providerSettings);
         this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
-        
+
         this.generateOceans = !Compat.isLoaded("hydrogen") ? 
             NbtUtil.readBoolean(NbtTags.GEN_OCEANS, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateOceans) : 
             false;
         
         this.generateOceanShrines = NbtUtil.readBoolean(NbtTags.GEN_OCEAN_SHRINES, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateOceanShrines);
         this.generateMonuments = NbtUtil.readBoolean(NbtTags.GEN_MONUMENTS, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateMonuments);
+        
+        this.biomeInjector = this.biomeSource instanceof OldBiomeSource oldBiomeSource ?
+            new OldBiomeInjector(this, oldBiomeSource) : 
+            null;
     }
 
     public static void register() {
@@ -135,8 +135,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             }
         }
         
-        if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource)
-            this.injectBiomesInChunk(oldBiomeSource, chunk);
+        //if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource)
+            //this.injectBiomesInChunk(oldBiomeSource, chunk);
+        // TODO: Revise this check since it will skip cave biomes
+        if (this.biomeInjector != null) {
+            this.biomeInjector.injectBiomes(chunk);
+        }
     }
     
     @Override
@@ -212,11 +216,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         BlockState[] column = new BlockState[worldHeight];
         
         for (int y = worldHeight - 1; y >= 0; --y) {
-            // Offset y by minY to get actual current height.
-            int actualY = y + minY;
+            int worldY = y + minY;
             
-            if (actualY > height) {
-                if (actualY > this.getSeaLevel())
+            if (worldY > height) {
+                if (worldY > this.getSeaLevel())
                     column[y] = BlockStates.AIR;
                 else
                     column[y] = this.settings.get().getDefaultFluid();
@@ -289,6 +292,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.noiseRegistry;
     }
     
+    public boolean generatesOceans() {
+        return this.generateOceans;
+    }
+    
     public boolean generatesOceanShrines() {
         return this.generateOceanShrines;
     }
@@ -302,15 +309,13 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int biomeY = y >> 2;
         int biomeZ = z >> 2;
         
-        if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource) {
-            if (this.atOceanDepth(y, DEEP_OCEAN_MIN_DEPTH)) {
-                return oldBiomeSource.getDeepOceanBiome(biomeX, 0, biomeZ);
-            } else if (this.atOceanDepth(y, OCEAN_MIN_DEPTH)) {
-                return oldBiomeSource.getOceanBiome(biomeX, 0, biomeZ);
-            }
-        }
+        int height = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
         
-        return this.biomeSource.getBiome(biomeX, biomeY, biomeZ, this.getMultiNoiseSampler());
+        Biome biome = this.biomeInjector.sample(y, height, this.settings.get().getDefaultFluid(), biomeX, biomeY, biomeZ);
+        if (biome == null)
+            biome = this.biomeSource.getBiome(biomeX, biomeY, biomeZ, this.getMultiNoiseSampler());
+        
+        return biome;
     }
     
     public Set<Biome> getBiomesInArea(int startX, int startY, int startZ, int radius) {
@@ -338,110 +343,5 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         }
         
         return set;
-    } 
-
-    private void injectBiomesInChunk(OldBiomeSource oldBiomeSource, Chunk chunk) {
-        ChunkPos chunkPos = chunk.getPos();
-        BlockPos.Mutable pos = new BlockPos.Mutable();
-        
-        int startX = chunkPos.getStartX();
-        int startZ = chunkPos.getStartZ();
-        
-        int startBiomeX = startX >> 2;
-        int startBiomeZ = startZ >> 2;
-        
-        int caveStartOffset = 8;
-        int caveLowerCutoff = this.getMinimumY() + 16;
-        
-        int containerLen = 4;
-        
-        BlockState defaultFluid = this.settings.get().getDefaultFluid();
-        
-        int[] heights = new int[16];
-        Biome[] biomes = new Biome[16];
-        
-        // Calculate height values and collect ocean biome at biome coordinates
-        for (int localBiomeX = 0; localBiomeX < containerLen; ++localBiomeX) {
-            for (int localBiomeZ = 0; localBiomeZ < containerLen; ++localBiomeZ) {
-                int x = startX + (localBiomeX << 2);
-                int z = startZ + (localBiomeZ << 2);
-                
-                int biomeX = startBiomeX + localBiomeX;
-                int biomeZ = startBiomeZ + localBiomeZ;
-                
-                // Offset by 2 to get center of biome coordinate section,
-                // to sample overall ocean depth as accurately as possible.
-                int offsetX = x + 2;
-                int offsetZ = z + 2;
-                int height = this.getHeight(offsetX, offsetZ, Heightmap.Type.OCEAN_FLOOR_WG, chunk);
-                
-                pos.set(offsetX, height + 1, offsetZ);
-                boolean inWater = chunk.getBlockState(pos).isOf(defaultFluid.getBlock());
-                
-                Biome biome = null;
-                if (this.atOceanDepth(height, DEEP_OCEAN_MIN_DEPTH) && inWater) {
-                    biome = oldBiomeSource.getDeepOceanBiome(biomeX, 0, biomeZ);
-                } else if (this.atOceanDepth(height, OCEAN_MIN_DEPTH) && inWater) {
-                    biome = oldBiomeSource.getOceanBiome(biomeX, 0, biomeZ);
-                }
-                
-                int ndx = localBiomeX + localBiomeZ * containerLen;
-                biomes[ndx] = biome;
-                heights[ndx] = height;
-            }
-        }
-        
-        // Replace biomes from biome array
-        for (int sectionY = 0; sectionY < chunk.countVerticalSections(); ++sectionY) {
-            ChunkSection section = chunk.getSection(sectionY);
-            PalettedContainer<Biome> container = section.getBiomeContainer();
-            
-            container.lock();
-            try {
-                int yOffset = section.getYOffset() >> 2;
-                
-                for (int localBiomeX = 0; localBiomeX < containerLen; ++localBiomeX) {
-                    for (int localBiomeZ = 0; localBiomeZ < containerLen; ++localBiomeZ) {
-                        int topY = Math.min(heights[localBiomeX + localBiomeZ * containerLen], this.getSeaLevel());
-                        Biome oceanBiome = biomes[localBiomeX + localBiomeZ * containerLen];
-                        
-                        for (int localBiomeY = 0; localBiomeY < containerLen; ++localBiomeY) {
-                            int y = (localBiomeY + yOffset) << 2;
-                            
-                            int biomeX = localBiomeX + startBiomeX;
-                            int biomeY = localBiomeY + yOffset;
-                            int biomeZ = localBiomeZ + startBiomeZ;
-                            
-                            Biome biome = null;
-                            
-                            // Replace with cave biomes
-                            if (y + caveStartOffset < topY && y > caveLowerCutoff) {
-                                biome = oldBiomeSource.getCaveBiome(biomeX, biomeY, biomeZ);
-                            }
-                            
-                            // Replace with ocean biomes
-                            if (biome == null) {
-                                biome = oceanBiome;
-                            }
-                            
-                            if (biome != null) {
-                                container.swapUnsafe(localBiomeX, localBiomeY, localBiomeZ, biome);
-                            }
-                        }   
-                    }
-                }
-                
-            } catch (Exception e) {
-                ModernBeta.log(Level.ERROR, "Unable to replace biomes!");
-                e.printStackTrace();
-                
-            } finally {
-                container.unlock();
-            }
-        }
-    }
-    
-    private boolean atOceanDepth(int height, int oceanDepth) {
-        return height < this.getSeaLevel() - oceanDepth;
     }
 }
