@@ -39,11 +39,10 @@ public class OldBiomeInjector {
         this.biomeSource = biomeSource;
         
         int seaLevel = chunkGenerator.getSeaLevel();
-        int caveLowerCutoff = chunkGenerator.getMinimumY() + CAVE_END_OFFSET;
         
         BiPredicate<Integer, Integer> oceanHeightPredicate = (y, height) -> this.atOceanDepth(height, OCEAN_MIN_DEPTH);
         BiPredicate<Integer, Integer> deepOceanHeightPredicate = (y, height) -> this.atOceanDepth(height, DEEP_OCEAN_MIN_DEPTH);
-        BiPredicate<Integer, Integer> caveBiomeHeightPredicate = (y, height) -> y + CAVE_START_OFFSET < Math.min(height, seaLevel) && y > caveLowerCutoff;
+        BiPredicate<Integer, Integer> caveBiomeHeightPredicate = (y, height) -> y + CAVE_START_OFFSET < Math.min(height, seaLevel);
         
         BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder()
             .add(caveBiomeHeightPredicate, NOOP_STATE_PREDICATE, this.biomeSource::getCaveBiome);

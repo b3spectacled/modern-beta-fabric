@@ -129,7 +129,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                     surfaceTopY
                 );
 
-                int soilDepth = 0;
+                int runDepth = 0;
 
                 for (int y = this.worldHeight - Math.abs(this.worldMinY) - 1; y >= this.worldMinY; --y) {
                     BlockState blockState = chunk.getBlockState(mutable.set(localX, y, localZ));
@@ -142,7 +142,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                     }
                     
                     if (inFluid) {
-                        soilDepth = 0;
+                        runDepth = 0;
                         continue;
                     }
                     
@@ -150,10 +150,10 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                         continue;
                     }
                         
-                    if (soilDepth == 0) blockState = (y >= this.seaLevel - 1) ? topBlock : fillerBlock;
-                    if (soilDepth == 1) blockState = fillerBlock;
+                    if (runDepth == 0) blockState = (y >= this.seaLevel - 1) ? topBlock : fillerBlock;
+                    if (runDepth == 1) blockState = fillerBlock;
                     
-                    soilDepth++;
+                    runDepth++;
 
                     chunk.setBlockState(mutable.set(localX, y, localZ), blockState, false);
                 }

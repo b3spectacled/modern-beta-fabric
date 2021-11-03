@@ -194,14 +194,4 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
     private MixinSurfaceBuilderAccessor injectAccessor(SurfaceBuilder surfaceBuilder) {
         return (MixinSurfaceBuilderAccessor)surfaceBuilder;
     }
-    
-    private int getNewHeight(Chunk chunk, int localX, int localZ) {
-        int height = chunk.getTopY();
-        BlockPos.Mutable pos = new BlockPos.Mutable();
-        
-        while(!isSolid(chunk.getBlockState(pos.set(localX, height, localZ)))) {
-            --height;
-        }
-        return height + 1;
-    }
 }

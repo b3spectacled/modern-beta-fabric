@@ -135,9 +135,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             }
         }
         
-        //if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource)
-            //this.injectBiomesInChunk(oldBiomeSource, chunk);
-        // TODO: Revise this check since it will skip cave biomes
+        // Inject cave, ocean, etc. biomes
         if (this.biomeInjector != null) {
             this.biomeInjector.injectBiomes(chunk);
         }
@@ -312,10 +310,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int height = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
         
         Biome biome = this.biomeInjector.sample(y, height, this.settings.get().getDefaultFluid(), biomeX, biomeY, biomeZ);
-        if (biome == null)
-            biome = this.biomeSource.getBiome(biomeX, biomeY, biomeZ, this.getMultiNoiseSampler());
         
-        return biome;
+        return biome != null ? biome : this.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
     public Set<Biome> getBiomesInArea(int startX, int startY, int startZ, int radius) {

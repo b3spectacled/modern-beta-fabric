@@ -94,7 +94,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 double surfaceNoise = this.surfaceNoiseOctaves.sample(x * eighth * 2.0, z * eighth * 2.0);
                 int surfaceDepth = (int)(surfaceNoise / 3.0 + 3.0 + rand.nextDouble() * 0.25);
                 
-                int flag = -1;
+                int runDepth = -1;
                 
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
                 
@@ -140,10 +140,10 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                     BlockState blockState = chunk.getBlockState(pos);
                     
                     if (blockState.isAir()) {
-                        flag = -1;
+                        runDepth = -1;
                         
                     } else if (blockState.isOf(this.defaultBlock.getBlock())) {
-                        if (flag == -1) {
+                        if (runDepth == -1) {
                             if (surfaceDepth <= 0) {
                                 topBlock = BlockStates.AIR;
                                 fillerBlock = this.defaultBlock;
@@ -163,7 +163,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                                 }
                             }
                             
-                            flag = surfaceDepth;
+                            runDepth = surfaceDepth;
                             
                             if (y < this.seaLevel && topBlock.isAir()) { // Generate water bodies
                                 BlockState fluidBlock = aquiferSampler.apply(x, y, z, 0.0, 0.0);
@@ -180,8 +180,8 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                             
                             chunk.setBlockState(pos, blockState, false);
                             
-                        } else if (flag > 0) {
-                            --flag;
+                        } else if (runDepth > 0) {
+                            --runDepth;
                             chunk.setBlockState(pos, fillerBlock, false);
                         }
                     }

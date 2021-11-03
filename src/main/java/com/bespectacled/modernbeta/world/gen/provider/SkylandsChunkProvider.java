@@ -71,7 +71,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                 int surfaceTopY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
 
                 int surfaceDepth = (int) (surfaceNoise[localZ + localX * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
-                int flag = -1;
+                int runDepth = -1;
 
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
                 
@@ -107,7 +107,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                     BlockState blockState = chunk.getBlockState(pos);
                     
                     if (blockState.isAir()) { // Skip if air block
-                        flag = -1;
+                        runDepth = -1;
                         continue;
                     }
 
@@ -115,13 +115,13 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
 
-                    if (flag == -1) {
+                    if (runDepth == -1) {
                         if (surfaceDepth <= 0) { // Generate stone basin if noise permits
                             topBlock = BlockStates.AIR;
                             fillerBlock = this.defaultBlock;
                         }
 
-                        flag = surfaceDepth;
+                        runDepth = surfaceDepth;
                         
                         blockState = (y >= 0) ? 
                             topBlock : 
@@ -132,16 +132,16 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
 
-                    if (flag <= 0) {
+                    if (runDepth <= 0) {
                         continue;
                     }
 
-                    flag--;
+                    runDepth--;
                     chunk.setBlockState(pos, fillerBlock, false);
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
-                    if (flag == 0 && fillerBlock.isOf(BlockStates.SAND.getBlock())) {
-                        flag = rand.nextInt(4);
+                    if (runDepth == 0 && fillerBlock.isOf(BlockStates.SAND.getBlock())) {
+                        runDepth = rand.nextInt(4);
                         fillerBlock = BlockStates.SANDSTONE;
                     }
                 }
