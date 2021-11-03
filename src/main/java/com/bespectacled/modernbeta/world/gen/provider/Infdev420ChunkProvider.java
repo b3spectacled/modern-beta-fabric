@@ -64,7 +64,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(z * eighth, 109.0134, x * eighth) + rand.nextDouble() * 0.2 > 3.0;
                 int surfaceDepth = (int)(this.surfaceNoiseOctaves.sample(x * eighth * 2.0, x * eighth * 2.0) / 3.0 + 3.0 + rand.nextDouble() * 0.25);
 
-                int flag = -1;
+                int runDepth = -1;
                 
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
 
@@ -94,9 +94,9 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                     BlockState blockState = chunk.getBlockState(pos.set(localX, y, localZ));
 
                     if (blockState.equals(BlockStates.AIR)) { // Skip if air block
-                        flag = -1;
+                        runDepth = -1;
                     } else if (blockState.equals(this.defaultBlock)) {
-                        if (flag == -1) {
+                        if (runDepth == -1) {
                             if (surfaceDepth <= 0) { // Generate stone basin if noise permits
                                 topBlock = BlockStates.AIR;
                                 fillerBlock = this.defaultBlock;
@@ -120,15 +120,15 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                                 topBlock = this.defaultFluid;
                             }
 
-                            flag = surfaceDepth;
+                            runDepth = surfaceDepth;
                             if (y >= this.seaLevel - 1) {
                                 chunk.setBlockState(pos.set(localX, y, localZ), topBlock, false);
                             } else {
                                 chunk.setBlockState(pos.set(localX, y, localZ), fillerBlock, false);
                             }
                             
-                        } else if (flag > 0) { 
-                            flag--;
+                        } else if (runDepth > 0) { 
+                            runDepth--;
                             chunk.setBlockState(pos.set(localX, y, localZ), fillerBlock, false);
                         }
                     }

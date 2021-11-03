@@ -127,7 +127,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
                 boolean genGravelBeach = gravelNoise[localZ + localX * 16] + rand.nextFloat() * 0.2D > 3D;
                 int surfaceDepth = (int) (surfaceNoise[localZ + localX * 16] / 3D + 3D + rand.nextFloat() * 0.25D);
                 
-                int flag = -1;
+                int runDepth = -1;
                 
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
 
@@ -156,7 +156,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
                     BlockState blockState = chunk.getBlockState(pos.set(localX, y, localZ));
 
                     if (blockState.equals(BlockStates.AIR)) { // Skip if air block
-                        flag = -1;
+                        runDepth = -1;
                         continue;
                     }
 
@@ -164,7 +164,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
 
-                    if (flag == -1) {
+                    if (runDepth == -1) {
                         if (surfaceDepth <= 0) { // Generate stone basin if noise permits
                             topBlock = BlockStates.AIR;
                             fillerBlock = this.defaultBlock;
@@ -188,7 +188,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
                             topBlock = this.defaultFluid;
                         }
 
-                        flag = surfaceDepth;
+                        runDepth = surfaceDepth;
                         if (y >= this.seaLevel - 1) {
                             chunk.setBlockState(pos.set(localX, y, localZ), topBlock, false);
                         } else {
@@ -198,16 +198,16 @@ public class PEChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
 
-                    if (flag <= 0) {
+                    if (runDepth <= 0) {
                         continue;
                     }
 
-                    flag--;
+                    runDepth--;
                     chunk.setBlockState(pos.set(localX, y, localZ), fillerBlock, false);
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
-                    if (flag == 0 && fillerBlock.equals(BlockStates.SAND)) {
-                        flag = rand.nextInt(4);
+                    if (runDepth == 0 && fillerBlock.equals(BlockStates.SAND)) {
+                        runDepth = rand.nextInt(4);
                         fillerBlock = BlockStates.SANDSTONE;
                     }
                 }

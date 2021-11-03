@@ -86,7 +86,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                 BlockState topBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState fillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
 
-                int soilDepth = 0;
+                int runDepth = 0;
 
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos);
                 
@@ -101,7 +101,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                     }
                     
                     if (inFluid) {
-                        soilDepth = 0;
+                        runDepth = 0;
                         continue;
                     }
                     
@@ -109,10 +109,10 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                         continue;
                     }
                         
-                    if (soilDepth == 0) blockState = (y >= this.seaLevel - 1) ? topBlock : fillerBlock;
-                    if (soilDepth == 1) blockState = fillerBlock;
+                    if (runDepth == 0) blockState = (y >= this.seaLevel - 1) ? topBlock : fillerBlock;
+                    if (runDepth == 1) blockState = fillerBlock;
                     
-                    soilDepth++;
+                    runDepth++;
 
                     chunk.setBlockState(pos.set(localX, y, localZ), blockState, false);
                 }

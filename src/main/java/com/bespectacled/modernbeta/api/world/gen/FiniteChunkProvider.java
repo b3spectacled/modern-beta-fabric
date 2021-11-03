@@ -361,20 +361,20 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
     }
     
     protected static class TerrainState {
-        private int soilDepth;
+        private int runDepth;
         private boolean terrainModified;
         
         public TerrainState() {
-            this.soilDepth = 0;
+            this.runDepth = 0;
             this.terrainModified = false;
         }
         
-        public int getSoilDepth() {
-            return this.soilDepth;
+        public int getRunDepth() {
+            return this.runDepth;
         }
         
-        public void incrementSoilDepth() {
-            this.soilDepth++;
+        public void incrementRunDepth() {
+            this.runDepth++;
         }
         
         public boolean isTerrainModified() {

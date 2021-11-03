@@ -84,7 +84,7 @@ public class Classic030ChunkProvider extends FiniteChunkProvider {
         BlockState modifiedBlockState = this.getBlockState(weightSampler, blockSource, x, y, z, block, this.defaultFluid.getBlock());
         
         boolean inFluid = modifiedBlockState.isAir() || modifiedBlockState.isOf(this.defaultFluid.getBlock());
-        int soilDepth = terrainState.getSoilDepth();
+        int runDepth = terrainState.getRunDepth();
         
         // Check to see if structure weight sampler modifies terrain.
         if (!blockState.equals(modifiedBlockState)) {
@@ -93,15 +93,15 @@ public class Classic030ChunkProvider extends FiniteChunkProvider {
         
         // Replace default block set by structure sampling with topsoil blocks.
         if (terrainState.isTerrainModified() && !inFluid) {
-            if (soilDepth == 0) {
+            if (runDepth == 0) {
                 modifiedBlockState = y >= this.waterLevel - 1 ? BlockStates.GRASS_BLOCK : BlockStates.DIRT;
             }
             
-            if (soilDepth == 1) {
+            if (runDepth == 1) {
                 modifiedBlockState = BlockStates.DIRT;
             }
             
-            terrainState.incrementSoilDepth();
+            terrainState.incrementRunDepth();
         }
         
         return modifiedBlockState;
