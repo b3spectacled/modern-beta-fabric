@@ -12,7 +12,7 @@ public abstract class ClimateBiomeProvider extends BiomeProvider {
     private final SkyClimateSampler skyClimateSampler;
     
     public ClimateBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry, ClimateSampler climateSampler) {
-        this(seed, settings, biomeRegistry, climateSampler, null);
+        this(seed, settings, biomeRegistry, climateSampler, climateSampler instanceof SkyClimateSampler skyClimateSampler ? skyClimateSampler : null);
     }
 
     public ClimateBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry, ClimateSampler climateSampler, SkyClimateSampler skyClimateSampler) {
@@ -28,13 +28,5 @@ public abstract class ClimateBiomeProvider extends BiomeProvider {
     
     public SkyClimateSampler getSkyClimateSampler() {
         return this.skyClimateSampler;
-    }
-    
-    public boolean sampleBiomeColor() {
-        return false;
-    }
-    
-    public boolean sampleSkyColor() {
-        return false;
     }
 }

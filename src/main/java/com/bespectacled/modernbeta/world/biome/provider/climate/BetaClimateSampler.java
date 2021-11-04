@@ -13,13 +13,12 @@ import com.bespectacled.modernbeta.util.chunk.SkyClimateChunk;
 
 import net.minecraft.util.math.MathHelper;
 
-public class BetaClimateSampler implements ClimateSampler, SkyClimateSampler {
+public class BetaClimateSampler implements ClimateSampler {
     private final SimplexOctaveNoise tempNoiseOctaves;
     private final SimplexOctaveNoise rainNoiseOctaves;
     private final SimplexOctaveNoise detailNoiseOctaves;
     
     private final ChunkCache<ClimateChunk> climateCache;
-    private final ChunkCache<SkyClimateChunk> skyClimateCache;
     
     public BetaClimateSampler(long seed) {
         this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
@@ -32,13 +31,6 @@ public class BetaClimateSampler implements ClimateSampler, SkyClimateSampler {
             true, 
             (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::sampleClimateNoise)
         );
-        
-        this.skyClimateCache = new ChunkCache<>(
-            "sky", 
-            256, 
-            true, 
-            (chunkX, chunkZ) -> new SkyClimateChunk(chunkX, chunkZ, this::sampleSkyTempNoise)
-        );
     }
     
     @Override
@@ -48,23 +40,10 @@ public class BetaClimateSampler implements ClimateSampler, SkyClimateSampler {
         
         return this.climateCache.get(chunkX, chunkZ).sampleClime(x, z);
     }
-
-    @Override
-    public double sampleSkyTemp(int x, int z) {
-        int chunkX = x >> 4;
-        int chunkZ = z >> 4;
-        
-        return this.skyClimateCache.get(chunkX, chunkZ).sampleTemp(x, z);
-    }
     
     @Override
     public boolean sampleBiomeColor() {
         return ModernBeta.RENDER_CONFIG.biomeColorConfig.renderBetaBiomeColor;
-    }
-    
-    @Override
-    public boolean sampleSkyColor() {
-        return ModernBeta.RENDER_CONFIG.biomeColorConfig.renderBetaSkyColor;
     }
     
     private Clime sampleClimateNoise(int x, int z) {
@@ -82,7 +61,37 @@ public class BetaClimateSampler implements ClimateSampler, SkyClimateSampler {
         return new Clime(MathHelper.clamp(temp, 0.0, 1.0), MathHelper.clamp(rain, 0.0, 1.0));
     }
     
-    private double sampleSkyTempNoise(int x, int z) {
-        return this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
+    public static class BetaSkyClimateSampler implements SkyClimateSampler {
+        private final SimplexOctaveNoise tempNoiseOctaves;
+
+        private final ChunkCache<SkyClimateChunk> skyClimateCache;
+        
+        public BetaSkyClimateSampler(long seed) {
+            this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
+            
+            this.skyClimateCache = new ChunkCache<>(
+                "sky", 
+                256, 
+                true, 
+                (chunkX, chunkZ) -> new SkyClimateChunk(chunkX, chunkZ, this::sampleSkyTempNoise)
+            );
+        }
+        
+        @Override
+        public double sampleSkyTemp(int x, int z) {
+            int chunkX = x >> 4;
+            int chunkZ = z >> 4;
+            
+            return this.skyClimateCache.get(chunkX, chunkZ).sampleTemp(x, z);
+        }
+        
+        @Override
+        public boolean sampleSkyColor() {
+            return ModernBeta.RENDER_CONFIG.biomeColorConfig.renderBetaSkyColor;
+        }
+        
+        private double sampleSkyTempNoise(int x, int z) {
+            return this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
+        }
     }
 }
