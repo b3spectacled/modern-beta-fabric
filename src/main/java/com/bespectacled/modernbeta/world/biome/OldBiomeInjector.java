@@ -78,7 +78,7 @@ public class OldBiomeInjector {
                 // to sample overall ocean depth as accurately as possible.
                 int offsetX = x + 2;
                 int offsetZ = z + 2;
-                int height = this.chunkGenerator.getHeight(offsetX, offsetZ, Heightmap.Type.OCEAN_FLOOR_WG, chunk);
+                int height = this.chunkGenerator.getHeight(offsetX, offsetZ, Heightmap.Type.OCEAN_FLOOR_WG);
                 BlockState state = chunk.getBlockState(pos.set(offsetX, height, offsetZ));
                 
                 int ndx = localBiomeX + localBiomeZ * 4;

@@ -34,7 +34,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
@@ -334,12 +333,10 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * @param x x-coordinate in block coordinates.
      * @param z z-coordinate in block coordinates.
      * @param type Vanilla heightmap type.
-     * @param world
-     * 
      * @return The y-coordinate of top block at x/z.
      */
     @Override
-    public int getHeight(int x, int z, Heightmap.Type type, HeightLimitView world) {
+    public int getHeight(int x, int z, Heightmap.Type type) {
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         
@@ -571,7 +568,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     
     /**
      * Generates a heightmap for the chunk containing the given x/z coordinates
-     * and returns to {@link #getHeight(int, int, net.minecraft.world.Heightmap.Type, HeightLimitView)} 
+     * and returns to {@link #getHeight(int, int, net.minecraft.world.Heightmap.Type)} 
      * to cache and return the height.
      * 
      * @param chunkX x-coordinate in chunk coordinates to sample all y-values for.
@@ -786,7 +783,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     @Override
     public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
         if (chunkStatus == ChunkStatus.CARVERS)
-            return true;
+            return false;
         
         return false;
     }

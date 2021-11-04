@@ -29,7 +29,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
@@ -142,7 +141,7 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
     }
     
     @Override
-    public int getHeight(int x, int z, Type type, HeightLimitView world) {
+    public int getHeight(int x, int z, Type type) {
         x += this.levelWidth / 2;
         z += this.levelLength / 2;
         

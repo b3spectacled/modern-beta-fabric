@@ -17,7 +17,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
@@ -85,11 +84,10 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
      * @param x x-coordinate in block coordinates.
      * @param z z-coordinate in block coordinates.
      * @param type Vanilla heightmap type.
-     * @param world
      * 
      * @return The y-coordinate of top block at x/z.
      */
-    public abstract int getHeight(int x, int z, Heightmap.Type heightmap, HeightLimitView world);
+    public abstract int getHeight(int x, int z, Heightmap.Type heightmap);
     
     /**
      * Determines whether to skip the chunk for some chunk generation step, depending on the x/z chunk coordinates.

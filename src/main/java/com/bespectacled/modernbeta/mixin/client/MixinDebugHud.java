@@ -82,8 +82,8 @@ public class MixinDebugHud {
                 info.getReturnValue().add(
                     String.format(
                         "[Modern Beta] Chunk Provider WS height: %d OF height: %d Sea level: %d", 
-                        chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG, null),
-                        chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR, null),
+                        chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG),
+                        chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR),
                         chunkProvider.getSeaLevel()
                     )
                 );

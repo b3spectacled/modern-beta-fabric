@@ -73,12 +73,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private final NbtCompound chunkProviderSettings;
     private final ChunkProvider chunkProvider;
     private final String chunkProviderType;
-
-    private final OldBiomeInjector biomeInjector;
     
     private final boolean generateOceans;
     private final boolean generateOceanShrines;
     private final boolean generateMonuments;
+
+    private final OldBiomeInjector biomeInjector;
     
     public OldChunkGenerator(Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry, BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, NbtCompound providerSettings) {
         super(noiseRegistry, biomeSource, seed, settings);
@@ -172,7 +172,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 GenerationSettings genSettings = curChunk.method_38258(
                     () -> this.getInjectedBiomeAtBlock(
                             startX,
-                            this.getHeight(startX, startZ, Heightmap.Type.OCEAN_FLOOR_WG, curChunk),
+                            this.getHeight(startX, startZ, Heightmap.Type.OCEAN_FLOOR_WG),
                             startZ
                 )).getGenerationSettings();
                 
@@ -202,12 +202,16 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public int getHeight(int x, int z, Heightmap.Type type, HeightLimitView world) {
-        return this.chunkProvider.getHeight(x, z, type, world);
+        return this.chunkProvider.getHeight(x, z, type);
+    }
+    
+    public int getHeight(int x, int z, Heightmap.Type type) {
+        return this.chunkProvider.getHeight(x, z, type);
     }
   
     @Override
     public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
-        int height = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world);
+        int height = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
         int worldHeight = this.chunkProvider.getWorldHeight();
         int minY = this.chunkProvider.getWorldMinY();
         
@@ -307,7 +311,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int biomeY = y >> 2;
         int biomeZ = z >> 2;
         
-        int height = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
+        int height = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
         
         Biome biome = this.biomeInjector.sample(y, height, this.settings.get().getDefaultFluid(), biomeX, biomeY, biomeZ);
         
@@ -332,7 +336,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 
                 int x = biomeX << 2;
                 int z = biomeZ << 2;
-                int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
+                int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
                 
                 set.add(this.getInjectedBiomeAtBlock(x, y, z));
             }

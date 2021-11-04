@@ -64,7 +64,7 @@ public class PESpawnLocator implements SpawnLocator {
             attempts++;
         }
         
-        int y = this.chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG, null);
+        int y = this.chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
         
         return Optional.of(new BlockPos(x, y - 1, z));
     }
@@ -73,7 +73,7 @@ public class PESpawnLocator implements SpawnLocator {
         double eighth = 0.03125D;
         int seaLevel = this.chunkProvider.getSeaLevel();
         
-        int y = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world);
+        int y = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
         
         Biome biome = (this.chunkProvider.getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) ? 
             oldBiomeSource.getBiomeForSurfaceGen(x, y, z) :

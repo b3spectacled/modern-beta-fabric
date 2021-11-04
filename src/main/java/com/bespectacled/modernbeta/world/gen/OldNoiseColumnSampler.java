@@ -69,7 +69,7 @@ public class OldNoiseColumnSampler extends NoiseColumnSampler  {
     protected int method_38383(int x, int z, TerrainNoisePoint terrainNoisePoint) {
         int height = (this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) ?
             noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
-            this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
+            this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
         
         int seaLevel = this.chunkProvider.getSeaLevel();
         
