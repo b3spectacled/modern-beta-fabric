@@ -11,6 +11,7 @@ import com.bespectacled.modernbeta.mixin.MixinSurfaceBuilderAccessor;
 import com.bespectacled.modernbeta.util.BlockColumnHolder;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -41,7 +42,6 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
     );
     
     private final RandomDeriver randomDeriver;
-    private final ChunkProvider chunkProvider;
     
     public OldSurfaceBuilder(
         NoiseColumnSampler columnSampler, 
@@ -55,7 +55,6 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         super(columnSampler, noiseRegistry, blockState, seaLevel, seed, randomProvider);
         
         this.randomDeriver = randomProvider.create(seed).createBlockPosRandomDeriver();
-        this.chunkProvider = chunkProvider;
     }
     
     /*
@@ -80,32 +79,33 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         }
         
         ChunkPos chunkPos = chunk.getPos();
+        BlockPos.Mutable pos = new BlockPos.Mutable();
+        
         int startX = chunkPos.getStartX();
         int startZ = chunkPos.getStartZ();
-        BlockPos.Mutable pos = new BlockPos.Mutable();
         
         int x = startX + localX;
         int z = startZ + localZ;
-        int height = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, localX, localZ) + 1;
-        column.setPos(x, z);
         
+        int height = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, localX, localZ) + 1;
         int surfaceMinY = surfaceTopY - 8;
         
-        AbstractRandom random = this.randomDeriver.createRandom(x, 0, z);
-        MixinSurfaceBuilderAccessor accessor = this.injectAccessor(this);
+        column.setPos(x, z);
         
+        MixinSurfaceBuilderAccessor accessor = this.injectAccessor(this);
+        AbstractRandom random = this.randomDeriver.createRandom(x, 0, z);
+        
+        // Surface noise and depth
         double surfaceNoise = accessor.getSurfaceNoise().sample(x, 0.0, z); 
         int runDepth = (int)(surfaceNoise * 2.75 + 3.0 + random.nextDouble() * 0.25);
-        
-        int badlandsLayerDepth = biomeKey == BiomeKeys.WOODED_BADLANDS || biomeKey == BiomeKeys.BADLANDS ? 15 : Integer.MAX_VALUE;
         
         // Generate eroded badlands hoodoos, as stone initially
         if (biomeKey == BiomeKeys.ERODED_BADLANDS) {
             accessor.invokeErodedBadlandsBuilder(surfaceMinY, surfaceNoise, column.getBlockColumn(), x, z, height, chunk);
+            
+            // Re-sample height after hoodoo generation
+            height = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, localX, localZ) + 1;
         }
-        
-        // Re-sample height after hoodoo generation
-        height = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, localX, localZ) + 1;
         
         ruleContext.initWorldDependentPredicates(chunk, x, z, runDepth);
         
@@ -114,6 +114,8 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         
         int waterHeight = Integer.MIN_VALUE;
         int solidHeight = Integer.MAX_VALUE;
+        
+        int badlandsLayerDepth = biomeKey == BiomeKeys.WOODED_BADLANDS || biomeKey == BiomeKeys.BADLANDS ? 15 : Integer.MAX_VALUE;
         
         for (int y = height; y >= surfaceMinY && currentDepth < badlandsLayerDepth; --y) {
             BlockState blockState = column.getBlockColumn().getState(y);
@@ -151,20 +153,9 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
             
             int stoneDepthBelow = y - solidHeight + 1;
             
-            /*
-            Biome verticalBiome = biomeAccess.getBiome(pos);
-            RegistryKey<Biome> verticalBiomeKey = biomeRegistry
-                .getKey(verticalBiome)
-                .orElseThrow(() -> new IllegalStateException("Unregistered biome: " + verticalBiome));
-            */
-            
-            // Ignore vertical biome sampling, since biome fuzzing produces weird results along biome borders.
-            Biome verticalBiome = biome;
-            RegistryKey<Biome> verticalBiomeKey = biomeKey;
-            
             ruleContext.initContextDependentPredicates(
-                verticalBiomeKey, 
-                verticalBiome, 
+                biomeKey, 
+                biome, 
                 runDepth, 
                 ++stoneDepthAbove, 
                 stoneDepthBelow, 
@@ -174,7 +165,7 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
             
             blockState = blockStateRule.tryApply(x, y, z);
             
-            if (blockState == null)
+            if (blockState == null || blockState.isOf(Blocks.BEDROCK))
                 continue;
             
             column.getBlockColumn().setState(y, blockState);
