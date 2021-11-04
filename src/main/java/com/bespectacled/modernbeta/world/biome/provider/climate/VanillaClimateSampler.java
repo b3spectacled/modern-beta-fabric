@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.world.biome.provider.climate;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateBiomeRules;
+import com.bespectacled.modernbeta.util.chunk.BiomeChunk;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.ClimateChunk;
 
@@ -22,7 +23,7 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
     private final BiomeLayerSampler biomeSampler;
     private final Registry<Biome> biomeRegistry;
     
-    private final ChunkCache<ClimateChunk> baseClimateCache;
+    private final ChunkCache<BiomeChunk> biomeCache;
     private final ChunkCache<ClimateChunk> climateCache;
     
     private final ClimateBiomeRules climateRules;
@@ -32,11 +33,11 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
         this.biomeSampler = biomeSampler;
         this.biomeRegistry = biomeRegistry;
         
-        this.baseClimateCache = new ChunkCache<>(
-            "climate", 
-            512, 
+        this.biomeCache = new ChunkCache<>(
+            "biome", 
+            1536, 
             true, 
-            (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::sampleBiomeClimate)
+            (chunkX, chunkZ) -> new BiomeChunk(chunkX, chunkZ, this::sampleBiome)
         );
         
         this.climateCache = new ChunkCache<>(
@@ -68,10 +69,8 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
         return this.biomeSampler;
     }
     
-    private Clime sampleBiomeClimate(int x, int z) {
-        Biome biome = HorizontalVoronoiBiomeAccessType.INSTANCE.getBiome(this.seed, x, 0, z, this);
-        
-        return this.climateRules.apply(biome);
+    private Biome sampleBiome(int x, int z) {
+        return HorizontalVoronoiBiomeAccessType.INSTANCE.getBiome(this.seed, x, 0, z, this);
     }
     
     private Clime blendBiomeClimate(int x, int z) {
@@ -87,7 +86,8 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
                 int chunkX = curX >> 4;
                 int chunkZ = curZ >> 4;
                 
-                Clime clime = this.baseClimateCache.get(chunkX, chunkZ).sampleClime(curX, curZ);
+                Biome biome = this.biomeCache.get(chunkX, chunkZ).sampleBiome(curX, curZ);
+                Clime clime = this.climateRules.apply(biome);
                 
                 temp += clime.temp();
                 rain += clime.rain();
