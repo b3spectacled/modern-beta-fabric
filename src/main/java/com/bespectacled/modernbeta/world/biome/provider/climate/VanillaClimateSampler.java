@@ -48,6 +48,7 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
             .add(biome -> biome.getCategory() == Category.EXTREME_HILLS, () -> new Clime(1.0, 1.0))
             .add(biome -> biome.getCategory() == Category.MOUNTAIN, () -> new Clime(1.0, 1.0))
             .add(biome -> biome.getCategory() == Category.MESA, () -> new Clime(1.0, 1.0))
+            .add(biome -> biome.getCategory() == Category.SWAMP, () -> new Clime(0.0, 0.0))
             .build();
     }
     
