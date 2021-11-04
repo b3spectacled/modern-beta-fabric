@@ -7,7 +7,6 @@ import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.ClimateChunk;
-import com.bespectacled.modernbeta.util.chunk.SkyClimateChunk;
 import com.bespectacled.modernbeta.util.mersenne.MTRandom;
 
 import net.minecraft.util.math.MathHelper;
@@ -18,7 +17,6 @@ public class PEClimateSampler implements ClimateSampler, SkyClimateSampler {
     private final PerlinOctaveNoise detailNoiseOctaves;
     
     private final ChunkCache<ClimateChunk> climateCache;
-    private final ChunkCache<SkyClimateChunk> skyClimateCache;
     
     public PEClimateSampler(long seed) {
         this.tempNoiseOctaves = new PerlinOctaveNoise(new MTRandom(seed * 9871L), 4, true);
@@ -30,13 +28,6 @@ public class PEClimateSampler implements ClimateSampler, SkyClimateSampler {
             1536, 
             true, 
             (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::sampleClimateNoise)
-        );
-        
-        this.skyClimateCache = new ChunkCache<>(
-            "sky", 
-            256, 
-            true, 
-            (chunkX, chunkZ) -> new SkyClimateChunk(chunkX, chunkZ, this::sampleSkyTempNoise)
         );
     }
     
@@ -53,7 +44,7 @@ public class PEClimateSampler implements ClimateSampler, SkyClimateSampler {
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         
-        return this.skyClimateCache.get(chunkX, chunkZ).sampleTemp(x, z);
+        return this.climateCache.get(chunkX, chunkZ).sampleClime(x, z).temp();
     }
     
     @Override
@@ -79,9 +70,5 @@ public class PEClimateSampler implements ClimateSampler, SkyClimateSampler {
         temp = 1.0D - (1.0D - temp) * (1.0D - temp);
         
         return new Clime(MathHelper.clamp(temp, 0.0, 1.0), MathHelper.clamp(rain, 0.0, 1.0));
-    }
-    
-    private double sampleSkyTempNoise(int x, int z) {
-        return this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D);
     }
 }

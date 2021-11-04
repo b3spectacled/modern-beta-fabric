@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.world.biome.provider;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
@@ -20,7 +19,7 @@ public class PEBiomeProvider extends ClimateBiomeProvider implements BiomeResolv
     private final BetaClimateMap climateMap;
     
     public PEBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
-        super(seed, settings, biomeRegistry, new PEClimateSampler(seed), new PEClimateSampler(seed));
+        super(seed, settings, biomeRegistry, new PEClimateSampler(seed));
         
         this.climateMap = new BetaClimateMap(settings);
     }
@@ -61,15 +60,5 @@ public class PEBiomeProvider extends ClimateBiomeProvider implements BiomeResolv
     @Override
     public List<RegistryKey<Biome>> getBiomesForRegistry() {
         return this.climateMap.getBiomeIds().stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
-    }
-    
-    @Override
-    public boolean sampleBiomeColor() {
-        return ModernBeta.RENDER_CONFIG.biomeColorConfig.renderPEBetaBiomeColor;
-    }
-    
-    @Override
-    public boolean sampleSkyColor() {
-        return ModernBeta.RENDER_CONFIG.biomeColorConfig.renderPEBetaSkyColor;
     }
 }

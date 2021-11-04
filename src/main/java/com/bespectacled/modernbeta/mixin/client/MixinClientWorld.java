@@ -19,6 +19,7 @@ import com.bespectacled.modernbeta.client.color.BetaBlockColors;
 import com.bespectacled.modernbeta.util.OldClientWorld;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampler;
+import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampler.BetaSkyClimateSampler;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.fabricmc.api.EnvType;
@@ -74,7 +75,7 @@ public abstract class MixinClientWorld implements OldClientWorld {
         
         this.isOldWorld = false;
         this.climateSampler = Optional.ofNullable(useFixedSeed ? new BetaClimateSampler(worldSeed) : null);
-        this.skyClimateSampler = Optional.ofNullable(useFixedSeed ? new BetaClimateSampler(worldSeed) : null);
+        this.skyClimateSampler = Optional.ofNullable(useFixedSeed ? new BetaSkyClimateSampler(worldSeed) : null);
         
         if (this.client.getServer() != null && worldKey != null) { // Server check
             ChunkGenerator chunkGenerator = this.client.getServer().getWorld(worldKey).getChunkManager().getChunkGenerator();
