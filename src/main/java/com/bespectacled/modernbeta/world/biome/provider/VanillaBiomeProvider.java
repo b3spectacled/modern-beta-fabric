@@ -29,7 +29,7 @@ public class VanillaBiomeProvider extends ClimateBiomeProvider {
 
     @Override
     public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        return this.vanillaBiomeSource.getBiome(biomeX, biomeY, biomeZ);
+        return this.vanillaClimateSampler.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
     @Override

@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Level;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.BiomeInjectionRules;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.google.common.base.Supplier;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -38,11 +39,12 @@ public class OldBiomeInjector {
         this.chunkGenerator = chunkGenerator;
         this.biomeSource = biomeSource;
         
-        int seaLevel = chunkGenerator.getSeaLevel();
+        // Use supplier since Indev generator may modify sea level after initialization.
+        Supplier<Integer> seaLevel = () -> chunkGenerator.getSeaLevel();
         
         BiPredicate<Integer, Integer> oceanHeightPredicate = (y, height) -> this.atOceanDepth(height, OCEAN_MIN_DEPTH);
         BiPredicate<Integer, Integer> deepOceanHeightPredicate = (y, height) -> this.atOceanDepth(height, DEEP_OCEAN_MIN_DEPTH);
-        BiPredicate<Integer, Integer> caveBiomeHeightPredicate = (y, height) -> y + CAVE_START_OFFSET < Math.min(height, seaLevel);
+        BiPredicate<Integer, Integer> caveBiomeHeightPredicate = (y, height) -> y + CAVE_START_OFFSET < Math.min(height, seaLevel.get());
         
         BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder()
             .add(caveBiomeHeightPredicate, NOOP_STATE_PREDICATE, this.biomeSource::getCaveBiome);

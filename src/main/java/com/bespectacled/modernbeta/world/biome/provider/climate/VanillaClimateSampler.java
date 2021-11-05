@@ -3,9 +3,10 @@ package com.bespectacled.modernbeta.world.biome.provider.climate;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateBiomeRules;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
-import com.bespectacled.modernbeta.util.chunk.BiomeChunk;
+import com.bespectacled.modernbeta.util.chunk.FullResBiomeChunk;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.ClimateChunk;
+import com.bespectacled.modernbeta.util.chunk.LowResBiomeChunk;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeSource;
 
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +23,8 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
     private final VanillaBiomeSource biomeSource;
     private final BiomeAccess biomeAccess;
     
-    private final ChunkCache<BiomeChunk> biomeCache;
+    private final ChunkCache<LowResBiomeChunk> lowResBiomeCache;
+    private final ChunkCache<FullResBiomeChunk> fullResBiomeCache;
     private final ChunkCache<ClimateChunk> climateCache;
     private final ClimateBiomeRules climateRules;
     
@@ -30,17 +32,24 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
         this.biomeSource = biomeSource;
         this.biomeAccess = new BiomeAccess(this, biomeSource.getSeed());
         
-        this.biomeCache = new ChunkCache<>(
-            "biome", 
+        this.lowResBiomeCache = new ChunkCache<>(
+            "biome_low_res",
             1536,
-            true, 
-            (chunkX, chunkZ) -> new BiomeChunk(chunkX, chunkZ, this::sampleBiome)
+            true,
+            (chunkX, chunkZ) -> new LowResBiomeChunk(chunkX, chunkZ, this::sampleBiomeLowRes)
+        );
+        
+        this.fullResBiomeCache = new ChunkCache<>(
+            "biome_full_res",
+            1536,
+            true,
+            (chunkX, chunkZ) -> new FullResBiomeChunk(chunkX, chunkZ, this::sampleBiomeFullRes)
         );
         
         this.climateCache = new ChunkCache<>(
-            "climate", 
-            1536, 
-            true, 
+            "climate",
+            1536,
+            true,
             (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::blendBiomeClimate)
         );
 
@@ -62,15 +71,22 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
 
     @Override
     public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeSource.getBiome(biomeX, biomeY, biomeZ);
+        int chunkX = biomeX >> 2;
+        int chunkZ = biomeZ >> 2;
+        
+        return this.lowResBiomeCache.get(chunkX, chunkZ).sampleBiome(biomeX, biomeZ);
     }
     
     public VanillaBiomeSource getBiomeSource() {
         return this.biomeSource;
     }
     
-    private Biome sampleBiome(int x, int z) {
+    private Biome sampleBiomeFullRes(int x, int z) {
         return this.biomeAccess.getBiome(new BlockPos(x, 0, z));
+    }
+    
+    private Biome sampleBiomeLowRes(int biomeX, int biomeZ) {
+        return this.biomeSource.getBiome(biomeX, 0, biomeZ);
     }
     
     private Clime blendBiomeClimate(int x, int z) {
@@ -86,7 +102,7 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
                 int chunkX = curX >> 4;
                 int chunkZ = curZ >> 4;
                 
-                Biome biome = this.biomeCache.get(chunkX, chunkZ).sampleBiome(curX, curZ);
+                Biome biome = this.fullResBiomeCache.get(chunkX, chunkZ).sampleBiome(curX, curZ);
                 Clime clime = this.climateRules.apply(biome);
                 
                 temp += clime.temp();

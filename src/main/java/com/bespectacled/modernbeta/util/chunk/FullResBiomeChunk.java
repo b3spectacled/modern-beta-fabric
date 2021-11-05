@@ -4,10 +4,10 @@ import java.util.function.BiFunction;
 
 import net.minecraft.world.biome.Biome;
 
-public class BiomeChunk {
+public class FullResBiomeChunk {
     private final Biome[] biomes = new Biome[256];
     
-    public BiomeChunk(int chunkX, int chunkZ, BiFunction<Integer, Integer, Biome> chunkFunc) {
+    public FullResBiomeChunk(int chunkX, int chunkZ, BiFunction<Integer, Integer, Biome> chunkFunc) {
         int startX = chunkX << 4;
         int startZ = chunkZ << 4;
         
