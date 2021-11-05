@@ -17,8 +17,8 @@ public interface MixinSurfaceBuilderAccessor {
     DoublePerlinNoiseSampler getSurfaceNoise();
     
     @Invoker("method_39104")
-    public void invokeFrozenOceanBuilder(int surfaceMinY, Biome biome, double surfaceNoise, BlockColumn chunk, BlockPos.Mutable mutablePos, int x, int z, int surfaceY);
+    public void invokeFrozenOceanBuilder(int surfaceMinY, Biome biome, BlockColumn column, BlockPos.Mutable mutablePos, int x, int z, int height);
     
     @Invoker("method_39102")
-    public void invokeErodedBadlandsBuilder(int surfaceMinY, double surfaceNoise, BlockColumn chunk, int x, int z, int height, HeightLimitView world);
+    public void invokeErodedBadlandsBuilder(BlockColumn column, int x, int z, int surfaceMinY, HeightLimitView world);
 }

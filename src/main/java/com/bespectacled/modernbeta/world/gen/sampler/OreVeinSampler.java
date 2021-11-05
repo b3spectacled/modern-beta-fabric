@@ -35,7 +35,7 @@ public class OreVeinSampler {
         this.oreVeinSecondNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEIN_B);
         this.oreGapNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_GAP);
         
-        this.orePosRandomDeriver = randomDeriver.createRandom(ModernBeta.createId("ore")).createBlockPosRandomDeriver();
+        this.orePosRandomDeriver = randomDeriver.createRandom(ModernBeta.createId("ore")).createRandomDeriver();
         
         this.horizontalNoiseResolution = horizontalNoiseResolution;
         this.verticalNoiseResolution = verticalNoiseResolution;

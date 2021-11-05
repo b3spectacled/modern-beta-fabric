@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import com.google.common.collect.Maps;
 
-import net.minecraft.class_6765;
+import net.minecraft.world.biome.source.util.VanillaTerrainParametersCreator;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.NoiseSamplingConfig;
 import net.minecraft.world.gen.chunk.SlideConfig;
@@ -57,12 +57,11 @@ public class OldGeneratorConfig {
             new SlideConfig(-0.078125, 3, 0),
             new SlideConfig(0.1171875, 3, 0),
             1, 
-            2, 
-            1, 
-            -0.46875, 
-            true, 
+            2,
             false,
-            class_6765.method_39421()
+            false,
+            false,
+            VanillaTerrainParametersCreator.createSurfaceParameters()
         );
         
         ALPHA_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -73,11 +72,10 @@ public class OldGeneratorConfig {
             new SlideConfig(0.1171875, 3, 0),
             1, 
             2, 
-            1, 
-            -0.46875, 
-            true, 
             false,
-            class_6765.method_39421()
+            false,
+            false,
+            VanillaTerrainParametersCreator.createSurfaceParameters()
         );
         
         SKYLANDS_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -88,11 +86,10 @@ public class OldGeneratorConfig {
             new SlideConfig(-0.234375, 7, 0),
             2, 
             1, 
-            1, 
-            -0.46875, 
-            true, 
             false,
-            class_6765.method_39421()
+            false,
+            false,
+            VanillaTerrainParametersCreator.createSurfaceParameters()
         );
         
         INFDEV_611_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -103,11 +100,10 @@ public class OldGeneratorConfig {
             new SlideConfig(0.1171875, 3, 0),
             1, 
             2, 
-            1, 
-            -0.46875, 
-            true, 
             false,
-            class_6765.method_39421()
+            false,
+            false,
+            VanillaTerrainParametersCreator.createSurfaceParameters()
         );
         
         INFDEV_420_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -118,11 +114,10 @@ public class OldGeneratorConfig {
             new SlideConfig(0.1171875, 3, 0),
             1, 
             2, 
-            1, 
-            -0.46875, 
-            true, 
             false,
-            class_6765.method_39421()
+            false,
+            false,
+            VanillaTerrainParametersCreator.createSurfaceParameters()
         );
         
         INFDEV_415_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -133,11 +128,10 @@ public class OldGeneratorConfig {
             new SlideConfig(0.1171875, 3, 0),
             1, 
             1, 
-            1, 
-            -0.46875, 
-            true, 
             false,
-            class_6765.method_39421()
+            false,
+            false,
+            VanillaTerrainParametersCreator.createSurfaceParameters()
         );
         
         INDEV_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -148,11 +142,10 @@ public class OldGeneratorConfig {
             new SlideConfig(0, 0, 0),
             1, 
             1, 
-            1, 
-            -0.46875, 
-            true, 
             false,
-            class_6765.method_39421()
+            false,
+            false,
+            VanillaTerrainParametersCreator.createSurfaceParameters()
         );
         
         PE_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -163,11 +156,10 @@ public class OldGeneratorConfig {
             new SlideConfig(0.1171875, 3, 0),
             1, 
             2, 
-            1, 
-            -0.46875, 
-            true, 
             false,
-            class_6765.method_39421()
+            false,
+            false,
+            VanillaTerrainParametersCreator.createSurfaceParameters()
         );
     }
 }

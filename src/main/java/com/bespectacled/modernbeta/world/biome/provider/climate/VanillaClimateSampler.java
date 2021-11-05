@@ -3,9 +3,9 @@ package com.bespectacled.modernbeta.world.biome.provider.climate;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateBiomeRules;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
-import com.bespectacled.modernbeta.util.chunk.FullResBiomeChunk;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.ClimateChunk;
+import com.bespectacled.modernbeta.util.chunk.FullResBiomeChunk;
 import com.bespectacled.modernbeta.util.chunk.LowResBiomeChunk;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeSource;
 

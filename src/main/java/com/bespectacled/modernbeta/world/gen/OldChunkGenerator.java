@@ -193,11 +193,13 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
-    public void generateFeatures(StructureWorldAccess world, ChunkPos pos, StructureAccessor structureAccessor) {
+    public void generateFeatures(StructureWorldAccess world, Chunk chunk, StructureAccessor structureAccessor) {
+        ChunkPos pos = chunk.getPos();
+        
         if (this.chunkProvider.skipChunk(pos.x, pos.z, ChunkStatus.FEATURES)) 
             return;
 
-        super.generateFeatures(world, pos, structureAccessor);
+        super.generateFeatures(world, chunk, structureAccessor);
     }
     
     @Override

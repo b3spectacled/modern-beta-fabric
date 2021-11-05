@@ -25,6 +25,7 @@ public class ChunkCache<T> {
         this.name = name;
         this.capacity = capacity;
         this.evictOldChunks = evictOldChunks;
+        
         this.chunkFunc = chunkFunc;
         this.chunkMap = new Long2ObjectLinkedOpenHashMap<>(capacity);
         

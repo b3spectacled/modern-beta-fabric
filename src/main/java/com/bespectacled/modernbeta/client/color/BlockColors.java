@@ -36,5 +36,5 @@ public final class BlockColors {
             (state, view, pos, tintNdx) -> BetaBlockColors.INSTANCE.getReedColor(state, view, pos, tintNdx), 
             Blocks.SUGAR_CANE
         );
-    }
+    }   
 }

@@ -45,7 +45,7 @@ public class AquiferSamplerProvider {
     ) {
         this(
             noiseRegistry,
-            new AtomicSimpleRandom(-1).createBlockPosRandomDeriver(),
+            new AtomicSimpleRandom(-1).createRandomDeriver(),
             null,
             null,
             defaultFluid,
@@ -76,7 +76,7 @@ public class AquiferSamplerProvider {
         this.aquiferLavaNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.AQUIFER_LAVA);
         this.aquiferLevelSpreadNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.AQUIFER_FLUID_LEVEL_SPREAD);
 
-        this.aquiferRandomDeriver = randomDeriver.createRandom(ModernBeta.createId("aquifer")).createBlockPosRandomDeriver();
+        this.aquiferRandomDeriver = randomDeriver.createRandom(ModernBeta.createId("aquifer")).createRandomDeriver();
         
         FluidLevel lavaFluidLevel = new FluidLevel(lavaLevel, BlockStates.LAVA); // Vanilla: -54
         FluidLevel seaFluidLevel = new FluidLevel(seaLevel, defaultFluid);

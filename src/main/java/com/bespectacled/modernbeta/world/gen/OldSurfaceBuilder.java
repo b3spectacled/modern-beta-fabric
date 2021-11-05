@@ -54,7 +54,7 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
     ) {
         super(columnSampler, noiseRegistry, blockState, seaLevel, seed, randomProvider);
         
-        this.randomDeriver = randomProvider.create(seed).createBlockPosRandomDeriver();
+        this.randomDeriver = randomProvider.create(seed).createRandomDeriver();
     }
     
     /*
@@ -101,13 +101,13 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         
         // Generate eroded badlands hoodoos, as stone initially
         if (biomeKey == BiomeKeys.ERODED_BADLANDS) {
-            accessor.invokeErodedBadlandsBuilder(surfaceMinY, surfaceNoise, column.getBlockColumn(), x, z, height, chunk);
+            accessor.invokeErodedBadlandsBuilder(column.getBlockColumn(), x, z, surfaceMinY, chunk);
             
             // Re-sample height after hoodoo generation
             height = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, localX, localZ) + 1;
         }
         
-        ruleContext.initWorldDependentPredicates(chunk, x, z, runDepth);
+        ruleContext.initHorizontalContext(x, z, runDepth);
         
         int stoneDepthAbove = 0;
         int currentDepth = 0;
@@ -153,9 +153,7 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
             
             int stoneDepthBelow = y - solidHeight + 1;
             
-            ruleContext.initContextDependentPredicates(
-                biomeKey, 
-                biome, 
+            ruleContext.initVerticalContext(
                 runDepth, 
                 ++stoneDepthAbove, 
                 stoneDepthBelow, 
@@ -165,14 +163,14 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
             
             blockState = blockStateRule.tryApply(x, y, z);
             
-            if (blockState == null || blockState.isOf(Blocks.BEDROCK))
+            if (blockState == null || blockState.isOf(Blocks.BEDROCK) || blockState.isOf(Blocks.DEEPSLATE))
                 continue;
             
             column.getBlockColumn().setState(y, blockState);
         }
         
         if (biomeKey == BiomeKeys.FROZEN_OCEAN || biomeKey == BiomeKeys.DEEP_FROZEN_OCEAN) {
-            accessor.invokeFrozenOceanBuilder(surfaceMinY, biome, surfaceNoise, column.getBlockColumn(), pos, x, z, height);
+            accessor.invokeFrozenOceanBuilder(surfaceMinY, biome, column.getBlockColumn(), pos, x, z, height);
         }
         
         return true;

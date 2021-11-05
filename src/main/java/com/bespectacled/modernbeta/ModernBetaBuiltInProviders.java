@@ -19,6 +19,7 @@ import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.VanillaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.NoCaveBiomeProvider;
+import com.bespectacled.modernbeta.world.cavebiome.provider.SingleCaveBiomeProvider;
 import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.provider.AlphaChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.BetaChunkProvider;
@@ -95,7 +96,7 @@ public class ModernBetaBuiltInProviders {
     public static void registerCaveBiomeProvider() {
         Registries.CAVE_BIOME.register(BuiltInTypes.DEFAULT_ID, NoCaveBiomeProvider::new);
         Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.NONE.name, NoCaveBiomeProvider::new);
-        //Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.SINGLE.name, SingleCaveBiomeProvider::new);
+        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.SINGLE.name, SingleCaveBiomeProvider::new);
         //Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.NOISE.name, NoiseCaveBiomeProvider::new);
     }
     

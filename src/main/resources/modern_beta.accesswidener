@@ -11,7 +11,7 @@ accessible field net/minecraft/world/gen/chunk/NoiseChunkGenerator seed J
 extendable class net/minecraft/world/gen/chunk/ChunkGenerator
 accessible field net/minecraft/world/gen/chunk/ChunkGenerator worldSeed J
 
-accessible method net/minecraft/world/gen/chunk/ChunkGeneratorSettings <init> (Lnet/minecraft/world/gen/chunk/StructuresConfig;Lnet/minecraft/world/gen/chunk/GenerationShapeConfig;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/BlockState;Lnet/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRule;IIIZZZZZZZ)V
+accessible method net/minecraft/world/gen/chunk/ChunkGeneratorSettings <init> (Lnet/minecraft/world/gen/chunk/StructuresConfig;Lnet/minecraft/world/gen/chunk/GenerationShapeConfig;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/BlockState;Lnet/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRule;IZZZZZZ)V
 
 accessible method net/minecraft/world/gen/StructureWeightSampler <init> (Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/world/chunk/Chunk;)V
 
@@ -31,6 +31,6 @@ accessible class net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRu
 accessible class net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext
 accessible class net/minecraft/world/gen/surfacebuilder/MaterialRules$BlockStateRule
 
-accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext initWorldDependentPredicates (Lnet/minecraft/world/chunk/Chunk;III)V
-accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext initContextDependentPredicates (Lnet/minecraft/util/registry/RegistryKey;Lnet/minecraft/world/biome/Biome;IIIIIII)V
-accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext <init> (Lnet/minecraft/world/gen/surfacebuilder/SurfaceBuilder;Lnet/minecraft/world/gen/HeightContext;)V
+accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext initHorizontalContext (III)V
+accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext initVerticalContext (IIIIIII)V
+accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext <init> (Lnet/minecraft/world/gen/surfacebuilder/SurfaceBuilder;Lnet/minecraft/world/chunk/Chunk;Ljava/util/function/Function;Lnet/minecraft/util/registry/Registry;Lnet/minecraft/world/gen/HeightContext;)V

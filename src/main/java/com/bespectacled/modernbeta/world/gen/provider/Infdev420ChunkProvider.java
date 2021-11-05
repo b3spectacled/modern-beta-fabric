@@ -19,6 +19,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.HeightContext;
 import net.minecraft.world.gen.chunk.AquiferSampler;
@@ -69,7 +70,11 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         // Surface builder stuff
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
         HeightContext context = new HeightContext(this.chunkGenerator, region);
-        MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(this.surfaceBuilder, context);
+        
+        BiomeAccess biomeAccess = region.getBiomeAccess();
+        Registry<Biome> biomeRegistry = region.getRegistryManager().get(Registry.BIOME_KEY);
+        
+        MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(this.surfaceBuilder, chunk, biomeAccess::getBiome, biomeRegistry, context);
         MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
         
         for (int localX = 0; localX < 16; ++localX) {

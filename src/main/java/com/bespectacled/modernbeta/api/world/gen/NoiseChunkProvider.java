@@ -9,6 +9,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.api.world.gen.blocksource.BlockSources;
+import com.bespectacled.modernbeta.api.world.gen.blocksource.LayerTransitionBlockSource;
 import com.bespectacled.modernbeta.api.world.gen.noise.BaseNoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoodleCaveNoiseProvider;
@@ -40,7 +41,6 @@ import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.BlockSource;
-import net.minecraft.world.gen.LayerTransitionBlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler;
@@ -50,6 +50,7 @@ import net.minecraft.world.gen.random.AbstractRandom;
 import net.minecraft.world.gen.random.ChunkRandom;
 import net.minecraft.world.gen.random.RandomDeriver;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
+import net.minecraft.world.tick.OrderedTick;
 
 public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final int verticalNoiseResolution;   // Number of blocks in a vertical subchunk
@@ -69,7 +70,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     
     protected final boolean generateNoiseCaves;
     protected final boolean generateAquifers;
-    protected final boolean generateDeepslate;
     protected final boolean generateOreVeins;
     protected final boolean generateNoodleCaves;
     
@@ -100,8 +100,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().minimumY(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().height(),
             chunkGenerator.getGeneratorSettings().get().getSeaLevel(),
-            chunkGenerator.getGeneratorSettings().get().getBedrockFloorY(),
-            chunkGenerator.getGeneratorSettings().get().getBedrockCeilingY(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().minimumY(), // Bedrock floor
+            Integer.MIN_VALUE,
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
             chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
             chunkGenerator.getGeneratorSettings().get().getRandomProvider(),
@@ -120,7 +120,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             ((MixinSlideConfig)chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().bottomSlide()).getOffset(),
             ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasNoiseCaves(),
             ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasAquifers(),
-            ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasDeepslate(),
             ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasOreVeins(),
             ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasNoodleCaves()
         );
@@ -152,7 +151,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int bottomSlideOffset,
         boolean generateNoiseCaves,
         boolean generateAquifers,
-        boolean generateDeepslate,
         boolean generateOreVeins,
         boolean generateNoodleCaves
     ) {
@@ -195,7 +193,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         this.generateNoiseCaves = generateNoiseCaves;
         this.generateAquifers = generateAquifers;
-        this.generateDeepslate = generateDeepslate;
         this.generateOreVeins = generateOreVeins;
         this.generateNoodleCaves = generateNoodleCaves;
         
@@ -237,11 +234,11 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             null,
             this.generatorSettings,
             this.fluidLevelSampler,
-            null // Blender
+            class_6748.method_39336()
         );
         
         // Random deriver
-        RandomDeriver randomDeriver = randomProvider.create(this.seed).createBlockPosRandomDeriver();
+        RandomDeriver randomDeriver = randomProvider.create(this.seed).createRandomDeriver();
         
         // Aquifer Sampler Provider
         this.aquiferSamplerProvider = new AquiferSamplerProvider(
@@ -277,9 +274,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         // Block Source
         AbstractRandom blockSourceRandom = randomProvider.create(this.seed);
-        this.deepslateSource = this.generateDeepslate ? 
-            new LayerTransitionBlockSource(blockSourceRandom.createBlockPosRandomDeriver(), BlockStates.DEEPSLATE, null, -8, 0) :
-            (sampler, x, y, z) -> null;
+        this.deepslateSource = new LayerTransitionBlockSource(blockSourceRandom.createRandomDeriver(), BlockStates.DEEPSLATE, null, 0, 8);
     }
 
     /**
@@ -456,7 +451,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         if (aquiferSampler.needsFluidTick() && !blockState.getFluidState().isEmpty()) {
             // TODO: Fix later
             //chunk.getFluidTickScheduler().schedule(pos, blockState.getFluidState().getFluid(), 0);
-            //((class_6762<Fluid>)chunk.getFluidTickScheduler())
+            chunk.getFluidTickScheduler().scheduleTick(OrderedTick.create(blockState.getFluidState().getFluid(), pos, 0L));
         }
     }
 

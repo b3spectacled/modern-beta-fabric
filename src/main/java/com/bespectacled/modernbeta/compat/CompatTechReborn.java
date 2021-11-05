@@ -11,7 +11,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.gen.GenerationStep;
 
-@SuppressWarnings("deprecation")
 public class CompatTechReborn {
     private static final String MOD_ID = "techreborn";
     private static final String FEATURE_PREFIX = "";

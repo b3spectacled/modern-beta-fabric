@@ -7,7 +7,7 @@ import java.util.concurrent.Executor;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
-import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
+import com.bespectacled.modernbeta.api.world.gen.blocksource.LayerTransitionBlockSource;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -28,10 +28,10 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.HeightContext;
-import net.minecraft.world.gen.LayerTransitionBlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.random.AtomicSimpleRandom;
@@ -72,11 +72,8 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         setForestOctaves(forestNoiseOctaves);
         
         // Block Source
-        boolean hasDeepslate = ((MixinChunkGeneratorSettingsInvoker)(Object)this.generatorSettings.get()).invokeHasDeepslate();
         AtomicSimpleRandom atomicSimpleRandom = new AtomicSimpleRandom(seed);
-        this.deepslateSource = hasDeepslate ? 
-            new LayerTransitionBlockSource(atomicSimpleRandom.createBlockPosRandomDeriver(), BlockStates.DEEPSLATE, null, -8, 0) :
-            (sampler, x, y, z) -> null;
+        this.deepslateSource = new LayerTransitionBlockSource(atomicSimpleRandom.createRandomDeriver(), BlockStates.DEEPSLATE, null, 0, 8);
     }
 
     @Override
@@ -97,7 +94,11 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         // Surface builder stuff
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
         HeightContext context = new HeightContext(this.chunkGenerator, region);
-        MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(this.surfaceBuilder, context);
+        
+        BiomeAccess biomeAccess = region.getBiomeAccess();
+        Registry<Biome> biomeRegistry = region.getRegistryManager().get(Registry.BIOME_KEY);
+        
+        MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(this.surfaceBuilder, chunk, biomeAccess::getBiome, biomeRegistry, context);
         MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
         
         for (int localX = 0; localX < 16; ++localX) {
