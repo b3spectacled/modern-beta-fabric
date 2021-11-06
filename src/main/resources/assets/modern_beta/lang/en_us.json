@@ -132,8 +132,8 @@
     "text.autoconfig.modern_beta.option.renderingConfig.otherConfig.renderGameVersion": "Render Game Version",
     "text.autoconfig.modern_beta.option.renderingConfig.otherConfig.renderGameVersion.@Tooltip": "Render game version in hud.",
     
-    "text.autoconfig.modern_beta.option.renderingConfig.otherConfig.renderLowClouds": "Render Low Clouds",
-    "text.autoconfig.modern_beta.option.renderingConfig.otherConfig.renderLowClouds.@Tooltip": "Render clouds at y108.",
+    "text.autoconfig.modern_beta.option.renderingConfig.otherConfig.cloudHeight": "Cloud Height",
+    "text.autoconfig.modern_beta.option.renderingConfig.otherConfig.cloudHeight.@Tooltip": "Set cloud render height, range: [0, 256]",
     
     "biome.modern_beta.forest": "Beta Forest",
     "biome.modern_beta.shrubland": "Beta Shrubland",

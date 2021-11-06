@@ -18,8 +18,8 @@ public class MixinSkyProperties {
     public void injectCloudsHeight(CallbackInfoReturnable<Float> info) {
         SkyProperties skyProperties = (SkyProperties)(Object)this;
         
-        if (skyProperties instanceof SkyProperties.Overworld && ModernBeta.RENDER_CONFIG.otherConfig.renderLowClouds) {
-            info.setReturnValue(108F);
+        if (skyProperties instanceof SkyProperties.Overworld) {
+            info.setReturnValue((float)ModernBeta.RENDER_CONFIG.otherConfig.cloudHeight);
         }
     }
 }
