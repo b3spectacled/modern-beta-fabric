@@ -54,7 +54,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().minimumY(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().height(),
             chunkGenerator.getGeneratorSettings().get().getSeaLevel(),
-            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().minimumY(),
+            0,
             Integer.MIN_VALUE,
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
             chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),

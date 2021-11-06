@@ -95,7 +95,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().minimumY(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().height(),
             chunkGenerator.getGeneratorSettings().get().getSeaLevel(),
-            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().minimumY(), // Bedrock floor
+            0, // Bedrock floor
             Integer.MIN_VALUE,
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
             chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
@@ -737,7 +737,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     @Override
     public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
         if (chunkStatus == ChunkStatus.CARVERS)
-            return true;
+            return false;
         
         return false;
     }

@@ -4,7 +4,6 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import net.minecraft.client.render.DimensionEffects;
-import net.minecraft.world.dimension.DimensionOptions;
 
 @Config(name = "rendering_config")
 public class ConfigRendering implements ConfigData {
