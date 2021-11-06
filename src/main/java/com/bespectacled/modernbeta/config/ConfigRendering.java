@@ -3,6 +3,8 @@ package com.bespectacled.modernbeta.config;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import net.minecraft.client.render.DimensionEffects;
+import net.minecraft.world.dimension.DimensionOptions;
 
 @Config(name = "rendering_config")
 public class ConfigRendering implements ConfigData {
@@ -49,6 +51,7 @@ public class ConfigRendering implements ConfigData {
         public boolean renderGameVersion = false;
         
         @ConfigEntry.Gui.Tooltip(count = 1)
-        public boolean renderLowClouds = false;
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 320)
+        public int cloudHeight = DimensionEffects.Overworld.CLOUDS_HEIGHT;
     }
 }

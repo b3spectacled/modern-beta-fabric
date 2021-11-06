@@ -18,8 +18,8 @@ public class MixinDimensionEffects {
     public void injectCloudsHeight(CallbackInfoReturnable<Float> info) {
         DimensionEffects skyProperties = (DimensionEffects)(Object)this;
         
-        if (skyProperties instanceof DimensionEffects.Overworld && ModernBeta.RENDER_CONFIG.otherConfig.renderLowClouds) {
-            info.setReturnValue(108F);
+        if (skyProperties instanceof DimensionEffects.Overworld) {
+            info.setReturnValue((float)ModernBeta.RENDER_CONFIG.otherConfig.cloudHeight);
         }
     }
 }
