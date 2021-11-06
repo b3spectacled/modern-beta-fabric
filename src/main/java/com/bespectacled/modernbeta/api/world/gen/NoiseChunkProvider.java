@@ -15,7 +15,6 @@ import com.bespectacled.modernbeta.api.world.gen.noise.NoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoodleCaveNoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.OreVeinNoiseProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
-import com.bespectacled.modernbeta.mixin.MixinSlideConfig;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
@@ -46,6 +45,7 @@ import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
+import net.minecraft.world.gen.chunk.SlideConfig;
 import net.minecraft.world.gen.random.AbstractRandom;
 import net.minecraft.world.gen.random.ChunkRandom;
 import net.minecraft.world.gen.random.RandomDeriver;
@@ -73,13 +73,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final boolean generateOreVeins;
     protected final boolean generateNoodleCaves;
     
-    private final double topSlideTarget;
-    private final int topSlideSize;
-    private final int topSlideOffset;
-    
-    private final double bottomSlideTarget;
-    private final int bottomSlideSize;
-    private final int bottomSlideOffset;
+    private final SlideConfig topSlide;
+    private final SlideConfig bottomSlide;
     
     private final ChunkCache<BaseNoiseProvider> noiseProviderCache;
     private final ChunkCache<HeightmapChunk> heightmapChunkCache;
@@ -112,12 +107,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().sampling().getYScale(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().sampling().getXZFactor(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().sampling().getYFactor(),
-            ((MixinSlideConfig)chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().topSlide()).getTarget(),
-            ((MixinSlideConfig)chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().topSlide()).getSize(),
-            ((MixinSlideConfig)chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().topSlide()).getOffset(),
-            ((MixinSlideConfig)chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().bottomSlide()).getTarget(),
-            ((MixinSlideConfig)chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().bottomSlide()).getSize(),
-            ((MixinSlideConfig)chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().bottomSlide()).getOffset(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().topSlide(),
+            chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().bottomSlide(),
             ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasNoiseCaves(),
             ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasAquifers(),
             ((MixinChunkGeneratorSettingsInvoker)(Object)chunkGenerator.getGeneratorSettings().get()).invokeHasOreVeins(),
@@ -143,12 +134,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         double yScale,
         double xzFactor, 
         double yFactor,
-        double topSlideTarget,
-        int topSlideSize,
-        int topSlideOffset,
-        double bottomSlideTarget,
-        int bottomSlideSize,
-        int bottomSlideOffset,
+        SlideConfig topSlide,
+        SlideConfig bottomSlide,
         boolean generateNoiseCaves,
         boolean generateAquifers,
         boolean generateOreVeins,
@@ -183,13 +170,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         this.xzFactor = xzFactor;
         this.yFactor = yFactor;
         
-        this.topSlideTarget = topSlideTarget;
-        this.topSlideSize = topSlideSize;
-        this.topSlideOffset = topSlideOffset;
-        
-        this.bottomSlideTarget = bottomSlideTarget;
-        this.bottomSlideSize = bottomSlideSize;
-        this.bottomSlideOffset = bottomSlideOffset;
+        this.topSlide = topSlide;
+        this.bottomSlide = bottomSlide;
         
         this.generateNoiseCaves = generateNoiseCaves;
         this.generateAquifers = generateAquifers;
@@ -402,43 +384,20 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     }
     
     /**
-     * Interpolates density to set terrain curve at top of the world.
+     * Interpolate density to set terrain curve at top and bottom of world.
      * 
      * @param density Base density.
-     * @param noiseY y-coordinate in noise coordinates.
-     * @param initialOffset Initial noise y-coordinate offset. Generator settings offset is subtracted from this.
+     * @param noiseY y-coordinate in noise coordinates from [0, noiseSizeY]
      * 
      * @return Modified noise density.
      */
-    protected double applyTopSlide(double density, int noiseY, int initialOffset) {
-        int topSlideStart = (this.noiseSizeY + this.noiseMinY + 1) - initialOffset - this.topSlideOffset;
-        if (noiseY > topSlideStart) {
-            double topSlideDelta = (float) (noiseY - topSlideStart) / (float) this.topSlideSize;
-            density = MathHelper.lerp(topSlideDelta, density, this.topSlideTarget);
-        }
+    protected double applySlides(double density, int noiseY) {
+        density = this.topSlide.method_38414(density, this.noiseSizeY - noiseY);
+        density = this.bottomSlide.method_38414(density, noiseY);
         
         return density;
     }
     
-    /**
-     * Interpolates density to set terrain curve at bottom of the world.
-     * 
-     * @param density Base density.
-     * @param noiseY y-coordinate in noise coordinates.
-     * @param initialOffset Initial noise y-coordinate offset. Generator settings offset is subtracted from this.
-     * 
-     * @return Modified noise density.
-     */
-    protected double applyBottomSlide(double density, int noiseY, int initialOffset) {
-        int bottomSlideStart = this.noiseMinY - initialOffset - this.bottomSlideOffset;
-        if (noiseY < bottomSlideStart) {
-            double bottomSlideDelta = (float) (bottomSlideStart - noiseY) / ((float) this.bottomSlideSize);
-            density = MathHelper.lerp(bottomSlideDelta, density, this.bottomSlideTarget);
-        }
-        
-        return density;
-    }
-
     /**
      * Schedules fluid tick for aquifer sampler, so water flows when generated.
      * 
@@ -778,7 +737,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     @Override
     public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
         if (chunkStatus == ChunkStatus.CARVERS)
-            return false;
+            return true;
         
         return false;
     }

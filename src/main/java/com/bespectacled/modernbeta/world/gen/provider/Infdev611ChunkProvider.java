@@ -317,11 +317,8 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
             
             // Apply slides
-            density = this.applyTopSlide(density, noiseY, 4);
-            density = this.applyBottomSlide(density, noiseY, -3);
-            
-            heightmapDensity = this.applyTopSlide(heightmapDensity, noiseY, 4);
-            heightmapDensity = this.applyBottomSlide(heightmapDensity, noiseY, -3);
+            density = this.applySlides(density, y);
+            heightmapDensity = this.applySlides(heightmapDensity, y);
             
             primaryBuffer[y] = MathHelper.clamp(density, -64.0, 64.0);
             heightmapBuffer[y] = MathHelper.clamp(heightmapDensity, -64.0, 64.0);
