@@ -3,6 +3,8 @@ package com.bespectacled.modernbeta.world.biome;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.function.Predicate;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
@@ -25,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 
@@ -91,6 +94,17 @@ public class OldBiomeSource extends BiomeSource {
         this.biomeHeightSampler = BiomeHeightSampler.DEFAULT;
     }
     
+    @Environment(EnvType.CLIENT)
+    @Override
+    public BiomeSource withSeed(long seed) {
+        return new OldBiomeSource(seed, this.biomeRegistry, this.biomeSettings, this.caveBiomeSettings);
+    }
+    
+    @Override
+    protected Codec<? extends BiomeSource> getCodec() {
+        return OldBiomeSource.CODEC;
+    }
+    
     public void setBiomeHeightSampler(BiomeHeightSampler biomeHeightSampler) {
         this.biomeHeightSampler = biomeHeightSampler;
     }
@@ -147,17 +161,6 @@ public class OldBiomeSource extends BiomeSource {
           return new NbtCompound().copyFrom(this.caveBiomeSettings.get());
         
         return new NbtCompound();
-    }
-
-    @Environment(EnvType.CLIENT)
-    @Override
-    public BiomeSource withSeed(long seed) {
-        return new OldBiomeSource(seed, this.biomeRegistry, this.biomeSettings, this.caveBiomeSettings);
-    }
-    
-    @Override
-    protected Codec<? extends BiomeSource> getCodec() {
-        return OldBiomeSource.CODEC;
     }
 
     public static void register() {

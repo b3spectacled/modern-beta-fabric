@@ -21,11 +21,11 @@ public class ConfigCaveBiome implements ConfigData {
         public String singleBiome = BiomeKeys.LUSH_CAVES.getValue().toString();
         public boolean useNoise = true;
         public int horizontalNoiseScale = 32;
-        public int verticalNoiseScale = 8;
+        public int verticalNoiseScale = 16;
     }
     
     public static class NoiseBiomeConfig {
         public int horizontalNoiseScale = 32;
-        public int verticalNoiseScale = 8;
+        public int verticalNoiseScale = 16;
     }
 }

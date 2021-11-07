@@ -72,8 +72,10 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         setForestOctaves(forestNoiseOctaves);
         
         // Block Source
-        AtomicSimpleRandom atomicSimpleRandom = new AtomicSimpleRandom(seed);
-        this.deepslateSource = new LayerTransitionBlockSource(atomicSimpleRandom.createRandomDeriver(), BlockStates.DEEPSLATE, null, 0, 8);
+        AtomicSimpleRandom blockSourceRandom = new AtomicSimpleRandom(seed);
+        this.deepslateSource = this.generateDeepslate ? 
+            new LayerTransitionBlockSource(blockSourceRandom.createRandomDeriver(), BlockStates.DEEPSLATE, null, 0, 8) :
+            (sampler, x, y, z) -> null;
     }
 
     @Override
@@ -110,8 +112,8 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(x, surfaceTopY, z));
                 
                 BiomeBlocks biomeBlocks = BiomeBlocks.getBiomeBlocks(biome);
-                BlockState biomeTopBlock = biomeBlocks.getTopBlock();
-                BlockState biomeFillerBlock = biomeBlocks.getFillerBlock();
+                BlockState biomeTopBlock = biomeBlocks.topBlock();
+                BlockState biomeFillerBlock = biomeBlocks.fillerBlock();
 
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;

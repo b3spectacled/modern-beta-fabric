@@ -6,6 +6,7 @@ import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.BooleanCyclingOptionWrapper;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.util.NbtTags;
@@ -22,6 +23,7 @@ public class InfWorldScreen extends WorldScreen {
     private static final String GENERATE_OCEANS_DISPLAY_STRING = "createWorld.customize.inf.generateOceans";
     private static final String GENERATE_OCEAN_SHRINES_DISPLAY_STRING = "createWorld.customize.inf.generateOceanShrines";
     private static final String GENERATE_MONUMENTS_DISPLAY_STRING = "createWorld.customize.inf.generateMonuments";
+    private static final String GENERATE_DEEPSLATE_DISPLAY_STRING = "createWorld.customize.inf.generateDeepslate";
     
     private static final String GENERATE_OCEANS_TOOLTIP = "createWorld.customize.inf.generateOceans.tooltip";
     
@@ -37,10 +39,13 @@ public class InfWorldScreen extends WorldScreen {
     protected void init() {
         super.init();
         
+        String worldType = NbtUtil.toStringOrThrow(this.getChunkSetting(NbtTags.WORLD_TYPE));
         String biomeType = NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.BIOME_TYPE));
         
         boolean isHydrogenLoaded = Compat.isLoaded("hydrogen");
         boolean isSingleBiome = biomeType.equals(BuiltInTypes.Biome.SINGLE.name);
+        boolean showDeepslateOption = this.worldProvider.showGenerateDeepslate();
+        
         /*
         boolean isSingleBiomeAndHasOceanShrine = isSingleBiome ? 
             this.registryManager
@@ -70,6 +75,12 @@ public class InfWorldScreen extends WorldScreen {
             value -> this.putChunkSetting(NbtTags.GEN_MONUMENTS, NbtByte.of(value))
         );
         
+        BooleanCyclingOptionWrapper generateDeepslate = new BooleanCyclingOptionWrapper(
+            GENERATE_DEEPSLATE_DISPLAY_STRING,
+            () -> NbtUtil.toBooleanOrThrow(this.getChunkSetting(NbtTags.GEN_DEEPSLATE)),
+            value -> this.putChunkSetting(NbtTags.GEN_DEEPSLATE, NbtByte.of(value))
+        );
+        
         TextOptionWrapper hydrogenText = new TextOptionWrapper(HYDROGEN_LOADED_STRING, Formatting.RED);
         
         if (isHydrogenLoaded && !isSingleBiome) {
@@ -84,6 +95,10 @@ public class InfWorldScreen extends WorldScreen {
         if (!isHydrogenLoaded && !isSingleBiome) {
             this.addOption(generateOceanShrines);
             this.addOption(generateMonuments);
+        }
+        
+        if (showDeepslateOption) {
+            this.addOption(generateDeepslate);
         }
     }
 }

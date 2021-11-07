@@ -2,8 +2,11 @@ package com.bespectacled.modernbeta.api.world.gen;
 
 import java.util.Random;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.NbtTags;
+import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.OldNoiseColumnSampler;
@@ -34,6 +37,8 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     protected final int bedrockFloor;
     protected final int bedrockCeiling;
     
+    protected final boolean generateDeepslate;
+    
     protected final BlockState defaultBlock;
     protected final BlockState defaultFluid;
     
@@ -56,6 +61,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getSeaLevel(),
             0,
             Integer.MIN_VALUE,
+            NbtUtil.readBoolean(NbtTags.GEN_DEEPSLATE, chunkGenerator.getProviderSettings(), ModernBeta.GEN_CONFIG.infGenConfig.generateDeepslate),
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
             chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
             chunkGenerator.getGeneratorSettings().get().getRandomProvider(),
@@ -71,6 +77,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         int seaLevel,
         int bedrockFloor,
         int bedrockCeiling,
+        boolean generateDeepslate,
         BlockState defaultBlock,
         BlockState defaultFluid,
         ChunkRandom.RandomProvider randomProvider,
@@ -86,6 +93,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         this.seaLevel = seaLevel;
         this.bedrockFloor = bedrockFloor;
         this.bedrockCeiling = bedrockCeiling;
+        this.generateDeepslate = generateDeepslate;
 
         this.defaultBlock = defaultBlock;
         this.defaultFluid = defaultFluid;

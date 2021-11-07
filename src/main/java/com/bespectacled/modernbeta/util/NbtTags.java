@@ -8,6 +8,7 @@ public class NbtTags {
     public static final String GEN_OCEANS = "generateOceans";
     public static final String GEN_OCEAN_SHRINES = "generateOceanShrines";
     public static final String GEN_MONUMENTS = "generateMonuments";
+    public static final String GEN_DEEPSLATE = "generateDeepslate";
     
     // Beta/PE Climate
     public static final String SAMPLE_CLIMATE = "sampleClimate";

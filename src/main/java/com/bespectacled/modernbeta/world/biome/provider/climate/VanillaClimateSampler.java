@@ -17,7 +17,7 @@ import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.source.BiomeAccess;
 
 public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storage {
-    private static final int BLEND_DIST = 3;
+    private static final int BLEND_DIST = 5;
     private static final double BLEND_AREA = Math.pow(BLEND_DIST * 2 + 1, 2);
     
     private final VanillaBiomeSource biomeSource;

@@ -17,6 +17,9 @@ public final class WorldProvider {
     
     private final boolean generateOceanShrines;
     private final boolean generateMonuments;
+    
+    private final boolean generateDeepslate;
+    private final boolean showGenerateDeepslate;
 
     public WorldProvider(
         String chunkProvider,
@@ -25,7 +28,9 @@ public final class WorldProvider {
         String singleBiome,
         String worldScreen,
         boolean generateOceanShrines,
-        boolean generateMonuments
+        boolean generateMonuments,
+        boolean generateDeepslate,
+        boolean showGenerateDeepslate
     ) {
         this.chunkProvider = chunkProvider;
         this.worldScreen = worldScreen;
@@ -36,6 +41,9 @@ public final class WorldProvider {
         
         this.generateOceanShrines = generateOceanShrines;
         this.generateMonuments = generateMonuments;
+        
+        this.generateDeepslate = generateDeepslate;
+        this.showGenerateDeepslate = showGenerateDeepslate;
     }
     
     public String getChunkProvider() {
@@ -64,6 +72,14 @@ public final class WorldProvider {
     
     public boolean generateMonuments() {
         return this.generateMonuments;
+    }
+    
+    public boolean generateDeepslate() {
+        return this.generateDeepslate;
+    }
+    
+    public boolean showGenerateDeepslate() {
+        return this.showGenerateDeepslate;
     }
     
     public WorldScreen createWorldScreen(

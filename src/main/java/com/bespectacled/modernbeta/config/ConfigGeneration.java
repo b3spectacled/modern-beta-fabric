@@ -26,6 +26,7 @@ public class ConfigGeneration implements ConfigData {
         public boolean generateOceanShrines = true;
         public boolean generateMonuments = false;
         public boolean sampleClimate = false;
+        public boolean generateDeepslate = true;
     }
     
     public static class Inf227GenConfig {

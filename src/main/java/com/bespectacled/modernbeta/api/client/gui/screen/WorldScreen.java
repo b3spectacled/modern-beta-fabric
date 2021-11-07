@@ -53,6 +53,9 @@ public abstract class WorldScreen extends GUIScreen {
         
         this.putChunkSetting(NbtTags.GEN_OCEAN_SHRINES, NbtByte.of(worldProvider.generateOceanShrines()));
         this.putChunkSetting(NbtTags.GEN_MONUMENTS, NbtByte.of(worldProvider.generateMonuments()));
+        
+        // Replace deepslate option if applicable
+        this.putChunkSetting(NbtTags.GEN_DEEPSLATE, NbtByte.of(worldProvider.generateDeepslate()));
     }
     
     @Override

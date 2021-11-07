@@ -29,7 +29,9 @@ public class ModernBetaBuiltInWorldProviders {
             BetaBiomes.FOREST_ID.toString(), 
             BuiltInTypes.WorldScreen.BASE.name,
             true,
-            false
+            false,
+            true,
+            true
         );
         
         BETA = new WorldProvider(
@@ -39,7 +41,9 @@ public class ModernBetaBuiltInWorldProviders {
             BetaBiomes.FOREST_ID.toString(), 
             BuiltInTypes.WorldScreen.INF_CLIMATE.name,
             true,
-            false
+            false,
+            true,
+            true
         );
         
         
@@ -50,7 +54,9 @@ public class ModernBetaBuiltInWorldProviders {
             BetaBiomes.SKY_ID.toString(), 
             BuiltInTypes.WorldScreen.BASE.name,
             false,
-            false
+            false,
+            false,
+            true
         );
         
         ALPHA = new WorldProvider(
@@ -60,7 +66,9 @@ public class ModernBetaBuiltInWorldProviders {
             InfBiomes.ALPHA_ID.toString(), 
             BuiltInTypes.WorldScreen.INF.name,
             true,
-            false
+            false,
+            false,
+            true
         );
         
         INFDEV_611 = new WorldProvider(
@@ -69,6 +77,8 @@ public class ModernBetaBuiltInWorldProviders {
             BuiltInTypes.CaveBiome.NONE.name,
             InfBiomes.INFDEV_611_ID.toString(),
             BuiltInTypes.WorldScreen.INF.name,
+            false,
+            true,
             false,
             true
         );
@@ -80,7 +90,9 @@ public class ModernBetaBuiltInWorldProviders {
             InfBiomes.INFDEV_420_ID.toString(), 
             BuiltInTypes.WorldScreen.INF.name,
             true,
-            false
+            false,
+            false,
+            true
         );
         
         INFDEV_415 = new WorldProvider(
@@ -90,7 +102,8 @@ public class ModernBetaBuiltInWorldProviders {
             InfBiomes.INFDEV_415_ID.toString(), 
             BuiltInTypes.WorldScreen.INF.name,
             true,
-            false
+            false,
+            false, true
         );
         
         INFDEV_227 = new WorldProvider(
@@ -100,7 +113,9 @@ public class ModernBetaBuiltInWorldProviders {
             InfBiomes.INFDEV_227_ID.toString(), 
             BuiltInTypes.WorldScreen.INFDEV_227.name,
             true,
-            false
+            false,
+            false,
+            true
         );
         
         INDEV = new WorldProvider(
@@ -110,6 +125,8 @@ public class ModernBetaBuiltInWorldProviders {
             IndevBiomes.INDEV_NORMAL_ID.toString(), 
             BuiltInTypes.WorldScreen.INDEV.name,
             true,
+            false,
+            false,
             false
         );
         
@@ -120,6 +137,8 @@ public class ModernBetaBuiltInWorldProviders {
             IndevBiomes.INDEV_NORMAL_ID.toString(), 
             BuiltInTypes.WorldScreen.PRE_INF.name,
             true,
+            false,
+            false,
             false
         );
         
@@ -130,6 +149,8 @@ public class ModernBetaBuiltInWorldProviders {
             BetaBiomes.FOREST_ID.toString(),
             BuiltInTypes.WorldScreen.ISLAND.name,
             false,
+            true,
+            true,
             true
         );
         
@@ -140,7 +161,9 @@ public class ModernBetaBuiltInWorldProviders {
             PEBiomes.PE_FOREST_ID.toString(),
             BuiltInTypes.WorldScreen.INF_CLIMATE.name,
             true,
-            false
+            false,
+            false,
+            true
         );
     }
 }

@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.blocksource.BlockSources;
 import com.bespectacled.modernbeta.api.world.gen.blocksource.LayerTransitionBlockSource;
 import com.bespectacled.modernbeta.api.world.gen.noise.BaseNoiseProvider;
@@ -16,6 +17,8 @@ import com.bespectacled.modernbeta.api.world.gen.noise.NoodleCaveNoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.OreVeinNoiseProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.NbtTags;
+import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
@@ -97,6 +100,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getSeaLevel(),
             0, // Bedrock floor
             Integer.MIN_VALUE,
+            NbtUtil.readBoolean(NbtTags.GEN_DEEPSLATE, chunkGenerator.getProviderSettings(), ModernBeta.GEN_CONFIG.infGenConfig.generateDeepslate),
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
             chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
             chunkGenerator.getGeneratorSettings().get().getRandomProvider(),
@@ -124,6 +128,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         int seaLevel,
         int bedrockFloor,
         int bedrockCeiling,
+        boolean generateDeepslate,
         BlockState defaultBlock,
         BlockState defaultFluid,
         ChunkRandom.RandomProvider randomProvider,
@@ -142,16 +147,17 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         boolean generateNoodleCaves
     ) {
         super(
-            chunkGenerator, 
-            noiseRegistry, 
-            worldMinY, 
-            worldHeight, 
-            seaLevel, 
-            bedrockFloor, 
-            bedrockCeiling, 
-            defaultBlock, 
-            defaultFluid, 
-            randomProvider, 
+            chunkGenerator,
+            noiseRegistry,
+            worldMinY,
+            worldHeight,
+            seaLevel,
+            bedrockFloor,
+            bedrockCeiling,
+            generateDeepslate,
+            defaultBlock,
+            defaultFluid,
+            randomProvider,
             surfaceRule
         );
         
@@ -256,7 +262,9 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         // Block Source
         AbstractRandom blockSourceRandom = randomProvider.create(this.seed);
-        this.deepslateSource = new LayerTransitionBlockSource(blockSourceRandom.createRandomDeriver(), BlockStates.DEEPSLATE, null, 0, 8);
+        this.deepslateSource = this.generateDeepslate ? 
+            new LayerTransitionBlockSource(blockSourceRandom.createRandomDeriver(), BlockStates.DEEPSLATE, null, 0, 8) :
+            (sampler, x, y, z) -> null;
     }
 
     /**

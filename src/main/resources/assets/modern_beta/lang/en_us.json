@@ -43,6 +43,7 @@
     "createWorld.customize.inf.generateOceanShrines": "Generate Ocean Shrines",
     "createWorld.customize.inf.generateMonuments": "Generate Monuments",
     "createWorld.customize.inf.sampleClimate": "Sample Climate",
+    "createWorld.customize.inf.generateDeepslate": "Generate Deepslate",
     
     "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",
     "createWorld.customize.infdev.generateInfdevWall": "Generate Infdev Obsidian Wall",

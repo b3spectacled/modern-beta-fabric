@@ -86,7 +86,7 @@ public class SingleCaveBiomeScreen extends BiomeScreen {
         
         DoubleOptionWrapper<Integer> verticalScaleOption = new DoubleOptionWrapper<>(
             VERTICAL_SCALE_DISPLAY_STRING,
-            1D, 16D, 1f,
+            1D, 64D, 1f,
             () -> NbtUtil.toIntOrThrow(this.getBiomeSetting(NbtTags.VERTICAL_NOISE_SCALE)),
             value -> this.putBiomeSetting(NbtTags.VERTICAL_NOISE_SCALE, NbtInt.of(value.intValue()))
         );

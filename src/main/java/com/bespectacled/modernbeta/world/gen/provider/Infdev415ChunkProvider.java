@@ -104,8 +104,8 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
                 
                 BiomeBlocks biomeBlocks = BiomeBlocks.getBiomeBlocks(biome);
-                BlockState biomeTopBlock = biomeBlocks.getTopBlock();
-                BlockState biomeFillerBlock = biomeBlocks.getFillerBlock();
+                BlockState biomeTopBlock = biomeBlocks.topBlock();
+                BlockState biomeFillerBlock = biomeBlocks.fillerBlock();
 
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
