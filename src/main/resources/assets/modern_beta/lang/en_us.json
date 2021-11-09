@@ -27,9 +27,8 @@
     "createWorld.customize.worldType.title": "Modern Beta World Configuration",
     "createWorld.customize.biomeType.title": "Modern Beta Biome Configuration",
     
-    "createWorld.customize.climateType": "Climate Type",
-    "createWorld.customize.climateType.land": "Land",
-    "createWorld.customize.climateType.ocean": "Ocean",
+    "createWorld.customize.climateType.land": "Land Biomes",
+    "createWorld.customize.climateType.ocean": "Ocean Biomes",
     
     "createWorld.customize.hydrogenLoaded": "Hydrogen detected! 'Assign Ocean Biomes' option is disabled.",
     

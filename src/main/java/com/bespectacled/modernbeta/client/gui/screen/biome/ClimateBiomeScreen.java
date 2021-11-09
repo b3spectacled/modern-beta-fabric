@@ -1,14 +1,12 @@
 package com.bespectacled.modernbeta.client.gui.screen.biome;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.client.gui.screen.BiomeScreen;
 import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.ActionOptionWrapper;
-import com.bespectacled.modernbeta.api.client.gui.wrapper.CyclingOptionWrapper;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
 import com.bespectacled.modernbeta.client.gui.Settings;
@@ -24,28 +22,30 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 public class ClimateBiomeScreen extends BiomeScreen {
-    private static final String CLIMATE_TYPE_DISPLAY_STRING = "createWorld.customize.climateType";
+    private static final String LAND_BIOME_DISPLAY_STRING = "createWorld.customize.climateType.land";
+    private static final String OCEAN_BIOME_DISPLAY_STRING = "createWorld.customize.climateType.ocean";
     
-    private final ClimateType climateType;
-    private final Map<String, Identifier> biomeSettingsMap;
+    private final Map<String, Identifier> landBiomeMap;
+    private final Map<String, Identifier> oceanBiomeMap;
     
-    private ClimateBiomeScreen(WorldScreen parent, Consumer<Settings> consumer, Settings biomeSettings, ClimateType climateType) {
+    private ClimateBiomeScreen(WorldScreen parent, Consumer<Settings> consumer, Settings biomeSettings) {
         super(parent, consumer, biomeSettings);
         
         // Create Beta biome map from existing biome settings
-        this.climateType = climateType;
-        this.biomeSettingsMap = new BetaClimateMap(this.biomeSettings.getNbt()).getMap(climateType);
+        BetaClimateMap climateMap = new BetaClimateMap(this.biomeSettings.getNbt());
+        
+        this.landBiomeMap = climateMap.getMap(ClimateType.LAND);
+        this.oceanBiomeMap = climateMap.getMap(ClimateType.OCEAN);
     }
     
-    private ClimateBiomeScreen(WorldScreen parent, Consumer<Settings> consumer, ClimateType climateType) {
-        this(parent, consumer, new Settings(parent.getWorldSettings().getNbt(WorldSetting.BIOME)), climateType);
+    private ClimateBiomeScreen(WorldScreen parent, Consumer<Settings> consumer) {
+        this(parent, consumer, new Settings(parent.getWorldSettings().getNbt(WorldSetting.BIOME)));
     }
     
     public static ClimateBiomeScreen create(WorldScreen worldScreen) {
         return new ClimateBiomeScreen(
             worldScreen,
-            settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getNbt()),
-            ClimateType.LAND
+            settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getNbt())
         );
     }
     
@@ -53,43 +53,37 @@ public class ClimateBiomeScreen extends BiomeScreen {
     protected void init() {
         super.init();
         
-        CyclingOptionWrapper<ClimateType> climateTypeOption = new CyclingOptionWrapper<>(
-            CLIMATE_TYPE_DISPLAY_STRING,
-            ClimateType.values(),
-            () -> this.climateType,
-            value -> {
-                this.client.setScreen(
-                    new ClimateBiomeScreen(
-                        (WorldScreen)this.parent,
-                        this.consumer,
-                        this.biomeSettings,
-                        value
-                    )    
-                );
-            }
+        TextOptionWrapper landBiomeText = new TextOptionWrapper(LAND_BIOME_DISPLAY_STRING, Formatting.YELLOW);
+        TextOptionWrapper oceanBiomeText = new TextOptionWrapper(OCEAN_BIOME_DISPLAY_STRING, Formatting.YELLOW);
+        
+        this.addOption(landBiomeText);
+        this.landBiomeMap.entrySet().forEach(
+            e -> this.addBiomeButtonEntry(e.getKey(), GuiUtil.createTranslatableBiomeStringFromId(e.getValue()), this.landBiomeMap)
         );
         
-        this.addOption(climateTypeOption);
-        
-        for (Entry<String, Identifier> e : this.biomeSettingsMap.entrySet()) {
-            this.addBiomeButtonEntry(e.getKey(), GuiUtil.createTranslatableBiomeStringFromId(e.getValue()));
-        }
+        this.addOption(oceanBiomeText);
+        this.oceanBiomeMap.entrySet().forEach(
+            e -> this.addBiomeButtonEntry(e.getKey(), GuiUtil.createTranslatableBiomeStringFromId(e.getValue()), this.oceanBiomeMap)
+        );
     }
     
-    private void addBiomeButtonEntry(String key, String biomeText) {
+    private void addBiomeButtonEntry(String key, String biomeText, Map<String, Identifier> biomeMap) {
         TextOptionWrapper text = new TextOptionWrapper(GuiUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(key)), Formatting.GRAY);
         
         ActionOptionWrapper singleBiomeScreen = new ActionOptionWrapper(
-            GuiUtil.createTranslatableBiomeStringFromId(this.biomeSettingsMap.get(key)), 
+            GuiUtil.createTranslatableBiomeStringFromId(biomeMap.get(key)), 
             "",
             buttonWidget -> this.client.setScreen(new CustomizeBuffetLevelScreen(
                 this,
                 this.registryManager,
                 biome -> {
+                    // Queue change
                     this.biomeSettings.putChange(key, NbtString.of(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString()));
-                    this.biomeSettingsMap.put(key, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome));
+                    
+                    // Update map for display
+                    biomeMap.put(key, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome));
                 }, 
-                this.registryManager.<Biome>get(Registry.BIOME_KEY).get(this.biomeSettingsMap.get(key))  
+                this.registryManager.<Biome>get(Registry.BIOME_KEY).get(biomeMap.get(key))  
             ))
         );
         
