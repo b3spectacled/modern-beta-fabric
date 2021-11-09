@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api.world.gen.blocksource;
+package com.bespectacled.modernbeta.world.gen.blocksource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,18 +6,18 @@ import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.world.gen.BlockSource;
 
-public class BlockSources implements BlockSource {
-    private final List<BlockSource> blockSources;
+public class BlockSourceRules implements BlockSource {
+    private final List<BlockSource> rules;
     private final BlockState defaultBlock;
     
-    private BlockSources(List<BlockSource> blockSources, BlockState defaultBlock) {
-        this.blockSources = blockSources;
+    private BlockSourceRules(List<BlockSource> blockSources, BlockState defaultBlock) {
+        this.rules = blockSources;
         this.defaultBlock = defaultBlock;
     }
 
     @Override
     public BlockState sample(int x, int y, int z) {
-        for (BlockSource blockSource : this.blockSources) {
+        for (BlockSource blockSource : this.rules) {
             BlockState blockState = blockSource.sample(x, y, z);
             
             if (blockState == null) continue;
@@ -29,20 +29,20 @@ public class BlockSources implements BlockSource {
     }
     
     public static class Builder {
-        private final List<BlockSource> blockSources;
+        private final List<BlockSource> rules;
         
         public Builder() {
-            this.blockSources = new ArrayList<>();
+            this.rules = new ArrayList<>();
         }
         
         public Builder add(BlockSource blockSource) {
-            this.blockSources.add(blockSource);
+            this.rules.add(blockSource);
             
             return this;
         }
         
-        public BlockSources build(BlockState defaultBlock) {
-            return new BlockSources(this.blockSources, defaultBlock);
+        public BlockSourceRules build(BlockState defaultBlock) {
+            return new BlockSourceRules(this.rules, defaultBlock);
         }
     }
 }

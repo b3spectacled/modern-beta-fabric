@@ -2,9 +2,9 @@ package com.bespectacled.modernbeta.api.client.gui.screen;
 
 import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.api.world.WorldSettings;
-import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.Settings;
+import com.bespectacled.modernbeta.client.gui.WorldSettings;
+import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;

@@ -1,9 +1,7 @@
-package com.bespectacled.modernbeta.api.world;
+package com.bespectacled.modernbeta.client.gui;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import com.bespectacled.modernbeta.client.gui.Settings;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;

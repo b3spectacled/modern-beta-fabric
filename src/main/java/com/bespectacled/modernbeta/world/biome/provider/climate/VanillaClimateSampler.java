@@ -1,6 +1,5 @@
 package com.bespectacled.modernbeta.world.biome.provider.climate;
 
-import com.bespectacled.modernbeta.api.world.biome.climate.ClimateBiomeRules;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import com.bespectacled.modernbeta.util.chunk.BiomeChunk;

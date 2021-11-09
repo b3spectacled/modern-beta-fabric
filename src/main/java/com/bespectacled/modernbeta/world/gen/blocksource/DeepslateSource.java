@@ -1,16 +1,16 @@
-package com.bespectacled.modernbeta.api.world.gen.blocksource;
+package com.bespectacled.modernbeta.world.gen.blocksource;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.ChunkRandom;
 
-public class DeepslateSourceNullable implements BlockSource {
+public class DeepslateSource implements BlockSource {
     private final ChunkRandom random;
     private final long seed;
     private final BlockState deepslateState;
     
-    public DeepslateSourceNullable(long seed, BlockState deepslateState) {
+    public DeepslateSource(long seed, BlockState deepslateState) {
         this.random = new ChunkRandom(seed);
         this.seed = seed;
         this.deepslateState = deepslateState;

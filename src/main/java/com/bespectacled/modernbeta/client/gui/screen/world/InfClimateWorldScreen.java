@@ -4,8 +4,8 @@ import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.api.client.gui.wrapper.BooleanCyclingOptionWrapper;
 import com.bespectacled.modernbeta.api.registry.Registries;
-import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
+import com.bespectacled.modernbeta.client.gui.WorldSettings;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 

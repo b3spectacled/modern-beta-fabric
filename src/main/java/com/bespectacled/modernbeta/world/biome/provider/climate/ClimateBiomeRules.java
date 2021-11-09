@@ -1,9 +1,11 @@
-package com.bespectacled.modernbeta.api.world.biome.climate;
+package com.bespectacled.modernbeta.world.biome.provider.climate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
