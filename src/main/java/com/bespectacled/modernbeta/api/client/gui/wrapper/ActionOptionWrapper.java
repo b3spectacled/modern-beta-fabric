@@ -18,6 +18,11 @@ public class ActionOptionWrapper implements OptionWrapper {
     
     @Override
     public Option create() {
-        return new ActionOption(this.key, this.suffix, this.onPress);
+        return this.create(true);
+    }
+    
+    @Override
+    public Option create(boolean active) {
+        return new ActionOption(this.key, this.suffix, this.onPress, active);
     }
 }

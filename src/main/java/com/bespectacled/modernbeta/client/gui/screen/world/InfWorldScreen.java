@@ -6,7 +6,6 @@ import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.BooleanCyclingOptionWrapper;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
-import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldSettings;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.util.NbtTags;
@@ -86,19 +85,9 @@ public class InfWorldScreen extends WorldScreen {
         if (isHydrogenLoaded && !isSingleBiome) {
             this.addOption(hydrogenText);
         }
-        
-        if (!isHydrogenLoaded && !isSingleBiome) {
-            this.addOption(generateOceans);
-        }
-        
-        //if ((!isHydrogenLoaded && !isSingleBiome) || isSingleBiomeAndHasOceanShrine) {
-        if (!isHydrogenLoaded && !isSingleBiome) {
-            this.addOption(generateOceanShrines);
-            this.addOption(generateMonuments);
-        }
-        
-        if (showDeepslateOption) {
-            this.addOption(generateDeepslate);
-        }
+        this.addOption(generateOceans, !isHydrogenLoaded && !isSingleBiome);
+        this.addOption(generateOceanShrines, !isHydrogenLoaded && !isSingleBiome);
+        this.addOption(generateMonuments, !isHydrogenLoaded && !isSingleBiome);
+        this.addOption(generateDeepslate, showDeepslateOption);
     }
 }

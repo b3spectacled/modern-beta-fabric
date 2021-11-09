@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.bespectacled.modernbeta.client.gui.option.ExtendedCyclingOption;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.option.CyclingOption;
@@ -46,12 +47,28 @@ public class CyclingOptionWrapper<T> implements OptionWrapper {
     
     @Override
     public CyclingOption<T> create() {
-        return CyclingOption.create(
+        CyclingOption<T> cyclingOption = CyclingOption.create(
             this.key,
             this.collection,
             value -> new TranslatableText(this.key + "." + value.toString().toLowerCase()).formatted(this.formatting.apply(value)), 
             gameOptions -> this.getter.get(),
             (gameOptions, option, value) -> this.setter.accept(value)
         ).tooltip(client -> value -> this.tooltips.apply(value));
+        
+        return cyclingOption;
+    }
+    
+    @Override
+    public CyclingOption<T> create(boolean active) {
+        CyclingOption<T> cyclingOption = ExtendedCyclingOption.create(
+            this.key,
+            this.collection,
+            value -> new TranslatableText(this.key + "." + value.toString().toLowerCase()).formatted(this.formatting.apply(value)), 
+            gameOptions -> this.getter.get(),
+            (gameOptions, option, value) -> this.setter.accept(value),
+            active
+        ).tooltip(client -> value -> this.tooltips.apply(value));
+        
+        return cyclingOption;
     }
 }

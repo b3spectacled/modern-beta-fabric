@@ -34,3 +34,5 @@ accessible class net/minecraft/world/gen/surfacebuilder/MaterialRules$BlockState
 accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext initHorizontalContext (III)V
 accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext initVerticalContext (IIIIIII)V
 accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext <init> (Lnet/minecraft/world/gen/surfacebuilder/SurfaceBuilder;Lnet/minecraft/world/chunk/Chunk;Ljava/util/function/Function;Lnet/minecraft/util/registry/Registry;Lnet/minecraft/world/gen/HeightContext;)V
+
+accessible method net/minecraft/client/option/CyclingOption <init> (Ljava/lang/String;Ljava/util/function/Function;Lnet/minecraft/client/option/CyclingOption$Setter;Ljava/util/function/Supplier;)V

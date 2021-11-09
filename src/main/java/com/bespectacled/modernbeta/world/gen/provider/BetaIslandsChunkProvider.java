@@ -85,13 +85,8 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource && 
             oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider
         ) {
-            ClimateSampler biomeProviderSampler = climateBiomeProvider.getClimateSampler();
-            
-            // Use climate sampler if:
-            // sampleClimate is enabled, or
-            // Climate sampler is BetaClimateSampler, even if sampleClimate is disabled, for reuse.
-            if (sampleClimate || biomeProviderSampler instanceof BetaClimateSampler) {
-                climateSampler = biomeProviderSampler;
+            if (sampleClimate) {
+                climateSampler = climateBiomeProvider.getClimateSampler();
             }
         }
         
