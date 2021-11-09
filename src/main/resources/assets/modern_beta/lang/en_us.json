@@ -33,7 +33,6 @@
     "createWorld.customize.worldType.title": "Modern Beta World Configuration",
     "createWorld.customize.biomeType.title": "Modern Beta Biome Configuration",
     
-    "createWorld.customize.climateScale": "Climate Scale",
     "createWorld.customize.climateType": "Climate Type",
     "createWorld.customize.climateType.land": "Land",
     "createWorld.customize.climateType.ocean": "Ocean",

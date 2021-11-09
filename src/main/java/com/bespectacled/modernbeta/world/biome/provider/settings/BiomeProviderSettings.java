@@ -15,16 +15,8 @@ public class BiomeProviderSettings {
         return settings;
     }
     
-    public static NbtCompound createSettingsClimate(String biomeType, double climateScale) {
-        NbtCompound settings = createSettingsBase(biomeType);
-        
-        settings.putDouble(NbtTags.CLIMATE_SCALE, climateScale);
-        
-        return settings;
-    }
-    
     public static NbtCompound createSettingsBeta() {
-        NbtCompound settings = createSettingsClimate(BuiltInTypes.Biome.BETA.name, ModernBeta.BIOME_CONFIG.betaBiomeConfig.climateScale);
+        NbtCompound settings = createSettingsBase(BuiltInTypes.Biome.BETA.name);
         
         settings.putString("desert", ModernBeta.BIOME_CONFIG.betaBiomeConfig.betaDesertBiome);
         settings.putString("forest", ModernBeta.BIOME_CONFIG.betaBiomeConfig.betaForestBiome);
@@ -56,7 +48,7 @@ public class BiomeProviderSettings {
     }
     
     public static NbtCompound createSettingsPE() {
-        NbtCompound settings = createSettingsClimate(BuiltInTypes.Biome.PE.name, ModernBeta.BIOME_CONFIG.peBiomeConfig.climateScale);
+        NbtCompound settings = createSettingsBase(BuiltInTypes.Biome.PE.name);
         
         settings.putString("desert", ModernBeta.BIOME_CONFIG.peBiomeConfig.peDesertBiome);
         settings.putString("forest", ModernBeta.BIOME_CONFIG.peBiomeConfig.peForestBiome);
