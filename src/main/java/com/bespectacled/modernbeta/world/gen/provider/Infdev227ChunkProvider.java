@@ -7,7 +7,6 @@ import java.util.concurrent.Executor;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
-import com.bespectacled.modernbeta.api.world.gen.blocksource.LayerTransitionBlockSource;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
@@ -16,6 +15,7 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.blocksource.LayerTransitionBlockSource;
 
 import net.minecraft.class_6748;
 import net.minecraft.block.Block;

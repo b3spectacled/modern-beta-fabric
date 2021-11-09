@@ -5,10 +5,10 @@ import java.util.List;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
-import com.bespectacled.modernbeta.api.world.cavebiome.climate.ClimateNoiseRules;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.cavebiome.provider.climate.BaseCaveClimateSampler;
+import com.bespectacled.modernbeta.world.cavebiome.provider.climate.ClimateNoiseRules;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;

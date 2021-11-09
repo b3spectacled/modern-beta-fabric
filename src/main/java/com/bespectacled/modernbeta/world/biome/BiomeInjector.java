@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.BiomeInjectionRules;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.google.common.base.Supplier;
 
@@ -20,7 +19,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.PalettedContainer;
 
-public class OldBiomeInjector {
+public class BiomeInjector {
     public static final int OCEAN_MIN_DEPTH = 4;
     public static final int DEEP_OCEAN_MIN_DEPTH = 16;
     
@@ -35,7 +34,7 @@ public class OldBiomeInjector {
     
     private final BiomeInjectionRules rules;
     
-    public OldBiomeInjector(OldChunkGenerator chunkGenerator, OldBiomeSource biomeSource) {
+    public BiomeInjector(OldChunkGenerator chunkGenerator, OldBiomeSource biomeSource) {
         this.chunkGenerator = chunkGenerator;
         this.biomeSource = biomeSource;
         

@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.client.gui.screen.world;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
-import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.client.gui.WorldSettings;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 

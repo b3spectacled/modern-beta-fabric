@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.DoubleOptionWrapper;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
-import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.client.gui.WorldSettings;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 

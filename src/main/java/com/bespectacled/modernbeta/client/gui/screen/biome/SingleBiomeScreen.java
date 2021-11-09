@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.client.gui.screen.biome;
 
 import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
-import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
+import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 

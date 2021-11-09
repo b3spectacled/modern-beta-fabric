@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api.world.gen.blocksource;
+package com.bespectacled.modernbeta.world.gen.blocksource;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.MathHelper;

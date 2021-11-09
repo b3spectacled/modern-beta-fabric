@@ -5,8 +5,8 @@ import java.util.function.Consumer;
 import com.bespectacled.modernbeta.api.client.gui.screen.BiomeScreen;
 import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.DoubleOptionWrapper;
-import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.Settings;
+import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 

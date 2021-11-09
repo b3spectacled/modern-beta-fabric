@@ -7,7 +7,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.CyclingOptionWrapper;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.DoubleOptionWrapper;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
-import com.bespectacled.modernbeta.api.world.WorldSettings;
+import com.bespectacled.modernbeta.client.gui.WorldSettings;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;

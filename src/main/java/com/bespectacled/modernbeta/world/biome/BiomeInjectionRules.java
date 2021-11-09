@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api.world.biome;
+package com.bespectacled.modernbeta.world.biome;
 
 import java.util.ArrayList;
 import java.util.List;

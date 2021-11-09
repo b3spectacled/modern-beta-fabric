@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api.world.cavebiome.climate;
+package com.bespectacled.modernbeta.world.cavebiome.provider.climate;
 
 import java.util.ArrayList;
 import java.util.List;

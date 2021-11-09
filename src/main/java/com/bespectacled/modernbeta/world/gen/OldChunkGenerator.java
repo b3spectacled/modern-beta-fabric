@@ -16,7 +16,7 @@ import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.world.biome.OldBiomeInjector;
+import com.bespectacled.modernbeta.world.biome.BiomeInjector;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.structure.OceanShrineStructure;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
@@ -78,7 +78,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private final boolean generateOceanShrines;
     private final boolean generateMonuments;
 
-    private final OldBiomeInjector biomeInjector;
+    private final BiomeInjector biomeInjector;
     
     public OldChunkGenerator(Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry, BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, NbtCompound providerSettings) {
         super(noiseRegistry, biomeSource, seed, settings);
@@ -96,7 +96,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.generateMonuments = NbtUtil.readBoolean(NbtTags.GEN_MONUMENTS, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateMonuments);
         
         this.biomeInjector = this.biomeSource instanceof OldBiomeSource oldBiomeSource ?
-            new OldBiomeInjector(this, oldBiomeSource) : 
+            new BiomeInjector(this, oldBiomeSource) : 
             null;
     }
 

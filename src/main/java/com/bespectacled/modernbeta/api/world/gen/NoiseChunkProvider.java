@@ -9,8 +9,6 @@ import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.gen.blocksource.BlockSources;
-import com.bespectacled.modernbeta.api.world.gen.blocksource.LayerTransitionBlockSource;
 import com.bespectacled.modernbeta.api.world.gen.noise.BaseNoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.VanillaNoiseProvider;
@@ -22,6 +20,8 @@ import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
+import com.bespectacled.modernbeta.world.gen.blocksource.BlockSourceRules;
+import com.bespectacled.modernbeta.world.gen.blocksource.LayerTransitionBlockSource;
 import com.bespectacled.modernbeta.world.gen.sampler.NoiseCaveSampler;
 import com.bespectacled.modernbeta.world.gen.sampler.NoodleCaveSampler;
 import com.bespectacled.modernbeta.world.gen.sampler.OreVeinSampler;
@@ -455,7 +455,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         BlockSource baseBlockSource = this.getBaseBlockSource(baseNoiseProvider, structureWeightSampler, aquiferSampler, noodleCaveSampler);
         
         // Create and populate block sources
-        BlockSources blockSources = new BlockSources.Builder()
+        BlockSourceRules blockSources = new BlockSourceRules.Builder()
             .add(baseBlockSource)
             .add(oreVeinBlockSource)
             .add(this.deepslateSource)
