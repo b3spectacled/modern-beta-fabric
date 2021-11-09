@@ -72,4 +72,8 @@ public abstract class BiomeScreen extends GUIScreen {
     protected boolean hasBiomeSetting(String key) {
         return this.biomeSettings.hasSetting(key);
     }
+    
+    protected NbtElement getBiomeSetting(String key) {
+        return this.biomeSettings.getSetting(key);
+    }
 }

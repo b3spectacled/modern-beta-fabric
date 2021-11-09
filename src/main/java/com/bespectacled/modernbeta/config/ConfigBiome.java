@@ -42,6 +42,8 @@ public class ConfigBiome implements ConfigData {
         public String betaFrozenOceanBiome = BetaBiomes.FROZEN_OCEAN_ID.toString();
         public String betaLukewarmOceanBiome = BetaBiomes.LUKEWARM_OCEAN_ID.toString();
         public String betaWarmOceanBiome = BetaBiomes.WARM_OCEAN_ID.toString();
+        
+        public double climateScale = 1.0;
     }
     
     public static class PEBiomeConfig {
@@ -61,6 +63,8 @@ public class ConfigBiome implements ConfigData {
         public String peFrozenOceanBiome = PEBiomes.PE_FROZEN_OCEAN_ID.toString();
         public String peLukewarmOceanBiome = PEBiomes.PE_LUKEWARM_OCEAN_ID.toString();
         public String peWarmOceanBiome = PEBiomes.PE_WARM_OCEAN_ID.toString();
+        
+        public double climateScale = 1.0;
     }
     
     public static class SingleBiomeConfig {

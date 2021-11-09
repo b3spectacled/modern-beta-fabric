@@ -86,16 +86,8 @@ public class InfWorldScreen extends WorldScreen {
             this.addOption(hydrogenText);
         }
         
-        if (!isHydrogenLoaded && !isSingleBiome) {
-            this.addOption(generateOceans);
-        }
-        
-        if ((!isHydrogenLoaded && !isSingleBiome) || isSingleBiomeAndHasOceanShrine) {
-            this.addOption(generateOceanShrines);
-        }
-        
-        if ((!isHydrogenLoaded && !isSingleBiome) || isSingleBiomeAndHasMonument) {
-            this.addOption(generateMonuments);
-        }
+        this.addOption(generateOceans, !isHydrogenLoaded && !isSingleBiome);
+        this.addOption(generateOceanShrines, (!isHydrogenLoaded && !isSingleBiome) || isSingleBiomeAndHasOceanShrine);
+        this.addOption(generateMonuments, (!isHydrogenLoaded && !isSingleBiome) || isSingleBiomeAndHasMonument);
     }
 }

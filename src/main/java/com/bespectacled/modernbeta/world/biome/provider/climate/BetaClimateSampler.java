@@ -19,8 +19,16 @@ public class BetaClimateSampler implements ClimateSampler {
     private final SimplexOctaveNoise detailNoiseOctaves;
     
     private final ChunkCache<ClimateChunk> climateCache;
+
+    private final double tempScale;
+    private final double rainScale;
+    private final double detailScale;
     
     public BetaClimateSampler(long seed) {
+        this(seed, 1D);
+    }
+    
+    public BetaClimateSampler(long seed, double climateScale) {
         this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
         this.rainNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
         this.detailNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
@@ -31,6 +39,10 @@ public class BetaClimateSampler implements ClimateSampler {
             true, 
             (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::sampleClimateNoise)
         );
+        
+        this.tempScale = 0.02500000037252903D / climateScale;
+        this.rainScale = 0.05000000074505806D / climateScale;
+        this.detailScale = 0.25D / climateScale;
     }
     
     @Override
@@ -47,9 +59,9 @@ public class BetaClimateSampler implements ClimateSampler {
     }
     
     private Clime sampleClimateNoise(int x, int z) {
-        double temp = this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.25D);
-        double rain = this.rainNoiseOctaves.sample(x, z, 0.05000000074505806D, 0.05000000074505806D, 0.33333333333333331D);
-        double detail = this.detailNoiseOctaves.sample(x, z, 0.25D, 0.25D, 0.58823529411764708D);
+        double temp = this.tempNoiseOctaves.sample(x, z, this.tempScale, this.tempScale, 0.25D);
+        double rain = this.rainNoiseOctaves.sample(x, z, this.rainScale, this.rainScale, 0.33333333333333331D);
+        double detail = this.detailNoiseOctaves.sample(x, z, this.detailScale, this.detailScale, 0.58823529411764708D);
 
         detail = detail * 1.1D + 0.5D;
 
@@ -66,7 +78,13 @@ public class BetaClimateSampler implements ClimateSampler {
 
         private final ChunkCache<SkyClimateChunk> skyClimateCache;
         
+        private final double tempScale;
+        
         public BetaSkyClimateSampler(long seed) {
+            this(seed, 1D);
+        }
+        
+        public BetaSkyClimateSampler(long seed, double climateScale) {
             this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
             
             this.skyClimateCache = new ChunkCache<>(
@@ -75,6 +93,8 @@ public class BetaClimateSampler implements ClimateSampler {
                 true, 
                 (chunkX, chunkZ) -> new SkyClimateChunk(chunkX, chunkZ, this::sampleSkyTempNoise)
             );
+            
+            this.tempScale = 0.02500000037252903D / climateScale;
         }
         
         @Override
@@ -91,7 +111,7 @@ public class BetaClimateSampler implements ClimateSampler {
         }
         
         private double sampleSkyTempNoise(int x, int z) {
-            return this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D, 0.5D);
+            return this.tempNoiseOctaves.sample(x, z, this.tempScale, this.tempScale, 0.5D);
         }
     }
 }

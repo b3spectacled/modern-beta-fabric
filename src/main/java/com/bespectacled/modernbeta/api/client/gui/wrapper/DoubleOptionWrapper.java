@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.bespectacled.modernbeta.client.gui.option.ExtendedDoubleOption;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.client.option.DoubleOption;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
@@ -56,15 +56,33 @@ public class DoubleOptionWrapper<T extends Number> implements OptionWrapper {
         this(key, suffix, min, max, step, getter, setter, ImmutableList.of());
     }
     
+    public DoubleOptionWrapper(
+        String key,
+        double min,
+        double max,
+        float step,
+        Supplier<T> getter,
+        Consumer<Double> setter
+    ) {
+        this(key, "", min, max, step, getter, setter, ImmutableList.of());
+    }
+
     @Override
-    public DoubleOption create() {
-        return new DoubleOption(
+    public ExtendedDoubleOption create() {
+        return this.create(true);
+    }
+    
+    @Override
+    public ExtendedDoubleOption create(boolean active) {
+        return new ExtendedDoubleOption(
             this.key, 
             this.min, this.max, this.step,
             gameOptions -> this.getter.get().doubleValue(), // Getter
             (gameOptions, value) -> this.setter.accept(value),
             (gameOptions, doubleOptions) -> {
-                MutableText value = this.getter.get() instanceof Float ?
+                Number number = this.getter.get();
+                
+                MutableText value = number instanceof Float || number instanceof Double ?
                     new LiteralText(String.format("%.2f", this.getter.get())) :
                     new LiteralText(this.getter.get().toString());
                 
@@ -75,7 +93,8 @@ public class DoubleOptionWrapper<T extends Number> implements OptionWrapper {
                         value.append(" ").append(this.suffix)
                 });
             },
-            client -> tooltips
+            client -> tooltips,
+            active
         );
     }
 }

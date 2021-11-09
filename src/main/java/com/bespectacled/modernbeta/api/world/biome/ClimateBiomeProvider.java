@@ -2,6 +2,8 @@ package com.bespectacled.modernbeta.api.world.biome;
 
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
+import com.bespectacled.modernbeta.util.NbtTags;
+import com.bespectacled.modernbeta.util.NbtUtil;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
@@ -28,5 +30,9 @@ public abstract class ClimateBiomeProvider extends BiomeProvider {
     
     public SkyClimateSampler getSkyClimateSampler() {
         return this.skyClimateSampler;
+    }
+    
+    public static double getClimateScale(NbtCompound settings, double defaultScale) {
+        return NbtUtil.readDouble(NbtTags.CLIMATE_SCALE, settings, defaultScale);
     }
 }

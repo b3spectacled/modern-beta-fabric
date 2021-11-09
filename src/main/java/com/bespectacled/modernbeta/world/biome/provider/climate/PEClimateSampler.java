@@ -18,7 +18,15 @@ public class PEClimateSampler implements ClimateSampler, SkyClimateSampler {
     
     private final ChunkCache<ClimateChunk> climateCache;
     
+    private final double tempScale;
+    private final double rainScale;
+    private final double detailScale;
+    
     public PEClimateSampler(long seed) {
+        this(seed, 1D);
+    }
+    
+    public PEClimateSampler(long seed, double climateScale) {
         this.tempNoiseOctaves = new PerlinOctaveNoise(new MTRandom(seed * 9871L), 4, true);
         this.rainNoiseOctaves = new PerlinOctaveNoise(new MTRandom(seed * 39811L), 4, true);
         this.detailNoiseOctaves = new PerlinOctaveNoise(new MTRandom(seed * 543321L), 2, true);
@@ -29,6 +37,10 @@ public class PEClimateSampler implements ClimateSampler, SkyClimateSampler {
             true, 
             (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::sampleClimateNoise)
         );
+        
+        this.tempScale = 0.02500000037252903D / climateScale;
+        this.rainScale = 0.05000000074505806D / climateScale;
+        this.detailScale = 0.25D / climateScale;
     }
     
     @Override
@@ -58,9 +70,9 @@ public class PEClimateSampler implements ClimateSampler, SkyClimateSampler {
     }
     
     private Clime sampleClimateNoise(int x, int z) {
-        double temp = this.tempNoiseOctaves.sample(x, z, 0.02500000037252903D, 0.02500000037252903D);
-        double rain = this.rainNoiseOctaves.sample(x, z, 0.05000000074505806D, 0.05000000074505806D);
-        double detail = this.detailNoiseOctaves.sample(x, z, 0.25D, 0.25D);
+        double temp = this.tempNoiseOctaves.sample(x, z, this.tempScale, this.tempScale);
+        double rain = this.rainNoiseOctaves.sample(x, z, this.rainScale, this.rainScale);
+        double detail = this.detailNoiseOctaves.sample(x, z, this.detailScale, this.detailScale);
 
         detail = detail * 1.1D + 0.5D;
 

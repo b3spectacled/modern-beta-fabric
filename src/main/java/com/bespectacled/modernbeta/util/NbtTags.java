@@ -11,6 +11,7 @@ public class NbtTags {
     
     // Beta/PE Climate
     public static final String SAMPLE_CLIMATE = "sampleClimate";
+    public static final String CLIMATE_SCALE = "climateScale";
     
     // Infdev 227
     public static final String GEN_INFDEV_PYRAMID = "generateInfdevPyramid";

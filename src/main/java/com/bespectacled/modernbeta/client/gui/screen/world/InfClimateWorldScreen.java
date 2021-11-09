@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtByte;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.BuiltinRegistries;
 
 public class InfClimateWorldScreen extends InfWorldScreen {
@@ -26,6 +27,12 @@ public class InfClimateWorldScreen extends InfWorldScreen {
         Consumer<WorldSettings> consumer
     ) {
         super(parent, worldSettings, consumer);
+        
+        // Replace sampleClimate option depending on if climate sampler matches biome type
+        String biomeType = NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.BIOME_TYPE));
+        boolean isSameBiomeType = this.worldProvider.getBiomeProvider().equals(biomeType);
+        
+        this.putChunkSetting(NbtTags.SAMPLE_CLIMATE, NbtByte.of(isSameBiomeType));
     } 
 
     @Override
@@ -34,10 +41,13 @@ public class InfClimateWorldScreen extends InfWorldScreen {
         
         String biomeType = NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.BIOME_TYPE));
         
+        boolean isSameBiomeType = this.worldProvider.getBiomeProvider().equals(biomeType);
+        boolean hasDefaultClimateScale = 
+            this.hasBiomeSetting(NbtTags.CLIMATE_SCALE) &&
+            MathHelper.approximatelyEquals(NbtUtil.toDoubleOrThrow(this.getBiomeSetting(NbtTags.CLIMATE_SCALE)), 1.0D);
         boolean climateSampleable = Registries.BIOME
             .get(biomeType)
             .apply(0L, new NbtCompound(), BuiltinRegistries.BIOME) instanceof ClimateBiomeProvider;
-        boolean isDifferentBiomeType = !this.worldProvider.getBiomeProvider().equals(biomeType); 
         
         BooleanCyclingOptionWrapper sampleClimate = new BooleanCyclingOptionWrapper(
             SAMPLE_CLIMATE_DISPLAY_STRING,
@@ -47,9 +57,7 @@ public class InfClimateWorldScreen extends InfWorldScreen {
         );
         
         // Check if biome type is ClimateBiomeProvider
-        // and biome type is different from the default/base one.
-        if (climateSampleable && isDifferentBiomeType) {
-            this.addOption(sampleClimate);
-        }
+        // and if default climate scale has been changed
+        this.addOption(sampleClimate, climateSampleable && (!isSameBiomeType || isSameBiomeType && !hasDefaultClimateScale));
     }
 }

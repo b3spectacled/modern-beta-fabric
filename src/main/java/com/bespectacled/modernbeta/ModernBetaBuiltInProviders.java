@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta;
 
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
-import com.bespectacled.modernbeta.client.gui.screen.biome.BetaBiomeScreen;
+import com.bespectacled.modernbeta.client.gui.screen.biome.ClimateBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.biome.SingleBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.biome.VanillaBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.BaseWorldScreen;
@@ -103,10 +103,10 @@ public class ModernBetaBuiltInProviders {
     // Register default biome settings screens (Note: Match identifiers with biome ids!)
     public static void registerBiomeScreens() {
         Registries.BIOME_SCREEN.register(BuiltInTypes.DEFAULT_ID, screen -> null);
-        Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.BETA.name, BetaBiomeScreen::create);
+        Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.BETA.name, ClimateBiomeScreen::create);
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeScreen::create);
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.VANILLA.name, VanillaBiomeScreen::create);
-        Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.PE.name, BetaBiomeScreen::create);
+        Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.PE.name, ClimateBiomeScreen::create);
     }
     
     // Register default world providers

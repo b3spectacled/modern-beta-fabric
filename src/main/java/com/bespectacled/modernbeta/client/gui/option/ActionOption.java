@@ -14,15 +14,21 @@ public class ActionOption extends Option {
     private final String key;
     private final String suffix;
     private final ButtonWidget.PressAction onPress;
+    private final boolean active;
     
     private ClickableWidget button;
     
     public ActionOption(String key, String suffix, ButtonWidget.PressAction onPress) {
+        this(key, suffix, onPress, true);
+    }
+    
+    public ActionOption(String key, String suffix, ButtonWidget.PressAction onPress, boolean active) {
         super(key);
         
         this.key = key;
         this.suffix = suffix;
         this.onPress = onPress;
+        this.active = active;
     }
 
     @Override
@@ -48,7 +54,7 @@ public class ActionOption extends Option {
             this.onPress
         );
         
-        if (this.onPress == null)
+        if (this.onPress == null || !this.active)
             this.button.active = false;
         
         return this.button;

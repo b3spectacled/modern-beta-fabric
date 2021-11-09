@@ -114,12 +114,10 @@ public class IslandWorldScreen extends InfClimateWorldScreen {
         this.addOption(centerIslandRadius);
         this.addOption(centerIslandFalloff);
         
-        if (generatesOuterIslands) {
-            this.addOption(centerOceanRadius);
-            this.addOption(centerOceanLerpDistance);
-            this.addOption(outerIslandNoiseScale);
-            this.addOption(outerIslandNoiseOffset);
-        }
+        this.addOption(centerOceanRadius, generatesOuterIslands);
+        this.addOption(centerOceanLerpDistance, generatesOuterIslands);
+        this.addOption(outerIslandNoiseScale, generatesOuterIslands);
+        this.addOption(outerIslandNoiseOffset, generatesOuterIslands);
     }
 
 }

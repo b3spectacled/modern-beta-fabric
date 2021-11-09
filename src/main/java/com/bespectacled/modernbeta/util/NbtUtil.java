@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.util;
 
 import net.minecraft.nbt.NbtByte;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtDouble;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtFloat;
 import net.minecraft.nbt.NbtInt;
@@ -50,6 +51,20 @@ public class NbtUtil {
     public static float readFloat(String key, NbtCompound tag, float alternate) {
         if (tag.contains(key))
             return tag.getFloat(key);
+        
+        return alternate;
+    }
+    
+    public static double readDoubleOrThrow(String key, NbtCompound tag) {
+        if (tag.contains(key))
+            return tag.getDouble(key);
+        
+        throw new IllegalArgumentException("[Modern Beta] NBT compound does not contain field " + key);
+    }
+    
+    public static double readDouble(String key, NbtCompound tag, double alternate) {
+        if (tag.contains(key))
+            return tag.getDouble(key);
         
         return alternate;
     }
@@ -110,6 +125,20 @@ public class NbtUtil {
     public static float toFloat(NbtElement element, float alternate) {
         if (element instanceof NbtFloat nbtFloat) 
             return nbtFloat.floatValue();
+        
+        return alternate;
+    }
+    
+    public static double toDoubleOrThrow(NbtElement element) {
+        if (element instanceof NbtDouble nbtDouble) 
+            return nbtDouble.doubleValue();
+        
+        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an double! Type: " + element.getType()); 
+    }
+    
+    public static double toFloat(NbtElement element, double alternate) {
+        if (element instanceof NbtDouble nbtDouble) 
+            return nbtDouble.doubleValue();
         
         return alternate;
     }

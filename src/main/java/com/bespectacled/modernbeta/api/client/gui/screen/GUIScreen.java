@@ -52,4 +52,12 @@ public abstract class GUIScreen extends Screen {
     public void addDualOption(OptionWrapper firstOption, OptionWrapper secondOption) {
         this.buttonList.addOptionEntry(firstOption.create(), secondOption.create());
     }
+    
+    public void addOption(OptionWrapper option, boolean active) {
+        this.buttonList.addSingleOptionEntry(option.create(active));
+    }
+    
+    public void addDualOption(OptionWrapper firstOption, OptionWrapper secondOption, boolean firstActive, boolean secondActive) {
+        this.buttonList.addOptionEntry(firstOption.create(firstActive), secondOption.create(secondActive));
+    }
 }

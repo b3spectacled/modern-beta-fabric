@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.bespectacled.modernbeta.client.gui.option.ExtendedCyclingOption;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.gui.screen.ScreenTexts;
@@ -40,5 +41,21 @@ public class BooleanCyclingOptionWrapper implements OptionWrapper {
                 this.setter.accept(value);
             }
         ).tooltip(client -> value -> this.tooltips);
+    }
+    
+    @Override
+    public CyclingOption<Boolean> create(boolean active) {
+        CyclingOption<Boolean> cyclingOption = ExtendedCyclingOption.create(
+            this.key,
+            new TranslatableText(ScreenTexts.ON.getString()).formatted(active ? Formatting.GREEN : Formatting.GRAY),
+            new TranslatableText(ScreenTexts.OFF.getString()).formatted(active ? Formatting.RED : Formatting.GRAY),
+            gameOptions -> this.getter.get(),
+            (gameOptions, option, value) -> {
+                this.setter.accept(value);
+            },
+            active
+        ).tooltip(client -> value -> this.tooltips);
+        
+        return cyclingOption;
     }
 }
