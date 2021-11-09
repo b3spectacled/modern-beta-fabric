@@ -13,8 +13,7 @@ import com.bespectacled.modernbeta.api.world.gen.blocksource.BlockSources;
 import com.bespectacled.modernbeta.api.world.gen.blocksource.LayerTransitionBlockSource;
 import com.bespectacled.modernbeta.api.world.gen.noise.BaseNoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoiseProvider;
-import com.bespectacled.modernbeta.api.world.gen.noise.NoodleCaveNoiseProvider;
-import com.bespectacled.modernbeta.api.world.gen.noise.OreVeinNoiseProvider;
+import com.bespectacled.modernbeta.api.world.gen.noise.VanillaNoiseProvider;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
@@ -642,11 +641,11 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * 
      * @return WeightSampler to sample density addition at x/y/z block coordinates.
      */
-    private WeightSampler createNoodleCaveNoiseProviders(ChunkPos chunkPos, Consumer<NoodleCaveNoiseProvider> consumer) {
+    private WeightSampler createNoodleCaveNoiseProviders(ChunkPos chunkPos, Consumer<VanillaNoiseProvider> consumer) {
         if (!this.generateNoodleCaves)
             return (weight, x, y, z) -> weight;
         
-        NoodleCaveNoiseProvider frequencyNoiseProvider = new NoodleCaveNoiseProvider(
+        VanillaNoiseProvider frequencyNoiseProvider = new VanillaNoiseProvider(
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
@@ -654,7 +653,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noodleCaveSampler::sampleFrequencyNoise
         );
         
-        NoodleCaveNoiseProvider reducingNoiseProvider = new NoodleCaveNoiseProvider(
+        VanillaNoiseProvider reducingNoiseProvider = new VanillaNoiseProvider(
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
@@ -662,7 +661,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noodleCaveSampler::sampleWeightReducingNoise
         );
         
-        NoodleCaveNoiseProvider firstNoiseProvider = new NoodleCaveNoiseProvider(
+        VanillaNoiseProvider firstNoiseProvider = new VanillaNoiseProvider(
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
@@ -670,7 +669,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.noodleCaveSampler::sampleFirstWeightNoise
         );
         
-        NoodleCaveNoiseProvider secondNoiseProvider = new NoodleCaveNoiseProvider(
+        VanillaNoiseProvider secondNoiseProvider = new VanillaNoiseProvider(
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
@@ -701,11 +700,11 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * 
      * @return BlockSource to sample alternate blockstate at x/y/z block coordinates.
      */
-    private BlockSource createOreVeinProviders(ChunkPos chunkPos, Consumer<OreVeinNoiseProvider> consumer) {
+    private BlockSource createOreVeinProviders(ChunkPos chunkPos, Consumer<VanillaNoiseProvider> consumer) {
         if (!this.generateOreVeins)
             return (weight, x, y, z) -> null;
 
-        OreVeinNoiseProvider frequencyNoiseProvider = new OreVeinNoiseProvider(
+        VanillaNoiseProvider frequencyNoiseProvider = new VanillaNoiseProvider(
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
@@ -713,7 +712,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.oreVeinSampler::sampleOreFrequencyNoise
         );
         
-        OreVeinNoiseProvider firstOreNoiseProvider = new OreVeinNoiseProvider(
+        VanillaNoiseProvider firstOreNoiseProvider = new VanillaNoiseProvider(
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,
@@ -721,7 +720,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.oreVeinSampler::sampleFirstOrePlacementNoise
         );
         
-        OreVeinNoiseProvider secondOreNoiseProvider = new OreVeinNoiseProvider(
+        VanillaNoiseProvider secondOreNoiseProvider = new VanillaNoiseProvider(
             this.noiseSizeX,
             this.noiseSizeY,
             this.noiseSizeZ,

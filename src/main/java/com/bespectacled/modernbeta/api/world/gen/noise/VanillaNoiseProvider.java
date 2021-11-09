@@ -1,15 +1,15 @@
 package com.bespectacled.modernbeta.api.world.gen.noise;
 
-public class OreVeinNoiseProvider extends NoiseProvider {
+public class VanillaNoiseProvider extends NoiseProvider {
     private final int noiseMinY;
-    private final OreVeinColumnSampler bufferSampler;
+    private final VanillaColumnSampler bufferSampler;
     
-    public OreVeinNoiseProvider(
+    public VanillaNoiseProvider(
         int noiseSizeX, 
         int noiseSizeY, 
         int noiseSizeZ, 
         int noiseMinY, 
-        OreVeinColumnSampler bufferSampler
+        VanillaColumnSampler bufferSampler
     ) {
         super(noiseSizeX, noiseSizeY, noiseSizeZ);
         
@@ -40,7 +40,7 @@ public class OreVeinNoiseProvider extends NoiseProvider {
     }
     
     @FunctionalInterface
-    public static interface OreVeinColumnSampler {
+    public static interface VanillaColumnSampler {
         public void sampleColumn(double[] buffer, int x, int z, int minY, int noiseSizeY);
     }
 }
