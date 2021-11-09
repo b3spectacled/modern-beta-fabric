@@ -1,16 +1,15 @@
 package com.bespectacled.modernbeta.api.world.gen.noise;
 
-public class NoodleCaveNoiseProvider extends NoiseProvider {
+public class VanillaNoiseProvider extends NoiseProvider {
     private final int noiseMinY;
-    private final NoodleCaveColumnSampler bufferSampler;
+    private final VanillaColumnSampler bufferSampler;
     
-    public NoodleCaveNoiseProvider(
+    public VanillaNoiseProvider(
         int noiseSizeX, 
         int noiseSizeY, 
         int noiseSizeZ, 
         int noiseMinY, 
-        NoodleCaveColumnSampler bufferSampler
-        
+        VanillaColumnSampler bufferSampler
     ) {
         super(noiseSizeX, noiseSizeY, noiseSizeZ);
         
@@ -40,7 +39,7 @@ public class NoodleCaveNoiseProvider extends NoiseProvider {
     }
     
     @FunctionalInterface
-    public static interface NoodleCaveColumnSampler {
+    public static interface VanillaColumnSampler {
         public void sampleColumn(double[] buffer, int x, int z, int minY, int noiseSizeY);
     }
 }
