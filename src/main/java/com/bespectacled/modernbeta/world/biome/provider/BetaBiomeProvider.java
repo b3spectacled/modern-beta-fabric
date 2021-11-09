@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.world.biome.provider;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
@@ -25,8 +24,8 @@ public class BetaBiomeProvider extends ClimateBiomeProvider implements BiomeReso
             seed,
             settings,
             biomeRegistry,
-            new BetaClimateSampler(seed, getClimateScale(settings, ModernBeta.BIOME_CONFIG.betaBiomeConfig.climateScale)),
-            new BetaSkyClimateSampler(seed, getClimateScale(settings, ModernBeta.BIOME_CONFIG.betaBiomeConfig.climateScale))
+            new BetaClimateSampler(seed),
+            new BetaSkyClimateSampler(seed)
         );
         
         this.climateMap = new BetaClimateMap(settings);

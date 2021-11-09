@@ -13,7 +13,6 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.nbt.NbtByte;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.BuiltinRegistries;
 
 public class InfClimateWorldScreen extends InfWorldScreen {
@@ -42,9 +41,6 @@ public class InfClimateWorldScreen extends InfWorldScreen {
         String biomeType = NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.BIOME_TYPE));
         
         boolean isSameBiomeType = this.worldProvider.getBiomeProvider().equals(biomeType);
-        boolean hasDefaultClimateScale = 
-            this.hasBiomeSetting(NbtTags.CLIMATE_SCALE) &&
-            MathHelper.approximatelyEquals(NbtUtil.toDoubleOrThrow(this.getBiomeSetting(NbtTags.CLIMATE_SCALE)), 1.0D);
         boolean climateSampleable = Registries.BIOME
             .get(biomeType)
             .apply(0L, new NbtCompound(), BuiltinRegistries.BIOME) instanceof ClimateBiomeProvider;
@@ -58,6 +54,6 @@ public class InfClimateWorldScreen extends InfWorldScreen {
         
         // Check if biome type is ClimateBiomeProvider
         // and if default climate scale has been changed
-        this.addOption(sampleClimate, climateSampleable && (!isSameBiomeType || isSameBiomeType && !hasDefaultClimateScale));
+        this.addOption(sampleClimate, climateSampleable && !isSameBiomeType);
     }
 }

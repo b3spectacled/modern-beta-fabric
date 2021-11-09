@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.world.biome.provider;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
@@ -24,7 +23,7 @@ public class PEBiomeProvider extends ClimateBiomeProvider implements BiomeResolv
             seed,
             settings,
             biomeRegistry,
-            new PEClimateSampler(seed, getClimateScale(settings, ModernBeta.BIOME_CONFIG.peBiomeConfig.climateScale))
+            new PEClimateSampler(seed)
         );
         
         this.climateMap = new BetaClimateMap(settings);
