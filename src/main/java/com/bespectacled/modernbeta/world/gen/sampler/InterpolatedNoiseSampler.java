@@ -63,7 +63,7 @@ public class InterpolatedNoiseSampler {
         
         this.chunkCache = new ChunkCache<>(
             "interpolated_noise",
-            1536,
+            512,
             true,
             (chunkX, chunkZ) -> {
                 int noiseStartX = chunkX * this.noiseSizeX;
