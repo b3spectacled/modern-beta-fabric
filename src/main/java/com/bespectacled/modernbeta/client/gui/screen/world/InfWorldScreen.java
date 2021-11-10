@@ -38,11 +38,22 @@ public class InfWorldScreen extends WorldScreen {
     protected void init() {
         super.init();
         
+        String worldType = NbtUtil.toStringOrThrow(this.getChunkSetting(NbtTags.WORLD_TYPE));
         String biomeType = NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.BIOME_TYPE));
         
         boolean isHydrogenLoaded = Compat.isLoaded("hydrogen");
         boolean isSingleBiome = biomeType.equals(BuiltInTypes.Biome.SINGLE.name);
         boolean showDeepslateOption = this.worldProvider.showGenerateDeepslate();
+        
+        /*
+        boolean isSingleBiomeAndHasOceanShrine = isSingleBiome ? 
+            this.registryManager
+            .<Biome>get(Registry.BIOME_KEY)
+            .get(new Identifier(NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.SINGLE_BIOME))))
+            .getGenerationSettings()
+            .hasStructureFeature(OldStructures.OCEAN_SHRINE_STRUCTURE) : 
+            false;
+        */
         
         BooleanCyclingOptionWrapper generateOceans = new BooleanCyclingOptionWrapper(
             GENERATE_OCEANS_DISPLAY_STRING,
@@ -74,7 +85,6 @@ public class InfWorldScreen extends WorldScreen {
         if (isHydrogenLoaded && !isSingleBiome) {
             this.addOption(hydrogenText);
         }
-        
         this.addOption(generateOceans, !isHydrogenLoaded && !isSingleBiome);
         this.addOption(generateOceanShrines, !isHydrogenLoaded && !isSingleBiome);
         this.addOption(generateMonuments, !isHydrogenLoaded && !isSingleBiome);

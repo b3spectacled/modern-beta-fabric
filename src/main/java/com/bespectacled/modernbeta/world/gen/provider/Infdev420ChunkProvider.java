@@ -10,7 +10,6 @@ import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.world.gen.sampler.InterpolatedNoiseSampler;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
 import net.minecraft.block.BlockState;
@@ -27,8 +26,9 @@ import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public class Infdev420ChunkProvider extends NoiseChunkProvider {
-    private final InterpolatedNoiseSampler noiseSampler;
-    
+    private final PerlinOctaveNoise minLimitNoiseOctaves;
+    private final PerlinOctaveNoise maxLimitNoiseOctaves;
+    private final PerlinOctaveNoise mainNoiseOctaves;
     private final PerlinOctaveNoise beachNoiseOctaves;
     private final PerlinOctaveNoise surfaceNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
@@ -37,19 +37,9 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         super(chunkGenerator);
         
         // Noise Generators
-        this.noiseSampler = new InterpolatedNoiseSampler(
-            this.rand,
-            684.412 * this.xzScale,
-            684.412 * this.yScale,
-            this.xzFactor,
-            this.yFactor,
-            512D,
-            128.0,
-            this.noiseSizeX,
-            this.noiseSizeY,
-            this.noiseSizeZ, this.noiseMinY
-        );
-
+        this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
+        this.mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
         this.beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
         this.surfaceNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
         new PerlinOctaveNoise(rand, 5, true); // Unused in original source
@@ -210,8 +200,15 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
         
-        int chunkX = startNoiseX / this.noiseSizeX;
-        int chunkZ = startNoiseZ / this.noiseSizeZ;
+        double coordinateScale = 684.412D * this.xzScale; 
+        double heightScale = 684.412D * this.yScale;
+        
+        double mainNoiseScaleX = this.xzFactor; // Default: 80
+        double mainNoiseScaleY = this.yFactor;  // Default: 160
+        double mainNoiseScaleZ = this.xzFactor;
+        
+        double lowerLimitScale = 512.0D;
+        double upperLimitScale = 512.0D;
         
         double baseSize = 8.5D;
         double heightStretch = 12D;
@@ -225,9 +222,55 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             
             double density;
             double heightmapDensity;
-           
-            density = this.noiseSampler.sample(chunkX, chunkZ, localNoiseX, y, localNoiseZ);
-            density -= this.getOffset(noiseY, baseSize, heightStretch) / densityScale;
+            
+            double densityOffset = this.getOffset(noiseY, baseSize, heightStretch);
+            
+            double mainNoise = (this.mainNoiseOctaves.sample(
+                noiseX, noiseY, noiseZ, 
+                coordinateScale / mainNoiseScaleX, 
+                heightScale / mainNoiseScaleY, 
+                coordinateScale / mainNoiseScaleZ
+            ) / 10D + 1.0D) / 2D;
+            
+            if (mainNoise < 0.0D) {
+                density = this.minLimitNoiseOctaves.sample(
+                    noiseX, noiseY, noiseZ, 
+                    coordinateScale, 
+                    heightScale, 
+                    coordinateScale
+                ) / lowerLimitScale;
+                
+            } else if (mainNoise > 1.0D) {
+                density = this.maxLimitNoiseOctaves.sample(
+                    noiseX, noiseY, noiseZ, 
+                    coordinateScale, 
+                    heightScale, 
+                    coordinateScale
+                ) / upperLimitScale;
+                
+            } else {
+                double minLimitNoise = this.minLimitNoiseOctaves.sample(
+                    noiseX, noiseY, noiseZ, 
+                    coordinateScale, 
+                    heightScale, 
+                    coordinateScale
+                ) / lowerLimitScale;
+                
+                double maxLimitNoise = this.maxLimitNoiseOctaves.sample(
+                    noiseX, noiseY, noiseZ, 
+                    coordinateScale, 
+                    heightScale, 
+                    coordinateScale
+                ) / upperLimitScale;
+                
+                density = minLimitNoise + (maxLimitNoise - minLimitNoise) * mainNoise;
+            }
+            
+            // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
+            density -= densityOffset;
+            
+            // Normalize density
+            density /= densityScale;
             
             // Sample without noise caves
             heightmapDensity = density;
