@@ -3,25 +3,25 @@ package com.bespectacled.modernbeta.client.gui.screen.cavebiome;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.api.client.gui.screen.SettingsScreen;
-import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.DoubleOptionWrapper;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
+import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 
 import net.minecraft.nbt.NbtInt;
 
-public class NoiseCaveBiomeScreen extends SettingsScreen {
+public class VanillaCaveBiomeScreen extends SettingsScreen {
     private static final String VERTICAL_SCALE_DISPLAY_STRING = "createWorld.customize.caveBiome.verticalNoiseScale";
     private static final String HORIZONTAL_SCALE_DISPLAY_STRING = "createWorld.customize.caveBiome.horizontalNoiseScale";
     
-    private NoiseCaveBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings biomeSettings) {
+    private VanillaCaveBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings biomeSettings) {
         super(parent, worldSetting, consumer, biomeSettings);
     }
     
-    public static NoiseCaveBiomeScreen create(WorldScreen parent, WorldSetting worldSetting) {
-        return new NoiseCaveBiomeScreen(
+    public static VanillaCaveBiomeScreen create(WorldScreen parent, WorldSetting worldSetting) {
+        return new VanillaCaveBiomeScreen(
             parent, 
             worldSetting, 
             settings -> parent.getWorldSettings().putChanges(worldSetting, settings.getNbt()),

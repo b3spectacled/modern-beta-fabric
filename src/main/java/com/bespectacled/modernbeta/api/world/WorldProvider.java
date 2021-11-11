@@ -1,13 +1,5 @@
 package com.bespectacled.modernbeta.api.world;
 
-import java.util.function.Consumer;
-
-import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
-import com.bespectacled.modernbeta.api.registry.Registries;
-import com.bespectacled.modernbeta.client.gui.WorldSettings;
-
-import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-
 public final class WorldProvider {
     private final String chunkProvider;
     private final String worldScreen;
@@ -83,6 +75,7 @@ public final class WorldProvider {
         return this.showGenerateDeepslate;
     }
     
+    /*
     public WorldScreen createWorldScreen(
         CreateWorldScreen parent,
         WorldSettings worldSettings,
@@ -92,6 +85,7 @@ public final class WorldProvider {
             .getOrDefault(this.worldScreen)
             .apply(parent, worldSettings, consumer);
     }
+    */
     
     @Override
     public String toString() {

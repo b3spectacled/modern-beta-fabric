@@ -4,9 +4,8 @@ import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.client.gui.screen.biome.ClimateBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.biome.SingleBiomeScreen;
-import com.bespectacled.modernbeta.client.gui.screen.cavebiome.NoiseCaveBiomeScreen;
+import com.bespectacled.modernbeta.client.gui.screen.cavebiome.VanillaCaveBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.cavebiome.SingleCaveBiomeScreen;
-import com.bespectacled.modernbeta.client.gui.screen.world.BaseWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.IndevWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.InfClimateWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.InfWorldScreen;
@@ -19,8 +18,8 @@ import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.VanillaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.NoCaveBiomeProvider;
-import com.bespectacled.modernbeta.world.cavebiome.provider.VanillaCaveBiomeProvider;
 import com.bespectacled.modernbeta.world.cavebiome.provider.SingleCaveBiomeProvider;
+import com.bespectacled.modernbeta.world.cavebiome.provider.VanillaCaveBiomeProvider;
 import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.provider.AlphaChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.BetaChunkProvider;
@@ -111,6 +110,7 @@ public class ModernBetaBuiltInProviders {
     
     // Register default world screens
     public static void registerWorldScreens() {
+        /*
         Registries.WORLD_SCREEN.register(BuiltInTypes.DEFAULT_ID, BaseWorldScreen::new);
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.BASE.name, BaseWorldScreen::new);
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF.name, InfWorldScreen::new);
@@ -119,6 +119,15 @@ public class ModernBetaBuiltInProviders {
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INDEV.name, IndevWorldScreen::new);
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.ISLAND.name, IslandWorldScreen::new);
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF_CLIMATE.name, InfClimateWorldScreen::new);
+        */
+        
+        Registries.WORLD_SCREEN.register(BuiltInTypes.DEFAULT_ID, (screen, worldSetting) -> null);
+        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF.name, InfWorldScreen::create);
+        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF_CLIMATE.name, InfClimateWorldScreen::create);
+        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INFDEV_227.name, Infdev227WorldScreen::create);
+        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.ISLAND.name, IslandWorldScreen::create);
+        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.PRE_INF.name, PreInfWorldScreen::create);
+        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INDEV.name, IndevWorldScreen::create);
     }
     
     // Register default biome settings screens (Note: Match identifiers with biome ids!)
@@ -133,7 +142,7 @@ public class ModernBetaBuiltInProviders {
         Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.DEFAULT_ID, (screen, worldSetting) -> null);
         Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.CaveBiome.NONE.name, (screen, worldSetting) -> null);
         Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.CaveBiome.SINGLE.name, SingleCaveBiomeScreen::create);
-        Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.CaveBiome.VANILLA.name, NoiseCaveBiomeScreen::create);
+        Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.CaveBiome.VANILLA.name, VanillaCaveBiomeScreen::create);
     }
     
     // Register default world providers

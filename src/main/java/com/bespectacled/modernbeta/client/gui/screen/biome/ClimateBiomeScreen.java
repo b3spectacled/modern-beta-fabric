@@ -5,12 +5,12 @@ import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.client.gui.screen.SettingsScreen;
-import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.ActionOptionWrapper;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
+import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
 
@@ -28,8 +28,8 @@ public class ClimateBiomeScreen extends SettingsScreen {
     private final Map<String, Identifier> landBiomeMap;
     private final Map<String, Identifier> oceanBiomeMap;
     
-    private ClimateBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings biomeSettings) {
-        super(parent, worldSetting, consumer, biomeSettings);
+    private ClimateBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
+        super(parent, worldSetting, consumer, settings);
         
         // Create Beta biome map from existing biome settings
         BetaClimateMap climateMap = new BetaClimateMap(this.settings.getNbt());
@@ -39,14 +39,14 @@ public class ClimateBiomeScreen extends SettingsScreen {
     }
     
     private ClimateBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
-        this(parent, worldSetting, consumer, new Settings(parent.getWorldSettings().getNbt(WorldSetting.BIOME)));
+        this(parent, worldSetting, consumer, new Settings(parent.getWorldSettings().getNbt(worldSetting)));
     }
     
     public static ClimateBiomeScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
         return new ClimateBiomeScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getNbt())
+            settings -> worldScreen.getWorldSettings().putChanges(worldSetting, settings.getNbt())
         );
     }
     
