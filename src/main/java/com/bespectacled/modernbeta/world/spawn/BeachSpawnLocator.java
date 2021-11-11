@@ -7,9 +7,11 @@ import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
 import net.minecraft.util.math.BlockPos;
@@ -57,17 +59,21 @@ public class BeachSpawnLocator implements SpawnLocator {
             attempts++;
         }
         
-        int y = this.chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG, null);
-        
-        return Optional.of(new BlockPos(x, y - 1, z));
+        int y = (this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) ?
+            noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
+            this.chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG, null);
+
+        return Optional.of(new BlockPos(x, y, z));
     }
     
     private boolean isSandAt(int x, int z, HeightLimitView world) {
         double eighth = 0.03125D;
         int seaLevel = this.chunkProvider.getSeaLevel();
         
-        int y = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world);
-        
+        int y = (this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) ?
+            noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
+            this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
+
         Biome biome = (this.chunkProvider.getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) ? 
             oldBiomeSource.getBiomeForSurfaceGen(x, y, z) :
             this.chunkProvider.getBiomeForNoiseGen(x >> 2, y >> 2, z >> 2);

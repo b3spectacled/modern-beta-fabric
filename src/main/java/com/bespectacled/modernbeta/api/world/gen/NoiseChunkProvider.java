@@ -243,6 +243,23 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     }
     
     /**
+     * Sample height at given x/z coordinate. Initially generates heightmap for entire chunk, 
+     * if chunk containing x/z coordinates has never been sampled.
+     *
+     * @param x x-coordinate in block coordinates.
+     * @param z z-coordinate in block coordinates.
+     * @param type HeightmapChunk heightmap type.
+     * 
+     * @return The y-coordinate of top block at x/z.
+     */
+    public int getHeight(int x, int z, HeightmapChunk.Type type) {
+        int chunkX = x >> 4;
+        int chunkZ = z >> 4;
+        
+        return this.heightmapChunkCache.get(chunkX, chunkZ).getHeight(x, z, type);
+    }
+    
+    /**
      * Generates noise for a column at startNoiseX + localNoiseX / startNoiseZ + localNoiseZ.
      * 
      * @param buffer Buffer of size noiseSizeY + 1 to store noise column
@@ -424,9 +441,11 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         int[] heightmapSurface = new int[256];
         int[] heightmapOcean = new int[256];
+        int[] heightmapSurfaceFloor = new int[256];
         
         Arrays.fill(heightmapSurface, minHeight);
         Arrays.fill(heightmapOcean, minHeight);
+        Arrays.fill(heightmapSurfaceFloor, Integer.MIN_VALUE);
         
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++subChunkZ) {
@@ -454,12 +473,22 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 
                                 double density = baseNoiseProvider.sample();
                                 
+                                int height = y + 1;
+                                int ndx = z + x * 16;
+                                
+                                // Capture topmost solid/fluid block height.
                                 if (y < this.seaLevel || density > 0.0) {
-                                    heightmapOcean[z + x * 16] = y + 1;
+                                    heightmapOcean[ndx] = height;
                                 }
                                 
+                                // Capture topmost solid block height.
                                 if (density > 0.0) {
-                                    heightmapSurface[z + x * 16] = y + 1;
+                                    heightmapSurface[ndx] = height;
+                                }
+                                
+                                // Capture lowest solid block height.
+                                if (density <= 0.0 && heightmapSurfaceFloor[ndx] == Integer.MIN_VALUE) {
+                                    heightmapSurfaceFloor[ndx] = height - 1;
                                 }
                             }
                         }
@@ -469,7 +498,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         }
         
         // Construct new heightmap cache from generated heightmap array
-        return new HeightmapChunk(heightmapSurface, heightmapOcean);
+        return new HeightmapChunk(heightmapSurface, heightmapOcean, heightmapSurfaceFloor);
     }
     
     /**

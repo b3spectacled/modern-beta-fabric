@@ -18,27 +18,32 @@ import net.minecraft.world.Heightmap;
  */
 public class HeightmapChunk {
     public enum Type {
+        SURFACE_FLOOR,
         SURFACE,
         OCEAN
     }
     
     private final int heightmapSurface[];
     private final int heightmapOcean[];
+    private final int heightmapSurfaceFloor[];
 
-    public HeightmapChunk(int[] heightmapSurface, int[] heightmapOcean) {
+    public HeightmapChunk(int[] heightmapSurface, int[] heightmapOcean, int[] heightmapSurfaceFloor) {
         if (heightmapSurface.length != 256 || heightmapOcean.length != 256) 
             throw new IllegalArgumentException("[Modern Beta] Heightmap is an invalid size!");
 
         this.heightmapSurface = heightmapSurface;
         this.heightmapOcean = heightmapOcean;
+        this.heightmapSurfaceFloor = heightmapSurfaceFloor;
     }
     
     public HeightmapChunk(int minHeight) {
         this.heightmapSurface = new int[256];
         this.heightmapOcean = new int[256];
+        this.heightmapSurfaceFloor = new int[256];
         
         Arrays.fill(this.heightmapSurface, minHeight);
         Arrays.fill(this.heightmapOcean, minHeight);
+        Arrays.fill(this.heightmapSurfaceFloor, minHeight);
     }
     
     public int getHeight(int x, int z, Heightmap.Type type) {
@@ -55,12 +60,14 @@ public class HeightmapChunk {
         };
     }
     
-    public void updateHeightmap(int x, int z, int height, HeightmapChunk.Type type) {
+    public int getHeight(int x, int z, HeightmapChunk.Type type) {
         int ndx = (z & 0xF) + (x & 0xF) * 16;
         
-        switch(type) {
-            case SURFACE -> this.heightmapSurface[ndx] = height;
-            case OCEAN -> this.heightmapOcean[ndx] = height;
-        }
+        return switch(type) {
+            case SURFACE -> this.heightmapSurface[ndx];
+            case OCEAN -> this.heightmapOcean[ndx];
+            case SURFACE_FLOOR -> this.heightmapSurfaceFloor[ndx];
+            default -> this.heightmapSurface[ndx];
+        };
     }
 }

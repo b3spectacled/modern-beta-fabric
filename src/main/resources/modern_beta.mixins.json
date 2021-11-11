@@ -9,7 +9,8 @@
     "MixinGeneratorOptions",
     "MixinChunkGeneratorInvoker",
     "MixinChunkGeneratorSettingsInvoker",
-    "MixinOceanMonumentFeature"
+    "MixinOceanMonumentFeature",
+    "MixinSpawnLocating"
   ],
   "client": [
     "client.MixinClientWorld",
