@@ -36,6 +36,7 @@ public class MixinMinecraftServer {
             spawnPos = oldChunkGenerator.getChunkProvider().locateSpawn().orElse(spawnPos);
             
             if (spawnPos != null && oldChunkGenerator.getChunkProvider() instanceof IndevChunkProvider indevChunkProvider) {
+                
                 // Generate Indev house
                 indevChunkProvider.generateIndevHouse(world, spawnPos);
                 

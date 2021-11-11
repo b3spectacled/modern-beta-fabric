@@ -18,7 +18,7 @@ public class Desert {
         OldBiomeMobs.addSquid(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        OldBiomeFeatures.addDesertFeatures(genSettings, true);
+        OldBiomeFeatures.addDesertFeatures(genSettings, false);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.NONE)

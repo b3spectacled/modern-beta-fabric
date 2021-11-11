@@ -101,9 +101,7 @@ public class SingleCaveBiomeScreen extends SettingsScreen {
         this.addOption(singleBiomeOption);
         this.addOption(useNoiseOption);
         
-        if (useNoise) {
-            this.addOption(verticalScaleOption);
-            this.addOption(horizontalScaleOption);
-        }
+        this.addOption(verticalScaleOption, useNoise);
+        this.addOption(horizontalScaleOption, useNoise);
     }
 }

@@ -35,12 +35,6 @@ public class IndevWorldScreen extends InfWorldScreen {
 
     protected IndevWorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
         super(parent, worldSetting, consumer, settings);
-        
-        // Set default single biome per level theme
-        /*
-        String levelTheme = NbtUtil.toStringOrThrow(this.getSetting(NbtTags.LEVEL_THEME));
-        this.setDefaultSingleBiome(IndevTheme.fromName(levelTheme).getDefaultBiome().toString());   
-        */
     }
 
     public static IndevWorldScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {

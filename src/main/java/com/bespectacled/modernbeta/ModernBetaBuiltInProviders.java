@@ -4,8 +4,8 @@ import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.client.gui.screen.biome.ClimateBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.biome.SingleBiomeScreen;
-import com.bespectacled.modernbeta.client.gui.screen.cavebiome.VanillaCaveBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.cavebiome.SingleCaveBiomeScreen;
+import com.bespectacled.modernbeta.client.gui.screen.cavebiome.VanillaCaveBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.IndevWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.InfClimateWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.InfWorldScreen;
@@ -110,17 +110,6 @@ public class ModernBetaBuiltInProviders {
     
     // Register default world screens
     public static void registerWorldScreens() {
-        /*
-        Registries.WORLD_SCREEN.register(BuiltInTypes.DEFAULT_ID, BaseWorldScreen::new);
-        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.BASE.name, BaseWorldScreen::new);
-        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF.name, InfWorldScreen::new);
-        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INFDEV_227.name, Infdev227WorldScreen::new);
-        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.PRE_INF.name, PreInfWorldScreen::new);
-        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INDEV.name, IndevWorldScreen::new);
-        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.ISLAND.name, IslandWorldScreen::new);
-        Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF_CLIMATE.name, InfClimateWorldScreen::new);
-        */
-        
         Registries.WORLD_SCREEN.register(BuiltInTypes.DEFAULT_ID, (screen, worldSetting) -> null);
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF.name, InfWorldScreen::create);
         Registries.WORLD_SCREEN.register(BuiltInTypes.WorldScreen.INF_CLIMATE.name, InfClimateWorldScreen::create);
@@ -136,6 +125,7 @@ public class ModernBetaBuiltInProviders {
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.BETA.name, ClimateBiomeScreen::create);
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeScreen::create);
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.PE.name, ClimateBiomeScreen::create);
+        Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.VANILLA.name, (screen, worldSetting) -> null);
     }
     
     public static void registerCaveBiomeScreens() {

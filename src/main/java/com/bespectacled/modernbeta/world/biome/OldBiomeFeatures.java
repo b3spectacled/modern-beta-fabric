@@ -14,439 +14,439 @@ public class OldBiomeFeatures {
     
     /* Beta Biomes */
     
-    public static void addDesertFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addDesertFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
-        DefaultBiomeFeatures.addDesertFeatures(genSettings);
-        DefaultBiomeFeatures.addFossils(genSettings);
+        DefaultBiomeFeatures.addDesertFeatures(builder);
+        DefaultBiomeFeatures.addFossils(builder);
         
         if (pe) {
-            addPEVegetation(genSettings, false);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_CACTUS_PE);
+            addPEVegetation(builder, false);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_CACTUS_PE);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-            genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_DEAD_BUSH_2);
-            genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_CACTUS_DESERT);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_DEAD_BUSH_2);
+            builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_CACTUS_DESERT);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
-    public static void addForestFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addForestFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, true);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_FOREST_BEES);
+            addPEVegetation(builder, true);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_FOREST_BEES);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_FOREST);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_FOREST);
             
-            genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.FOREST_FLOWER_VEGETATION);
-            genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_GRASS_FOREST);
+            builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.FOREST_FLOWER_VEGETATION);
+            builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_GRASS_FOREST);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
-    public static void addIceDesertFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addIceDesertFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, false);
+            addPEVegetation(builder, false);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
-    public static void addPlainsFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addPlainsFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, true);
+            addPEVegetation(builder, true);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_3);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_PLAINS_10);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_3);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_PLAINS_10);
         }
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.FLOWER_PLAIN_DECORATED);
+        builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.FLOWER_PLAIN_DECORATED);
     }
     
-    public static void addRainforestFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addRainforestFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, true);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_RAINFOREST_BEES);
+            addPEVegetation(builder, true);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_RAINFOREST_BEES);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_RAINFOREST);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_RAINFOREST_10);
-            genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.FOREST_FLOWER_VEGETATION);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_RAINFOREST);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_RAINFOREST_10);
+            builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.FOREST_FLOWER_VEGETATION);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_MELON);
+        builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_MELON);
     }
     
-    public static void addSavannaFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addSavannaFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, false);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_SPARSE);
+            addPEVegetation(builder, false);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_SPARSE);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_SPARSE);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_SPARSE);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
-    public static void addSeasonalForestFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addSeasonalForestFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, true);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_SEASONAL_FOREST_BEES);
+            addPEVegetation(builder, true);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_SEASONAL_FOREST_BEES);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_4);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_SEASONAL_FOREST);
-            genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_GRASS_FOREST);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_4);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_SEASONAL_FOREST);
+            builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_GRASS_FOREST);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
-    public static void addShrublandFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addShrublandFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, false);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_SPARSE);
+            addPEVegetation(builder, false);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_SPARSE);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_SPARSE);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_SPARSE);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
-    public static void addSkyFeatures(GenerationSettings.Builder genSettings) {
-        addDefaultFeatures(genSettings, OldFeatureSettings.SKY);
+    public static void addSkyFeatures(GenerationSettings.Builder builder) {
+        addDefaultFeatures(builder, OldFeatureSettings.SKY);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_SPARSE);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_SPARSE);
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
-    public static void addSwamplandFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addSwamplandFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, false);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_SPARSE);
+            addPEVegetation(builder, false);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_SPARSE);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_SPARSE);
-            genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.FLOWER_SWAMP);
-            genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_WATERLILLY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_SPARSE);
+            builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.FLOWER_SWAMP);
+            builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_WATERLILLY);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
-    public static void addTaigaFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addTaigaFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, true);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_TAIGA);
+            addPEVegetation(builder, true);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_TAIGA);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_TAIGA);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_TAIGA_1);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_TAIGA);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_TAIGA_1);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
-        if (!pe) DefaultBiomeFeatures.addSweetBerryBushes(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
+        if (!pe) DefaultBiomeFeatures.addSweetBerryBushes(builder);
     }
     
-    public static void addTundraFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addTundraFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, false);
+            addPEVegetation(builder, false);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
-    public static void addOceanFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addOceanFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, false);
+            addPEVegetation(builder, false);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_NORMAL);
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_SIMPLE);
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.KELP_COLD);
+        builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_NORMAL);
+        builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_SIMPLE);
+        builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.KELP_COLD);
     }
     
-    public static void addColdOceanFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addColdOceanFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, false);
+            addPEVegetation(builder, false);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_COLD);
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_SIMPLE);
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.KELP_COLD);
+        builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_COLD);
+        builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_SIMPLE);
+        builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.KELP_COLD);
     }
     
-    public static void addFrozenOceanFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addFrozenOceanFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, false);
+            addPEVegetation(builder, false);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
-    public static void addLukewarmOceanFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addLukewarmOceanFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, false);
+            addPEVegetation(builder, false);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
 
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_WARM);
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.KELP_WARM);
+        builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_WARM);
+        builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.KELP_WARM);
     }
     
-    public static void addWarmOceanFeatures(GenerationSettings.Builder genSettings, boolean pe) {
-        addDefaultFeatures(genSettings, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
+    public static void addWarmOceanFeatures(GenerationSettings.Builder builder, boolean pe) {
+        addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         if (pe) {
-            addPEVegetation(genSettings, false);
+            addPEVegetation(builder, false);
         } else {
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
         }
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.WARM_OCEAN_VEGETATION);
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_WARM);
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEA_PICKLE);
+        builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.WARM_OCEAN_VEGETATION);
+        builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_WARM);
+        builder.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEA_PICKLE);
     }
     
     /* Inf Biomes */
     
-    public static void addAlphaFeatures(GenerationSettings.Builder genSettings) {
-        addDefaultFeatures(genSettings, OldFeatureSettings.ALPHA);
+    public static void addAlphaFeatures(GenerationSettings.Builder builder) {
+        addDefaultFeatures(builder, OldFeatureSettings.ALPHA);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_CACTUS_ALPHA);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_ALPHA_BEES);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_CACTUS_ALPHA);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_ALPHA_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
         
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        DefaultBiomeFeatures.addDefaultVegetation(genSettings);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
-    public static void addInfdev611Features(GenerationSettings.Builder genSettings) {
-        addDefaultFeatures(genSettings, OldFeatureSettings.INFDEV_611);
+    public static void addInfdev611Features(GenerationSettings.Builder builder) {
+        addDefaultFeatures(builder, OldFeatureSettings.INFDEV_611);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INFDEV_611_BEES);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INFDEV_611_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
     }
     
-    public static void addInfdev420Features(GenerationSettings.Builder genSettings) {
-        addDefaultFeatures(genSettings, OldFeatureSettings.INFDEV_420);
+    public static void addInfdev420Features(GenerationSettings.Builder builder) {
+        addDefaultFeatures(builder, OldFeatureSettings.INFDEV_420);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INFDEV_420_BEES);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INFDEV_420_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
     }
     
-    public static void addInfdev415Features(GenerationSettings.Builder genSettings) {
-        addDefaultFeatures(genSettings, OldFeatureSettings.INFDEV_415);
+    public static void addInfdev415Features(GenerationSettings.Builder builder) {
+        addDefaultFeatures(builder, OldFeatureSettings.INFDEV_415);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INFDEV_415_BEES);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INFDEV_415_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
     }
     
-    public static void addInfdev227Features(GenerationSettings.Builder genSettings) {
-        addDefaultFeatures(genSettings, OldFeatureSettings.INFDEV_227);
+    public static void addInfdev227Features(GenerationSettings.Builder builder) {
+        addDefaultFeatures(builder, OldFeatureSettings.INFDEV_227);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.FLOWER_INFDEV_227);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.FLOWER_INFDEV_227);
     }
     
     /* Indev Biomes */
     
-    public static void addIndevHellFeatures(GenerationSettings.Builder genSettings) {
-        addDefaultFeatures(genSettings, OldFeatureSettings.INDEV);
+    public static void addIndevHellFeatures(GenerationSettings.Builder builder) {
+        addDefaultFeatures(builder, OldFeatureSettings.INDEV);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INDEV_BEES);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.MUSHROOM_HELL);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INDEV_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.MUSHROOM_HELL);
     }
     
-    public static void addIndevNormalFeatures(GenerationSettings.Builder genSettings) {
-        addDefaultFeatures(genSettings, OldFeatureSettings.INDEV);
+    public static void addIndevNormalFeatures(GenerationSettings.Builder builder) {
+        addDefaultFeatures(builder, OldFeatureSettings.INDEV);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INDEV_BEES);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INDEV_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
     }
     
-    public static void addIndevParadiseFeatures(GenerationSettings.Builder genSettings) {
-        addDefaultFeatures(genSettings, OldFeatureSettings.INDEV);
+    public static void addIndevParadiseFeatures(GenerationSettings.Builder builder) {
+        addDefaultFeatures(builder, OldFeatureSettings.INDEV);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.FLOWER_PARADISE);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INDEV_BEES);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.FLOWER_PARADISE);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INDEV_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
     }
     
-    public static void addIndevSnowyFeatures(GenerationSettings.Builder genSettings) {
-        addIndevNormalFeatures(genSettings);
+    public static void addIndevSnowyFeatures(GenerationSettings.Builder builder) {
+        addIndevNormalFeatures(builder);
     }
     
-    public static void addIndevWoodsFeatures(GenerationSettings.Builder genSettings) {
-        addDefaultFeatures(genSettings, OldFeatureSettings.INDEV);
+    public static void addIndevWoodsFeatures(GenerationSettings.Builder builder) {
+        addDefaultFeatures(builder, OldFeatureSettings.INDEV);
         
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INDEV_WOODS_BEES);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.MUSHROOM_HELL);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INDEV_WOODS_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.MUSHROOM_HELL);
     }
     
     public static void addDefaultFeatures(
-        GenerationSettings.Builder genSettings,
+        GenerationSettings.Builder builder,
         OldFeatureSettings featureSettings
     ) {
-        addCarvers(genSettings, featureSettings.addCanyons);
-        DefaultBiomeFeatures.addAmethystGeodes(genSettings);
-        DefaultBiomeFeatures.addDungeons(genSettings);
-        addMineables(genSettings, featureSettings.addAlternateStones, featureSettings.addNewMineables);
+        addCarvers(builder, featureSettings.addCanyons);
+        DefaultBiomeFeatures.addAmethystGeodes(builder);
+        DefaultBiomeFeatures.addDungeons(builder);
+        addMineables(builder, featureSettings.addAlternateStones, featureSettings.addNewMineables);
         
-        if (featureSettings.addSprings) DefaultBiomeFeatures.addSprings(genSettings);
+        if (featureSettings.addSprings) DefaultBiomeFeatures.addSprings(builder);
         if (featureSettings.useBetaFreezeTopLayer)
-            OldBiomeFeatures.addBetaFrozenTopLayer(genSettings);
+            OldBiomeFeatures.addBetaFrozenTopLayer(builder);
         else
-            DefaultBiomeFeatures.addFrozenTopLayer(genSettings);
+            DefaultBiomeFeatures.addFrozenTopLayer(builder);
         
-        DefaultBiomeFeatures.addDefaultOres(genSettings);
-        addOres(genSettings);
+        DefaultBiomeFeatures.addDefaultOres(builder);
+        addOres(builder);
     }
     
-    public static void addDefaultFeatures(GenerationSettings.Builder genSettings, boolean isOcean, boolean addLakes, boolean addSprings) {
-        //if (addLakes) DefaultBiomeFeatures.addDefaultLakes(genSettings);
-        DefaultBiomeFeatures.addDungeons(genSettings);
-        DefaultBiomeFeatures.addDefaultOres(genSettings);
-        DefaultBiomeFeatures.addDefaultMushrooms(genSettings);
-        if (addSprings) DefaultBiomeFeatures.addSprings(genSettings);
-        DefaultBiomeFeatures.addAmethystGeodes(genSettings);
+    public static void addDefaultFeatures(GenerationSettings.Builder builder, boolean isOcean, boolean addLakes, boolean addSprings) {
+        if (addLakes) addLakes(builder);
+        DefaultBiomeFeatures.addDungeons(builder);
+        DefaultBiomeFeatures.addDefaultOres(builder);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        if (addSprings) DefaultBiomeFeatures.addSprings(builder);
+        DefaultBiomeFeatures.addAmethystGeodes(builder);
     }
 
-    public static void addCarvers(GenerationSettings.Builder genSettings, boolean addCanyons) {
-        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER);
-        genSettings.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER_DEEP);
+    private static void addCarvers(GenerationSettings.Builder builder, boolean addCanyons) {
+        builder.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER);
+        builder.carver(GenerationStep.Carver.AIR, OldCarvers.CONF_OLD_BETA_CAVE_CARVER_DEEP);
         
         if (addCanyons) {
-            genSettings.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
+            builder.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
         }
     }
     
-    public static void addOceanCarvers(GenerationSettings.Builder genSettings) {
-        addCarvers(genSettings, true);
+    private static void addLakes(GenerationSettings.Builder builder) {
+        builder.feature(GenerationStep.Feature.LAKES, ConfiguredFeatures.LAKE_LAVA);
     }
 
-    public static void addMineables(GenerationSettings.Builder genSettings, boolean addAlternateStones, boolean addNewMineables) {
-        genSettings.feature(Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_DIRT);
-        genSettings.feature(Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_GRAVEL);
-        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
+    private static void addMineables(GenerationSettings.Builder builder, boolean addAlternateStones, boolean addNewMineables) {
+        builder.feature(Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_DIRT);
+        builder.feature(Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_GRAVEL);
+        builder.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_CLAY);
         
         if (addAlternateStones) {
-            genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_GRANITE_LOWER);
-            genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_DIORITE_LOWER);
-            genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_ANDESITE_LOWER);
+            builder.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_GRANITE_LOWER);
+            builder.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_DIORITE_LOWER);
+            builder.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_ANDESITE_LOWER);
         }
         
         if (addNewMineables) {
-            genSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, ConfiguredFeatures.GLOW_LICHEN);
-            genSettings.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_TUFF);
+            builder.feature(GenerationStep.Feature.VEGETAL_DECORATION, ConfiguredFeatures.GLOW_LICHEN);
+            builder.feature(GenerationStep.Feature.UNDERGROUND_ORES, ConfiguredFeatures.ORE_TUFF);
         }
     }
     
-    public static void addOres(GenerationSettings.Builder genSettings) {
-        genSettings.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_EMERALD_Y95);
+    private static void addOres(GenerationSettings.Builder builder) {
+        builder.feature(Feature.UNDERGROUND_ORES, OldConfiguredFeatures.ORE_EMERALD_Y95);
     }
 
-    public static void addBetaFrozenTopLayer(GenerationSettings.Builder genSettings) {
-        genSettings.feature(Feature.TOP_LAYER_MODIFICATION, OldConfiguredFeatures.BETA_FREEZE_TOP_LAYER);
+    private static void addBetaFrozenTopLayer(GenerationSettings.Builder builder) {
+        builder.feature(Feature.TOP_LAYER_MODIFICATION, OldConfiguredFeatures.BETA_FREEZE_TOP_LAYER);
     }
     
-    private static void addPEVegetation(GenerationSettings.Builder genSettings, boolean addGrass) {
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
+    private static void addPEVegetation(GenerationSettings.Builder builder, boolean addGrass) {
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION);
+        builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
         
         if (addGrass)
-            genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
+            builder.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
     }
     
     private record OldFeatureSettings(

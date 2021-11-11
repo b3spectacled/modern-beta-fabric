@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta.client.gui.option;
 
+import java.util.List;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
@@ -17,26 +19,29 @@ import net.minecraft.util.math.MathHelper;
  */
 public class TextOption extends Option {
     private final String key;
-    private final Formatting formatting;
+    private final List<Formatting> formattingList;
     
     private ClickableWidget button;
     
-    public TextOption(String key, Formatting formatting) {
+    public TextOption(String key, List<Formatting> formattingList) {
         super(key);
         
         this.key = key;
-        this.formatting = formatting;
+        this.formattingList = formattingList;
     }
     
     public TextOption(String key) {
-        this(key, Formatting.RESET);
+        this(key, List.of());
     }
 
     @Override
     public ClickableWidget createButton(GameOptions options, int x, int y, int width) {
+        TranslatableText buttonText = new TranslatableText(this.key);
+        this.formattingList.forEach(f -> buttonText.formatted(f));
+        
         this.button = new ButtonWidget(
             x, y, width, 20,
-            new TranslatableText(this.key).formatted(this.formatting),
+            buttonText,
             (buttonWidget) -> {}
         ) {
             @Override
