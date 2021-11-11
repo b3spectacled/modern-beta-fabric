@@ -19,7 +19,7 @@ import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.VanillaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.NoCaveBiomeProvider;
-import com.bespectacled.modernbeta.world.cavebiome.provider.NoiseCaveBiomeProvider;
+import com.bespectacled.modernbeta.world.cavebiome.provider.VanillaCaveBiomeProvider;
 import com.bespectacled.modernbeta.world.cavebiome.provider.SingleCaveBiomeProvider;
 import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.provider.AlphaChunkProvider;
@@ -98,7 +98,7 @@ public class ModernBetaBuiltInProviders {
         Registries.CAVE_BIOME.register(BuiltInTypes.DEFAULT_ID, NoCaveBiomeProvider::new);
         Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.NONE.name, NoCaveBiomeProvider::new);
         Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.SINGLE.name, SingleCaveBiomeProvider::new);
-        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.NOISE.name, NoiseCaveBiomeProvider::new);
+        Registries.CAVE_BIOME.register(BuiltInTypes.CaveBiome.VANILLA.name, VanillaCaveBiomeProvider::new);
     }
     
     // Registry default cave biome settings
@@ -106,7 +106,7 @@ public class ModernBetaBuiltInProviders {
         Registries.CAVE_BIOME_SETTINGS.register(BuiltInTypes.DEFAULT_ID, () -> new NbtCompound());
         Registries.CAVE_BIOME_SETTINGS.register(BuiltInTypes.CaveBiome.NONE.name, CaveBiomeProviderSettings::createSettingsNone);
         Registries.CAVE_BIOME_SETTINGS.register(BuiltInTypes.CaveBiome.SINGLE.name, CaveBiomeProviderSettings::createSettingsSingle);
-        Registries.CAVE_BIOME_SETTINGS.register(BuiltInTypes.CaveBiome.NOISE.name, CaveBiomeProviderSettings::createSettingsNoise);
+        Registries.CAVE_BIOME_SETTINGS.register(BuiltInTypes.CaveBiome.VANILLA.name, CaveBiomeProviderSettings::createSettingsNoise);
     }
     
     // Register default world screens
@@ -133,7 +133,7 @@ public class ModernBetaBuiltInProviders {
         Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.DEFAULT_ID, (screen, worldSetting) -> null);
         Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.CaveBiome.NONE.name, (screen, worldSetting) -> null);
         Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.CaveBiome.SINGLE.name, SingleCaveBiomeScreen::create);
-        Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.CaveBiome.NOISE.name, NoiseCaveBiomeScreen::create);
+        Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.CaveBiome.VANILLA.name, NoiseCaveBiomeScreen::create);
     }
     
     // Register default world providers

@@ -60,7 +60,7 @@ public class IndevWorldScreen extends InfWorldScreen {
             () -> IndevTheme.fromName(NbtUtil.toStringOrThrow(this.getChunkSetting(NbtTags.LEVEL_THEME))),
             value -> {
                 this.putChunkSetting(NbtTags.LEVEL_THEME, NbtString.of(value.getName()));
-                this.resetWorldScreen();
+                this.resetWorldScreen(this.worldProvider);
             },
             value -> value.getColor(),
             value -> this.client.textRenderer.wrapLines(new TranslatableText(value.getDescription()).formatted(value.getColor()), 250)

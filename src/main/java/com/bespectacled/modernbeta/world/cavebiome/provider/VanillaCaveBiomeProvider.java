@@ -16,24 +16,24 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
-public class NoiseCaveBiomeProvider extends CaveBiomeProvider implements CaveClimateSampler {
+public class VanillaCaveBiomeProvider extends CaveBiomeProvider implements CaveClimateSampler {
     private static final Identifier LUSH_CAVES = BiomeKeys.LUSH_CAVES.getValue();
     private static final Identifier DRIPSTONE_CAVES = BiomeKeys.DRIPSTONE_CAVES.getValue();
     
     private final CaveClimateSampler climateSampler;
     private final ClimateNoiseRules noiseRanges;
     
-    public NoiseCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+    public VanillaCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
         
         int verticalNoiseScale = NbtUtil.readInt(
-            NbtTags.VERTICAL_NOISE_SCALE, 
+            NbtTags.VERTICAL_NOISE_SCALE,
             settings, 
             ModernBeta.CAVE_BIOME_CONFIG.noiseBiomeConfig.verticalNoiseScale
         );
         
         int horizontalNoiseScale = NbtUtil.readInt(
-            NbtTags.HORIZONTAL_NOISE_SCALE, 
+            NbtTags.HORIZONTAL_NOISE_SCALE,
             settings, 
             ModernBeta.CAVE_BIOME_CONFIG.noiseBiomeConfig.horizontalNoiseScale
         );

@@ -50,7 +50,7 @@ public class IslandWorldScreen extends InfClimateWorldScreen {
                 this.putChunkSetting(NbtTags.GEN_OUTER_ISLANDS, NbtByte.of(value));
                 
                 // Reset screen, to hide outer islands options, if generateOuterIslands set to false.
-                this.resetWorldScreen();
+                this.resetWorldScreen(this.worldProvider);
             }
         );
         

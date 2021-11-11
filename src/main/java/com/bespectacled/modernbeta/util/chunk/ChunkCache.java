@@ -20,7 +20,7 @@ public class ChunkCache<T> {
     private final Long2ObjectLinkedOpenHashMap<T> chunkMap;
     
     private final StampedLock lock;
-    
+
     public ChunkCache(String name, int capacity, boolean evictOldChunks, BiFunction<Integer, Integer, T> chunkFunc) {
         this.name = name;
         this.capacity = capacity;

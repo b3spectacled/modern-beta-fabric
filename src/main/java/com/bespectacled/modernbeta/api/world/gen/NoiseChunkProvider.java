@@ -415,8 +415,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      */
     protected void scheduleFluidTick(Chunk chunk, AquiferSampler aquiferSampler, BlockPos pos, BlockState blockState) {
         if (aquiferSampler.needsFluidTick() && !blockState.getFluidState().isEmpty()) {
-            // TODO: Fix later
-            //chunk.getFluidTickScheduler().schedule(pos, blockState.getFluidState().getFluid(), 0);
             chunk.getFluidTickScheduler().scheduleTick(OrderedTick.create(blockState.getFluidState().getFluid(), pos, 0L));
         }
     }

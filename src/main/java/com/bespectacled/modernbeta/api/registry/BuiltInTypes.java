@@ -36,7 +36,7 @@ public final class BuiltInTypes {
     
     public enum CaveBiome {
         NONE("none"),
-        NOISE("noise"),
+        VANILLA("vanilla"),
         BETA("beta"),
         SINGLE("single")
         ;

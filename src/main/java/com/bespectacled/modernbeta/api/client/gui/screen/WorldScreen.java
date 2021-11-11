@@ -42,10 +42,12 @@ public abstract class WorldScreen extends GUIScreen {
         this.worldProvider = Registries.WORLD.get(NbtUtil.toStringOrThrow(this.getChunkSetting(NbtTags.WORLD_TYPE)));
         
         // Replace single biome if applicable
+        /*
         String biomeType = NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.BIOME_TYPE));
         
         if (biomeType.equals(BuiltInTypes.Biome.SINGLE.name))
             this.putBiomeSetting(NbtTags.SINGLE_BIOME, NbtString.of(this.worldProvider.getSingleBiome()));
+            */
         
         // Replace ocean structure options if applicable
         String worldType = NbtUtil.toStringOrThrow(this.getChunkSetting(NbtTags.WORLD_TYPE));
@@ -116,13 +118,11 @@ public abstract class WorldScreen extends GUIScreen {
                     ).get()
                 );
                 
+                // Replace single biome if applicable
+                this.setDefaultSingleBiome(value.getBiomeProvider(), value.getSingleBiome());
+                
                 // Create new world screen
-                this.client.setScreen(
-                    value.createWorldScreen(
-                        (CreateWorldScreen)this.parent,
-                        this.worldSettings,
-                        this.consumer
-                ));
+                this.resetWorldScreen(value);
             }
         );
         
@@ -141,7 +141,10 @@ public abstract class WorldScreen extends GUIScreen {
                     ).get()
                 );
                 
-                this.resetWorldScreen();
+                // Replace single biome if applicable
+                this.setDefaultSingleBiome(value, this.worldProvider.getSingleBiome());
+                
+                this.resetWorldScreen(this.worldProvider);
             }
         );
         
@@ -160,7 +163,7 @@ public abstract class WorldScreen extends GUIScreen {
                     ).get()
                 );
             
-                this.resetWorldScreen();
+                this.resetWorldScreen(this.worldProvider);
             }
         );
         
@@ -208,9 +211,15 @@ public abstract class WorldScreen extends GUIScreen {
     /* Convenience methods */
     
     protected void setDefaultSingleBiome(String defaultBiome) {
+        String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
+        
+        this.setDefaultSingleBiome(biomeType, defaultBiome);
+    }
+    
+    protected void setDefaultSingleBiome(String biomeType, String defaultBiome) {
         // Replace default single biome with one supplied by world provider, if switching to Single biome type
-        if (NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.BIOME_TYPE)).equals(BuiltInTypes.Biome.SINGLE.name)) { 
-            this.worldSettings.putChange(WorldSetting.BIOME, NbtTags.SINGLE_BIOME, NbtString.of(defaultBiome));
+        if (biomeType.equals(BuiltInTypes.Biome.SINGLE.name)) { 
+            this.putBiomeSetting(NbtTags.SINGLE_BIOME, NbtString.of(defaultBiome));
         }
     }
     
@@ -250,12 +259,12 @@ public abstract class WorldScreen extends GUIScreen {
         return this.worldSettings.getSetting(WorldSetting.CAVE_BIOME, key);
     }
     
-    protected void resetWorldScreen() {
+    protected void resetWorldScreen(WorldProvider worldProvider) {
         this.client.setScreen(
-            this.worldProvider.createWorldScreen(
-                (CreateWorldScreen)this.parent,
-                this.worldSettings,
-                this.consumer
+            worldProvider.createWorldScreen(
+            (CreateWorldScreen)this.parent,
+            this.worldSettings,
+            this.consumer
         ));
     }
 }
