@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.server.network.SpawnLocating;
@@ -22,7 +23,9 @@ public class MixinSpawnLocating {
     private static void injectFindOverworldSpawn(ServerWorld world, int x, int z, CallbackInfoReturnable<BlockPos> info) {
         ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
         
-        if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
+        if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator && 
+            oldChunkGenerator.getChunkProvider().getSpawnLocator() != SpawnLocator.DEFAULT
+        ) {
             int spawnY = world.getLevelProperties().getSpawnY();
             
             info.setReturnValue(new BlockPos(x, spawnY, z));
