@@ -1,13 +1,5 @@
 package com.bespectacled.modernbeta.api.world;
 
-import java.util.function.Consumer;
-
-import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
-import com.bespectacled.modernbeta.api.registry.Registries;
-import com.bespectacled.modernbeta.client.gui.WorldSettings;
-
-import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-
 public final class WorldProvider {
     private final String chunkProvider;
     private final String chunkGenSettings;
@@ -65,16 +57,6 @@ public final class WorldProvider {
     
     public boolean generateMonuments() {
         return this.generateMonuments;
-    }
-    
-    public WorldScreen createWorldScreen(
-        CreateWorldScreen parent,
-        WorldSettings worldSettings,
-        Consumer<WorldSettings> consumer
-    ) {
-        return Registries.WORLD_SCREEN
-            .getOrDefault(this.worldScreen)
-            .apply(parent, worldSettings, consumer);
     }
     
     @Override

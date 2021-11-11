@@ -43,13 +43,12 @@ public class ModernBetaBuiltInWorldProviders {
             false
         );
         
-        
         SKYLANDS = new WorldProvider(
             BuiltInTypes.Chunk.SKYLANDS.name, 
             OldChunkGeneratorSettings.SKYLANDS.toString(), 
             BuiltInTypes.Biome.SINGLE.name,
             BetaBiomes.SKY_ID.toString(), 
-            BuiltInTypes.WorldScreen.BASE.name,
+            BuiltInTypes.DEFAULT_ID,
             false,
             false
         );

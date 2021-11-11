@@ -13,7 +13,7 @@
     "createWorld.customize.worldType.infdev_415": "Infdev 20100415",
     "createWorld.customize.worldType.infdev_227": "Infdev 20100227",
     "createWorld.customize.worldType.beta_islands": "Beta Islands",
-    "createWorld.customize.worldType.pe": "Pocket Edition v0.6.0",
+    "createWorld.customize.worldType.pe": "Pocket Edition",
     "createWorld.customize.worldType.classic_0_30": "Classic 0.30",
     
     "createWorld.customize.biomeType": "Biome Type",
@@ -21,11 +21,12 @@
     "createWorld.customize.biomeType.single": "Single",
     "createWorld.customize.biomeType.vanilla": "Vanilla",
     "createWorld.customize.biomeType.pe": "Pocket Edition",
-    "createWorld.customize.biomeType.settings": "Settings",
     "createWorld.customize.biomeType.biome": "Biome",
     
+    "createWorld.customize.settings": "Settings",
+    
     "createWorld.customize.worldType.title": "Modern Beta World Configuration",
-    "createWorld.customize.biomeType.title": "Modern Beta Biome Configuration",
+    "createWorld.customize.settings.title": "Modern Beta Settings Configuration",
     
     "createWorld.customize.climateType.land": "Land Biomes",
     "createWorld.customize.climateType.ocean": "Ocean Biomes",

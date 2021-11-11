@@ -5,6 +5,8 @@ import java.util.function.Consumer;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
+import com.bespectacled.modernbeta.client.gui.screen.GUIScreen;
+import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -12,8 +14,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public abstract class SettingsScreen extends GUIScreen {
-    @SuppressWarnings("unused")
-    private final WorldSettings worldSettings;
+    protected final WorldSettings worldSettings;
     protected final Consumer<Settings> consumer;
     
     protected final DynamicRegistryManager registryManager;
@@ -21,7 +22,7 @@ public abstract class SettingsScreen extends GUIScreen {
     protected final WorldSetting worldSetting;
     
     protected SettingsScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
-        super("createWorld.customize.biomeType.title", parent);
+        super("createWorld.customize.settings.title", parent);
 
         this.worldSettings = parent.getWorldSettings();
         this.worldSetting = worldSetting;

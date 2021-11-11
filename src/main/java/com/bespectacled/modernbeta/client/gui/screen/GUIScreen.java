@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api.client.gui.screen;
+package com.bespectacled.modernbeta.client.gui.screen;
 
 import java.util.List;
 
