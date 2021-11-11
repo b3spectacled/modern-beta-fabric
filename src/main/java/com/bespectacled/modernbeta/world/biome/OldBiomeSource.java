@@ -66,7 +66,7 @@ public class OldBiomeSource extends BiomeSource {
         
         List<Biome> biomes = new ArrayList<>();
         biomes.addAll(mainBiomes);
-        //biomes.addAll(caveBiomes);
+        biomes.addAll(caveBiomes);
         
         return biomes;
     }

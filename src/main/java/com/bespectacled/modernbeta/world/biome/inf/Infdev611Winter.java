@@ -3,14 +3,11 @@ package com.bespectacled.modernbeta.world.biome.inf;
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
 import com.bespectacled.modernbeta.world.biome.OldBiomeMobs;
-import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.gen.GenerationStep.Feature;
-import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 
 public class Infdev611Winter {
     public static final Biome BIOME = create();
@@ -22,15 +19,7 @@ public class Infdev611Winter {
         OldBiomeMobs.addWolves(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, InfBiomes.ADD_LAKES_INF_611, InfBiomes.ADD_SPRINGS_INF_611);
-        OldBiomeFeatures.addOres(genSettings);
-        DefaultBiomeFeatures.addFrozenTopLayer(genSettings);
-        
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INFDEV_611_BEES);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
-        
-        OldBiomeFeatures.addCarvers(genSettings, false);
+        OldBiomeFeatures.addInfdev611Features(genSettings);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.SNOW)

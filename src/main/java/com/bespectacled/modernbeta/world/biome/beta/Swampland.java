@@ -3,15 +3,11 @@ package com.bespectacled.modernbeta.world.biome.beta;
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
 import com.bespectacled.modernbeta.world.biome.OldBiomeMobs;
-import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.gen.GenerationStep.Feature;
-import net.minecraft.world.gen.feature.ConfiguredFeatures;
-import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 
 public class Swampland {
     public static final Biome BIOME = create();
@@ -24,22 +20,7 @@ public class Swampland {
         OldBiomeMobs.addTurtles(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        
-        DefaultBiomeFeatures.addFossils(genSettings);
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, BetaBiomes.ADD_LAKES, BetaBiomes.ADD_SPRINGS);
-        OldBiomeFeatures.addMineables(genSettings, BetaBiomes.ADD_ALTERNATE_STONES, BetaBiomes.ADD_NEW_MINEABLES);
-        OldBiomeFeatures.addOres(genSettings);
-        
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_BETA_SPARSE);
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.FLOWER_SWAMP);
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_WATERLILLY);
-        
-        OldBiomeFeatures.addVegetalPatches(genSettings);
-        
-        OldBiomeFeatures.addBetaFrozenTopLayer(genSettings);
-        
-        OldBiomeFeatures.addCarvers(genSettings, true);
+        OldBiomeFeatures.addSwamplandFeatures(genSettings, false);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.RAIN)

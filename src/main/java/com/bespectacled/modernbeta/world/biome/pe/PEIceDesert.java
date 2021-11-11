@@ -3,14 +3,11 @@ package com.bespectacled.modernbeta.world.biome.pe;
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
 import com.bespectacled.modernbeta.world.biome.OldBiomeMobs;
-import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.gen.GenerationStep.Feature;
-import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 
 public class PEIceDesert {
     public static final Biome BIOME = create();
@@ -21,21 +18,7 @@ public class PEIceDesert {
         OldBiomeMobs.addSquid(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        
-        DefaultBiomeFeatures.addDesertFeatures(genSettings);
-        DefaultBiomeFeatures.addFossils(genSettings);
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, PEBiomes.ADD_LAKES, PEBiomes.ADD_SPRINGS);
-        OldBiomeFeatures.addMineables(genSettings, PEBiomes.ADD_ALTERNATE_STONES, PEBiomes.ADD_NEW_MINEABLES);
-        OldBiomeFeatures.addOres(genSettings);
-        
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-        
-        OldBiomeFeatures.addVegetalPatches(genSettings);
-        
-        OldBiomeFeatures.addBetaFrozenTopLayer(genSettings);
-        
-        OldBiomeFeatures.addCarvers(genSettings, true);
+        OldBiomeFeatures.addIceDesertFeatures(genSettings, true);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.SNOW)

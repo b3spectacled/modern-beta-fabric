@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.world.biome.provider;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.climate.VanillaClimateSampler;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeSource;
@@ -12,7 +13,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class VanillaBiomeProvider extends ClimateBiomeProvider {
+public class VanillaBiomeProvider extends ClimateBiomeProvider implements BiomeResolver {
     private final VanillaClimateSampler vanillaClimateSampler;
     private final VanillaBiomeSource vanillaBiomeSource;
     private final VanillaBiomeSource oceanBiomeSource;
@@ -40,6 +41,11 @@ public class VanillaBiomeProvider extends ClimateBiomeProvider {
     @Override
     public Biome getDeepOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.deepOceanBiomeSource.getBiome(biomeX, biomeY, biomeZ);
+    }
+    
+    @Override
+    public Biome getBiomeAtBlock(int x, int y, int z) {
+        return this.vanillaClimateSampler.getBiomeAtBlock(x, z);
     }
     
     @Override

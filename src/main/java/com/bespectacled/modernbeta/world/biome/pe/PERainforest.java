@@ -3,13 +3,11 @@ package com.bespectacled.modernbeta.world.biome.pe;
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
 import com.bespectacled.modernbeta.world.biome.OldBiomeMobs;
-import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.gen.GenerationStep.Feature;
 
 public class PERainforest {
     public static final Biome BIOME = create();
@@ -22,21 +20,7 @@ public class PERainforest {
         OldBiomeMobs.addTurtles(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, PEBiomes.ADD_LAKES, PEBiomes.ADD_SPRINGS);
-        OldBiomeFeatures.addMineables(genSettings, PEBiomes.ADD_ALTERNATE_STONES, PEBiomes.ADD_NEW_MINEABLES);
-        OldBiomeFeatures.addOres(genSettings);
-        
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_PE_RAINFOREST_BEES);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
-        
-        OldBiomeFeatures.addVegetalPatches(genSettings);
-        
-        OldBiomeFeatures.addBetaFrozenTopLayer(genSettings);
-        
-        OldBiomeFeatures.addCarvers(genSettings, true);
+        OldBiomeFeatures.addRainforestFeatures(genSettings, true);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.RAIN)

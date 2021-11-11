@@ -3,14 +3,11 @@ package com.bespectacled.modernbeta.world.biome.inf;
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
 import com.bespectacled.modernbeta.world.biome.OldBiomeMobs;
-import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.gen.GenerationStep.Feature;
-import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 
 public class Alpha {
     public static final Biome BIOME = create();
@@ -22,21 +19,7 @@ public class Alpha {
         OldBiomeMobs.addWolves(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, InfBiomes.ADD_LAKES_ALPHA, InfBiomes.ADD_SPRINGS_ALPHA);
-        OldBiomeFeatures.addMineables(genSettings, InfBiomes.ADD_ALTERNATE_STONES_ALPHA, InfBiomes.ADD_NEW_MINEABLES_ALPHA);
-        OldBiomeFeatures.addOres(genSettings);
-        DefaultBiomeFeatures.addFrozenTopLayer(genSettings);
-        
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_CACTUS_ALPHA);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_ALPHA_BEES);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
-        
-        OldBiomeFeatures.addVegetalPatches(genSettings);
-        
-        OldBiomeFeatures.addCarvers(genSettings, false);
+        OldBiomeFeatures.addAlphaFeatures(genSettings);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.RAIN)

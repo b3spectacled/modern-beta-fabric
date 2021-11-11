@@ -35,14 +35,22 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
             "biome_low_res",
             1536,
             true,
-            (chunkX, chunkZ) -> new LowResBiomeChunk(chunkX, chunkZ, this::sampleBiomeLowRes)
+            (chunkX, chunkZ) -> new LowResBiomeChunk(
+                chunkX,
+                chunkZ,
+                (biomeX, biomeZ) -> this.biomeSource.getBiome(biomeX, 0, biomeZ)
+            )
         );
         
         this.fullResBiomeCache = new ChunkCache<>(
             "biome_full_res",
             1536,
             true,
-            (chunkX, chunkZ) -> new FullResBiomeChunk(chunkX, chunkZ, this::sampleBiomeFullRes)
+            (chunkX, chunkZ) -> new FullResBiomeChunk(
+                chunkX,
+                chunkZ,
+                (x, z) -> this.biomeAccess.getBiome(new BlockPos(x, 0, z))
+            )
         );
         
         this.climateCache = new ChunkCache<>(
@@ -76,16 +84,15 @@ public class VanillaClimateSampler implements ClimateSampler, BiomeAccess.Storag
         return this.lowResBiomeCache.get(chunkX, chunkZ).sampleBiome(biomeX, biomeZ);
     }
     
+    public Biome getBiomeAtBlock(int x, int z) {
+        int chunkX = x >> 4;
+        int chunkZ = z >> 4;
+        
+        return this.fullResBiomeCache.get(chunkX, chunkZ).sampleBiome(x, z);
+    }
+    
     public VanillaBiomeSource getBiomeSource() {
         return this.biomeSource;
-    }
-    
-    private Biome sampleBiomeFullRes(int x, int z) {
-        return this.biomeAccess.getBiome(new BlockPos(x, 0, z));
-    }
-    
-    private Biome sampleBiomeLowRes(int biomeX, int biomeZ) {
-        return this.biomeSource.getBiome(biomeX, 0, biomeZ);
     }
     
     private Clime blendBiomeClimate(int x, int z) {

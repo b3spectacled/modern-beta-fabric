@@ -3,15 +3,11 @@ package com.bespectacled.modernbeta.world.biome.beta;
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
 import com.bespectacled.modernbeta.world.biome.OldBiomeMobs;
-import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.gen.GenerationStep.Feature;
-import net.minecraft.world.gen.feature.ConfiguredFeatures;
-import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 
 public class Desert {
     public static final Biome BIOME = create();
@@ -22,23 +18,7 @@ public class Desert {
         OldBiomeMobs.addSquid(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        
-        DefaultBiomeFeatures.addDesertFeatures(genSettings);
-        DefaultBiomeFeatures.addFossils(genSettings);
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, BetaBiomes.ADD_LAKES, BetaBiomes.ADD_SPRINGS);
-        OldBiomeFeatures.addMineables(genSettings, BetaBiomes.ADD_ALTERNATE_STONES, BetaBiomes.ADD_NEW_MINEABLES);
-        OldBiomeFeatures.addOres(genSettings);
-        
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-        
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_DEAD_BUSH_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_CACTUS_DESERT);
-        
-        OldBiomeFeatures.addVegetalPatches(genSettings);
-        
-        OldBiomeFeatures.addBetaFrozenTopLayer(genSettings);
-        
-        OldBiomeFeatures.addCarvers(genSettings, true);
+        OldBiomeFeatures.addDesertFeatures(genSettings, true);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.NONE)

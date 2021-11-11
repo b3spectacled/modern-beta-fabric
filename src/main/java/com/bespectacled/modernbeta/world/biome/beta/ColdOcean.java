@@ -8,8 +8,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.gen.GenerationStep.Feature;
-import net.minecraft.world.gen.feature.ConfiguredFeatures;
 
 public class ColdOcean {
     public static final Biome BIOME = create();
@@ -19,21 +17,7 @@ public class ColdOcean {
         OldBiomeMobs.addColdOceanMobs(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        
-        OldBiomeFeatures.addDefaultFeatures(genSettings, true, BetaBiomes.ADD_LAKES, BetaBiomes.ADD_SPRINGS);
-        OldBiomeFeatures.addMineables(genSettings, BetaBiomes.ADD_ALTERNATE_STONES, BetaBiomes.ADD_NEW_MINEABLES);
-        OldBiomeFeatures.addOres(genSettings);
-        
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.KELP_COLD);
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_SIMPLE);
-        genSettings.feature(Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_COLD);
-        
-        OldBiomeFeatures.addVegetalPatches(genSettings);
-        
-        OldBiomeFeatures.addBetaFrozenTopLayer(genSettings);
-        
-        OldBiomeFeatures.addCarvers(genSettings, true);
-        OldBiomeFeatures.addOceanCarvers(genSettings);
+        OldBiomeFeatures.addColdOceanFeatures(genSettings, false);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.SNOW)

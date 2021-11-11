@@ -3,13 +3,11 @@ package com.bespectacled.modernbeta.world.biome.indev;
 import com.bespectacled.modernbeta.world.biome.OldBiomeColors;
 import com.bespectacled.modernbeta.world.biome.OldBiomeFeatures;
 import com.bespectacled.modernbeta.world.biome.OldBiomeMobs;
-import com.bespectacled.modernbeta.world.feature.OldConfiguredFeatures;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.gen.GenerationStep.Feature;
 
 public class IndevNormal {
     public static final Biome BIOME = create();
@@ -23,17 +21,7 @@ public class IndevNormal {
         spawnSettings.playerSpawnFriendly();
 
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        
-        OldBiomeFeatures.addDefaultFeatures(genSettings, false, IndevBiomes.ADD_LAKES, IndevBiomes.ADD_SPRINGS);
-        OldBiomeFeatures.addOres(genSettings);
-        
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_DANDELION_2);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_POPPY);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_CACTUS_ALPHA);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.TREES_INDEV_BEES);
-        genSettings.feature(Feature.VEGETAL_DECORATION, OldConfiguredFeatures.PATCH_GRASS_ALPHA_2);
-        
-        OldBiomeFeatures.addCarvers(genSettings, false);
+        OldBiomeFeatures.addIndevNormalFeatures(genSettings);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.RAIN)

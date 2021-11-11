@@ -17,17 +17,7 @@ public class FrozenOcean {
         OldBiomeMobs.addFrozenOceanMobs(spawnSettings);
         
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
-        
-        OldBiomeFeatures.addDefaultFeatures(genSettings, true, BetaBiomes.ADD_LAKES, BetaBiomes.ADD_SPRINGS);
-        OldBiomeFeatures.addMineables(genSettings, BetaBiomes.ADD_ALTERNATE_STONES, BetaBiomes.ADD_NEW_MINEABLES);
-        OldBiomeFeatures.addOres(genSettings);
-        
-        OldBiomeFeatures.addVegetalPatches(genSettings);
-        
-        OldBiomeFeatures.addBetaFrozenTopLayer(genSettings);
-        
-        OldBiomeFeatures.addCarvers(genSettings, true);
-        OldBiomeFeatures.addOceanCarvers(genSettings);
+        OldBiomeFeatures.addFrozenOceanFeatures(genSettings, false);
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.SNOW)

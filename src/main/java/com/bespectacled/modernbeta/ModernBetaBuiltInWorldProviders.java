@@ -25,7 +25,7 @@ public class ModernBetaBuiltInWorldProviders {
         DEFAULT = new WorldProvider(
             BuiltInTypes.Chunk.BETA.name,
             BuiltInTypes.Biome.BETA.name,
-            BuiltInTypes.CaveBiome.NONE.name, 
+            BuiltInTypes.CaveBiome.NOISE.name, 
             BetaBiomes.FOREST_ID.toString(), 
             BuiltInTypes.WorldScreen.BASE.name,
             true,

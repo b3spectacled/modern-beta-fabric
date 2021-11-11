@@ -38,7 +38,7 @@ public class InfWorldScreen extends WorldScreen {
     protected void init() {
         super.init();
         
-        String worldType = NbtUtil.toStringOrThrow(this.getChunkSetting(NbtTags.WORLD_TYPE));
+        //String worldType = NbtUtil.toStringOrThrow(this.getChunkSetting(NbtTags.WORLD_TYPE));
         String biomeType = NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.BIOME_TYPE));
         
         boolean isHydrogenLoaded = Compat.isLoaded("hydrogen");
