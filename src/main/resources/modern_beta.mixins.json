@@ -14,7 +14,8 @@
     "Mixin_class_6623",
     "MixinOceanMonumentFeature",
     "MixinVanillaBiomeParametersAccessor",
-    "MixinSurfaceBuilderAccessor"
+    "MixinSurfaceBuilderAccessor",
+    "MixinSpawnLocating"
   ],
   "client": [
     "client.MixinClientWorld",
