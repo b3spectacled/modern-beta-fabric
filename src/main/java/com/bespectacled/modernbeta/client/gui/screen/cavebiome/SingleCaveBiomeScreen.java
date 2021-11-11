@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.client.gui.screen.cavebiome;
 
 import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.api.client.gui.screen.BiomeScreen;
+import com.bespectacled.modernbeta.api.client.gui.screen.SettingsScreen;
 import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.ActionOptionWrapper;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.BooleanCyclingOptionWrapper;
@@ -22,7 +22,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class SingleCaveBiomeScreen extends BiomeScreen {
+public class SingleCaveBiomeScreen extends SettingsScreen {
     private static final String USE_NOISE_DISPLAY_STRING = "createWorld.customize.caveBiome.useNoise";
     private static final String VERTICAL_SCALE_DISPLAY_STRING = "createWorld.customize.caveBiome.verticalNoiseScale";
     private static final String HORIZONTAL_SCALE_DISPLAY_STRING = "createWorld.customize.caveBiome.horizontalNoiseScale";
@@ -50,16 +50,16 @@ public class SingleCaveBiomeScreen extends BiomeScreen {
     protected void init() {
         super.init();
         
-        boolean useNoise = NbtUtil.toBooleanOrThrow(this.getBiomeSetting(NbtTags.USE_NOISE));
+        boolean useNoise = NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.USE_NOISE));
        
         ActionOptionWrapper singleBiomeOption = new ActionOptionWrapper(
             "createWorld.customize.biomeType.biome", // Key
-            GuiUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.SINGLE_BIOME))),
+            GuiUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getSetting(NbtTags.SINGLE_BIOME))),
             buttonWidget -> this.client.setScreen(new CustomizeBuffetLevelScreen(
                 this,
                 this.registryManager,
                 biome -> {
-                    this.biomeSettings.putChange(NbtTags.SINGLE_BIOME, NbtString.of(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString()));
+                    this.settings.putChange(NbtTags.SINGLE_BIOME, NbtString.of(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString()));
                     this.biomeId = this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome);
                 }, 
                 this.registryManager.<Biome>get(Registry.BIOME_KEY).get(this.biomeId)  
@@ -68,16 +68,16 @@ public class SingleCaveBiomeScreen extends BiomeScreen {
         
         BooleanCyclingOptionWrapper useNoiseOption = new BooleanCyclingOptionWrapper(
             USE_NOISE_DISPLAY_STRING,
-            () -> NbtUtil.toBooleanOrThrow(this.getBiomeSetting(NbtTags.USE_NOISE)),
+            () -> NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.USE_NOISE)),
             value -> {
-                this.putBiomeSetting(NbtTags.USE_NOISE, NbtByte.of(value));
+                this.putSetting(NbtTags.USE_NOISE, NbtByte.of(value));
                 
                 this.client.setScreen(
                     new SingleCaveBiomeScreen(
                         (WorldScreen)this.parent,
                         this.worldSetting,
                         this.consumer,
-                        this.biomeSettings
+                        this.settings
                     )
                 );
             },
@@ -87,15 +87,15 @@ public class SingleCaveBiomeScreen extends BiomeScreen {
         DoubleOptionWrapper<Integer> verticalScaleOption = new DoubleOptionWrapper<>(
             VERTICAL_SCALE_DISPLAY_STRING,
             1D, 64D, 1f,
-            () -> NbtUtil.toIntOrThrow(this.getBiomeSetting(NbtTags.VERTICAL_NOISE_SCALE)),
-            value -> this.putBiomeSetting(NbtTags.VERTICAL_NOISE_SCALE, NbtInt.of(value.intValue()))
+            () -> NbtUtil.toIntOrThrow(this.getSetting(NbtTags.VERTICAL_NOISE_SCALE)),
+            value -> this.putSetting(NbtTags.VERTICAL_NOISE_SCALE, NbtInt.of(value.intValue()))
         );
         
         DoubleOptionWrapper<Integer> horizontalScaleOption = new DoubleOptionWrapper<>(
             HORIZONTAL_SCALE_DISPLAY_STRING,
             1D, 64D, 1f,
-            () -> NbtUtil.toIntOrThrow(this.getBiomeSetting(NbtTags.HORIZONTAL_NOISE_SCALE)),
-            value -> this.putBiomeSetting(NbtTags.HORIZONTAL_NOISE_SCALE, NbtInt.of(value.intValue()))
+            () -> NbtUtil.toIntOrThrow(this.getSetting(NbtTags.HORIZONTAL_NOISE_SCALE)),
+            value -> this.putSetting(NbtTags.HORIZONTAL_NOISE_SCALE, NbtInt.of(value.intValue()))
         );
         
         this.addOption(singleBiomeOption);
