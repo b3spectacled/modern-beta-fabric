@@ -136,7 +136,7 @@ public abstract class WorldScreen extends GUIScreen {
         
         Screen biomeSettingsScreen = Registries.BIOME_SCREEN
             .getOrDefault(NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.BIOME_TYPE)))
-            .apply(this); 
+            .apply(this, WorldSetting.BIOME); 
         
         ActionOptionWrapper biomeSettingsOption = new ActionOptionWrapper(
             biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ?

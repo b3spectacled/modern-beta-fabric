@@ -11,28 +11,30 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-public abstract class BiomeScreen extends GUIScreen {
+public abstract class SettingsScreen extends GUIScreen {
     @SuppressWarnings("unused")
     private final WorldSettings worldSettings;
     protected final Consumer<Settings> consumer;
     
     protected final DynamicRegistryManager registryManager;
-    protected final Settings biomeSettings;
+    protected final Settings settings;
+    protected final WorldSetting worldSetting;
     
-    protected BiomeScreen(WorldScreen parent, Consumer<Settings> consumer, Settings biomeSettings) {
+    protected SettingsScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
         super("createWorld.customize.biomeType.title", parent);
 
         this.worldSettings = parent.getWorldSettings();
+        this.worldSetting = worldSetting;
         this.consumer = consumer;
-        this.biomeSettings = biomeSettings;
+        this.settings = settings;
         
         this.registryManager = parent.getRegistryManager();
     }
     
-    protected BiomeScreen(WorldScreen parent, Consumer<Settings> consumer) {
+    protected SettingsScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
         // Create new settings independent of main world settings storage.
         // Will only be applied to main world settings when 'Done'.
-        this(parent, consumer, new Settings(parent.getWorldSettings().getNbt(WorldSetting.BIOME)));
+        this(parent, worldSetting, consumer, new Settings(parent.getWorldSettings().getNbt(worldSetting)));
     }
     
     @Override
@@ -46,7 +48,7 @@ public abstract class BiomeScreen extends GUIScreen {
             this.width / 2 - 155, this.height - 28, 150, 20, 
             ScreenTexts.DONE, 
             buttonWidget -> {
-                this.consumer.accept(this.biomeSettings);
+                this.consumer.accept(this.settings);
                 this.client.setScreen(this.parent);
             }
         );
@@ -65,15 +67,15 @@ public abstract class BiomeScreen extends GUIScreen {
     
     /* Convenience methods */
     
-    protected void putBiomeSetting(String key, NbtElement element) {
-        this.biomeSettings.putChange(key, element);
+    protected void putSetting(String key, NbtElement element) {
+        this.settings.putChange(key, element);
     }
     
-    protected boolean hasBiomeSetting(String key) {
-        return this.biomeSettings.hasSetting(key);
+    protected boolean hasSetting(String key) {
+        return this.settings.hasSetting(key);
     }
     
-    protected NbtElement getBiomeSetting(String key) {
-        return this.biomeSettings.getSetting(key);
+    protected NbtElement getSetting(String key) {
+        return this.settings.getSetting(key);
     }
 }

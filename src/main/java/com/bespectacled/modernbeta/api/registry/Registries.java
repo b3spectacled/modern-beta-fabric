@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.api.registry;
 
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -9,6 +10,7 @@ import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.client.gui.WorldSettings;
+import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.util.function.TriFunction;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
@@ -19,7 +21,7 @@ import net.minecraft.world.biome.Biome;
 
 public final class Registries {
     public static final Registry<TriFunction<Long, NbtCompound, net.minecraft.util.registry.Registry<Biome>, BiomeProvider>> BIOME;
-    public static final Registry<Function<WorldScreen, Screen>> BIOME_SCREEN;
+    public static final Registry<BiFunction<WorldScreen, WorldSetting, Screen>> BIOME_SCREEN;
     public static final Registry<Supplier<NbtCompound>> BIOME_SETTINGS;
     public static final Registry<Function<OldChunkGenerator, ChunkProvider>> CHUNK;
     public static final Registry<Supplier<NbtCompound>> CHUNK_SETTINGS;

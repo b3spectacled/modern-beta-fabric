@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.client.gui.screen.BiomeScreen;
+import com.bespectacled.modernbeta.api.client.gui.screen.SettingsScreen;
 import com.bespectacled.modernbeta.api.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.ActionOptionWrapper;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
@@ -21,30 +21,31 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class ClimateBiomeScreen extends BiomeScreen {
+public class ClimateBiomeScreen extends SettingsScreen {
     private static final String LAND_BIOME_DISPLAY_STRING = "createWorld.customize.climateType.land";
     private static final String OCEAN_BIOME_DISPLAY_STRING = "createWorld.customize.climateType.ocean";
     
     private final Map<String, Identifier> landBiomeMap;
     private final Map<String, Identifier> oceanBiomeMap;
     
-    private ClimateBiomeScreen(WorldScreen parent, Consumer<Settings> consumer, Settings biomeSettings) {
-        super(parent, consumer, biomeSettings);
+    private ClimateBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings biomeSettings) {
+        super(parent, worldSetting, consumer, biomeSettings);
         
         // Create Beta biome map from existing biome settings
-        BetaClimateMap climateMap = new BetaClimateMap(this.biomeSettings.getNbt());
+        BetaClimateMap climateMap = new BetaClimateMap(this.settings.getNbt());
         
         this.landBiomeMap = climateMap.getMap(ClimateType.LAND);
         this.oceanBiomeMap = climateMap.getMap(ClimateType.OCEAN);
     }
     
-    private ClimateBiomeScreen(WorldScreen parent, Consumer<Settings> consumer) {
-        this(parent, consumer, new Settings(parent.getWorldSettings().getNbt(WorldSetting.BIOME)));
+    private ClimateBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
+        this(parent, worldSetting, consumer, new Settings(parent.getWorldSettings().getNbt(WorldSetting.BIOME)));
     }
     
-    public static ClimateBiomeScreen create(WorldScreen worldScreen) {
+    public static ClimateBiomeScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
         return new ClimateBiomeScreen(
             worldScreen,
+            worldSetting,
             settings -> worldScreen.getWorldSettings().putChanges(WorldSetting.BIOME, settings.getNbt())
         );
     }
@@ -78,7 +79,7 @@ public class ClimateBiomeScreen extends BiomeScreen {
                 this.registryManager,
                 biome -> {
                     // Queue change
-                    this.biomeSettings.putChange(key, NbtString.of(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString()));
+                    this.settings.putChange(key, NbtString.of(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString()));
                     
                     // Update map for display
                     biomeMap.put(key, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome));

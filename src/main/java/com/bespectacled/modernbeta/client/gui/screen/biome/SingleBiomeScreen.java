@@ -12,19 +12,19 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 public class SingleBiomeScreen {
-    public static CustomizeBuffetLevelScreen create(WorldScreen worldScreen) {
+    public static CustomizeBuffetLevelScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
         return new CustomizeBuffetLevelScreen(
             worldScreen, 
             worldScreen.getRegistryManager(),
             biome -> worldScreen.getWorldSettings().putChange(
-                WorldSetting.BIOME, 
+                worldSetting, 
                 NbtTags.SINGLE_BIOME, 
                 NbtString.of(worldScreen.getRegistryManager().<Biome>get(Registry.BIOME_KEY).getId(biome).toString())
             ),
             worldScreen
                 .getRegistryManager()
                 .<Biome>get(Registry.BIOME_KEY)
-                .get(new Identifier(NbtUtil.toStringOrThrow(worldScreen.getWorldSettings().getSetting(WorldSetting.BIOME, NbtTags.SINGLE_BIOME))))
+                .get(new Identifier(NbtUtil.toStringOrThrow(worldScreen.getWorldSettings().getSetting(worldSetting, NbtTags.SINGLE_BIOME))))
         );
     }
 }

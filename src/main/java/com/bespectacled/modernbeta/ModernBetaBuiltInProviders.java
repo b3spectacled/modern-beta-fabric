@@ -102,7 +102,7 @@ public class ModernBetaBuiltInProviders {
     
     // Register default biome settings screens (Note: Match identifiers with biome ids!)
     public static void registerBiomeScreens() {
-        Registries.BIOME_SCREEN.register(BuiltInTypes.DEFAULT_ID, screen -> null);
+        Registries.BIOME_SCREEN.register(BuiltInTypes.DEFAULT_ID, (screen, worldSetting) -> null);
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.BETA.name, ClimateBiomeScreen::create);
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeScreen::create);
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.VANILLA.name, VanillaBiomeScreen::create);
