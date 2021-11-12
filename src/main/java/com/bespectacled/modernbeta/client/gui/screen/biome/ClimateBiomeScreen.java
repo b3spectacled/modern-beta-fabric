@@ -54,8 +54,11 @@ public class ClimateBiomeScreen extends SettingsScreen {
     protected void init() {
         super.init();
         
-        TextOptionWrapper landBiomeText = new TextOptionWrapper(LAND_BIOME_DISPLAY_STRING, Formatting.YELLOW);
-        TextOptionWrapper oceanBiomeText = new TextOptionWrapper(OCEAN_BIOME_DISPLAY_STRING, Formatting.YELLOW);
+        TextOptionWrapper landBiomeText = new TextOptionWrapper(LAND_BIOME_DISPLAY_STRING);
+        TextOptionWrapper oceanBiomeText = new TextOptionWrapper(OCEAN_BIOME_DISPLAY_STRING);
+
+        landBiomeText.formatting(Formatting.YELLOW).formatting(Formatting.BOLD);
+        oceanBiomeText.formatting(Formatting.YELLOW).formatting(Formatting.BOLD);
         
         this.addOption(landBiomeText);
         this.landBiomeMap.entrySet().forEach(
