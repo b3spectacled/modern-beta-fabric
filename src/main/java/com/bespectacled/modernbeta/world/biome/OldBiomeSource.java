@@ -7,9 +7,9 @@ import java.util.Optional;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
+import com.bespectacled.modernbeta.api.world.biome.BiomeBlockResolver;
 import com.bespectacled.modernbeta.api.world.biome.BiomeHeightSampler;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
-import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
@@ -123,7 +123,7 @@ public class OldBiomeSource extends BiomeSource {
     }
     
     public Biome getBiomeForSurfaceGen(int x, int y, int z) {
-        if (this.biomeProvider instanceof BiomeResolver biomeResolver) {
+        if (this.biomeProvider instanceof BiomeBlockResolver biomeResolver) {
             return biomeResolver.getBiomeAtBlock(x, y, z);
         }
         
@@ -131,7 +131,7 @@ public class OldBiomeSource extends BiomeSource {
     }
     
     public Biome getBiomeForSurfaceGen(ChunkRegion region, BlockPos pos) {
-        if (this.biomeProvider instanceof BiomeResolver biomeResolver)
+        if (this.biomeProvider instanceof BiomeBlockResolver biomeResolver)
             return biomeResolver.getBiomeAtBlock(pos.getX(), pos.getY(), pos.getZ());
         
         return region.getBiome(pos);

@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.world.biome.provider;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
+import com.bespectacled.modernbeta.api.world.biome.BiomeBlockResolver;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.climate.VanillaClimateSampler;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeSource;
@@ -13,7 +13,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class VanillaBiomeProvider extends ClimateBiomeProvider implements BiomeResolver {
+public class VanillaBiomeProvider extends ClimateBiomeProvider implements BiomeBlockResolver {
     private final VanillaClimateSampler vanillaClimateSampler;
     private final VanillaBiomeSource vanillaBiomeSource;
     private final VanillaBiomeSource oceanBiomeSource;

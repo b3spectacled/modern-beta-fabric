@@ -1,14 +1,12 @@
-package com.bespectacled.modernbeta.world.biome;
+package com.bespectacled.modernbeta.world.biome.injector;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-import com.bespectacled.modernbeta.util.function.TriFunction;
+import com.bespectacled.modernbeta.util.function.TriPredicate;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.world.biome.Biome;
 
 public class BiomeInjectionRules {
     private final List<BiomeInjectionRule> rules;
@@ -17,15 +15,15 @@ public class BiomeInjectionRules {
         this.rules = rules;
     }
     
-    public Biome apply(int y, int height, BlockState blockState, int biomeX, int biomeY, int biomeZ) {
+    public BiomeInjectionResolver test(int y, int height, int minHeight, BlockState blockState) {
         for (BiomeInjectionRule rule : this.rules) {
-            Biome biome = rule.apply(y, height, blockState, biomeX, biomeY, biomeZ);
+            BiomeInjectionResolver biomeResolver = rule.test(y, height, minHeight, blockState);
             
-            if (biome != null)
-                return biome;
+            if (biomeResolver != null)
+                return biomeResolver;
         }
         
-        return null;
+        return (biomeX, biomeY, biomeZ) -> null;
     }
 
     public static class Builder {
@@ -36,9 +34,9 @@ public class BiomeInjectionRules {
         }
         
         public Builder add(
-            BiPredicate<Integer, Integer> heightRule,
+            TriPredicate<Integer, Integer, Integer> heightRule,
             Predicate<BlockState> stateRule,
-            TriFunction<Integer, Integer, Integer, Biome> biomeFunc
+            BiomeInjectionResolver biomeFunc
         ) {
             this.rules.add(new BiomeInjectionRule(heightRule, stateRule, biomeFunc));
             
@@ -51,23 +49,23 @@ public class BiomeInjectionRules {
     }
     
     private static class BiomeInjectionRule {
-        private final BiPredicate<Integer, Integer> heightRule;
+        private final TriPredicate<Integer, Integer, Integer> heightRule;
         private final Predicate<BlockState> stateRule;
-        private final TriFunction<Integer, Integer, Integer, Biome> biomeFunc;
+        private final BiomeInjectionResolver biomeResolver;
         
         public BiomeInjectionRule(
-            BiPredicate<Integer, Integer> heightRule,
+            TriPredicate<Integer, Integer, Integer> heightRule,
             Predicate<BlockState> stateRule, 
-            TriFunction<Integer, Integer, Integer, Biome> biomeFunc
+            BiomeInjectionResolver biomeFunc
         ) {
             this.heightRule = heightRule;
             this.stateRule = stateRule;
-            this.biomeFunc = biomeFunc;
+            this.biomeResolver = biomeFunc;
         }
         
-        public Biome apply(int y, int height, BlockState blockState, int biomeX, int biomeY, int biomeZ) {
-            if (this.heightRule.test(y, height) && this.stateRule.test(blockState))
-                return this.biomeFunc.apply(biomeX, biomeY, biomeZ);
+        public BiomeInjectionResolver test(int y, int height, int minHeight, BlockState blockState) {
+            if (this.heightRule.test(y, height, minHeight) && this.stateRule.test(blockState))
+                return this.biomeResolver;
             
             return null;
         }

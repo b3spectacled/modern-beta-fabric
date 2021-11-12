@@ -16,8 +16,10 @@ import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.world.biome.BiomeInjector;
+import com.bespectacled.modernbeta.util.SimpleGenProfiler;
+import com.bespectacled.modernbeta.util.SimpleGenProfiler.GenProfilerStep;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import com.bespectacled.modernbeta.world.structure.OceanShrineStructure;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
 import com.google.common.collect.Sets;
@@ -80,6 +82,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
     private final BiomeInjector biomeInjector;
     
+    private SimpleGenProfiler genProfiler;
+    
     public OldChunkGenerator(Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry, BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, NbtCompound providerSettings) {
         super(noiseRegistry, biomeSource, seed, settings);
         
@@ -98,6 +102,9 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.biomeInjector = this.biomeSource instanceof OldBiomeSource oldBiomeSource ?
             new BiomeInjector(this, oldBiomeSource) : 
             null;
+        
+        this.genProfiler = new SimpleGenProfiler(100);
+        this.genProfiler.addStep(ChunkStatus.BIOMES);
     }
 
     public static void register() {
@@ -137,7 +144,11 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         // Inject cave, ocean, etc. biomes
         if (this.biomeInjector != null) {
+            GenProfilerStep step = this.genProfiler.createStep(ChunkStatus.BIOMES);
+            
+            step.start();
             this.biomeInjector.injectBiomes(chunk);
+            step.stop();
         }
     }
     
@@ -315,7 +326,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         int height = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
         
-        Biome biome = this.biomeInjector.sample(y, height, this.settings.get().getDefaultFluid(), biomeX, biomeY, biomeZ);
+        Biome biome = this.biomeInjector.test(y, height, height, this.settings.get().getDefaultFluid()).apply(biomeX, biomeY, biomeZ);
         
         return biome != null ? biome : this.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
