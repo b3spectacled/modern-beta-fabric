@@ -15,9 +15,9 @@ public class BiomeInjectionRules {
         this.rules = rules;
     }
     
-    public BiomeInjectionResolver test(int y, int height, int minHeight, BlockState blockState) {
+    public BiomeInjectionResolver test(int y, int topHeight, int minHeight, BlockState blockState) {
         for (BiomeInjectionRule rule : this.rules) {
-            BiomeInjectionResolver biomeResolver = rule.test(y, height, minHeight, blockState);
+            BiomeInjectionResolver biomeResolver = rule.test(y, topHeight, minHeight, blockState);
             
             if (biomeResolver != null)
                 return biomeResolver;
@@ -63,8 +63,8 @@ public class BiomeInjectionRules {
             this.biomeResolver = biomeFunc;
         }
         
-        public BiomeInjectionResolver test(int y, int height, int minHeight, BlockState blockState) {
-            if (this.heightRule.test(y, height, minHeight) && this.stateRule.test(blockState))
+        public BiomeInjectionResolver test(int y, int topHeight, int minHeight, BlockState blockState) {
+            if (this.heightRule.test(y, topHeight, minHeight) && this.stateRule.test(blockState))
                 return this.biomeResolver;
             
             return null;

@@ -29,8 +29,8 @@ public class BiomeInjector {
     public static final int CAVE_START_OFFSET = 8;
     public static final int CAVE_END_OFFSET = 16;
     
-    private static final Predicate<BlockState> OCEAN_STATE_PREDICATE;
-    private static final Predicate<BlockState> NOOP_STATE_PREDICATE;
+    private static final Predicate<BlockState> OCEAN_STATE_PREDICATE = blockState -> blockState.isOf(Blocks.WATER);
+    private static final Predicate<BlockState> NOOP_STATE_PREDICATE = blockState -> true;
     
     private final OldChunkGenerator oldChunkGenerator;
     private final OldBiomeSource oldBiomeSource;
@@ -47,9 +47,9 @@ public class BiomeInjector {
         TriPredicate<Integer, Integer, Integer> deepOceanHeightPredicate;
         TriPredicate<Integer, Integer, Integer> caveBiomeHeightPredicate;
         
-        oceanHeightPredicate = (y, height, minHeight) -> this.atOceanDepth(height, OCEAN_MIN_DEPTH);
-        deepOceanHeightPredicate = (y, height, minHeight) -> this.atOceanDepth(height, DEEP_OCEAN_MIN_DEPTH);
-        caveBiomeHeightPredicate = (y, height, minHeight) -> y + CAVE_START_OFFSET < minHeight;
+        oceanHeightPredicate = (y, topHeight, minHeight) -> this.atOceanDepth(topHeight, OCEAN_MIN_DEPTH);
+        deepOceanHeightPredicate = (y, topHeight, minHeight) -> this.atOceanDepth(topHeight, DEEP_OCEAN_MIN_DEPTH);
+        caveBiomeHeightPredicate = (y, topHeight, minHeight) -> y + CAVE_START_OFFSET < minHeight;
         
         BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder()
             .add(caveBiomeHeightPredicate, NOOP_STATE_PREDICATE, this.oldBiomeSource::getCaveBiome);
@@ -73,46 +73,29 @@ public class BiomeInjector {
         int[] minHeights = new int[16];
         BlockState[] states = new BlockState[16];
         
-        // Collect initial heights and block states at heights
+        /*
+         * Collect the following:
+         * -> Height at local biome coordinate.
+         * -> Minimum height of area around local biome coordinate.
+         * -> Blockstate at height of local biome coordinate.
+         */
         for (int localBiomeX = 0; localBiomeX < 4; ++localBiomeX) {
             for (int localBiomeZ = 0; localBiomeZ < 4; ++localBiomeZ) {
-                // Offset by 2 to get center of biome coordinate section,
-                // to sample overall ocean depth as accurately as possible.
-                int x = ((localBiomeX + startBiomeX) << 2) + 2;
-                int z = ((localBiomeZ + startBiomeZ) << 2) + 2;
+                int ndx = localBiomeX + localBiomeZ * 4;
                 
-                int height = this.oldChunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+                int biomeX = localBiomeX + startBiomeX;
+                int biomeZ = localBiomeZ + startBiomeZ;
+                
+                int x = (biomeX << 2) + 2;
+                int z = (biomeZ << 2) + 2;
+                
+                int height = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+                int minHeight = this.sampleMinHeightAround(biomeX, biomeZ, height);
                 BlockState state = chunk.getBlockState(pos.set(x, height, z));
                 
-                int ndx = localBiomeX + localBiomeZ * 4;
                 heights[ndx] = height;
+                minHeights[ndx] = minHeight;
                 states[ndx] = state;
-            }
-        }
-        
-        // Collect min heights in an area centered on local biome coordinate
-        for (int localBiomeX = 0; localBiomeX < 4; ++localBiomeX) {
-            for (int localBiomeZ = 0; localBiomeZ < 4; ++localBiomeZ) {
-                int ndx = localBiomeX + localBiomeZ * 4;
-                int height = heights[ndx];
-                
-                for (int areaBiomeX = -1; areaBiomeX <= 1; ++areaBiomeX) {
-                    for (int areaBiomeZ = -1; areaBiomeZ <= 1; ++areaBiomeZ) {
-                        int biomeX = localBiomeX + areaBiomeX;
-                        int biomeZ = localBiomeZ + areaBiomeZ;
-                        
-                        int curHeight;
-                        if (biomeX >= 0 && biomeX < 4 && biomeZ >= 0 && biomeZ < 4) {
-                            curHeight = heights[biomeX + biomeZ * 4];
-                        } else {
-                            curHeight = this.getCenteredHeight(biomeX + startBiomeX, biomeZ + startBiomeZ);
-                        }
-                        
-                        height = Math.min(height, curHeight);
-                    }
-                }
-                
-                minHeights[ndx] = height;
             }
         }
         
@@ -167,7 +150,7 @@ public class BiomeInjector {
         return height < this.oldChunkGenerator.getSeaLevel() - oceanDepth;
     }
     
-    private int getCenteredHeight(int biomeX, int biomeZ) {
+    public int getCenteredHeight(int biomeX, int biomeZ) {
         // Offset by 2 to get center of biome coordinate section in block coordinates
         int x = (biomeX << 2) + 2;
         int z = (biomeZ << 2) + 2;
@@ -177,8 +160,18 @@ public class BiomeInjector {
             this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
     }
     
-    static {
-        OCEAN_STATE_PREDICATE = blockState -> blockState.isOf(Blocks.WATER);
-        NOOP_STATE_PREDICATE = blockState -> true;
+    public int sampleMinHeightAround(int centerBiomeX, int centerBiomeZ, int initialHeight) {
+        int minHeight = initialHeight;
+        
+        for (int areaBiomeX = -1; areaBiomeX <= 1; ++areaBiomeX) {
+            for (int areaBiomeZ = -1; areaBiomeZ <= 1; ++areaBiomeZ) {
+                int biomeX = centerBiomeX + areaBiomeX;
+                int biomeZ = centerBiomeZ + areaBiomeZ;
+                
+                minHeight = Math.min(minHeight, this.getCenteredHeight(biomeX, biomeZ));
+            }
+        }
+        
+        return minHeight;
     }
 }
