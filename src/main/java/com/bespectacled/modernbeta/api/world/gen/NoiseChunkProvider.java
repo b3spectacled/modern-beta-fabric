@@ -537,6 +537,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      */
     private HeightmapChunk sampleHeightmap(int chunkX, int chunkZ) {
         short minHeight = 16;
+        short worldMinY = (short)this.worldMinY;
+        short worldTopY = (short)this.worldTopY;
         
         BaseNoiseProvider baseNoiseProvider = this.noiseProviderCache.get(chunkX, chunkZ);
         
@@ -546,7 +548,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         Arrays.fill(heightmapSurface, minHeight);
         Arrays.fill(heightmapOcean, minHeight);
-        Arrays.fill(heightmapSurfaceFloor, Short.MIN_VALUE);
+        Arrays.fill(heightmapSurfaceFloor, worldMinY);
         
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++subChunkZ) {
@@ -573,22 +575,31 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 baseNoiseProvider.sampleNoiseZHeightmap(deltaZ);
                                 
                                 double density = baseNoiseProvider.sampleHeightmap();
+                                boolean isSolid = density > 0.0;
                                 
                                 short height = (short)(y + 1);
                                 int ndx = z + x * 16;
                                 
                                 // Capture topmost solid/fluid block height.
-                                if (y < this.seaLevel || density > 0.0) {
+                                if (y < this.seaLevel || isSolid) {
                                     heightmapOcean[ndx] = height;
                                 }
                                 
                                 // Capture topmost solid block height.
-                                if (density > 0.0) {
+                                if (isSolid) {
                                     heightmapSurface[ndx] = height;
                                 }
                                 
                                 // Capture lowest solid block height.
-                                if (density <= 0.0 && heightmapSurfaceFloor[ndx] == Short.MIN_VALUE) {
+                                // First, set max world height as flag when hitting first solid layer
+                                // then set the actual height value when hitting first non-solid layer.
+                                // This handles situations where the bottom of the world may not be solid,
+                                // i.e. Skylands-style world types.
+                                if (isSolid && heightmapSurfaceFloor[ndx] == worldMinY) {
+                                    heightmapSurfaceFloor[ndx] = worldTopY;
+                                }
+                                
+                                if (!isSolid && heightmapSurfaceFloor[ndx] == worldTopY) {
                                     heightmapSurfaceFloor[ndx] = (short)(height - 1);
                                 }
                             }

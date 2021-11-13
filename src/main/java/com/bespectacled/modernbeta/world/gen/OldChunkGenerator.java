@@ -296,6 +296,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.noiseRegistry;
     }
     
+    public BiomeInjector getBiomeInjector() {
+        return this.biomeInjector;
+    }
+    
     public boolean generatesOceans() {
         return this.generateOceans;
     }
@@ -313,7 +317,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int biomeY = y >> 2;
         int biomeZ = z >> 2;
         
-        int height = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        int height = this.biomeInjector.getCenteredHeight(biomeX, biomeZ);
         int minHeight = this.biomeInjector.sampleMinHeightAround(biomeX, biomeZ, height);
         
         Biome biome = this.biomeInjector.test(y, height, minHeight, this.settings.get().getDefaultFluid()).apply(biomeX, biomeY, biomeZ);

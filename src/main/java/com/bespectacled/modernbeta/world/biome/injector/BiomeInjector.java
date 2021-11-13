@@ -29,6 +29,9 @@ public class BiomeInjector {
     public static final int CAVE_START_OFFSET = 8;
     public static final int CAVE_END_OFFSET = 16;
     
+    public static final TriPredicate<Integer, Integer, Integer> CAVE_BIOME_HEIGHT_PREDICATE = 
+        (y, topHeight, minHeight) -> y + CAVE_START_OFFSET < minHeight;
+
     private static final Predicate<BlockState> OCEAN_STATE_PREDICATE = blockState -> blockState.isOf(Blocks.WATER);
     private static final Predicate<BlockState> NOOP_STATE_PREDICATE = blockState -> true;
     
@@ -45,14 +48,12 @@ public class BiomeInjector {
         
         TriPredicate<Integer, Integer, Integer> oceanHeightPredicate;
         TriPredicate<Integer, Integer, Integer> deepOceanHeightPredicate;
-        TriPredicate<Integer, Integer, Integer> caveBiomeHeightPredicate;
         
         oceanHeightPredicate = (y, topHeight, minHeight) -> this.atOceanDepth(topHeight, OCEAN_MIN_DEPTH);
         deepOceanHeightPredicate = (y, topHeight, minHeight) -> this.atOceanDepth(topHeight, DEEP_OCEAN_MIN_DEPTH);
-        caveBiomeHeightPredicate = (y, topHeight, minHeight) -> y + CAVE_START_OFFSET < minHeight;
         
         BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder()
-            .add(caveBiomeHeightPredicate, NOOP_STATE_PREDICATE, this.oldBiomeSource::getCaveBiome);
+            .add(CAVE_BIOME_HEIGHT_PREDICATE, NOOP_STATE_PREDICATE, this.oldBiomeSource::getCaveBiome);
         
         if (oldChunkGenerator.generatesOceans()) {
             builder.add(deepOceanHeightPredicate, OCEAN_STATE_PREDICATE, this.oldBiomeSource::getDeepOceanBiome);

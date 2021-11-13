@@ -16,6 +16,7 @@ import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.fabricmc.api.EnvType;
@@ -40,6 +41,9 @@ public class MixinDebugHud {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
+        
+        int biomeX = x >> 2;
+        int biomeZ = z >> 2;
         
         IntegratedServer integratedServer = this.client.getServer();
         ServerWorld serverWorld = null;
@@ -70,7 +74,7 @@ public class MixinDebugHud {
                 if (oldBiomeSource.getCaveBiomeProvider() instanceof CaveClimateSampler climateSampler)
                     info.getReturnValue().add(
                         String.format(
-                            "[Modern Beta] Cave Climate: %.3f", 
+                            "[Modern Beta] Cave Climate: %.3f",
                             climateSampler.sample(x >> 2, y >> 2, z >> 2)
                         )
                     );
@@ -96,6 +100,16 @@ public class MixinDebugHud {
                         )
                     );
                 }
+
+                int minHeight = oldChunkGenerator.getBiomeInjector().sampleMinHeightAround(biomeX, biomeZ, Integer.MAX_VALUE);
+                boolean canPlaceCave = BiomeInjector.CAVE_BIOME_HEIGHT_PREDICATE.test(y, -1, minHeight);
+                
+                info.getReturnValue().add(
+                    String.format(
+                        "[Modern Beta] Valid cave position: %b",
+                        canPlaceCave
+                    )
+                );
             }
         }
     }

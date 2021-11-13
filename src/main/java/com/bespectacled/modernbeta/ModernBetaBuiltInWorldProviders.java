@@ -144,7 +144,7 @@ public class ModernBetaBuiltInWorldProviders {
         BETA_ISLANDS = new WorldProvider(
             BuiltInTypes.Chunk.BETA_ISLANDS.name,
             BuiltInTypes.Biome.BETA.name,
-            BuiltInTypes.CaveBiome.NONE.name,
+            BuiltInTypes.CaveBiome.VANILLA.name,
             BetaBiomes.FOREST_ID.toString(),
             BuiltInTypes.WorldScreen.ISLAND.name,
             false,
