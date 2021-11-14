@@ -253,9 +253,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         // See: MC-236933 and MC-236723
         if (this.chunkProvider == null)
             return this.getGeneratorSettings().get().getGenerationShapeConfig().height();
-            
-        // Some features complain if the height is too low or high, so just return min/max
-        return Math.max(this.chunkProvider.getWorldHeight(), 384);
+       
+        return this.chunkProvider.getWorldHeight();
     }
     
     @Override

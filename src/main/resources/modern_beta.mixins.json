@@ -15,7 +15,11 @@
     "MixinOceanMonumentFeature",
     "MixinVanillaBiomeParametersAccessor",
     "MixinSurfaceBuilderAccessor",
-    "MixinSpawnLocating"
+    "MixinSpawnLocating",
+    "heightprovider.MixinUniformHeightProvider",
+    "heightprovider.MixinBiasedToBottomHeightProvider",
+    "heightprovider.MixinTrapezoidHeightProvider",
+    "heightprovider.MixinVeryBiasedToBottomHeightProvider"
   ],
   "client": [
     "client.MixinClientWorld",

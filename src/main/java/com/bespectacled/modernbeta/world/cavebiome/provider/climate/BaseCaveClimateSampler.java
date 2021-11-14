@@ -8,8 +8,8 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import net.minecraft.util.math.MathHelper;
 
 public class BaseCaveClimateSampler implements CaveClimateSampler {
-    private static final int DEFAULT_VERTICAL_SCALE = 2;
-    private static final int DEFAULT_HORIZONTAL_SCALE = 8;
+    private static final int DEFAULT_VERTICAL_SCALE = 16;
+    private static final int DEFAULT_HORIZONTAL_SCALE = 32;
     
     private final PerlinOctaveNoise climateNoiseOctaves;
     private final PerlinOctaveNoise detailNoiseOctaves;
