@@ -48,32 +48,44 @@ public class ChunkCache<T> {
     
     public T get(int chunkX, int chunkZ) {
         T chunk;
-        long stamp;
         
         long key = ChunkPos.toLong(chunkX, chunkZ);
+        long stamp = this.lock.readLock();
         
-        stamp = this.lock.readLock();
         try {
-            chunk = this.chunkMap.get(key);
-        } finally {
-            this.lock.unlockRead(stamp);
-        }
-        
-        if (chunk == null) { 
-            stamp = this.lock.writeLock();
-            try {
-                chunk = this.chunkFunc.apply(chunkX, chunkZ);
+            while ((chunk = this.chunkMap.get(key)) == null) {
+                // Attempt to upgrade read lock to write lock w/o blocking
+                long writeStamp = this.lock.tryConvertToWriteLock(stamp);
                 
-                // Ensure cache size remains below capacity
-                if (this.evictOldChunks && this.chunkMap.size() >= this.capacity) {
-                    this.chunkMap.removeFirst();
+                // Write lock, if:
+                // => lock upgrade succeeds w/o blocking
+                // => blocked write is acquired anyway (see below)
+                if (writeStamp != 0) {
+                    stamp = writeStamp;
+                    chunk = this.createChunk(key, chunkX, chunkZ);
+                    
+                    break;
                 }
                 
-                this.chunkMap.put(key, chunk);
-            } finally {
-                this.lock.unlockWrite(stamp);
+                // Lock upgrade failed so use blocking write lock.
+                this.lock.unlockRead(stamp);
+                stamp = this.lock.writeLock();
             }
+        } finally {
+            this.lock.unlock(stamp);
         }
+        
+        return chunk;
+    }
+    
+    private T createChunk(long key, int chunkX, int chunkZ) {
+        // Ensure cache size remains below capacity
+        if (this.evictOldChunks && this.chunkMap.size() >= this.capacity) {
+            this.chunkMap.removeFirst();
+        }
+        
+        T chunk = this.chunkFunc.apply(chunkX, chunkZ);
+        this.chunkMap.put(key, chunk);
         
         return chunk;
     }
