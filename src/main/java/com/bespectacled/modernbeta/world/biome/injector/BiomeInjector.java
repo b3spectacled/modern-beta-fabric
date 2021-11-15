@@ -70,7 +70,7 @@ public class BiomeInjector {
         int startBiomeX = chunkPos.getStartX() >> 2;
         int startBiomeZ = chunkPos.getStartZ() >> 2;
         
-        int[] heights = new int[16];
+        int[] topHeights = new int[16];
         int[] minHeights = new int[16];
         BlockState[] states = new BlockState[16];
         
@@ -90,11 +90,11 @@ public class BiomeInjector {
                 int x = (biomeX << 2) + 2;
                 int z = (biomeZ << 2) + 2;
                 
-                int height = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-                int minHeight = this.sampleMinHeightAround(biomeX, biomeZ, height);
-                BlockState state = chunk.getBlockState(pos.set(x, height, z));
+                int topHeight = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+                int minHeight = this.sampleMinHeightAround(biomeX, biomeZ, topHeight);
+                BlockState state = chunk.getBlockState(pos.set(x, topHeight, z));
                 
-                heights[ndx] = height;
+                topHeights[ndx] = topHeight;
                 minHeights[ndx] = minHeight;
                 states[ndx] = state;
             }
@@ -113,7 +113,7 @@ public class BiomeInjector {
                     for (int localBiomeZ = 0; localBiomeZ < 4; ++localBiomeZ) {
                         int ndx = localBiomeX + localBiomeZ * 4;
                         
-                        int height = heights[ndx];
+                        int topHeight = topHeights[ndx];
                         int minHeight = minHeights[ndx];
                         BlockState state = states[ndx];
                         
@@ -124,7 +124,7 @@ public class BiomeInjector {
 
                             int y = (localBiomeY + yOffset) << 2;
                             
-                            Biome biome = this.test(y, height, minHeight, state).apply(biomeX, biomeY, biomeZ);
+                            Biome biome = this.test(y, topHeight, minHeight, state, biomeX, biomeY, biomeZ);
                             
                             if (biome != null) {
                                 container.swapUnsafe(localBiomeX, localBiomeY, localBiomeZ, biome);
@@ -143,12 +143,12 @@ public class BiomeInjector {
         }
     }
     
-    public BiomeInjectionResolver test(int y, int height, int minHeight, BlockState blockState) {
-        return this.rules.test(y, height, minHeight, blockState);
+    public Biome test(int y, int height, int minHeight, BlockState blockState, int biomeX, int biomeY, int biomeZ) {
+        return this.rules.test(y, height, minHeight, blockState, biomeX, biomeY, biomeZ);
     }
     
-    private boolean atOceanDepth(int height, int oceanDepth) {
-        return height < this.oldChunkGenerator.getSeaLevel() - oceanDepth;
+    private boolean atOceanDepth(int topHeight, int oceanDepth) {
+        return topHeight < this.oldChunkGenerator.getSeaLevel() - oceanDepth;
     }
     
     public int getCenteredHeight(int biomeX, int biomeZ) {

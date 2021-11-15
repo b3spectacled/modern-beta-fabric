@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import com.bespectacled.modernbeta.util.function.TriPredicate;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.world.biome.Biome;
 
 public class BiomeInjectionRules {
     private final List<BiomeInjectionRule> rules;
@@ -15,15 +16,15 @@ public class BiomeInjectionRules {
         this.rules = rules;
     }
     
-    public BiomeInjectionResolver test(int y, int topHeight, int minHeight, BlockState blockState) {
+    public Biome test(int y, int topHeight, int minHeight, BlockState blockState, int biomeX, int biomeY, int biomeZ) {
         for (BiomeInjectionRule rule : this.rules) {
-            BiomeInjectionResolver biomeResolver = rule.test(y, topHeight, minHeight, blockState);
+            Biome biome = rule.test(y, topHeight, minHeight, blockState).apply(biomeX, biomeY, biomeZ);
             
-            if (biomeResolver != null)
-                return biomeResolver;
+            if (biome != null)
+                return biome;
         }
         
-        return (biomeX, biomeY, biomeZ) -> null;
+        return null;
     }
 
     public static class Builder {
@@ -67,7 +68,7 @@ public class BiomeInjectionRules {
             if (this.heightRule.test(y, topHeight, minHeight) && this.stateRule.test(blockState))
                 return this.biomeResolver;
             
-            return null;
+            return BiomeInjectionResolver.DEFAULT;
         }
     }
 }

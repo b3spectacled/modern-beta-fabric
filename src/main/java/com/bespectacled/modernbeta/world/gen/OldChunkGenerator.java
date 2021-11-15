@@ -319,7 +319,13 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int height = this.biomeInjector.getCenteredHeight(biomeX, biomeZ);
         int minHeight = this.biomeInjector.sampleMinHeightAround(biomeX, biomeZ, height);
         
-        Biome biome = this.biomeInjector.test(y, height, minHeight, this.settings.get().getDefaultFluid()).apply(biomeX, biomeY, biomeZ);
+        Biome biome = this.biomeInjector.test(
+            y,
+            height,
+            minHeight,
+            this.settings.get().getDefaultFluid(),
+            biomeX, biomeY, biomeZ
+        );
         
         return biome != null ? biome : this.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
