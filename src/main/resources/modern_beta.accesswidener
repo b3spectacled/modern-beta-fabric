@@ -19,8 +19,6 @@ extendable method net/minecraft/client/world/GeneratorType <init> (Ljava/lang/St
 
 accessible class net/minecraft/world/gen/NoiseColumnSampler$VeinType
 
-accessible class net/minecraft/world/gen/feature/ConfiguredFeatures$Decorators
-
 accessible field net/minecraft/world/gen/carver/CaveCarverConfig floorLevel Lnet/minecraft/util/math/floatprovider/FloatProvider;
 
 accessible method net/minecraft/world/gen/stateprovider/SimpleBlockStateProvider <init>  (Lnet/minecraft/block/BlockState;)V
