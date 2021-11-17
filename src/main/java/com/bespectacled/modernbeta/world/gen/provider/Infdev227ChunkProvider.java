@@ -100,7 +100,14 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         BiomeAccess biomeAccess = region.getBiomeAccess();
         Registry<Biome> biomeRegistry = region.getRegistryManager().get(Registry.BIOME_KEY);
         
-        MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(this.surfaceBuilder, chunk, biomeAccess::getBiome, biomeRegistry, context);
+        MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(
+            this.surfaceBuilder,
+            chunk,
+            this.dummyNoiseChunkSampler,
+            biomeAccess::getBiome,
+            biomeRegistry,
+            context
+        );
         MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
         
         for (int localX = 0; localX < 16; ++localX) {

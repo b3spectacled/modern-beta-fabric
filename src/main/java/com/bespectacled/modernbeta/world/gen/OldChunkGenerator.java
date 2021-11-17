@@ -3,10 +3,12 @@ package com.bespectacled.modernbeta.world.gen;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
@@ -56,6 +58,7 @@ import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 
@@ -154,7 +157,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         AquiferSampler aquiferSampler = this.chunkProvider.getAquiferSampler(chunk);
         
-        CarverContext heightContext = new CarverContext(this, region.getRegistryManager(), chunk);
+        // Chunk Noise Sampler used to sample surface level
+        ChunkNoiseSampler chunkNoiseSampler = this.chunkProvider.getChunkNoiseSampler();
+        
+        CarverContext carverContext = new CarverContext(this, region.getRegistryManager(), chunk.getHeightLimitView(), chunkNoiseSampler);
         CarvingMask carvingMask = ((ProtoChunk)chunk).getOrCreateCarvingMask(genCarver);
         
         Random random = new Random(seed);
@@ -184,7 +190,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
                     
                     if (configuredCarver.shouldCarve(random)) {
-                        configuredCarver.carve(heightContext, chunk, biomeAcc::getBiome, random, aquiferSampler, pos, carvingMask);
+                        configuredCarver.carve(carverContext, chunk, biomeAcc::getBiome, random, aquiferSampler, pos, carvingMask);
 
                     }
                 }
@@ -273,6 +279,11 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public ChunkGenerator withSeed(long seed) {
         return new OldChunkGenerator(this.noiseRegistry, this.biomeSource.withSeed(seed), seed, this.settings, this.chunkProviderSettings);
+    }
+    
+    @Override
+    public Optional<BlockState> method_39041(CarverContext context, Function<BlockPos, Biome> function, Chunk chunk, ChunkNoiseSampler arg3, BlockPos arg4, boolean bl) {
+        return this.chunkProvider.getSurfaceBuilder().method_39110(this.settings.get().getSurfaceRule(), context, function, chunk, arg3, arg4, bl);
     }
     
     public long getWorldSeed() {

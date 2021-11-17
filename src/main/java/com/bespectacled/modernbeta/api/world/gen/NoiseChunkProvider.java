@@ -19,7 +19,6 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
 import com.bespectacled.modernbeta.world.gen.blocksource.BlockSourceRules;
 import com.bespectacled.modernbeta.world.gen.blocksource.LayerTransitionBlockSource;
 import com.bespectacled.modernbeta.world.gen.sampler.NoiseCaveSampler;
@@ -49,9 +48,7 @@ import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.SlideConfig;
 import net.minecraft.world.gen.random.AbstractRandom;
-import net.minecraft.world.gen.random.ChunkRandom;
 import net.minecraft.world.gen.random.RandomDeriver;
-import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 import net.minecraft.world.tick.OrderedTick;
 
 public abstract class NoiseChunkProvider extends BaseChunkProvider {
@@ -88,7 +85,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     private final NoodleCaveSampler noodleCaveSampler;
     
     private final BlockSource deepslateSource;
-    private final ChunkNoiseSampler dummyNoiseChunkSampler;
 
     public NoiseChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
@@ -102,8 +98,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             NbtUtil.readBoolean(NbtTags.GEN_DEEPSLATE, chunkGenerator.getProviderSettings(), ModernBeta.GEN_CONFIG.infGenConfig.generateDeepslate),
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
             chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
-            chunkGenerator.getGeneratorSettings().get().getRandomProvider(),
-            chunkGenerator.getGeneratorSettings().get().getSurfaceRule(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().verticalSize(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().horizontalSize(),
             chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig().sampling().getXZScale(),
@@ -130,8 +124,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         boolean generateDeepslate,
         BlockState defaultBlock,
         BlockState defaultFluid,
-        ChunkRandom.RandomProvider randomProvider,
-        MaterialRules.MaterialRule surfaceRule,
         int sizeVertical, 
         int sizeHorizontal,
         double xzScale, 
@@ -155,9 +147,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             bedrockCeiling,
             generateDeepslate,
             defaultBlock,
-            defaultFluid,
-            randomProvider,
-            surfaceRule
+            defaultFluid
         );
         
         this.verticalNoiseResolution = sizeVertical * 4;
@@ -206,22 +196,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             1536, 
             true, 
             this::sampleHeightmap
-        );
-
-        // Dummy ChunkNoiseSampler
-        this.dummyNoiseChunkSampler = new OldChunkNoiseSampler(
-            this.horizontalNoiseResolution,
-            this.verticalNoiseResolution,
-            16 / this.horizontalNoiseResolution,
-            this.noiseTopY,
-            this.worldMinY,
-            this.noiseColumnSampler,
-            0, 
-            0,
-            null,
-            this.generatorSettings,
-            this.fluidLevelSampler,
-            class_6748.method_39336()
         );
         
         // Random deriver

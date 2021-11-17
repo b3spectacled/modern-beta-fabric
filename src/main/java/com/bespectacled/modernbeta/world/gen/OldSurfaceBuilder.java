@@ -25,9 +25,7 @@ import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.NoiseColumnSampler;
-import net.minecraft.world.gen.random.AbstractRandom;
 import net.minecraft.world.gen.random.ChunkRandom.RandomProvider;
-import net.minecraft.world.gen.random.RandomDeriver;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 
@@ -41,8 +39,6 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         ).toList()
     );
     
-    private final RandomDeriver randomDeriver;
-    
     public OldSurfaceBuilder(
         NoiseColumnSampler columnSampler, 
         Registry<NoiseParameters> noiseRegistry, 
@@ -53,8 +49,6 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         ChunkProvider chunkProvider
     ) {
         super(columnSampler, noiseRegistry, blockState, seaLevel, seed, randomProvider);
-        
-        this.randomDeriver = randomProvider.create(seed).createRandomDeriver();
     }
     
     /*
@@ -93,11 +87,6 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         column.setPos(x, z);
         
         MixinSurfaceBuilderAccessor accessor = this.injectAccessor(this);
-        AbstractRandom random = this.randomDeriver.createRandom(x, 0, z);
-        
-        // Surface noise and depth
-        double surfaceNoise = accessor.getSurfaceNoise().sample(x, 0.0, z); 
-        int runDepth = (int)(surfaceNoise * 2.75 + 3.0 + random.nextDouble() * 0.25);
         
         // Generate eroded badlands hoodoos, as stone initially
         if (biomeKey == BiomeKeys.ERODED_BADLANDS) {
@@ -107,17 +96,14 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
             height = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, localX, localZ) + 1;
         }
         
-        ruleContext.initHorizontalContext(x, z, runDepth);
+        ruleContext.initHorizontalContext(x, z);
         
         int stoneDepthAbove = 0;
-        int currentDepth = 0;
         
         int waterHeight = Integer.MIN_VALUE;
         int solidHeight = Integer.MAX_VALUE;
         
-        int badlandsLayerDepth = biomeKey == BiomeKeys.WOODED_BADLANDS || biomeKey == BiomeKeys.BADLANDS ? 15 : Integer.MAX_VALUE;
-        
-        for (int y = height; y >= surfaceMinY && currentDepth < badlandsLayerDepth; --y) {
+        for (int y = height; y >= surfaceMinY; --y) {
             BlockState blockState = column.getBlockColumn().getState(y);
             pos.set(x, y, z);
             
@@ -149,13 +135,10 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
                 }
             }
             
-            currentDepth++;
-            
             int stoneDepthBelow = y - solidHeight + 1;
             
             ruleContext.initVerticalContext(
-                runDepth, 
-                ++stoneDepthAbove, 
+                ++stoneDepthAbove,
                 stoneDepthBelow, 
                 waterHeight, 
                 x, y, z

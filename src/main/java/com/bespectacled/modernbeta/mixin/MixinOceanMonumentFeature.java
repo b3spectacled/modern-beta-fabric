@@ -16,7 +16,6 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.OceanMonumentFeature;
-import net.minecraft.world.gen.random.ChunkRandom;
 
 @Mixin(OceanMonumentFeature.class)
 public class MixinOceanMonumentFeature {
@@ -25,9 +24,7 @@ public class MixinOceanMonumentFeature {
         ChunkGenerator chunkGenerator,
         BiomeSource biomeSource,
         long worldSeed,
-        ChunkRandom random,
-        ChunkPos pos, 
-        ChunkPos arg5,
+        ChunkPos pos,
         DefaultFeatureConfig featureConfig,
         HeightLimitView world,
         CallbackInfoReturnable<Boolean> info

@@ -20,9 +20,6 @@ public class OldNoiseColumnSampler extends NoiseColumnSampler  {
     
     public OldNoiseColumnSampler(ChunkProvider chunkProvider) {
         this(
-            -1, 
-            -1, 
-            -1, 
             OldGeneratorConfig.BETA_SHAPE_CONFIG, 
             true, 
             0L, 
@@ -33,9 +30,6 @@ public class OldNoiseColumnSampler extends NoiseColumnSampler  {
     }
     
     public OldNoiseColumnSampler(
-        int horizontalNoiseResolution, 
-        int verticalNoiseResolution, 
-        int noiseSizeY, 
         GenerationShapeConfig generationShapeConfig, 
         boolean hasNoiseCaves,
         long seed,
@@ -44,9 +38,6 @@ public class OldNoiseColumnSampler extends NoiseColumnSampler  {
         ChunkProvider chunkProvider
     ) {
         super(
-            horizontalNoiseResolution, 
-            verticalNoiseResolution, 
-            noiseSizeY, 
             generationShapeConfig,
             hasNoiseCaves,
             seed,

@@ -61,7 +61,7 @@ public class OldGeneratorConfig {
             false,
             false,
             false,
-            VanillaTerrainParametersCreator.createSurfaceParameters()
+            VanillaTerrainParametersCreator.createSurfaceParameters(false)
         );
         
         ALPHA_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -75,7 +75,7 @@ public class OldGeneratorConfig {
             false,
             false,
             false,
-            VanillaTerrainParametersCreator.createSurfaceParameters()
+            VanillaTerrainParametersCreator.createSurfaceParameters(false)
         );
         
         SKYLANDS_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -89,7 +89,7 @@ public class OldGeneratorConfig {
             false,
             false,
             false,
-            VanillaTerrainParametersCreator.createSurfaceParameters()
+            VanillaTerrainParametersCreator.createSurfaceParameters(false)
         );
         
         INFDEV_611_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -103,7 +103,7 @@ public class OldGeneratorConfig {
             false,
             false,
             false,
-            VanillaTerrainParametersCreator.createSurfaceParameters()
+            VanillaTerrainParametersCreator.createSurfaceParameters(false)
         );
         
         INFDEV_420_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -117,7 +117,7 @@ public class OldGeneratorConfig {
             false,
             false,
             false,
-            VanillaTerrainParametersCreator.createSurfaceParameters()
+            VanillaTerrainParametersCreator.createSurfaceParameters(false)
         );
         
         INFDEV_415_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -131,7 +131,7 @@ public class OldGeneratorConfig {
             false,
             false,
             false,
-            VanillaTerrainParametersCreator.createSurfaceParameters()
+            VanillaTerrainParametersCreator.createSurfaceParameters(false)
         );
         
         INDEV_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -145,7 +145,7 @@ public class OldGeneratorConfig {
             false,
             false,
             false,
-            VanillaTerrainParametersCreator.createSurfaceParameters()
+            VanillaTerrainParametersCreator.createSurfaceParameters(false)
         );
         
         PE_SHAPE_CONFIG = GenerationShapeConfig.create(
@@ -159,7 +159,7 @@ public class OldGeneratorConfig {
             false,
             false,
             false,
-            VanillaTerrainParametersCreator.createSurfaceParameters()
+            VanillaTerrainParametersCreator.createSurfaceParameters(false)
         );
     }
 }

@@ -11,7 +11,7 @@
     "MixinConfiguredStructureFeaturesAccessor",
     "MixinVeinTypeAccessor",
     "MixinAquiferSampler",
-    "Mixin_class_6623",
+    "MixinStructurePiecesGeneratorContext",
     "MixinOceanMonumentFeature",
     "MixinVanillaBiomeParametersAccessor",
     "MixinSurfaceBuilderAccessor",

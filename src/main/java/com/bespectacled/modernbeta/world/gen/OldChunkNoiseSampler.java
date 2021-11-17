@@ -13,9 +13,7 @@ public class OldChunkNoiseSampler extends ChunkNoiseSampler {
     public OldChunkNoiseSampler(
         int horizontalNoiseResolution, 
         int verticalNoiseResolution, 
-        int horizontalSize, 
-        int height, 
-        int minimumY, 
+        int horizontalSize,
         NoiseColumnSampler noiseColumnSampler, 
         int x, 
         int z, 
@@ -27,14 +25,12 @@ public class OldChunkNoiseSampler extends ChunkNoiseSampler {
         super(
             horizontalNoiseResolution, 
             verticalNoiseResolution, 
-            horizontalSize, 
-            height, 
-            minimumY, 
-            noiseColumnSampler, 
+            horizontalSize,
+            noiseColumnSampler,
             x, 
             z, 
             columnSampler, 
-            supplier, 
+            supplier.get(), 
             fluidLevelSampler,
             blender
         );
@@ -47,5 +43,9 @@ public class OldChunkNoiseSampler extends ChunkNoiseSampler {
     public TerrainNoisePoint getTerrainNoisePoint(NoiseColumnSampler columnSampler, int x, int z) {
         return null;
     }
-
+    
+    @Override
+    public TerrainNoisePoint getInterpolatedTerrainNoisePoint(int x, int z) {
+        return null;
+    }
 }

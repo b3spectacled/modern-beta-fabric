@@ -10,6 +10,9 @@ import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
+import com.bespectacled.modernbeta.world.gen.OldNoiseColumnSampler;
+import com.bespectacled.modernbeta.world.gen.OldSurfaceBuilder;
 
 import net.minecraft.class_6748;
 import net.minecraft.block.BlockState;
@@ -28,6 +31,9 @@ import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.world.gen.chunk.GenerationShapeConfig;
+import net.minecraft.world.gen.random.ChunkRandom;
+import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public abstract class ChunkProvider implements BiomeHeightSampler {
     public static final int LAVA_LEVEL = -53; // Vanilla: -54;
@@ -39,7 +45,14 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
     protected final NbtCompound providerSettings;
     protected SpawnLocator spawnLocator;
     
-    private final FluidLevelSampler carverFluidLevelSampler;
+    protected final OldNoiseColumnSampler noiseColumnSampler;
+    protected final OldChunkNoiseSampler dummyNoiseChunkSampler;
+    
+    protected final ChunkRandom.RandomProvider randomProvider;
+    protected final MaterialRules.MaterialRule surfaceRule;
+    protected final OldSurfaceBuilder surfaceBuilder;
+    
+    private final FluidLevelSampler emptyFluidLevelSampler;
     
     /**
      * Construct a Modern Beta chunk provider with seed and settings.
@@ -54,7 +67,40 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
         this.providerSettings = chunkGenerator.getProviderSettings();
         this.spawnLocator = SpawnLocator.DEFAULT;
 
-        this.carverFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
+        this.emptyFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
+        
+        // Modified NoiseColumnSampler and ChunkNoiseSampler
+        GenerationShapeConfig shapeConfig = chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig();
+        int verticalNoiseResolution = shapeConfig.verticalSize() * 4;
+        int horizontalNoiseResolution = shapeConfig.horizontalSize() * 4;
+        
+        this.noiseColumnSampler = new OldNoiseColumnSampler(this);
+        this.dummyNoiseChunkSampler = new OldChunkNoiseSampler(
+            horizontalNoiseResolution,
+            verticalNoiseResolution,
+            16 / horizontalNoiseResolution,
+            this.noiseColumnSampler,
+            0, 
+            0,
+            null,
+            this.generatorSettings,
+            this.emptyFluidLevelSampler,
+            class_6748.method_39336()
+        );
+        
+        this.randomProvider = chunkGenerator.getGeneratorSettings().get().getRandomProvider();
+        this.surfaceRule = chunkGenerator.getGeneratorSettings().get().getSurfaceRule();
+        
+        // Modified SurfaceBuilder
+        this.surfaceBuilder = new OldSurfaceBuilder(
+            this.noiseColumnSampler, 
+            chunkGenerator.getNoiseRegistry(), 
+            chunkGenerator.getGeneratorSettings().get().getDefaultBlock(), 
+            chunkGenerator.getGeneratorSettings().get().getSeaLevel(), 
+            this.seed, 
+            this.randomProvider,
+            this
+        );
     }
     
     /**
@@ -132,7 +178,7 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
      * @return An aquifer sampler.
      */
     public AquiferSampler getAquiferSampler(Chunk chunk) {
-        return AquiferSampler.seaLevel(this.carverFluidLevelSampler);
+        return AquiferSampler.seaLevel(this.emptyFluidLevelSampler);
     }
     
     /**
@@ -157,6 +203,27 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
      */
     public OldChunkGenerator getChunkGenerator() {
         return this.chunkGenerator;
+    }
+    
+    /**
+     * @return OldNoiseColumnSampler.
+     */
+    public OldNoiseColumnSampler getNoiseColumnSampler() {
+        return this.noiseColumnSampler;
+    }
+    
+    /**
+     * @return OldChunkNoiseSampler.
+     */
+    public OldChunkNoiseSampler getChunkNoiseSampler() {
+       return this.dummyNoiseChunkSampler; 
+    }
+    
+    /**
+     * @return OldSurfaceBuilder.
+     */
+    public OldSurfaceBuilder getSurfaceBuilder() {
+        return this.surfaceBuilder;
     }
     
     /**

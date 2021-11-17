@@ -7,18 +7,14 @@ import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.world.decorator.OldDecorators;
+import com.bespectacled.modernbeta.world.feature.placed.OldVegetationPlacedFeatures;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.world.gen.OldNoiseColumnSampler;
-import com.bespectacled.modernbeta.world.gen.OldSurfaceBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
-import net.minecraft.world.gen.random.ChunkRandom;
-import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public abstract class BaseChunkProvider extends ChunkProvider {
     
@@ -44,13 +40,6 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     
     protected final FluidLevelSampler fluidLevelSampler;
     protected final FluidLevelSampler lavalessFluidLevelSampler;
-    
-    protected final ChunkRandom.RandomProvider randomProvider;
-    
-    protected final OldNoiseColumnSampler noiseColumnSampler;
-    
-    protected final MaterialRules.MaterialRule surfaceRule;
-    protected final OldSurfaceBuilder surfaceBuilder;
 
     public BaseChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
@@ -63,9 +52,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
             Integer.MIN_VALUE,
             NbtUtil.readBoolean(NbtTags.GEN_DEEPSLATE, chunkGenerator.getProviderSettings(), ModernBeta.GEN_CONFIG.infGenConfig.generateDeepslate),
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(),
-            chunkGenerator.getGeneratorSettings().get().getDefaultFluid(),
-            chunkGenerator.getGeneratorSettings().get().getRandomProvider(),
-            chunkGenerator.getGeneratorSettings().get().getSurfaceRule()
+            chunkGenerator.getGeneratorSettings().get().getDefaultFluid()
         );
     }
     
@@ -79,9 +66,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         int bedrockCeiling,
         boolean generateDeepslate,
         BlockState defaultBlock,
-        BlockState defaultFluid,
-        ChunkRandom.RandomProvider randomProvider,
-        MaterialRules.MaterialRule surfaceRule
+        BlockState defaultFluid
     ) {
         super(chunkGenerator);
         
@@ -105,21 +90,6 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         
         this.fluidLevelSampler = (x, y, z) -> y < LAVA_LEVEL ? lavaFluidLevel : seaFluidLevel;
         this.lavalessFluidLevelSampler = (x, y, z) -> seaFluidLevel;
-        
-        this.randomProvider = randomProvider;
-        this.surfaceRule = surfaceRule;
-        
-        // Modified NoiseColumnSampler and SurfaceBuilder
-        this.noiseColumnSampler = new OldNoiseColumnSampler(this);
-        this.surfaceBuilder = new OldSurfaceBuilder(
-            this.noiseColumnSampler, 
-            noiseRegistry, 
-            this.defaultBlock, 
-            this.seaLevel, 
-            this.seed, 
-            this.randomProvider,
-            this
-        );
         
         // Handle bad height values
         if (this.worldMinY > this.worldHeight)
@@ -167,11 +137,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
      * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
      */
     protected void setForestOctaves(PerlinOctaveNoise forestOctaves) {
-        OldDecorators.COUNT_BETA_NOISE.setOctaves(forestOctaves);
-        OldDecorators.COUNT_ALPHA_NOISE.setOctaves(forestOctaves);
-        OldDecorators.COUNT_INFDEV_415_NOISE.setOctaves(forestOctaves);
-        OldDecorators.COUNT_INFDEV_420_NOISE.setOctaves(forestOctaves);
-        OldDecorators.COUNT_INFDEV_611_NOISE.setOctaves(forestOctaves);
+        OldVegetationPlacedFeatures.setNoiseOctaves(forestOctaves);
     }
     
     /**

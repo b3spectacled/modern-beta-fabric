@@ -4,13 +4,13 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.ModernBeta;
 
-import net.minecraft.class_6625;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.SimpleStructurePiece;
+import net.minecraft.structure.StructureContext;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePiecesHolder;
 import net.minecraft.structure.StructurePlacementData;
@@ -63,8 +63,8 @@ public class OceanShrineGenerator {
         }
         
         @Override
-        protected void writeNbt(class_6625 world, NbtCompound nbtCompound) {
-            super.writeNbt(world, nbtCompound);
+        protected void writeNbt(StructureContext context, NbtCompound nbtCompound) {
+            super.writeNbt(context, nbtCompound);
             nbtCompound.putString("Rot", this.placementData.getRotation().name());
         }
         
