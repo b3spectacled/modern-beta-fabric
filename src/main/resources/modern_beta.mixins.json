@@ -19,7 +19,8 @@
     "heightprovider.MixinUniformHeightProvider",
     "heightprovider.MixinBiasedToBottomHeightProvider",
     "heightprovider.MixinTrapezoidHeightProvider",
-    "heightprovider.MixinVeryBiasedToBottomHeightProvider"
+    "heightprovider.MixinVeryBiasedToBottomHeightProvider",
+    "MixinPlacedFeatureAccessor"
   ],
   "client": [
     "client.MixinClientWorld",

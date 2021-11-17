@@ -283,6 +283,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public Optional<BlockState> method_39041(CarverContext context, Function<BlockPos, Biome> function, Chunk chunk, ChunkNoiseSampler arg3, BlockPos arg4, boolean bl) {
+        // TODO: Look more closely into this
         return this.chunkProvider.getSurfaceBuilder().method_39110(this.settings.get().getSurfaceRule(), context, function, chunk, arg3, arg4, bl);
     }
     

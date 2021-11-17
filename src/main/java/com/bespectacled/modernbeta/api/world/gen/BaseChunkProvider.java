@@ -1,13 +1,15 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
+import java.util.List;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.mixin.MixinPlacedFeatureAccessor;
 import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.world.feature.placed.OldVegetationPlacedFeatures;
+import com.bespectacled.modernbeta.world.feature.placement.OldNoiseBasedCountPlacementModifier;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
@@ -15,6 +17,8 @@ import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
+import net.minecraft.world.gen.decorator.PlacementModifier;
+import net.minecraft.world.gen.feature.PlacedFeature;
 
 public abstract class BaseChunkProvider extends ChunkProvider {
     
@@ -132,12 +136,27 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     }
     
     /**
-     * Sets forest density using PerlinOctaveNoise object created using world seed.
+     * Sets forest density using PerlinOctaveNoise sampler created with world seed.
+     * Checks every placed feature in the biome source feature list,
+     * and if it uses OldNoiseBasedCountPlacementModifier, replaces the noise sampler.
      * 
      * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
      */
     protected void setForestOctaves(PerlinOctaveNoise forestOctaves) {
-        OldVegetationPlacedFeatures.setNoiseOctaves(forestOctaves);
+        List<List<PlacedFeature>> generationSteps = this.chunkGenerator.getBiomeSource().method_38115();
+        
+        for (List<PlacedFeature> step : generationSteps) {
+            for (PlacedFeature placedFeature : step) {
+                MixinPlacedFeatureAccessor accessor = (MixinPlacedFeatureAccessor)placedFeature;
+                List<PlacementModifier> modifiers = accessor.getPlacementModifiers();
+                
+                for (PlacementModifier modifier : modifiers) {
+                    if (modifier instanceof OldNoiseBasedCountPlacementModifier noiseModifier) {
+                        noiseModifier.setOctaves(forestOctaves);
+                    }
+                }
+            }
+        }
     }
     
     /**
