@@ -4,6 +4,7 @@ import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.client.gui.screen.biome.ClimateBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.biome.SingleBiomeScreen;
+import com.bespectacled.modernbeta.client.gui.screen.biome.VanillaBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.cavebiome.SingleCaveBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.cavebiome.VanillaCaveBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.IndevWorldScreen;
@@ -125,7 +126,7 @@ public class ModernBetaBuiltInProviders {
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.BETA.name, ClimateBiomeScreen::create);
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.SINGLE.name, SingleBiomeScreen::create);
         Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.PE.name, ClimateBiomeScreen::create);
-        Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.VANILLA.name, (screen, worldSetting) -> null);
+        Registries.BIOME_SCREEN.register(BuiltInTypes.Biome.VANILLA.name, VanillaBiomeScreen::create);
     }
     
     public static void registerCaveBiomeScreens() {

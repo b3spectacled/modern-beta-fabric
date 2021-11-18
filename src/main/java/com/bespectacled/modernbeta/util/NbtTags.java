@@ -41,8 +41,7 @@ public class NbtTags {
     public static final String BIOME_TYPE = "biomeType";
     
     // Vanilla
-    public static final String VANILLA_BIOME_SIZE = "vanillaBiomeSize";
-    public static final String VANILLA_OCEAN_BIOME_SIZE = "vanillaOceanBiomeSize";
+    public static final String LARGE_BIOMES = "largeBiomes";
     
     // Single
     public static final String SINGLE_BIOME = "singleBiome";

@@ -33,6 +33,9 @@ public class OldGeneratorConfig {
     public static final GenerationShapeConfig INDEV_SHAPE_CONFIG;
     public static final GenerationShapeConfig PE_SHAPE_CONFIG;
     
+    // For the Vanilla biome type
+    public static final GenerationShapeConfig BETA_SHAPE_CONFIG_LARGE_BIOMES;
+    
     static {
         STRUCTURES = new StructuresConfig(true);
         INDEV_STRONGHOLD = Optional.of(new StrongholdConfig(0, 0, 1));
@@ -159,6 +162,20 @@ public class OldGeneratorConfig {
             false,
             false,
             false,
+            VanillaTerrainParametersCreator.createSurfaceParameters(false)
+        );
+        
+        BETA_SHAPE_CONFIG_LARGE_BIOMES = GenerationShapeConfig.create(
+            -64,
+            192,
+            BETA_SAMPLING_CONFIG, 
+            new SlideConfig(-0.078125, 3, 0),
+            new SlideConfig(0.1171875, 3, 0),
+            1, 
+            2,
+            false,
+            false,
+            true, // Amplified
             VanillaTerrainParametersCreator.createSurfaceParameters(false)
         );
     }

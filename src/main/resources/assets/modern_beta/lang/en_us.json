@@ -90,6 +90,8 @@
     "createWorld.customize.indev.levelType.floating": "Floating",
     "createWorld.customize.indev.levelType.inland": "Inland",
     
+    "createWorld.customize.biome.largeBiomes": "Large Biomes",
+    
     "createWorld.customize.caveBiome.useNoise": "Use Noise",
     "createWorld.customize.caveBiome.verticalNoiseScale": "Vertical Noise Scale",
     "createWorld.customize.caveBiome.horizontalNoiseScale": "Horizontal Noise Scale",

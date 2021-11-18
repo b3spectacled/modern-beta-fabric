@@ -22,9 +22,12 @@ import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.random.ChunkRandom;
 
 public class VanillaBiomeSource {
-    private static final GenerationShapeConfig SHAPE_CONFIG = OldGeneratorConfig.BETA_SHAPE_CONFIG;
+    private static final GenerationShapeConfig NORMAL_BIOME_SHAPE_CONFIG = OldGeneratorConfig.BETA_SHAPE_CONFIG;
+    private static final GenerationShapeConfig LARGE_BIOME_SHAPE_CONFIG = OldGeneratorConfig.BETA_SHAPE_CONFIG_LARGE_BIOMES;
     
     private static final boolean GEN_NOISE_CAVES = false;
+    
+    // Currently, large biomes option only works with Xoroshiro random type.
     private static final ChunkRandom.RandomProvider RANDOM_TYPE = ChunkRandom.RandomProvider.XOROSHIRO;
     
     private final MultiNoiseUtil.Entries<Supplier<Biome>> biomeEntries;
@@ -32,11 +35,15 @@ public class VanillaBiomeSource {
     private final NoiseColumnSampler columnSampler;
     private final long seed;
     
-    private VanillaBiomeSource(ImmutableList<Pair<MultiNoiseUtil.NoiseHypercube, Supplier<Biome>>> biomeList, long seed) {
+    private VanillaBiomeSource(
+        ImmutableList<Pair<MultiNoiseUtil.NoiseHypercube, Supplier<Biome>>> biomeList,
+        long seed,
+        boolean largeBiomes
+    ) {
         this.biomeEntries = new MultiNoiseUtil.Entries<Supplier<Biome>>(biomeList);
         this.biomeSource = new MultiNoiseBiomeSource(this.biomeEntries, Optional.empty());
         this.columnSampler = new NoiseColumnSampler(
-            SHAPE_CONFIG,
+            largeBiomes ? LARGE_BIOME_SHAPE_CONFIG : NORMAL_BIOME_SHAPE_CONFIG,
             GEN_NOISE_CAVES,
             seed,
             BuiltinRegistries.NOISE_PARAMETERS,
@@ -66,12 +73,14 @@ public class VanillaBiomeSource {
         private final ExtendedVanillaBiomeParameters biomeParameters;
         private final Consumer<Pair<MultiNoiseUtil.NoiseHypercube, RegistryKey<Biome>>> parameters;
         private final long seed;
+        private boolean largeBiomes;
         
         public Builder(Registry<Biome> biomeRegistry, long seed) {
             this.builder = ImmutableList.builder(); 
             this.biomeParameters = new ExtendedVanillaBiomeParameters();
             this.parameters = pair -> this.builder.add(pair.mapSecond(key -> () -> biomeRegistry.getOrThrow(key)));
             this.seed = seed;
+            this.largeBiomes = false;
         }
         
         public Builder writeMixedBiomes(ParameterRange range) {
@@ -108,8 +117,14 @@ public class VanillaBiomeSource {
             return this;
         }
         
+        public Builder largeBiomes(boolean largeBiomes) {
+            this.largeBiomes = largeBiomes;
+            
+            return this;
+        }
+        
         public VanillaBiomeSource build() {
-            return new VanillaBiomeSource(this.builder.build(), this.seed);
+            return new VanillaBiomeSource(this.builder.build(), this.seed, this.largeBiomes);
         }
         
         private MixinVanillaBiomeParametersAccessor getInvoker() {

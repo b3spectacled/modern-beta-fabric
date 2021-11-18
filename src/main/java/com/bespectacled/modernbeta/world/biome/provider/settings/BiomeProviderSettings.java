@@ -72,6 +72,10 @@ public class BiomeProviderSettings {
     }
     
     public static NbtCompound createSettingsVanilla() {
-        return createSettingsBase(BuiltInTypes.Biome.VANILLA.name);
+        NbtCompound settings = createSettingsBase(BuiltInTypes.Biome.VANILLA.name);
+        
+        settings.putBoolean(NbtTags.LARGE_BIOMES, ModernBeta.BIOME_CONFIG.vanillaBiomeConfig.largeBiomes);
+        
+        return settings;
     }
 }

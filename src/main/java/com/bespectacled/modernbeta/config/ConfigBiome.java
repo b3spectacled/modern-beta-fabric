@@ -63,5 +63,7 @@ public class ConfigBiome implements ConfigData {
         public String singleBiome = InfBiomes.ALPHA_ID.toString();
     }
     
-    public static class VanillaBiomeConfig {}
+    public static class VanillaBiomeConfig {
+        public boolean largeBiomes = false;
+    }
 }
