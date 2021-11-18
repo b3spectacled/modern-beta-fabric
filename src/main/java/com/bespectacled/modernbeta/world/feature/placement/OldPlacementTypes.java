@@ -15,7 +15,6 @@ public class OldPlacementTypes<P extends PlacementModifier> {
     public static final PlacementModifierType<Infdev611NoiseBasedCountPlacementModifier> INFDEV_611_NOISE_BASED_COUNT;
     
     public static final PlacementModifierType<HeightmapSpreadDoublePlacementModifier> HEIGHTMAP_SPREAD_DOUBLE;
-    public static final PlacementModifierType<Spread32AbovePlacementModifier> SPREAD_32_ABOVE;
     
     private static <P extends PlacementModifier> PlacementModifierType<P> register(String id, Codec<P> codec) {
         return Registry.register(Registry.PLACEMENT_MODIFIER_TYPE, ModernBeta.createId(id), () -> codec);
@@ -29,6 +28,5 @@ public class OldPlacementTypes<P extends PlacementModifier> {
         INFDEV_611_NOISE_BASED_COUNT = register("infdev_611_noise_based_count", Infdev611NoiseBasedCountPlacementModifier.MODIFIER_CODEC);
     
         HEIGHTMAP_SPREAD_DOUBLE = register("heightmap_spread_double", HeightmapSpreadDoublePlacementModifier.MODIFIER_CODEC);
-        SPREAD_32_ABOVE = register("spread_32_above", Spread32AbovePlacementModifier.MODIFIER_CODEC);
     }
 }

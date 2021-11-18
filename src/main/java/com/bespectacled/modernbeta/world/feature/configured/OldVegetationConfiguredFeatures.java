@@ -47,11 +47,11 @@ public class OldVegetationConfiguredFeatures {
         private static final int TRIES = 64;
         private static final int GRASS_TRIES = 64;
         
+        public static final PlacedFeature DANDELION_PLACED_FEATURE;
+        public static final PlacedFeature POPPY_PLACED_FEATURE;
+        
         public static final ConfiguredFeature<?, ?> GRASS_FEATURE;
         public static final ConfiguredFeature<?, ?> LUSH_GRASS_FEATURE;
-        
-        public static final ConfiguredFeature<?, ?> DANDELION_FEATURE;
-        public static final ConfiguredFeature<?, ?> POPPY_FEATURE;
         
         public static final ConfiguredFeature<?, ?> MUSHROOM_HELL_FEATURE;
         
@@ -88,11 +88,11 @@ public class OldVegetationConfiguredFeatures {
         }
         
         static {
+            DANDELION_PLACED_FEATURE = Feature.SIMPLE_BLOCK.configure(new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.DANDELION))).withInAirFilter();
+            POPPY_PLACED_FEATURE = Feature.SIMPLE_BLOCK.configure(new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.POPPY))).withInAirFilter();
+            
             GRASS_FEATURE = Feature.SIMPLE_BLOCK.configure(new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.GRASS)));
             LUSH_GRASS_FEATURE = Feature.SIMPLE_BLOCK.configure(new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(pool().add(BlockStates.GRASS, 1).add(BlockStates.FERN, 4))));
-            
-            DANDELION_FEATURE = Feature.SIMPLE_BLOCK.configure(new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.DANDELION)));
-            POPPY_FEATURE = Feature.SIMPLE_BLOCK.configure(new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.POPPY)));
             
             MUSHROOM_HELL_FEATURE = Feature.SIMPLE_BLOCK.configure(new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(pool().add(Blocks.BROWN_MUSHROOM.getDefaultState(), 2).add(Blocks.RED_MUSHROOM.getDefaultState(), 1))));
             
@@ -101,8 +101,8 @@ public class OldVegetationConfiguredFeatures {
             GRASS_CONFIG = createRandomPatchFeatureConfig(GRASS_TRIES, GRASS_FEATURE);
             LUSH_GRASS_CONFIG = createRandomPatchFeatureConfig(GRASS_TRIES, LUSH_GRASS_FEATURE);
         
-            DANDELION_CONFIG = createRandomPatchFeatureConfig(TRIES, DANDELION_FEATURE);
-            POPPY_CONFIG = createRandomPatchFeatureConfig(TRIES, POPPY_FEATURE);
+            DANDELION_CONFIG = createRandomPatchFeatureConfig(TRIES, DANDELION_PLACED_FEATURE);
+            POPPY_CONFIG = createRandomPatchFeatureConfig(TRIES, POPPY_PLACED_FEATURE);
             
             MUSHROOM_HELL = createRandomPatchFeatureConfig(TRIES, MUSHROOM_HELL_FEATURE);
         }
@@ -114,7 +114,7 @@ public class OldVegetationConfiguredFeatures {
     // Flowers
     public static final ConfiguredFeature<?, ?> PATCH_DANDELION = OldConfiguredFeatures.register("patch_dandelion", Feature.FLOWER.configure(OldRandomPatchConfigs.DANDELION_CONFIG)); 
     public static final ConfiguredFeature<?, ?> PATCH_POPPY = OldConfiguredFeatures.register("patch_poppy", Feature.FLOWER.configure(OldRandomPatchConfigs.POPPY_CONFIG));
-    public static final ConfiguredFeature<?, ?> PATCH_DANDELION_INFDEV_227 = OldConfiguredFeatures.register("patch_dandelion_infdev_227", OldRandomPatchConfigs.DANDELION_FEATURE);
+    public static final ConfiguredFeature<?, ?> PATCH_DANDELION_INFDEV_227 = OldConfiguredFeatures.register("patch_dandelion_infdev_227", Feature.SIMPLE_BLOCK.configure(new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.DANDELION))));
     
     // Grass
     public static final ConfiguredFeature<?, ?> PATCH_GRASS = OldConfiguredFeatures.register("patch_grass", Feature.RANDOM_PATCH.configure(OldRandomPatchConfigs.GRASS_CONFIG));
