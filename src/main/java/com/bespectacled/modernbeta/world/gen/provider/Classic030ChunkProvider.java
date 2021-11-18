@@ -1,9 +1,9 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
 import com.bespectacled.modernbeta.api.world.gen.FiniteChunkProvider;
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.Block;

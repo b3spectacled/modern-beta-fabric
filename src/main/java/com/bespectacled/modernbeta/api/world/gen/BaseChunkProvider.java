@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.compat.CompatBiomes;
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 

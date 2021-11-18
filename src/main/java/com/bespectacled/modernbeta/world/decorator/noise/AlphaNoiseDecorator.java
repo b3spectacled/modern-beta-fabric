@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.world.decorator.noise;
 
 import java.util.Random;
 
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 
 public class AlphaNoiseDecorator implements OldNoiseDecorator {
     private final PerlinOctaveNoise noiseSampler;

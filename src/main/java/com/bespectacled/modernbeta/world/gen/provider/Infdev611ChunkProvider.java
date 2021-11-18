@@ -3,9 +3,9 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;

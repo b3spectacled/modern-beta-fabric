@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.world.decorator;
 
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.decorator.noise.Infdev420NoiseDecorator;
 import com.mojang.serialization.Codec;
 
