@@ -16,8 +16,6 @@ public class IndevHell {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         OldBiomeMobs.addCommonMobs(spawnSettings);
         
-        spawnSettings.playerSpawnFriendly();
-        
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         OldBiomeFeatures.addIndevHellFeatures(genSettings);;
         

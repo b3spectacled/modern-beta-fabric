@@ -17,8 +17,6 @@ public class IndevNormal {
         OldBiomeMobs.addCommonMobs(spawnSettings);
         OldBiomeMobs.addSquid(spawnSettings);
         OldBiomeMobs.addWolves(spawnSettings);
-        
-        spawnSettings.playerSpawnFriendly();
 
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         OldBiomeFeatures.addIndevNormalFeatures(genSettings);

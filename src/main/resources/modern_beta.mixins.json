@@ -11,7 +11,6 @@
     "MixinConfiguredStructureFeaturesAccessor",
     "MixinVeinTypeAccessor",
     "MixinAquiferSampler",
-    "MixinStructurePiecesGeneratorContext",
     "MixinOceanMonumentFeature",
     "MixinVanillaBiomeParametersAccessor",
     "MixinSurfaceBuilderAccessor",
@@ -20,7 +19,8 @@
     "heightprovider.MixinBiasedToBottomHeightProvider",
     "heightprovider.MixinTrapezoidHeightProvider",
     "heightprovider.MixinVeryBiasedToBottomHeightProvider",
-    "MixinPlacedFeatureAccessor"
+    "MixinPlacedFeatureAccessor",
+    "Mixin_class_6835"
   ],
   "client": [
     "client.MixinClientWorld",

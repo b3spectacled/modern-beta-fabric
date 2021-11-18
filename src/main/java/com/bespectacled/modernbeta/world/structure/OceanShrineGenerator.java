@@ -32,12 +32,6 @@ import net.minecraft.world.gen.feature.FeatureConfig;
 public class OceanShrineGenerator {
     private static final Identifier SHRINE_BASE = ModernBeta.createId("ocean_shrine/base");
     
-    /*
-    public static void addPieces(StructureManager manager, BlockPos pos, BlockRotation rot, StructurePiecesHolder structurePiecesHolder, List<StructurePiece> pieces) {
-        pieces.add(new Piece(manager, pos, structurePiecesHolder, SHRINE_BASE, rot));
-    }
-    */
-    
     public static void addPieces(
         StructureManager manager, 
         BlockPos pos, 

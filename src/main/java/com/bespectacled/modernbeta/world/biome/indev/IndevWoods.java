@@ -18,8 +18,6 @@ public class IndevWoods {
         OldBiomeMobs.addSquid(spawnSettings);
         OldBiomeMobs.addWolves(spawnSettings);
         
-        spawnSettings.playerSpawnFriendly();
-        
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         OldBiomeFeatures.addIndevWoodsFeatures(genSettings);
 

@@ -9,29 +9,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.HeightLimitView;
+import net.minecraft.class_6834;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.OceanMonumentFeature;
 
 @Mixin(OceanMonumentFeature.class)
 public class MixinOceanMonumentFeature {
-    @Inject(method = "shouldStartAt", at = @At("HEAD"), cancellable = true)
-    private void injectShouldStartAt(
-        ChunkGenerator chunkGenerator,
-        BiomeSource biomeSource,
-        long worldSeed,
-        ChunkPos pos,
-        DefaultFeatureConfig featureConfig,
-        HeightLimitView world,
-        CallbackInfoReturnable<Boolean> info
-    ) {
+    @Inject(method = "method_28642", at = @At("HEAD"), cancellable = true) 
+    private static void injectShouldStartAt(class_6834.class_6835<DefaultFeatureConfig> structureInfo, CallbackInfoReturnable<Boolean> info) {
+        ChunkGenerator chunkGenerator = structureInfo.chunkGenerator();
+        
         if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
-            int offsetX = pos.getOffsetX(9);
-            int offsetZ = pos.getOffsetZ(9);
+            int offsetX = structureInfo.chunkPos().getOffsetX(9);
+            int offsetZ = structureInfo.chunkPos().getOffsetZ(9);
             
             boolean shouldStartAt = oldChunkGenerator.generatesMonuments();
             

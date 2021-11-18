@@ -143,8 +143,8 @@ public class BiomeInjector {
         }
     }
     
-    public Biome test(int y, int height, int minHeight, BlockState blockState, int biomeX, int biomeY, int biomeZ) {
-        return this.rules.test(y, height, minHeight, blockState, biomeX, biomeY, biomeZ);
+    public Biome test(int y, int topHeight, int minHeight, BlockState blockState, int biomeX, int biomeY, int biomeZ) {
+        return this.rules.test(y, topHeight, minHeight, blockState, biomeX, biomeY, biomeZ);
     }
     
     private boolean atOceanDepth(int topHeight, int oceanDepth) {

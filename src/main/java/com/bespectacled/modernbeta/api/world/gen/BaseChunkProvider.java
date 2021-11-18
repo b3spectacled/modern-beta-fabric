@@ -15,6 +15,7 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.source.BiomeSource.class_6827;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.decorator.PlacementModifier;
@@ -143,10 +144,12 @@ public abstract class BaseChunkProvider extends ChunkProvider {
      * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
      */
     protected void setForestOctaves(PerlinOctaveNoise forestOctaves) {
-        List<List<PlacedFeature>> generationSteps = this.chunkGenerator.getBiomeSource().method_38115();
+        List<class_6827> generationSteps = this.chunkGenerator.getBiomeSource().method_38115();
         
-        for (List<PlacedFeature> step : generationSteps) {
-            for (PlacedFeature placedFeature : step) {
+        for (class_6827 step : generationSteps) {
+            List<PlacedFeature> featureList = step.features();
+            
+            for (PlacedFeature placedFeature : featureList) {
                 MixinPlacedFeatureAccessor accessor = (MixinPlacedFeatureAccessor)placedFeature;
                 List<PlacementModifier> modifiers = accessor.getPlacementModifiers();
                 

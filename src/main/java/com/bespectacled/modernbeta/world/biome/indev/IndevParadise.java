@@ -17,8 +17,6 @@ public class IndevParadise {
         OldBiomeMobs.addCommonMobs(spawnSettings);
         OldBiomeMobs.addSquid(spawnSettings);
         
-        spawnSettings.playerSpawnFriendly();
-        
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         OldBiomeFeatures.addIndevParadiseFeatures(genSettings);
         

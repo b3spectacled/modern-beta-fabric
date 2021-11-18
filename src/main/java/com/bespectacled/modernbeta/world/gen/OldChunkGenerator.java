@@ -113,7 +113,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
-    public CompletableFuture<Chunk> populateBiomes(Executor executor, class_6748 blender, StructureAccessor accessor, Chunk chunk) {
+    public CompletableFuture<Chunk> populateBiomes(Registry<Biome> biomeRegistry, Executor executor, class_6748 blender, StructureAccessor accessor, Chunk chunk) {
         return CompletableFuture.<Chunk>supplyAsync(Util.debugSupplier("init_biomes", () -> {
             chunk.method_38257(this.biomeSource, this.getMultiNoiseSampler());
             return chunk;
@@ -328,14 +328,17 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int biomeY = y >> 2;
         int biomeZ = z >> 2;
         
-        int height = this.biomeInjector.getCenteredHeight(biomeX, biomeZ);
-        int minHeight = this.biomeInjector.sampleMinHeightAround(biomeX, biomeZ, height);
+        int topHeight = this.biomeInjector.getCenteredHeight(biomeX, biomeZ);
+        int minHeight = this.biomeInjector.sampleMinHeightAround(biomeX, biomeZ, topHeight);
+        BlockState state = y < this.getSeaLevel() ? 
+            this.settings.get().getDefaultFluid() :
+            BlockStates.AIR;
         
         Biome biome = this.biomeInjector.test(
             y,
-            height,
+            topHeight,
             minHeight,
-            this.settings.get().getDefaultFluid(),
+            state,
             biomeX, biomeY, biomeZ
         );
         

@@ -18,8 +18,6 @@ public class IndevSnowy {
         OldBiomeMobs.addSquid(spawnSettings);
         OldBiomeMobs.addWolves(spawnSettings);
         
-        spawnSettings.playerSpawnFriendly();
-        
         GenerationSettings.Builder genSettings = new GenerationSettings.Builder();
         OldBiomeFeatures.addIndevSnowyFeatures(genSettings);
 
