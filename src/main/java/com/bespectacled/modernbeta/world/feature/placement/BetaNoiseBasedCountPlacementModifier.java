@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.world.feature.placement;
 
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
-import com.bespectacled.modernbeta.world.feature.placement.noise.BetaNoisePlacer;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.world.feature.placement.noise.BetaNoiseCount;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -25,7 +25,7 @@ public class BetaNoiseBasedCountPlacementModifier extends OldNoiseBasedCountPlac
     
     @Override
     public void setOctaves(PerlinOctaveNoise octaves) {
-        this.noiseDecorator = new BetaNoisePlacer(octaves);
+        this.noiseDecorator = new BetaNoiseCount(octaves);
     }
     
     @Override

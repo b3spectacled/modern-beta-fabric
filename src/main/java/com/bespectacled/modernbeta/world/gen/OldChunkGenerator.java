@@ -323,6 +323,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.generateMonuments;
     }
     
+    public String getChunkProviderType() {
+        return this.chunkProviderType;
+    }
+    
     public Biome getInjectedBiomeAtBlock(int x, int y, int z) {
         int biomeX = x >> 2;
         int biomeY = y >> 2;

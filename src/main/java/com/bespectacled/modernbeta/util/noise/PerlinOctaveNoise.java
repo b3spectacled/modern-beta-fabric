@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.noise;
+package com.bespectacled.modernbeta.util.noise;
 
 import java.util.Random;
 

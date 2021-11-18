@@ -34,6 +34,7 @@ import com.bespectacled.modernbeta.world.gen.provider.Infdev611ChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.PEChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.SkylandsChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
+import com.bespectacled.modernbeta.world.gen.sampler.OreVeinRules;
 
 import net.minecraft.nbt.NbtCompound;
 
@@ -150,5 +151,18 @@ public class ModernBetaBuiltInProviders {
         Registries.WORLD.register(BuiltInTypes.Chunk.CLASSIC_0_30.name, ModernBetaBuiltInWorldProviders.CLASSIC_0_30);
         Registries.WORLD.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, ModernBetaBuiltInWorldProviders.BETA_ISLANDS);
         Registries.WORLD.register(BuiltInTypes.Chunk.PE.name, ModernBetaBuiltInWorldProviders.PE);
+    }
+    
+    // Register default ore vein types, currently bound to chunk type
+    public static void registerOreVeinRules() {
+        Registries.ORE_VEIN_RULES.register(BuiltInTypes.DEFAULT_ID, OreVeinRules.DEFAULT_VEIN_RULES);
+        Registries.ORE_VEIN_RULES.register(BuiltInTypes.Chunk.BETA.name, OreVeinRules.BETA_VEIN_RULES);
+        Registries.ORE_VEIN_RULES.register(BuiltInTypes.Chunk.SKYLANDS.name, OreVeinRules.SKYLANDS_VEIN_RULES);
+        Registries.ORE_VEIN_RULES.register(BuiltInTypes.Chunk.ALPHA.name, OreVeinRules.OLD_VEIN_RULES);
+        Registries.ORE_VEIN_RULES.register(BuiltInTypes.Chunk.INFDEV_611.name, OreVeinRules.OLD_VEIN_RULES);
+        Registries.ORE_VEIN_RULES.register(BuiltInTypes.Chunk.INFDEV_420.name, OreVeinRules.OLD_VEIN_RULES);
+        Registries.ORE_VEIN_RULES.register(BuiltInTypes.Chunk.INFDEV_415.name, OreVeinRules.OLD_VEIN_RULES);
+        Registries.ORE_VEIN_RULES.register(BuiltInTypes.Chunk.BETA_ISLANDS.name, OreVeinRules.BETA_VEIN_RULES);
+        Registries.ORE_VEIN_RULES.register(BuiltInTypes.Chunk.PE.name, OreVeinRules.OLD_VEIN_RULES);
     }
 }

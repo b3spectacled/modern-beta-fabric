@@ -7,8 +7,8 @@ import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.util.noise.NoiseRules;
 import com.bespectacled.modernbeta.world.cavebiome.provider.climate.BaseCaveClimateSampler;
-import com.bespectacled.modernbeta.world.cavebiome.provider.climate.ClimateNoiseRules;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -23,7 +23,7 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveCl
     
     private final boolean useNoise;
     private final CaveClimateSampler climateSampler;
-    private final ClimateNoiseRules noiseRanges;
+    private final NoiseRules<Identifier> noiseRanges;
     
     public SingleCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
@@ -44,7 +44,7 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveCl
         
         this.useNoise = NbtUtil.readBoolean(NbtTags.USE_NOISE, settings, false);
         this.climateSampler = new BaseCaveClimateSampler(seed, verticalNoiseScale, horizontalNoiseScale);
-        this.noiseRanges = new ClimateNoiseRules.Builder()
+        this.noiseRanges = new NoiseRules.Builder<Identifier>()
             .add(0.0, 1.0, biomeId)
             .build();
     }

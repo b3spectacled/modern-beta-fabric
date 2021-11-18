@@ -7,8 +7,8 @@ import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.util.noise.NoiseRules;
 import com.bespectacled.modernbeta.world.cavebiome.provider.climate.BaseCaveClimateSampler;
-import com.bespectacled.modernbeta.world.cavebiome.provider.climate.ClimateNoiseRules;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -21,7 +21,7 @@ public class VanillaCaveBiomeProvider extends CaveBiomeProvider implements CaveC
     private static final Identifier DRIPSTONE_CAVES = BiomeKeys.DRIPSTONE_CAVES.getValue();
     
     private final CaveClimateSampler climateSampler;
-    private final ClimateNoiseRules noiseRanges;
+    private final NoiseRules<Identifier> noiseRanges;
     
     public VanillaCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
@@ -39,7 +39,7 @@ public class VanillaCaveBiomeProvider extends CaveBiomeProvider implements CaveC
         );
         
         this.climateSampler = new BaseCaveClimateSampler(seed, verticalNoiseScale, horizontalNoiseScale);
-        this.noiseRanges = new ClimateNoiseRules.Builder()
+        this.noiseRanges = new NoiseRules.Builder<Identifier>()
             .add(0.4, 0.8, LUSH_CAVES)
             .add(-0.8, -0.4, DRIPSTONE_CAVES)
             .build();

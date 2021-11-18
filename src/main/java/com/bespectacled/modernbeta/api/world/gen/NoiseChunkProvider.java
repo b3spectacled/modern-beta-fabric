@@ -49,7 +49,6 @@ import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.SlideConfig;
 import net.minecraft.world.gen.random.AbstractRandom;
 import net.minecraft.world.gen.random.RandomDeriver;
-import net.minecraft.world.tick.OrderedTick;
 
 public abstract class NoiseChunkProvider extends BaseChunkProvider {
     protected final int verticalNoiseResolution;   // Number of blocks in a vertical subchunk
@@ -216,6 +215,12 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.generateAquifers
         );
         
+        // Block Source
+        AbstractRandom blockSourceRandom = randomProvider.create(this.seed);
+        this.deepslateSource = this.generateDeepslate ? 
+            new LayerTransitionBlockSource(blockSourceRandom.createRandomDeriver(), BlockStates.DEEPSLATE, null, 0, 8) :
+            (sampler, x, y, z) -> null;
+        
         // Samplers
         this.noiseCaveSampler = new NoiseCaveSampler(noiseRegistry, randomDeriver, this.noiseMinY);
         
@@ -223,7 +228,9 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             noiseRegistry, 
             randomDeriver,
             this.horizontalNoiseResolution,
-            this.verticalNoiseResolution
+            this.verticalNoiseResolution,
+            this.deepslateSource,
+            chunkGenerator.getChunkProviderType()
         );
         
         this.noodleCaveSampler = new NoodleCaveSampler(
@@ -232,12 +239,6 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.horizontalNoiseResolution,
             this.verticalNoiseResolution
         );
-        
-        // Block Source
-        AbstractRandom blockSourceRandom = randomProvider.create(this.seed);
-        this.deepslateSource = this.generateDeepslate ? 
-            new LayerTransitionBlockSource(blockSourceRandom.createRandomDeriver(), BlockStates.DEEPSLATE, null, 0, 8) :
-            (sampler, x, y, z) -> null;
     }
 
     /**

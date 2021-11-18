@@ -1,13 +1,16 @@
 package com.bespectacled.modernbeta.world.gen.sampler;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.mixin.MixinVeinTypeAccessor;
+import com.bespectacled.modernbeta.api.registry.Registries;
+import com.bespectacled.modernbeta.api.world.gen.OreVeinType;
+import com.bespectacled.modernbeta.util.noise.NoiseRules;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.NoiseColumnSampler;
+import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.NoiseHelper;
 import net.minecraft.world.gen.noise.NoiseParametersKeys;
 import net.minecraft.world.gen.random.AbstractRandom;
@@ -24,11 +27,16 @@ public class OreVeinSampler {
     private final int horizontalNoiseResolution;
     private final int verticalNoiseResolution;
     
+    private final BlockSource blockSource;
+    private final NoiseRules<OreVeinType> oreVeinRules;
+    
     public OreVeinSampler(
         Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry,
         RandomDeriver randomDeriver,
         int horizontalNoiseResolution,
-        int verticalNoiseResolution
+        int verticalNoiseResolution,
+        BlockSource blockSource,
+        String chunkProviderType
     ) {
         this.oreVeininessNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEININESS);
         this.oreVeinFirstNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEIN_A);
@@ -39,6 +47,9 @@ public class OreVeinSampler {
         
         this.horizontalNoiseResolution = horizontalNoiseResolution;
         this.verticalNoiseResolution = verticalNoiseResolution;
+        
+        this.blockSource = blockSource;
+        this.oreVeinRules = Registries.ORE_VEIN_RULES.get(chunkProviderType);
     }
     
     public void sampleOreFrequencyNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
@@ -56,14 +67,18 @@ public class OreVeinSampler {
     public BlockState sample(int x, int y, int z, double oreFrequencyNoise, double firstOrePlacementNoise, double secondOrePlacementNoise) {
         AbstractRandom random = this.orePosRandomDeriver.createRandom(x, y, z);
         
-        NoiseColumnSampler.VeinType veinType = this.getVeinType(oreFrequencyNoise, y);
+        OreVeinType veinType = this.getVeinType(oreFrequencyNoise, y);
         
         if (veinType == null) 
             return null;
         
-        BlockState oreBlock = ((MixinVeinTypeAccessor)(Object)veinType).getOre();
-        BlockState rawBlock = ((MixinVeinTypeAccessor)(Object)veinType).getRawBlock();
-        BlockState stoneBlock = ((MixinVeinTypeAccessor)(Object)veinType).getStone();
+        // Sample block source to get correct ore and filler block type
+        BlockState stoneBlock = this.blockSource.apply(null, x, y, z);
+        boolean inDeepslate = stoneBlock != null && stoneBlock.isOf(Blocks.DEEPSLATE);
+
+        BlockState fillerBlock = inDeepslate ? veinType.deepslateFillerBlock() : veinType.stoneFillerBlock();
+        BlockState oreBlock = inDeepslate ? veinType.deepslateOreBlock() : veinType.stoneOreBlock();
+        BlockState rawBlock = veinType.rawBlock();
         
         if (random.nextFloat() > 0.7f)
             return null;
@@ -75,7 +90,7 @@ public class OreVeinSampler {
                 return random.nextFloat() < 0.02f ? rawBlock : oreBlock;
             }
             
-            return stoneBlock;
+            return fillerBlock;
         }
         
         return null;
@@ -103,11 +118,15 @@ public class OreVeinSampler {
         }
     }
 
-    private NoiseColumnSampler.VeinType getVeinType(double oreFrequencyNoise, int y) {
-        NoiseColumnSampler.VeinType veinType = oreFrequencyNoise > 0.0 ? NoiseColumnSampler.VeinType.COPPER : NoiseColumnSampler.VeinType.IRON;
+    private OreVeinType getVeinType(double oreFrequencyNoise, int y) {
+        OreVeinType veinType = this.oreVeinRules.sample(oreFrequencyNoise);
         
-        int oreMinY = ((MixinVeinTypeAccessor)(Object)veinType).getMinY();
-        int oreMaxY = ((MixinVeinTypeAccessor)(Object)veinType).getMaxY();
+        if (veinType == null) {
+            return null;
+        }
+        
+        int oreMinY = veinType.minY();
+        int oreMaxY = veinType.maxY();
         
         int upperY = oreMaxY - y;
         int lowerY = y - oreMinY;

@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.noise;
+package com.bespectacled.modernbeta.util.noise;
 
 public final class PerlinOctaveNoiseCombined {
     private PerlinOctaveNoise noiseGenerator0;

@@ -82,6 +82,7 @@ public class ModernBeta implements ModInitializer {
         ModernBetaBuiltInProviders.registerBiomeSettings();
         ModernBetaBuiltInProviders.registerCaveBiomeProvider();
         ModernBetaBuiltInProviders.registerCaveBiomeSettings();
+        ModernBetaBuiltInProviders.registerOreVeinRules();
         
         // Register client-only stuff, i.e. GUI, block colors, etc.
         if (CLIENT_ENV) {

@@ -4,10 +4,10 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.ClimateChunk;
 import com.bespectacled.modernbeta.util.mersenne.MTRandom;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 
 import net.minecraft.util.math.MathHelper;
 

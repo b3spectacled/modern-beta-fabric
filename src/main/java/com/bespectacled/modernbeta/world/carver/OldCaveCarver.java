@@ -449,6 +449,7 @@ public class OldCaveCarver extends CaveCarver {
     static {
         ALWAYS_CARVABLE_BLOCKS = ImmutableSet.<Block>of(
             Blocks.STONE,
+            Blocks.COBBLESTONE,
             Blocks.DIRT,
             Blocks.GRASS_BLOCK,
             Blocks.DEEPSLATE, 
@@ -456,7 +457,13 @@ public class OldCaveCarver extends CaveCarver {
             Blocks.GRANITE, 
             Blocks.IRON_ORE, 
             Blocks.DEEPSLATE_IRON_ORE,
-            Blocks.COPPER_ORE
+            Blocks.RAW_IRON_BLOCK,
+            Blocks.COPPER_ORE,
+            Blocks.DEEPSLATE_COPPER_ORE,
+            Blocks.RAW_COPPER_BLOCK,
+            Blocks.COAL_ORE,
+            Blocks.DEEPSLATE_COAL_ORE,
+            Blocks.COAL_BLOCK
         );
     }
 }

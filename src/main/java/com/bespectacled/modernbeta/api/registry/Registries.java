@@ -8,9 +8,11 @@ import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.OreVeinType;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.util.function.TriFunction;
+import com.bespectacled.modernbeta.util.noise.NoiseRules;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.client.gui.screen.Screen;
@@ -28,6 +30,7 @@ public final class Registries {
     public static final Registry<Supplier<NbtCompound>> CHUNK_SETTINGS;
     public static final Registry<WorldProvider> WORLD;
     public static final Registry<BiFunction<WorldScreen, WorldSetting, Screen>> WORLD_SCREEN;
+    public static final Registry<NoiseRules<OreVeinType>> ORE_VEIN_RULES;
     
     static {
         BIOME = new Registry<>("BIOME");
@@ -40,5 +43,6 @@ public final class Registries {
         CHUNK_SETTINGS = new Registry<>("CHUNK_SETTINGS");
         WORLD = new Registry<>("WORLD");
         WORLD_SCREEN = new Registry<>("WORLD_SCREEN");
+        ORE_VEIN_RULES = new Registry<>("ORE_VEIN_RULES");
     }
 }

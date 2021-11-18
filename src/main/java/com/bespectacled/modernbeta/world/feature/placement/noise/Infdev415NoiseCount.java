@@ -2,16 +2,16 @@ package com.bespectacled.modernbeta.world.feature.placement.noise;
 
 import java.util.Random;
 
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 
-public class Infdev415NoisePlacer implements OldNoisePlacer {
+public class Infdev415NoiseCount implements OldNoiseCount {
     private final PerlinOctaveNoise noiseSampler;
     
-    public Infdev415NoisePlacer(Random random) {
+    public Infdev415NoiseCount(Random random) {
         this.noiseSampler = new PerlinOctaveNoise(random, 5, true);
     }
     
-    public Infdev415NoisePlacer(PerlinOctaveNoise noiseSampler) {
+    public Infdev415NoiseCount(PerlinOctaveNoise noiseSampler) {
         this.noiseSampler = noiseSampler;
     }
 
