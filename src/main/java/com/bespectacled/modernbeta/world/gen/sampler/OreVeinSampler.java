@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.world.gen.sampler;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
-import com.bespectacled.modernbeta.api.world.gen.OreVeinType;
 import com.bespectacled.modernbeta.util.noise.NoiseRules;
 
 import net.minecraft.block.BlockState;

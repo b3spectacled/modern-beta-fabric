@@ -1,6 +1,5 @@
 package com.bespectacled.modernbeta.world.gen.sampler;
 
-import com.bespectacled.modernbeta.api.world.gen.OreVeinType;
 import com.bespectacled.modernbeta.util.noise.NoiseRules;
 
 public class OreVeinRules {

@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.api.world.gen;
+package com.bespectacled.modernbeta.world.gen.sampler;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

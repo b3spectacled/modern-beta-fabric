@@ -75,18 +75,6 @@ public final class WorldProvider {
         return this.showGenerateDeepslate;
     }
     
-    /*
-    public WorldScreen createWorldScreen(
-        CreateWorldScreen parent,
-        WorldSettings worldSettings,
-        Consumer<WorldSettings> consumer
-    ) {
-        return Registries.WORLD_SCREEN
-            .getOrDefault(this.worldScreen)
-            .apply(parent, worldSettings, consumer);
-    }
-    */
-    
     @Override
     public String toString() {
         return this.chunkProvider;
