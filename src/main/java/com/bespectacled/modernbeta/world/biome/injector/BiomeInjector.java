@@ -70,35 +70,12 @@ public class BiomeInjector {
         int startBiomeX = chunkPos.getStartX() >> 2;
         int startBiomeZ = chunkPos.getStartZ() >> 2;
         
-        int[] topHeights = new int[16];
-        int[] minHeights = new int[16];
-        BlockState[] states = new BlockState[16];
-        
         /*
-         * Collect the following:
+         * Collect the following for an x/z coordinate:
          * -> Height at local biome coordinate.
          * -> Minimum height of area around local biome coordinate.
          * -> Blockstate at height of local biome coordinate.
          */
-        for (int localBiomeX = 0; localBiomeX < 4; ++localBiomeX) {
-            for (int localBiomeZ = 0; localBiomeZ < 4; ++localBiomeZ) {
-                int ndx = localBiomeX + localBiomeZ * 4;
-                
-                int biomeX = localBiomeX + startBiomeX;
-                int biomeZ = localBiomeZ + startBiomeZ;
-                
-                int x = (biomeX << 2) + 2;
-                int z = (biomeZ << 2) + 2;
-                
-                int topHeight = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-                int minHeight = this.sampleMinHeightAround(biomeX, biomeZ, topHeight);
-                BlockState state = chunk.getBlockState(pos.set(x, topHeight, z));
-                
-                topHeights[ndx] = topHeight;
-                minHeights[ndx] = minHeight;
-                states[ndx] = state;
-            }
-        }
         
         // Replace biomes from biome container
         for (int sectionY = 0; sectionY < chunk.countVerticalSections(); ++sectionY) {
@@ -111,17 +88,18 @@ public class BiomeInjector {
                 
                 for (int localBiomeX = 0; localBiomeX < 4; ++localBiomeX) {
                     for (int localBiomeZ = 0; localBiomeZ < 4; ++localBiomeZ) {
-                        int ndx = localBiomeX + localBiomeZ * 4;
+                        int biomeX = localBiomeX + startBiomeX;
+                        int biomeZ = localBiomeZ + startBiomeZ;
                         
-                        int topHeight = topHeights[ndx];
-                        int minHeight = minHeights[ndx];
-                        BlockState state = states[ndx];
+                        int x = (biomeX << 2) + 2;
+                        int z = (biomeZ << 2) + 2;
+                        
+                        int topHeight = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+                        int minHeight = this.sampleMinHeightAround(biomeX, biomeZ, topHeight);
+                        BlockState state = chunk.getBlockState(pos.set(x, topHeight, z));
                         
                         for (int localBiomeY = 0; localBiomeY < 4; ++localBiomeY) {
-                            int biomeX = localBiomeX + startBiomeX;
                             int biomeY = localBiomeY + yOffset;
-                            int biomeZ = localBiomeZ + startBiomeZ;
-
                             int y = (localBiomeY + yOffset) << 2;
                             
                             Biome biome = this.test(y, topHeight, minHeight, state, biomeX, biomeY, biomeZ);
