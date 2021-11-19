@@ -20,7 +20,7 @@ public class MixinSpawnLocating {
      * even after finding initial spawn point.
      */
     @Inject(method = "findOverworldSpawn", at = @At("HEAD"), cancellable = true)
-    private static void injectFindOverworldSpawn(ServerWorld world, int x, int z, boolean validSpawnNeeded, CallbackInfoReturnable<BlockPos> info) {
+    private static void injectFindOverworldSpawnHeight(ServerWorld world, int x, int z, boolean validSpawnNeeded, CallbackInfoReturnable<BlockPos> info) {
         ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
         
         if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator && 

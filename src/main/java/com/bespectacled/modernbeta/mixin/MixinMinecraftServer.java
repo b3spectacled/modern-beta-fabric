@@ -1,10 +1,12 @@
 package com.bespectacled.modernbeta.mixin;
 
+import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
@@ -34,6 +36,10 @@ public class MixinMinecraftServer {
         if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
             ((IntRuleAccessor)world.getGameRules().get(GameRules.SPAWN_RADIUS)).setValue(0); // Ensure a centered spawn
             spawnPos = oldChunkGenerator.getChunkProvider().locateSpawn().orElse(spawnPos);
+            
+            if (spawnPos != null && ModernBeta.DEV_ENV) {
+                ModernBeta.log(Level.INFO, String.format("Spawning at %d/%d/%d", spawnPos.getX(), spawnPos.getY(), spawnPos.getZ()));
+            }
             
             if (spawnPos != null && oldChunkGenerator.getChunkProvider() instanceof IndevChunkProvider indevChunkProvider) {
                 // Generate Indev house

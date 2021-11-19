@@ -9,11 +9,12 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
-import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
@@ -77,10 +78,11 @@ public class BeachSpawnLocator implements SpawnLocator {
         Biome biome = (this.chunkProvider.getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) ? 
             oldBiomeSource.getBiomeForSurfaceGen(x, y, z) :
             this.chunkProvider.getBiomeForNoiseGen(x >> 2, y >> 2, z >> 2);
+        BlockState topMaterial = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
         
         return 
-            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial().equals(BlockStates.SAND) && y >= seaLevel - 1) || 
-            (this.beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
+                (topMaterial.isOf(Blocks.SAND) && y >= seaLevel) || 
+                (this.beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) > 0.0 && y >= seaLevel && y <= seaLevel + 2);
     }
 
 }
