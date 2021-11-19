@@ -79,8 +79,8 @@ public class BeachSpawnLocator implements SpawnLocator {
             this.chunkProvider.getBiome(x >> 2, y >> 2, z >> 2, null);
         
         return 
-            (biome.getCategory() == Category.DESERT && y >= seaLevel - 1) || 
-            (this.beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
+            (biome.getCategory() == Category.DESERT && y >= seaLevel) || 
+            (this.beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) > 0.0 && y >= seaLevel && y <= seaLevel + 2);
     }
 
 }

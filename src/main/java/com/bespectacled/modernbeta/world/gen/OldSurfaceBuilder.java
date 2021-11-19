@@ -6,9 +6,11 @@ import java.util.stream.Stream;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.compat.CompatBiomes;
 import com.bespectacled.modernbeta.mixin.MixinSurfaceBuilderAccessor;
 import com.bespectacled.modernbeta.util.BlockColumnHolder;
+import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -25,6 +27,7 @@ import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.NoiseColumnSampler;
+import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
 import net.minecraft.world.gen.random.ChunkRandom.RandomProvider;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
@@ -39,6 +42,8 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         ).toList()
     );
     
+    private final ChunkProvider chunkProvider;
+    
     public OldSurfaceBuilder(
         NoiseColumnSampler columnSampler, 
         Registry<NoiseParameters> noiseRegistry, 
@@ -49,6 +54,8 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         ChunkProvider chunkProvider
     ) {
         super(columnSampler, noiseRegistry, blockState, seaLevel, seed, randomProvider);
+        
+        this.chunkProvider = chunkProvider;
     }
     
     /*
@@ -165,5 +172,14 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
     
     private MixinSurfaceBuilderAccessor injectAccessor(SurfaceBuilder surfaceBuilder) {
         return (MixinSurfaceBuilderAccessor)surfaceBuilder;
+    }
+    
+    @Override
+    protected int method_39553(ChunkNoiseSampler noiseSampler, int x, int z) {
+        int topY = (this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) ?
+            noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
+            this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        
+        return topY - 8;
     }
 }
