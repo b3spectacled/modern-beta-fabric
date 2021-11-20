@@ -20,6 +20,7 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
+import com.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import com.bespectacled.modernbeta.world.structure.OceanShrineStructure;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
 import com.google.common.collect.Sets;
@@ -338,13 +339,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             this.settings.get().getDefaultFluid() :
             BlockStates.AIR;
         
-        Biome biome = this.biomeInjector.test(
-            y,
-            topHeight,
-            minHeight,
-            state,
-            biomeX, biomeY, biomeZ
-        );
+        BiomeInjectionContext context = new BiomeInjectionContext(topHeight, minHeight, state).setY(y);
+        Biome biome = this.biomeInjector.sample(context, biomeX, biomeY, biomeZ);
         
         return biome != null ? biome : this.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.bespectacled.modernbeta.util.function.TriPredicate;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.world.biome.Biome;
 
@@ -16,9 +14,9 @@ public class BiomeInjectionRules {
         this.rules = rules;
     }
     
-    public Biome test(int y, int topHeight, int minHeight, BlockState blockState, int biomeX, int biomeY, int biomeZ) {
+    public Biome test(BiomeInjectionContext context, int biomeX, int biomeY, int biomeZ) {
         for (BiomeInjectionRule rule : this.rules) {
-            Biome biome = rule.test(y, topHeight, minHeight, blockState).apply(biomeX, biomeY, biomeZ);
+            Biome biome = rule.test(context).apply(biomeX, biomeY, biomeZ);
             
             if (biome != null)
                 return biome;
@@ -34,12 +32,8 @@ public class BiomeInjectionRules {
             this.rules = new ArrayList<>();
         }
         
-        public Builder add(
-            TriPredicate<Integer, Integer, Integer> heightRule,
-            Predicate<BlockState> stateRule,
-            BiomeInjectionResolver biomeFunc
-        ) {
-            this.rules.add(new BiomeInjectionRule(heightRule, stateRule, biomeFunc));
+        public Builder add(Predicate<BiomeInjectionContext> rule, BiomeInjectionResolver resolver) {
+            this.rules.add(new BiomeInjectionRule(rule, resolver));
             
             return this;
         }
@@ -50,25 +44,45 @@ public class BiomeInjectionRules {
     }
     
     private static class BiomeInjectionRule {
-        private final TriPredicate<Integer, Integer, Integer> heightRule;
-        private final Predicate<BlockState> stateRule;
+        private final Predicate<BiomeInjectionContext> rule;
         private final BiomeInjectionResolver biomeResolver;
         
-        public BiomeInjectionRule(
-            TriPredicate<Integer, Integer, Integer> heightRule,
-            Predicate<BlockState> stateRule, 
-            BiomeInjectionResolver biomeFunc
-        ) {
-            this.heightRule = heightRule;
-            this.stateRule = stateRule;
+        public BiomeInjectionRule(Predicate<BiomeInjectionContext> rule, BiomeInjectionResolver biomeFunc) {
+            this.rule = rule;
             this.biomeResolver = biomeFunc;
         }
         
-        public BiomeInjectionResolver test(int y, int topHeight, int minHeight, BlockState blockState) {
-            if (this.heightRule.test(y, topHeight, minHeight) && this.stateRule.test(blockState))
+        public BiomeInjectionResolver test(BiomeInjectionContext context) {
+            if (this.rule.test(context))
                 return this.biomeResolver;
             
             return BiomeInjectionResolver.DEFAULT;
+        }
+    }
+    
+    
+    public static class BiomeInjectionContext {
+        protected final int topHeight;
+        protected final int minHeight;
+        protected final BlockState blockState;
+        
+        private int y;
+        
+        public BiomeInjectionContext(int topHeight, int minHeight, BlockState blockState) {
+            this.topHeight = topHeight;
+            this.minHeight = minHeight;
+            this.blockState = blockState;
+            this.y = topHeight;
+        }
+        
+        public BiomeInjectionContext setY(int y) {
+            this.y = y;
+            
+            return this;
+        }
+        
+        public int getY() {
+            return this.y;
         }
     }
 }

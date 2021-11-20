@@ -8,8 +8,8 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
-import com.bespectacled.modernbeta.util.function.TriPredicate;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
@@ -29,11 +29,8 @@ public class BiomeInjector {
     public static final int CAVE_START_OFFSET = 8;
     public static final int CAVE_END_OFFSET = 16;
     
-    public static final TriPredicate<Integer, Integer, Integer> CAVE_BIOME_HEIGHT_PREDICATE = 
-        (y, topHeight, minHeight) -> y + CAVE_START_OFFSET < minHeight;
-
-    private static final Predicate<BlockState> OCEAN_STATE_PREDICATE = blockState -> blockState.isOf(Blocks.WATER);
-    private static final Predicate<BlockState> NOOP_STATE_PREDICATE = blockState -> true;
+    public static final Predicate<BiomeInjectionContext> CAVE_PREDICATE = context ->
+        context.getY() + CAVE_START_OFFSET < context.minHeight;
     
     private final OldChunkGenerator oldChunkGenerator;
     private final OldBiomeSource oldBiomeSource;
@@ -46,18 +43,20 @@ public class BiomeInjector {
         this.oldBiomeSource = oldBiomeSource;
         this.chunkProvider = oldChunkGenerator.getChunkProvider();
         
-        TriPredicate<Integer, Integer, Integer> oceanHeightPredicate;
-        TriPredicate<Integer, Integer, Integer> deepOceanHeightPredicate;
+        Predicate<BiomeInjectionContext> oceanPredicate = context -> 
+            this.atOceanDepth(context.topHeight, OCEAN_MIN_DEPTH) && 
+            context.blockState.isOf(Blocks.WATER);
         
-        oceanHeightPredicate = (y, topHeight, minHeight) -> this.atOceanDepth(topHeight, OCEAN_MIN_DEPTH);
-        deepOceanHeightPredicate = (y, topHeight, minHeight) -> this.atOceanDepth(topHeight, DEEP_OCEAN_MIN_DEPTH);
-        
+        Predicate<BiomeInjectionContext> deepOceanPredicate = context ->
+            this.atOceanDepth(context.topHeight, DEEP_OCEAN_MIN_DEPTH) && 
+            context.blockState.isOf(Blocks.WATER);
+            
         BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder()
-            .add(CAVE_BIOME_HEIGHT_PREDICATE, NOOP_STATE_PREDICATE, this.oldBiomeSource::getCaveBiome);
+            .add(CAVE_PREDICATE, this.oldBiomeSource::getCaveBiome);
         
         if (oldChunkGenerator.generatesOceans()) {
-            builder.add(deepOceanHeightPredicate, OCEAN_STATE_PREDICATE, this.oldBiomeSource::getDeepOceanBiome);
-            builder.add(oceanHeightPredicate, OCEAN_STATE_PREDICATE, this.oldBiomeSource::getOceanBiome);
+            builder.add(deepOceanPredicate, this.oldBiomeSource::getDeepOceanBiome);
+            builder.add(oceanPredicate, this.oldBiomeSource::getOceanBiome);
         }
         
         this.rules = builder.build();
@@ -98,11 +97,14 @@ public class BiomeInjector {
                         int minHeight = this.sampleMinHeightAround(biomeX, biomeZ, topHeight);
                         BlockState state = chunk.getBlockState(pos.set(x, topHeight, z));
                         
+                        BiomeInjectionContext context = new BiomeInjectionContext(topHeight, minHeight, state);
+                        
                         for (int localBiomeY = 0; localBiomeY < 4; ++localBiomeY) {
                             int biomeY = localBiomeY + yOffset;
                             int y = (localBiomeY + yOffset) << 2;
                             
-                            Biome biome = this.test(y, topHeight, minHeight, state, biomeX, biomeY, biomeZ);
+                            context.setY(y);
+                            Biome biome = this.sample(context, biomeX, biomeY, biomeZ);
                             
                             if (biome != null) {
                                 container.swapUnsafe(localBiomeX, localBiomeY, localBiomeZ, biome);
@@ -121,8 +123,8 @@ public class BiomeInjector {
         }
     }
     
-    public Biome test(int y, int topHeight, int minHeight, BlockState blockState, int biomeX, int biomeY, int biomeZ) {
-        return this.rules.test(y, topHeight, minHeight, blockState, biomeX, biomeY, biomeZ);
+    public Biome sample(BiomeInjectionContext context, int biomeX, int biomeY, int biomeZ) {
+        return this.rules.test(context, biomeX, biomeY, biomeZ);
     }
     
     private boolean atOceanDepth(int topHeight, int oceanDepth) {

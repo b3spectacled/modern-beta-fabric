@@ -14,8 +14,10 @@ import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import com.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
+import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import com.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
@@ -102,7 +104,9 @@ public class MixinDebugHud {
                 }
 
                 int minHeight = oldChunkGenerator.getBiomeInjector().sampleMinHeightAround(biomeX, biomeZ, Integer.MAX_VALUE);
-                boolean canPlaceCave = BiomeInjector.CAVE_BIOME_HEIGHT_PREDICATE.test(y, -1, minHeight);
+                BiomeInjectionContext context = new BiomeInjectionContext(-1, minHeight, BlockStates.AIR).setY(y);
+                
+                boolean canPlaceCave = BiomeInjector.CAVE_PREDICATE.test(context);
                 
                 info.getReturnValue().add(
                     String.format(
