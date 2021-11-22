@@ -12,7 +12,6 @@ import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.client.gui.WorldSettings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
-import com.bespectacled.modernbeta.client.gui.screen.world.InfClimateWorldScreen;
 import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
@@ -269,14 +268,9 @@ public class WorldScreen extends GUIScreen {
         boolean isClimateBiomeProvider = Registries.BIOME
             .get(biomeType)
             .apply(0L, new NbtCompound(), BuiltinRegistries.BIOME) instanceof ClimateBiomeProvider;
-        boolean isClimateChunkProvider = Registries.WORLD_SCREEN
-            .getOrDefault(this.worldProvider.getWorldScreen())
-            .apply(this, WorldSetting.CHUNK) instanceof InfClimateWorldScreen;
         
-        if (isClimateBiomeProvider && isClimateChunkProvider)
+        if (isClimateBiomeProvider && this.worldSettings.hasSetting(WorldSetting.CHUNK, NbtTags.SAMPLE_CLIMATE))
             this.worldSettings.putChange(WorldSetting.CHUNK, NbtTags.SAMPLE_CLIMATE, NbtByte.of(isSameBiomeType));
-        else
-            this.worldSettings.clearChange(WorldSetting.CHUNK, NbtTags.SAMPLE_CLIMATE);
     }
     
     private String settingsToString(WorldSetting setting) {
