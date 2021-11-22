@@ -3,14 +3,22 @@ package com.bespectacled.modernbeta.client.gui;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.bespectacled.modernbeta.util.NbtTags;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
 public final class WorldSettings {
     public enum WorldSetting {
-        CHUNK,
-        BIOME,
-        CAVE_BIOME
+        CHUNK(NbtTags.WORLD_TYPE),
+        BIOME(NbtTags.BIOME_TYPE),
+        CAVE_BIOME(NbtTags.CAVE_BIOME_TYPE);
+        
+        public final String tag;
+        
+        private WorldSetting(String tag) {
+            this.tag = tag;
+        }
     }
     
     private final Map<WorldSetting, Settings> settings = new LinkedHashMap<>();
@@ -39,6 +47,10 @@ public final class WorldSettings {
     
     public void putChanges(WorldSetting settingsKey, NbtCompound compound) {
         this.settings.get(settingsKey).putChanges(compound);
+    }
+    
+    public void clearChange(WorldSetting settingsKey, String key) {
+        this.settings.get(settingsKey).clearChange(key);
     }
     
     public void clearChanges(WorldSetting settingsKey) {
