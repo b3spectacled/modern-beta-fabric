@@ -64,6 +64,15 @@ public class Settings {
         return false;
     }
     
+    public boolean clearChange(String key) {
+        if (this.changes.containsKey(key)) {
+            this.changes.remove(key);
+            return true;
+        }
+        
+        return false;
+    }
+    
     public NbtCompound getNbt() {
         NbtCompound compound = new NbtCompound();
         

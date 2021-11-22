@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.client.gui.screen;
 
+import java.util.Set;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBetaBuiltInWorldProviders;
@@ -11,6 +12,7 @@ import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.client.gui.WorldSettings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
+import com.bespectacled.modernbeta.client.gui.screen.world.InfClimateWorldScreen;
 import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
@@ -26,6 +28,7 @@ import net.minecraft.nbt.NbtByte;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
@@ -139,7 +142,8 @@ public class WorldScreen extends GUIScreen {
             "",
             worldSettingsScreen != null ?
                 widget -> this.client.setScreen(worldSettingsScreen) :
-                null
+                null,
+            () -> this.client.textRenderer.wrapLines(new LiteralText(this.settingsToString(WorldSetting.CHUNK)), 250)
         );
         
         Screen biomeSettingsScreen = Registries.BIOME_SCREEN
@@ -155,7 +159,8 @@ public class WorldScreen extends GUIScreen {
                 "",
             biomeSettingsScreen != null ? 
                 widget -> this.client.setScreen(biomeSettingsScreen) : 
-                null
+                null,
+            () -> this.client.textRenderer.wrapLines(new LiteralText(this.settingsToString(WorldSetting.BIOME)), 250)
         );
 
         this.addDualOption(worldTypeOption, worldSettingsOption);
@@ -216,11 +221,52 @@ public class WorldScreen extends GUIScreen {
         // Replace sampleClimate option depending on if climate sampler matches biome type
         String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
         boolean isSameBiomeType = worldProvider.getBiomeProvider().equals(biomeType);
-        boolean climateSampleable = Registries.BIOME
+        boolean isClimateBiomeProvider = Registries.BIOME
             .get(biomeType)
             .apply(0L, new NbtCompound(), BuiltinRegistries.BIOME) instanceof ClimateBiomeProvider;
+        boolean isClimateChunkProvider = Registries.WORLD_SCREEN
+            .getOrDefault(this.worldProvider.getWorldScreen())
+            .apply(this, WorldSetting.CHUNK) instanceof InfClimateWorldScreen;
         
-        if (climateSampleable)
+        if (isClimateBiomeProvider && isClimateChunkProvider)
             this.worldSettings.putChange(WorldSetting.CHUNK, NbtTags.SAMPLE_CLIMATE, NbtByte.of(isSameBiomeType));
+        else
+            this.worldSettings.clearChange(WorldSetting.CHUNK, NbtTags.SAMPLE_CLIMATE);
+    }
+    
+    private String settingsToString(WorldSetting setting) {
+        NbtCompound settings = this.worldSettings.getNbt(setting);
+        
+        StringBuilder builder = new StringBuilder().append("Settings\n");
+        Set<String> keys = settings.getKeys();
+        
+        int row = 0;
+        int cutoff = 5;
+        
+        for (String key : keys) {
+            // Do not print main tag
+            if (key.equals(setting.tag)) {
+                row++;
+                continue;
+            }
+            
+            if (row >= cutoff) {
+                builder.append(String.format("... and %d more", keys.size() - cutoff - 1));
+                break;
+            }
+
+            NbtElement element = settings.get(key);
+            String elementAsString = (element instanceof NbtByte nbtByte) ?
+                Boolean.valueOf(nbtByte.byteValue() == 1).toString():
+                element.toString();
+            
+            builder.append(String.format("* %s: %s", key, elementAsString));
+            if (row < keys.size() - 1)
+                builder.append("\n");
+                
+            row++;
+        }
+        
+        return builder.toString();
     }
 }
