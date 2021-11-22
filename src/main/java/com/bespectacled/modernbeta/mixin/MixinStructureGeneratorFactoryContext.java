@@ -10,21 +10,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
-import net.minecraft.class_6834;
+import net.minecraft.structure.StructureGeneratorFactory;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
-@Mixin(class_6834.class_6835.class)
-public class Mixin_class_6835 {
+@Mixin(StructureGeneratorFactory.Context.class)
+public class MixinStructureGeneratorFactoryContext {
     @Shadow private ChunkGenerator comp_306;
     @Shadow private ChunkPos comp_309;
     @Shadow private HeightLimitView comp_311;
     @Shadow private Predicate<Biome> comp_312;
     
-    @Inject(method = "method_39848", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "isBiomeValid", at = @At("HEAD"), cancellable = true)
     private void injectCheckForBiomeOnTop(Heightmap.Type heightmap, CallbackInfoReturnable<Boolean> info) {
         if (this.comp_306 instanceof OldChunkGenerator oldChunkGenerator) {
             int x = this.comp_309.getCenterX();

@@ -99,7 +99,7 @@ public abstract class MixinClientWorld implements OldClientWorld {
     }
     
     @ModifyVariable(
-        method = "method_23777",
+        method = "getSkyColor",
         at = @At("HEAD"),
         index = 1
     )
@@ -108,7 +108,7 @@ public abstract class MixinClientWorld implements OldClientWorld {
     }
     
     @ModifyVariable(
-        method = "method_23777",
+        method = "getSkyColor",
         at = @At(
             value = "INVOKE_ASSIGN",  
             target = 

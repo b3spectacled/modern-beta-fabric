@@ -71,10 +71,10 @@ public class AquiferSamplerProvider {
         int verticalNoiseResolution,
         boolean generateAquifers
     ) {
-        this.aquiferBarrierNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.AQUIFER_BARRIER);
-        this.aquiferFluidLevelFloodedNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.AQUIFER_FLUID_LEVEL_FLOODEDNESS);
-        this.aquiferLavaNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.AQUIFER_LAVA);
-        this.aquiferLevelSpreadNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.AQUIFER_FLUID_LEVEL_SPREAD);
+        this.aquiferBarrierNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.AQUIFER_BARRIER);
+        this.aquiferFluidLevelFloodedNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.AQUIFER_FLUID_LEVEL_FLOODEDNESS);
+        this.aquiferLavaNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.AQUIFER_LAVA);
+        this.aquiferLevelSpreadNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.AQUIFER_FLUID_LEVEL_SPREAD);
 
         this.aquiferRandomDeriver = randomDeriver.createRandom(ModernBeta.createId("aquifer")).createRandomDeriver();
         
@@ -112,8 +112,7 @@ public class AquiferSamplerProvider {
             this.aquiferFluidLevelFloodedNoise,
             this.aquiferLevelSpreadNoise,
             this.aquiferLavaNoise, 
-            this.aquiferRandomDeriver, 
-            this.columnSampler, 
+            this.aquiferRandomDeriver,
             noiseMinY * this.verticalNoiseResolution, 
             noiseTopY * this.verticalNoiseResolution, 
             this.fluidLevelSampler

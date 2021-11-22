@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
-import net.minecraft.class_6834;
+import net.minecraft.structure.StructureGeneratorFactory;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
@@ -18,7 +18,7 @@ import net.minecraft.world.gen.feature.OceanMonumentFeature;
 @Mixin(OceanMonumentFeature.class)
 public class MixinOceanMonumentFeature {
     @Inject(method = "method_28642", at = @At("HEAD"), cancellable = true) 
-    private static void injectShouldStartAt(class_6834.class_6835<DefaultFeatureConfig> structureInfo, CallbackInfoReturnable<Boolean> info) {
+    private static void injectShouldStartAt(StructureGeneratorFactory.Context<DefaultFeatureConfig> structureInfo, CallbackInfoReturnable<Boolean> info) {
         ChunkGenerator chunkGenerator = structureInfo.chunkGenerator();
         
         if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {

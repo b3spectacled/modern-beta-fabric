@@ -33,7 +33,7 @@ public class OldSurfaceRules {
         MaterialRules.MaterialRule desertRule = MaterialRules.condition(desertCondition, sandRule);
         
         MaterialRules.MaterialRule desertWithDepthCondition = MaterialRules.condition(MaterialRules.waterWithStoneDepth(-6, -1), desertRule);
-        MaterialRules.MaterialRule runDepthCondition = MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR_WITH_RUN_DEPTH, desertWithDepthCondition);
+        MaterialRules.MaterialRule runDepthCondition = MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR_WITH_SURFACE_DEPTH, desertWithDepthCondition);
         
         return MaterialRules.sequence(runDepthCondition, materialRules);
     }

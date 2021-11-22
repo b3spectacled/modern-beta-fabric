@@ -17,7 +17,6 @@ import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.blocksource.LayerTransitionBlockSource;
 
-import net.minecraft.class_6748;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -34,6 +33,7 @@ import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.HeightContext;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
+import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.random.AtomicSimpleRandom;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
@@ -79,7 +79,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     }
 
     @Override
-    public CompletableFuture<Chunk> provideChunk(Executor executor, class_6748 blender, StructureAccessor structureAccessor, Chunk chunk) {
+    public CompletableFuture<Chunk> provideChunk(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
         this.generateTerrain(chunk, structureAccessor);  
         
         return CompletableFuture.<Chunk>supplyAsync(

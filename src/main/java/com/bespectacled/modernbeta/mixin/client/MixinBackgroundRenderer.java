@@ -51,7 +51,7 @@ public class MixinBackgroundRenderer {
         method = "render",
         at = @At(
             value = "INVOKE", 
-            target = "Lnet/minecraft/client/world/ClientWorld;method_23777(Lnet/minecraft/util/math/Vec3d;F)Lnet/minecraft/util/math/Vec3d;"
+            target = "Lnet/minecraft/client/world/ClientWorld;getSkyColor(Lnet/minecraft/util/math/Vec3d;F)Lnet/minecraft/util/math/Vec3d;"
         ),
         index = 7
     )

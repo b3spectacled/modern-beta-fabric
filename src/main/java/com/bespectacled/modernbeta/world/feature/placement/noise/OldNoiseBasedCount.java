@@ -2,6 +2,6 @@ package com.bespectacled.modernbeta.world.feature.placement.noise;
 
 import java.util.Random;
 
-public interface OldNoiseCount {
+public interface OldNoiseBasedCount {
     int sample(int chunkX, int chunkZ, Random random);
 }

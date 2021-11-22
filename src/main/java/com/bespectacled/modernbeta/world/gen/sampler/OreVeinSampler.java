@@ -37,10 +37,10 @@ public class OreVeinSampler {
         BlockSource blockSource,
         String chunkProviderType
     ) {
-        this.oreVeininessNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEININESS);
-        this.oreVeinFirstNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEIN_A);
-        this.oreVeinSecondNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEIN_B);
-        this.oreGapNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_GAP);
+        this.oreVeininessNoiseSampler = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEININESS);
+        this.oreVeinFirstNoiseSampler = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEIN_A);
+        this.oreVeinSecondNoiseSampler = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEIN_B);
+        this.oreGapNoiseSampler = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_GAP);
         
         this.orePosRandomDeriver = randomDeriver.createRandom(ModernBeta.createId("ore")).createRandomDeriver();
         

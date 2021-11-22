@@ -21,7 +21,7 @@ public class BiomeProviderSettings {
     public static NbtCompound createSettingsOceans(String biomeType) {
         NbtCompound settings = createSettingsBase(biomeType);
         
-        settings.putBoolean(NbtTags.GEN_OCEANS, false);
+        settings.putBoolean(NbtTags.GEN_OCEANS, CONFIG.oceanBiomeConfig.generateOceans);
         
         return settings;
     }

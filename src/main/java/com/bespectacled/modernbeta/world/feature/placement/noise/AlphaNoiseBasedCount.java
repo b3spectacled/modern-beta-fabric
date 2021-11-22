@@ -4,14 +4,14 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 
-public class Infdev611NoiseCount implements OldNoiseCount {
+public class AlphaNoiseBasedCount implements OldNoiseBasedCount {
     private final PerlinOctaveNoise noiseSampler;
     
-    public Infdev611NoiseCount(Random random) {
+    public AlphaNoiseBasedCount(Random random) {
         this.noiseSampler = new PerlinOctaveNoise(random, 8, true);
     }
     
-    public Infdev611NoiseCount(PerlinOctaveNoise noiseSampler) {
+    public AlphaNoiseBasedCount(PerlinOctaveNoise noiseSampler) {
         this.noiseSampler = noiseSampler;
     }
 
@@ -21,8 +21,8 @@ public class Infdev611NoiseCount implements OldNoiseCount {
         int startZ = chunkZ << 4;
         
         double scale = 0.5D;
-        
-        int noiseCount = (int) (this.noiseSampler.sample(startX * scale, startZ * scale) / 8.0 + random.nextDouble() * 4D + 4D);
+
+        int noiseCount = (int) ((this.noiseSampler.sample(startX * scale, startZ * scale) / 8D + random.nextDouble() * 4D + 4D) / 3D);
         
         if (noiseCount < 0) {
             noiseCount = 0;

@@ -58,11 +58,11 @@ public class OldVegetationPlacedFeatures {
     }
     
     public static List<PlacementModifier> withCountExtraAndTreeModifier(int count, float extraChance, int extraCount) {
-        return withTreeModifier(PlacedFeatures.method_39736(count, extraChance, extraCount));
+        return withTreeModifier(PlacedFeatures.createCountExtraModifier(count, extraChance, extraCount));
     }
     
     public static PlacementModifier withCountExtraModifier(int count, float extraChance, int extraCount) {
-        return PlacedFeatures.method_39736(count, extraChance, extraCount);
+        return PlacedFeatures.createCountExtraModifier(count, extraChance, extraCount);
     }
     
     public static List<PlacementModifier> withNoiseBasedCountModifier(String id, OldNoiseBasedCountPlacementModifier modifier) {

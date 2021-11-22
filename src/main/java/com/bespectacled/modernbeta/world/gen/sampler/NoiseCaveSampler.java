@@ -33,26 +33,26 @@ public class NoiseCaveSampler {
 
     public NoiseCaveSampler(Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry, RandomDeriver randomDeriver, int minY) {
         
-        this.pillarNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.PILLAR);
-        this.pillarRarenessNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.PILLAR_RARENESS);
-        this.pillarThicknessNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.PILLAR_THICKNESS);
+        this.pillarNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.PILLAR);
+        this.pillarRarenessNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.PILLAR_RARENESS);
+        this.pillarThicknessNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.PILLAR_THICKNESS);
         
-        this.spaghetti2dNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_2D);
-        this.spaghetti2dElevationNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_2D_ELEVATION);
-        this.spaghetti2dModulatorNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_2D_MODULATOR);
-        this.spaghetti2dThicknessNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_2D_THICKNESS);
+        this.spaghetti2dNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_2D);
+        this.spaghetti2dElevationNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_2D_ELEVATION);
+        this.spaghetti2dModulatorNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_2D_MODULATOR);
+        this.spaghetti2dThicknessNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_2D_THICKNESS);
         
-        this.spaghetti3dFirstNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_3D_1);
-        this.spaghetti3dSecondNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_3D_2);
-        this.spaghetti3dRarityNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_3D_RARITY);
-        this.spaghetti3dThicknessNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_3D_THICKNESS);
+        this.spaghetti3dFirstNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_3D_1);
+        this.spaghetti3dSecondNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_3D_2);
+        this.spaghetti3dRarityNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_3D_RARITY);
+        this.spaghetti3dThicknessNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_3D_THICKNESS);
         
-        this.spaghettiRoughnessNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_ROUGHNESS);
-        this.spaghettiRoughnessModulatorNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_ROUGHNESS_MODULATOR);
+        this.spaghettiRoughnessNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_ROUGHNESS);
+        this.spaghettiRoughnessModulatorNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.SPAGHETTI_ROUGHNESS_MODULATOR);
         
-        this.caveEntranceNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.CAVE_ENTRANCE);
-        this.caveLayerNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.CAVE_LAYER);
-        this.caveCheeseNoise = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.CAVE_CHEESE);
+        this.caveEntranceNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.CAVE_ENTRANCE);
+        this.caveLayerNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.CAVE_LAYER);
+        this.caveCheeseNoise = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.CAVE_CHEESE);
         
         this.minY = minY;
     }

@@ -27,7 +27,6 @@ import com.bespectacled.modernbeta.world.gen.sampler.OreVeinSampler;
 import com.bespectacled.modernbeta.world.gen.sampler.WeightSampler;
 import com.google.common.collect.Sets;
 
-import net.minecraft.class_6748;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
@@ -44,6 +43,7 @@ import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.SlideConfig;
@@ -250,7 +250,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * @return A completed chunk.
      */
     @Override
-    public CompletableFuture<Chunk> provideChunk(Executor executor, class_6748 blender, StructureAccessor structureAccessor, Chunk chunk) {
+    public CompletableFuture<Chunk> provideChunk(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
         GenerationShapeConfig shapeConfig = this.generatorSettings.get().getGenerationShapeConfig();
         
         int minY = Math.max(shapeConfig.minimumY(), chunk.getBottomY());

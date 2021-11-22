@@ -18,7 +18,6 @@ import com.bespectacled.modernbeta.world.biome.provider.VanillaBiomeProvider;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.IndevSpawnLocator;
 
-import net.minecraft.class_6748;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -37,6 +36,7 @@ import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
+import net.minecraft.world.gen.chunk.Blender;
 
 public abstract class FiniteChunkProvider extends BaseChunkProvider implements NoiseChunkImitable {
     protected final int levelWidth;
@@ -85,7 +85,7 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
     }
 
     @Override
-    public CompletableFuture<Chunk> provideChunk(Executor executor, class_6748 blender, StructureAccessor structureAccessor, Chunk chunk) {
+    public CompletableFuture<Chunk> provideChunk(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
         ChunkPos pos = chunk.getPos();
 
         if (this.inWorldBounds(pos.getStartX(), pos.getStartZ())) {

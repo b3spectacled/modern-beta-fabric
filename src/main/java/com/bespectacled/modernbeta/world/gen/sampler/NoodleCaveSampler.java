@@ -22,10 +22,10 @@ public class NoodleCaveSampler {
         int horizontalNoiseResolution,
         int verticalNoiseResolution
     ) {
-        this.noodleNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE);
-        this.noodleThicknessNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE_THICKNESS);
-        this.noodleRidgeFirstNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE_RIDGE_A);
-        this.noodleRidgeSecondNoiseSampler = NoiseParametersKeys.method_39173(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE_RIDGE_B);
+        this.noodleNoiseSampler = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE);
+        this.noodleThicknessNoiseSampler = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE_THICKNESS);
+        this.noodleRidgeFirstNoiseSampler = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE_RIDGE_A);
+        this.noodleRidgeSecondNoiseSampler = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.NOODLE_RIDGE_B);
         
         this.horizontalNoiseResolution = horizontalNoiseResolution;
         this.verticalNoiseResolution = verticalNoiseResolution;

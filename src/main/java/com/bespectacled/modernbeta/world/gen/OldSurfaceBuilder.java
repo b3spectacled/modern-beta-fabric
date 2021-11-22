@@ -45,7 +45,6 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
     private final ChunkProvider chunkProvider;
     
     public OldSurfaceBuilder(
-        NoiseColumnSampler columnSampler, 
         Registry<NoiseParameters> noiseRegistry, 
         BlockState blockState, 
         int seaLevel, 
@@ -53,7 +52,7 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         RandomProvider randomProvider,
         ChunkProvider chunkProvider
     ) {
-        super(columnSampler, noiseRegistry, blockState, seaLevel, seed, randomProvider);
+        super(noiseRegistry, blockState, seaLevel, seed, randomProvider);
         
         this.chunkProvider = chunkProvider;
     }
@@ -174,12 +173,14 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         return (MixinSurfaceBuilderAccessor)surfaceBuilder;
     }
     
+    /*
     @Override
-    protected int method_39553(ChunkNoiseSampler noiseSampler, int x, int z) {
+    protected int method_39551(ChunkNoiseSampler noiseSampler, int x, int z) {
         int topY = (this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) ?
             noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
             this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
         
         return topY - 8;
     }
+    */
 }

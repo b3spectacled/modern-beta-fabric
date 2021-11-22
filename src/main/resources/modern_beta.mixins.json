@@ -20,7 +20,7 @@
     "heightprovider.MixinTrapezoidHeightProvider",
     "heightprovider.MixinVeryBiasedToBottomHeightProvider",
     "MixinPlacedFeatureAccessor",
-    "Mixin_class_6835"
+    "MixinStructureGeneratorFactoryContext"
   ],
   "client": [
     "client.MixinClientWorld",

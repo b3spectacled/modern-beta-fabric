@@ -26,7 +26,6 @@ import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.class_6748;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.nbt.NbtCompound;
@@ -56,6 +55,7 @@ import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.CarvingMask;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
@@ -108,17 +108,17 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
-    public CompletableFuture<Chunk> populateBiomes(Registry<Biome> biomeRegistry, Executor executor, class_6748 blender, StructureAccessor accessor, Chunk chunk) {
+    public CompletableFuture<Chunk> populateBiomes(Registry<Biome> biomeRegistry, Executor executor, Blender blender, StructureAccessor accessor, Chunk chunk) {
         return CompletableFuture.<Chunk>supplyAsync(Util.debugSupplier("init_biomes", () -> {
-            chunk.method_38257(this.biomeSource, this.getMultiNoiseSampler());
+            chunk.populateBiomes(this.biomeSource, this.getMultiNoiseSampler());
             return chunk;
             
         }), Util.getMainWorkerExecutor());
     }
     
     @Override
-    public CompletableFuture<Chunk> populateNoise(Executor executor, class_6748 blender, StructureAccessor accessor, Chunk chunk) {
-        CompletableFuture<Chunk> completedChunk = this.chunkProvider.provideChunk(executor, class_6748.method_39336(), accessor, chunk);
+    public CompletableFuture<Chunk> populateNoise(Executor executor, Blender blender, StructureAccessor accessor, Chunk chunk) {
+        CompletableFuture<Chunk> completedChunk = this.chunkProvider.provideChunk(executor, Blender.getNoBlending(), accessor, chunk);
         
         return completedChunk;
     }
@@ -170,11 +170,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                 int startX = pos.getStartX();
                 int startZ = pos.getStartZ();
                 
+                @SuppressWarnings("deprecation")
                 GenerationSettings genSettings = curChunk.method_38258(
                     () -> this.getInjectedBiomeAtBlock(
-                            startX,
-                            this.getHeight(startX, startZ, Heightmap.Type.OCEAN_FLOOR_WG),
-                            startZ
+                        startX,
+                        this.getHeight(startX, startZ, Heightmap.Type.OCEAN_FLOOR_WG),
+                        startZ
                 )).getGenerationSettings();
                 
                 List<Supplier<ConfiguredCarver<?>>> carverList = genSettings.getCarversForStep(genCarver);
@@ -276,10 +277,11 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return new OldChunkGenerator(this.noiseRegistry, this.biomeSource.withSeed(seed), seed, this.settings, this.chunkProviderSettings);
     }
     
+    @SuppressWarnings("deprecation")
     @Override
-    public Optional<BlockState> method_39041(CarverContext context, Function<BlockPos, Biome> function, Chunk chunk, ChunkNoiseSampler arg3, BlockPos arg4, boolean bl) {
+    public Optional<BlockState> applyMaterialRule(CarverContext context, Function<BlockPos, Biome> function, Chunk chunk, ChunkNoiseSampler arg3, BlockPos arg4, boolean bl) {
         // TODO: Look more closely into this
-        return this.chunkProvider.getSurfaceBuilder().method_39110(this.settings.get().getSurfaceRule(), context, function, chunk, arg3, arg4, bl);
+        return this.chunkProvider.getSurfaceBuilder().applyMaterialRule(this.settings.get().getSurfaceRule(), context, function, chunk, arg3, arg4, bl);
     }
     
     public long getWorldSeed() {

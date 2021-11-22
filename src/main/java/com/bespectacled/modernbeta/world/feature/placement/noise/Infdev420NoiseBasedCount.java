@@ -4,14 +4,14 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 
-public class Infdev420NoiseCount implements OldNoiseCount {
+public class Infdev420NoiseBasedCount implements OldNoiseBasedCount {
     private final PerlinOctaveNoise noiseSampler;
     
-    public Infdev420NoiseCount(Random random) {
+    public Infdev420NoiseBasedCount(Random random) {
         this.noiseSampler = new PerlinOctaveNoise(random, 5, true);
     }
     
-    public Infdev420NoiseCount(PerlinOctaveNoise noiseSampler) {
+    public Infdev420NoiseBasedCount(PerlinOctaveNoise noiseSampler) {
         this.noiseSampler = noiseSampler;
     }
 

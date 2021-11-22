@@ -13,7 +13,6 @@ import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
 import com.bespectacled.modernbeta.world.gen.OldNoiseColumnSampler;
 import com.bespectacled.modernbeta.world.gen.OldSurfaceBuilder;
 
-import net.minecraft.class_6748;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
@@ -29,6 +28,7 @@ import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
+import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.random.ChunkRandom;
@@ -84,7 +84,8 @@ public abstract class ChunkProvider {
             null,
             this.generatorSettings,
             this.emptyFluidLevelSampler,
-            class_6748.method_39336()
+            Blender.getNoBlending(),
+            this
         );
         
         this.randomProvider = chunkGenerator.getGeneratorSettings().get().getRandomProvider();
@@ -92,7 +93,6 @@ public abstract class ChunkProvider {
         
         // Modified SurfaceBuilder
         this.surfaceBuilder = new OldSurfaceBuilder(
-            this.noiseColumnSampler, 
             chunkGenerator.getNoiseRegistry(), 
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(), 
             chunkGenerator.getGeneratorSettings().get().getSeaLevel(), 
@@ -111,7 +111,7 @@ public abstract class ChunkProvider {
      * @param chunk
      * @return A completed chunk.
      */
-    public abstract CompletableFuture<Chunk> provideChunk(Executor executor, class_6748 blender, StructureAccessor structureAccessor, Chunk chunk);
+    public abstract CompletableFuture<Chunk> provideChunk(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk);
     
     /**
      * Generates biome-specific surface for given chunk.

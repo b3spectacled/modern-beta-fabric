@@ -5,9 +5,8 @@ import java.util.function.Predicate;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.class_6834;
-import net.minecraft.class_6834.class_6835;
 import net.minecraft.entity.EntityType;
+import net.minecraft.structure.StructureGeneratorFactory;
 import net.minecraft.structure.StructurePiecesCollector;
 import net.minecraft.structure.StructurePiecesGenerator;
 import net.minecraft.util.BlockRotation;
@@ -25,7 +24,7 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
     public static final Pool<SpawnSettings.SpawnEntry> MONSTER_SPAWNS;
     
     public OceanShrineStructure(Codec<DefaultFeatureConfig> codec) {
-        super(codec, class_6834.simple(checkIfOceanShrinesValid(), OceanShrineStructure::init));
+        super(codec, StructureGeneratorFactory.simple(checkIfOceanShrinesValid(), OceanShrineStructure::init));
     }
     
     private static void init(StructurePiecesCollector structureHolder, StructurePiecesGenerator.Context<DefaultFeatureConfig> context) {
@@ -43,12 +42,12 @@ public class OceanShrineStructure extends StructureFeature<DefaultFeatureConfig>
         return OceanShrineStructure.MONSTER_SPAWNS;
     }
     
-    public static <C extends FeatureConfig> Predicate<class_6835<C>> checkIfOceanShrinesValid() {
+    public static <C extends FeatureConfig> Predicate<StructureGeneratorFactory.Context<C>> checkIfOceanShrinesValid() {
         return structureInfo -> {
             ChunkGenerator chunkGenerator = structureInfo.chunkGenerator();
             
             if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator && oldChunkGenerator.generatesOceanShrines()) {
-                return structureInfo.method_39848(Heightmap.Type.OCEAN_FLOOR_WG);
+                return structureInfo.isBiomeValid(Heightmap.Type.OCEAN_FLOOR_WG);
             }
             
             return false;
