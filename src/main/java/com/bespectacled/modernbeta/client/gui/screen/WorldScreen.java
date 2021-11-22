@@ -240,16 +240,13 @@ public class WorldScreen extends GUIScreen {
         StringBuilder builder = new StringBuilder().append("Settings\n");
         Set<String> keys = settings.getKeys();
         
+        // Remove main settings tag
+        keys.remove(setting.tag);
+        
         int row = 0;
         int cutoff = 5;
         
         for (String key : keys) {
-            // Do not print main tag
-            if (key.equals(setting.tag)) {
-                row++;
-                continue;
-            }
-            
             if (row >= cutoff) {
                 builder.append(String.format("... and %d more", keys.size() - cutoff));
                 break;
@@ -263,7 +260,7 @@ public class WorldScreen extends GUIScreen {
             builder.append(String.format("* %s: %s", key, elementAsString));
             if (row < keys.size() - 1)
                 builder.append("\n");
-                
+            
             row++;
         }
         
