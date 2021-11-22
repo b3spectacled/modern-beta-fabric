@@ -45,33 +45,32 @@ public class BiomeInjectionRules {
     
     private static class BiomeInjectionRule {
         private final Predicate<BiomeInjectionContext> rule;
-        private final BiomeInjectionResolver biomeResolver;
+        private final BiomeInjectionResolver resolver;
         
-        public BiomeInjectionRule(Predicate<BiomeInjectionContext> rule, BiomeInjectionResolver biomeFunc) {
+        public BiomeInjectionRule(Predicate<BiomeInjectionContext> rule, BiomeInjectionResolver resolver) {
             this.rule = rule;
-            this.biomeResolver = biomeFunc;
+            this.resolver = resolver;
         }
         
         public BiomeInjectionResolver test(BiomeInjectionContext context) {
             if (this.rule.test(context))
-                return this.biomeResolver;
+                return this.resolver;
             
             return BiomeInjectionResolver.DEFAULT;
         }
     }
     
-    
     public static class BiomeInjectionContext {
         protected final int topHeight;
         protected final int minHeight;
-        protected final BlockState blockState;
+        protected final BlockState topState;
         
         private int y;
         
-        public BiomeInjectionContext(int topHeight, int minHeight, BlockState blockState) {
+        public BiomeInjectionContext(int topHeight, int minHeight, BlockState topState) {
             this.topHeight = topHeight;
             this.minHeight = minHeight;
-            this.blockState = blockState;
+            this.topState = topState;
             this.y = topHeight;
         }
         

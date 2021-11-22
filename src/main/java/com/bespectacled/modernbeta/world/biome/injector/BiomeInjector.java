@@ -45,11 +45,11 @@ public class BiomeInjector {
         
         Predicate<BiomeInjectionContext> oceanPredicate = context -> 
             this.atOceanDepth(context.topHeight, OCEAN_MIN_DEPTH) && 
-            context.blockState.isOf(Blocks.WATER);
+            context.topState.isOf(Blocks.WATER);
         
         Predicate<BiomeInjectionContext> deepOceanPredicate = context ->
             this.atOceanDepth(context.topHeight, DEEP_OCEAN_MIN_DEPTH) && 
-            context.blockState.isOf(Blocks.WATER);
+            context.topState.isOf(Blocks.WATER);
             
         BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder()
             .add(CAVE_PREDICATE, this.oldBiomeSource::getCaveBiome);
@@ -95,9 +95,9 @@ public class BiomeInjector {
                         
                         int topHeight = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
                         int minHeight = this.sampleMinHeightAround(biomeX, biomeZ, topHeight);
-                        BlockState state = chunk.getBlockState(pos.set(x, topHeight, z));
+                        BlockState topState = chunk.getBlockState(pos.set(x, topHeight, z));
                         
-                        BiomeInjectionContext context = new BiomeInjectionContext(topHeight, minHeight, state);
+                        BiomeInjectionContext context = new BiomeInjectionContext(topHeight, minHeight, topState);
                         
                         for (int localBiomeY = 0; localBiomeY < 4; ++localBiomeY) {
                             int biomeY = localBiomeY + yOffset;
