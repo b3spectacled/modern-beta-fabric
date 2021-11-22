@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.api.world.biome.BiomeBlockResolver;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.OceanBiomeResolver;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
@@ -14,7 +15,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class PEBiomeProvider extends ClimateBiomeProvider implements BiomeBlockResolver {
+public class PEBiomeProvider extends ClimateBiomeProvider implements BiomeBlockResolver, OceanBiomeResolver {
     private final BetaClimateMap climateMap;
     
     public PEBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {

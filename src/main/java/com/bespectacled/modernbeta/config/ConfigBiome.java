@@ -12,6 +12,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 public class ConfigBiome implements ConfigData {
     
     public GeneralBiomeConfig generalBiomeConfig = new GeneralBiomeConfig();
+    public OceanBiomeConfig oceanBiomeConfig = new OceanBiomeConfig();
     public BetaBiomeConfig betaBiomeConfig = new BetaBiomeConfig();
     public PEBiomeConfig peBiomeConfig = new PEBiomeConfig();
     public SingleBiomeConfig singleBiomeConfig = new SingleBiomeConfig();
@@ -19,6 +20,10 @@ public class ConfigBiome implements ConfigData {
     
     public static class GeneralBiomeConfig {
         public String biomeType = BuiltInTypes.Biome.BETA.name;
+    }
+    
+    public static class OceanBiomeConfig {
+        public boolean generateOceans = true;
     }
     
     public static class BetaBiomeConfig {

@@ -25,7 +25,7 @@ public class DebugProviderSettingsCommand {
         if (source.getWorld().getChunkManager().getChunkGenerator() instanceof OldChunkGenerator oldChunkGenerator) {
             validWorld = true;
             
-            String chunkSettings = oldChunkGenerator.getProviderSettings().asString();
+            String chunkSettings = oldChunkGenerator.getChunkSettings().asString();
             
             source.sendFeedback(new LiteralText("Chunk Provider Settings:").formatted(Formatting.YELLOW), false);
             source.sendFeedback(new LiteralText(chunkSettings), false);

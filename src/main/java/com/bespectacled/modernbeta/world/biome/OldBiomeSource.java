@@ -8,8 +8,8 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.biome.BiomeBlockResolver;
-import com.bespectacled.modernbeta.api.world.biome.BiomeHeightSampler;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.OceanBiomeResolver;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
@@ -44,10 +44,7 @@ public class OldBiomeSource extends BiomeSource {
     
     private final BiomeProvider biomeProvider;
     private final CaveBiomeProvider caveBiomeProvider;
-    
-    @SuppressWarnings("unused")
-    private BiomeHeightSampler biomeHeightSampler;
-    
+
     private static List<Biome> getBiomesForRegistry(
         long seed,
         Registry<Biome> biomeRegistry, 
@@ -87,8 +84,6 @@ public class OldBiomeSource extends BiomeSource {
         this.caveBiomeProvider = Registries.CAVE_BIOME
             .get(NbtUtil.readStringOrThrow(NbtTags.CAVE_BIOME_TYPE, caveSettings))
             .apply(seed, caveSettings, biomeRegistry);
-        
-        this.biomeHeightSampler = BiomeHeightSampler.DEFAULT;
     }
     
     @Environment(EnvType.CLIENT)
@@ -102,20 +97,22 @@ public class OldBiomeSource extends BiomeSource {
         return OldBiomeSource.CODEC;
     }
     
-    public void setBiomeHeightSampler(BiomeHeightSampler biomeHeightSampler) {
-        this.biomeHeightSampler = biomeHeightSampler;
-    }
-    
     public Biome getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {    
         return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
 
     public Biome getOceanBiome(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeProvider.getOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        if (this.biomeProvider instanceof OceanBiomeResolver oceanBiomeResolver)
+            return oceanBiomeResolver.getOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        
+        return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
     public Biome getDeepOceanBiome(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeProvider.getDeepOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        if (this.biomeProvider instanceof OceanBiomeResolver oceanBiomeResolver)
+            return oceanBiomeResolver.getDeepOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        
+        return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
     public Biome getCaveBiome(int biomeX, int biomeY, int biomeZ) {

@@ -14,13 +14,12 @@ import java.util.function.Supplier;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
-import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import com.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
+import com.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import com.bespectacled.modernbeta.world.structure.OceanShrineStructure;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
 import com.google.common.collect.Sets;
@@ -78,7 +77,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     private final ChunkProvider chunkProvider;
     private final String chunkProviderType;
     
-    private final boolean generateOceans;
     private final boolean generateOceanShrines;
     private final boolean generateMonuments;
 
@@ -91,10 +89,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.chunkProviderSettings = providerSettings;
         this.chunkProviderType = NbtUtil.readStringOrThrow(NbtTags.WORLD_TYPE, providerSettings);
         this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
-
-        this.generateOceans = !Compat.isLoaded("hydrogen") ? 
-            NbtUtil.readBoolean(NbtTags.GEN_OCEANS, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateOceans) : 
-            false;
         
         this.generateOceanShrines = NbtUtil.readBoolean(NbtTags.GEN_OCEAN_SHRINES, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateOceanShrines);
         this.generateMonuments = NbtUtil.readBoolean(NbtTags.GEN_MONUMENTS, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateMonuments);
@@ -300,7 +294,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.chunkProvider;
     }
     
-    public NbtCompound getProviderSettings() {
+    public NbtCompound getChunkSettings() {
         return new NbtCompound().copyFrom(this.chunkProviderSettings);
     }
     
@@ -310,10 +304,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     public BiomeInjector getBiomeInjector() {
         return this.biomeInjector;
-    }
-    
-    public boolean generatesOceans() {
-        return this.generateOceans;
     }
     
     public boolean generatesOceanShrines() {

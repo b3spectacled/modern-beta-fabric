@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.client.gui.screen.SettingsScreen;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.ActionOptionWrapper;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
@@ -21,9 +20,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class ClimateBiomeScreen extends SettingsScreen {
-    private static final String LAND_BIOME_DISPLAY_STRING = "createWorld.customize.climateType.land";
-    private static final String OCEAN_BIOME_DISPLAY_STRING = "createWorld.customize.climateType.ocean";
+public class ClimateBiomeScreen extends OceanBiomeScreen {
+    private static final String LAND_BIOME_DISPLAY_STRING = "createWorld.customize.biome.climateType.land";
+    private static final String OCEAN_BIOME_DISPLAY_STRING = "createWorld.customize.biome.climateType.ocean";
     
     private final Map<String, Identifier> landBiomeMap;
     private final Map<String, Identifier> oceanBiomeMap;

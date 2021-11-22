@@ -12,5 +12,5 @@ public interface BiomeBlockResolver {
      * 
      * @return A biome at given block coordinates.
      */
-    public Biome getBiomeAtBlock(int x, int y, int z);
+    Biome getBiomeAtBlock(int x, int y, int z);
 }

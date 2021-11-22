@@ -7,6 +7,8 @@ import org.apache.logging.log4j.Level;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
+import com.bespectacled.modernbeta.util.NbtTags;
+import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
@@ -14,6 +16,7 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.Heightmap;
@@ -43,6 +46,12 @@ public class BiomeInjector {
         this.oldBiomeSource = oldBiomeSource;
         this.chunkProvider = oldChunkGenerator.getChunkProvider();
         
+        NbtCompound chunkSettings = this.oldChunkGenerator.getChunkSettings();
+        NbtCompound biomeSettings = this.oldBiomeSource.getBiomeSettings();
+        
+        boolean legacyGeneratesOceans = NbtUtil.readBoolean(NbtTags.GEN_OCEANS, chunkSettings, false);
+        boolean generatesOceans = NbtUtil.readBoolean(NbtTags.GEN_OCEANS, biomeSettings, false);
+        
         Predicate<BiomeInjectionContext> oceanPredicate = context -> 
             this.atOceanDepth(context.topHeight, OCEAN_MIN_DEPTH) && 
             context.topState.isOf(Blocks.WATER);
@@ -54,7 +63,7 @@ public class BiomeInjector {
         BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder()
             .add(CAVE_PREDICATE, this.oldBiomeSource::getCaveBiome);
         
-        if (oldChunkGenerator.generatesOceans()) {
+        if (legacyGeneratesOceans || generatesOceans) {
             builder.add(deepOceanPredicate, this.oldBiomeSource::getDeepOceanBiome);
             builder.add(oceanPredicate, this.oldBiomeSource::getOceanBiome);
         }
@@ -127,10 +136,6 @@ public class BiomeInjector {
         return this.rules.test(context, biomeX, biomeY, biomeZ);
     }
     
-    private boolean atOceanDepth(int topHeight, int oceanDepth) {
-        return topHeight < this.oldChunkGenerator.getSeaLevel() - oceanDepth;
-    }
-    
     public int getCenteredHeight(int biomeX, int biomeZ) {
         // Offset by 2 to get center of biome coordinate section in block coordinates
         int x = (biomeX << 2) + 2;
@@ -154,5 +159,9 @@ public class BiomeInjector {
         }
         
         return minHeight;
+    }
+
+    private boolean atOceanDepth(int topHeight, int oceanDepth) {
+        return topHeight < this.oldChunkGenerator.getSeaLevel() - oceanDepth;
     }
 }

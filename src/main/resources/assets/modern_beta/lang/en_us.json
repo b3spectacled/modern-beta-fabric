@@ -33,12 +33,8 @@
     "createWorld.customize.worldType.title": "Modern Beta World Configuration",
     "createWorld.customize.settings.title": "Modern Beta Settings Configuration",
     
-    "createWorld.customize.climateType.land": "Land Biomes",
-    "createWorld.customize.climateType.ocean": "Ocean Biomes",
-    
     "createWorld.customize.hydrogenLoaded": "Hydrogen detected! 'Assign Ocean Biomes' option is disabled.",
     
-    "createWorld.customize.inf.generateOceans": "Assign Ocean Biomes",
     "createWorld.customize.inf.generateOceanShrines": "Generate Ocean Shrines",
     "createWorld.customize.inf.generateMonuments": "Generate Monuments",
     "createWorld.customize.inf.sampleClimate": "Sample Climate",
@@ -47,7 +43,6 @@
     "createWorld.customize.infdev.generateInfdevPyramid": "Generate Infdev Brick Pyramid",
     "createWorld.customize.infdev.generateInfdevWall": "Generate Infdev Obsidian Wall",
     
-    "createWorld.customize.inf.generateOceans.tooltip": "Replace biomes in bodies of water with ocean biomes.",
     "createWorld.customize.inf.sampleClimate.tooltip": "Sample biome climate for terrain generation.",
     
     "createWorld.customize.island.generateOuterIslands": "Generate Outer Islands",
@@ -90,7 +85,13 @@
     "createWorld.customize.indev.levelType.floating": "Floating",
     "createWorld.customize.indev.levelType.inland": "Inland",
     
+    "createWorld.customize.biome.generateOceans": "Assign Ocean Biomes",
     "createWorld.customize.biome.largeBiomes": "Large Biomes",
+    
+    "createWorld.customize.biome.climateType.land": "Land Biomes",
+    "createWorld.customize.biome.climateType.ocean": "Ocean Biomes",
+    
+    "createWorld.customize.biome.generateOceans.tooltip": "Replace biomes in bodies of water with ocean biomes.",
     
     "createWorld.customize.caveBiome.useNoise": "Use Noise",
     "createWorld.customize.caveBiome.verticalNoiseScale": "Vertical Noise Scale",

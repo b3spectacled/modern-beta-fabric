@@ -5,7 +5,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.world.biome.BiomeHeightSampler;
 import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
@@ -35,7 +34,7 @@ import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.random.ChunkRandom;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
-public abstract class ChunkProvider implements BiomeHeightSampler {
+public abstract class ChunkProvider {
     public static final int LAVA_LEVEL = -53; // Vanilla: -54;
     
     protected final OldChunkGenerator chunkGenerator;
@@ -64,7 +63,7 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
         
         this.seed = chunkGenerator.getWorldSeed();
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
-        this.providerSettings = chunkGenerator.getProviderSettings();
+        this.providerSettings = chunkGenerator.getChunkSettings();
         this.spawnLocator = SpawnLocator.DEFAULT;
 
         this.emptyFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
