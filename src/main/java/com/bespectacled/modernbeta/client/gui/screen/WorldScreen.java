@@ -251,7 +251,7 @@ public class WorldScreen extends GUIScreen {
             }
             
             if (row >= cutoff) {
-                builder.append(String.format("... and %d more", keys.size() - cutoff - 1));
+                builder.append(String.format("... and %d more", keys.size() - cutoff));
                 break;
             }
 
