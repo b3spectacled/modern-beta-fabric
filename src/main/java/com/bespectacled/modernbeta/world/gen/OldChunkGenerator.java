@@ -58,7 +58,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     public static final Codec<OldChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
         .group(
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
-            Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
+            Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.seed),
             ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(generator -> generator.settings),
             NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings))
         .apply(instance, instance.stable(OldChunkGenerator::new)));
@@ -275,7 +275,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     public long getWorldSeed() {
-        return this.worldSeed;
+        return this.seed;
     }
     
     public Supplier<ChunkGeneratorSettings> getGeneratorSettings() {
