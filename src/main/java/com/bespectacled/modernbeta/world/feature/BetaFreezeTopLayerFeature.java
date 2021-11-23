@@ -2,8 +2,8 @@ package com.bespectacled.modernbeta.world.feature;
 
 import java.util.Random;
 
-import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
-import com.bespectacled.modernbeta.world.biome.*;
+import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
@@ -14,14 +14,13 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.LightType;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.WorldView;
-import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.LightType;
 
 public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
     public BetaFreezeTopLayerFeature(Codec<DefaultFeatureConfig> codec) {
@@ -38,21 +37,21 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
     ) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutableDown = new BlockPos.Mutable();
-
-        BiomeSource biomeSource = chunkGenerator.getBiomeSource();
         
-        for (int x = 0; x < 16; ++x) {
-            for (int z = 0; z < 16; ++z) {
-                int absX = pos.getX() + x;
-                int absZ = pos.getZ() + z;
-                int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING, absX, absZ);
+        for (int localX = 0; localX < 16; ++localX) {
+            for (int localZ = 0; localZ < 16; ++localZ) {
+                int x = pos.getX() + localX;
+                int z = pos.getZ() + localZ;
+                int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z);
                 
-                mutable.set(absX, y, absZ);
+                mutable.set(x, y, z);
                 mutableDown.set(mutable).move(Direction.DOWN, 1);
                 
                 double temp;
-                if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource && ((OldBiomeSource)biomeSource).getBiomeProvider() instanceof BetaClimateResolver) {
-                    temp = ((BetaClimateResolver)((OldBiomeSource)biomeSource).getBiomeProvider()).sampleTemp(absX, absZ);
+                if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource && 
+                    oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider
+                ) {
+                    temp = climateBiomeProvider.getClimateSampler().sampleClime(x, z).temp();
                 } else {
                     temp = world.getBiome(mutable).getTemperature();
                 }
@@ -87,9 +86,9 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                     return true;
                 }
 
-                boolean boolean7 = worldView.isWater(blockPos.west()) && worldView.isWater(blockPos.east())
+                boolean submerged = worldView.isWater(blockPos.west()) && worldView.isWater(blockPos.east())
                         && worldView.isWater(blockPos.north()) && worldView.isWater(blockPos.south());
-                if (!boolean7) {
+                if (!submerged) {
                     return true;
                 }
             }
@@ -111,4 +110,5 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
         }
         return false;
     }
+
 }

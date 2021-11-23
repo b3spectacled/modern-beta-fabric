@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.util;
 
 import net.minecraft.nbt.NbtByte;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtDouble;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtFloat;
 import net.minecraft.nbt.NbtInt;
@@ -54,6 +55,20 @@ public class NbtUtil {
         return alternate;
     }
     
+    public static double readDoubleOrThrow(String key, NbtCompound tag) {
+        if (tag.contains(key))
+            return tag.getDouble(key);
+        
+        throw new IllegalArgumentException("[Modern Beta] NBT compound does not contain field " + key);
+    }
+    
+    public static double readDouble(String key, NbtCompound tag, double alternate) {
+        if (tag.contains(key))
+            return tag.getDouble(key);
+        
+        return alternate;
+    }
+    
     public static boolean readBooleanOrThrow(String key, NbtCompound tag) {
         if (tag.contains(key))
             return tag.getBoolean(key);
@@ -73,57 +88,71 @@ public class NbtUtil {
      */
     
     public static String toStringOrThrow(NbtElement element) {
-        if (element instanceof NbtString)
-            return ((NbtString)element).asString();
+        if (element instanceof NbtString nbtString)
+            return nbtString.asString();
         
         throw new IllegalArgumentException("[Modern Beta] NBT Element is not a string! Type:" + element.getType());
     }
     
     public static String toString(NbtElement element, String alternate) {
-        if (element instanceof NbtString)
-            return ((NbtString)element).asString();
+        if (element instanceof NbtString nbtString)
+            return nbtString.asString();
         
         return alternate;
     }
     
     public static int toIntOrThrow(NbtElement element) {
-        if (element instanceof NbtInt)
-            return ((NbtInt)element).intValue();
+        if (element instanceof NbtInt nbtInt)
+            return nbtInt.intValue();
         
         throw new IllegalArgumentException("[Modern Beta] NBT Element is not an int! Type: " + element.getType()); 
     }
     
     public static int toInt(NbtElement element, int alternate) {
-        if (element instanceof NbtInt)
-            return ((NbtInt)element).intValue();
+        if (element instanceof NbtInt nbtInt) 
+            return nbtInt.intValue();
         
         return alternate;
     }
     
     public static float toFloatOrThrow(NbtElement element) {
-        if (element instanceof NbtFloat) 
-            return ((NbtFloat)element).floatValue();
+        if (element instanceof NbtFloat nbtFloat) 
+            return nbtFloat.floatValue();
         
         throw new IllegalArgumentException("[Modern Beta] NBT Element is not an float! Type: " + element.getType()); 
     }
     
     public static float toFloat(NbtElement element, float alternate) {
-        if (element instanceof NbtFloat) 
-            return ((NbtFloat)element).floatValue();
+        if (element instanceof NbtFloat nbtFloat) 
+            return nbtFloat.floatValue();
+        
+        return alternate;
+    }
+    
+    public static double toDoubleOrThrow(NbtElement element) {
+        if (element instanceof NbtDouble nbtDouble) 
+            return nbtDouble.doubleValue();
+        
+        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an double! Type: " + element.getType()); 
+    }
+    
+    public static double toFloat(NbtElement element, double alternate) {
+        if (element instanceof NbtDouble nbtDouble) 
+            return nbtDouble.doubleValue();
         
         return alternate;
     }
     
     public static boolean toBooleanOrThrow(NbtElement element) {
-        if (element instanceof NbtByte) 
-            return ((NbtByte)element).byteValue() == 1;
+        if (element instanceof NbtByte nbtByte) 
+            return nbtByte.byteValue() == 1;
         
         throw new IllegalArgumentException("[Modern Beta] NBT Element is not an byte/boolean! Type: " + element.getType()); 
     }
     
     public static boolean toBoolean(NbtElement element, boolean alternate) {
-        if (element instanceof NbtByte) 
-            return ((NbtByte)element).byteValue() == 1;
+        if (element instanceof NbtByte nbtByte) 
+            return nbtByte.byteValue() == 1;
         
         return alternate;
     }

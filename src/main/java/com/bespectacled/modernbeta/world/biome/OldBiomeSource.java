@@ -6,25 +6,23 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
-import com.bespectacled.modernbeta.mixin.MixinBiomeSourceAccessor;
+import com.bespectacled.modernbeta.api.world.biome.OceanBiomeResolver;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 
 public class OldBiomeSource extends BiomeSource {
-    
     public static final Codec<OldBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance
         .group(
             Codec.LONG.fieldOf("seed").stable().forGetter(biomeSource -> biomeSource.seed),
@@ -35,41 +33,55 @@ public class OldBiomeSource extends BiomeSource {
     private final long seed;
     private final Registry<Biome> biomeRegistry;
     private final NbtCompound biomeProviderSettings;
-    //private final Optional<NbtCompound> caveBiomeProviderSettings;
-    
     private final BiomeProvider biomeProvider;
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, NbtCompound settings) {
-        super(ImmutableList.of());
+        super(Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings))
+            .apply(seed, settings, biomeRegistry)
+            .getBiomesForRegistry()
+            .stream()
+            .map((registryKey) -> (Biome) biomeRegistry.get(registryKey))
+            .collect(Collectors.toList())
+        );
         
         this.seed = seed;
         this.biomeRegistry = biomeRegistry;
         this.biomeProviderSettings = settings;
-        
-        this.biomeProvider = Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings)).apply(this);
-        
-        // Set biomes list here, instead of constructor.
-        ((MixinBiomeSourceAccessor)this).setBiomes(
-            this.biomeProvider
-                .getBiomesForRegistry()
-                .stream()
-                .map((registryKey) -> (Biome) biomeRegistry.get(registryKey))
-                .collect(Collectors.toList())
-        );
+        this.biomeProvider = Registries.BIOME
+            .get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings))
+            .apply(seed, settings, biomeRegistry);
     }
 
     @Override
-    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeProvider.getBiomeForNoiseGen(this.biomeRegistry, biomeX, biomeY, biomeZ);
+    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {    
+        return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
 
     public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeProvider.getOceanBiomeForNoiseGen(this.biomeRegistry, biomeX, biomeY, biomeZ);
+        if (this.biomeProvider instanceof OceanBiomeResolver oceanBiomeResolver)
+            return oceanBiomeResolver.getOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+
+        return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+    }
+    
+    public Biome getDeepOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+        if (this.biomeProvider instanceof OceanBiomeResolver oceanBiomeResolver)
+            return oceanBiomeResolver.getDeepOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+
+        return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+    }
+    
+    public Biome getBiomeForSurfaceGen(int x, int y, int z) {
+        if (this.biomeProvider instanceof BiomeResolver biomeResolver) {
+            return biomeResolver.getBiome(x, y, z);
+        }
+        
+        return this.biomeProvider.getBiomeForNoiseGen(x >> 2, y >> 2, z >> 2);
     }
     
     public Biome getBiomeForSurfaceGen(ChunkRegion region, BlockPos pos) {
-        if (this.biomeProvider instanceof BiomeResolver)
-            return ((BiomeResolver)this.biomeProvider).getBiome(this.biomeRegistry, pos.getX(), pos.getY(), pos.getZ());
+        if (this.biomeProvider instanceof BiomeResolver biomeResolver)
+            return biomeResolver.getBiome(pos.getX(), pos.getY(), pos.getZ());
         
         return region.getBiome(pos);
     }
@@ -86,7 +98,7 @@ public class OldBiomeSource extends BiomeSource {
         return this.biomeProvider;
     }
     
-    public NbtCompound getProviderSettings() {
+    public NbtCompound getBiomeSettings() {
         return new NbtCompound().copyFrom(this.biomeProviderSettings);
     }
 

@@ -13,6 +13,12 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class BetaBiomes {
+    protected static final boolean ADD_LAKES = true;
+    protected static final boolean ADD_SPRINGS = true;
+    
+    protected static final boolean ADD_ALTERNATE_STONES = true;
+    protected static final boolean ADD_NEW_MINEABLES = true;
+    
     public static final Identifier FOREST_ID = ModernBeta.createId("forest");
     public static final Identifier SHRUBLAND_ID = ModernBeta.createId("shrubland");
     public static final Identifier DESERT_ID = ModernBeta.createId("desert");
@@ -55,7 +61,10 @@ public class BetaBiomes {
         SKY_ID
     );
     
-    public static final List<RegistryKey<Biome>> BIOME_KEYS = BIOMES.stream().map(i -> RegistryKey.of(Registry.BIOME_KEY, i)).collect(Collectors.toList());
+    public static final List<RegistryKey<Biome>> BIOME_KEYS = BIOMES
+        .stream()
+        .map(i -> RegistryKey.of(Registry.BIOME_KEY, i))
+        .collect(Collectors.toList());
     
     public static void registerBiomes() {
         OldBiomes.register(FOREST_ID, Forest.BIOME);

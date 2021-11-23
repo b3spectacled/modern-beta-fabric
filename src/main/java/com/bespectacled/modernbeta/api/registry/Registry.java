@@ -16,14 +16,13 @@ public final class Registry<T> {
     private final String name;
     private final Map<String, T> map; // Use LinkedHashMap so entries are displayed in order if retrieved as list.
     
-    protected Registry() {
-        this.name = "";
-        this.map = new LinkedHashMap<String, T>();
-    }
-    
     protected Registry(String name) {
         this.name = name;
         this.map = new LinkedHashMap<String, T>();
+    }
+    
+    protected Registry() {
+        this("");
     }
     
     public void register(String key, T entry) {
@@ -39,6 +38,15 @@ public final class Registry<T> {
         
         return this.map.get(key);
     }
+    
+    public T getOrElse(String key, T alternate) {
+        if (!this.contains(key)) {
+            ModernBeta.log(Level.WARN, "Registry " + this.name + " does not contain entry named " + key + ", getting supplied default.");
+            return alternate;
+        }
+        
+        return this.map.get(key);
+    }
 
     public T getOrDefault(String key) {
         if (!this.contains(key)) {
@@ -49,7 +57,7 @@ public final class Registry<T> {
         return this.map.get(key);
     }
     
-    public T get(String key, String alternate) {
+    public T getOrAlternate(String key, String alternate) {
         if (!this.contains(key)) {
             ModernBeta.log(Level.WARN, "Registry " + this.name + " does not contain entry named " + key + ", defaulting to " + alternate);
             return this.get(alternate);

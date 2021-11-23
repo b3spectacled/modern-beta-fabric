@@ -19,14 +19,18 @@ public class OldGeneratorConfig {
     public static final NoiseSamplingConfig ALPHA_SAMPLING_CONFIG;
     public static final NoiseSamplingConfig SKYLANDS_SAMPLING_CONFIG;
     public static final NoiseSamplingConfig INFDEV_611_SAMPLING_CONFIG;
+    public static final NoiseSamplingConfig INFDEV_420_SAMPLING_CONFIG; 
     public static final NoiseSamplingConfig INFDEV_415_SAMPLING_CONFIG;
+    public static final NoiseSamplingConfig PE_SAMPLING_CONFIG;
     
     public static final GenerationShapeConfig BETA_SHAPE_CONFIG;
     public static final GenerationShapeConfig ALPHA_SHAPE_CONFIG;
     public static final GenerationShapeConfig SKYLANDS_SHAPE_CONFIG;
     public static final GenerationShapeConfig INFDEV_611_SHAPE_CONFIG;
     public static final GenerationShapeConfig INFDEV_415_SHAPE_CONFIG;
+    public static final GenerationShapeConfig INFDEV_420_SHAPE_CONFIG;
     public static final GenerationShapeConfig INDEV_SHAPE_CONFIG;
+    public static final GenerationShapeConfig PE_SHAPE_CONFIG;
     
     static {
         STRUCTURES = new StructuresConfig(true);
@@ -38,6 +42,8 @@ public class OldGeneratorConfig {
         SKYLANDS_SAMPLING_CONFIG = new NoiseSamplingConfig(2.0, 1.0, 80.0, 160.0);
         INFDEV_611_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
         INFDEV_415_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 400.0);
+        INFDEV_420_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
+        PE_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0); 
         
         BETA_SHAPE_CONFIG = new GenerationShapeConfig(
             128,
@@ -73,7 +79,7 @@ public class OldGeneratorConfig {
             128, 
             SKYLANDS_SAMPLING_CONFIG, 
             new SlideConfig(-30, 31, 0), 
-            new SlideConfig(-30, 7, 0),
+            new SlideConfig(-30, 7, 1),
             2, 
             1, 
             1, 
@@ -99,10 +105,25 @@ public class OldGeneratorConfig {
             false
         );
         
+        INFDEV_420_SHAPE_CONFIG = new GenerationShapeConfig(
+            128,
+            INFDEV_420_SAMPLING_CONFIG, 
+            new SlideConfig(0, Integer.MIN_VALUE, 0), 
+            new SlideConfig(15, 3, 0),
+            1, 
+            2, 
+            1, 
+            -0.46875, 
+            true, 
+            false, 
+            false, 
+            false
+        );
+        
         INFDEV_415_SHAPE_CONFIG = new GenerationShapeConfig(
             128,
             INFDEV_415_SAMPLING_CONFIG, 
-            new SlideConfig(0, 0, 0), 
+            new SlideConfig(0, Integer.MIN_VALUE, 0), 
             new SlideConfig(15, 3, 0),
             1, 
             1, 
@@ -117,14 +138,29 @@ public class OldGeneratorConfig {
         INDEV_SHAPE_CONFIG = new GenerationShapeConfig(
             256, 
             INFDEV_415_SAMPLING_CONFIG, 
-            new SlideConfig(0, 0, 0), 
-            new SlideConfig(0, 0, 0),
+            new SlideConfig(0, Integer.MIN_VALUE, 0), 
+            new SlideConfig(0, Integer.MIN_VALUE, 0),
             1, 
             1, 
             1, 
             -0.46875, 
             true, 
             false, 
+            false, 
+            false
+        );
+        
+        PE_SHAPE_CONFIG = new GenerationShapeConfig(
+            128,
+            PE_SAMPLING_CONFIG, 
+            new SlideConfig(-10, 3, 0), 
+            new SlideConfig(15, 3, 0),
+            1, 
+            2, 
+            1, 
+            -0.46875, 
+            true, 
+            false,
             false, 
             false
         );

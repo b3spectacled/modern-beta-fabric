@@ -1,13 +1,7 @@
 package com.bespectacled.modernbeta.util.chunk;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+import java.util.concurrent.locks.StampedLock;
 import java.util.function.BiFunction;
-
-import org.apache.logging.log4j.Level;
-
-import com.bespectacled.modernbeta.ModernBeta;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import net.minecraft.util.math.ChunkPos;
@@ -17,90 +11,81 @@ import net.minecraft.util.math.ChunkPos;
  * 
  */
 public class ChunkCache<T> {
+    @SuppressWarnings("unused")
     private final String name;
     private final int capacity;
     private final boolean evictOldChunks;
+    
     private final BiFunction<Integer, Integer, T> chunkFunc;
     private final Long2ObjectLinkedOpenHashMap<T> chunkMap;
     
-    private final ReentrantReadWriteLock lock;
-    private final WriteLock writeLock;
-    private final ReadLock readLock;
-
-    private int hits;
-    private int misses;
-    private boolean debug;
+    private final StampedLock lock;
     
-    public ChunkCache(String name, int capacity, boolean evictOldChunks, BiFunction<Integer, Integer, T> chunkFunc, boolean debug) {
+    public ChunkCache(String name, int capacity, boolean evictOldChunks, BiFunction<Integer, Integer, T> chunkFunc) {
         this.name = name;
         this.capacity = capacity;
         this.evictOldChunks = evictOldChunks;
         this.chunkFunc = chunkFunc;
         this.chunkMap = new Long2ObjectLinkedOpenHashMap<>(capacity);
         
-        this.lock = new ReentrantReadWriteLock();
-        this.writeLock = this.lock.writeLock();
-        this.readLock = this.lock.readLock();
-        
-        this.hits = 0;
-        this.misses = 0;
-        this.debug = debug;
-    }
-    
-    public ChunkCache(String name, int capacity, boolean evictOldChunks, BiFunction<Integer, Integer, T> chunkFunc) {
-        this(name, capacity, evictOldChunks, chunkFunc, false);
+        this.lock = new StampedLock();
     }
     
     public ChunkCache(String name, int capacity, BiFunction<Integer, Integer, T> chunkFunc) {
-        this(name, capacity, true, chunkFunc, false);
+        this(name, capacity, true, chunkFunc);
     }
     
     public void clear() {
-        this.writeLock.lock();
+        long stamp = this.lock.writeLock();
         try {
             this.chunkMap.clear();
             this.chunkMap.trim();
         } finally {
-            this.writeLock.unlock();
+            this.lock.unlock(stamp);
         }
     }
     
     public T get(int chunkX, int chunkZ) {
-        long hashedCoord = ChunkPos.toLong(chunkX, chunkZ);
-        T item;
+        T chunk;
         
-        this.readLock.lock();
+        long key = ChunkPos.toLong(chunkX, chunkZ);
+        long stamp = this.lock.readLock();
+        
         try {
-            item = this.chunkMap.get(hashedCoord);
-        } finally {
-            this.readLock.unlock();
-        }
-        
-        if (item == null) { 
-            this.writeLock.lock();
-            try {
-                item = this.chunkFunc.apply(chunkX, chunkZ);
+            while ((chunk = this.chunkMap.get(key)) == null) {
+                // Attempt to upgrade read lock to write lock w/o blocking
+                long writeStamp = this.lock.tryConvertToWriteLock(stamp);
                 
-                // Ensure cache size remains below capacity
-                if (this.evictOldChunks && this.chunkMap.size() >= this.capacity) {
-                    this.chunkMap.removeFirst();
+                // Write lock, if:
+                // => lock upgrade succeeds w/o blocking
+                // => blocked write is acquired anyway (see below)
+                if (writeStamp != 0) {
+                    stamp = writeStamp;
+                    chunk = this.createChunk(key, chunkX, chunkZ);
+                    
+                    break;
                 }
                 
-                this.chunkMap.put(hashedCoord, item);
-            } finally {
-                this.writeLock.unlock();
+                // Lock upgrade failed so use blocking write lock.
+                this.lock.unlockRead(stamp);
+                stamp = this.lock.writeLock();
             }
-            
-            misses++;
-        } else {
-            hits++;
+        } finally {
+            this.lock.unlock(stamp);
         }
         
-        if (this.debug && hits % 512 == 0) {
-            float hitMissRate = hits / (float)(hits + misses) * 100F;
-            ModernBeta.log(Level.INFO, String.format("Cache '%s' hit/miss rate: %.2f", this.name, hitMissRate));
+        return chunk;
+    }
+    
+    private T createChunk(long key, int chunkX, int chunkZ) {
+        // Ensure cache size remains below capacity
+        if (this.evictOldChunks && this.chunkMap.size() >= this.capacity) {
+            this.chunkMap.removeFirst();
         }
         
-        return item;
+        T chunk = this.chunkFunc.apply(chunkX, chunkZ);
+        this.chunkMap.put(key, chunk);
+        
+        return chunk;
     }
 }

@@ -1,16 +1,14 @@
 package com.bespectacled.modernbeta.command;
 
+import static net.minecraft.server.command.CommandManager.literal;
+
+import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
-import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-
-import static net.minecraft.server.command.CommandManager.*;
-
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 public class DebugProviderSettingsCommand {
     public static void register() {
@@ -24,22 +22,19 @@ public class DebugProviderSettingsCommand {
     private static int execute(ServerCommandSource source) {
         boolean validWorld = false;
         
-        ChunkGenerator chunkGenerator = source.getWorld().getChunkManager().getChunkGenerator();
-        BiomeSource biomeSource = source.getWorld().getChunkManager().getChunkGenerator().getBiomeSource();
-        
-        if (chunkGenerator instanceof OldChunkGenerator) {
+        if (source.getWorld().getChunkManager().getChunkGenerator() instanceof OldChunkGenerator oldChunkGenerator) {
             validWorld = true;
             
-            String chunkProviderSettings = ((OldChunkGenerator)chunkGenerator).getProviderSettings().asString();
+            String chunkProviderSettings = oldChunkGenerator.getChunkSettings().asString();
             
             source.sendFeedback(new LiteralText("Chunk Provider Settings:").formatted(Formatting.YELLOW), false);
             source.sendFeedback(new LiteralText(chunkProviderSettings), false);
         }
         
-        if (biomeSource instanceof OldBiomeSource) {
+        if (source.getWorld().getChunkManager().getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) {
             validWorld = true;
             
-            String biomeProviderSettings = ((OldBiomeSource)biomeSource).getProviderSettings().asString();
+            String biomeProviderSettings = oldBiomeSource.getBiomeSettings().asString();
             
             source.sendFeedback(new LiteralText("Biome Provider Settings:").formatted(Formatting.YELLOW), false);
             source.sendFeedback(new LiteralText(biomeProviderSettings), false);

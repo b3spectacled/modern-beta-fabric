@@ -1,9 +1,10 @@
 package com.bespectacled.modernbeta.client.color;
 
-import java.util.function.Supplier;
+import java.util.Optional;
 
-import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.BetaClimateResolver;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.color.world.FoliageColors;
@@ -12,40 +13,31 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockRenderView;
 
-public final class BetaBlockColors implements BetaClimateResolver {
-    private static BetaBlockColors INSTANCE;
+public final class BetaBlockColors {
+    public static final BetaBlockColors INSTANCE = new BetaBlockColors();
     
-    private final Supplier<Boolean> useBetaColorsConfigSupplier;
-    private boolean useBetaColors;
+    private Optional<ClimateSampler> climateSampler;
     
     private BetaBlockColors() {
-        this.useBetaColorsConfigSupplier = () -> ModernBeta.RENDER_CONFIG.renderBetaBiomeColor;
-        this.useBetaColors = false;
+        this.climateSampler = Optional.empty();
     }
     
-    public static BetaBlockColors getInstance() {
-        if (INSTANCE == null)
-            INSTANCE = new BetaBlockColors();
-        
-        return INSTANCE;
-    }
-    
-    public void setSeed(long seed, boolean useBetaColors) {
-        this.setSeed(seed);
-        this.useBetaColors = useBetaColors;
+    public void setSeed(long seed, Optional<ClimateSampler> climateSampler) {
+        this.climateSampler = climateSampler;
     }
     
     public int getGrassColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
         if (view == null || pos == null) { // Appears to enter here when loading color for inventory block
             return 8174955; // Default tint, from wiki
         }
-        
-        if (this.useBetaColors && this.useBetaColorsConfigSupplier.get()) {
+       
+        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor()) {
             int x = pos.getX();
             int z = pos.getZ();
 
-            double temp = this.sampleTemp(x, z);
-            double rain = this.sampleRain(x, z);
+            Clime clime = this.climateSampler.get().sampleClime(x, z);
+            double temp = clime.temp();
+            double rain = clime.rain();
 
             return GrassColors.getColor(temp, rain);
         }
@@ -58,7 +50,7 @@ public final class BetaBlockColors implements BetaClimateResolver {
             return 8174955; // Default tint, from wiki
         }
         
-        if (this.useBetaColors && this.useBetaColorsConfigSupplier.get()) {
+        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor()) {
             int x = pos.getX();
             int y = pos.getY();
             int z = pos.getZ();
@@ -69,8 +61,9 @@ public final class BetaBlockColors implements BetaClimateResolver {
             y = (int) ((long) y + (shift >> 19 & 31L));
             z = (int) ((long) z + (shift >> 24 & 31L));
             
-            double temp = this.sampleTemp(x, z);
-            double rain = this.sampleRain(x, z);
+            Clime clime = this.climateSampler.get().sampleClime(x, z);
+            double temp = clime.temp();
+            double rain = clime.rain();
 
             return GrassColors.getColor(temp, rain);
         }
@@ -83,12 +76,13 @@ public final class BetaBlockColors implements BetaClimateResolver {
             return 4764952; // Default tint, from wiki
         }
         
-        if (this.useBetaColors && this.useBetaColorsConfigSupplier.get()) {
+        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor()) {
             int x = pos.getX();
             int z = pos.getZ();
             
-            double temp = this.sampleTemp(x, z);
-            double rain = this.sampleRain(x, z);
+            Clime clime = this.climateSampler.get().sampleClime(x, z);
+            double temp = clime.temp();
+            double rain = clime.rain();
             
             return FoliageColors.getColor(temp, rain);
         }
@@ -97,7 +91,7 @@ public final class BetaBlockColors implements BetaClimateResolver {
     }
     
     public int getReedColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
-        if (this.useBetaColors && this.useBetaColorsConfigSupplier.get()) {
+        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor()) {
             return 0xFFFFFF;
         }
         

@@ -1,24 +1,24 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
-import com.bespectacled.modernbeta.api.world.gen.BeachSpawnable;
+import java.util.Random;
+
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.GenUtil;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.ChunkRandom;
 
-public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachSpawnable {
+public class Infdev415ChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
     private final PerlinOctaveNoise maxLimitNoiseOctaves;
     private final PerlinOctaveNoise mainNoiseOctaves;
@@ -28,8 +28,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
     
     public Infdev415ChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        //super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 1, 1, 1.0, 1.0, 80, 400, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
-        
+
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
@@ -40,6 +39,8 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
         this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 5, true);
 
         setForestOctaves(forestNoiseOctaves);
+        
+        this.spawnLocator = new BeachSpawnLocator(this, this.beachNoiseOctaves);
     }
 
     @Override
@@ -49,33 +50,34 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
-        int bedrockFloor = this.minY + this.bedrockFloor;
+        int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
-        ChunkRandom rand = this.createChunkRand(chunkX, chunkZ);
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        Random rand = this.createSurfaceRandom(chunkX, chunkZ);
+        Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         
-        for (int x = 0; x < 16; ++x) {
-            for (int z = 0; z < 16; ++z) {
-                int absX = (chunkX << 4) + x;
-                int absZ = (chunkZ << 4) + z;
-                int topY = GenUtil.getSolidHeight(chunk, x, z, this.worldHeight, this.defaultFluid) + 1;
+        for (int localX = 0; localX < 16; ++localX) {
+            for (int localZ = 0; localZ < 16; ++localZ) {
+                int x = (chunkX << 4) + localX;
+                int z = (chunkZ << 4) + localZ;
+                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(
-                    absX * thirtysecond, 
-                    absZ * thirtysecond, 
+                    x * thirtysecond, 
+                    z * thirtysecond, 
                     0.0) + rand.nextDouble() * 0.2 > 0.0;
                 
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(
-                    absZ * thirtysecond, 
+                    z * thirtysecond, 
                     109.0134,
-                    absX * thirtysecond) + rand.nextDouble() * 0.2 > 3.0;
+                    x * thirtysecond) + rand.nextDouble() * 0.2 > 3.0;
                 
-                double surfaceNoise = this.surfaceNoiseOctaves.sample(absX * thirtysecond * 2.0, absZ * thirtysecond * 2.0);
+                double surfaceNoise = this.surfaceNoiseOctaves.sample(x * thirtysecond * 2.0, z * thirtysecond * 2.0);
                 int surfaceDepth = (int)(surfaceNoise / 3.0 + 3.0 + rand.nextDouble() * 0.25);
                 
-                int flag = -1;
+                int runDepth = -1;
                 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(absX, topY, absZ));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
                 
                 BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();
@@ -83,29 +85,29 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
                 BlockState topBlock = biomeTopBlock;
                 BlockState fillerBlock = biomeFillerBlock;
                 
-                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, mutable);
+                boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos);
                 
-                for (int y = this.worldTopY - 1; y >= this.minY; --y) {
+                for (int y = this.worldTopY - 1; y >= this.worldMinY; --y) {
                     
                     // Randomly place bedrock from y=0 to y=5
-                    if (y <= bedrockFloor + rand.nextInt(5)) {
-                        chunk.setBlockState(mutable.set(x, y, z), Blocks.BEDROCK.getDefaultState(), false);
+                    if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
+                        chunk.setBlockState(pos.set(localX, y, localZ), Blocks.BEDROCK.getDefaultState(), false);
                         continue;
                     }
                     
                     // Skip if used custom surface generation or if below minimum surface level.
-                    if (usedCustomSurface || y < this.minSurfaceY) {
+                    if (usedCustomSurface || y < this.surfaceMinY) {
                         continue;
                     }
                     
-                    mutable.set(x, y, z);
-                    BlockState someBlock = chunk.getBlockState(mutable);
+                    pos.set(localX, y, localZ);
+                    BlockState blockState = chunk.getBlockState(pos);
                     
-                    if (someBlock.equals(BlockStates.AIR)) {
-                        flag = -1;
+                    if (blockState.equals(BlockStates.AIR)) {
+                        runDepth = -1;
                         
-                    } else if (someBlock.equals(this.defaultBlock)) {
-                        if (flag == -1) {
+                    } else if (blockState.equals(this.defaultBlock)) {
+                        if (runDepth == -1) {
                             if (surfaceDepth <= 0) {
                                 topBlock = BlockStates.AIR;
                                 fillerBlock = this.defaultBlock;
@@ -129,17 +131,17 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
                                 topBlock = this.defaultFluid;
                             }
                             
-                            flag = surfaceDepth;
+                            runDepth = surfaceDepth;
                             
                             if (y >= this.seaLevel - 1) {
-                                chunk.setBlockState(mutable, topBlock, false);
+                                chunk.setBlockState(pos, topBlock, false);
                             } else {
-                                chunk.setBlockState(mutable, fillerBlock, false);
+                                chunk.setBlockState(pos, fillerBlock, false);
                             }
                             
-                        } else if (flag > 0) {
-                            --flag;
-                            chunk.setBlockState(mutable, fillerBlock, false);
+                        } else if (runDepth > 0) {
+                            --runDepth;
+                            chunk.setBlockState(pos, fillerBlock, false);
                         }
                     }
                 }
@@ -148,29 +150,9 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
     }
     
     @Override
-    public boolean isSandAt(int x, int z) {
-        double eighth = 0.03125D;
-        
-        int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-        Biome biome = this.getBiomeForNoiseGen(x >> 2, 0, z >> 2);
-        
-        return 
-            (biome.getGenerationSettings().getSurfaceConfig().getTopMaterial() == BlockStates.SAND && y >= seaLevel - 1) || 
-            (beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) > 0.0 && y > seaLevel - 1 && y <= seaLevel + 1);
-    }
-    
-    @Override
-    protected void generateScaleDepth(int startNoiseX, int startNoiseZ, int curNoiseX, int curNoiseZ, double[] scaleDepth) {}
-
-    @Override
-    protected double generateNoise(int noiseX, int noiseY, int noiseZ, double[] scaleDepth) {
-        // Check if y (in scaled space) is below sealevel
-        // and increase density accordingly.
-        //double elevGrad = y * 4.0 - 64.0;
-        double densityOffset = noiseY * this.verticalNoiseResolution - (double)this.seaLevel;
-        if (densityOffset < 0.0) {
-            densityOffset *= 3.0;
-        }
+    protected void sampleNoiseColumn(double[] buffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
+        int noiseX = startNoiseX + localNoiseX;
+        int noiseZ = startNoiseZ + localNoiseZ;
         
         double coordinateScale = 684.412D * this.xzScale; 
         double heightScale = 984.412D * this.yScale;
@@ -181,35 +163,78 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider implements BeachS
         
         double limitScale = 512.0D;
         
-        double density;
-        
-        // Default values: 8.55515, 1.71103, 8.55515
-        double mainNoiseVal = this.mainNoiseOctaves.sample(
-            noiseX * coordinateScale / mainNoiseScaleX, 
-            noiseY * coordinateScale / mainNoiseScaleY, 
-            noiseZ * coordinateScale / mainNoiseScaleZ) / 2.0;
-        
-        // Do not clamp noise if generating with noise caves!
-        if (mainNoiseVal < -1) {
-            density = this.minLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
-            density = MathHelper.clamp(density, -10D, 10D);
+        for (int y = 0; y < buffer.length; ++y) {
+            int noiseY = y + this.noiseMinY;
             
-        } else if (mainNoiseVal > 1.0) {
-            density = this.maxLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
-            density = MathHelper.clamp(density, -10D, 10D);
+            double density;
+            double densityOffset = this.getOffset(noiseY);
             
-        } else {
-            double minLimitVal = this.minLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;
-            double maxLimitVal = this.maxLimitNoiseOctaves.sample(noiseX * coordinateScale, noiseY * heightScale, noiseZ * coordinateScale) / limitScale - densityOffset;     
-            minLimitVal = MathHelper.clamp(minLimitVal, -10D, 10D);
-            maxLimitVal = MathHelper.clamp(maxLimitVal, -10D, 10D);
+            // Default values: 8.55515, 1.71103, 8.55515
+            double mainNoiseVal = this.mainNoiseOctaves.sample(
+                noiseX * coordinateScale / mainNoiseScaleX, 
+                noiseY * coordinateScale / mainNoiseScaleY, 
+                noiseZ * coordinateScale / mainNoiseScaleZ
+            ) / 2.0;
             
-            double mix = (mainNoiseVal + 1.0) / 2.0;
-            density = minLimitVal + (maxLimitVal - minLimitVal) * mix;
-        };
+            // Do not clamp noise if generating with noise caves!
+            if (mainNoiseVal < -1) {
+                density = this.minLimitNoiseOctaves.sample(
+                    noiseX * coordinateScale, 
+                    noiseY * heightScale, 
+                    noiseZ * coordinateScale
+                ) / limitScale - densityOffset;
+                
+                density = this.clampNoise(density);
+                
+            } else if (mainNoiseVal > 1.0) {
+                density = this.maxLimitNoiseOctaves.sample(
+                    noiseX * coordinateScale, 
+                    noiseY * heightScale, 
+                    noiseZ * coordinateScale
+                ) / limitScale - densityOffset;
+                
+                density = this.clampNoise(density);
+                
+            } else {
+                double minLimitVal = this.minLimitNoiseOctaves.sample(
+                    noiseX * coordinateScale, 
+                    noiseY * heightScale, 
+                    noiseZ * coordinateScale
+                ) / limitScale - densityOffset;
+                
+                double maxLimitVal = this.maxLimitNoiseOctaves.sample(
+                    noiseX * coordinateScale, 
+                    noiseY * heightScale, 
+                    noiseZ * coordinateScale
+                ) / limitScale - densityOffset;     
+
+                minLimitVal = this.clampNoise(minLimitVal);
+                maxLimitVal = this.clampNoise(maxLimitVal);
+                                
+                double delta = (mainNoiseVal + 1.0) / 2.0;
+                density = minLimitVal + (maxLimitVal - minLimitVal) * delta;
+            };
+            
+            // Apply slides
+            density = this.applySlides(density, y);
+            
+            buffer[y] = density;
+        }
+    }
+    
+    private double clampNoise(double density) {
+        return MathHelper.clamp(density, -10D, 10D);
+    }
+    
+    private double getOffset(int noiseY) {
+        // Check if y (in scaled space) is below sealevel
+        // and increase density accordingly.
+        //double offset = y * 4.0 - 64.0;
+        double offset = noiseY * this.verticalNoiseResolution - (double)this.seaLevel;
         
-        density = this.applyBottomSlide(density, noiseY, -3);
+        if (offset < 0.0)
+            offset *= 3.0;
         
-        return density;
+        return offset;
     }
 }

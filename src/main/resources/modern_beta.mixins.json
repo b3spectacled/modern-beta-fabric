@@ -8,7 +8,8 @@
     "MixinBiomeArray",
     "MixinGeneratorOptions",
     "MixinChunkGeneratorInvoker",
-    "MixinBiomeSourceAccessor"
+    "MixinOceanMonumentFeature",
+    "MixinSpawnLocating"
   ],
   "client": [
     "client.MixinClientWorld",
@@ -16,7 +17,9 @@
     "client.MixinBackgroundRenderer",
     "client.MixinGeneratorTypeAccessor",
     "client.MixinInGameHud",
-    "client.MixinMoreOptionsDialogInvoker"
+    "client.MixinMoreOptionsDialogInvoker",
+    "client.MixinSkyProperties",
+    "client.MixinDebugHud"
   ],
   "injectors": {
     "defaultRequire": 1

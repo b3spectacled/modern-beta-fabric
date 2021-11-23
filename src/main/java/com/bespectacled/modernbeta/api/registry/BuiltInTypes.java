@@ -8,10 +8,13 @@ public final class BuiltInTypes {
         SKYLANDS("skylands"),
         ALPHA("alpha"),
         INFDEV_611("infdev_611"),
+        INFDEV_420("infdev_420"),
         INFDEV_415("infdev_415"),
         INFDEV_227("infdev_227"),
         INDEV("indev"),
-        BETA_ISLANDS("beta_islands")
+        CLASSIC_0_30("classic_0_30"),
+        BETA_ISLANDS("beta_islands"),
+        PE("pe")
         ;
         
         public final String name;
@@ -22,7 +25,8 @@ public final class BuiltInTypes {
     public enum Biome {
         BETA("beta"),
         SINGLE("single"),
-        VANILLA("vanilla")
+        VANILLA("vanilla"),
+        PE("pe")
         ;
         
         public final String name;
@@ -30,24 +34,14 @@ public final class BuiltInTypes {
         private Biome(String name) { this.name = name; }
     }
     
-    public enum CaveBiome {
-        NONE("none"),
-        VANILLA("vanilla"),
-        BETA("beta"),
-        SINGLE("single")
-        ;
-        
-        public final String name;
-        
-        private CaveBiome(String name) { this.name = name; }
-    }
-    
     public enum WorldScreen {
         BASE("base"),
         INF("inf"),
         INFDEV_227("infdev_227"),
+        PRE_INF("pre_inf"),
         INDEV("indev"),
-        ISLAND("island")
+        ISLAND("island"),
+        INF_CLIMATE("inf_climate")
         ;
         
         public final String name;

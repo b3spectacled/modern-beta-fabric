@@ -1,10 +1,15 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.compat.CompatBiomes;
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.decorator.OldDecorators;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
@@ -20,13 +25,22 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
 
 public abstract class BaseChunkProvider extends ChunkProvider {
+    // Set for specifying which biomes should use their vanilla surface builders.
+    // Done on per-biome basis for best mod compatibility.
+    private static final Set<Identifier> BIOMES_WITH_CUSTOM_SURFACES = new HashSet<Identifier>(
+        Stream.concat(
+            CompatBiomes.BIOMES_WITH_CUSTOM_SURFACES.stream().map(b -> new Identifier(b)), 
+            ModernBeta.COMPAT_CONFIG.biomesWithCustomSurfaces.stream().map(b -> new Identifier(b))
+        ).collect(Collectors.toList())
+    );
+    
     protected final Random rand;
     
-    protected final int minY;
+    protected final int worldMinY;
     protected final int worldHeight;
     protected final int worldTopY;
     protected final int seaLevel;
-    protected final int minSurfaceY;
+    protected final int surfaceMinY;
     
     protected final int bedrockFloor;
     protected final int bedrockCeiling;
@@ -52,10 +66,10 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     
     public BaseChunkProvider(
         OldChunkGenerator chunkGenerator,
-        int minY,
+        int worldMinY,
         int worldHeight,
         int seaLevel,
-        int minSurfaceY,
+        int surfaceMinY,
         int bedrockFloor,
         int bedrockCeiling,
         BlockState defaultBlock,
@@ -63,11 +77,11 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     ) {
         super(chunkGenerator);
         
-        this.minY = minY;
+        this.worldMinY = worldMinY;
         this.worldHeight = worldHeight;
-        this.worldTopY = worldHeight + minY;
+        this.worldTopY = worldHeight + worldMinY;
         this.seaLevel = seaLevel;
-        this.minSurfaceY = minSurfaceY;
+        this.surfaceMinY = surfaceMinY;
         this.bedrockFloor = bedrockFloor;
         this.bedrockCeiling = bedrockCeiling;
 
@@ -80,6 +94,10 @@ public abstract class BaseChunkProvider extends ChunkProvider {
             new OctavePerlinNoiseSampler(new ChunkRandom(seed), IntStream.rangeClosed(-3, 0));
         
         this.rand = new Random(seed);
+        
+        // Handle bad height values
+        if (this.worldMinY > this.worldHeight)
+            throw new IllegalStateException("[Modern Beta] Minimum height cannot be greater than world height!");
     }
     
     /**
@@ -92,8 +110,8 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     /**
      * @return Minimum Y coordinate in block coordinates.
      */
-    public int getMinimumY() {
-        return this.minY;
+    public int getWorldMinY() {
+        return this.worldMinY;
     }
     
     /**
@@ -104,17 +122,17 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     }
     
     /**
-     * Get a new ChunkRandom object initialized with chunk coordinates for seed, for surface generation.
+     * Get a new Random object initialized with chunk coordinates for seed, for surface generation.
      * 
      * @param chunkX x-coordinate in chunk coordinates.
      * @param chunkZ z-coordinate in chunk coordinates.
      * 
-     * @return New ChunkRandom object initialized with chunk coordinates for seed.
+     * @return New Random object initialized with chunk coordinates for seed.
      */
-    protected ChunkRandom createChunkRand(int chunkX, int chunkZ) {
+    protected Random createSurfaceRandom(int chunkX, int chunkZ) {
         long seed = (long)chunkX * 0x4f9939f508L + (long)chunkZ * 0x1ef1565bd5L;
         
-        return new ChunkRandom(seed);
+        return new Random(seed);
     }
     
     /**
@@ -123,10 +141,12 @@ public abstract class BaseChunkProvider extends ChunkProvider {
      * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
      */
     protected void setForestOctaves(PerlinOctaveNoise forestOctaves) {
-        OldDecorators.COUNT_BETA_NOISE_DECORATOR.setOctaves(forestOctaves);
-        OldDecorators.COUNT_ALPHA_NOISE_DECORATOR.setOctaves(forestOctaves);
-        OldDecorators.COUNT_INFDEV_NOISE_DECORATOR.setOctaves(forestOctaves);
-    }
+        OldDecorators.COUNT_BETA_NOISE.setOctaves(forestOctaves);
+        OldDecorators.COUNT_ALPHA_NOISE.setOctaves(forestOctaves);
+        OldDecorators.COUNT_INFDEV_415_NOISE.setOctaves(forestOctaves);
+        OldDecorators.COUNT_INFDEV_420_NOISE.setOctaves(forestOctaves);
+        OldDecorators.COUNT_INFDEV_611_NOISE.setOctaves(forestOctaves);
+        }
     
     /**
      * Use a biome-specific surface builder, at a given x/z-coordinate and topmost y-coordinate.
@@ -141,12 +161,12 @@ public abstract class BaseChunkProvider extends ChunkProvider {
      * 
      * @return True if biome is included in valid biomes set and has run surface builder. False if not included and not run.
      */
-    protected boolean useCustomSurfaceBuilder(Biome biome, Identifier biomeId, ChunkRegion region, Chunk chunk, ChunkRandom random, BlockPos.Mutable mutable) {
+    protected boolean useCustomSurfaceBuilder(Biome biome, Identifier biomeId, ChunkRegion region, Chunk chunk, Random random, BlockPos.Mutable mutable) {
         int x = mutable.getX();
         int y = mutable.getY();
         int z = mutable.getZ();
         
-        if (CompatBiomes.hasCustomSurface(biomeId)) {
+        if (BIOMES_WITH_CUSTOM_SURFACES.contains(biomeId)) {
             double surfaceNoise = this.surfaceDepthNoise.sample(x * 0.0625, z * 0.0625, 0.0625, (x & 0xF) * 0.0625) * 15.0;
             biome.buildSurface(
                 random, 
@@ -163,5 +183,14 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         }
         
         return false;
+    }
+    
+    /**
+     * Creates an array to hold 16 * 16 array of double values for surface generation.
+     * 
+     * @return Double array of size 256.
+     */
+    protected double[] createSurfaceArray() {
+        return new double[256];
     }
 }

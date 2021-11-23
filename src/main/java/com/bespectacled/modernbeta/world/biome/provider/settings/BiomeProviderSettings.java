@@ -2,12 +2,14 @@ package com.bespectacled.modernbeta.world.biome.provider.settings;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.config.ConfigBiome;
 import com.bespectacled.modernbeta.util.NbtTags;
 
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.world.biome.BiomeKeys;
 
 public class BiomeProviderSettings {
+    private static final ConfigBiome CONFIG = ModernBeta.BIOME_CONFIG;
+    
     public static NbtCompound createSettingsBase(String biomeType) {
         NbtCompound settings = new NbtCompound();
         
@@ -16,35 +18,43 @@ public class BiomeProviderSettings {
         return settings;
     }
     
+    public static NbtCompound createSettingsOceans(String biomeType) {
+        NbtCompound settings = createSettingsBase(biomeType);
+
+        settings.putBoolean(NbtTags.GEN_OCEANS, CONFIG.oceanBiomeConfig.generateOceans);
+
+        return settings;
+    }
+    
     public static NbtCompound createSettingsBeta() {
-        NbtCompound settings = createSettingsBase(BuiltInTypes.Biome.BETA.name);
+        NbtCompound settings = createSettingsOceans(BuiltInTypes.Biome.BETA.name);
         
-        settings.putString("desert", ModernBeta.BIOME_CONFIG.betaDesertBiome);
-        settings.putString("forest", ModernBeta.BIOME_CONFIG.betaForestBiome);
-        settings.putString("ice_desert", ModernBeta.BIOME_CONFIG.betaIceDesertBiome);
-        settings.putString("plains", ModernBeta.BIOME_CONFIG.betaPlainsBiome);
-        settings.putString("rainforest", ModernBeta.BIOME_CONFIG.betaRainforestBiome);
-        settings.putString("savanna", ModernBeta.BIOME_CONFIG.betaSavannaBiome);
-        settings.putString("shrubland", ModernBeta.BIOME_CONFIG.betaShrublandBiome);
-        settings.putString("seasonal_forest", ModernBeta.BIOME_CONFIG.betaSeasonalForestBiome);
-        settings.putString("swampland", ModernBeta.BIOME_CONFIG.betaSwamplandBiome);
-        settings.putString("taiga", ModernBeta.BIOME_CONFIG.betaTaigaBiome);
-        settings.putString("tundra", ModernBeta.BIOME_CONFIG.betaTundraBiome);
+        settings.putString("desert", CONFIG.betaBiomeConfig.betaDesertBiome);
+        settings.putString("forest", CONFIG.betaBiomeConfig.betaForestBiome);
+        settings.putString("ice_desert", CONFIG.betaBiomeConfig.betaIceDesertBiome);
+        settings.putString("plains", CONFIG.betaBiomeConfig.betaPlainsBiome);
+        settings.putString("rainforest", CONFIG.betaBiomeConfig.betaRainforestBiome);
+        settings.putString("savanna", CONFIG.betaBiomeConfig.betaSavannaBiome);
+        settings.putString("shrubland", CONFIG.betaBiomeConfig.betaShrublandBiome);
+        settings.putString("seasonal_forest", CONFIG.betaBiomeConfig.betaSeasonalForestBiome);
+        settings.putString("swampland", CONFIG.betaBiomeConfig.betaSwamplandBiome);
+        settings.putString("taiga", CONFIG.betaBiomeConfig.betaTaigaBiome);
+        settings.putString("tundra", CONFIG.betaBiomeConfig.betaTundraBiome);
         
-        settings.putString("ocean", ModernBeta.BIOME_CONFIG.betaOceanBiome);
-        settings.putString("cold_ocean", ModernBeta.BIOME_CONFIG.betaColdOceanBiome);
-        settings.putString("frozen_ocean", ModernBeta.BIOME_CONFIG.betaFrozenOceanBiome);
-        settings.putString("lukewarm_ocean", ModernBeta.BIOME_CONFIG.betaLukewarmOceanBiome);
-        settings.putString("warm_ocean", ModernBeta.BIOME_CONFIG.betaWarmOceanBiome);
+        settings.putString("ocean", CONFIG.betaBiomeConfig.betaOceanBiome);
+        settings.putString("cold_ocean", CONFIG.betaBiomeConfig.betaColdOceanBiome);
+        settings.putString("frozen_ocean", CONFIG.betaBiomeConfig.betaFrozenOceanBiome);
+        settings.putString("lukewarm_ocean", CONFIG.betaBiomeConfig.betaLukewarmOceanBiome);
+        settings.putString("warm_ocean", CONFIG.betaBiomeConfig.betaWarmOceanBiome);
         
         return settings;
     }
     
     public static NbtCompound createSettingsVanilla() {
-        NbtCompound settings = createSettingsBase(BuiltInTypes.Biome.VANILLA.name);
+        NbtCompound settings = createSettingsOceans(BuiltInTypes.Biome.VANILLA.name);
         
-        settings.putInt(NbtTags.VANILLA_BIOME_SIZE, ModernBeta.BIOME_CONFIG.vanillaBiomeSize);
-        settings.putInt(NbtTags.VANILLA_OCEAN_BIOME_SIZE, ModernBeta.BIOME_CONFIG.vanillaOceanBiomeSize);
+        settings.putInt(NbtTags.VANILLA_BIOME_SIZE, CONFIG.vanillaBiomeConfig.vanillaBiomeSize);
+        settings.putInt(NbtTags.VANILLA_OCEAN_BIOME_SIZE, CONFIG.vanillaBiomeConfig.vanillaOceanBiomeSize);
         
         return settings;
     }
@@ -52,37 +62,31 @@ public class BiomeProviderSettings {
     public static NbtCompound createSettingsSingle() {
         NbtCompound settings = createSettingsBase(BuiltInTypes.Biome.SINGLE.name);
 
-        settings.putString(NbtTags.SINGLE_BIOME, ModernBeta.BIOME_CONFIG.singleBiome);
+        settings.putString(NbtTags.SINGLE_BIOME, CONFIG.singleBiomeConfig.singleBiome);
         
         return settings;
     }
     
-    /* Beta Biome Presets */
-    
-    public static NbtCompound createBetaSettingsBase() {
-        return new NbtCompound();
-    }
-    
-    public static NbtCompound createBetaSettingsPlus() {
-        NbtCompound settings = createBetaSettingsBase();
+    public static NbtCompound createSettingsPE() {
+        NbtCompound settings = createSettingsOceans(BuiltInTypes.Biome.PE.name);
         
-        settings.putString("desert", BiomeKeys.DESERT.getValue().toString());
-        settings.putString("forest", BiomeKeys.FOREST.getValue().toString());
-        settings.putString("ice_desert", BiomeKeys.ICE_SPIKES.getValue().toString());
-        settings.putString("plains", BiomeKeys.PLAINS.getValue().toString());
-        settings.putString("rainforest", BiomeKeys.JUNGLE.getValue().toString());
-        settings.putString("savanna", BiomeKeys.SAVANNA.getValue().toString());
-        settings.putString("shrubland", BiomeKeys.PLAINS.getValue().toString());
-        settings.putString("seasonal_forest", BiomeKeys.DARK_FOREST.getValue().toString());
-        settings.putString("swampland", BiomeKeys.SWAMP.getValue().toString());
-        settings.putString("taiga", BiomeKeys.SNOWY_TAIGA.getValue().toString());
-        settings.putString("tundra", BiomeKeys.SNOWY_TUNDRA.getValue().toString());
+        settings.putString("desert", CONFIG.peBiomeConfig.peDesertBiome);
+        settings.putString("forest", CONFIG.peBiomeConfig.peForestBiome);
+        settings.putString("ice_desert", CONFIG.peBiomeConfig.peIceDesertBiome);
+        settings.putString("plains", CONFIG.peBiomeConfig.pePlainsBiome);
+        settings.putString("rainforest", CONFIG.peBiomeConfig.peRainforestBiome);
+        settings.putString("savanna", CONFIG.peBiomeConfig.peSavannaBiome);
+        settings.putString("shrubland", CONFIG.peBiomeConfig.peShrublandBiome);
+        settings.putString("seasonal_forest", CONFIG.peBiomeConfig.peSeasonalForestBiome);
+        settings.putString("swampland", CONFIG.peBiomeConfig.peSwamplandBiome);
+        settings.putString("taiga", CONFIG.peBiomeConfig.peTaigaBiome);
+        settings.putString("tundra", CONFIG.peBiomeConfig.peTundraBiome);
         
-        settings.putString("ocean", BiomeKeys.OCEAN.getValue().toString());
-        settings.putString("cold_ocean", BiomeKeys.COLD_OCEAN.getValue().toString());
-        settings.putString("frozen_ocean", BiomeKeys.FROZEN_OCEAN.getValue().toString());
-        settings.putString("lukewarm_ocean", BiomeKeys.LUKEWARM_OCEAN.getValue().toString());
-        settings.putString("warm_ocean", BiomeKeys.WARM_OCEAN.getValue().toString());
+        settings.putString("ocean", CONFIG.peBiomeConfig.peOceanBiome);
+        settings.putString("cold_ocean", CONFIG.peBiomeConfig.peColdOceanBiome);
+        settings.putString("frozen_ocean", CONFIG.peBiomeConfig.peFrozenOceanBiome);
+        settings.putString("lukewarm_ocean", CONFIG.peBiomeConfig.peLukewarmOceanBiome);
+        settings.putString("warm_ocean", CONFIG.peBiomeConfig.peWarmOceanBiome);
         
         return settings;
     }

@@ -7,9 +7,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.bespectacled.modernbeta.client.gui.option.ExtendedCyclingOption;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.option.CyclingOption;
+import net.minecraft.client.option.Option;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.TranslatableText;
@@ -18,6 +20,7 @@ import net.minecraft.util.Formatting;
 public class CyclingOptionWrapper<T> implements OptionWrapper {
     private final String key;
     private final T[] collection;
+    @SuppressWarnings("unused")
     private final Supplier<T> getter;
     private final Consumer<T> setter;
     private final Function<T, Formatting> formatting;
@@ -56,8 +59,13 @@ public class CyclingOptionWrapper<T> implements OptionWrapper {
     }
     
     @Override
-    public CyclingOption create() {
-        this.cyclingOption = new CyclingOption(
+    public Option create() {
+        return this.create(true);
+    }
+    
+    @Override
+    public CyclingOption create(boolean active) {
+        this.cyclingOption = new ExtendedCyclingOption(
             this.key,
             (gameOptions, value) -> {
                 if (this.iter.hasNext()) {
@@ -74,7 +82,8 @@ public class CyclingOptionWrapper<T> implements OptionWrapper {
                 MutableText currentText = new TranslatableText(this.key + "." + this.current.toString().toLowerCase()).formatted(this.formatting.apply(this.current));
                 
                 return prefix.append(": ").append(currentText);
-            }
+            },
+            active
         );
         
         cyclingOption.setTooltip(this.tooltips.apply(this.current));

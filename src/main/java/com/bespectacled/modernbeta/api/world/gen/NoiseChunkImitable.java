@@ -21,7 +21,7 @@ public interface NoiseChunkImitable {
      * 
      * @return A blockstate.
      */
-    default BlockState getBlockState(StructureWeightSampler weightSampler, int x, int y, int z, Block blockToSet, Block defaultBlock, Block defaultFluid) {
+    default BlockState getBlockState(StructureWeightSampler weightSampler, int x, int y, int z, Block blockToSet, Block defaultFluid, Block defaultBlock) {
         boolean isFluid = blockToSet == Blocks.AIR || blockToSet == defaultFluid;
         double simDensity = isFluid ? -25D : 25D;
         

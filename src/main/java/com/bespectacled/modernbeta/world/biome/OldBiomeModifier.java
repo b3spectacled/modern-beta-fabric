@@ -12,7 +12,6 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
-@SuppressWarnings("deprecation")
 public class OldBiomeModifier {
     private static ImmutableList<RegistryKey<Biome>> VANILLA_OCEANS = ImmutableList.of(
         BiomeKeys.OCEAN,

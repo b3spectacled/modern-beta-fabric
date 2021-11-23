@@ -9,7 +9,7 @@ import net.minecraft.world.gen.carver.Carver;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 
 public class OldCarvers {
-    public static final Carver<ProbabilityConfig> OLD_BETA_CAVE_CARVER = register("old_beta_cave", new OldBetaCaveCarver(ProbabilityConfig.CODEC, 128));
+    public static final Carver<ProbabilityConfig> OLD_BETA_CAVE_CARVER = register("old_beta_cave", new OldCaveCarver(ProbabilityConfig.CODEC, 128));
     public static final ConfiguredCarver<?> CONF_OLD_BETA_CAVE_CARVER = register("old_beta_cave", new ConfiguredCarver<ProbabilityConfig>(OLD_BETA_CAVE_CARVER, new ProbabilityConfig(1f)));
     
     public static Carver<ProbabilityConfig> register(String id, Carver<ProbabilityConfig> carver) {

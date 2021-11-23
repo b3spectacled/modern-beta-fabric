@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.world.decorator.noise;
 
 import java.util.Random;
 
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 
 public class AlphaNoiseDecorator implements OldNoiseDecorator {
     private final PerlinOctaveNoise noiseSampler;
@@ -24,8 +24,9 @@ public class AlphaNoiseDecorator implements OldNoiseDecorator {
 
         int noiseCount = (int) ((this.noiseSampler.sample(startX * scale, startZ * scale) / 8D + random.nextDouble() * 4D + 4D) / 3D);
         
-        if (noiseCount < 0)
+        if (noiseCount < 0) {
             noiseCount = 0;
+        }
         
         return noiseCount;
     }

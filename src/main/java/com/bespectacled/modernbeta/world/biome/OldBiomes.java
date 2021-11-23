@@ -2,9 +2,12 @@ package com.bespectacled.modernbeta.world.biome;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
-import com.bespectacled.modernbeta.world.biome.classic.ClassicBiomes;
 import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
+import com.bespectacled.modernbeta.world.biome.inf.InfBiomes;
+import com.bespectacled.modernbeta.world.biome.pe.PEBiomes;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
@@ -20,9 +23,12 @@ public class OldBiomes {
     
     public static void register() {
         BetaBiomes.registerBiomes();
-        ClassicBiomes.registerAlphaBiomes();
-        ClassicBiomes.registerInfdev415Biomes();
-        ClassicBiomes.registerInfdev227Biomes();
+        InfBiomes.registerAlphaBiomes();
+        InfBiomes.registerInfdev415Biomes();
+        InfBiomes.registerInfdev227Biomes();
         IndevBiomes.registerBiomes();
+        PEBiomes.registerBiomes();
+        InfBiomes.registerInfdev611Biomes();
+        InfBiomes.registerInfdev420Biomes();
     }
 }

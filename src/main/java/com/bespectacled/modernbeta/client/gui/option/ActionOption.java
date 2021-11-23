@@ -1,5 +1,10 @@
 package com.bespectacled.modernbeta.client.gui.option;
 
+import java.util.function.Function;
+
+import com.google.common.collect.ImmutableList;
+
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.GameOptions;
@@ -14,15 +19,33 @@ public class ActionOption extends Option {
     private final String key;
     private final String suffix;
     private final ButtonWidget.PressAction onPress;
+    private final boolean active;
+    private Function<MinecraftClient, ActionButtonWidget.TooltipFactory> tooltips;
     
-    private ClickableWidget button;
+    private ActionButtonWidget button;
     
     public ActionOption(String key, String suffix, ButtonWidget.PressAction onPress) {
+        this(key, suffix, onPress, true);
+    }
+    
+    public ActionOption(String key, String suffix, ButtonWidget.PressAction onPress, boolean active) {
+        this(key, suffix, onPress, client -> () -> ImmutableList.of(), active);
+    }
+    
+    public ActionOption(
+        String key,
+        String suffix,
+        ButtonWidget.PressAction onPress,
+        Function<MinecraftClient, ActionButtonWidget.TooltipFactory> tooltips,
+        boolean active
+    ) {
         super(key);
         
         this.key = key;
         this.suffix = suffix;
         this.onPress = onPress;
+        this.tooltips = tooltips;
+        this.active = active;
     }
 
     @Override
@@ -42,15 +65,24 @@ public class ActionOption extends Option {
             buttonText.append(suffixText);
         }
         
-        this.button = new ButtonWidget(
+        this.button = new ActionButtonWidget(
             x, y, width, 20,
             buttonText,
-            this.onPress
+            this.onPress,
+            this.tooltips.apply(MinecraftClient.getInstance())
         );
         
-        if (this.onPress == null)
+        if (this.onPress == null || !this.active)
             this.button.active = false;
         
         return this.button;
     }
+    
+    public ActionOption tooltip(Function<MinecraftClient, ActionButtonWidget.TooltipFactory> tooltips) {
+        this.tooltips = tooltips;
+        
+        return this;
+    }
+    
+    
 }

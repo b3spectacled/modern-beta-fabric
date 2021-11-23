@@ -1,11 +1,14 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
@@ -22,6 +25,8 @@ public abstract class ChunkProvider {
     protected final Supplier<ChunkGeneratorSettings> generatorSettings;
     protected final NbtCompound providerSettings;
     
+    protected SpawnLocator spawnLocator;
+    
     /**
      * Construct a Modern Beta chunk provider with seed and settings.
      * 
@@ -32,17 +37,21 @@ public abstract class ChunkProvider {
         
         this.seed = chunkGenerator.getWorldSeed();
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
-        this.providerSettings = chunkGenerator.getProviderSettings();
+        this.providerSettings = chunkGenerator.getChunkSettings();
+        
+        this.spawnLocator = SpawnLocator.DEFAULT;
     }
     
     /**
-     * Generates base terrain for given chunk.
-     * 
-     * @param worldAccess
+     * Generates base terrain for given chunk and returns it.
+     * @param worldAccess TODO
      * @param structureAccessor
      * @param chunk
+     * @param biomeSource
+     * 
+     * @return A completed chunk.
      */
-    public abstract void provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk);
+    public abstract Chunk provideChunk(WorldAccess worldAccess, StructureAccessor structureAccessor, Chunk chunk);
     
     /**
      * Generates biome-specific surface for given chunk.
@@ -60,8 +69,6 @@ public abstract class ChunkProvider {
      * @param x x-coordinate in block coordinates.
      * @param z z-coordinate in block coordinates.
      * @param type Vanilla heightmap type.
-     * @param world
-     * 
      * @return The y-coordinate of top block at x/z.
      */
     public abstract int getHeight(int x, int z, Heightmap.Type heightmap);
@@ -92,7 +99,7 @@ public abstract class ChunkProvider {
     /**
      * @return Minimum Y coordinate in block coordinates. 0 by default.
      */
-    public int getMinimumY() {
+    public int getWorldMinY() {
         return 0;
     }
     
@@ -104,6 +111,30 @@ public abstract class ChunkProvider {
     }
     
     /**
+     * Locate initial spawn position for players.
+     * If optional left empty, then vanilla spawn position is used.
+     * 
+     * @return Optional BlockPos player spawn position.
+     */
+    public Optional<BlockPos> locateSpawn() {
+        return this.spawnLocator.locateSpawn();
+    }
+    
+    /**
+     * @return Chunk provider's spawn locator.
+     */
+    public SpawnLocator getSpawnLocator() {
+        return this.spawnLocator;
+    }
+    
+    /**
+     * @return Parent OldChunkGenerator.
+     */
+    public OldChunkGenerator getChunkGenerator() {
+        return this.chunkGenerator;
+    }
+    
+    /**
      * Samples biome at given biome coordinates.
      * 
      * @param biomeX x-coordinate in biome coordinates.
@@ -112,7 +143,7 @@ public abstract class ChunkProvider {
      * 
      * @return A biome.
      */
-    protected Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.chunkGenerator.getBiomeSource().getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
 }

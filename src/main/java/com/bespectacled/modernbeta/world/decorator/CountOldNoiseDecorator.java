@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.bespectacled.modernbeta.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.decorator.noise.BetaNoiseDecorator;
 import com.bespectacled.modernbeta.world.decorator.noise.OldNoiseDecorator;
 import com.mojang.serialization.Codec;

@@ -1,63 +1,44 @@
 package com.bespectacled.modernbeta.compat;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
+import java.util.List;
 
-import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.BiomeKeys;
 
 public class CompatBiomes {
-    // Set for specifying which biomes should use their vanilla surface builders.
-    // Done on per-biome basis for best mod compatibility.
-    private static final Set<Identifier> BIOMES_WITH_CUSTOM_SURFACES = new HashSet<Identifier>();
-    
-    public static void addBiomeWithCustomSurface(Identifier key) {
-        if (BIOMES_WITH_CUSTOM_SURFACES.contains(key)) 
-            throw new IllegalArgumentException("[Modern Beta] Custom surfaces already contains biome named " + key.toString());
-        
-        BIOMES_WITH_CUSTOM_SURFACES.add(key);
-    }
-    
-    public static boolean hasCustomSurface(Identifier key) {
-        if (BIOMES_WITH_CUSTOM_SURFACES.contains(key))
-            return true;
-        
-        return false;
-    }
-    
-    static {
+    public static final List<String> BIOMES_WITH_CUSTOM_SURFACES = Arrays.asList(
         // Badlands
-        addBiomeWithCustomSurface(BiomeKeys.BADLANDS.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.BADLANDS_PLATEAU.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.ERODED_BADLANDS.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.MODIFIED_BADLANDS_PLATEAU.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.MODIFIED_WOODED_BADLANDS_PLATEAU.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.WOODED_BADLANDS_PLATEAU.getValue());
+        BiomeKeys.BADLANDS.getValue().toString(),
+        BiomeKeys.BADLANDS_PLATEAU.getValue().toString(),
+        BiomeKeys.ERODED_BADLANDS.getValue().toString(),
+        BiomeKeys.MODIFIED_BADLANDS_PLATEAU.getValue().toString(),
+        BiomeKeys.MODIFIED_WOODED_BADLANDS_PLATEAU.getValue().toString(),
+        BiomeKeys.WOODED_BADLANDS_PLATEAU.getValue().toString(),
         
         // Mountains
-        addBiomeWithCustomSurface(BiomeKeys.MOUNTAINS.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.GRAVELLY_MOUNTAINS.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.MODIFIED_GRAVELLY_MOUNTAINS.getValue());
+        BiomeKeys.MOUNTAINS.getValue().toString(),
+        BiomeKeys.GRAVELLY_MOUNTAINS.getValue().toString(),
+        BiomeKeys.MODIFIED_GRAVELLY_MOUNTAINS.getValue().toString(),
         
         // Giant Taigas
-        addBiomeWithCustomSurface(BiomeKeys.GIANT_TREE_TAIGA.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.GIANT_TREE_TAIGA_HILLS.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.GIANT_SPRUCE_TAIGA.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.GIANT_SPRUCE_TAIGA_HILLS.getValue());
+        BiomeKeys.GIANT_TREE_TAIGA.getValue().toString(),
+        BiomeKeys.GIANT_TREE_TAIGA_HILLS.getValue().toString(),
+        BiomeKeys.GIANT_SPRUCE_TAIGA.getValue().toString(),
+        BiomeKeys.GIANT_SPRUCE_TAIGA_HILLS.getValue().toString(),
         
         // Savanna
-        addBiomeWithCustomSurface(BiomeKeys.SHATTERED_SAVANNA.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.SHATTERED_SAVANNA_PLATEAU.getValue());
+        BiomeKeys.SHATTERED_SAVANNA.getValue().toString(),
+        BiomeKeys.SHATTERED_SAVANNA_PLATEAU.getValue().toString(),
         
         // Swamp
-        addBiomeWithCustomSurface(BiomeKeys.SWAMP.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.SWAMP_HILLS.getValue());
+        BiomeKeys.SWAMP.getValue().toString(),
+        BiomeKeys.SWAMP_HILLS.getValue().toString(),
         
         // Nether
-        addBiomeWithCustomSurface(BiomeKeys.NETHER_WASTES.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.WARPED_FOREST.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.CRIMSON_FOREST.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.BASALT_DELTAS.getValue());
-        addBiomeWithCustomSurface(BiomeKeys.SOUL_SAND_VALLEY.getValue());
-    }
+        BiomeKeys.NETHER_WASTES.getValue().toString(),
+        BiomeKeys.WARPED_FOREST.getValue().toString(),
+        BiomeKeys.CRIMSON_FOREST.getValue().toString(),
+        BiomeKeys.BASALT_DELTAS.getValue().toString(),
+        BiomeKeys.SOUL_SAND_VALLEY.getValue().toString()
+    );
 }

@@ -6,8 +6,9 @@ import java.util.function.Supplier;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
-import com.bespectacled.modernbeta.api.world.WorldSettings;
-import com.bespectacled.modernbeta.api.world.WorldSettings.WorldSetting;
+import com.bespectacled.modernbeta.client.gui.WorldSettings;
+import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
+import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.mixin.client.MixinMoreOptionsDialogInvoker;
 import com.bespectacled.modernbeta.util.NbtTags;
@@ -111,15 +112,15 @@ public class OldGeneratorType {
                         // In the case that settings have been set, and the world edit screen is opened again:
                         // If settings already present, create new compound tag and copy from source,
                         // otherwise, not copying will modify original settings.
-                        NbtCompound chunkProviderSettings = chunkGenerator instanceof OldChunkGenerator ?
-                            ((OldChunkGenerator)chunkGenerator).getProviderSettings() :
+                        NbtCompound chunkProviderSettings = chunkGenerator instanceof OldChunkGenerator oldChunkGenerator ?
+                            oldChunkGenerator.getChunkSettings() :
                             Registries.CHUNK_SETTINGS.get(worldProvider.getChunkProvider()).get();
                         
-                        NbtCompound biomeProviderSettings = biomeSource instanceof OldBiomeSource ? 
-                            ((OldBiomeSource)biomeSource).getProviderSettings() :
+                        NbtCompound biomeProviderSettings = biomeSource instanceof OldBiomeSource oldBiomeSource ? 
+                            oldBiomeSource.getBiomeSettings() : 
                             Registries.BIOME_SETTINGS.get(worldProvider.getBiomeProvider()).get();
                         
-                        return Registries.WORLD.get(chunkProviderSettings.getString(NbtTags.WORLD_TYPE)).createWorldScreen(
+                        return new WorldScreen(
                             screen,
                             new WorldSettings(chunkProviderSettings, biomeProviderSettings),
                             modifiedWorldSettings -> ((MixinMoreOptionsDialogInvoker)screen.moreOptionsDialog).invokeSetGeneratorOptions(

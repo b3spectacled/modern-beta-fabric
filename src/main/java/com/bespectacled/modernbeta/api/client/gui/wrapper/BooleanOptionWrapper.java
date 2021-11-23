@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.client.gui.option.FormattedBooleanOption;
+import com.bespectacled.modernbeta.client.gui.option.ExtendedBooleanOption;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.option.BooleanOption;
@@ -29,12 +29,18 @@ public class BooleanOptionWrapper implements OptionWrapper {
     
     @Override
     public BooleanOption create() {
-        FormattedBooleanOption booleanOption = new FormattedBooleanOption(
+        return this.create(true);
+    }
+    
+    @Override
+    public BooleanOption create(boolean active) {
+        ExtendedBooleanOption booleanOption = new ExtendedBooleanOption(
             this.key,
             gameOptions -> this.getter.get(),
             (gameOptions, value) -> {
                 this.setter.accept(value);
-            }
+            },
+            active
         );
         
         booleanOption.setTooltip(tooltips);
