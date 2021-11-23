@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
@@ -33,20 +34,22 @@ public class MixinMinecraftServer {
         ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
         BlockPos spawnPos = SpawnLocating.findServerSpawnPoint(world, chunkPos, validSpawnNeeded);
         
-        if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
+        if (chunkGenerator instanceof OldChunkGenerator) {
+            ChunkProvider chunkProvider = ((OldChunkGenerator)chunkGenerator).getChunkProvider();
+            
             ((IntRuleAccessor)world.getGameRules().get(GameRules.SPAWN_RADIUS)).setValue(0); // Ensure a centered spawn
-            spawnPos = oldChunkGenerator.getChunkProvider().locateSpawn().orElse(spawnPos);
+            spawnPos = chunkProvider.locateSpawn().orElse(spawnPos);
             
             if (spawnPos != null && ModernBeta.DEV_ENV) {
                 ModernBeta.log(Level.INFO, String.format("Spawning at %d/%d/%d", spawnPos.getX(), spawnPos.getY(), spawnPos.getZ()));
             }
             
-            if (spawnPos != null && oldChunkGenerator.getChunkProvider() instanceof IndevChunkProvider indevChunkProvider) {
+            if (spawnPos != null && chunkProvider instanceof IndevChunkProvider) {
                 // Generate Indev house
-                indevChunkProvider.generateIndevHouse(world, spawnPos);
+                ((IndevChunkProvider)chunkProvider).generateIndevHouse(world, spawnPos);
                 
                 // Set Indev world properties.
-                setIndevProperties(world, indevChunkProvider.getLevelTheme());
+                setIndevProperties(world, ((IndevChunkProvider)chunkProvider).getLevelTheme());
             }
         }
         
@@ -56,19 +59,22 @@ public class MixinMinecraftServer {
     @Unique
     private static void setIndevProperties(ServerWorld world, IndevTheme theme) {
         switch(theme) {
-            case HELL -> {
+            case HELL:
                 world.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(false, null); 
                 world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null); 
                 world.setTimeOfDay(18000);
-            } case PARADISE -> {
+                break;
+            case PARADISE:
                 world.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(false, null); 
                 world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null); 
                 world.setTimeOfDay(6000);
-            } case WOODS -> {
+                break;
+            case WOODS:
                 world.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null); 
                 world.setWeather(0, Integer.MAX_VALUE, true, false);
-            } default -> {}
+                break;
+            default:
+                break;
         }
     }
-    
 }

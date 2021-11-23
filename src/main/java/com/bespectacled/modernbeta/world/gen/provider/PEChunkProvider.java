@@ -14,7 +14,7 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.mersenne.MTRandom;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.provider.climate.PEClimateSampler;
+import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampler;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.PESpawnLocator;
 
@@ -22,6 +22,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 
 public class PEChunkProvider extends NoiseChunkProvider {
@@ -62,13 +63,14 @@ public class PEChunkProvider extends NoiseChunkProvider {
             ModernBeta.GEN_CONFIG.infGenConfig.sampleClimate
         );
 
-        ClimateSampler climateSampler = new PEClimateSampler(chunkGenerator.getWorldSeed());
+        ClimateSampler climateSampler = new BetaClimateSampler(chunkGenerator.getWorldSeed());
+        BiomeSource biomeSource = chunkGenerator.getBiomeSource();
         
-        if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource && 
-            oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider
+        if (biomeSource instanceof OldBiomeSource && 
+            ((OldBiomeSource)biomeSource).getBiomeProvider() instanceof ClimateBiomeProvider
         ) {
             if (sampleClimate) {
-                climateSampler = climateBiomeProvider.getClimateSampler();
+                climateSampler = ((ClimateBiomeProvider)((OldBiomeSource)biomeSource).getBiomeProvider()).getClimateSampler();
             }
         }
         

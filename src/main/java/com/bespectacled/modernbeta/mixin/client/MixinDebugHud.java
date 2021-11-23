@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
@@ -48,9 +49,11 @@ public class MixinDebugHud {
             ChunkGenerator chunkGenerator = serverWorld.getChunkManager().getChunkGenerator();
             BiomeSource biomeSource = chunkGenerator.getBiomeSource();
             
-            if (biomeSource instanceof OldBiomeSource oldBiomeSource) {
-                if (oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider) {
-                    Clime clime = climateBiomeProvider.getClimateSampler().sampleClime(x, z);
+            if (biomeSource instanceof OldBiomeSource) {
+                BiomeProvider biomeProvider = ((OldBiomeSource)biomeSource).getBiomeProvider();
+                
+                if (biomeProvider instanceof ClimateBiomeProvider) {
+                    Clime clime = ((ClimateBiomeProvider)biomeProvider).getClimateSampler().sampleClime(x, z);
                     double temp = clime.temp();
                     double rain = clime.rain();
                     
@@ -64,8 +67,8 @@ public class MixinDebugHud {
                 }
             }
             
-            if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
-                ChunkProvider chunkProvider = oldChunkGenerator.getChunkProvider();
+            if (chunkGenerator instanceof OldChunkGenerator) {
+                ChunkProvider chunkProvider = ((OldChunkGenerator)chunkGenerator).getChunkProvider();
                 
                 info.getReturnValue().add(
                     String.format(

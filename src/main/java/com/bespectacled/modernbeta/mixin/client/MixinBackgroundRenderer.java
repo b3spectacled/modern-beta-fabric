@@ -44,7 +44,7 @@ public class MixinBackgroundRenderer {
         
         // Track whether current client world is Modern Beta world,
         // old fog weighting won't be used if not.
-        isOldWorld = world instanceof OldClientWorld oldClientWorld ? oldClientWorld.isOldWorld() : false;
+        isOldWorld = world instanceof OldClientWorld ? ((OldClientWorld)world).isOldWorld() : false;
     }
     
     @ModifyVariable(

@@ -249,8 +249,8 @@ public class WorldScreen extends GUIScreen {
             }
 
             NbtElement element = settings.get(key);
-            String elementAsString = (element instanceof NbtByte nbtByte) ?
-                Boolean.valueOf(nbtByte.byteValue() == 1).toString():
+            String elementAsString = (element instanceof NbtByte) ?
+                Boolean.valueOf(((NbtByte)element).byteValue() == 1).toString():
                 element.toString();
             
             builder.append(String.format("* %s: %s", key, elementAsString));

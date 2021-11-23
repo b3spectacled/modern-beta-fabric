@@ -48,10 +48,10 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 mutableDown.set(mutable).move(Direction.DOWN, 1);
                 
                 double temp;
-                if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource && 
-                    oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider
+                if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource && 
+                   ((OldBiomeSource)chunkGenerator.getBiomeSource()).getBiomeProvider() instanceof ClimateBiomeProvider
                 ) {
-                    temp = climateBiomeProvider.getClimateSampler().sampleClime(x, z).temp();
+                    temp = ((ClimateBiomeProvider)((OldBiomeSource)chunkGenerator.getBiomeSource()).getBiomeProvider()).getClimateSampler().sampleClime(x, z).temp();
                 } else {
                     temp = world.getBiome(mutable).getTemperature();
                 }

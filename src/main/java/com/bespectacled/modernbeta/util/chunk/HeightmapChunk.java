@@ -48,26 +48,52 @@ public class HeightmapChunk {
     
     public int getHeight(int x, int z, Heightmap.Type type) {
         int ndx = (z & 0xF) + (x & 0xF) * 16;
+        int height;
         
-        return switch(type) {
-            case MOTION_BLOCKING -> this.heightmapOcean[ndx];
-            case MOTION_BLOCKING_NO_LEAVES -> this.heightmapOcean[ndx];
-            case OCEAN_FLOOR -> this.heightmapSurface[ndx];
-            case OCEAN_FLOOR_WG -> this.heightmapSurface[ndx];
-            case WORLD_SURFACE -> this.heightmapOcean[ndx];
-            case WORLD_SURFACE_WG -> this.heightmapOcean[ndx];
-            default -> this.heightmapSurface[ndx];
-        };
+        switch(type) {
+            case MOTION_BLOCKING:
+                height = this.heightmapOcean[ndx];
+                break;
+            case MOTION_BLOCKING_NO_LEAVES:
+                height = this.heightmapOcean[ndx];
+                break;
+            case OCEAN_FLOOR:
+                height = this.heightmapSurface[ndx];
+                break;
+            case OCEAN_FLOOR_WG:
+                height = this.heightmapSurface[ndx];
+                break;
+            case WORLD_SURFACE:
+                height = this.heightmapOcean[ndx];
+                break;
+            case WORLD_SURFACE_WG:
+                height = this.heightmapOcean[ndx];
+                break;
+            default:
+                height = this.heightmapSurface[ndx];
+        }
+
+        return height;
     }
     
     public int getHeight(int x, int z, HeightmapChunk.Type type) {
         int ndx = (z & 0xF) + (x & 0xF) * 16;
+        int height;
         
-        return switch(type) {
-            case SURFACE -> this.heightmapSurface[ndx];
-            case OCEAN -> this.heightmapOcean[ndx];
-            case SURFACE_FLOOR -> this.heightmapSurfaceFloor[ndx];
-            default -> this.heightmapSurface[ndx];
-        };
+        switch(type) {
+            case SURFACE:
+                height = this.heightmapSurface[ndx];
+                break;
+            case OCEAN:
+                height = this.heightmapOcean[ndx];
+                break;
+            case SURFACE_FLOOR:
+                height = this.heightmapSurfaceFloor[ndx];
+                break;
+            default:
+                height = this.heightmapSurface[ndx];
+        }
+        
+        return height;
     }
 }

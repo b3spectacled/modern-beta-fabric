@@ -12,7 +12,7 @@ public abstract class ClimateBiomeProvider extends BiomeProvider {
     private final SkyClimateSampler skyClimateSampler;
     
     public ClimateBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry, ClimateSampler climateSampler) {
-        this(seed, settings, biomeRegistry, climateSampler, climateSampler instanceof SkyClimateSampler skyClimateSampler ? skyClimateSampler : null);
+        this(seed, settings, biomeRegistry, climateSampler, climateSampler instanceof SkyClimateSampler ? (SkyClimateSampler)climateSampler : null);
     }
 
     public ClimateBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry, ClimateSampler climateSampler, SkyClimateSampler skyClimateSampler) {

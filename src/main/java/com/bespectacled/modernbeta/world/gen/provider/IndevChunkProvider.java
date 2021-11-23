@@ -151,10 +151,14 @@ public class IndevChunkProvider extends FiniteChunkProvider {
     @Override
     protected void generateBorder(Chunk chunk) {
         switch(this.levelType) {
-            case ISLAND -> this.generateWaterBorder(chunk);
-            case INLAND -> this.generateWorldBorder(chunk);
-            case FLOATING -> {}
-            default -> {}
+            case ISLAND:
+                this.generateWaterBorder(chunk);
+                break;
+            case INLAND:
+                this.generateWorldBorder(chunk);
+                break;
+            case FLOATING:
+                break;
         }
     }
     

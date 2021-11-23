@@ -32,7 +32,9 @@ public class MixinOceanMonumentFeature {
         DefaultFeatureConfig featureConfig,
         CallbackInfoReturnable<Boolean> info
     ) {
-        if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
+        if (chunkGenerator instanceof OldChunkGenerator) {
+            OldChunkGenerator oldChunkGenerator = (OldChunkGenerator)chunkGenerator;
+            
             int offsetX = (chunkX << 4) + 9;
             int offsetZ = (chunkZ << 4) + 9; 
                     

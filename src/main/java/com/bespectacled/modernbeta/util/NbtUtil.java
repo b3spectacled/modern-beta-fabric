@@ -88,71 +88,71 @@ public class NbtUtil {
      */
     
     public static String toStringOrThrow(NbtElement element) {
-        if (element instanceof NbtString nbtString)
-            return nbtString.asString();
+        if (element instanceof NbtString)
+            return ((NbtString)element).asString();
         
         throw new IllegalArgumentException("[Modern Beta] NBT Element is not a string! Type:" + element.getType());
     }
     
     public static String toString(NbtElement element, String alternate) {
-        if (element instanceof NbtString nbtString)
-            return nbtString.asString();
+        if (element instanceof NbtString)
+            return ((NbtString)element).asString();
         
         return alternate;
     }
     
     public static int toIntOrThrow(NbtElement element) {
-        if (element instanceof NbtInt nbtInt)
-            return nbtInt.intValue();
+        if (element instanceof NbtInt)
+            return ((NbtInt)element).intValue();
         
         throw new IllegalArgumentException("[Modern Beta] NBT Element is not an int! Type: " + element.getType()); 
     }
     
     public static int toInt(NbtElement element, int alternate) {
-        if (element instanceof NbtInt nbtInt) 
-            return nbtInt.intValue();
+        if (element instanceof NbtInt)
+            return ((NbtInt)element).intValue();
         
         return alternate;
     }
     
     public static float toFloatOrThrow(NbtElement element) {
-        if (element instanceof NbtFloat nbtFloat) 
-            return nbtFloat.floatValue();
+        if (element instanceof NbtFloat) 
+            return ((NbtFloat)element).floatValue();
         
         throw new IllegalArgumentException("[Modern Beta] NBT Element is not an float! Type: " + element.getType()); 
     }
     
     public static float toFloat(NbtElement element, float alternate) {
-        if (element instanceof NbtFloat nbtFloat) 
-            return nbtFloat.floatValue();
+        if (element instanceof NbtFloat) 
+            return ((NbtFloat)element).floatValue();
         
         return alternate;
     }
     
     public static double toDoubleOrThrow(NbtElement element) {
-        if (element instanceof NbtDouble nbtDouble) 
-            return nbtDouble.doubleValue();
+        if (element instanceof NbtDouble) 
+            return ((NbtDouble)element).doubleValue();
         
         throw new IllegalArgumentException("[Modern Beta] NBT Element is not an double! Type: " + element.getType()); 
     }
     
-    public static double toFloat(NbtElement element, double alternate) {
-        if (element instanceof NbtDouble nbtDouble) 
-            return nbtDouble.doubleValue();
+    public static double toDouble(NbtElement element, double alternate) {
+        if (element instanceof NbtDouble) 
+            return ((NbtDouble)element).doubleValue();
         
         return alternate;
     }
     
     public static boolean toBooleanOrThrow(NbtElement element) {
-        if (element instanceof NbtByte nbtByte) 
-            return nbtByte.byteValue() == 1;
+        if (element instanceof NbtByte) 
+            return ((NbtByte)element).byteValue() == 1;
         
         throw new IllegalArgumentException("[Modern Beta] NBT Element is not an byte/boolean! Type: " + element.getType()); 
     }
     
     public static boolean toBoolean(NbtElement element, boolean alternate) {
-        if (element instanceof NbtByte nbtByte) 
-            return nbtByte.byteValue() == 1;
+        if (element instanceof NbtByte) 
+            return ((NbtByte)element).byteValue() == 1;
         
         return alternate;
     }

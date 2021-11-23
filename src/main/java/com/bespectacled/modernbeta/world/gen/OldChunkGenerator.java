@@ -82,8 +82,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.generateOceanShrines = NbtUtil.readBoolean(NbtTags.GEN_OCEAN_SHRINES, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateOceanShrines);
         this.generateMonuments = NbtUtil.readBoolean(NbtTags.GEN_MONUMENTS, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateMonuments);
     
-        this.biomeInjector = this.biomeSource instanceof OldBiomeSource oldBiomeSource ?
-            new BiomeInjector(this, oldBiomeSource) : 
+        this.biomeInjector = this.biomeSource instanceof OldBiomeSource ?
+            new BiomeInjector(this, (OldBiomeSource)this.biomeSource) : 
             null;
     }
 
@@ -104,8 +104,8 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public void buildSurface(ChunkRegion region, Chunk chunk) {
         if (!this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.SURFACE))  
-            if (this.biomeSource instanceof OldBiomeSource oldBiomeSource)
-                this.chunkProvider.provideSurface(region, chunk, oldBiomeSource);
+            if (this.biomeSource instanceof OldBiomeSource)
+                this.chunkProvider.provideSurface(region, chunk, (OldBiomeSource)this.biomeSource);
             else
                 super.buildSurface(region, chunk);
         

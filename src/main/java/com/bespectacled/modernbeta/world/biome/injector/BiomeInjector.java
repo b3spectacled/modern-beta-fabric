@@ -100,8 +100,8 @@ public class BiomeInjector {
         int x = (biomeX << 2) + 2;
         int z = (biomeZ << 2) + 2;
         
-        return this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider ?
-            noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
+        return this.chunkProvider instanceof NoiseChunkProvider ?
+            ((NoiseChunkProvider)this.chunkProvider).getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
             this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
     }
     

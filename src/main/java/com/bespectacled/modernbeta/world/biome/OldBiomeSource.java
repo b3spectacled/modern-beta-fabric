@@ -58,30 +58,30 @@ public class OldBiomeSource extends BiomeSource {
     }
 
     public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        if (this.biomeProvider instanceof OceanBiomeResolver oceanBiomeResolver)
-            return oceanBiomeResolver.getOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        if (this.biomeProvider instanceof OceanBiomeResolver)
+            return ((OceanBiomeResolver)this.biomeProvider).getOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
 
         return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
     public Biome getDeepOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        if (this.biomeProvider instanceof OceanBiomeResolver oceanBiomeResolver)
-            return oceanBiomeResolver.getDeepOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        if (this.biomeProvider instanceof OceanBiomeResolver)
+            return ((OceanBiomeResolver)this.biomeProvider).getDeepOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
 
         return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
     public Biome getBiomeForSurfaceGen(int x, int y, int z) {
-        if (this.biomeProvider instanceof BiomeResolver biomeResolver) {
-            return biomeResolver.getBiome(x, y, z);
+        if (this.biomeProvider instanceof BiomeResolver) {
+            return ((BiomeResolver)this.biomeProvider).getBiome(x, y, z);
         }
         
         return this.biomeProvider.getBiomeForNoiseGen(x >> 2, y >> 2, z >> 2);
     }
     
     public Biome getBiomeForSurfaceGen(ChunkRegion region, BlockPos pos) {
-        if (this.biomeProvider instanceof BiomeResolver biomeResolver)
-            return biomeResolver.getBiome(pos.getX(), pos.getY(), pos.getZ());
+        if (this.biomeProvider instanceof BiomeResolver)
+            return ((BiomeResolver)this.biomeProvider).getBiome(pos.getX(), pos.getY(), pos.getZ());
         
         return region.getBiome(pos);
     }

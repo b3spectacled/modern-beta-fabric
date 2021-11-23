@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
@@ -85,11 +86,14 @@ public abstract class MixinClientWorld implements OldClientWorld {
             
             this.isOldWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof OldBiomeSource;
             
-            if (biomeSource instanceof OldBiomeSource oldBiomeSource) {
-                if (oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider)
-                    this.climateSampler = Optional.ofNullable(climateBiomeProvider.getClimateSampler());
-                if (oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider)
-                    this.skyClimateSampler = Optional.ofNullable(climateBiomeProvider.getSkyClimateSampler());
+            if (biomeSource instanceof OldBiomeSource) {
+                OldBiomeSource oldBiomeSource = (OldBiomeSource)biomeSource;
+                BiomeProvider biomeProvider = oldBiomeSource.getBiomeProvider();
+                
+                if (biomeProvider instanceof ClimateBiomeProvider)
+                    this.climateSampler = Optional.ofNullable(((ClimateBiomeProvider)biomeProvider).getClimateSampler());
+                if (biomeProvider instanceof ClimateBiomeProvider)
+                    this.skyClimateSampler = Optional.ofNullable(((ClimateBiomeProvider)biomeProvider).getSkyClimateSampler());
             }
         }
         

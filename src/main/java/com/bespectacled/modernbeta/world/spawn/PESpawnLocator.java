@@ -66,8 +66,8 @@ public class PESpawnLocator implements SpawnLocator {
             attempts++;
         }
 
-        int y = (this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) ?
-            noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
+        int y = (this.chunkProvider instanceof NoiseChunkProvider) ?
+            ((NoiseChunkProvider)this.chunkProvider).getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
             this.chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
    
         return Optional.of(new BlockPos(x, y, z));
@@ -77,12 +77,12 @@ public class PESpawnLocator implements SpawnLocator {
         double eighth = 0.03125D;
         int seaLevel = this.chunkProvider.getSeaLevel();
 
-        int y = (this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) ?
-            noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
+        int y = (this.chunkProvider instanceof NoiseChunkProvider) ?
+            ((NoiseChunkProvider)this.chunkProvider).getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
             this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
- 
-        Biome biome = (this.chunkProvider.getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) ? 
-            oldBiomeSource.getBiomeForSurfaceGen(x, y, z) :
+
+        Biome biome = (this.chunkProvider.getChunkGenerator().getBiomeSource() instanceof OldBiomeSource) ? 
+            ((OldBiomeSource)this.chunkProvider.getChunkGenerator().getBiomeSource()).getBiomeForSurfaceGen(x, y, z) :
             this.chunkProvider.getBiomeForNoiseGen(x >> 2, y >> 2, z >> 2);
         BlockState topMaterial = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
         

@@ -112,12 +112,12 @@ public class OldGeneratorType {
                         // In the case that settings have been set, and the world edit screen is opened again:
                         // If settings already present, create new compound tag and copy from source,
                         // otherwise, not copying will modify original settings.
-                        NbtCompound chunkProviderSettings = chunkGenerator instanceof OldChunkGenerator oldChunkGenerator ?
-                            oldChunkGenerator.getChunkSettings() :
+                        NbtCompound chunkProviderSettings = chunkGenerator instanceof OldChunkGenerator ?
+                            ((OldChunkGenerator)chunkGenerator).getChunkSettings() :
                             Registries.CHUNK_SETTINGS.get(worldProvider.getChunkProvider()).get();
                         
-                        NbtCompound biomeProviderSettings = biomeSource instanceof OldBiomeSource oldBiomeSource ? 
-                            oldBiomeSource.getBiomeSettings() : 
+                        NbtCompound biomeProviderSettings = biomeSource instanceof OldBiomeSource ? 
+                            ((OldBiomeSource)biomeSource).getBiomeSettings() : 
                             Registries.BIOME_SETTINGS.get(worldProvider.getBiomeProvider()).get();
                         
                         return new WorldScreen(

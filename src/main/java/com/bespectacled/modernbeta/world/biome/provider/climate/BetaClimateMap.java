@@ -59,25 +59,23 @@ public class BetaClimateMap {
     }
     
     public Map<String, Identifier> getMap(ClimateType climateType) {
-        return switch(climateType) {
-            case LAND -> new LinkedHashMap<>(this.landBiomeMap);
-            case OCEAN -> new LinkedHashMap<>(this.oceanBiomeMap);
-            default -> new LinkedHashMap<>(this.landBiomeMap);
-        };
+        switch(climateType) {
+            case LAND: 
+                return new LinkedHashMap<>(this.landBiomeMap);
+            case OCEAN:
+                return new LinkedHashMap<>(this.oceanBiomeMap);
+            default:
+                return new LinkedHashMap<>(this.landBiomeMap);
+        }
     }
     
     public Identifier getBiome(double temp, double rain, ClimateType type) {
         int t = (int) (temp * 63D);
         int r = (int) (rain * 63D);
         
-        Identifier biomeId;
-
-        switch(type) {
-            case OCEAN -> biomeId = this.oceanBiomeTable[t + r * 64];
-            default -> biomeId = this.landBiomeTable[t + r * 64];
-        }
-
-        return biomeId;
+        return type == ClimateType.OCEAN ?
+            this.oceanBiomeTable[t + r * 64] :
+            this.landBiomeTable[t + r * 64];
     }
     
     public List<Identifier> getBiomeIds() {

@@ -21,6 +21,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 
 public class BetaChunkProvider extends NoiseChunkProvider {
@@ -59,12 +60,13 @@ public class BetaChunkProvider extends NoiseChunkProvider {
         );
 
         ClimateSampler climateSampler = new BetaClimateSampler(chunkGenerator.getWorldSeed());
+        BiomeSource biomeSource = chunkGenerator.getBiomeSource();
         
-        if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource && 
-            oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider
+        if (biomeSource instanceof OldBiomeSource && 
+            ((OldBiomeSource)biomeSource).getBiomeProvider() instanceof ClimateBiomeProvider
         ) {
             if (sampleClimate) {
-                climateSampler = climateBiomeProvider.getClimateSampler();
+                climateSampler = ((ClimateBiomeProvider)((OldBiomeSource)biomeSource).getBiomeProvider()).getClimateSampler();
             }
         }
         
