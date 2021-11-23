@@ -21,7 +21,7 @@
     "issues": "https://github.com/b3spectacled/modern-beta-fabric/issues"
   },
 
-  "license": "LGPLv3",
+  "license": "MIT",
   "icon": "assets/modern_beta/icon.png",
 
   "environment": "*",
@@ -42,7 +42,8 @@
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric": "*",
-    "minecraft": "1.16.5"
+    "minecraft": "1.16.5",
+    "cloth-config2": "*"
   },
   
   "conflicts": {
