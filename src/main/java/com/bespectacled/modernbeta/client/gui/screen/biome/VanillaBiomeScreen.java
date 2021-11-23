@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.client.gui.screen.biome;
 
 import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.api.client.gui.screen.SettingsScreen;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.DoubleOptionWrapper;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
@@ -12,7 +11,7 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 
 import net.minecraft.nbt.NbtInt;
 
-public class VanillaBiomeScreen extends SettingsScreen {
+public class VanillaBiomeScreen extends OceanBiomeScreen {
     private VanillaBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
         super(parent, worldSetting, consumer, settings);
     }

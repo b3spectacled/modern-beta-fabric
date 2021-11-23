@@ -28,8 +28,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
     
     public Infdev611ChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        //super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
-        
+
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
@@ -52,7 +51,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
-        int bedrockFloor = this.minY + this.bedrockFloor;
+        int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
@@ -62,7 +61,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             for (int localZ = 0; localZ < 16; localZ++) {
                 int absX = (chunkX << 4) + localX;
                 int absZ = (chunkZ << 4) + localZ;
-                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(absX * eighth, absZ * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0;
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(absZ * eighth, 109.0134, absX * eighth) + rand.nextDouble() * 0.2 > 3.0;
@@ -81,7 +80,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos);
                 
                 // Generate from top to bottom of world
-                for (int y = this.worldTopY - 1; y >= this.minY; y--) {
+                for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
 
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
@@ -91,7 +90,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                     
                     // Don't surface build below 50, per 1.17 default surface builder
                     // Skip if used custom surface generation or if below minimum surface level.
-                    if (usedCustomSurface || y < this.minSurfaceY) {
+                    if (usedCustomSurface || y < this.surfaceMinY) {
                         continue;
                     }
 
@@ -149,67 +148,59 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         double depthNoiseScaleX = 100D;
         double depthNoiseScaleZ = 100D;
         
-        //double baseSize = noiseResolutionY / 2D; // Or: 17 / 2D = 8.5
+        double coordinateScale = 684.412D * this.xzScale; 
+        double heightScale = 684.412D * this.yScale;
+        
+        double mainNoiseScaleX = this.xzFactor; // Default: 80
+        double mainNoiseScaleY = this.yFactor;  // Default: 160
+        double mainNoiseScaleZ = this.xzFactor;
+
+        double lowerLimitScale = 512D;
+        double upperLimitScale = 512D;
+        
         double baseSize = 8.5D;
+        double heightStretch = 12D;
         
-        double scaleNoise = this.scaleNoiseOctaves.sample(noiseX, 0, noiseZ, 1.0D, 0.0D, 1.0D);
-        scaleNoise = (scaleNoise + 256D) / 512D;
+        double scale = this.scaleNoiseOctaves.sample(noiseX, 0, noiseZ, 1.0D, 0.0D, 1.0D);
+        scale = (scale + 256D) / 512D;
         
-        if (scaleNoise > 1.0D) {
-            scaleNoise = 1.0D; 
+        if (scale > 1.0D) {
+            scale = 1.0D; 
         }
 
-        double depthNoise = this.depthNoiseOctaves.sample(noiseX, 0, noiseZ, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
-        depthNoise /= 8000D;
+        double depth = this.depthNoiseOctaves.sample(noiseX, 0, noiseZ, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
+        depth /= 8000D;
         
-        if (depthNoise < 0.0D) {
-            depthNoise = -depthNoise;
+        if (depth < 0.0D) {
+            depth = -depth;
         }
 
-        depthNoise = depthNoise * 3D - 3D;
+        depth = depth * 3D - 3D;
 
-        if (depthNoise < 0.0D) {
-            depthNoise /= 2D;
-            if (depthNoise < -1D) {
-                depthNoise = -1D;
+        if (depth < 0.0D) {
+            depth /= 2D;
+            if (depth < -1D) {
+                depth = -1D;
             }
 
-            depthNoise /= 1.4D;
+            depth /= 1.4D;
             //depthNoise /= 2D; // Omitting this creates the Infdev 20100611 generator.
 
-            scaleNoise = 0.0D;
+            scale = 0.0D;
 
         } else {
-            if (depthNoise > 1.0D) {
-                depthNoise = 1.0D;
+            if (depth > 1.0D) {
+                depth = 1.0D;
             }
-            depthNoise /= 6D;
+            depth /= 6D;
         }
 
-        scaleNoise += 0.5D;
-        //depth0 = (depth0 * (double) noiseResolutionY) / 16D;
-        //double depth1 = (double) noiseResolutionY / 2D + depth0 * 4D;\
-        depthNoise = depthNoise * baseSize / 8D;
-        depthNoise = baseSize + depthNoise * 4D;
-        
-        double scale = scaleNoise;
-        double depth = depthNoise;
+        scale += 0.5D;
+        depth = depth * baseSize / 8D;
+        depth = baseSize + depth * 4D;
         
         for (int y = 0; y < buffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
-            
-            // Var names taken from old customized preset names
-            double coordinateScale = 684.412D * this.xzScale; 
-            double heightScale = 684.412D * this.yScale;
-            
-            double mainNoiseScaleX = this.xzFactor; // Default: 80
-            double mainNoiseScaleY = this.yFactor;  // Default: 160
-            double mainNoiseScaleZ = this.xzFactor;
-
-            double lowerLimitScale = 512D;
-            double upperLimitScale = 512D;
-            
-            double heightStretch = 12D;
             
             double density = 0.0D;
             double densityOffset = this.getOffset(noiseY, heightStretch, depth, scale);
@@ -257,15 +248,15 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             }
             
             // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
-            double densityWithOffset = density - densityOffset; 
+            density -= densityOffset;
             
             // Sample for noise caves
-            densityWithOffset = this.sampleNoiseCave(densityWithOffset, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, noiseX, noiseY, noiseZ);
             
-            densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
-            densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);
+            // Apply slides
+            density = this.applySlides(density, y);
             
-            buffer[y] = densityWithOffset;
+            buffer[y] = density;
         }
     }
     

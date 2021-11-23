@@ -15,7 +15,6 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
 
 import net.minecraft.nbt.NbtByte;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -25,11 +24,8 @@ import net.minecraft.world.gen.feature.StructureFeature;
 public class InfWorldScreen extends SettingsScreen {
     private static final String HYDROGEN_LOADED_STRING = "createWorld.customize.hydrogenLoaded";
     
-    private static final String GENERATE_OCEANS_DISPLAY_STRING = "createWorld.customize.inf.generateOceans";
     private static final String GENERATE_OCEAN_SHRINES_DISPLAY_STRING = "createWorld.customize.inf.generateOceanShrines";
     private static final String GENERATE_MONUMENTS_DISPLAY_STRING = "createWorld.customize.inf.generateMonuments";
-    
-    private static final String GENERATE_OCEANS_TOOLTIP = "createWorld.customize.inf.generateOceans.tooltip";
 
     protected InfWorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
         super(parent, worldSetting, consumer, settings);
@@ -67,13 +63,6 @@ public class InfWorldScreen extends SettingsScreen {
             .hasStructureFeature(StructureFeature.MONUMENT) : 
             false;
         
-        BooleanCyclingOptionWrapper generateOceans = new BooleanCyclingOptionWrapper(
-            GENERATE_OCEANS_DISPLAY_STRING,
-            () -> NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.GEN_OCEANS)),
-            value -> this.putSetting(NbtTags.GEN_OCEANS, NbtByte.of(value)),
-            this.client.textRenderer.wrapLines(new TranslatableText(GENERATE_OCEANS_TOOLTIP), 200)
-        );
-        
         BooleanCyclingOptionWrapper generateOceanShrines = new BooleanCyclingOptionWrapper(
             GENERATE_OCEAN_SHRINES_DISPLAY_STRING,
             () -> NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.GEN_OCEAN_SHRINES)),
@@ -91,7 +80,6 @@ public class InfWorldScreen extends SettingsScreen {
         if (isHydrogenLoaded && !isSingleBiome)
             this.addOption(hydrogenText);
         
-        this.addOption(generateOceans, !isHydrogenLoaded && !isSingleBiome);
         this.addOption(generateOceanShrines, (!isHydrogenLoaded && !isSingleBiome) || isSingleBiomeAndHasOceanShrine);
         this.addOption(generateMonuments, (!isHydrogenLoaded && !isSingleBiome) || isSingleBiomeAndHasMonument);
     }

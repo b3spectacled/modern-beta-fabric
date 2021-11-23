@@ -21,7 +21,6 @@ public class ChunkProviderSettings {
     public static NbtCompound createSettingsInf(String worldType) {
         NbtCompound settings = createSettingsBase(worldType);
         
-        settings.putBoolean(NbtTags.GEN_OCEANS, CONFIG.infGenConfig.generateOceans);
         settings.putBoolean(NbtTags.GEN_OCEAN_SHRINES, CONFIG.infGenConfig.generateOceanShrines);
         settings.putBoolean(NbtTags.GEN_MONUMENTS, CONFIG.infGenConfig.generateMonuments);
         

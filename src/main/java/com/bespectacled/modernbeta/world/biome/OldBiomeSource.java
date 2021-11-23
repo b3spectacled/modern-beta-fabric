@@ -4,9 +4,9 @@ import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
-import com.bespectacled.modernbeta.api.world.biome.BiomeHeightSampler;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeResolver;
+import com.bespectacled.modernbeta.api.world.biome.OceanBiomeResolver;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.mojang.serialization.Codec;
@@ -33,10 +33,7 @@ public class OldBiomeSource extends BiomeSource {
     private final long seed;
     private final Registry<Biome> biomeRegistry;
     private final NbtCompound biomeProviderSettings;
-    
     private final BiomeProvider biomeProvider;
-    @SuppressWarnings("unused")
-    private BiomeHeightSampler biomeHeightSampler;
     
     public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, NbtCompound settings) {
         super(Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings))
@@ -50,13 +47,9 @@ public class OldBiomeSource extends BiomeSource {
         this.seed = seed;
         this.biomeRegistry = biomeRegistry;
         this.biomeProviderSettings = settings;
-        
-        this.biomeProvider = Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings)).apply(seed, settings, biomeRegistry);
-        this.biomeHeightSampler = BiomeHeightSampler.DEFAULT;
-    }
-    
-    public void setBiomeHeightSampler(BiomeHeightSampler biomeHeightSampler) {
-        this.biomeHeightSampler = biomeHeightSampler;
+        this.biomeProvider = Registries.BIOME
+            .get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, settings))
+            .apply(seed, settings, biomeRegistry);
     }
 
     @Override
@@ -65,11 +58,17 @@ public class OldBiomeSource extends BiomeSource {
     }
 
     public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeProvider.getOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        if (this.biomeProvider instanceof OceanBiomeResolver oceanBiomeResolver)
+            return oceanBiomeResolver.getOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+
+        return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
     public Biome getDeepOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeProvider.getDeepOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        if (this.biomeProvider instanceof OceanBiomeResolver oceanBiomeResolver)
+            return oceanBiomeResolver.getDeepOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+
+        return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
     public Biome getBiomeForSurfaceGen(int x, int y, int z) {
@@ -99,7 +98,7 @@ public class OldBiomeSource extends BiomeSource {
         return this.biomeProvider;
     }
     
-    public NbtCompound getProviderSettings() {
+    public NbtCompound getBiomeSettings() {
         return new NbtCompound().copyFrom(this.biomeProviderSettings);
     }
 

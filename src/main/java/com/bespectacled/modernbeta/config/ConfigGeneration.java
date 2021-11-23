@@ -11,15 +11,10 @@ import me.shedaniel.autoconfig.annotation.Config;
 public class ConfigGeneration implements ConfigData {
     
     public GeneralGenConfig generalGenConfig = new GeneralGenConfig();
-    
     public InfGenConfig infGenConfig = new InfGenConfig();
-    
     public Inf227GenConfig inf227GenConfig = new Inf227GenConfig();
-    
     public PreInfGenConfig preInfGenConfig = new PreInfGenConfig();
-    
     public IndevGenConfig indevGenConfig = new IndevGenConfig();
-    
     public IslandGenConfig islandGenConfig = new IslandGenConfig();
     
     public static class GeneralGenConfig {
@@ -27,7 +22,6 @@ public class ConfigGeneration implements ConfigData {
     }
     
     public static class InfGenConfig {
-        public boolean generateOceans = true;
         public boolean generateOceanShrines = true;
         public boolean generateMonuments = false;
         public boolean sampleClimate = false;

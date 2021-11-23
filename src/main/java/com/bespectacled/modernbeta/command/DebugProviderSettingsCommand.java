@@ -25,7 +25,7 @@ public class DebugProviderSettingsCommand {
         if (source.getWorld().getChunkManager().getChunkGenerator() instanceof OldChunkGenerator oldChunkGenerator) {
             validWorld = true;
             
-            String chunkProviderSettings = oldChunkGenerator.getProviderSettings().asString();
+            String chunkProviderSettings = oldChunkGenerator.getChunkSettings().asString();
             
             source.sendFeedback(new LiteralText("Chunk Provider Settings:").formatted(Formatting.YELLOW), false);
             source.sendFeedback(new LiteralText(chunkProviderSettings), false);
@@ -34,7 +34,7 @@ public class DebugProviderSettingsCommand {
         if (source.getWorld().getChunkManager().getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) {
             validWorld = true;
             
-            String biomeProviderSettings = oldBiomeSource.getProviderSettings().asString();
+            String biomeProviderSettings = oldBiomeSource.getBiomeSettings().asString();
             
             source.sendFeedback(new LiteralText("Biome Provider Settings:").formatted(Formatting.YELLOW), false);
             source.sendFeedback(new LiteralText(biomeProviderSettings), false);

@@ -25,7 +25,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
@@ -51,10 +50,10 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
     public FiniteChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
             chunkGenerator,
-            NbtUtil.readInt(NbtTags.LEVEL_WIDTH, chunkGenerator.getProviderSettings(), ModernBeta.GEN_CONFIG.preInfGenConfig.levelWidth),
-            NbtUtil.readInt(NbtTags.LEVEL_LENGTH, chunkGenerator.getProviderSettings(), ModernBeta.GEN_CONFIG.preInfGenConfig.levelLength),
-            NbtUtil.readInt(NbtTags.LEVEL_HEIGHT, chunkGenerator.getProviderSettings(), ModernBeta.GEN_CONFIG.preInfGenConfig.levelHeight),
-            NbtUtil.readFloat(NbtTags.LEVEL_CAVE_RADIUS, chunkGenerator.getProviderSettings(), ModernBeta.GEN_CONFIG.preInfGenConfig.caveRadius)
+            NbtUtil.readInt(NbtTags.LEVEL_WIDTH, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.preInfGenConfig.levelWidth),
+            NbtUtil.readInt(NbtTags.LEVEL_LENGTH, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.preInfGenConfig.levelLength),
+            NbtUtil.readInt(NbtTags.LEVEL_HEIGHT, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.preInfGenConfig.levelHeight),
+            NbtUtil.readFloat(NbtTags.LEVEL_CAVE_RADIUS, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.preInfGenConfig.caveRadius)
         );
     }
     
@@ -103,7 +102,7 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
         
-        int worldTopY = this.worldHeight + this.minY;
+        int worldTopY = this.worldHeight + this.worldMinY;
         
         for (int localX = 0; localX < 16; ++localX) {
             for (int localZ = 0; localZ < 16; ++localZ) {
@@ -120,7 +119,7 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
                     isCold = biome.isCold(pos);
                 }
                 
-                for (int y = worldTopY - 1; y >= this.minY; --y) {
+                for (int y = worldTopY - 1; y >= this.worldMinY; --y) {
                     pos.set(x, y, z);
                     
                     BlockState blockState = this.postProcessSurfaceState(chunk.getBlockState(pos), biome, pos, isCold);
@@ -137,7 +136,7 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
     }
     
     @Override
-    public int getHeight(int x, int z, Type type, HeightLimitView world) {
+    public int getHeight(int x, int z, Type type) {
         x += this.levelWidth / 2;
         z += this.levelLength / 2;
         

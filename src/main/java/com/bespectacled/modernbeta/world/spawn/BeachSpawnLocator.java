@@ -62,7 +62,7 @@ public class BeachSpawnLocator implements SpawnLocator {
         
         int y = (this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) ?
             noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
-            this.chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG, null);
+            this.chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
 
         return Optional.of(new BlockPos(x, y, z));
     }
@@ -73,7 +73,7 @@ public class BeachSpawnLocator implements SpawnLocator {
         
         int y = (this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) ?
             noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
-            this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, null);
+            this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
 
         Biome biome = (this.chunkProvider.getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) ? 
             oldBiomeSource.getBiomeForSurfaceGen(x, y, z) :

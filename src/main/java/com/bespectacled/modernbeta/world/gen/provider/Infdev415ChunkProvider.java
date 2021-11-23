@@ -28,8 +28,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
     
     public Infdev415ChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        //super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 1, 1, 1.0, 1.0, 80, 400, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
-        
+
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
@@ -51,7 +50,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
-        int bedrockFloor = this.minY + this.bedrockFloor;
+        int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
@@ -61,7 +60,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             for (int localZ = 0; localZ < 16; ++localZ) {
                 int x = (chunkX << 4) + localX;
                 int z = (chunkZ << 4) + localZ;
-                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(
                     x * thirtysecond, 
@@ -88,7 +87,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos);
                 
-                for (int y = this.worldTopY - 1; y >= this.minY; --y) {
+                for (int y = this.worldTopY - 1; y >= this.worldMinY; --y) {
                     
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
@@ -97,7 +96,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                     }
                     
                     // Skip if used custom surface generation or if below minimum surface level.
-                    if (usedCustomSurface || y < this.minSurfaceY) {
+                    if (usedCustomSurface || y < this.surfaceMinY) {
                         continue;
                     }
                     
@@ -155,17 +154,17 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
         
+        double coordinateScale = 684.412D * this.xzScale; 
+        double heightScale = 984.412D * this.yScale;
+        
+        double mainNoiseScaleX = this.xzFactor; // Default: 80
+        double mainNoiseScaleY = this.yFactor;  // Default: 400
+        double mainNoiseScaleZ = this.xzFactor;
+        
+        double limitScale = 512.0D;
+        
         for (int y = 0; y < buffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
-            
-            double coordinateScale = 684.412D * this.xzScale; 
-            double heightScale = 984.412D * this.yScale;
-            
-            double mainNoiseScaleX = this.xzFactor; // Default: 80
-            double mainNoiseScaleY = this.yFactor;  // Default: 400
-            double mainNoiseScaleZ = this.xzFactor;
-            
-            double limitScale = 512.0D;
             
             double density;
             double densityOffset = this.getOffset(noiseY);
@@ -219,7 +218,8 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             // Sample for noise caves
             density = this.sampleNoiseCave(density, noiseX, noiseY, noiseZ);
             
-            density = this.applyBottomSlide(density, noiseY, -3);
+            // Apply slides
+            density = this.applySlides(density, y);
             
             buffer[y] = density;
         }

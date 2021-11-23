@@ -48,7 +48,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
-        int bedrockFloor = this.minY + this.bedrockFloor;
+        int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
@@ -58,7 +58,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             for (int localZ = 0; localZ < 16; localZ++) {
                 int x = (chunkX << 4) + localX;
                 int z = (chunkZ << 4) + localZ;
-                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0;
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(z * eighth, 109.0134, x * eighth) + rand.nextDouble() * 0.2 > 3.0;
@@ -77,7 +77,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos);
                 
                 // Generate from top to bottom of world
-                for (int y = this.worldTopY - 1; y >= this.minY; y--) {
+                for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
 
                     // Randomly place bedrock from y=0 to y=5
                     if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
@@ -87,7 +87,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                     
                     // Don't surface build below 50, per 1.17 default surface builder
                     // Skip if used custom surface generation or if below minimum surface level.
-                    if (usedCustomSurface || y < this.minSurfaceY) {
+                    if (usedCustomSurface || y < this.surfaceMinY) {
                         continue;
                     }
 
@@ -142,21 +142,21 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
         
+        double coordinateScale = 684.412D * this.xzScale; 
+        double heightScale = 684.412D * this.yScale;
+        
+        double mainNoiseScaleX = this.xzFactor; // Default: 80
+        double mainNoiseScaleY = this.yFactor;  // Default: 160
+        double mainNoiseScaleZ = this.xzFactor;
+        
+        double lowerLimitScale = 512.0D;
+        double upperLimitScale = 512.0D;
+        
+        double baseSize = 8.5D;
+        double heightStretch = 12D;
+        
         for (int y = 0; y < buffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
-            
-            double coordinateScale = 684.412D * this.xzScale; 
-            double heightScale = 684.412D * this.yScale;
-            
-            double mainNoiseScaleX = this.xzFactor; // Default: 80
-            double mainNoiseScaleY = this.yFactor;  // Default: 160
-            double mainNoiseScaleZ = this.xzFactor;
-            
-            double lowerLimitScale = 512.0D;
-            double upperLimitScale = 512.0D;
-            
-            double baseSize = 8.5D;
-            double heightStretch = 12D;
             
             double density;
             double densityOffset = this.getOffset(noiseY, baseSize, heightStretch);
@@ -203,13 +203,13 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             }
             
             // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
-            density -= densityOffset; 
+            density -= densityOffset;
             
             // Sample for noise caves
             density = this.sampleNoiseCave(density, noiseX, noiseY, noiseZ);
             
             // Apply slides
-            density = this.applyBottomSlide(density, noiseY, -3);
+            density = this.applySlides(density, y);
             
             buffer[y] = density;
         }

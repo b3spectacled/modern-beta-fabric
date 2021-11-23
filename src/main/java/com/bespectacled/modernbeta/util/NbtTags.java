@@ -5,7 +5,6 @@ public class NbtTags {
     public static final String WORLD_TYPE = "worldType";
     
     // Inf
-    public static final String GEN_OCEANS = "generateOceans";
     public static final String GEN_OCEAN_SHRINES = "generateOceanShrines";
     public static final String GEN_MONUMENTS = "generateMonuments";
     
@@ -38,6 +37,9 @@ public class NbtTags {
     
     /* Biome Settings */
     public static final String BIOME_TYPE = "biomeType";
+    
+    // Oceans
+    public static final String GEN_OCEANS = "generateOceans";
     
     // Vanilla
     public static final String VANILLA_BIOME_SIZE = "vanillaBiomeSize";

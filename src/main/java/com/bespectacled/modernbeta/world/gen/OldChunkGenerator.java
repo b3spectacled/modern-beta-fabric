@@ -13,14 +13,13 @@ import java.util.function.Supplier;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
-import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorInvoker;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.util.mutable.MutableBiomeArray;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
+import com.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import com.bespectacled.modernbeta.world.structure.OldStructures;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
@@ -29,7 +28,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.util.Util;
 import net.minecraft.util.collection.Pool;
@@ -63,7 +61,6 @@ import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
-import net.minecraft.world.gen.feature.StructureFeature;
 
 public class OldChunkGenerator extends NoiseChunkGenerator {
     public static final Codec<OldChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance
@@ -74,16 +71,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings))
         .apply(instance, instance.stable(OldChunkGenerator::new)));
     
-    public static final int OCEAN_MIN_DEPTH = 4;
-    public static final int DEEP_OCEAN_MIN_DEPTH = 16;
-    
     private final NbtCompound chunkProviderSettings;
     private final ChunkProvider chunkProvider;
     private final String chunkProviderType;
 
-    private final boolean generateOceans;
     private final boolean generateOceanShrines;
     private final boolean generateMonuments;
+
+    private final BiomeInjector biomeInjector;
     
     public OldChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, NbtCompound providerSettings) {
         super(biomeSource, seed, settings);
@@ -92,12 +87,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.chunkProviderType = NbtUtil.readStringOrThrow(NbtTags.WORLD_TYPE, providerSettings);
         this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
         
-        this.generateOceans = !Compat.isLoaded("hydrogen") ? 
-            NbtUtil.readBoolean(NbtTags.GEN_OCEANS, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateOceans) : 
-            false;
-        
         this.generateOceanShrines = NbtUtil.readBoolean(NbtTags.GEN_OCEAN_SHRINES, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateOceanShrines);
         this.generateMonuments = NbtUtil.readBoolean(NbtTags.GEN_MONUMENTS, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateMonuments);
+    
+        this.biomeInjector = this.biomeSource instanceof OldBiomeSource oldBiomeSource ?
+            new BiomeInjector(this, oldBiomeSource) : 
+            null;
     }
 
     public static void register() {
@@ -124,8 +119,10 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             else
                 super.buildSurface(region, chunk);
         
-        if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource)
-            this.replaceOceansInChunk(oldBiomeSource, chunk);
+        // Inject ocean, etc. biomes
+        if (this.biomeInjector != null) {
+            this.biomeInjector.injectBiomes(chunk);
+        }
     }
     
     @Override
@@ -249,14 +246,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public int getHeight(int x, int z, Heightmap.Type type, HeightLimitView world) {
-        return this.chunkProvider.getHeight(x, z, type, world);
+        return this.chunkProvider.getHeight(x, z, type);
     }
   
     @Override
     public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
-        int height = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG, world);
+        int height = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
         int worldHeight = this.chunkProvider.getWorldHeight();
-        int minY = this.chunkProvider.getMinimumY();
+        int minY = this.chunkProvider.getWorldMinY();
         
         BlockState[] column = new BlockState[worldHeight];
         
@@ -278,19 +275,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
-    public BlockPos locateStructure(ServerWorld world, StructureFeature<?> feature, BlockPos center, int radius, boolean skipExistingChunks) {
-        if (!this.generateOceans)
-            if (feature.equals(StructureFeature.OCEAN_RUIN) || 
-                feature.equals(StructureFeature.SHIPWRECK) || 
-                feature.equals(StructureFeature.BURIED_TREASURE) ||
-                feature.equals(OldStructures.OCEAN_SHRINE_STRUCTURE)) {
-                return null;
-            }
-
-        return super.locateStructure(world, feature, center, radius, skipExistingChunks);
-    }
-    
-    @Override
     public Pool<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {
         if (spawnGroup == SpawnGroup.MONSTER) {
             if (structureAccessor.getStructureAt(blockPos, false, OldStructures.OCEAN_SHRINE_STRUCTURE).hasChildren()) {
@@ -309,7 +293,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public int getMinimumY() {
-        return this.chunkProvider.getMinimumY();
+        return this.chunkProvider.getWorldMinY();
     }
 
     @Override
@@ -334,7 +318,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.chunkProvider;
     }
     
-    public NbtCompound getProviderSettings() {
+    public NbtCompound getChunkSettings() {
         return new NbtCompound().copyFrom(this.chunkProviderSettings);
     }
     
@@ -344,6 +328,22 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     public boolean generatesMonuments() {
         return this.generateMonuments;
+    }
+    
+    private Biome getInjectedBiomeAtBlock(int x, int y, int z) {
+        int biomeX = x >> 2;
+        int biomeY = y >> 2;
+        int biomeZ = z >> 2;
+        
+        int topHeight = this.biomeInjector.getCenteredHeight(biomeX, biomeZ);
+        BlockState topState = y < this.getSeaLevel() ? 
+            this.settings.get().getDefaultFluid() :
+            BlockStates.AIR;
+        
+        BiomeInjectionContext context = new BiomeInjectionContext(topHeight, topState);
+        Biome biome = this.biomeInjector.sample(context, biomeX, biomeY, biomeZ);
+        
+        return biome != null ? biome : this.biomeSource.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
     public Set<Biome> getBiomesInArea(int startX, int startY, int startZ, int radius) {
@@ -371,70 +371,5 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         }
         
         return set;
-    } 
-
-    private void replaceOceansInChunk(OldBiomeSource oldBiomeSource, Chunk chunk) {
-        MutableBiomeArray mutableBiomeArray = MutableBiomeArray.inject(chunk.getBiomeArray());
-        
-        ChunkPos chunkPos = chunk.getPos();
-        BlockPos.Mutable pos = new BlockPos.Mutable();
-        
-        int worldHeight = this.getWorldHeight();
-        int minY = this.getMinimumY();
-        
-        int biomeHeight = worldHeight >> 2;
-        
-        for (int biomeX = 0; biomeX < 4; ++biomeX) {
-            for (int biomeZ = 0; biomeZ < 4; ++biomeZ) {
-                int x = chunkPos.getStartX() + (biomeX << 2);
-                int z = chunkPos.getStartZ() + (biomeZ << 2);
-                    
-                // Offset by 2 to get center of biome coordinate section,
-                // to sample overall ocean depth as accurately as possible.
-                int offsetX = x + 2;
-                int offsetZ = z + 2;
-                
-                int height = GenUtil.getSolidHeight(chunk, worldHeight, minY, offsetX, offsetZ, this.defaultFluid);
-                boolean inWater = chunk.getBlockState(pos.set(offsetX, height + 1, offsetZ)).isOf(this.defaultFluid.getBlock());
-                
-                Biome biome = null;
-                
-                // Sample deep oceans
-                if (this.atOceanDepth(height, DEEP_OCEAN_MIN_DEPTH) && inWater) {
-                    biome = oldBiomeSource.getDeepOceanBiomeForNoiseGen(x >> 2, 0, z >> 2);
-                } else if (this.atOceanDepth(height, OCEAN_MIN_DEPTH) && inWater) {
-                    biome = oldBiomeSource.getOceanBiomeForNoiseGen(x >> 2, 0, z >> 2);
-                }
-                
-                if (biome != null) {
-                    // Fill biome column
-                    for (int biomeY = 0; biomeY < biomeHeight; ++biomeY) {
-                        int y = biomeY << 2;
-                        
-                        mutableBiomeArray.setBiome(x, y, z, biome, this.getMinimumY(), this.getWorldHeight());
-                    }
-                }
-            }
-        }
-    }
-    
-    private Biome getInjectedBiomeAtBlock(int x, int y, int z) {
-        int biomeX = x >> 2;
-        int biomeY = y >> 2;
-        int biomeZ = z >> 2;
-        
-        if (this.generateOceans && this.biomeSource instanceof OldBiomeSource oldBiomeSource) {
-            if (this.atOceanDepth(y, DEEP_OCEAN_MIN_DEPTH)) {
-                return oldBiomeSource.getDeepOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
-            } else if (this.atOceanDepth(y, OCEAN_MIN_DEPTH)) { 
-                return oldBiomeSource.getOceanBiomeForNoiseGen(biomeX, 0, biomeZ);
-            }
-        }
-        
-        return this.biomeSource.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
-    }
-
-    private boolean atOceanDepth(int height, int oceanDepth) {
-        return height < this.getSeaLevel() - oceanDepth;
     }
 }

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.OceanBiomeResolver;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.provider.climate.VanillaClimateSampler;
@@ -20,7 +21,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 
-public class VanillaBiomeProvider extends ClimateBiomeProvider {
+public class VanillaBiomeProvider extends ClimateBiomeProvider implements OceanBiomeResolver {
     private final BiomeLayerSampler biomeSampler;
     private final BiomeLayerSampler oceanSampler;
     private final BiomeLayerSampler deepOceanSampler;

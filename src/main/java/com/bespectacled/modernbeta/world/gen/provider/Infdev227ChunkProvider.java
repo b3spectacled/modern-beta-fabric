@@ -18,7 +18,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
@@ -42,8 +41,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     
     public Infdev227ChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        //super(chunkGenerator, 0, 128, 64, 0, 0, -10, BlockStates.STONE, BlockStates.WATER);
-        
+
         // Noise Generators
         this.noiseOctavesA = new PerlinOctaveNoise(rand, 16, true); 
         this.noiseOctavesB = new PerlinOctaveNoise(rand, 16, true);
@@ -79,7 +77,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
             for (int localZ = 0; localZ < 16; ++localZ) {
                 int x = startX + localX;
                 int z = startZ + localZ;
-                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
                 
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
                 
@@ -90,13 +88,13 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
 
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos);
                 
-                for (int y = this.worldHeight - Math.abs(this.minY) - 1; y >= this.minY; --y) {
+                for (int y = this.worldHeight - Math.abs(this.worldMinY) - 1; y >= this.worldMinY; --y) {
                     BlockState blockState = chunk.getBlockState(pos.set(localX, y, localZ));
                     
                     boolean inFluid = blockState.equals(BlockStates.AIR) || blockState.equals(this.defaultFluid);
                     
                     // Skip if used custom surface generation or if below minimum surface level.
-                    if (usedCustomSurface || y < this.minSurfaceY) {
+                    if (usedCustomSurface || y < this.surfaceMinY) {
                         continue;
                     }
                     
@@ -121,7 +119,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     }
 
     @Override
-    public int getHeight(int x, int z, Type type, HeightLimitView world) {
+    public int getHeight(int x, int z, Type type) {
         int groundHeight = this.sampleHeightmap(x, z) + 1;
         
         if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
@@ -144,44 +142,44 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
         
-        int bedrockFloor = this.minY + this.bedrockFloor;
+        int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Block defaultBlock = this.defaultBlock.getBlock();
         Block defaultFluid = this.defaultFluid.getBlock();
 
-        for (int x = 0; x < 16; ++x) {
-            int absX = startX + x;
-            int rX = absX / 1024;
+        for (int localX = 0; localX < 16; ++localX) {
+            int x = startX + localX;
+            int rX = x / 1024;
             
-            for (int z = 0; z < 16; ++z) {    
-                int absZ = startZ + z;
-                int rZ = absZ / 1024;
+            for (int localZ = 0; localZ < 16; ++localZ) {    
+                int z = startZ + localZ;
+                int rZ = z / 1024;
                 
                 float noiseA = (float)(
-                    this.noiseOctavesA.sample(absX / 0.03125f, 0.0, absZ / 0.03125f) - 
-                    this.noiseOctavesB.sample(absX / 0.015625f, 0.0, absZ / 0.015625f)) / 512.0f / 4.0f;
-                float noiseB = (float)this.noiseOctavesE.sample(absX / 4.0f, absZ / 4.0f);
-                float noiseC = (float)this.noiseOctavesF.sample(absX / 8.0f, absZ / 8.0f) / 8.0f;
+                    this.noiseOctavesA.sample(x / 0.03125f, 0.0, z / 0.03125f) - 
+                    this.noiseOctavesB.sample(x / 0.015625f, 0.0, z / 0.015625f)) / 512.0f / 4.0f;
+                float noiseB = (float)this.noiseOctavesE.sample(x / 4.0f, z / 4.0f);
+                float noiseC = (float)this.noiseOctavesF.sample(x / 8.0f, z / 8.0f) / 8.0f;
                 
                 noiseB = noiseB > 0.0f ? 
-                    ((float)(this.noiseOctavesC.sample(absX * 0.25714284f * 2.0f, absZ * 0.25714284f * 2.0f) * noiseC / 4.0)) :
-                    ((float)(this.noiseOctavesD.sample(absX * 0.25714284f, absZ * 0.25714284f) * noiseC));
+                    ((float)(this.noiseOctavesC.sample(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
+                    ((float)(this.noiseOctavesD.sample(x * 0.25714284f, z * 0.25714284f) * noiseC));
                 
                 //int heightVal = (int)(noiseA + this.seaLevel + noiseB);
 
                 // Subtract 1 to be more consistent with modern versions.
                 int heightVal = (int)(noiseA + (this.seaLevel - 1) + noiseB);
-                if ((float)this.noiseOctavesE.sample(absX, absZ) < 0.0f) {
+                if ((float)this.noiseOctavesE.sample(x, z) < 0.0f) {
                     heightVal = heightVal / 2 << 1;
-                    if ((float)this.noiseOctavesE.sample(absX / 5, absZ / 5) < 0.0f) {
+                    if ((float)this.noiseOctavesE.sample(x / 5, z / 5) < 0.0f) {
                         ++heightVal;
                     }
                 }
                 
-                for (int y = this.minY; y < this.worldTopY; ++y) {
+                for (int y = this.worldMinY; y < this.worldTopY; ++y) {
                     Block block = Blocks.AIR;
                     
-                    if (this.generateInfdevWall && (absX == 0 || absZ == 0) && y <= heightVal + 2) {
+                    if (this.generateInfdevWall && (x == 0 || z == 0) && y <= heightVal + 2) {
                         block = Blocks.OBSIDIAN;
                     }
                     
@@ -220,8 +218,8 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                         int bX = (rX << 10) + 128 + rand.nextInt(512);
                         int bZ = (rZ << 10) + 128 + rand.nextInt(512);
                         
-                        bX = absX - bX;
-                        bZ = absZ - bZ;
+                        bX = x - bX;
+                        bZ = z - bZ;
                         
                         if (bX < 0) bX = -bX;
                         if (bZ < 0) bZ = -bZ;
@@ -238,15 +236,18 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                         block = Blocks.BEDROCK;
                     }
                     
-                    //block = blockWeightSampler.getBlockWeight(absX, y, absZ, block);
-                    //BlockState blockState = this.getBlockState(absX, y, absZ, block);
+                    BlockState blockState = this.getBlockState(
+                        structureWeightSampler,
+                        blockSource,
+                        x, y, z,
+                        block,
+                        this.defaultFluid.getBlock()
+                    );
                     
-                    BlockState blockState = this.getBlockState(structureWeightSampler, blockSource, absX, y, absZ, block, this.defaultFluid.getBlock());
+                    chunk.setBlockState(mutable.set(localX, y, localZ), blockState, false);
                     
-                    chunk.setBlockState(mutable.set(x, y, z), blockState, false);
-                    
-                    heightmapOCEAN.trackUpdate(x, y, z, blockState);
-                    heightmapSURFACE.trackUpdate(x, y, z, blockState);
+                    heightmapOCEAN.trackUpdate(localX, y, localZ, blockState);
+                    heightmapSURFACE.trackUpdate(localX, y, localZ, blockState);
                 }
             }
         }

@@ -35,11 +35,11 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     
     protected final Random rand;
     
-    protected final int minY;
+    protected final int worldMinY;
     protected final int worldHeight;
     protected final int worldTopY;
     protected final int seaLevel;
-    protected final int minSurfaceY;
+    protected final int surfaceMinY;
     
     protected final int bedrockFloor;
     protected final int bedrockCeiling;
@@ -65,10 +65,10 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     
     public BaseChunkProvider(
         OldChunkGenerator chunkGenerator,
-        int minY,
+        int worldMinY,
         int worldHeight,
         int seaLevel,
-        int minSurfaceY,
+        int surfaceMinY,
         int bedrockFloor,
         int bedrockCeiling,
         BlockState defaultBlock,
@@ -76,11 +76,11 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     ) {
         super(chunkGenerator);
         
-        this.minY = minY;
+        this.worldMinY = worldMinY;
         this.worldHeight = worldHeight;
-        this.worldTopY = worldHeight + minY;
+        this.worldTopY = worldHeight + worldMinY;
         this.seaLevel = seaLevel;
-        this.minSurfaceY = minSurfaceY;
+        this.surfaceMinY = surfaceMinY;
         this.bedrockFloor = bedrockFloor;
         this.bedrockCeiling = bedrockCeiling;
 
@@ -95,7 +95,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         this.rand = new Random(seed);
         
         // Handle bad height values
-        if (this.minY > this.worldHeight)
+        if (this.worldMinY > this.worldHeight)
             throw new IllegalStateException("[Modern Beta] Minimum height cannot be greater than world height!");
     }
     
@@ -109,8 +109,8 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     /**
      * @return Minimum Y coordinate in block coordinates.
      */
-    public int getMinimumY() {
-        return this.minY;
+    public int getWorldMinY() {
+        return this.worldMinY;
     }
     
     /**
@@ -175,7 +175,7 @@ public abstract class BaseChunkProvider extends ChunkProvider {
                 this.defaultBlock, 
                 this.defaultFluid,
                 this.seaLevel, 
-                this.minSurfaceY,
+                this.surfaceMinY,
                 region.getSeed()
             );
             

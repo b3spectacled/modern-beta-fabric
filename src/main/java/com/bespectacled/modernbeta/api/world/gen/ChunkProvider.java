@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.api.world.gen;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.bespectacled.modernbeta.api.world.biome.BiomeHeightSampler;
 import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
@@ -11,7 +10,6 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
-import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -19,7 +17,7 @@ import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-public abstract class ChunkProvider implements BiomeHeightSampler {
+public abstract class ChunkProvider {
     protected final OldChunkGenerator chunkGenerator;
     
     protected final long seed;
@@ -38,7 +36,7 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
         
         this.seed = chunkGenerator.getWorldSeed();
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
-        this.providerSettings = chunkGenerator.getProviderSettings();
+        this.providerSettings = chunkGenerator.getChunkSettings();
         
         this.spawnLocator = SpawnLocator.DEFAULT;
     }
@@ -70,11 +68,9 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
      * @param x x-coordinate in block coordinates.
      * @param z z-coordinate in block coordinates.
      * @param type Vanilla heightmap type.
-     * @param world
-     * 
      * @return The y-coordinate of top block at x/z.
      */
-    public abstract int getHeight(int x, int z, Heightmap.Type heightmap, HeightLimitView world);
+    public abstract int getHeight(int x, int z, Heightmap.Type heightmap);
     
     /**
      * Determines whether to skip the chunk for some chunk generation step, depending on the x/z chunk coordinates.
@@ -102,7 +98,7 @@ public abstract class ChunkProvider implements BiomeHeightSampler {
     /**
      * @return Minimum Y coordinate in block coordinates. 0 by default.
      */
-    public int getMinimumY() {
+    public int getWorldMinY() {
         return 0;
     }
     

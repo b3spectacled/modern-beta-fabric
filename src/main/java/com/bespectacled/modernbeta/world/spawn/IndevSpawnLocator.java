@@ -45,7 +45,7 @@ public class IndevSpawnLocator implements SpawnLocator {
             spawnX = random.nextInt(width / 2) + width / 4;
             spawnZ = random.nextInt(length / 2) + length / 4;
             //spawnY = this.chunkProvider.getLevelHighestBlock(spawnX, spawnZ) + 1;
-            spawnY = this.chunkProvider.getHeight(spawnX - width / 2, spawnZ - length / 2, Heightmap.Type.OCEAN_FLOOR_WG, null) + 1;
+            spawnY = this.chunkProvider.getHeight(spawnX - width / 2, spawnZ - length / 2, Heightmap.Type.OCEAN_FLOOR_WG) + 1;
             
             if (attempts >= 1000000) {
                 ModernBeta.log(Level.INFO, "[Indev] Exceeded spawn attempts, spawning anyway..");

@@ -113,11 +113,11 @@ public class OldGeneratorType {
                         // If settings already present, create new compound tag and copy from source,
                         // otherwise, not copying will modify original settings.
                         NbtCompound chunkProviderSettings = chunkGenerator instanceof OldChunkGenerator oldChunkGenerator ?
-                            oldChunkGenerator.getProviderSettings() :
+                            oldChunkGenerator.getChunkSettings() :
                             Registries.CHUNK_SETTINGS.get(worldProvider.getChunkProvider()).get();
                         
                         NbtCompound biomeProviderSettings = biomeSource instanceof OldBiomeSource oldBiomeSource ? 
-                            oldBiomeSource.getProviderSettings() : 
+                            oldBiomeSource.getBiomeSettings() : 
                             Registries.BIOME_SETTINGS.get(worldProvider.getBiomeProvider()).get();
                         
                         return new WorldScreen(

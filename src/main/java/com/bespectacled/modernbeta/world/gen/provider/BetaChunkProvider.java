@@ -37,8 +37,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
     
     public BetaChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        //super(chunkGenerator, 0, 128, 64, 50, 0, -10, BlockStates.STONE, BlockStates.WATER, 2, 1, 1.0, 1.0, 80, 160, -10, 3, 0, 15, 3, 0, false, false, false, false, false);
-        
+
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
         this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
@@ -80,7 +79,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
-        int bedrockFloor = this.minY + this.bedrockFloor;
+        int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
@@ -112,7 +111,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
             for (int localX = 0; localX < 16; localX++) {
                 int x = (chunkX << 4) + localX;
                 int z = (chunkZ << 4) + localZ;
-                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.minY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
                 
                 boolean genSandBeach = sandNoise[localZ + localX * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
                 boolean genGravelBeach = gravelNoise[localZ + localX * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
@@ -131,7 +130,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos);
 
                 // Generate from top to bottom of world
-                for (int y = this.worldTopY - 1; y >= this.minY; y--) {
+                for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
 
                     // Randomly place bedrock from y=0 (or minHeight) to y=5
                     if (y <= bedrockFloor + rand.nextInt(5)) {
@@ -140,7 +139,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
                     }
                     
                     // Skip if used custom surface generation or if below minimum surface level.
-                    if (usedCustomSurface || y < this.minSurfaceY) {
+                    if (usedCustomSurface || y < this.surfaceMinY) {
                         continue;
                     }
 
@@ -218,8 +217,18 @@ public class BetaChunkProvider extends NoiseChunkProvider {
         double depthNoiseScaleX = 200D;
         double depthNoiseScaleZ = 200D;
         
-        //double baseSize = noiseResolutionY / 2D; // Or: 17 / 2D = 8.5
+        double coordinateScale = 684.412D * this.xzScale; 
+        double heightScale = 684.412D * this.yScale;
+        
+        double mainNoiseScaleX = this.xzFactor; // Default: 80
+        double mainNoiseScaleY = this.yFactor;  // Default: 160
+        double mainNoiseScaleZ = this.xzFactor;
+
+        double lowerLimitScale = 512D;
+        double upperLimitScale = 512D;
+        
         double baseSize = 8.5D;
+        double heightStretch = 12D;
         
         Clime clime = this.climateSampler.sampleClime(x, z);
         double temp = clime.temp();
@@ -230,72 +239,54 @@ public class BetaChunkProvider extends NoiseChunkProvider {
         rain *= rain;
         rain = 1.0D - rain;
 
-        double scaleNoise = this.scaleNoiseOctaves.sample(noiseX, noiseZ, 1.121D, 1.121D);
-        scaleNoise = (scaleNoise + 256D) / 512D;
-        scaleNoise *= rain;
+        double scale = this.scaleNoiseOctaves.sample(noiseX, noiseZ, 1.121D, 1.121D);
+        scale = (scale + 256D) / 512D;
+        scale *= rain;
         
-        if (scaleNoise > 1.0D) {
-            scaleNoise = 1.0D;
+        if (scale > 1.0D) {
+            scale = 1.0D;
         }
         
-        double depthNoise = this.depthNoiseOctaves.sample(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
-        depthNoise /= 8000D;
+        double depth = this.depthNoiseOctaves.sample(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
+        depth /= 8000D;
 
-        if (depthNoise < 0.0D) {
-            depthNoise = -depthNoise * 0.3D;
+        if (depth < 0.0D) {
+            depth = -depth * 0.3D;
         }
 
-        depthNoise = depthNoise * 3D - 2D;
+        depth = depth * 3D - 2D;
 
-        if (depthNoise < 0.0D) {
-            depthNoise /= 2D;
+        if (depth < 0.0D) {
+            depth /= 2D;
 
-            if (depthNoise < -1D) {
-                depthNoise = -1D;
+            if (depth < -1D) {
+                depth = -1D;
             }
 
-            depthNoise /= 1.4D;
-            depthNoise /= 2D;
+            depth /= 1.4D;
+            depth /= 2D;
 
-            scaleNoise = 0.0D;
+            scale = 0.0D;
 
         } else {
-            if (depthNoise > 1.0D) {
-                depthNoise = 1.0D;
+            if (depth > 1.0D) {
+                depth = 1.0D;
             }
-            depthNoise /= 8D;
+            depth /= 8D;
         }
 
-        if (scaleNoise < 0.0D) {
-            scaleNoise = 0.0D;
+        if (scale < 0.0D) {
+            scale = 0.0D;
         }
 
-        scaleNoise += 0.5D;
-        //depthVal = (depthVal * (double) noiseResolutionY) / 16D;
-        //double depthVal2 = (double) noiseResolutionY / 2D + depthVal * 4D;
-        depthNoise = depthNoise * baseSize / 8D;
-        depthNoise = baseSize + depthNoise * 4D;
-        
-        double scale = scaleNoise;
-        double depth = depthNoise;
+        scale += 0.5D;
+        depth = depth * baseSize / 8D;
+        depth = baseSize + depth * 4D;
         
         for (int y = 0; y < buffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
             
-            // Var names taken from old customized preset names
-            double coordinateScale = 684.412D * this.xzScale; 
-            double heightScale = 684.412D * this.yScale;
-            
-            double mainNoiseScaleX = this.xzFactor; // Default: 80
-            double mainNoiseScaleY = this.yFactor;  // Default: 160
-            double mainNoiseScaleZ = this.xzFactor;
-
-            double lowerLimitScale = 512D;
-            double upperLimitScale = 512D;
-            
-            double heightStretch = 12D;
-            
-            double density = 0.0D;
+            double density;
             double densityOffset = this.getOffset(noiseY, heightStretch, depth, scale);
             
             // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
@@ -341,15 +332,15 @@ public class BetaChunkProvider extends NoiseChunkProvider {
             }
             
             // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
-            double densityWithOffset = density - densityOffset; 
+            density -= densityOffset;
             
             // Sample for noise caves
-            densityWithOffset = this.sampleNoiseCave(densityWithOffset, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, noiseX, noiseY, noiseZ);
             
-            densityWithOffset = this.applyTopSlide(densityWithOffset, noiseY, 4);
-            densityWithOffset = this.applyBottomSlide(densityWithOffset, noiseY, -3);
+            // Apply slides
+            density = this.applySlides(density, y);
             
-            buffer[y] = densityWithOffset;
+            buffer[y] = density;
         }
     }
     

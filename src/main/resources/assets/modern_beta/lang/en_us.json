@@ -28,10 +28,13 @@
     "createWorld.customize.worldType.title": "Modern Beta World Configuration",
     "createWorld.customize.settings.title": "Modern Beta Settings Configuration",
     
-    "createWorld.customize.climateType.land": "Land Biomes",
-    "createWorld.customize.climateType.ocean": "Ocean Biomes",
+    "createWorld.customize.biome.climateType.land": "Land Biomes",
+    "createWorld.customize.biome.climateType.ocean": "Ocean Biomes",
     
-    "createWorld.customize.hydrogenLoaded": "Hydrogen detected! 'Assign Ocean Biomes' option is disabled.",
+    "createWorld.customize.biome.generateOceans": "Assign Ocean Biomes",
+    "createWorld.customize.biome.generateOceans.tooltip": "Replace biomes in bodies of water with ocean biomes.",
+    
+    "createWorld.customize.hydrogenLoaded": "'Assign Ocean Biomes' option is disabled due to an incompatibility with Hydrogen.",
     
     "createWorld.customize.inf.generateOceans": "Assign Ocean Biomes",
     "createWorld.customize.inf.generateOceanShrines": "Generate Ocean Shrines",

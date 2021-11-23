@@ -21,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
-import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.BlockSource;
@@ -111,10 +110,10 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
 
     public NoiseChunkProvider(
         OldChunkGenerator chunkGenerator,
-        int minY, 
+        int worldMinY, 
         int worldHeight, 
         int seaLevel,
-        int minSurfaceY,
+        int surfaceMinY,
         int bedrockFloor,
         int bedrockCeiling,
         BlockState defaultBlock,
@@ -137,7 +136,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         boolean generateOreVeins,
         boolean generateNoodleCaves
     ) {
-        super(chunkGenerator, minY, worldHeight, seaLevel, minSurfaceY, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid);
+        super(chunkGenerator, worldMinY, worldHeight, seaLevel, surfaceMinY, bedrockFloor, bedrockCeiling, defaultBlock, defaultFluid);
         
         this.verticalNoiseResolution = sizeVertical * 4;
         this.horizontalNoiseResolution = sizeHorizontal * 4;
@@ -145,8 +144,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         this.noiseSizeX = 16 / this.horizontalNoiseResolution;
         this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
         this.noiseSizeY = MathHelper.floorDiv(this.worldHeight, this.verticalNoiseResolution);
-        this.noiseMinY = MathHelper.floorDiv(this.minY, this.verticalNoiseResolution);
-        this.noiseTopY = MathHelper.floorDiv(this.minY + this.worldHeight, this.verticalNoiseResolution);
+        this.noiseMinY = MathHelper.floorDiv(this.worldMinY, this.verticalNoiseResolution);
+        this.noiseTopY = MathHelper.floorDiv(this.worldMinY + this.worldHeight, this.verticalNoiseResolution);
         
         this.xzScale = xzScale;
         this.yScale = yScale;
@@ -230,12 +229,10 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
      * @param x x-coordinate in block coordinates.
      * @param z z-coordinate in block coordinates.
      * @param type Vanilla heightmap type.
-     * @param world
-     * 
      * @return The y-coordinate of top block at x/z.
      */
     @Override
-    public int getHeight(int x, int z, Heightmap.Type type, HeightLimitView world) {
+    public int getHeight(int x, int z, Heightmap.Type type) {
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
         
@@ -293,38 +290,24 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     }
     
     /**
-     * Interpolates density to set terrain curve at bottom of the world.
+     * Interpolates density to set terrain curve at top and bottom of the world.
      * 
      * @param density Base density.
      * @param noiseY y-coordinate in noise coordinates.
-     * @param initialOffset Initial noise y-coordinate offset. Generator settings offset is subtracted from this.
      * 
      * @return Modified noise density.
      */
-    protected double applyBottomSlide(double density, int noiseY, int initialOffset) {
-        int bottomSlideStart = this.noiseMinY - initialOffset - this.bottomSlideOffset;
-        if (noiseY < bottomSlideStart) {
-            double bottomSlideDelta = (float) (bottomSlideStart - noiseY) / ((float) this.bottomSlideSize);
-            density = MathHelper.lerp(bottomSlideDelta, density, this.bottomSlideTarget);
+    protected double applySlides(double density, int noiseY) {
+        noiseY -= this.noiseMinY;
+        
+        if (this.topSlideSize > 0.0) {
+            double delta = ((double)(this.noiseSizeY - noiseY) - this.topSlideOffset) / this.topSlideSize;
+            density = MathHelper.clampedLerp(this.topSlideTarget, density, delta);
         }
         
-        return density;
-    }
-    
-    /**
-     * Interpolates density to set terrain curve at top of the world.
-     * 
-     * @param density Base density.
-     * @param noiseY y-coordinate in noise coordinates.
-     * @param initialOffset Initial noise y-coordinate offset. Generator settings offset is subtracted from this.
-     * 
-     * @return Modified noise density.
-     */
-    protected double applyTopSlide(double density, int noiseY, int initialOffset) {
-        int topSlideStart = (this.noiseSizeY + this.noiseMinY + 1) - initialOffset - this.topSlideOffset;
-        if (noiseY > topSlideStart) {
-            double topSlideDelta = (float) (noiseY - topSlideStart) / (float) this.topSlideSize;
-            density = MathHelper.lerp(topSlideDelta, density, this.topSlideTarget);
+        if (this.bottomSlideSize > 0.0) {
+            double delta = ((double)noiseY - this.bottomSlideOffset) / this.bottomSlideSize;
+            density = MathHelper.clampedLerp(this.bottomSlideTarget, density, delta);
         }
         
         return density;
@@ -346,8 +329,8 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         Heightmap heightmapOcean = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSurface = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
-        int minY = Math.max(this.minY, chunk.getBottomY());
-        int topY = Math.min(this.minY + this.worldHeight, chunk.getTopY());
+        int minY = Math.max(this.worldMinY, chunk.getBottomY());
+        int topY = Math.min(this.worldMinY + this.worldHeight, chunk.getTopY());
         
         int noiseMinY = MathHelper.floorDiv(minY, this.verticalNoiseResolution);
         int noiseTopY = MathHelper.floorDiv(topY - minY, this.verticalNoiseResolution);
@@ -390,7 +373,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
                         int y = subY + subChunkY * this.verticalNoiseResolution;
-                        y += this.minY;
+                        y += this.worldMinY;
                         
                         double deltaY = subY / (double)this.verticalNoiseResolution;
                         noiseProviders.forEach(noiseProvider -> noiseProvider.sampleNoiseY(deltaY));
@@ -426,7 +409,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
     
     /**
      * Generates a heightmap for the chunk containing the given x/z coordinates
-     * and returns to {@link #getHeight(int, int, net.minecraft.world.Heightmap.Type, HeightLimitView)} 
+     * and returns to {@link #getHeight(int, int, net.minecraft.world.Heightmap.Type)} 
      * to cache and return the height.
      * 
      * @param chunkX x-coordinate in chunk coordinates to sample all y-values for.
@@ -445,7 +428,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
         
         Arrays.fill(heightmapSurface, minHeight);
         Arrays.fill(heightmapOcean, minHeight);
-        Arrays.fill(heightmapSurfaceFloor, Integer.MIN_VALUE);
+        Arrays.fill(heightmapSurfaceFloor, this.worldMinY);
         
         for (int subChunkX = 0; subChunkX < this.noiseSizeX; ++subChunkX) {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++subChunkZ) {
@@ -454,7 +437,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                     
                     for (int subY = 0; subY < this.verticalNoiseResolution; ++subY) {
                         int y = subY + subChunkY * this.verticalNoiseResolution;
-                        y += this.minY;
+                        y += this.worldMinY;
                         
                         double deltaY = subY / (double)this.verticalNoiseResolution;
                         baseNoiseProvider.sampleNoiseY(deltaY);
@@ -472,22 +455,36 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
                                 baseNoiseProvider.sampleNoiseZ(deltaZ);
                                 
                                 double density = baseNoiseProvider.sample();
+                                boolean isSolid = density > 0.0;
                                 
                                 int height = y + 1;
                                 int ndx = z + x * 16;
                                 
                                 // Capture topmost solid/fluid block height.
-                                if (y < this.seaLevel || density > 0.0) {
+                                if (y < this.seaLevel || isSolid) {
                                     heightmapOcean[ndx] = height;
                                 }
                                 
                                 // Capture topmost solid block height.
-                                if (density > 0.0) {
+                                if (isSolid) {
                                     heightmapSurface[ndx] = height;
                                 }
                                 
                                 // Capture lowest solid block height.
                                 if (density <= 0.0 && heightmapSurfaceFloor[ndx] == Integer.MIN_VALUE) {
+                                    heightmapSurfaceFloor[ndx] = height - 1;
+                                }
+                                
+                                // Capture lowest solid block height.
+                                // First, set max world height as flag when hitting first solid layer
+                                // then set the actual height value when hitting first non-solid layer.
+                                // This handles situations where the bottom of the world may not be solid,
+                                // i.e. Skylands-style world types.
+                                if (isSolid && heightmapSurfaceFloor[ndx] == this.worldMinY) {
+                                    heightmapSurfaceFloor[ndx] = this.worldTopY;
+                                }
+                                
+                                if (!isSolid && heightmapSurfaceFloor[ndx] == this.worldTopY) {
                                     heightmapSurfaceFloor[ndx] = height - 1;
                                 }
                             }
@@ -585,7 +582,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             double firstNoise = firstNoiseProvider.sample();
             double secondNoise = secondNoiseProvider.sample();
             
-            return this.noodleCaveGenerator.sampleWeight(weight, x, y, z, frequencyNoise, reducingNoise, firstNoise, secondNoise, this.minY);
+            return this.noodleCaveGenerator.sampleWeight(weight, x, y, z, frequencyNoise, reducingNoise, firstNoise, secondNoise, this.worldMinY);
         };
     }
     
