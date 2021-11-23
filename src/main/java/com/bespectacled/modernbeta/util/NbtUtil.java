@@ -136,7 +136,7 @@ public class NbtUtil {
         throw new IllegalArgumentException("[Modern Beta] NBT Element is not an double! Type: " + element.getType()); 
     }
     
-    public static double toFloat(NbtElement element, double alternate) {
+    public static double toDouble(NbtElement element, double alternate) {
         if (element instanceof NbtDouble nbtDouble) 
             return nbtDouble.doubleValue();
         
