@@ -13,10 +13,10 @@ import net.minecraft.client.render.WorldRenderer;
 @Environment(EnvType.CLIENT)
 @Mixin(value = WorldRenderer.class, priority = 1)
 public class MixinWorldRenderer {
-	@ModifyVariable(
-        method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FLjava/lang/Runnable;)V",
-        at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/SkyProperties;getFogColorOverride(FF)[F")
-    )
+    @ModifyVariable(
+            method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;F)V",
+            at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/SkyProperties;getFogColorOverride(FF)[F")
+        )
     private float[] modifySkySunsetCols(float[] skyCols) {
 	    return ModernBeta.RENDER_CONFIG.otherConfig.renderAlphaSunset ? null : skyCols;
     }
