@@ -30,6 +30,11 @@ public class TextOptionWrapper implements OptionWrapper {
 
     @Override
     public Option create() {
+        return this.create(true);
+    }
+
+    @Override
+    public Option create(boolean active) {
         return new TextOption(this.key, this.formattingList);
     }
 
