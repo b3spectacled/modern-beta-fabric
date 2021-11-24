@@ -4,7 +4,6 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
@@ -13,6 +12,7 @@ import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 
@@ -59,17 +59,30 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         
         for (int localX = 0; localX < 16; localX++) {
             for (int localZ = 0; localZ < 16; localZ++) {
-                int absX = (chunkX << 4) + localX;
-                int absZ = (chunkZ << 4) + localZ;
-                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
+                int x = (chunkX << 4) + localX;
+                int z = (chunkZ << 4) + localZ;
+                int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
                 
-                boolean genSandBeach = this.beachNoiseOctaves.sample(absX * eighth, absZ * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0;
-                boolean genGravelBeach = this.beachNoiseOctaves.sample(absZ * eighth, 109.0134, absX * eighth) + rand.nextDouble() * 0.2 > 3.0;
-                int surfaceDepth = (int)(this.surfaceNoiseOctaves.sample(absX * eighth * 2.0, absX * eighth * 2.0) / 3.0 + 3.0 + rand.nextDouble() * 0.25);
+                boolean genSandBeach = this.beachNoiseOctaves.sample(
+                    x * eighth,
+                    z * eighth,
+                    0.0
+                ) + rand.nextDouble() * 0.2 > 0.0;
+                
+                boolean genGravelBeach = this.beachNoiseOctaves.sample(
+                    z * eighth,
+                    109.0134,
+                    x * eighth
+                ) + rand.nextDouble() * 0.2 > 3.0;
+                
+                int surfaceDepth = (int)(this.surfaceNoiseOctaves.sample(
+                    x * eighth * 2.0,
+                    z * eighth * 2.0
+                ) / 3.0 + 3.0 + rand.nextDouble() * 0.25);
 
                 int runDepth = -1;
                 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(absX, surfaceTopY, absZ));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
 
                 BlockState biomeTopBlock = biome.getGenerationSettings().getSurfaceConfig().getTopMaterial();
                 BlockState biomeFillerBlock = biome.getGenerationSettings().getSurfaceConfig().getUnderMaterial();

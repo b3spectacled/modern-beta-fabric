@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.util.OldClientWorld;
+import com.bespectacled.modernbeta.util.ModernBetaClientWorld;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -44,7 +44,7 @@ public class MixinBackgroundRenderer {
         
         // Track whether current client world is Modern Beta world,
         // old fog weighting won't be used if not.
-        isOldWorld = world instanceof OldClientWorld oldClientWorld ? oldClientWorld.isOldWorld() : false;
+        isOldWorld = world instanceof ModernBetaClientWorld clientWorld ? clientWorld.isModernBetaWorld() : false;
     }
     
     @ModifyVariable(
