@@ -96,14 +96,20 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 boolean genSandBeach = this.beachNoiseOctaves.sample(
                     x * eighth, 
                     z * eighth, 
-                    0.0) + rand.nextDouble() * 0.2 > 0.0;
+                    0.0
+                ) + rand.nextDouble() * 0.2 > 0.0;
                 
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(
                     z * eighth, 
                     109.0134,
-                    x * eighth) + rand.nextDouble() * 0.2 > 3.0;
+                    x * eighth
+                ) + rand.nextDouble() * 0.2 > 3.0;
                 
-                double surfaceNoise = this.surfaceNoiseOctaves.sample(x * eighth * 2.0, z * eighth * 2.0);
+                double surfaceNoise = this.surfaceNoiseOctaves.sample(
+                    x * eighth * 2.0,
+                    z * eighth * 2.0
+                );
+                
                 int surfaceDepth = (int)(surfaceNoise / 3.0 + 3.0 + rand.nextDouble() * 0.25);
                 
                 int runDepth = -1;

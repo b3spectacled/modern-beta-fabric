@@ -147,8 +147,8 @@ public class BetaChunkProvider extends NoiseChunkProvider {
                     heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
                     this.worldMinY;
                 
-                boolean genSandBeach = sandNoise[localZ + localX * 16] + rand.nextDouble() * 0.20000000000000001D > 0.0D;
-                boolean genGravelBeach = gravelNoise[localZ + localX * 16] + rand.nextDouble() * 0.20000000000000001D > 3D;
+                boolean genSandBeach = sandNoise[localZ + localX * 16] + rand.nextDouble() * 0.2D > 0.0D;
+                boolean genGravelBeach = gravelNoise[localZ + localX * 16] + rand.nextDouble() * 0.2D > 3D;
                 int surfaceDepth = (int) (surfaceNoise[localZ + localX * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 
                 int runDepth = -1;

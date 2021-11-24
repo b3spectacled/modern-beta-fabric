@@ -98,9 +98,22 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                     heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
                     this.worldMinY;
                 
-                boolean genSandBeach = this.beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) + rand.nextDouble() * 0.2 > 0.0;
-                boolean genGravelBeach = this.beachNoiseOctaves.sample(z * eighth, 109.0134, x * eighth) + rand.nextDouble() * 0.2 > 3.0;
-                int surfaceDepth = (int)(this.surfaceNoiseOctaves.sample(x * eighth * 2.0, x * eighth * 2.0) / 3.0 + 3.0 + rand.nextDouble() * 0.25);
+                boolean genSandBeach = this.beachNoiseOctaves.sample(
+                    x * eighth,
+                    z * eighth,
+                    0.0
+                ) + rand.nextDouble() * 0.2 > 0.0;
+                
+                boolean genGravelBeach = this.beachNoiseOctaves.sample(
+                    z * eighth,
+                    109.0134,
+                    x * eighth
+                ) + rand.nextDouble() * 0.2 > 3.0;
+                
+                int surfaceDepth = (int)(this.surfaceNoiseOctaves.sample(
+                    x * eighth * 2.0,
+                    z * eighth * 2.0
+                ) / 3.0 + 3.0 + rand.nextDouble() * 0.25);
 
                 int runDepth = -1;
                 
