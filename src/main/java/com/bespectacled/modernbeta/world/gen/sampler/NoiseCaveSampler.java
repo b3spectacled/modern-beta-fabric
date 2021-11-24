@@ -57,7 +57,7 @@ public class NoiseCaveSampler {
         this.minY = minY;
     }
     
-    public double sample(double weight, double tunnelOffset, int x, int y, int z) {
+    public double sample(double density, double tunnelOffset, int x, int y, int z) {
         //double tunnelOffset = 1.5625; // 200.0 / 128.0
         
         double offsetWeight;
@@ -65,12 +65,12 @@ public class NoiseCaveSampler {
         double minLimit;
         double maxLimit;
         
-        if (weight < -64.0) {
-            noise = weight;
+        if (density < -64.0) {
+            noise = density;
             maxLimit = 64.0;
             minLimit = -64.0;
         } else {
-            offsetWeight = weight - tunnelOffset;
+            offsetWeight = density - tunnelOffset;
             boolean genTunnelsOnly = offsetWeight < 0.0;
             
             double caveEntranceNoise = this.sampleCaveEntranceNoise(x, y, z);
@@ -80,7 +80,7 @@ public class NoiseCaveSampler {
             double entranceNoise = Math.min(caveEntranceNoise, spaghetti3dNoise + spaghettiRoughnessNoise);
             
             if (genTunnelsOnly) {
-                noise = weight;
+                noise = density;
                 maxLimit = entranceNoise * 5.0;
                 minLimit = -64.0;
             } else {

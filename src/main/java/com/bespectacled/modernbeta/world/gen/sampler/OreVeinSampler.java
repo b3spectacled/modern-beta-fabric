@@ -10,21 +10,17 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.BlockSource;
-import net.minecraft.world.gen.NoiseHelper;
 import net.minecraft.world.gen.noise.NoiseParametersKeys;
 import net.minecraft.world.gen.random.AbstractRandom;
 import net.minecraft.world.gen.random.RandomDeriver;
 
-public class OreVeinSampler {
+public class OreVeinSampler extends NoiseSampler {
     private final DoublePerlinNoiseSampler oreVeininessNoiseSampler;
     private final DoublePerlinNoiseSampler oreVeinFirstNoiseSampler;
     private final DoublePerlinNoiseSampler oreVeinSecondNoiseSampler;
     private final DoublePerlinNoiseSampler oreGapNoiseSampler;
     
     private final RandomDeriver orePosRandomDeriver;
-    
-    private final int horizontalNoiseResolution;
-    private final int verticalNoiseResolution;
     
     private final BlockSource blockSource;
     private final NoiseRules<OreVeinType> oreVeinRules;
@@ -37,6 +33,8 @@ public class OreVeinSampler {
         BlockSource blockSource,
         String chunkProviderType
     ) {
+        super(horizontalNoiseResolution, verticalNoiseResolution);
+        
         this.oreVeininessNoiseSampler = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEININESS);
         this.oreVeinFirstNoiseSampler = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEIN_A);
         this.oreVeinSecondNoiseSampler = NoiseParametersKeys.createNoiseSampler(noiseRegistry, randomDeriver, NoiseParametersKeys.ORE_VEIN_B);
@@ -44,29 +42,33 @@ public class OreVeinSampler {
         
         this.orePosRandomDeriver = randomDeriver.createRandom(ModernBeta.createId("ore")).createRandomDeriver();
         
-        this.horizontalNoiseResolution = horizontalNoiseResolution;
-        this.verticalNoiseResolution = verticalNoiseResolution;
-        
         this.blockSource = blockSource;
         this.oreVeinRules = Registries.ORE_VEIN_RULES.get(chunkProviderType);
     }
     
-    public void sampleOreFrequencyNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
-        this.sample(buffer, x, z, this.oreVeininessNoiseSampler, 1.5, minY, noiseSizeY);
+    public void sampleOreVeinNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
+        this.sample(buffer, x, z, minY, noiseSizeY, this.oreVeininessNoiseSampler, 1.5, 1.5);
     }
 
-    public void sampleFirstOrePlacementNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
-        this.sample(buffer, x, z, this.oreVeinFirstNoiseSampler, 4.0, minY, noiseSizeY);
+    public void sampleOreFirstNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
+        this.sample(buffer, x, z, minY, noiseSizeY, this.oreVeinFirstNoiseSampler, 4.0, 4.0);
     }
 
-    public void sampleSecondOrePlacementNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
-        this.sample(buffer, x, z, this.oreVeinSecondNoiseSampler, 4.0, minY, noiseSizeY);
+    public void sampleOreSecondNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
+        this.sample(buffer, x, z, minY, noiseSizeY, this.oreVeinSecondNoiseSampler, 4.0, 4.0);
     }
 
-    public BlockState sample(int x, int y, int z, double oreFrequencyNoise, double firstOrePlacementNoise, double secondOrePlacementNoise) {
+    public BlockState sample(
+        int x,
+        int y,
+        int z,
+        double oreVeinNoise,
+        double oreFirstNoise,
+        double oreSecondNoise
+    ) {
         AbstractRandom random = this.orePosRandomDeriver.createRandom(x, y, z);
         
-        OreVeinType veinType = this.getVeinType(oreFrequencyNoise, y);
+        OreVeinType veinType = this.getVeinType(oreVeinNoise, y);
         
         if (veinType == null) 
             return null;
@@ -82,8 +84,8 @@ public class OreVeinSampler {
         if (random.nextFloat() > 0.7f)
             return null;
         
-        if (this.shouldPlaceOreBlock(firstOrePlacementNoise, secondOrePlacementNoise)) {
-            double oreVeinSelector = MathHelper.clampedLerpFromProgress(Math.abs(oreFrequencyNoise), 0.4f, 0.6f, 0.1f, 0.3f);
+        if (this.shouldPlaceOreBlock(oreFirstNoise, oreSecondNoise)) {
+            double oreVeinSelector = MathHelper.clampedLerpFromProgress(Math.abs(oreVeinNoise), 0.4f, 0.6f, 0.1f, 0.3f);
             
             if (random.nextFloat() < oreVeinSelector && this.oreGapNoiseSampler.sample(x, y, z) > -0.3) {
                 return random.nextFloat() < 0.02f ? rawBlock : oreBlock;
@@ -95,30 +97,9 @@ public class OreVeinSampler {
         return null;
         
     }
-    
-    private void sample(double[] buffer, int x, int z, DoublePerlinNoiseSampler sampler, double scale, int minY, int noiseSizeY) {
-        for (int y = 0; y < noiseSizeY; ++y) {
-            double noise;
-            int actualY = y + minY;
-            
-            int noiseX = x * this.horizontalNoiseResolution;
-            int noiseY = actualY * this.verticalNoiseResolution;
-            int noiseZ = z * this.horizontalNoiseResolution;
-            
-            noise = NoiseHelper.lerpFromProgress(
-                sampler, 
-                (double)noiseX * scale, 
-                (double)noiseY * scale, 
-                (double)noiseZ * scale, 
-                -1.0, 1.0
-            );
-            
-            buffer[y] = noise;
-        }
-    }
 
-    private OreVeinType getVeinType(double oreFrequencyNoise, int y) {
-        OreVeinType veinType = this.oreVeinRules.sample(oreFrequencyNoise);
+    private OreVeinType getVeinType(double oreVeinNoise, int y) {
+        OreVeinType veinType = this.oreVeinRules.sample(oreVeinNoise);
         
         if (veinType == null) {
             return null;
@@ -137,16 +118,16 @@ public class OreVeinSampler {
         int minY = Math.min(upperY, lowerY);
         double lerpedY = MathHelper.clampedLerpFromProgress(minY, 0.0, 20.0, -0.2, 0.0);
         
-        if (Math.abs(oreFrequencyNoise) + lerpedY < 0.5) {
+        if (Math.abs(oreVeinNoise) + lerpedY < 0.5) {
             return null;
         }
         
         return veinType;
     }
     
-    private boolean shouldPlaceOreBlock(double firstOrePlacementNoise, double secondOrePlacementNoise) {
-        double ridgedSecondNoise = Math.abs(1.0 * secondOrePlacementNoise) - 0.08;
-        double ridgedFirstNoise = Math.abs(1.0 * firstOrePlacementNoise) - 0.08;
+    private boolean shouldPlaceOreBlock(double oreFirstNoise, double oreSecondNoise) {
+        double ridgedFirstNoise = Math.abs(1.0 * oreFirstNoise) - 0.08;
+        double ridgedSecondNoise = Math.abs(1.0 * oreSecondNoise) - 0.08;
         
         return Math.max(ridgedFirstNoise, ridgedSecondNoise) < 0.0;
     }

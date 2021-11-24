@@ -8,7 +8,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
@@ -28,7 +27,6 @@ public class AquiferSamplerProvider {
     private final FluidLevelSampler fluidLevelSampler;
     private final FluidLevelSampler lavalessFluidLevelSampler;
     
-    private final NoiseColumnSampler columnSampler;
     private final ChunkNoiseSampler chunkSampler;
     
     private final int worldMinY;
@@ -47,7 +45,6 @@ public class AquiferSamplerProvider {
             noiseRegistry,
             new AtomicSimpleRandom(-1).createRandomDeriver(),
             null,
-            null,
             defaultFluid,
             seaLevel,
             lavaLevel,
@@ -61,7 +58,6 @@ public class AquiferSamplerProvider {
     public AquiferSamplerProvider(
         Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry,
         RandomDeriver randomDeriver,
-        NoiseColumnSampler columnSampler,
         ChunkNoiseSampler chunkSampler,
         BlockState defaultFluid,
         int seaLevel,
@@ -84,7 +80,6 @@ public class AquiferSamplerProvider {
         this.fluidLevelSampler = (x, y, z) -> y < lavaLevel ? lavaFluidLevel : seaFluidLevel;
         this.lavalessFluidLevelSampler = (x, y, z) -> seaFluidLevel;
         
-        this.columnSampler = columnSampler;
         this.chunkSampler = chunkSampler;
         
         this.worldMinY = worldMinY;
