@@ -4,7 +4,6 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
@@ -15,6 +14,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 
@@ -60,19 +60,25 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
             for (int localZ = 0; localZ < 16; ++localZ) {
                 int x = (chunkX << 4) + localX;
                 int z = (chunkZ << 4) + localZ;
-                int surfaceTopY = GenUtil.getSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(
-                    x * thirtysecond, 
-                    z * thirtysecond, 
-                    0.0) + rand.nextDouble() * 0.2 > 0.0;
+                    x * thirtysecond,
+                    z * thirtysecond,
+                    0.0
+                ) + rand.nextDouble() * 0.2 > 0.0;
                 
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(
                     z * thirtysecond, 
                     109.0134,
-                    x * thirtysecond) + rand.nextDouble() * 0.2 > 3.0;
+                    x * thirtysecond
+                ) + rand.nextDouble() * 0.2 > 3.0;
                 
-                double surfaceNoise = this.surfaceNoiseOctaves.sample(x * thirtysecond * 2.0, z * thirtysecond * 2.0);
+                double surfaceNoise = this.surfaceNoiseOctaves.sample(
+                    x * thirtysecond * 2.0,
+                    z * thirtysecond * 2.0
+                );
+                
                 int surfaceDepth = (int)(surfaceNoise / 3.0 + 3.0 + rand.nextDouble() * 0.25);
                 
                 int runDepth = -1;

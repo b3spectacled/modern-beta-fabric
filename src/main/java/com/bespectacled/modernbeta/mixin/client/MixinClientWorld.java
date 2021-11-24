@@ -10,14 +10,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
 import com.bespectacled.modernbeta.client.color.BetaBlockColors;
-import com.bespectacled.modernbeta.util.OldClientWorld;
+import com.bespectacled.modernbeta.util.GenUtil;
+import com.bespectacled.modernbeta.util.ModernBetaClientWorld;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampler;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampler.BetaSkyClimateSampler;
@@ -40,74 +41,64 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Environment(EnvType.CLIENT)
 @Mixin(value = ClientWorld.class, priority = 1)
-public abstract class MixinClientWorld implements OldClientWorld {
+public abstract class MixinClientWorld implements ModernBetaClientWorld {
     @Shadow private MinecraftClient client;
     
-    @Unique private BlockPos curPos;
-    @Unique private boolean isOldWorld;
+    @Unique private BlockPos capturedPos;
     @Unique private Optional<ClimateSampler> climateSampler;
     @Unique private Optional<SkyClimateSampler> skyClimateSampler;
-
-    @Override
-    public boolean isBetaBiomeWorld() {
-        return this.climateSampler.isPresent();
-    }
+    @Unique private boolean isModernBetaWorld;
     
     @Override
-    public boolean isOldWorld() {
-        return this.isOldWorld;
+    public boolean isModernBetaWorld() {
+        return this.isModernBetaWorld;
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(
-        ClientPlayNetworkHandler netHandler, 
+        ClientPlayNetworkHandler netHandler,
         ClientWorld.Properties properties,
-        RegistryKey<World> worldKey, 
+        RegistryKey<World> registryRef, 
         DimensionType dimensionType, 
-        int loadDistance, 
+        int loadDistance,
         Supplier<Profiler> profiler,
-        WorldRenderer renderer, 
-        boolean debugWorld, 
-        long seed, 
-        CallbackInfo ci
+        WorldRenderer renderer,
+        boolean debugWorld,
+        long seed,
+        CallbackInfo info
     ) {
-        long worldSeed = this.parseFixedSeed(ModernBeta.RENDER_CONFIG.fixedSeedConfig.fixedSeed);
+        long worldSeed = GenUtil.parseSeed(ModernBeta.RENDER_CONFIG.fixedSeedConfig.fixedSeed);
         boolean useFixedSeed = ModernBeta.RENDER_CONFIG.fixedSeedConfig.useFixedSeed;
         
-        this.isOldWorld = false;
+        // Init with default values
         this.climateSampler = Optional.ofNullable(useFixedSeed ? new BetaClimateSampler(worldSeed) : null);
         this.skyClimateSampler = Optional.ofNullable(useFixedSeed ? new BetaSkyClimateSampler(worldSeed) : null);
+        this.isModernBetaWorld = false;
         
-        if (this.client.getServer() != null && worldKey != null) { // Server check
-            ChunkGenerator chunkGenerator = this.client.getServer().getWorld(worldKey).getChunkManager().getChunkGenerator();
+        // Server check
+        if (this.client.getServer() != null && registryRef != null) {
+            ChunkGenerator chunkGenerator = this.client.getServer().getWorld(registryRef).getChunkManager().getChunkGenerator();
             BiomeSource biomeSource = chunkGenerator.getBiomeSource();
             
-            worldSeed = this.client.getServer().getWorld(worldKey).getSeed();
+            worldSeed = this.client.getServer().getWorld(registryRef).getSeed();
             
-            this.isOldWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof OldBiomeSource;
-            
-            if (biomeSource instanceof OldBiomeSource) {
-                OldBiomeSource oldBiomeSource = (OldBiomeSource)biomeSource;
-                BiomeProvider biomeProvider = oldBiomeSource.getBiomeProvider();
-                
-                if (biomeProvider instanceof ClimateBiomeProvider)
-                    this.climateSampler = Optional.ofNullable(((ClimateBiomeProvider)biomeProvider).getClimateSampler());
-                if (biomeProvider instanceof ClimateBiomeProvider)
-                    this.skyClimateSampler = Optional.ofNullable(((ClimateBiomeProvider)biomeProvider).getSkyClimateSampler());
+            if (biomeSource instanceof OldBiomeSource &&
+                ((OldBiomeSource)biomeSource).getBiomeProvider() instanceof ClimateBiomeProvider
+            ) {
+                this.climateSampler = Optional.ofNullable(((ClimateBiomeProvider)((OldBiomeSource)biomeSource).getBiomeProvider()).getClimateSampler());
+                this.skyClimateSampler = Optional.ofNullable(((ClimateBiomeProvider)((OldBiomeSource)biomeSource).getBiomeProvider()).getSkyClimateSampler());
             }
+            
+            this.isModernBetaWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof OldBiomeSource;
         }
         
         // Set Beta block colors seed.
         BetaBlockColors.INSTANCE.setSeed(worldSeed, this.climateSampler);
     }
     
-    @ModifyVariable(
-        method = "method_23777",
-        at = @At("HEAD"),
-        index = 1
-    )
-    private BlockPos capturePos(BlockPos pos) {
-        return curPos = pos;
+    @Inject(method = "method_23777", at = @At("HEAD"))
+    private void capturePos(BlockPos cameraPos, float tickDelta, CallbackInfoReturnable<Integer> info) {
+        this.capturedPos = cameraPos;
     }
     
     @ModifyVariable(
@@ -117,37 +108,17 @@ public abstract class MixinClientWorld implements OldClientWorld {
     )
     private int injectBetaSkyColor(int skyColor) {
         if (this.skyClimateSampler.isPresent() && this.skyClimateSampler.get().sampleSkyColor()) {
-            int x = (int)curPos.getX();
-            int z = (int)curPos.getZ();
-            float temp = (float)this.skyClimateSampler.get().sampleSkyTemp(x, z);
+            int x = (int)capturedPos.getX();
+            int z = (int)capturedPos.getZ();
             
-            skyColor = this.sampleBetaSkyColor(temp);
+            float temp = (float)this.skyClimateSampler.get().sampleSkyTemp(x, z);
+            temp /= 3F;
+            temp = MathHelper.clamp(temp, -1F, 1F);
+            
+            skyColor = MathHelper.hsvToRgb(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F);
         }
         
         return skyColor;
-    }
-    
-    @Unique
-    private int sampleBetaSkyColor(float temp) {
-        temp /= 3F;
-        temp = MathHelper.clamp(temp, -1F, 1F);
-        
-        return MathHelper.hsvToRgb(0.6222222F - temp * 0.05F, 0.5F + temp * 0.1F, 1.0F);
-    }
-    
-    @Unique
-    private long parseFixedSeed(String stringSeed) {
-        long seed = 0L;
-        
-        if (!stringSeed.isEmpty()) {
-            try {
-                seed = Long.parseLong(stringSeed);
-            } catch (NumberFormatException e) {
-                seed = stringSeed.hashCode();
-            }
-        }
-        
-        return seed;
     }
 }
 
