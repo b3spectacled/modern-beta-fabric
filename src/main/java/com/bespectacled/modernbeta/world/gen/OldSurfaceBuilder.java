@@ -6,11 +6,9 @@ import java.util.stream.Stream;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
-import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.compat.CompatBiomes;
 import com.bespectacled.modernbeta.mixin.MixinSurfaceBuilderAccessor;
 import com.bespectacled.modernbeta.util.BlockColumnHolder;
-import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -26,8 +24,6 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.NoiseColumnSampler;
-import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
 import net.minecraft.world.gen.random.ChunkRandom.RandomProvider;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;

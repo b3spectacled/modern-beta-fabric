@@ -9,7 +9,6 @@ import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
 import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
@@ -114,7 +113,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
             for (int localZ = 0; localZ < 16; ++localZ) {
                 int x = startX + localX;
                 int z = startZ + localZ;
-                int surfaceTopY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
                 
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, mutable.set(x, surfaceTopY, z));
                 

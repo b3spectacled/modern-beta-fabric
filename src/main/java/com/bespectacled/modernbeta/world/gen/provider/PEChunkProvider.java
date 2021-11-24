@@ -9,7 +9,6 @@ import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
@@ -26,6 +25,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.chunk.Chunk;
@@ -145,7 +145,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
             for (int localX = 0; localX < 16; localX++) {
                 int x = (chunkX << 4) + localX;
                 int z = (chunkZ << 4) + localZ;
-                int surfaceTopY = GenUtil.getLowestSolidHeight(chunk, this.worldHeight, this.worldMinY, localX, localZ, this.defaultFluid) + 1;
+                int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
                 int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 
                     heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
                     this.worldMinY;
