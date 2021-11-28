@@ -13,14 +13,11 @@ import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
 import com.bespectacled.modernbeta.world.gen.OldNoiseColumnSampler;
 import com.bespectacled.modernbeta.world.gen.OldSurfaceBuilder;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
@@ -238,25 +235,5 @@ public abstract class ChunkProvider {
      */
     public Biome getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {
         return this.chunkGenerator.getBiomeSource().getBiome(biomeX, biomeY, biomeZ, noiseSampler);
-    }
-    
-    public record BiomeBlocks(BlockState topBlock, BlockState fillerBlock) {
-        private static final BiomeBlocks DESERT = new BiomeBlocks(BlockStates.SAND, BlockStates.SAND);
-        private static final BiomeBlocks DEFAULT = new BiomeBlocks(BlockStates.GRASS_BLOCK, BlockStates.DIRT);
-        private static final BiomeBlocks BADLANDS = new BiomeBlocks(Blocks.RED_SAND.getDefaultState(), Blocks.WHITE_TERRACOTTA.getDefaultState());
-        private static final BiomeBlocks NETHER = new BiomeBlocks(Blocks.NETHERRACK.getDefaultState(), Blocks.NETHERRACK.getDefaultState());
-        private static final BiomeBlocks THEEND = new BiomeBlocks(Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState());
-        
-        public static BiomeBlocks getBiomeBlocks(Biome biome) {
-            Category category = biome.getCategory();
-            
-            return switch(category) {
-                case DESERT -> DESERT;
-                case MESA -> BADLANDS;
-                case NETHER -> NETHER;
-                case THEEND -> THEEND;
-                default -> DEFAULT;
-            };
-        }
     }
 }

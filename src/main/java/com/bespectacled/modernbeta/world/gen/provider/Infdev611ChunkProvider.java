@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.SurfaceConfig;
 import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
@@ -119,12 +120,9 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
 
-                BiomeBlocks biomeBlocks = BiomeBlocks.getBiomeBlocks(biome);
-                BlockState biomeTopBlock = biomeBlocks.topBlock();
-                BlockState biomeFillerBlock = biomeBlocks.fillerBlock();
-
-                BlockState topBlock = biomeTopBlock;
-                BlockState fillerBlock = biomeFillerBlock;
+                SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
+                BlockState topBlock = surfaceConfig.topBlock();
+                BlockState fillerBlock = surfaceConfig.fillerBlock();
 
                 boolean usedCustomSurface = this.surfaceBuilder.buildSurfaceColumn(
                     region.getRegistryManager().get(Registry.BIOME_KEY),
@@ -170,8 +168,8 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                                 fillerBlock = this.defaultBlock;
                                 
                             } else if (y >= this.seaLevel - 4 && y <= this.seaLevel + 1) { // Generate beaches at this y range
-                                topBlock = biomeTopBlock;
-                                fillerBlock = biomeFillerBlock;
+                                topBlock = surfaceConfig.topBlock();
+                                fillerBlock = surfaceConfig.fillerBlock();
 
                                 if (genGravelBeach) {
                                     topBlock = BlockStates.AIR; // This reduces gravel beach height by 1

@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.world.gen.provider;
 
 import com.bespectacled.modernbeta.api.world.gen.FiniteChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.SurfaceConfig;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoiseCombined;
@@ -120,9 +121,9 @@ public class Classic030ChunkProvider extends FiniteChunkProvider {
 
     @Override
     protected BlockState postProcessSurfaceState(BlockState blockState, Biome biome, BlockPos pos, boolean isCold) {
-        BiomeBlocks biomeBlocks = BiomeBlocks.getBiomeBlocks(biome);
-        BlockState topBlock = biomeBlocks.topBlock();
-        BlockState fillerBlock = biomeBlocks.fillerBlock();
+        SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
+        BlockState topBlock = surfaceConfig.topBlock();
+        BlockState fillerBlock = surfaceConfig.fillerBlock();
         
         int x = pos.getX();
         int y = pos.getY();

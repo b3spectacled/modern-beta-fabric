@@ -175,7 +175,7 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         return (MixinSurfaceBuilderAccessor)surfaceBuilder;
     }
 
-    public boolean ignoreBlockStateRule(BlockState blockState) {
+    private boolean ignoreBlockStateRule(BlockState blockState) {
         if (blockState.isOf(Blocks.BEDROCK) || blockState.isOf(Blocks.DEEPSLATE))
             return true;
             

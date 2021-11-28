@@ -21,10 +21,10 @@ import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.blocksource.BlockSourceRules;
 import com.bespectacled.modernbeta.world.gen.blocksource.LayerTransitionBlockSource;
+import com.bespectacled.modernbeta.world.gen.sampler.DensitySampler;
 import com.bespectacled.modernbeta.world.gen.sampler.NoiseCaveSampler;
 import com.bespectacled.modernbeta.world.gen.sampler.NoodleCaveSampler;
 import com.bespectacled.modernbeta.world.gen.sampler.OreVeinSampler;
-import com.bespectacled.modernbeta.world.gen.sampler.DensitySampler;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.BlockState;
