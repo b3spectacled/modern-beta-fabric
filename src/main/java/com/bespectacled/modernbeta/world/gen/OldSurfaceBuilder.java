@@ -38,7 +38,8 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         ).toList()
     );
     
-    private final ChunkProvider chunkProvider;
+    //private final ChunkProvider chunkProvider;
+    private final BlockState defaultState;
     
     public OldSurfaceBuilder(
         Registry<NoiseParameters> noiseRegistry, 
@@ -46,11 +47,13 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         int seaLevel, 
         long seed, 
         RandomProvider randomProvider,
-        ChunkProvider chunkProvider
+        ChunkProvider chunkProvider,
+        BlockState defaultState
     ) {
         super(noiseRegistry, blockState, seaLevel, seed, randomProvider);
         
-        this.chunkProvider = chunkProvider;
+        //this.chunkProvider = chunkProvider;
+        this.defaultState = defaultState;
     }
     
     /*
@@ -68,6 +71,7 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         int localZ,
         int surfaceTopY
     ) {
+        MixinSurfaceBuilderAccessor accessor = this.injectAccessor(this);
         RegistryKey<Biome> biomeKey = biomeRegistry.getKey(biome).orElseThrow(() -> new IllegalStateException("Unregistered biome: " + biome));
         
         if (!BIOMES_WITH_CUSTOM_SURFACES.contains(biomeKey.getValue())) {
@@ -88,11 +92,9 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         
         column.setPos(x, z);
         
-        MixinSurfaceBuilderAccessor accessor = this.injectAccessor(this);
-        
         // Generate eroded badlands hoodoos, as stone initially
         if (biomeKey == BiomeKeys.ERODED_BADLANDS) {
-            accessor.invokeErodedBadlandsBuilder(column.getBlockColumn(), x, z, surfaceMinY, chunk);
+            accessor.invokePlaceBadlandsPillar(column.getBlockColumn(), x, z, surfaceMinY, chunk);
             
             // Re-sample height after hoodoo generation
             height = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, localX, localZ) + 1;
@@ -104,18 +106,21 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         
         int waterHeight = Integer.MIN_VALUE;
         int solidHeight = Integer.MAX_VALUE;
+        int minimumY = chunk.getBottomY();
         
-        for (int y = height; y >= surfaceMinY; --y) {
-            BlockState blockState = column.getBlockColumn().getState(y);
+        for (int y = height; y >= minimumY; --y) {
+            BlockState columnState = column.getBlockColumn().getState(y);
+            BlockState blockState;
+            
             pos.set(x, y, z);
             
-            if (blockState.isAir()) {
+            if (columnState.isAir()) {
                 stoneDepthAbove = 0;
                 waterHeight = Integer.MIN_VALUE;
                 continue;
             }
             
-            if (!blockState.getFluidState().isEmpty()) {
+            if (!columnState.getFluidState().isEmpty()) {
                 if (waterHeight != Integer.MIN_VALUE)
                     continue;
                 
@@ -138,7 +143,6 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
             }
             
             int stoneDepthBelow = y - solidHeight + 1;
-            
             ruleContext.initVerticalContext(
                 ++stoneDepthAbove,
                 stoneDepthBelow, 
@@ -146,16 +150,18 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
                 x, y, z
             );
             
-            blockState = blockStateRule.tryApply(x, y, z);
+            if (columnState != this.defaultState)
+                continue;
             
-            if (blockState == null || blockState.isOf(Blocks.BEDROCK) || blockState.isOf(Blocks.DEEPSLATE))
+            blockState = blockStateRule.tryApply(x, y, z);
+            if (blockState == null || this.ignoreBlockStateRule(blockState))
                 continue;
             
             column.getBlockColumn().setState(y, blockState);
         }
         
         if (biomeKey == BiomeKeys.FROZEN_OCEAN || biomeKey == BiomeKeys.DEEP_FROZEN_OCEAN) {
-            accessor.invokeFrozenOceanBuilder(surfaceMinY, biome, column.getBlockColumn(), pos, x, z, height);
+            accessor.invokePlaceIceberg(surfaceMinY, biome, column.getBlockColumn(), pos, x, z, height);
         }
         
         return true;
@@ -168,15 +174,11 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
     private MixinSurfaceBuilderAccessor injectAccessor(SurfaceBuilder surfaceBuilder) {
         return (MixinSurfaceBuilderAccessor)surfaceBuilder;
     }
-    
-    /*
-    @Override
-    protected int method_39551(ChunkNoiseSampler noiseSampler, int x, int z) {
-        int topY = (this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) ?
-            noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
-            this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-        
-        return topY - 8;
+
+    public boolean ignoreBlockStateRule(BlockState blockState) {
+        if (blockState.isOf(Blocks.BEDROCK) || blockState.isOf(Blocks.DEEPSLATE))
+            return true;
+            
+        return false;
     }
-    */
 }

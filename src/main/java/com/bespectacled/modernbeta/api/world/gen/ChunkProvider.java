@@ -98,7 +98,8 @@ public abstract class ChunkProvider {
             chunkGenerator.getGeneratorSettings().get().getSeaLevel(), 
             this.seed, 
             this.randomProvider,
-            this
+            this,
+            this.generatorSettings.get().getDefaultBlock()
         );
     }
     
