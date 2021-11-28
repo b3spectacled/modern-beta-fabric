@@ -12,7 +12,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BuiltinBiomes;
 
 public class SingleBiomeProvider extends ClimateBiomeProvider {
     private static final Identifier DEFAULT_BIOME_ID = new Identifier("plains");
@@ -39,6 +38,6 @@ public class SingleBiomeProvider extends ClimateBiomeProvider {
         Identifier biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
         Optional<Biome> biome = biomeRegistry.getOrEmpty(biomeId);
         
-        return biome.orElse(BuiltinBiomes.PLAINS);
+        return biome.orElse(biomeRegistry.get(DEFAULT_BIOME_ID));
     }
 }

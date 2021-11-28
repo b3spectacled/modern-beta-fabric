@@ -165,13 +165,13 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         for (int chunkX = mainChunkX - 8; chunkX <= mainChunkX + 8; ++chunkX) {
             for (int chunkZ = mainChunkZ - 8; chunkZ <= mainChunkZ + 8; ++chunkZ) {
                 ChunkPos pos = new ChunkPos(chunkX, chunkZ);
-                Chunk curChunk = region.getChunk(pos.x, pos.z);
+                Chunk carverChunk = region.getChunk(pos.x, pos.z);
                 
                 int startX = pos.getStartX();
                 int startZ = pos.getStartZ();
                 
                 @SuppressWarnings("deprecation")
-                GenerationSettings genSettings = curChunk.method_38258(
+                GenerationSettings genSettings = carverChunk.setBiomeIfAbsent(
                     () -> this.getInjectedBiomeAtBlock(
                         startX,
                         this.getHeight(startX, startZ, Heightmap.Type.OCEAN_FLOOR_WG),
@@ -187,7 +187,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                     
                     if (configuredCarver.shouldCarve(random)) {
                         configuredCarver.carve(carverContext, chunk, biomeAcc::getBiome, random, aquiferSampler, pos, carvingMask);
-
                     }
                 }
             }
@@ -331,7 +330,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             this.settings.get().getDefaultFluid() :
             BlockStates.AIR;
         
-        BiomeInjectionContext context = new BiomeInjectionContext(topHeight, minHeight, state).setY(y);
+        BiomeInjectionContext context = new BiomeInjectionContext(topHeight, minHeight, state, state).setY(y);
         Biome biome = this.biomeInjector.sample(context, biomeX, biomeY, biomeZ);
         
         return biome != null ? biome : this.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);

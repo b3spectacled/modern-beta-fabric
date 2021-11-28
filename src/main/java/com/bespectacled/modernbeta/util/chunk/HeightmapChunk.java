@@ -70,25 +70,4 @@ public class HeightmapChunk {
             default -> this.heightmapSurface[ndx];
         };
     }
-    
-    public short[] getHeightmap(Heightmap.Type type) {
-        return switch(type) {
-            case MOTION_BLOCKING -> this.heightmapOcean;
-            case MOTION_BLOCKING_NO_LEAVES -> this.heightmapOcean;
-            case OCEAN_FLOOR -> this.heightmapSurface;
-            case OCEAN_FLOOR_WG -> this.heightmapSurface;
-            case WORLD_SURFACE -> this.heightmapOcean;
-            case WORLD_SURFACE_WG -> this.heightmapOcean;
-            default -> this.heightmapSurface;
-        };
-    }
-    
-    public short[] getHeightmap(HeightmapChunk.Type type) {
-        return switch(type) {
-            case SURFACE -> this.heightmapSurface;
-            case OCEAN -> this.heightmapOcean;
-            case SURFACE_FLOOR -> this.heightmapSurfaceFloor;
-            default -> this.heightmapSurface;
-        };
-    }
 }

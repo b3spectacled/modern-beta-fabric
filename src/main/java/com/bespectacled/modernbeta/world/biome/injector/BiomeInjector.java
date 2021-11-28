@@ -104,9 +104,16 @@ public class BiomeInjector {
                         
                         int topHeight = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
                         int minHeight = this.sampleMinHeightAround(biomeX, biomeZ, topHeight);
-                        BlockState topState = chunk.getBlockState(pos.set(x, topHeight, z));
                         
-                        BiomeInjectionContext context = new BiomeInjectionContext(topHeight, minHeight, topState);
+                        BlockState topState = chunk.getBlockState(pos.set(x, topHeight, z));
+                        BlockState minState = chunk.getBlockState(pos.set(x, minHeight, z));
+                        
+                        BiomeInjectionContext context = new BiomeInjectionContext(
+                            topHeight,
+                            minHeight,
+                            topState,
+                            minState
+                        );
                         
                         for (int localBiomeY = 0; localBiomeY < 4; ++localBiomeY) {
                             int biomeY = localBiomeY + yOffset;

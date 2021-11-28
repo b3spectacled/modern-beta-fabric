@@ -64,13 +64,15 @@ public class BiomeInjectionRules {
         protected final int topHeight;
         protected final int minHeight;
         protected final BlockState topState;
+        protected final BlockState minState;
         
         private int y;
         
-        public BiomeInjectionContext(int topHeight, int minHeight, BlockState topState) {
+        public BiomeInjectionContext(int topHeight, int minHeight, BlockState topState, BlockState minState) {
             this.topHeight = topHeight;
             this.minHeight = minHeight;
             this.topState = topState;
+            this.minState = minState;
             this.y = topHeight;
         }
         
