@@ -103,7 +103,7 @@ public class BiomeInjector {
                         int z = (biomeZ << 2) + 2;
                         
                         int topHeight = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-                        int minHeight = this.sampleMinHeightAround(biomeX, biomeZ, topHeight);
+                        int minHeight = this.sampleMinHeightAround(biomeX, biomeZ);
                         
                         BlockState topState = chunk.getBlockState(pos.set(x, topHeight, z));
                         BlockState minState = chunk.getBlockState(pos.set(x, minHeight, z));
@@ -153,8 +153,8 @@ public class BiomeInjector {
             this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
     }
     
-    public int sampleMinHeightAround(int centerBiomeX, int centerBiomeZ, int initialHeight) {
-        int minHeight = initialHeight;
+    public int sampleMinHeightAround(int centerBiomeX, int centerBiomeZ) {
+        int minHeight = Integer.MAX_VALUE;
         
         for (int areaBiomeX = -1; areaBiomeX <= 1; ++areaBiomeX) {
             for (int areaBiomeZ = -1; areaBiomeZ <= 1; ++areaBiomeZ) {

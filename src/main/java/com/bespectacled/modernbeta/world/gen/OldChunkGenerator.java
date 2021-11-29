@@ -325,7 +325,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int biomeZ = z >> 2;
         
         int topHeight = this.biomeInjector.getCenteredHeight(biomeX, biomeZ);
-        int minHeight = this.biomeInjector.sampleMinHeightAround(biomeX, biomeZ, topHeight);
+        int minHeight = this.biomeInjector.sampleMinHeightAround(biomeX, biomeZ);
         BlockState state = y < this.getSeaLevel() ? 
             this.settings.get().getDefaultFluid() :
             BlockStates.AIR;
