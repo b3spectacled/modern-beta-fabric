@@ -114,7 +114,7 @@ public class BiomeInjector {
             noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
             this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
     }
-    
+
     private boolean atOceanDepth(int topHeight, int oceanDepth) {
         return topHeight < this.oldChunkGenerator.getSeaLevel() - oceanDepth;
     }

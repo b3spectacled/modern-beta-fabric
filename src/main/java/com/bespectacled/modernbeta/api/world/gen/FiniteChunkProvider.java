@@ -1,9 +1,6 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
 import java.util.ArrayDeque;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
@@ -44,8 +41,7 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
     protected final int[] heightmap;
     protected final Block[][][] blockArr;
     
-    private final AtomicBoolean generated;
-    private final CountDownLatch generatedLatch;
+    private boolean pregenerated;
     
     public FiniteChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
@@ -75,8 +71,7 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
         this.blockArr = new Block[this.levelWidth][this.levelHeight][this.levelLength];
         this.fillBlockArr(Blocks.AIR);
         
-        this.generated = new AtomicBoolean(false);
-        this.generatedLatch = new CountDownLatch(1);
+        this.pregenerated = false;
         
         this.spawnLocator = new IndevSpawnLocator(this);
     }
@@ -333,19 +328,10 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
         }
     }
 
-    private void pregenerateTerrainOrWait() {
-        // Only one thread should enter pregeneration method,
-        // others should funnel into awaiting for latch to count down.
-        if (!this.generated.getAndSet(true)) {
+    private synchronized void pregenerateTerrainOrWait() {
+        if (!this.pregenerated) {
             this.pregenerateTerrain();
-            this.generatedLatch.countDown();
-        } else {
-            try {
-                this.generatedLatch.await();
-            } catch (InterruptedException e) {
-                ModernBeta.log(Level.ERROR, "Indev chunk provider failed to pregenerate terrain!");
-                e.printStackTrace();
-            }
+            this.pregenerated = true;
         }
     }
     
