@@ -40,6 +40,6 @@ public final class VanillaBiomeSourceCreator {
     }
     
     private static boolean useLargeBiomes(NbtCompound settings) {
-        return NbtUtil.readBoolean(NbtTags.LARGE_BIOMES, settings, ModernBeta.BIOME_CONFIG.vanillaBiomeConfig.largeBiomes);
+        return NbtUtil.readBoolean(NbtTags.VANILLA_LARGE_BIOMES, settings, ModernBeta.BIOME_CONFIG.vanillaLargeBiomes);
     }
 }

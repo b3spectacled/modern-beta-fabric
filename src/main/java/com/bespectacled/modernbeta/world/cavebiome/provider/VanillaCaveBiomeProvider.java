@@ -29,13 +29,13 @@ public class VanillaCaveBiomeProvider extends CaveBiomeProvider implements CaveC
         int verticalNoiseScale = NbtUtil.readInt(
             NbtTags.VERTICAL_NOISE_SCALE,
             settings, 
-            ModernBeta.CAVE_BIOME_CONFIG.noiseBiomeConfig.verticalNoiseScale
+            ModernBeta.CAVE_BIOME_CONFIG.verticalNoiseScale
         );
         
         int horizontalNoiseScale = NbtUtil.readInt(
             NbtTags.HORIZONTAL_NOISE_SCALE,
             settings, 
-            ModernBeta.CAVE_BIOME_CONFIG.noiseBiomeConfig.horizontalNoiseScale
+            ModernBeta.CAVE_BIOME_CONFIG.horizontalNoiseScale
         );
         
         this.climateSampler = new BaseCaveClimateSampler(seed, verticalNoiseScale, horizontalNoiseScale);

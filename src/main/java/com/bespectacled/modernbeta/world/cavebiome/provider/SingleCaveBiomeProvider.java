@@ -31,13 +31,13 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider implements CaveCl
         int verticalNoiseScale = NbtUtil.readInt(
             NbtTags.VERTICAL_NOISE_SCALE, 
             settings, 
-            ModernBeta.CAVE_BIOME_CONFIG.singleBiomeConfig.verticalNoiseScale
+            ModernBeta.CAVE_BIOME_CONFIG.verticalNoiseScale
         );
         
         int horizontalNoiseScale = NbtUtil.readInt(
             NbtTags.HORIZONTAL_NOISE_SCALE, 
             settings, 
-            ModernBeta.CAVE_BIOME_CONFIG.singleBiomeConfig.horizontalNoiseScale
+            ModernBeta.CAVE_BIOME_CONFIG.horizontalNoiseScale
         );
 
         this.biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));

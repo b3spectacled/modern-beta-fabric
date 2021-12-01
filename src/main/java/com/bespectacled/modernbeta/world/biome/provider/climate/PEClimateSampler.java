@@ -61,12 +61,12 @@ public class PEClimateSampler implements ClimateSampler, SkyClimateSampler {
     
     @Override
     public boolean sampleBiomeColor() {
-        return ModernBeta.RENDER_CONFIG.biomeColorConfig.renderPEBetaBiomeColor;
+        return ModernBeta.RENDER_CONFIG.configBiomeColor.renderPEBetaBiomeColor;
     }
     
     @Override
     public boolean sampleSkyColor() {
-        return ModernBeta.RENDER_CONFIG.biomeColorConfig.renderPEBetaSkyColor;
+        return ModernBeta.RENDER_CONFIG.configBiomeColor.renderPEBetaSkyColor;
     }
     
     private Clime sampleClimateNoise(int x, int z) {

@@ -9,23 +9,21 @@ import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 @Config(name = ModernBeta.MOD_ID)
 public class ModernBetaConfig extends PartitioningSerializer.GlobalData {
     @ConfigEntry.Gui.TransitiveObject
-    public ConfigRendering renderingConfig = new ConfigRendering();
-    
-    // Workaround: Put generation and biome configs in renderingConfig categories so they don't show up in Mod Menu config.
+    public ModernBetaConfigRendering renderingConfig = new ModernBetaConfigRendering();
     
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Gui.Excluded
-    public ConfigGeneration generationConfig = new ConfigGeneration();
+    public ModernBetaConfigGeneration generationConfig = new ModernBetaConfigGeneration();
  
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Gui.Excluded
-    public ConfigBiome biomeConfig = new ConfigBiome();
+    public ModernBetaConfigBiome biomeConfig = new ModernBetaConfigBiome();
     
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Gui.Excluded
-    public ConfigCaveBiome caveBiomeConfig = new ConfigCaveBiome();
+    public ModernBetaConfigCaveBiome caveBiomeConfig = new ModernBetaConfigCaveBiome();
     
     @ConfigEntry.Gui.TransitiveObject
     @ConfigEntry.Gui.Excluded
-    public ConfigCompat compatConfig = new ConfigCompat();
+    public ModernBetaConfigCompat compatConfig = new ModernBetaConfigCompat();
 }

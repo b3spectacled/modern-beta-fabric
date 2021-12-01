@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta.compat;
 
 public class CompatTechReborn {
+    /*
     private static final String MOD_ID = "techreborn";
     private static final String FEATURE_PREFIX = "";
     private static final String FEATURE_SUFFIX = "";
@@ -15,6 +16,7 @@ public class CompatTechReborn {
         "silver_ore",
         "tin_ore"
     };
+    */
     
     public static void addCompat() {
         /* TODO: Fix later

@@ -16,10 +16,10 @@ import net.minecraft.client.render.DimensionEffects;
 public class MixinDimensionEffects {
     @Inject(method = "getCloudsHeight", at = @At("HEAD"), cancellable = true)
     public void injectCloudsHeight(CallbackInfoReturnable<Float> info) {
-        DimensionEffects skyProperties = (DimensionEffects)(Object)this;
+        DimensionEffects dimensionEffects = (DimensionEffects)(Object)this;
         
-        if (skyProperties instanceof DimensionEffects.Overworld) {
-            info.setReturnValue((float)ModernBeta.RENDER_CONFIG.otherConfig.cloudHeight);
+        if (dimensionEffects instanceof DimensionEffects.Overworld) {
+            info.setReturnValue((float)ModernBeta.RENDER_CONFIG.configOther.cloudHeight);
         }
     }
 }

@@ -36,8 +36,8 @@ public class VanillaBiomeScreen extends OceanBiomeScreen {
      
         BooleanCyclingOptionWrapper largeBiomes = new BooleanCyclingOptionWrapper(
             LARGE_BIOMES_DISPLAY_STRING,
-            () -> NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.LARGE_BIOMES)),
-            value -> this.putSetting(NbtTags.LARGE_BIOMES, NbtByte.of(value))
+            () -> NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.VANILLA_LARGE_BIOMES)),
+            value -> this.putSetting(NbtTags.VANILLA_LARGE_BIOMES, NbtByte.of(value))
         );
         
         this.addOption(largeBiomes);

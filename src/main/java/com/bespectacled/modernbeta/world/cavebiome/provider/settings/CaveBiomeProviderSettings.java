@@ -2,13 +2,13 @@ package com.bespectacled.modernbeta.world.cavebiome.provider.settings;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
-import com.bespectacled.modernbeta.config.ConfigCaveBiome;
+import com.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
 import com.bespectacled.modernbeta.util.NbtTags;
 
 import net.minecraft.nbt.NbtCompound;
 
 public class CaveBiomeProviderSettings {
-    private static final ConfigCaveBiome CONFIG = ModernBeta.CAVE_BIOME_CONFIG;
+    private static final ModernBetaConfigCaveBiome CONFIG = ModernBeta.CAVE_BIOME_CONFIG;
     
     public static NbtCompound createSettingsBase(String caveBiomeType) {
         NbtCompound settings = new NbtCompound();
@@ -25,11 +25,11 @@ public class CaveBiomeProviderSettings {
     public static NbtCompound createSettingsSingle() {
         NbtCompound settings = createSettingsBase(BuiltInTypes.CaveBiome.SINGLE.name);
 
-        settings.putString(NbtTags.SINGLE_BIOME, CONFIG.singleBiomeConfig.singleBiome);
-        settings.putBoolean(NbtTags.USE_NOISE, CONFIG.singleBiomeConfig.useNoise);
+        settings.putString(NbtTags.SINGLE_BIOME, CONFIG.singleBiome);
+        settings.putBoolean(NbtTags.USE_NOISE, CONFIG.useNoise);
         
-        settings.putInt(NbtTags.VERTICAL_NOISE_SCALE, CONFIG.singleBiomeConfig.verticalNoiseScale);
-        settings.putInt(NbtTags.HORIZONTAL_NOISE_SCALE, CONFIG.singleBiomeConfig.horizontalNoiseScale);
+        settings.putInt(NbtTags.VERTICAL_NOISE_SCALE, CONFIG.verticalNoiseScale);
+        settings.putInt(NbtTags.HORIZONTAL_NOISE_SCALE, CONFIG.horizontalNoiseScale);
         
         return settings;
     }
@@ -37,8 +37,8 @@ public class CaveBiomeProviderSettings {
     public static NbtCompound createSettingsNoise() {
         NbtCompound settings = createSettingsBase(BuiltInTypes.CaveBiome.VANILLA.name);
         
-        settings.putInt(NbtTags.VERTICAL_NOISE_SCALE, CONFIG.noiseBiomeConfig.verticalNoiseScale);
-        settings.putInt(NbtTags.HORIZONTAL_NOISE_SCALE, CONFIG.noiseBiomeConfig.horizontalNoiseScale);
+        settings.putInt(NbtTags.VERTICAL_NOISE_SCALE, CONFIG.verticalNoiseScale);
+        settings.putInt(NbtTags.HORIZONTAL_NOISE_SCALE, CONFIG.horizontalNoiseScale);
         
         return settings;
     }

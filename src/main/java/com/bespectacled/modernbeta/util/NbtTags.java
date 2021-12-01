@@ -43,7 +43,7 @@ public class NbtTags {
     public static final String GEN_OCEANS = "generateOceans";
     
     // Vanilla
-    public static final String LARGE_BIOMES = "largeBiomes";
+    public static final String VANILLA_LARGE_BIOMES = "vanillaLargeBiomes";
     
     // Single
     public static final String SINGLE_BIOME = "singleBiome";

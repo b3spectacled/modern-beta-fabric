@@ -5,19 +5,18 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import net.minecraft.client.render.DimensionEffects;
 
-@Config(name = "rendering_config")
-public class ConfigRendering implements ConfigData {
+@Config(name = "config_rendering")
+public class ModernBetaConfigRendering implements ConfigData {
+    @ConfigEntry.Gui.CollapsibleObject
+    public ConfigFixedSeed configFixedSeed = new ConfigFixedSeed();
     
     @ConfigEntry.Gui.CollapsibleObject
-    public FixedSeedConfig fixedSeedConfig = new FixedSeedConfig();
+    public ConfigBiomeColor configBiomeColor = new ConfigBiomeColor();
     
     @ConfigEntry.Gui.CollapsibleObject
-    public BiomeColorConfig biomeColorConfig = new BiomeColorConfig();
+    public ConfigOther configOther = new ConfigOther();
     
-    @ConfigEntry.Gui.CollapsibleObject
-    public OtherConfig otherConfig = new OtherConfig();
-    
-    public static class FixedSeedConfig {
+    public static class ConfigFixedSeed {
         @ConfigEntry.Gui.Tooltip(count = 4)
         public String fixedSeed = "";
         
@@ -25,7 +24,7 @@ public class ConfigRendering implements ConfigData {
         public boolean useFixedSeed = false;
     }
     
-    public static class BiomeColorConfig {
+    public static class ConfigBiomeColor {
         @ConfigEntry.Gui.Tooltip(count = 2)
         public boolean renderBetaSkyColor = true;
 
@@ -42,7 +41,7 @@ public class ConfigRendering implements ConfigData {
         public boolean renderOldFogColor = true;
     }
     
-    public static class OtherConfig {
+    public static class ConfigOther {
         @ConfigEntry.Gui.Tooltip(count = 1)
         public boolean renderAlphaSunset = false;
 

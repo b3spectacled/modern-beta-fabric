@@ -53,8 +53,17 @@ public class IndevChunkProvider extends FiniteChunkProvider {
     public IndevChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         
-        this.levelType = IndevType.fromName(NbtUtil.readString(NbtTags.LEVEL_TYPE, providerSettings, ModernBeta.GEN_CONFIG.indevGenConfig.indevLevelType));
-        this.levelTheme = IndevTheme.fromName(NbtUtil.readString(NbtTags.LEVEL_THEME, providerSettings, ModernBeta.GEN_CONFIG.indevGenConfig.indevLevelTheme));
+        this.levelType = IndevType.fromName(NbtUtil.readString(
+            NbtTags.LEVEL_TYPE,
+            this.providerSettings,
+            ModernBeta.GEN_CONFIG.levelType
+        ));
+        
+        this.levelTheme = IndevTheme.fromName(NbtUtil.readString(
+            NbtTags.LEVEL_THEME,
+            this.providerSettings,
+            ModernBeta.GEN_CONFIG.levelTheme
+        ));
         
         this.fluidBlock = this.isFloating() ? BlockStates.AIR : (this.isHell() ? BlockStates.LAVA : this.defaultFluid);
         this.topsoilBlock = this.isHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;
