@@ -79,8 +79,17 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.chunkProviderType = NbtUtil.readStringOrThrow(NbtTags.WORLD_TYPE, providerSettings);
         this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
         
-        this.generateOceanShrines = NbtUtil.readBoolean(NbtTags.GEN_OCEAN_SHRINES, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateOceanShrines);
-        this.generateMonuments = NbtUtil.readBoolean(NbtTags.GEN_MONUMENTS, providerSettings, ModernBeta.GEN_CONFIG.infGenConfig.generateMonuments);
+        this.generateOceanShrines = NbtUtil.readBoolean(
+            NbtTags.GEN_OCEAN_SHRINES,
+            providerSettings,
+            ModernBeta.GEN_CONFIG.generateOceanShrines
+        );
+        
+        this.generateMonuments = NbtUtil.readBoolean(
+            NbtTags.GEN_MONUMENTS,
+            providerSettings,
+            ModernBeta.GEN_CONFIG.generateMonuments
+        );
     
         this.biomeInjector = this.biomeSource instanceof OldBiomeSource ?
             new BiomeInjector(this, (OldBiomeSource)this.biomeSource) : 

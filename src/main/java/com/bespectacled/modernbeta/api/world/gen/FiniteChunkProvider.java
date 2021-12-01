@@ -44,10 +44,10 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
     public FiniteChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
             chunkGenerator,
-            NbtUtil.readInt(NbtTags.LEVEL_WIDTH, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.preInfGenConfig.levelWidth),
-            NbtUtil.readInt(NbtTags.LEVEL_LENGTH, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.preInfGenConfig.levelLength),
-            NbtUtil.readInt(NbtTags.LEVEL_HEIGHT, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.preInfGenConfig.levelHeight),
-            NbtUtil.readFloat(NbtTags.LEVEL_CAVE_RADIUS, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.preInfGenConfig.caveRadius)
+            NbtUtil.readInt(NbtTags.LEVEL_WIDTH, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.levelWidth),
+            NbtUtil.readInt(NbtTags.LEVEL_LENGTH, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.levelLength),
+            NbtUtil.readInt(NbtTags.LEVEL_HEIGHT, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.levelHeight),
+            NbtUtil.readFloat(NbtTags.LEVEL_CAVE_RADIUS, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.caveRadius)
         );
     }
     

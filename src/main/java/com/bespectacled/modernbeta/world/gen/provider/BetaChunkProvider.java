@@ -55,8 +55,8 @@ public class BetaChunkProvider extends NoiseChunkProvider {
         // else create new default Beta climate sampler.
         boolean sampleClimate = NbtUtil.readBoolean(
             NbtTags.SAMPLE_CLIMATE, 
-            providerSettings, 
-            ModernBeta.GEN_CONFIG.infGenConfig.sampleClimate
+            this.providerSettings, 
+            ModernBeta.GEN_CONFIG.sampleClimate
         );
 
         ClimateSampler climateSampler = new BetaClimateSampler(chunkGenerator.getWorldSeed());

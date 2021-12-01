@@ -52,8 +52,17 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         new PerlinOctaveNoise(rand, 3, true);
         this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
         
-        this.generateInfdevPyramid = NbtUtil.readBoolean(NbtTags.GEN_INFDEV_PYRAMID, providerSettings, ModernBeta.GEN_CONFIG.inf227GenConfig.generateInfdevPyramid);
-        this.generateInfdevWall = NbtUtil.readBoolean(NbtTags.GEN_INFDEV_WALL, providerSettings, ModernBeta.GEN_CONFIG.inf227GenConfig.generateInfdevWall);
+        this.generateInfdevPyramid = NbtUtil.readBoolean(
+            NbtTags.GEN_INFDEV_PYRAMID,
+            providerSettings,
+            ModernBeta.GEN_CONFIG.generateInfdevPyramid
+        );
+        
+        this.generateInfdevWall = NbtUtil.readBoolean(
+            NbtTags.GEN_INFDEV_WALL,
+            providerSettings,
+            ModernBeta.GEN_CONFIG.generateInfdevWall
+        );
         
         setForestOctaves(forestNoiseOctaves);
     }

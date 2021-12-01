@@ -67,8 +67,8 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         long seed,
         CallbackInfo info
     ) {
-        long worldSeed = GenUtil.parseSeed(ModernBeta.RENDER_CONFIG.fixedSeedConfig.fixedSeed);
-        boolean useFixedSeed = ModernBeta.RENDER_CONFIG.fixedSeedConfig.useFixedSeed;
+        long worldSeed = GenUtil.parseSeed(ModernBeta.RENDER_CONFIG.configFixedSeed.fixedSeed);
+        boolean useFixedSeed = ModernBeta.RENDER_CONFIG.configFixedSeed.useFixedSeed;
         
         // Init with default values
         this.climateSampler = Optional.ofNullable(useFixedSeed ? new BetaClimateSampler(worldSeed) : null);

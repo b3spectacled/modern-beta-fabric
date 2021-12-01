@@ -83,8 +83,8 @@ public class MixinGeneratorOptions {
             String generate_structures = (String) properties.get("generate-structures");
             boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
             
-            String worldType = ModernBeta.GEN_CONFIG.generalGenConfig.worldType;
-            String biomeType = ModernBeta.BIOME_CONFIG.generalBiomeConfig.biomeType;
+            String worldType = ModernBeta.GEN_CONFIG.worldType;
+            String biomeType = ModernBeta.BIOME_CONFIG.biomeType;
             
             NbtCompound chunkProviderSettings = Registries.CHUNK_SETTINGS.getOrElse(
                 worldType, 
@@ -96,7 +96,7 @@ public class MixinGeneratorOptions {
                 () -> BiomeProviderSettings.createSettingsBase(biomeType)
             ).get();
             
-            WorldProvider worldProvider = Registries.WORLD.getOrDefault(ModernBeta.GEN_CONFIG.generalGenConfig.worldType);
+            WorldProvider worldProvider = Registries.WORLD.getOrDefault(ModernBeta.GEN_CONFIG.worldType);
             
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 new OldBiomeSource(seed, registryBiome, biomeProviderSettings), 

@@ -7,8 +7,8 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
-@Config(name = "compat_config")
-public class ConfigCompat implements ConfigData {
+@Config(name = "config_compat")
+public class ModernBetaConfigCompat implements ConfigData {
     @ConfigEntry.Gui.Excluded
     public List<String> biomesWithCustomSurfaces = Arrays.asList();
 }

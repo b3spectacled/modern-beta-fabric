@@ -55,7 +55,7 @@ public class BetaClimateSampler implements ClimateSampler {
     
     @Override
     public boolean sampleBiomeColor() {
-        return ModernBeta.RENDER_CONFIG.biomeColorConfig.renderBetaBiomeColor;
+        return ModernBeta.RENDER_CONFIG.configBiomeColor.renderBetaBiomeColor;
     }
     
     private Clime sampleClimateNoise(int x, int z) {
@@ -107,7 +107,7 @@ public class BetaClimateSampler implements ClimateSampler {
         
         @Override
         public boolean sampleSkyColor() {
-            return ModernBeta.RENDER_CONFIG.biomeColorConfig.renderBetaSkyColor;
+            return ModernBeta.RENDER_CONFIG.configBiomeColor.renderBetaSkyColor;
         }
         
         private double sampleSkyTempNoise(int x, int z) {
