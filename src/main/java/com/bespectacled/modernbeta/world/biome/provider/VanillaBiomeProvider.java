@@ -74,7 +74,7 @@ public class VanillaBiomeProvider extends ClimateBiomeProvider implements OceanB
         int vanillaBiomeSize = NbtUtil.readInt(
             NbtTags.VANILLA_BIOME_SIZE, 
             settings, 
-            ModernBeta.BIOME_CONFIG.vanillaBiomeConfig.vanillaBiomeSize
+            ModernBeta.BIOME_CONFIG.vanillaBiomeSize
         );
         
         return VanillaBiomeLayer.build(seed, false, vanillaBiomeSize, -1);
@@ -84,7 +84,7 @@ public class VanillaBiomeProvider extends ClimateBiomeProvider implements OceanB
         int vanillaOceanBiomeSize = NbtUtil.readInt(
             NbtTags.VANILLA_OCEAN_BIOME_SIZE, 
             settings, 
-            ModernBeta.BIOME_CONFIG.vanillaBiomeConfig.vanillaOceanBiomeSize
+            ModernBeta.BIOME_CONFIG.vanillaOceanBiomeSize
         );
      
         return VanillaOceanLayer.build(seed, false, vanillaOceanBiomeSize, -1);
@@ -94,7 +94,7 @@ public class VanillaBiomeProvider extends ClimateBiomeProvider implements OceanB
         int vanillaOceanBiomeSize = NbtUtil.readInt(
             NbtTags.VANILLA_OCEAN_BIOME_SIZE, 
             settings, 
-            ModernBeta.BIOME_CONFIG.vanillaBiomeConfig.vanillaOceanBiomeSize
+            ModernBeta.BIOME_CONFIG.vanillaOceanBiomeSize
         );
      
         return VanillaDeepOceanLayer.build(seed, false, vanillaOceanBiomeSize, -1);

@@ -7,10 +7,10 @@ import org.apache.logging.log4j.Logger;
 import com.bespectacled.modernbeta.client.color.BlockColors;
 import com.bespectacled.modernbeta.command.DebugProviderSettingsCommand;
 import com.bespectacled.modernbeta.compat.Compat;
-import com.bespectacled.modernbeta.config.ConfigBiome;
-import com.bespectacled.modernbeta.config.ConfigCompat;
-import com.bespectacled.modernbeta.config.ConfigGeneration;
-import com.bespectacled.modernbeta.config.ConfigRendering;
+import com.bespectacled.modernbeta.config.ModernBetaConfigBiome;
+import com.bespectacled.modernbeta.config.ModernBetaConfigCompat;
+import com.bespectacled.modernbeta.config.ModernBetaConfigGeneration;
+import com.bespectacled.modernbeta.config.ModernBetaConfigRendering;
 import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.world.biome.OldBiomeModifier;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
@@ -38,10 +38,10 @@ public class ModernBeta implements ModInitializer {
         PartitioningSerializer.wrap(GsonConfigSerializer::new)
     ).getConfig();
     
-    public static final ConfigGeneration GEN_CONFIG = CONFIG.generationConfig;
-    public static final ConfigBiome BIOME_CONFIG = CONFIG.biomeConfig;
-    public static final ConfigRendering RENDER_CONFIG = CONFIG.renderingConfig;
-    public static final ConfigCompat COMPAT_CONFIG = CONFIG.compatConfig;
+    public static final ModernBetaConfigGeneration GEN_CONFIG = CONFIG.generationConfig;
+    public static final ModernBetaConfigBiome BIOME_CONFIG = CONFIG.biomeConfig;
+    public static final ModernBetaConfigRendering RENDER_CONFIG = CONFIG.renderingConfig;
+    public static final ModernBetaConfigCompat COMPAT_CONFIG = CONFIG.compatConfig;
 
     private static final Logger LOGGER = LogManager.getLogger(MOD_ID);
     

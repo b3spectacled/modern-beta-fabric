@@ -19,7 +19,7 @@ public class MixinSkyProperties {
         SkyProperties skyProperties = (SkyProperties)(Object)this;
         
         if (skyProperties instanceof SkyProperties.Overworld) {
-            info.setReturnValue((float)ModernBeta.RENDER_CONFIG.otherConfig.cloudHeight);
+            info.setReturnValue((float)ModernBeta.RENDER_CONFIG.configOther.cloudHeight);
         }
     }
 }
