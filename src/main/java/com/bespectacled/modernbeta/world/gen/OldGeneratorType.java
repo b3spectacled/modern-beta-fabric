@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.world.gen;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
@@ -12,6 +13,7 @@ import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.mixin.client.MixinMoreOptionsDialogInvoker;
 import com.bespectacled.modernbeta.util.NbtTags;
+import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.google.common.collect.ImmutableMap;
 
@@ -45,32 +47,32 @@ public class OldGeneratorType {
         GeneratorOptions generatorOptions,
         WorldSettings worldSettings
     ) {
-        NbtCompound chunkProviderSettings = worldSettings.getNbt(WorldSetting.CHUNK);
-        NbtCompound biomeProviderSettings = worldSettings.getNbt(WorldSetting.BIOME);
+        Registry<DimensionType> dimensionRegistry = registryManager.<DimensionType>get(Registry.DIMENSION_TYPE_KEY);
+        Registry<ChunkGeneratorSettings> chunkGenSettingsRegistry = registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
+        Registry<Biome> biomeRegistry = registryManager.<Biome>get(Registry.BIOME_KEY);
         
-        WorldProvider worldProvider = Registries.WORLD.get(chunkProviderSettings.getString(NbtTags.WORLD_TYPE));
+        NbtCompound chunkSettings = worldSettings.getNbt(WorldSetting.CHUNK);
+        NbtCompound biomeSettings = worldSettings.getNbt(WorldSetting.BIOME);
+
+        String worldType = NbtUtil.readStringOrThrow(NbtTags.WORLD_TYPE, chunkSettings);
         
-        Registry<DimensionType> registryDimensionType = registryManager.<DimensionType>get(Registry.DIMENSION_TYPE_KEY);
-        Registry<ChunkGeneratorSettings> registryChunkGenSettings = registryManager.<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
-        Registry<Biome> registryBiome = registryManager.<Biome>get(Registry.BIOME_KEY);
-        
-        Optional<ChunkGeneratorSettings> chunkGenSettings = registryChunkGenSettings.getOrEmpty(new Identifier(worldProvider.getChunkGenSettings()));
+        Optional<ChunkGeneratorSettings> chunkGenSettings = chunkGenSettingsRegistry.getOrEmpty(ModernBeta.createId(worldType));
         Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = chunkGenSettings.isPresent() ?
             () -> chunkGenSettings.get() :
-            () -> registryChunkGenSettings.getOrThrow(ChunkGeneratorSettings.OVERWORLD);
+            () -> chunkGenSettingsRegistry.getOrThrow(ChunkGeneratorSettings.OVERWORLD);
         
         return new GeneratorOptions(
             generatorOptions.getSeed(),
             generatorOptions.shouldGenerateStructures(),
             generatorOptions.hasBonusChest(),
             GeneratorOptions.getRegistryWithReplacedOverworldGenerator(
-                registryDimensionType, 
+                dimensionRegistry, 
                 generatorOptions.getDimensions(), 
                 new OldChunkGenerator(
-                    new OldBiomeSource(generatorOptions.getSeed(), registryBiome, biomeProviderSettings), 
+                    new OldBiomeSource(generatorOptions.getSeed(), biomeRegistry, biomeSettings), 
                     generatorOptions.getSeed(), 
                     chunkGenSettingsSupplier, 
-                    chunkProviderSettings
+                    chunkSettings
                 )
             )
         );
@@ -79,22 +81,20 @@ public class OldGeneratorType {
     static {
         OLD = new GeneratorType("old") {
             @Override
-            protected ChunkGenerator getChunkGenerator(Registry<Biome> biomes, Registry<ChunkGeneratorSettings> registryChunkGenSettings, long seed) {
+            protected ChunkGenerator getChunkGenerator(Registry<Biome> biomeRegistry, Registry<ChunkGeneratorSettings> chunkGenSettingsRegistry, long seed) {
                 Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = () -> 
-                    registryChunkGenSettings.get(new Identifier(Registries.WORLD.get(DEFAULT_WORLD_TYPE).getChunkGenSettings()));
+                    chunkGenSettingsRegistry.get(new Identifier(Registries.WORLD.get(DEFAULT_WORLD_TYPE).getChunkGenSettings()));
                     
                 WorldProvider worldProvider = Registries.WORLD.get(DEFAULT_WORLD_TYPE);
-                //NbtCompound chunkProviderSettings = ChunkProviderSettings.createSettingsBase(worldProvider.getChunkProvider());
-                //NbtCompound biomeProviderSettings = BiomeProviderSettings.createSettingsBase(worldProvider.getBiomeProvider(), worldProvider.getSingleBiome());
-                  
-                NbtCompound chunkProviderSettings = Registries.CHUNK_SETTINGS.get(worldProvider.getChunkProvider()).get();
-                NbtCompound biomeProviderSettings = Registries.BIOME_SETTINGS.get(worldProvider.getBiomeProvider()).get();
+                
+                NbtCompound chunkSettings = Registries.CHUNK_SETTINGS.get(worldProvider.getChunkProvider()).get();
+                NbtCompound biomeSettings = Registries.BIOME_SETTINGS.get(worldProvider.getBiomeProvider()).get();
                 
                 return new OldChunkGenerator(
-                    new OldBiomeSource(seed, biomes, biomeProviderSettings), 
+                    new OldBiomeSource(seed, biomeRegistry, biomeSettings), 
                     seed, 
                     chunkGenSettingsSupplier, 
-                    chunkProviderSettings
+                    chunkSettings
                 );
             }
         };
@@ -131,8 +131,7 @@ public class OldGeneratorType {
                             ))
                         );
                     }
-                )
-                .build()
+                ).build()
         );
     }
 }

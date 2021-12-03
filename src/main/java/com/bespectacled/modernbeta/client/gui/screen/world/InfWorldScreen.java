@@ -35,7 +35,7 @@ public class InfWorldScreen extends SettingsScreen {
         return new InfWorldScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putChanges(worldSetting, settings.getNbt()),
+            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt()),
             new Settings(worldScreen.getWorldSettings().getNbt(worldSetting))
         );
     }
@@ -44,21 +44,21 @@ public class InfWorldScreen extends SettingsScreen {
     protected void init() {
         super.init();
         
-        String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
+        String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
         
         boolean isHydrogenLoaded = Compat.isLoaded("hydrogen");
         boolean isSingleBiome = biomeType.equals(BuiltInTypes.Biome.SINGLE.name);
         boolean isSingleBiomeAndHasOceanShrine = isSingleBiome ? 
             this.registryManager
             .<Biome>get(Registry.BIOME_KEY)
-            .get(new Identifier(NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.SINGLE_BIOME))))
+            .get(new Identifier(NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.BIOME, NbtTags.SINGLE_BIOME))))
             .getGenerationSettings()
             .hasStructureFeature(OldStructures.OCEAN_SHRINE_STRUCTURE) : 
             false;
         boolean isSingleBiomeAndHasMonument = isSingleBiome ? 
             this.registryManager
             .<Biome>get(Registry.BIOME_KEY)
-            .get(new Identifier(NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.SINGLE_BIOME))))
+            .get(new Identifier(NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.BIOME, NbtTags.SINGLE_BIOME))))
             .getGenerationSettings()
             .hasStructureFeature(StructureFeature.MONUMENT) : 
             false;

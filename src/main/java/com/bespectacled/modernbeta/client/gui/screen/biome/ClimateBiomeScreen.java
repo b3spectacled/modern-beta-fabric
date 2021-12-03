@@ -45,7 +45,7 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
         return new ClimateBiomeScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putChanges(worldSetting, settings.getNbt())
+            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt())
         );
     }
     
@@ -81,7 +81,7 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
                 this.registryManager,
                 biome -> {
                     // Queue change
-                    this.settings.putChange(key, NbtString.of(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString()));
+                    this.settings.putElement(key, NbtString.of(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString()));
                     
                     // Update map for display
                     biomeMap.put(key, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome));

@@ -39,34 +39,34 @@ public final class WorldSettings {
         this.settings.put(WorldSetting.BIOME, new Settings(biomeSettings));
     }
     
-    public void putChange(WorldSetting settingsKey, String key, NbtElement element) {
-        this.settings.get(settingsKey).putChange(key, element);
+    public void putElement(WorldSetting settingsKey, String key, NbtElement element) {
+        this.settings.get(settingsKey).putElement(key, element);
     }
     
-    public void putChanges(WorldSetting settingsKey, NbtCompound compound) {
-        this.settings.get(settingsKey).putChanges(compound);
+    public void putCompound(WorldSetting settingsKey, NbtCompound compound) {
+        this.settings.get(settingsKey).putCompound(compound);
     }
     
-    public void clearChange(WorldSetting settingsKey, String key) {
-        this.settings.get(settingsKey).clearChange(key);
+    public void removeElement(WorldSetting settingsKey, String key) {
+        this.settings.get(settingsKey).removeElement(key);
     }
     
-    public void clearChanges(WorldSetting settingsKey) {
-        this.settings.get(settingsKey).clearChanges();
+    public void clearSettings(WorldSetting settingsKey) {
+        this.settings.get(settingsKey).clearAll();
     }
     
-    public void clearChanges() {
+    public void clearAll() {
         for (Settings s : this.settings.values()) {
-            s.clearChanges();
+            s.clearAll();
         }
     }
     
-    public NbtElement getSetting(WorldSetting settingsKey, String key) {
-        return this.settings.get(settingsKey).getSetting(key);
+    public NbtElement getElement(WorldSetting settingsKey, String key) {
+        return this.settings.get(settingsKey).getElement(key);
     }
     
-    public boolean hasSetting(WorldSetting settingsKey, String key) {
-        return this.settings.get(settingsKey).hasSetting(key);
+    public boolean hasElement(WorldSetting settingsKey, String key) {
+        return this.settings.get(settingsKey).hasElement(key);
     }
     
     public NbtCompound getNbt(WorldSetting settingsKey) {
