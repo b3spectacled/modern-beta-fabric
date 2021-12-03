@@ -69,14 +69,14 @@ public abstract class SettingsScreen extends GUIScreen {
     /* Convenience methods */
     
     protected void putSetting(String key, NbtElement element) {
-        this.settings.putChange(key, element);
+        this.settings.putElement(key, element);
     }
     
     protected boolean hasSetting(String key) {
-        return this.settings.hasSetting(key);
+        return this.settings.hasElement(key);
     }
     
     protected NbtElement getSetting(String key) {
-        return this.settings.getSetting(key);
+        return this.settings.getElement(key);
     }
 }

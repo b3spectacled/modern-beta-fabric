@@ -16,7 +16,7 @@ public class SingleBiomeScreen {
         return new CustomizeBuffetLevelScreen(
             worldScreen, 
             worldScreen.getRegistryManager(),
-            biome -> worldScreen.getWorldSettings().putChange(
+            biome -> worldScreen.getWorldSettings().putElement(
                 worldSetting, 
                 NbtTags.SINGLE_BIOME, 
                 NbtString.of(worldScreen.getRegistryManager().<Biome>get(Registry.BIOME_KEY).getId(biome).toString())
@@ -24,7 +24,7 @@ public class SingleBiomeScreen {
             worldScreen
                 .getRegistryManager()
                 .<Biome>get(Registry.BIOME_KEY)
-                .get(new Identifier(NbtUtil.toStringOrThrow(worldScreen.getWorldSettings().getSetting(worldSetting, NbtTags.SINGLE_BIOME))))
+                .get(new Identifier(NbtUtil.toStringOrThrow(worldScreen.getWorldSettings().getElement(worldSetting, NbtTags.SINGLE_BIOME))))
         );
     }
 }

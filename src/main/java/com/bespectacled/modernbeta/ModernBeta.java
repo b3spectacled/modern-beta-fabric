@@ -75,11 +75,13 @@ public class ModernBeta implements ModInitializer {
         ModernBetaBuiltInProviders.registerChunkSettings();
         ModernBetaBuiltInProviders.registerBiomeProviders();
         ModernBetaBuiltInProviders.registerBiomeSettings();
-        ModernBetaBuiltInProviders.registerWorldProviders();
         
         // Register client-only stuff, i.e. GUI, block colors, etc.
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             OldGeneratorType.register();
+            
+            // Register clientside world providers
+            ModernBetaBuiltInProviders.registerWorldProviders();
             
             // Register default screen providers
             ModernBetaBuiltInProviders.registerWorldScreens();
@@ -93,10 +95,6 @@ public class ModernBeta implements ModInitializer {
         if (DEV_ENV) {
             DebugProviderSettingsCommand.register();
         }
-        
-        // Serialize various world gen stuff to JSON
-        //OldChunkGeneratorSettings.export();
-        //OldChunkGenerator.export();
         
         log(Level.INFO, "Initialized Modern Beta!");
         

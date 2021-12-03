@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
-import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
@@ -19,7 +18,6 @@ import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSett
 import com.google.common.base.MoreObjects;
 
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -41,7 +39,7 @@ public class MixinGeneratorOptions {
     private static void injectServerGeneratorType(
         DynamicRegistryManager dynamicRegistryManager, 
         Properties properties,
-        CallbackInfoReturnable<GeneratorOptions> cir
+        CallbackInfoReturnable<GeneratorOptions> info
     ) {
         // Exit if server.properties file not yet created
         if (properties.get("level-type") == null) {
@@ -88,25 +86,23 @@ public class MixinGeneratorOptions {
             
             NbtCompound chunkProviderSettings = Registries.CHUNK_SETTINGS.getOrElse(
                 worldType, 
-                () -> ChunkProviderSettings.createSettingsBase(worldType)
+                () -> ChunkProviderSettings.createSettingsDefault(worldType)
             ).get();
             
             NbtCompound biomeProviderSettings = Registries.BIOME_SETTINGS.getOrElse(
                 biomeType, 
-                () -> BiomeProviderSettings.createSettingsBase(biomeType)
+                () -> BiomeProviderSettings.createSettingsDefault(biomeType)
             ).get();
-            
-            WorldProvider worldProvider = Registries.WORLD.getOrDefault(ModernBeta.GEN_CONFIG.worldType);
             
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 new OldBiomeSource(seed, registryBiome, biomeProviderSettings), 
                 seed,
-                () -> registryChunkGenSettings.get(new Identifier(worldProvider.getChunkGenSettings())), 
+                () -> registryChunkGenSettings.get(ModernBeta.createId(worldType)), 
                 chunkProviderSettings
             );
             
             // return our chunk generator
-            cir.setReturnValue(new GeneratorOptions(
+            info.setReturnValue(new GeneratorOptions(
                 seed, 
                 generateStructures, 
                 false,

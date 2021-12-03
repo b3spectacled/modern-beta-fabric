@@ -29,7 +29,7 @@ public class InfClimateWorldScreen extends InfWorldScreen {
         return new InfClimateWorldScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putChanges(worldSetting, settings.getNbt()),
+            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt()),
             new Settings(worldScreen.getWorldSettings().getNbt(worldSetting))
         );
     }
@@ -39,7 +39,7 @@ public class InfClimateWorldScreen extends InfWorldScreen {
         super.init();
         
         String worldType = NbtUtil.toStringOrThrow(this.getSetting(NbtTags.WORLD_TYPE));
-        String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
+        String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
         
         boolean isSameBiomeType = Registries.WORLD.get(worldType).getBiomeProvider().equals(biomeType);
         boolean climateSampleable = Registries.BIOME

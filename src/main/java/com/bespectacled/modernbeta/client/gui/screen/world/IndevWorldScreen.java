@@ -42,7 +42,7 @@ public class IndevWorldScreen extends InfWorldScreen {
         return new IndevWorldScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putChanges(worldSetting, settings.getNbt()),
+            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt()),
             new Settings(worldScreen.getWorldSettings().getNbt(worldSetting))
         );
     }

@@ -1,26 +1,10 @@
 package com.bespectacled.modernbeta.world.gen;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import org.apache.logging.log4j.Level;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.util.BlockStates;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
-
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
@@ -70,24 +54,6 @@ public class OldChunkGeneratorSettings {
         SETTINGS_MAP.put(id, settings);
         BuiltinRegistries.<ChunkGeneratorSettings, ChunkGeneratorSettings>add(BuiltinRegistries.CHUNK_GENERATOR_SETTINGS, id, settings);
         return settings;
-    }
-    
-    public static void export() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Path dir = Paths.get("..\\src\\main\\resources\\data\\modern_beta\\worldgen\\noise_settings");
-        
-        for (Identifier i : SETTINGS_MAP.keySet()) {
-            ChunkGeneratorSettings s = SETTINGS_MAP.get(i);
-            Function<Supplier<ChunkGeneratorSettings>, DataResult<JsonElement>> toJson = JsonOps.INSTANCE.withEncoder(ChunkGeneratorSettings.REGISTRY_CODEC);
-            
-            try {
-                JsonElement json = toJson.apply(() -> s).result().get();
-                Files.write(dir.resolve(i.getPath() + ".json"), gson.toJson(json).getBytes(StandardCharsets.UTF_8));
-            } catch (IOException e) {
-                ModernBeta.log(Level.ERROR, "[Modern Beta] Couldn't serialize chunk generator settings!");
-                e.printStackTrace();
-            }
-        }
     }
     
     static {
