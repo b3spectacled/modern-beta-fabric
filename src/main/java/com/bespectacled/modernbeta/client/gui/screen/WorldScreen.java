@@ -85,22 +85,22 @@ public class WorldScreen extends GUIScreen {
             () -> this.worldProvider,
             value -> {
                 // Queue world type changes
-                this.worldSettings.clearChanges();
-                this.worldSettings.putChanges(
+                this.worldSettings.clearAll();
+                this.worldSettings.putCompound(
                     WorldSetting.CHUNK, 
                     Registries.CHUNK_SETTINGS.getOrElse(
                         value.getChunkProvider(), 
                         () -> ChunkProviderSettings.createSettingsBase(value.getChunkProvider())
                     ).get()
                 );
-                this.worldSettings.putChanges(
+                this.worldSettings.putCompound(
                     WorldSetting.BIOME, 
                     Registries.BIOME_SETTINGS.getOrElse(
                         value.getBiomeProvider(),
                         () -> BiomeProviderSettings.createSettingsBase(value.getBiomeProvider())
                     ).get()
                 );
-                this.worldSettings.putChanges(
+                this.worldSettings.putCompound(
                     WorldSetting.CAVE_BIOME, 
                     Registries.CAVE_BIOME_SETTINGS.getOrElse(
                         value.getCaveBiomeProvider(), 
@@ -120,11 +120,11 @@ public class WorldScreen extends GUIScreen {
         CyclingOptionWrapper<String> biomeTypeOption = new CyclingOptionWrapper<>(
             "createWorld.customize.biomeType",
             Registries.BIOME.getKeySet().stream().toArray(String[]::new),
-            () -> NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.BIOME_TYPE)),
+            () -> NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.BIOME, NbtTags.BIOME_TYPE)),
             value -> {
                 // Queue biome settings changes
-                this.worldSettings.clearChanges(WorldSetting.BIOME);
-                this.worldSettings.putChanges(
+                this.worldSettings.clearSettings(WorldSetting.BIOME);
+                this.worldSettings.putCompound(
                     WorldSetting.BIOME,
                     Registries.BIOME_SETTINGS.getOrElse(
                         value,
@@ -143,11 +143,11 @@ public class WorldScreen extends GUIScreen {
         CyclingOptionWrapper<String> caveBiomeTypeOption = new CyclingOptionWrapper<>(
             "createWorld.customize.caveBiomeType",
             Registries.CAVE_BIOME.getKeySet().stream().toArray(String[]::new),
-            () -> NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.CAVE_BIOME, NbtTags.CAVE_BIOME_TYPE)),
+            () -> NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.CAVE_BIOME, NbtTags.CAVE_BIOME_TYPE)),
             value -> {
                 // Queue cave biome settings changes
-                this.worldSettings.clearChanges(WorldSetting.CAVE_BIOME);
-                this.worldSettings.putChanges(
+                this.worldSettings.clearSettings(WorldSetting.CAVE_BIOME);
+                this.worldSettings.putCompound(
                     WorldSetting.CAVE_BIOME, 
                     Registries.CAVE_BIOME_SETTINGS.getOrElse(
                         value, 
@@ -173,7 +173,7 @@ public class WorldScreen extends GUIScreen {
         );
         
         Screen biomeSettingsScreen = Registries.BIOME_SCREEN
-            .getOrDefault(NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.BIOME_TYPE)))
+            .getOrDefault(NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.BIOME, NbtTags.BIOME_TYPE)))
             .apply(this, WorldSetting.BIOME); 
         
         ActionOptionWrapper biomeSettingsOption = new ActionOptionWrapper(
@@ -190,7 +190,7 @@ public class WorldScreen extends GUIScreen {
         );
         
         Screen caveBiomeSettingsScreen = Registries.CAVE_BIOME_SCREEN
-            .getOrDefault(NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.CAVE_BIOME, NbtTags.CAVE_BIOME_TYPE)))
+            .getOrDefault(NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.CAVE_BIOME, NbtTags.CAVE_BIOME_TYPE)))
             .apply(this, WorldSetting.CAVE_BIOME);
         
         ActionOptionWrapper caveBiomeSettingsOption = new ActionOptionWrapper(
@@ -218,7 +218,7 @@ public class WorldScreen extends GUIScreen {
     /* Convenience methods */
     
     protected void setDefaultSingleBiome(String defaultBiome) {
-        String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
+        String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
         
         this.setDefaultSingleBiome(biomeType, defaultBiome);
     }
@@ -226,20 +226,20 @@ public class WorldScreen extends GUIScreen {
     protected void setDefaultSingleBiome(String biomeType, String defaultBiome) {
         // Replace default single biome with one supplied by world provider, if switching to Single biome type
         if (biomeType.equals(BuiltInTypes.Biome.SINGLE.name)) { 
-            this.worldSettings.putChange(WorldSetting.BIOME, NbtTags.SINGLE_BIOME, NbtString.of(defaultBiome));
+            this.worldSettings.putElement(WorldSetting.BIOME, NbtTags.SINGLE_BIOME, NbtString.of(defaultBiome));
         }
     }
     
     protected NbtElement getChunkSetting(String key) {
-        return this.worldSettings.getSetting(WorldSetting.CHUNK, key);
+        return this.worldSettings.getElement(WorldSetting.CHUNK, key);
     }
     
     protected NbtElement getBiomeSetting(String key) {
-        return this.worldSettings.getSetting(WorldSetting.BIOME, key);
+        return this.worldSettings.getElement(WorldSetting.BIOME, key);
     }
     
     protected NbtElement getCaveBiomeSetting(String key) {
-        return this.worldSettings.getSetting(WorldSetting.CAVE_BIOME, key);
+        return this.worldSettings.getElement(WorldSetting.CAVE_BIOME, key);
     }
     
     protected void resetWorldScreen(WorldProvider worldProvider) {
@@ -255,7 +255,7 @@ public class WorldScreen extends GUIScreen {
     private void preProcessOptions() {
         // Replace single biome if Indev world type
         if (this.worldProvider == ModernBetaBuiltInWorldProviders.INDEV) {
-            String levelTheme = NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.CHUNK, NbtTags.LEVEL_THEME));
+            String levelTheme = NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.CHUNK, NbtTags.LEVEL_THEME));
 
             this.setDefaultSingleBiome(IndevTheme.fromName(levelTheme).getDefaultBiome().toString());   
         }
@@ -263,14 +263,14 @@ public class WorldScreen extends GUIScreen {
     
     private void postProcessOptions(WorldProvider worldProvider) {
         // Replace sampleClimate option depending on if climate sampler matches biome type
-        String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
+        String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
         boolean isSameBiomeType = worldProvider.getBiomeProvider().equals(biomeType);
         boolean isClimateBiomeProvider = Registries.BIOME
             .get(biomeType)
             .apply(0L, new NbtCompound(), BuiltinRegistries.BIOME) instanceof ClimateBiomeProvider;
         
-        if (isClimateBiomeProvider && this.worldSettings.hasSetting(WorldSetting.CHUNK, NbtTags.SAMPLE_CLIMATE))
-            this.worldSettings.putChange(WorldSetting.CHUNK, NbtTags.SAMPLE_CLIMATE, NbtByte.of(isSameBiomeType));
+        if (isClimateBiomeProvider && this.worldSettings.hasElement(WorldSetting.CHUNK, NbtTags.SAMPLE_CLIMATE))
+            this.worldSettings.putElement(WorldSetting.CHUNK, NbtTags.SAMPLE_CLIMATE, NbtByte.of(isSameBiomeType));
     }
     
     private String settingsToString(WorldSetting setting) {

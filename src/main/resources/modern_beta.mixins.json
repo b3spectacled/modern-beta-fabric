@@ -4,33 +4,31 @@
   "package": "com.bespectacled.modernbeta.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "MixinMinecraftServer",
-    "MixinGeneratorOptions",
     "MixinChunkGeneratorSettingsInvoker",
     "MixinConfiguredStructureFeatures",
     "MixinConfiguredStructureFeaturesAccessor",
-    "MixinVeinTypeAccessor",
-    "MixinAquiferSampler",
+    "MixinGeneratorOptions",
+    "MixinMinecraftServer",
     "MixinOceanMonumentFeature",
-    "MixinVanillaBiomeParametersAccessor",
-    "MixinSurfaceBuilderAccessor",
+    "MixinPlacedFeatureAccessor",
     "MixinSpawnLocating",
+    "MixinStructureGeneratorFactoryContext",
+    "MixinSurfaceBuilderAccessor",
+    "MixinVanillaBiomeParametersAccessor",
     "heightprovider.MixinUniformHeightProvider",
     "heightprovider.MixinBiasedToBottomHeightProvider",
     "heightprovider.MixinTrapezoidHeightProvider",
-    "heightprovider.MixinVeryBiasedToBottomHeightProvider",
-    "MixinPlacedFeatureAccessor",
-    "MixinStructureGeneratorFactoryContext"
+    "heightprovider.MixinVeryBiasedToBottomHeightProvider"
   ],
   "client": [
-    "client.MixinClientWorld",
-    "client.MixinWorldRenderer",
     "client.MixinBackgroundRenderer",
+    "client.MixinClientWorld",
+    "client.MixinDebugHud",
+    "client.MixinDimensionEffects",
     "client.MixinGeneratorTypeAccessor",
     "client.MixinInGameHud",
     "client.MixinMoreOptionsDialogInvoker",
-    "client.MixinDimensionEffects",
-    "client.MixinDebugHud"
+    "client.MixinWorldRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

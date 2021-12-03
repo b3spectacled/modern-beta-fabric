@@ -101,7 +101,7 @@ public class OldBiomeFeatures {
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
         DefaultBiomeFeatures.addDefaultVegetation(builder);
         
-        builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_MELON);
+        builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_MELON_SPARSE);
     }
     
     public static void addSavannaFeatures(GenerationSettings.Builder builder, boolean pe) {

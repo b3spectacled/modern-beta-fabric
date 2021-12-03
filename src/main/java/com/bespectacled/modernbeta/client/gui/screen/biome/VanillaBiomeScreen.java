@@ -26,7 +26,7 @@ public class VanillaBiomeScreen extends OceanBiomeScreen {
         return new VanillaBiomeScreen(
             parent,
             worldSetting,
-            settings -> parent.getWorldSettings().putChanges(worldSetting, settings.getNbt())
+            settings -> parent.getWorldSettings().putCompound(worldSetting, settings.getNbt())
         );
     }
     

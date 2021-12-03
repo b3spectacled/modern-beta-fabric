@@ -24,7 +24,7 @@ public class VanillaCaveBiomeScreen extends SettingsScreen {
         return new VanillaCaveBiomeScreen(
             parent, 
             worldSetting, 
-            settings -> parent.getWorldSettings().putChanges(worldSetting, settings.getNbt()),
+            settings -> parent.getWorldSettings().putCompound(worldSetting, settings.getNbt()),
             new Settings(parent.getWorldSettings().getNbt(worldSetting))
         );
     }

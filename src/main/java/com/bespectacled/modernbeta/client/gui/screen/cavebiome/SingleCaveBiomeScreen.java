@@ -41,7 +41,7 @@ public class SingleCaveBiomeScreen extends SettingsScreen {
         return new SingleCaveBiomeScreen(
             parent, 
             worldSetting, 
-            settings -> parent.getWorldSettings().putChanges(worldSetting, settings.getNbt()),
+            settings -> parent.getWorldSettings().putCompound(worldSetting, settings.getNbt()),
             new Settings(parent.getWorldSettings().getNbt(worldSetting))
         );
     }
@@ -59,7 +59,7 @@ public class SingleCaveBiomeScreen extends SettingsScreen {
                 this,
                 this.registryManager,
                 biome -> {
-                    this.settings.putChange(NbtTags.SINGLE_BIOME, NbtString.of(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString()));
+                    this.settings.putElement(NbtTags.SINGLE_BIOME, NbtString.of(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString()));
                     this.biomeId = this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome);
                 }, 
                 this.registryManager.<Biome>get(Registry.BIOME_KEY).get(this.biomeId)  

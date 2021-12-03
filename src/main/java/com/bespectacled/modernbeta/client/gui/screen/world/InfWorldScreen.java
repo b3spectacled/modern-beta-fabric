@@ -32,7 +32,7 @@ public class InfWorldScreen extends SettingsScreen {
         return new InfWorldScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putChanges(worldSetting, settings.getNbt()),
+            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt()),
             new Settings(worldScreen.getWorldSettings().getNbt(worldSetting))
         );
     }
@@ -42,7 +42,7 @@ public class InfWorldScreen extends SettingsScreen {
         super.init();
         
         String worldType = NbtUtil.toStringOrThrow(this.getSetting(NbtTags.WORLD_TYPE));
-        String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getSetting(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
+        String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
         
         boolean isHydrogenLoaded = Compat.isLoaded("hydrogen");
         boolean isSingleBiome = biomeType.equals(BuiltInTypes.Biome.SINGLE.name);

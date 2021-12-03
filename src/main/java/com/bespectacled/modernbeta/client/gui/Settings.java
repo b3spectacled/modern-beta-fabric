@@ -14,59 +14,65 @@ import net.minecraft.nbt.NbtElement;
 public class Settings {
     private static final boolean DEBUG = false;
     
-    private final Map<String, NbtElement> changes;
+    private final Map<String, NbtElement> settings;
     
     public Settings() {
-        this.changes = new LinkedHashMap<>();
+        this.settings = new LinkedHashMap<>();
     }
     
     public Settings(NbtCompound initial) {
         this();
         
-        this.readNbt(initial);
+        this.putCompound(initial);
     }
 
-    public void putChange(String key, NbtElement element) {
-        this.changes.put(key, element);
+    public Settings putElement(String key, NbtElement element) {
+        this.settings.put(key, element);
         
         if (DEBUG) {
             ModernBeta.log(Level.INFO, "Queueing setting for key '" + key + "'");
             ModernBeta.log(Level.INFO, "Current queue:");
             
-            for (Entry<String, NbtElement> change : this.changes.entrySet()) {
+            for (Entry<String, NbtElement> change : this.settings.entrySet()) {
                 ModernBeta.log(Level.INFO, "* '" + change.getKey() + "'");
             }
             
         }
+        
+        return this;
     }
     
-    public void putChanges(NbtCompound compound) {
+    public Settings putCompound(NbtCompound compound) {
         for (String key : compound.getKeys()) {
-            this.putChange(key, compound.get(key));
+            this.putElement(key, compound.get(key));
         }
+        
+        return this;
     }
     
-    public void clearChanges() {
-        this.changes.clear();
+    public Settings clearAll() {
+        this.settings.clear();
+        
+        return this;
     }
     
-    public NbtElement getSetting(String key) {
-        if (this.changes.containsKey(key))
-            return this.changes.get(key);
+    public NbtElement getElement(String key) {
+        if (this.settings.containsKey(key))
+            return this.settings.get(key);
         
         return null;
     }
     
-    public boolean hasSetting(String key) {
-        if (this.changes.containsKey(key))
+    public boolean hasElement(String key) {
+        if (this.settings.containsKey(key))
             return true;
         
         return false;
     }
     
-    public boolean clearChange(String key) {
-        if (this.changes.containsKey(key)) {
-            this.changes.remove(key);
+    public boolean removeElement(String key) {
+        if (this.settings.containsKey(key)) {
+            this.settings.remove(key);
             return true;
         }
         
@@ -76,16 +82,10 @@ public class Settings {
     public NbtCompound getNbt() {
         NbtCompound compound = new NbtCompound();
         
-        for (Entry<String, NbtElement> change : this.changes.entrySet()) {
+        for (Entry<String, NbtElement> change : this.settings.entrySet()) {
             compound.put(change.getKey(), change.getValue());
         }
         
         return compound;
-    }
-    
-    private void readNbt(NbtCompound compound) {
-        for (String key : compound.getKeys()) {
-            this.changes.put(key, compound.get(key));
-        }
     }
 }
