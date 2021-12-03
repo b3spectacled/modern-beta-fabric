@@ -1,7 +1,15 @@
 package com.bespectacled.modernbeta.compat;
 
+import com.bespectacled.modernbeta.world.biome.OldBiomes;
+
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.gen.GenerationStep;
+
 public class CompatTechReborn {
-    /*
     private static final String MOD_ID = "techreborn";
     private static final String FEATURE_PREFIX = "";
     private static final String FEATURE_SUFFIX = "";
@@ -16,10 +24,8 @@ public class CompatTechReborn {
         "silver_ore",
         "tin_ore"
     };
-    */
     
     public static void addCompat() {
-        /* TODO: Fix later
         for (String o : ORES) {
             BiomeModifications.addFeature(
                 BiomeSelectors.includeByKey(
@@ -27,15 +33,14 @@ public class CompatTechReborn {
                     .keySet()
                     .stream()
                     .map(i -> RegistryKey.of(Registry.BIOME_KEY, i))
-                    .collect(Collectors.toList())
+                    .toList()
                 ), 
                 GenerationStep.Feature.UNDERGROUND_ORES,  
                 RegistryKey.of(
-                    Registry.CONFIGURED_FEATURE_KEY, 
+                    Registry.PLACED_FEATURE_KEY, 
                     new Identifier(MOD_ID, FEATURE_PREFIX + o + FEATURE_SUFFIX)
                 )
             );
         }
-        */
     }
 }

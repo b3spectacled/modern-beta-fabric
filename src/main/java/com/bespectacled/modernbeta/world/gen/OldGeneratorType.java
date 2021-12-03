@@ -147,8 +147,7 @@ public class OldGeneratorType {
                             ))
                         );
                     }
-                )
-                .build()
+                ).build()
         );
     }
 }

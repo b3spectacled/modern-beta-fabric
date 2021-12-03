@@ -42,7 +42,7 @@ public class MixinGeneratorOptions {
     private static void injectServerGeneratorType(
         DynamicRegistryManager registryManager, 
         Properties properties,
-        CallbackInfoReturnable<GeneratorOptions> cir
+        CallbackInfoReturnable<GeneratorOptions> info
     ) {
         // Exit if server.properties file not yet created
         if (properties.get("level-type") == null) {
@@ -107,7 +107,7 @@ public class MixinGeneratorOptions {
             );
             
             // return our chunk generator
-            cir.setReturnValue(new GeneratorOptions(
+            info.setReturnValue(new GeneratorOptions(
                 seed, 
                 generateStructures, 
                 false,
