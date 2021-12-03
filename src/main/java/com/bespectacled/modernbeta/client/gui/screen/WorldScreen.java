@@ -90,21 +90,21 @@ public class WorldScreen extends GUIScreen {
                     WorldSetting.CHUNK, 
                     Registries.CHUNK_SETTINGS.getOrElse(
                         value.getChunkProvider(), 
-                        () -> ChunkProviderSettings.createSettingsBase(value.getChunkProvider())
+                        () -> ChunkProviderSettings.createSettingsDefault(value.getChunkProvider())
                     ).get()
                 );
                 this.worldSettings.putCompound(
                     WorldSetting.BIOME, 
                     Registries.BIOME_SETTINGS.getOrElse(
                         value.getBiomeProvider(),
-                        () -> BiomeProviderSettings.createSettingsBase(value.getBiomeProvider())
+                        () -> BiomeProviderSettings.createSettingsDefault(value.getBiomeProvider())
                     ).get()
                 );
                 this.worldSettings.putCompound(
                     WorldSetting.CAVE_BIOME, 
                     Registries.CAVE_BIOME_SETTINGS.getOrElse(
                         value.getCaveBiomeProvider(), 
-                        () -> CaveBiomeProviderSettings.createSettingsBase(value.getCaveBiomeProvider())
+                        () -> CaveBiomeProviderSettings.createSettingsDefault(value.getCaveBiomeProvider())
                     ).get()
                 );
                 
@@ -128,7 +128,7 @@ public class WorldScreen extends GUIScreen {
                     WorldSetting.BIOME,
                     Registries.BIOME_SETTINGS.getOrElse(
                         value,
-                        () -> BiomeProviderSettings.createSettingsBase(value)
+                        () -> BiomeProviderSettings.createSettingsDefault(value)
                     ).get()
                 );
                 
@@ -151,7 +151,7 @@ public class WorldScreen extends GUIScreen {
                     WorldSetting.CAVE_BIOME, 
                     Registries.CAVE_BIOME_SETTINGS.getOrElse(
                         value, 
-                        () -> CaveBiomeProviderSettings.createSettingsBase(value)
+                        () -> CaveBiomeProviderSettings.createSettingsDefault(value)
                     ).get()
                 );
             

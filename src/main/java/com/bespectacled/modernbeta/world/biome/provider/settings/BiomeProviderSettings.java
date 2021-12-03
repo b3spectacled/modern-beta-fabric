@@ -3,6 +3,7 @@ package com.bespectacled.modernbeta.world.biome.provider.settings;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.config.ModernBetaConfigBiome;
+import com.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import com.bespectacled.modernbeta.util.NbtTags;
 
 import net.minecraft.nbt.NbtCompound;
@@ -10,83 +11,69 @@ import net.minecraft.nbt.NbtCompound;
 public class BiomeProviderSettings {
     private static final ModernBetaConfigBiome CONFIG = ModernBeta.BIOME_CONFIG;
     
-    public static NbtCompound createSettingsBase(String biomeType) {
-        NbtCompound settings = new NbtCompound();
-        
-        settings.putString(NbtTags.BIOME_TYPE, biomeType);
-        
-        return settings;
+    private static NbtCompoundBuilder createSettingsBase(String biomeType) {
+        return new NbtCompoundBuilder().putString(NbtTags.BIOME_TYPE, biomeType);
     }
     
-    public static NbtCompound createSettingsOceans(String biomeType) {
-        NbtCompound settings = createSettingsBase(biomeType);
-
-        settings.putBoolean(NbtTags.GEN_OCEANS, CONFIG.generateOceans);
-
-        return settings;
+    private static NbtCompoundBuilder createSettingsOceans(String biomeType) {
+        return createSettingsBase(biomeType).putBoolean(NbtTags.GEN_OCEANS, CONFIG.generateOceans);
+    }
+    
+    public static NbtCompound createSettingsDefault(String biomeType) {
+        return createSettingsBase(biomeType).build();
     }
     
     public static NbtCompound createSettingsBeta() {
-        NbtCompound settings = createSettingsOceans(BuiltInTypes.Biome.BETA.name);
-        
-        settings.putString("desert", CONFIG.betaDesertBiome);
-        settings.putString("forest", CONFIG.betaForestBiome);
-        settings.putString("ice_desert", CONFIG.betaIceDesertBiome);
-        settings.putString("plains", CONFIG.betaPlainsBiome);
-        settings.putString("rainforest", CONFIG.betaRainforestBiome);
-        settings.putString("savanna", CONFIG.betaSavannaBiome);
-        settings.putString("shrubland", CONFIG.betaShrublandBiome);
-        settings.putString("seasonal_forest", CONFIG.betaSeasonalForestBiome);
-        settings.putString("swampland", CONFIG.betaSwamplandBiome);
-        settings.putString("taiga", CONFIG.betaTaigaBiome);
-        settings.putString("tundra", CONFIG.betaTundraBiome);
-        
-        settings.putString("ocean", CONFIG.betaOceanBiome);
-        settings.putString("cold_ocean", CONFIG.betaColdOceanBiome);
-        settings.putString("frozen_ocean", CONFIG.betaFrozenOceanBiome);
-        settings.putString("lukewarm_ocean", CONFIG.betaLukewarmOceanBiome);
-        settings.putString("warm_ocean", CONFIG.betaWarmOceanBiome);
-        
-        return settings;
+        return createSettingsOceans(BuiltInTypes.Biome.BETA.name)
+            .putString("desert", CONFIG.betaDesertBiome)
+            .putString("forest", CONFIG.betaForestBiome)
+            .putString("ice_desert", CONFIG.betaIceDesertBiome)
+            .putString("plains", CONFIG.betaPlainsBiome)
+            .putString("rainforest", CONFIG.betaRainforestBiome)
+            .putString("savanna", CONFIG.betaSavannaBiome)
+            .putString("shrubland", CONFIG.betaShrublandBiome)
+            .putString("seasonal_forest", CONFIG.betaSeasonalForestBiome)
+            .putString("swampland", CONFIG.betaSwamplandBiome)
+            .putString("taiga", CONFIG.betaTaigaBiome)
+            .putString("tundra", CONFIG.betaTundraBiome)
+            .putString("ocean", CONFIG.betaOceanBiome)
+            .putString("cold_ocean", CONFIG.betaColdOceanBiome)
+            .putString("frozen_ocean", CONFIG.betaFrozenOceanBiome)
+            .putString("lukewarm_ocean", CONFIG.betaLukewarmOceanBiome)
+            .putString("warm_ocean", CONFIG.betaWarmOceanBiome)
+            .build();
     }
     
     public static NbtCompound createSettingsSingle() {
-        NbtCompound settings = createSettingsBase(BuiltInTypes.Biome.SINGLE.name);
-
-        settings.putString(NbtTags.SINGLE_BIOME, CONFIG.singleBiome);
-        
-        return settings;
+        return createSettingsBase(BuiltInTypes.Biome.SINGLE.name)
+            .putString(NbtTags.SINGLE_BIOME, CONFIG.singleBiome)
+            .build();
     }
     
     public static NbtCompound createSettingsPE() {
-        NbtCompound settings = createSettingsOceans(BuiltInTypes.Biome.PE.name);
-        
-        settings.putString("desert", CONFIG.peDesertBiome);
-        settings.putString("forest", CONFIG.peForestBiome);
-        settings.putString("ice_desert", CONFIG.peIceDesertBiome);
-        settings.putString("plains", CONFIG.pePlainsBiome);
-        settings.putString("rainforest", CONFIG.peRainforestBiome);
-        settings.putString("savanna", CONFIG.peSavannaBiome);
-        settings.putString("shrubland", CONFIG.peShrublandBiome);
-        settings.putString("seasonal_forest", CONFIG.peSeasonalForestBiome);
-        settings.putString("swampland", CONFIG.peSwamplandBiome);
-        settings.putString("taiga", CONFIG.peTaigaBiome);
-        settings.putString("tundra", CONFIG.peTundraBiome);
-        
-        settings.putString("ocean", CONFIG.peOceanBiome);
-        settings.putString("cold_ocean", CONFIG.peColdOceanBiome);
-        settings.putString("frozen_ocean", CONFIG.peFrozenOceanBiome);
-        settings.putString("lukewarm_ocean", CONFIG.peLukewarmOceanBiome);
-        settings.putString("warm_ocean", CONFIG.peWarmOceanBiome);
-        
-        return settings;
+        return createSettingsOceans(BuiltInTypes.Biome.PE.name)
+            .putString("desert", CONFIG.peDesertBiome)
+            .putString("forest", CONFIG.peForestBiome)
+            .putString("ice_desert", CONFIG.peIceDesertBiome)
+            .putString("plains", CONFIG.pePlainsBiome)
+            .putString("rainforest", CONFIG.peRainforestBiome)
+            .putString("savanna", CONFIG.peSavannaBiome)
+            .putString("shrubland", CONFIG.peShrublandBiome)
+            .putString("seasonal_forest", CONFIG.peSeasonalForestBiome)
+            .putString("swampland", CONFIG.peSwamplandBiome)
+            .putString("taiga", CONFIG.peTaigaBiome)
+            .putString("tundra", CONFIG.peTundraBiome)
+            .putString("ocean", CONFIG.peOceanBiome)
+            .putString("cold_ocean", CONFIG.peColdOceanBiome)
+            .putString("frozen_ocean", CONFIG.peFrozenOceanBiome)
+            .putString("lukewarm_ocean", CONFIG.peLukewarmOceanBiome)
+            .putString("warm_ocean", CONFIG.peWarmOceanBiome)
+            .build();
     }
     
     public static NbtCompound createSettingsVanilla() {
-        NbtCompound settings = createSettingsOceans(BuiltInTypes.Biome.VANILLA.name);
-        
-        settings.putBoolean(NbtTags.VANILLA_LARGE_BIOMES, CONFIG.vanillaLargeBiomes);
-        
-        return settings;
+        return createSettingsOceans(BuiltInTypes.Biome.VANILLA.name)
+            .putBoolean(NbtTags.VANILLA_LARGE_BIOMES, CONFIG.vanillaLargeBiomes)
+            .build();
     }
 }

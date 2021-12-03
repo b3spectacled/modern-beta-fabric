@@ -51,7 +51,9 @@ public class OldBiomeSource extends BiomeSource {
         NbtCompound biomeSettings, 
         Optional<NbtCompound> caveBiomeSettings
     ) {
-        NbtCompound caveSettings = caveBiomeSettings.orElse(CaveBiomeProviderSettings.createSettingsBase(BuiltInTypes.CaveBiome.NONE.name));
+        NbtCompound caveSettings = caveBiomeSettings.orElse(
+            CaveBiomeProviderSettings.createSettingsDefault(BuiltInTypes.CaveBiome.NONE.name)
+        );
         
         List<Biome> mainBiomes = Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, biomeSettings))
             .apply(seed, biomeSettings, biomeRegistry)
@@ -76,7 +78,9 @@ public class OldBiomeSource extends BiomeSource {
         this.biomeSettings = biomeSettings;
         this.caveBiomeSettings = caveBiomeSettings;
         
-        NbtCompound caveSettings = this.caveBiomeSettings.orElse(CaveBiomeProviderSettings.createSettingsBase(BuiltInTypes.CaveBiome.NONE.name));
+        NbtCompound caveSettings = this.caveBiomeSettings.orElse(
+            CaveBiomeProviderSettings.createSettingsDefault(BuiltInTypes.CaveBiome.NONE.name)
+        );
         
         this.biomeProvider = Registries.BIOME
             .get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, biomeSettings))
