@@ -22,6 +22,6 @@ public class Infdev415NoiseDecorator implements OldNoiseDecorator {
         
         double scale = 0.25D;
         
-        return (int) this.noiseSampler.sample(startX * scale, startZ * scale) << 3;
+        return (int) this.noiseSampler.sampleXY(startX * scale, startZ * scale) << 3;
     }
 }

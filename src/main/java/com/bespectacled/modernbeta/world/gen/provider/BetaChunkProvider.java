@@ -76,7 +76,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
     
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        double eighth = 0.03125D;
+        double scale = 0.03125D;
 
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
@@ -86,29 +86,22 @@ public class BetaChunkProvider extends NoiseChunkProvider {
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
         
-        double[] sandNoise = this.createSurfaceArray();
-        double[] gravelNoise = this.createSurfaceArray();
-        double[] surfaceNoise = this.createSurfaceArray();
-
-        sandNoise = beachNoiseOctaves.sampleArrShelf(
-            sandNoise, 
+        double[] sandNoise = beachNoiseOctaves.sampleBeta(
             chunkX * 16, chunkZ * 16, 0.0D, 
             16, 16, 1,
-            eighth, eighth, 1.0D);
+            scale, scale, 1.0D);
         
-        gravelNoise = beachNoiseOctaves.sampleArrShelf(
-            gravelNoise, 
+        double[] gravelNoise = beachNoiseOctaves.sampleBeta(
             chunkX * 16, 109.0134D, chunkZ * 16, 
             16, 1, 16, 
-            eighth, 1.0D, eighth);
+            scale, 1.0D, scale);
         
-        surfaceNoise = surfaceNoiseOctaves.sampleArrShelf(
-            surfaceNoise, 
+        double[] surfaceNoise = surfaceNoiseOctaves.sampleBeta(
             chunkX * 16, chunkZ * 16, 0.0D, 
             16, 16, 1,
-            eighth * 2D, eighth * 2D, eighth * 2D
+            scale * 2D, scale * 2D, scale * 2D
         );
-
+        
         for (int localZ = 0; localZ < 16; localZ++) {
             for (int localX = 0; localX < 16; localX++) {
                 int x = (chunkX << 4) + localX;
@@ -241,7 +234,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
         rain *= rain;
         rain = 1.0D - rain;
 
-        double scale = this.scaleNoiseOctaves.sample(noiseX, noiseZ, 1.121D, 1.121D);
+        double scale = this.scaleNoiseOctaves.sampleXZ(noiseX, noiseZ, 1.121D, 1.121D);
         scale = (scale + 256D) / 512D;
         scale *= rain;
         
@@ -249,7 +242,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
             scale = 1.0D;
         }
         
-        double depth = this.depthNoiseOctaves.sample(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
+        double depth = this.depthNoiseOctaves.sampleXZ(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
         depth /= 8000D;
 
         if (depth < 0.0D) {

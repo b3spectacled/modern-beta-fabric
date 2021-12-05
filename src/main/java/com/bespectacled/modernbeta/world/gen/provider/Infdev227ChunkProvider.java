@@ -36,7 +36,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     private final PerlinOctaveNoise noiseOctavesE;
     private final PerlinOctaveNoise noiseOctavesF;
     private final PerlinOctaveNoise forestNoiseOctaves;
-    
+
     public Infdev227ChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
 
@@ -51,7 +51,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         new PerlinOctaveNoise(rand, 3, true);
         new PerlinOctaveNoise(rand, 3, true);
         this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
-        
+
         this.generateInfdevPyramid = NbtUtil.readBoolean(
             NbtTags.GEN_INFDEV_PYRAMID,
             providerSettings,
@@ -164,20 +164,18 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                 float noiseA = (float)(
                     this.noiseOctavesA.sample(x / 0.03125f, 0.0, z / 0.03125f) - 
                     this.noiseOctavesB.sample(x / 0.015625f, 0.0, z / 0.015625f)) / 512.0f / 4.0f;
-                float noiseB = (float)this.noiseOctavesE.sample(x / 4.0f, z / 4.0f);
-                float noiseC = (float)this.noiseOctavesF.sample(x / 8.0f, z / 8.0f) / 8.0f;
+                float noiseB = (float)this.noiseOctavesE.sampleXY(x / 4.0f, z / 4.0f);
+                float noiseC = (float)this.noiseOctavesF.sampleXY(x / 8.0f, z / 8.0f) / 8.0f;
                 
                 noiseB = noiseB > 0.0f ? 
-                    ((float)(this.noiseOctavesC.sample(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
-                    ((float)(this.noiseOctavesD.sample(x * 0.25714284f, z * 0.25714284f) * noiseC));
+                    ((float)(this.noiseOctavesC.sampleXY(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
+                    ((float)(this.noiseOctavesD.sampleXY(x * 0.25714284f, z * 0.25714284f) * noiseC));
                 
-                //int heightVal = (int)(noiseA + this.seaLevel + noiseB);
+                int heightVal = (int)(noiseA + this.seaLevel + noiseB);
 
-                // Subtract 1 to be more consistent with modern versions.
-                int heightVal = (int)(noiseA + (this.seaLevel - 1) + noiseB);
-                if ((float)this.noiseOctavesE.sample(x, z) < 0.0f) {
+                if ((float)this.noiseOctavesE.sampleXY(x, z) < 0.0f) {
                     heightVal = heightVal / 2 << 1;
-                    if ((float)this.noiseOctavesE.sample(x / 5, z / 5) < 0.0f) {
+                    if ((float)this.noiseOctavesE.sampleXY(x / 5, z / 5) < 0.0f) {
                         ++heightVal;
                     }
                 }
@@ -208,14 +206,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                         block = defaultBlock;
                     }
                     
-                    /*
                     else if (y <= this.seaLevel) {
-                        block = defaultFluid;
-                    }
-                    */
-
-                    // Subtract 1 to be more consistent with modern versions.
-                    else if (y <= this.seaLevel - 1) {
                         block = defaultFluid;
                     }
                     
@@ -269,20 +260,18 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         float noiseA = (float)(
             this.noiseOctavesA.sample(x / 0.03125f, 0.0, z / 0.03125f) - 
             this.noiseOctavesB.sample(x / 0.015625f, 0.0, z / 0.015625f)) / 512.0f / 4.0f;
-        float noiseB = (float)this.noiseOctavesE.sample(x / 4.0f, z / 4.0f);
-        float noiseC = (float)this.noiseOctavesF.sample(x / 8.0f, z / 8.0f) / 8.0f;
+        float noiseB = (float)this.noiseOctavesE.sampleXY(x / 4.0f, z / 4.0f);
+        float noiseC = (float)this.noiseOctavesF.sampleXY(x / 8.0f, z / 8.0f) / 8.0f;
         
         noiseB = noiseB > 0.0f ? 
-            ((float)(this.noiseOctavesC.sample(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
-            ((float)(this.noiseOctavesD.sample(x * 0.25714284f, z * 0.25714284f) * noiseC));
+            ((float)(this.noiseOctavesC.sampleXY(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
+            ((float)(this.noiseOctavesD.sampleXY(x * 0.25714284f, z * 0.25714284f) * noiseC));
             
-        //int heightVal = (int)(noiseA + this.seaLevel + noiseB);
+        int heightVal = (int)(noiseA + this.seaLevel + noiseB);
 
-        // Subtract 1 to be more consistent with modern versions.
-        int heightVal = (int)(noiseA + (this.seaLevel - 1) + noiseB);
-        if ((float)this.noiseOctavesE.sample(x, z) < 0.0f) {
+        if ((float)this.noiseOctavesE.sampleXY(x, z) < 0.0f) {
             heightVal = heightVal / 2 << 1;
-            if ((float)this.noiseOctavesE.sample(x / 5, z / 5) < 0.0f) {
+            if ((float)this.noiseOctavesE.sampleXY(x / 5, z / 5) < 0.0f) {
                 ++heightVal;
             }
         }

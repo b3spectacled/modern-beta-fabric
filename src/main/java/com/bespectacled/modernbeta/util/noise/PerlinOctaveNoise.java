@@ -5,104 +5,105 @@ import java.util.Random;
 import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
 
 public class PerlinOctaveNoise {
-    private final PerlinNoise generatorCollection[];
+    private final PerlinNoise noises[];
     private final int octaves;
     private final boolean maintainPrecision;
     
     public PerlinOctaveNoise(Random random, int octaves, boolean useOffset) {
+        this.noises = new PerlinNoise[octaves];
         this.octaves = octaves;
-        this.generatorCollection = new PerlinNoise[octaves];
         this.maintainPrecision = false;
         
-        for (int j = 0; j < octaves; j++) {
-            this.generatorCollection[j] = new PerlinNoise(random, useOffset);
+        for (int i = 0; i < octaves; i++) {
+            this.noises[i] = new PerlinNoise(random, useOffset);
         }
-    }
-    
-    /*
-     * Beta 2D array noise sampler.
-     */
-    public double[] sampleArrBeta(
-        double arr[], 
-        int x, int z, 
-        int sizeX, int sizeZ, 
-        double scaleX, double scaleZ, 
-        double unused
-    ) {
-        return sampleArrShelf(arr, x, 10D, z, sizeX, 1, sizeZ, scaleX, 1.0D, scaleZ);
     }
 
     /*
      * Beta 3D array noise sampler.
      */
-    public double[] sampleArrShelf(
-        double arr[], 
-        double x, double y, double z, 
-        int sizeX, int sizeY, int sizeZ, 
-        double scaleX, double scaleY, double scaleZ
+    public double[] sampleBeta(
+        double x,
+        double y,
+        double z, 
+        int sizeX,
+        int sizeY,
+        int sizeZ, 
+        double scaleX,
+        double scaleY,
+        double scaleZ
     ) {
-        if (arr == null)
-            arr = new double[sizeX * sizeY * sizeZ];
-        else
-            for (int l = 0; l < arr.length; l++) {
-                arr[l] = 0.0D;
-            }
-
+        double[] noise = new double[sizeX * sizeY * sizeZ];
         double frequency = 1.0;
-        for (int i1 = 0; i1 < octaves; i1++) {
-            this.generatorCollection[i1].sampleArrShelf(
-                arr, 
-                x, y, z, 
-                sizeX, sizeY, sizeZ, 
-                scaleX * frequency, scaleY * frequency, scaleZ * frequency, 
+        
+        for (int i = 0; i < octaves; i++) {
+            this.noises[i].sampleBeta(
+                noise, 
+                x,
+                y,
+                z, 
+                sizeX,
+                sizeY,
+                sizeZ,
+                scaleX * frequency,
+                scaleY * frequency,
+                scaleZ * frequency,
                 frequency
             );
+            
             frequency /= 2.0;
         }
         
-        return arr;
+        return noise;
     }
     
     /*
-     * Alpha array noise sampler.
+     * Alpha 3D array noise sampler.
      */
-    public double[] sampleArr(
-        double arr[],
-        double x, double y, double z, 
-        int sizeX, int sizeY, int sizeZ, 
-        double scaleX, double scaleY, double scaleZ
+    public double[] sampleAlpha(
+        double x,
+        double y,
+        double z, 
+        int sizeX,
+        int sizeY,
+        int sizeZ, 
+        double scaleX,
+        double scaleY,
+        double scaleZ
     ) {
-        if (arr == null)
-            arr = new double[sizeX * sizeY * sizeZ];
-        else
-            for (int l = 0; l < arr.length; l++) {
-                arr[l] = 0.0D;
-            }
-
+        double[] noise = new double[sizeX * sizeY * sizeZ];
         double frequency = 1.0;
-        for (int i1 = 0; i1 < octaves; i1++) {
-            this.generatorCollection[i1].sampleArr(
-                arr, 
-                x, y, z, 
-                sizeX, sizeY, sizeZ, 
-                scaleX * frequency, scaleY * frequency, scaleZ * frequency, 
+        
+        for (int i = 0; i < octaves; i++) {
+            this.noises[i].sampleAlpha(
+                noise, 
+                x,
+                y,
+                z, 
+                sizeX,
+                sizeY,
+                sizeZ,
+                scaleX * frequency,
+                scaleY * frequency,
+                scaleZ * frequency,
                 frequency
             );
+            
             frequency /= 2.0;
         }
 
-        return arr;
+        return noise;
     }
     
     /*
      * Standard 2D Perlin noise sampler.
      */
-    public final double sample(double x, double y) {
+    public final double sampleXY(double x, double y) {
         double total = 0.0;
         double frequency = 1.0;
         
         for (int i = 0; i < this.octaves; ++i) {
-            total += this.generatorCollection[i].sample(x / frequency, y / frequency) * frequency;
+            total += this.noises[i].sample(x / frequency, y / frequency) * frequency;
             frequency *= 2.0;
         }
         
@@ -117,7 +118,7 @@ public class PerlinOctaveNoise {
         double frequency = 1.0;
         
         for (int i = 0; i < this.octaves; ++i) {
-            total += this.generatorCollection[i].sample(x / frequency, y / frequency, z / frequency) * frequency;
+            total += this.noises[i].sample(x / frequency, y / frequency, z / frequency) * frequency;
             frequency *= 2.0;
         }
         
@@ -126,13 +127,14 @@ public class PerlinOctaveNoise {
     
     /*
      * Beta 2D noise sampler.
+     * This functions like sample(x, 0.0, z), except yOrigin is ignored.
      */
-    public final double sample(double x, double z, double scaleX, double scaleZ) {
+    public final double sampleXZ(double x, double z, double scaleX, double scaleZ) {
         double total = 0.0;
         double frequency = 1.0;
         
         for (int i = 0; i < this.octaves; ++i) {
-            total += this.generatorCollection[i].sample2D(
+            total += this.noises[i].sampleXZ(
                 this.maintainPrecision(x * scaleX * frequency), 
                 this.maintainPrecision(z * scaleZ * frequency), 
                 frequency
@@ -151,14 +153,12 @@ public class PerlinOctaveNoise {
         double frequency = 1.0;
         
         for (int i = 0; i < this.octaves; ++i) {
-            double frequencyY = scaleY * frequency;
-            
-            total += this.generatorCollection[i].sample3D(
+            total += this.noises[i].sample(
                 this.maintainPrecision(x * scaleX * frequency), 
                 this.maintainPrecision(y * scaleY * frequency), 
                 this.maintainPrecision(z * scaleZ * frequency), 
-                frequencyY, 
-                y * frequencyY
+                scaleY * frequency, 
+                y * scaleY * frequency
             ) / frequency;
             
             frequency /= 2.0;
