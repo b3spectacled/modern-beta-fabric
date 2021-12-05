@@ -46,59 +46,6 @@ public class PerlinNoise {
         }
     }
 
-    private static double lerp(double d, double d1, double d2) {
-        return d1 + d * (d2 - d1);
-    }
-
-    // Using alternate function from
-    // https://adrianb.io/2014/08/09/perlinnoise.html
-    private static double grad(int hash, double x, double y, double z) {
-        switch (hash & 0xF) {
-            case 0x0:
-                return x + y;
-            case 0x1:
-                return -x + y;
-            case 0x2:
-                return x - y;
-            case 0x3:
-                return -x - y;
-            case 0x4:
-                return x + z;
-            case 0x5:
-                return -x + z;
-            case 0x6:
-                return x - z;
-            case 0x7:
-                return -x - z;
-            case 0x8:
-                return y + z;
-            case 0x9:
-                return -y + z;
-            case 0xA:
-                return y - z;
-            case 0xB:
-                return -y - z;
-            case 0xC:
-                return y + x;
-            case 0xD:
-                return -y + z;
-            case 0xE:
-                return y - x;
-            case 0xF:
-                return -y - z;
-            default:
-                return 0; // never happens
-        }
-    }
-    
-    private static double fade(double t) {
-        return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
-    }
-    
-    private int getGradient(int hash) {
-        return this.permutations[hash & 0xFF] & 0xFF;
-    }
-    
     public double sample(double x, double y) {
         return this.sample(x, y, 0.0);
     }
@@ -160,7 +107,7 @@ public class PerlinNoise {
         );
     }
    
-    public void sampleArr(
+    public void sampleAlpha(
         double arr[], 
         double x, double y, double z, 
         int sizeX, int sizeY, int sizeZ, 
@@ -239,7 +186,7 @@ public class PerlinNoise {
         }
     }
 
-    public void sampleArrShelf(
+    public void sampleBeta(
         double arr[], 
         double x, double y, double z, 
         int sizeX, int sizeY, int sizeZ, 
@@ -247,56 +194,52 @@ public class PerlinNoise {
         double frequency
     ) {
         if (sizeY != 1) {
-            this.sampleArr(arr, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ, frequency);
-            
-            return;
-        }
-        
-        int ndx = 0;
-        
-        frequency = 1.0D / frequency;
-        
-        for (int sX = 0; sX < sizeX; sX++) {
-            double curX = (x + (double)sX) * scaleX + this.xOrigin;
-            int floorX = MathHelper.floor(curX);
-            
-            int X = floorX & 0xFF;
-            curX -= floorX;
-            
-            double u = fade(curX);
-            
-            for (int sZ = 0; sZ < sizeZ; sZ++) {
-                double curZ = (z + (double) sZ) * scaleZ + this.zOrigin;
-                int floorZ = MathHelper.floor(curZ);
+            this.sampleAlpha(arr, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ, frequency);
+        } else {
+            frequency = 1.0D / frequency;
+
+            int ndx = 0;
+            for (int sX = 0; sX < sizeX; sX++) {
+                double curX = (x + (double)sX) * scaleX + this.xOrigin;
+                int floorX = MathHelper.floor(curX);
                 
-                int Z = floorZ & 0xFF;
-                curZ -= floorZ;
+                int X = floorX & 0xFF;
+                curX -= floorX;
                 
-                double w = fade(curZ);
+                double u = fade(curX);
                 
-                int A = this.permutations[X] + 0;
-                int AA = this.permutations[A] + Z;
-                int B = this.permutations[X + 1] + 0;
-                int BA = this.permutations[B] + Z;
-                
-                double lerp0 = lerp(
-                    u, 
-                    //grad(permutations[AA], curX, curZ), // Below should give same result but faster
-                    grad(this.permutations[AA], curX, 0.0D, curZ),
-                    grad(this.permutations[BA], curX - 1.0D, 0.0D, curZ));
-                double lerp1 = lerp(
-                    u, 
-                    grad(this.permutations[AA + 1], curX, 0.0D, curZ - 1.0D),
-                    grad(this.permutations[BA + 1], curX - 1.0D, 0.0D, curZ - 1.0D));
-                
-                double res = lerp(w, lerp0, lerp1);
-                
-                arr[ndx++] += res * frequency;
+                for (int sZ = 0; sZ < sizeZ; sZ++) {
+                    double curZ = (z + (double) sZ) * scaleZ + this.zOrigin;
+                    int floorZ = MathHelper.floor(curZ);
+                    
+                    int Z = floorZ & 0xFF;
+                    curZ -= floorZ;
+                    
+                    double w = fade(curZ);
+                    
+                    int A = this.permutations[X] + 0;
+                    int AA = this.permutations[A] + Z;
+                    int B = this.permutations[X + 1] + 0;
+                    int BA = this.permutations[B] + Z;
+                    
+                    double lerp0 = lerp(
+                        u,
+                        grad(this.permutations[AA], curX, 0.0D, curZ),
+                        grad(this.permutations[BA], curX - 1.0D, 0.0D, curZ));
+                    double lerp1 = lerp(
+                        u, 
+                        grad(this.permutations[AA + 1], curX, 0.0D, curZ - 1.0D),
+                        grad(this.permutations[BA + 1], curX - 1.0D, 0.0D, curZ - 1.0D));
+                    
+                    double res = lerp(w, lerp0, lerp1);
+                    
+                    arr[ndx++] += res * frequency;
+                }
             }
         }
     }
     
-    public double sample2D(double x, double z, double frequency) {
+    public double sampleXZ(double x, double z, double frequency) {
         frequency = 1.0D / frequency;
         
         x = x + this.xOrigin;
@@ -340,7 +283,7 @@ public class PerlinNoise {
     /*
      * From vanilla PerlinNoiseSampler.
      */
-    public double sample3D(double x, double y, double z, double yScale, double yMax) {
+    public double sample(double x, double y, double z, double yScale, double yMax) {
         x += this.xOrigin;
         y += this.yOrigin;
         z += this.zOrigin;
@@ -398,5 +341,58 @@ public class PerlinNoise {
         double w = fade(localZ);
         
         return MathHelper.lerp3(u, v, w, grad0, grad1, grad2, grad3, grad4, grad5, grad6, grad7);
+    }
+
+    private int getGradient(int hash) {
+        return this.permutations[hash & 0xFF] & 0xFF;
+    }
+
+    private static double lerp(double delta, double start, double end) {
+        return start + delta * (end - start);
+    }
+
+    // Using alternate function from
+    // https://adrianb.io/2014/08/09/perlinnoise.html
+    private static double grad(int hash, double x, double y, double z) {
+        switch (hash & 0xF) {
+            case 0x0:
+                return x + y;
+            case 0x1:
+                return -x + y;
+            case 0x2:
+                return x - y;
+            case 0x3:
+                return -x - y;
+            case 0x4:
+                return x + z;
+            case 0x5:
+                return -x + z;
+            case 0x6:
+                return x - z;
+            case 0x7:
+                return -x - z;
+            case 0x8:
+                return y + z;
+            case 0x9:
+                return -y + z;
+            case 0xA:
+                return y - z;
+            case 0xB:
+                return -y - z;
+            case 0xC:
+                return y + x;
+            case 0xD:
+                return -y + z;
+            case 0xE:
+                return y - x;
+            case 0xF:
+                return -y - z;
+            default:
+                return 0; // never happens
+        }
+    }
+
+    private static double fade(double t) {
+        return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
     }
 }

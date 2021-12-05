@@ -45,7 +45,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
 
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        double thirtysecond = 0.03125D;
+        double scale = 0.03125D;
         
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
@@ -63,20 +63,20 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(
-                    x * thirtysecond,
-                    z * thirtysecond,
+                    x * scale,
+                    z * scale,
                     0.0
                 ) + rand.nextDouble() * 0.2 > 0.0;
                 
                 boolean genGravelBeach = this.beachNoiseOctaves.sample(
-                    z * thirtysecond, 
+                    z * scale, 
                     109.0134,
-                    x * thirtysecond
+                    x * scale
                 ) + rand.nextDouble() * 0.2 > 3.0;
                 
-                double surfaceNoise = this.surfaceNoiseOctaves.sample(
-                    x * thirtysecond * 2.0,
-                    z * thirtysecond * 2.0
+                double surfaceNoise = this.surfaceNoiseOctaves.sampleXY(
+                    x * scale * 2.0,
+                    z * scale * 2.0
                 );
                 
                 int surfaceDepth = (int)(surfaceNoise / 3.0 + 3.0 + rand.nextDouble() * 0.25);

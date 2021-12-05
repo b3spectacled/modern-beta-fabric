@@ -46,7 +46,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
 
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        double eighth = 0.03125D;
+        double scale = 0.03125D;
 
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
@@ -55,14 +55,24 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
-        
-        double[] sandNoise = this.createSurfaceArray();
-        double[] gravelNoise = this.createSurfaceArray();
-        double[] surfaceNoise = this.createSurfaceArray();
 
-        beachNoiseOctaves.sampleArr(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth, eighth, 1.0D);
-        beachNoiseOctaves.sampleArr(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
-        surfaceNoiseOctaves.sampleArr(surfaceNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
+        double[] sandNoise = beachNoiseOctaves.sampleAlpha(
+            chunkX * 16, chunkZ * 16, 0.0D,
+            16, 16, 1,
+            scale, scale, 1.0D
+        );
+        
+        double[] gravelNoise = beachNoiseOctaves.sampleAlpha(
+            chunkZ * 16, 109.0134D, chunkX * 16,
+            16, 1, 16,
+            scale, 1.0D, scale
+        );
+        
+        double[] surfaceNoise = surfaceNoiseOctaves.sampleAlpha(
+            chunkX * 16, chunkZ * 16, 0.0D,
+            16, 16, 1,
+            scale * 2D, scale * 2D, scale * 2D
+        );
 
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.

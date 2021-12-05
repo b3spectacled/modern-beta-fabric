@@ -271,7 +271,7 @@ public class IndevChunkProvider extends FiniteChunkProvider {
                 double heightLow = minHeightNoiseOctaves.sample(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
                 double heightHigh = maxHeightNoiseOctaves.sample(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
                 
-                double heightSelector = mainHeightNoiseOctaves.sample(x, z) / 8.0;
+                double heightSelector = mainHeightNoiseOctaves.sampleXY(x, z) / 8.0;
                 
                 if (heightSelector > 0.0) {
                     heightHigh = heightLow;
@@ -281,7 +281,7 @@ public class IndevChunkProvider extends FiniteChunkProvider {
                 
                 if (this.levelType == IndevType.ISLAND) {
                     double islandRadius = Math.sqrt(normalizedX * normalizedX + normalizedZ * normalizedZ) * 1.2;
-                    islandRadius = Math.min(islandRadius, islandNoiseOctaves.sample(x * 0.05f, z * 0.05f) / 4.0 + 1.0);
+                    islandRadius = Math.min(islandRadius, islandNoiseOctaves.sampleXY(x * 0.05f, z * 0.05f) / 4.0 + 1.0);
                     islandRadius = Math.max(islandRadius, Math.max(normalizedX, normalizedZ));
                     
                     if (islandRadius > 1.0) {
@@ -336,7 +336,7 @@ public class IndevChunkProvider extends FiniteChunkProvider {
                 double normalizedZ = Math.max(normalizedX, Math.abs(z / (this.levelLength - 1.0) - 0.5) * 2.0);
                 normalizedZ = normalizedZ * normalizedZ * normalizedZ;
 
-                int dirtThickness = (int)(dirtNoiseOctaves.sample(x, z) / 24.0) - 4;
+                int dirtThickness = (int)(dirtNoiseOctaves.sampleXY(x, z) / 24.0) - 4;
                 int dirtThreshold = this.heightmap[x + z * this.levelWidth] + seaLevel;
          
                 int stoneThreshold = dirtThickness + dirtThreshold;
@@ -350,7 +350,7 @@ public class IndevChunkProvider extends FiniteChunkProvider {
                     this.heightmap[x + z * this.levelWidth] = 1;
                 }
              
-                double floatingNoise = floatingNoiseOctaves.sample(x * 2.3, z * 2.3) / 24.0;
+                double floatingNoise = floatingNoiseOctaves.sampleXY(x * 2.3, z * 2.3) / 24.0;
              
                 // Rounds out the bottom of terrain to form floating islands
                 int roundedHeight = (int)(Math.sqrt(Math.abs(floatingNoise)) * Math.signum(floatingNoise) * 20.0) + seaLevel;
@@ -390,19 +390,19 @@ public class IndevChunkProvider extends FiniteChunkProvider {
         
         for (int x = 0; x < this.levelWidth; ++x) {
             for (int z = 0; z < this.levelLength; ++z) {
-                boolean genSand = sandNoiseOctaves.sample(x, z) > 8.0;
-                boolean genGravel = gravelNoiseOctaves.sample(x, z) > 12.0;
+                boolean genSand = sandNoiseOctaves.sampleXY(x, z) > 8.0;
+                boolean genGravel = gravelNoiseOctaves.sampleXY(x, z) > 12.0;
                 
                 if (this.levelType == IndevType.ISLAND) {
-                    genSand = sandNoiseOctaves.sample(x, z) > -8.0;
+                    genSand = sandNoiseOctaves.sampleXY(x, z) > -8.0;
                 }
                 
                 if (this.levelTheme == IndevTheme.PARADISE) {
-                    genSand = sandNoiseOctaves.sample(x, z) > -32.0;
+                    genSand = sandNoiseOctaves.sampleXY(x, z) > -32.0;
                 }
                 
                 if (this.levelTheme == IndevTheme.HELL || this.levelTheme == IndevTheme.WOODS) {
-                    genSand = sandNoiseOctaves.sample(x, z) > -8.0;
+                    genSand = sandNoiseOctaves.sampleXY(x, z) > -8.0;
                 }
                 
                 int heightResult = heightmap[x + z * this.levelWidth];
