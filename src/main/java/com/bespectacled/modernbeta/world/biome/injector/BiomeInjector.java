@@ -33,7 +33,7 @@ public class BiomeInjector {
     public static final int CAVE_END_OFFSET = 16;
     
     public static final Predicate<BiomeInjectionContext> CAVE_PREDICATE = context ->
-        context.getY() + CAVE_START_OFFSET < context.minHeight;
+        context.getY() >= context.worldMinY && context.getY() + CAVE_START_OFFSET < context.minHeight;
     
     private final OldChunkGenerator oldChunkGenerator;
     private final OldBiomeSource oldBiomeSource;
@@ -102,6 +102,7 @@ public class BiomeInjector {
                         int x = (biomeX << 2) + 2;
                         int z = (biomeZ << 2) + 2;
                         
+                        int worldMinY = this.chunkProvider.getWorldMinY();
                         int topHeight = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
                         int minHeight = this.sampleMinHeightAround(biomeX, biomeZ);
                         
@@ -109,6 +110,7 @@ public class BiomeInjector {
                         BlockState minState = chunk.getBlockState(pos.set(x, minHeight, z));
                         
                         BiomeInjectionContext context = new BiomeInjectionContext(
+                            worldMinY,
                             topHeight,
                             minHeight,
                             topState,

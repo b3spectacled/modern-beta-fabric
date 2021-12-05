@@ -61,6 +61,7 @@ public class BiomeInjectionRules {
     }
     
     public static class BiomeInjectionContext {
+        protected final int worldMinY;
         protected final int topHeight;
         protected final int minHeight;
         protected final BlockState topState;
@@ -68,7 +69,8 @@ public class BiomeInjectionRules {
         
         private int y;
         
-        public BiomeInjectionContext(int topHeight, int minHeight, BlockState topState, BlockState minState) {
+        public BiomeInjectionContext(int worldMinY, int topHeight, int minHeight, BlockState topState, BlockState minState) {
+            this.worldMinY = worldMinY;
             this.topHeight = topHeight;
             this.minHeight = minHeight;
             this.topState = topState;

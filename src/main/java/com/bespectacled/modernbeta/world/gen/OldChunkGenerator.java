@@ -333,13 +333,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int biomeY = y >> 2;
         int biomeZ = z >> 2;
         
+        int worldMinY = this.chunkProvider.getWorldMinY();
         int topHeight = this.biomeInjector.getCenteredHeight(biomeX, biomeZ);
         int minHeight = this.biomeInjector.sampleMinHeightAround(biomeX, biomeZ);
         BlockState state = y < this.getSeaLevel() ? 
             this.settings.get().getDefaultFluid() :
             BlockStates.AIR;
         
-        BiomeInjectionContext context = new BiomeInjectionContext(topHeight, minHeight, state, state).setY(y);
+        BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, topHeight, minHeight, state, state).setY(y);
         Biome biome = this.biomeInjector.sample(context, biomeX, biomeY, biomeZ);
         
         return biome != null ? biome : this.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
