@@ -22,8 +22,6 @@ import net.minecraft.world.gen.decorator.PlacementModifier;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
 public abstract class BaseChunkProvider extends ChunkProvider {
-    
-    
     private static final int LAVA_LEVEL = -53; // Vanilla: -54;
     
     protected final Random rand;

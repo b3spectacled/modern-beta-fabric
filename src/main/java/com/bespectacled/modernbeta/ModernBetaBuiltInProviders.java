@@ -107,7 +107,7 @@ public class ModernBetaBuiltInProviders {
         Registries.CAVE_BIOME_SETTINGS.register(BuiltInTypes.DEFAULT_ID, () -> new NbtCompound());
         Registries.CAVE_BIOME_SETTINGS.register(BuiltInTypes.CaveBiome.NONE.name, CaveBiomeProviderSettings::createSettingsNone);
         Registries.CAVE_BIOME_SETTINGS.register(BuiltInTypes.CaveBiome.SINGLE.name, CaveBiomeProviderSettings::createSettingsSingle);
-        Registries.CAVE_BIOME_SETTINGS.register(BuiltInTypes.CaveBiome.VANILLA.name, CaveBiomeProviderSettings::createSettingsNoise);
+        Registries.CAVE_BIOME_SETTINGS.register(BuiltInTypes.CaveBiome.VANILLA.name, CaveBiomeProviderSettings::createSettingsVanilla);
     }
     
     // Register default world screens

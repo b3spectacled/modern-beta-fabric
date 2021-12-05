@@ -3,6 +3,8 @@ package com.bespectacled.modernbeta.util.noise;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.util.math.MathHelper;
 
 public class NoiseRules<T> {
@@ -23,6 +25,10 @@ public class NoiseRules<T> {
         return null;
     }
     
+    public List<NoiseRule<T>> asList() {
+        return ImmutableList.copyOf(this.noiseRules);
+    }
+    
     public static class Builder<T> {
         private final List<NoiseRule<T>> noiseRules;
         
@@ -41,10 +47,10 @@ public class NoiseRules<T> {
         }
     }
 
-    private static class NoiseRule<T> {
-        private final double min;
-        private final double max;
-        private final T item;
+    public static class NoiseRule<T> {
+        public final double min;
+        public final double max;
+        public final T item;
         
         public NoiseRule(double min, double max, T item) {
             this.min = MathHelper.clamp(min, -1.0, 1.0);

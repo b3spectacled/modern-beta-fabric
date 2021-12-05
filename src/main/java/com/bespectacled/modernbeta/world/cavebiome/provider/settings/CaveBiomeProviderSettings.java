@@ -32,7 +32,7 @@ public class CaveBiomeProviderSettings {
             .build();
     }
     
-    public static NbtCompound createSettingsNoise() {
+    public static NbtCompound createSettingsVanilla() {
         return createSettingsBase(BuiltInTypes.CaveBiome.VANILLA.name)
             .putInt(NbtTags.VERTICAL_NOISE_SCALE, CONFIG.verticalNoiseScale)
             .putInt(NbtTags.HORIZONTAL_NOISE_SCALE, CONFIG.horizontalNoiseScale)
