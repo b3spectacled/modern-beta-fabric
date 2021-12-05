@@ -164,7 +164,7 @@ public class Classic030ChunkProvider extends FiniteChunkProvider {
                 double heightLow = minHeightNoiseOctaves.sample(x * 1.3f, z * 1.3f) / 6.0 - 4.0;
                 double heightHigh = maxHeightNoiseOctaves.sample(x * 1.3f, z * 1.3f) / 5.0 + 10.0 - 4.0;
                 
-                double heightSelector = mainHeightNoiseOctaves.sample(x, z) / 8.0;
+                double heightSelector = mainHeightNoiseOctaves.sampleXY(x, z) / 8.0;
                 
                 if (heightSelector > 0.0) {
                     heightHigh = heightLow;
@@ -209,7 +209,7 @@ public class Classic030ChunkProvider extends FiniteChunkProvider {
         
         for (int x = 0; x < this.levelWidth; ++x) {
             for (int z = 0; z < this.levelLength; ++z) {
-                int dirtThickness = (int)(dirtNoiseOctaves.sample(x, z) / 24.0) - 4;
+                int dirtThickness = (int)(dirtNoiseOctaves.sampleXY(x, z) / 24.0) - 4;
                 int dirtThreshold = this.heightmap[x + z * this.levelWidth] + this.waterLevel;
                 
                 int stoneThreshold = dirtThickness + dirtThreshold;
@@ -338,8 +338,8 @@ public class Classic030ChunkProvider extends FiniteChunkProvider {
         
         for (int x = 0; x < this.levelWidth; ++x) {
             for (int z = 0; z < this.levelLength; ++z) {
-                boolean genSand = sandNoiseOctaves.sample(x, z) > 8.0;
-                boolean genGravel = gravelNoiseOctaves.sample(x, z) > 12.0;
+                boolean genSand = sandNoiseOctaves.sampleXY(x, z) > 8.0;
+                boolean genGravel = gravelNoiseOctaves.sampleXY(x, z) > 12.0;
                 
                 int heightResult = heightmap[x + z * this.levelWidth];
                 Block blockUp = this.blockArr[x][heightResult + 1][z];

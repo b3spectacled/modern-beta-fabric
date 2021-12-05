@@ -22,7 +22,7 @@ public class Infdev611NoiseBasedCount implements OldNoiseBasedCount {
         
         double scale = 0.5D;
         
-        int noiseCount = (int) (this.noiseSampler.sample(startX * scale, startZ * scale) / 8.0 + random.nextDouble() * 4D + 4D);
+        int noiseCount = (int) (this.noiseSampler.sampleXY(startX * scale, startZ * scale) / 8.0 + random.nextDouble() * 4D + 4D);
         
         if (noiseCount < 0) {
             noiseCount = 0;

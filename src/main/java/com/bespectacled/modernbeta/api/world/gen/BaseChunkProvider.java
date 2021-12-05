@@ -161,13 +161,4 @@ public abstract class BaseChunkProvider extends ChunkProvider {
             }
         }
     }
-    
-    /**
-     * Creates an array to hold 16 * 16 array of double values for surface generation.
-     * 
-     * @return Double array of size 256.
-     */
-    protected double[] createSurfaceArray() {
-        return new double[256];
-    }
 }

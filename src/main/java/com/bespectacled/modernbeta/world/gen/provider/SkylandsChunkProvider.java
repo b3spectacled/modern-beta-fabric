@@ -48,7 +48,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
 
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        double eighth = 0.03125D;
+        double scale = 0.03125D;
 
         ChunkPos chunkPos = chunk.getPos();
         int chunkX = chunkPos.x;
@@ -56,9 +56,12 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
 
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
-        
-        double[] surfaceNoise = this.createSurfaceArray();
-        surfaceNoise = surfaceNoiseOctaves.sampleArrShelf(surfaceNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
+
+        double[] surfaceNoise = surfaceNoiseOctaves.sampleBeta(
+            chunkX * 16, chunkZ * 16, 0.0D, 
+            16, 16, 1,
+            scale * 2D, scale * 2D, scale * 2D
+        );
 
         // Surface builder stuff
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);

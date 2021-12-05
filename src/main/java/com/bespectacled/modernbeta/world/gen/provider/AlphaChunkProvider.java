@@ -56,7 +56,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
 
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        double eighth = 0.03125D;
+        double scale = 0.03125D;
 
         ChunkPos chunkPos = chunk.getPos();
         int chunkX = chunkPos.x;
@@ -66,14 +66,24 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
-        
-        double[] sandNoise = this.createSurfaceArray();
-        double[] gravelNoise = this.createSurfaceArray();
-        double[] surfaceNoise = this.createSurfaceArray();
 
-        beachNoiseOctaves.sampleArr(sandNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth, eighth, 1.0D);
-        beachNoiseOctaves.sampleArr(gravelNoise, chunkZ * 16, 109.0134D, chunkX * 16, 16, 1, 16, eighth, 1.0D, eighth);
-        surfaceNoiseOctaves.sampleArr(surfaceNoise, chunkX * 16, chunkZ * 16, 0.0D, 16, 16, 1, eighth * 2D, eighth * 2D, eighth * 2D);
+        double[] sandNoise = beachNoiseOctaves.sampleAlpha(
+            chunkX * 16, chunkZ * 16, 0.0D,
+            16, 16, 1,
+            scale, scale, 1.0D
+        );
+        
+        double[] gravelNoise = beachNoiseOctaves.sampleAlpha(
+            chunkZ * 16, 109.0134D, chunkX * 16,
+            16, 1, 16,
+            scale, 1.0D, scale
+        );
+        
+        double[] surfaceNoise = surfaceNoiseOctaves.sampleAlpha(
+            chunkX * 16, chunkZ * 16, 0.0D,
+            16, 16, 1,
+            scale * 2D, scale * 2D, scale * 2D
+        );
 
         AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);

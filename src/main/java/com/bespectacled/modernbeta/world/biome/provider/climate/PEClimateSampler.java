@@ -70,9 +70,9 @@ public class PEClimateSampler implements ClimateSampler, SkyClimateSampler {
     }
     
     private Clime sampleClimateNoise(int x, int z) {
-        double temp = this.tempNoiseOctaves.sample(x, z, this.tempScale, this.tempScale);
-        double rain = this.rainNoiseOctaves.sample(x, z, this.rainScale, this.rainScale);
-        double detail = this.detailNoiseOctaves.sample(x, z, this.detailScale, this.detailScale);
+        double temp = this.tempNoiseOctaves.sampleXZ(x, z, this.tempScale, this.tempScale);
+        double rain = this.rainNoiseOctaves.sampleXZ(x, z, this.rainScale, this.rainScale);
+        double detail = this.detailNoiseOctaves.sampleXZ(x, z, this.detailScale, this.detailScale);
 
         detail = detail * 1.1D + 0.5D;
 

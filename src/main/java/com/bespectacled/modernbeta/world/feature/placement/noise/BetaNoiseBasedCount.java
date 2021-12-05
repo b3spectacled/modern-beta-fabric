@@ -22,6 +22,6 @@ public class BetaNoiseBasedCount implements OldNoiseBasedCount {
         
         double scale = 0.5D;
 
-        return (int) ((this.noiseSampler.sample(startX * scale, startZ * scale) / 8D + random.nextDouble() * 4D + 4D) / 3D);
+        return (int) ((this.noiseSampler.sampleXY(startX * scale, startZ * scale) / 8D + random.nextDouble() * 4D + 4D) / 3D);
     }
 }
