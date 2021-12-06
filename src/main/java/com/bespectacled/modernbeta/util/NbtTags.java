@@ -35,6 +35,10 @@ public class NbtTags {
     public static final String OUTER_ISLAND_NOISE_SCALE = "outerIslandNoiseScale";
     public static final String OUTER_ISLAND_NOISE_OFFSET = "outerIslandNoiseOffset";
 
+    /* Biome Container */
+    public static final String LAND_BIOME = "landBiome";
+    public static final String OCEAN_BIOME = "oceanBiome";
+    public static final String DEEP_OCEAN_BIOME = "deepOceanBiome";
     
     /* Biome Settings */
     public static final String BIOME_TYPE = "biomeType";

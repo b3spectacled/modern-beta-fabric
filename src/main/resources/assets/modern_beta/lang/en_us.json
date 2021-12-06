@@ -88,8 +88,9 @@
     "createWorld.customize.biome.generateOceans": "Assign Ocean Biomes",
     "createWorld.customize.biome.largeBiomes": "Large Biomes",
     
-    "createWorld.customize.biome.climateType.land": "Land Biomes",
-    "createWorld.customize.biome.climateType.ocean": "Ocean Biomes",
+    "createWorld.customize.biome.climateType.land": "Land",
+    "createWorld.customize.biome.climateType.ocean": "Ocean",
+    "createWorld.customize.biome.climateType.deepOcean": "Deep Ocean",
     
     "createWorld.customize.biome.generateOceans.tooltip": "Replace biomes in bodies of water with ocean biomes.",
     

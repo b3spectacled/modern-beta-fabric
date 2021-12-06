@@ -83,6 +83,20 @@ public class NbtUtil {
         return alternate;
     }
     
+    public static NbtCompound readCompoundOrThrow(String key, NbtCompound tag) {
+        if (tag.contains(key))
+            return tag.getCompound(key);
+        
+        throw new IllegalArgumentException("[Modern Beta] NBT compound does not contain field " + key);
+    }
+    
+    public static NbtCompound readCompound(String key, NbtCompound tag, NbtCompound alternate) {
+        if (tag.contains(key))
+            return tag.getCompound(key);
+        
+        return alternate;
+    }
+    
     /*
      * Conversion methods for extracting primitive values from NbtElement objects
      */

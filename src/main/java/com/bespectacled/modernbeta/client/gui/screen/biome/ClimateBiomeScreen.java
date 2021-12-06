@@ -6,15 +6,16 @@ import java.util.function.Consumer;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.ActionOptionWrapper;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
-import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
+import com.bespectacled.modernbeta.api.world.biome.BiomeClimatePoint;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.util.GuiUtil;
+import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
-import net.minecraft.nbt.NbtString;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -23,18 +24,15 @@ import net.minecraft.world.biome.Biome;
 public class ClimateBiomeScreen extends OceanBiomeScreen {
     private static final String LAND_BIOME_DISPLAY_STRING = "createWorld.customize.biome.climateType.land";
     private static final String OCEAN_BIOME_DISPLAY_STRING = "createWorld.customize.biome.climateType.ocean";
+    private static final String DEEP_OCEAN_BIOME_DISPLAY_STRING = "createWorld.customize.biome.climateType.deepOcean";
     
-    private final Map<String, Identifier> landBiomeMap;
-    private final Map<String, Identifier> oceanBiomeMap;
+    private final Map<String, BiomeClimatePoint> biomeMap;
     
     private ClimateBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
         super(parent, worldSetting, consumer, settings);
         
         // Create Beta biome map from existing biome settings
-        BetaClimateMap climateMap = new BetaClimateMap(this.settings.getNbt());
-        
-        this.landBiomeMap = climateMap.getMap(ClimateType.LAND);
-        this.oceanBiomeMap = climateMap.getMap(ClimateType.OCEAN);
+        this.biomeMap = new BetaClimateMap(this.settings.getNbt()).getMap();
     }
     
     private ClimateBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
@@ -53,43 +51,41 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
     protected void init() {
         super.init();
         
-        TextOptionWrapper landBiomeText = new TextOptionWrapper(LAND_BIOME_DISPLAY_STRING);
-        TextOptionWrapper oceanBiomeText = new TextOptionWrapper(OCEAN_BIOME_DISPLAY_STRING);
-        
-        landBiomeText.formatting(Formatting.YELLOW).formatting(Formatting.BOLD);
-        oceanBiomeText.formatting(Formatting.YELLOW).formatting(Formatting.BOLD);
-        
-        this.addOption(landBiomeText);
-        this.landBiomeMap.entrySet().forEach(
-            e -> this.addBiomeButtonEntry(e.getKey(), GuiUtil.createTranslatableBiomeStringFromId(e.getValue()), this.landBiomeMap)
-        );
-        
-        this.addOption(oceanBiomeText);
-        this.oceanBiomeMap.entrySet().forEach(
-            e -> this.addBiomeButtonEntry(e.getKey(), GuiUtil.createTranslatableBiomeStringFromId(e.getValue()), this.oceanBiomeMap)
+        this.biomeMap.entrySet().forEach(
+            e -> this.addBiomePointEntry(e.getKey(), e.getValue())
         );
     }
     
-    private void addBiomeButtonEntry(String key, String biomeText, Map<String, Identifier> biomeMap) {
-        TextOptionWrapper text = new TextOptionWrapper(GuiUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(key)), Formatting.GRAY);
+    private void addBiomePointEntry(String biomePointKey, BiomeClimatePoint biomePoint) {
+        TextOptionWrapper header = new TextOptionWrapper(GuiUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(biomePointKey)));
+        header.formatting(Formatting.YELLOW).formatting(Formatting.BOLD);
         
-        ActionOptionWrapper singleBiomeScreen = new ActionOptionWrapper(
-            GuiUtil.createTranslatableBiomeStringFromId(biomeMap.get(key)), 
+        TextOptionWrapper landBiomeText = new TextOptionWrapper(LAND_BIOME_DISPLAY_STRING).formatting(Formatting.GRAY);
+        TextOptionWrapper oceanBiomeText = new TextOptionWrapper(OCEAN_BIOME_DISPLAY_STRING).formatting(Formatting.GRAY);
+        TextOptionWrapper deepOceanBiomeText = new TextOptionWrapper(DEEP_OCEAN_BIOME_DISPLAY_STRING).formatting(Formatting.GRAY);
+        
+        this.addOption(header);
+        this.addDualOption(landBiomeText, this.createBiomeSelectionScreen(biomePointKey, biomePoint.landBiome(), NbtTags.LAND_BIOME));
+        this.addDualOption(oceanBiomeText, this.createBiomeSelectionScreen(biomePointKey, biomePoint.oceanBiome(), NbtTags.OCEAN_BIOME));
+        this.addDualOption(deepOceanBiomeText, this.createBiomeSelectionScreen(biomePointKey, biomePoint.deepOceanBiome(), NbtTags.DEEP_OCEAN_BIOME));
+    }
+    
+    private ActionOptionWrapper createBiomeSelectionScreen(String biomePointKey, String biomeId, String climateTypeKey) {
+        return new ActionOptionWrapper(
+            GuiUtil.createTranslatableBiomeStringFromId(biomeId),
             "",
             buttonWidget -> this.client.setScreen(new CustomizeBuffetLevelScreen(
                 this,
                 this.registryManager,
                 biome -> {
                     // Queue change
-                    this.settings.putElement(key, NbtString.of(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString()));
+                    ((NbtCompound)this.settings.getElement(biomePointKey)).putString(climateTypeKey, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString());
                     
                     // Update map for display
-                    biomeMap.put(key, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome));
-                }, 
-                this.registryManager.<Biome>get(Registry.BIOME_KEY).get(biomeMap.get(key))  
-            ))
+                    this.biomeMap.put(biomePointKey, BiomeClimatePoint.fromCompound(((NbtCompound)this.settings.getElement(biomePointKey))));
+                },
+                this.registryManager.<Biome>get(Registry.BIOME_KEY).get(new Identifier(biomeId))
+            ))  
         );
-        
-        this.addDualOption(text, singleBiomeScreen);
     }
 }
