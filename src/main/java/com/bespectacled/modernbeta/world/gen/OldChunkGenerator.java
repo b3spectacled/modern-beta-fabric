@@ -69,26 +69,39 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
             Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
             ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(generator -> generator.settings),
-            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings))
-        .apply(instance, instance.stable(OldChunkGenerator::new)));
+            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings),
+            Codec.INT.optionalFieldOf("version").forGetter(generator -> generator.version)
+        ).apply(instance, instance.stable(OldChunkGenerator::new)));
 
     private final Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry;
     private final NbtCompound chunkProviderSettings;
     private final ChunkProvider chunkProvider;
     private final String chunkProviderType;
+    private final Optional<Integer> version;
     
     private final boolean generateOceanShrines;
     private final boolean generateMonuments;
 
     private final BiomeInjector biomeInjector;
     
-    public OldChunkGenerator(Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry, BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> settings, NbtCompound providerSettings) {
+    public OldChunkGenerator(
+        Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry,
+        BiomeSource biomeSource,
+        long seed,
+        Supplier<ChunkGeneratorSettings> settings,
+        NbtCompound providerSettings,
+        Optional<Integer> version
+    ) {
         super(noiseRegistry, biomeSource, seed, settings);
+        
+        // Validate mod version
+        ModernBeta.validateVersion(version);
         
         this.noiseRegistry = noiseRegistry;
         this.chunkProviderSettings = providerSettings;
         this.chunkProviderType = NbtUtil.readStringOrThrow(NbtTags.WORLD_TYPE, providerSettings);
         this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
+        this.version = version;
         
         this.generateOceanShrines = NbtUtil.readBoolean(
             NbtTags.GEN_OCEAN_SHRINES,
@@ -107,15 +120,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             null;
     }
 
-    public static void register() {
-        Registry.register(Registry.CHUNK_GENERATOR, ModernBeta.createId("old"), CODEC);
-    }
-    
-    @Override
-    protected Codec<? extends ChunkGenerator> getCodec() {
-        return OldChunkGenerator.CODEC;
-    }
-    
     @Override
     public CompletableFuture<Chunk> populateBiomes(Registry<Biome> biomeRegistry, Executor executor, Blender blender, StructureAccessor accessor, Chunk chunk) {
         return CompletableFuture.<Chunk>supplyAsync(Util.debugSupplier("init_biomes", () -> {
@@ -282,7 +286,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public ChunkGenerator withSeed(long seed) {
-        return new OldChunkGenerator(this.noiseRegistry, this.biomeSource.withSeed(seed), seed, this.settings, this.chunkProviderSettings);
+        return new OldChunkGenerator(this.noiseRegistry, this.biomeSource.withSeed(seed), seed, this.settings, this.chunkProviderSettings, this.version);
     }
     
     @SuppressWarnings("deprecation")
@@ -371,5 +375,14 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         }
         
         return set;
+    }
+
+    public static void register() {
+        Registry.register(Registry.CHUNK_GENERATOR, ModernBeta.createId("old"), CODEC);
+    }
+
+    @Override
+    protected Codec<? extends ChunkGenerator> getCodec() {
+        return OldChunkGenerator.CODEC;
     }
 }

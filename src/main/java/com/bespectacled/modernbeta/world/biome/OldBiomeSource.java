@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.biome.BiomeBlockResolver;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
@@ -13,7 +12,6 @@ import com.bespectacled.modernbeta.api.world.biome.OceanBiomeResolver;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -34,13 +32,15 @@ public class OldBiomeSource extends BiomeSource {
             Codec.LONG.fieldOf("seed").stable().forGetter(biomeSource -> biomeSource.seed),
             RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(biomeSource -> biomeSource.biomeRegistry),
             NbtCompound.CODEC.fieldOf("provider_settings").forGetter(biomeSource -> biomeSource.biomeSettings),
-            NbtCompound.CODEC.optionalFieldOf("cave_provider_settings").forGetter(biomeSource -> biomeSource.caveBiomeSettings)
+            NbtCompound.CODEC.fieldOf("cave_provider_settings").forGetter(biomeSource -> biomeSource.caveBiomeSettings),
+            Codec.INT.optionalFieldOf("version").forGetter(generator -> generator.version)
         ).apply(instance, (instance).stable(OldBiomeSource::new)));
     
     private final long seed;
     private final Registry<Biome> biomeRegistry;
     private final NbtCompound biomeSettings;
-    private final Optional<NbtCompound> caveBiomeSettings;
+    private final NbtCompound caveBiomeSettings;
+    private final Optional<Integer> version;
     
     private final BiomeProvider biomeProvider;
     private final CaveBiomeProvider caveBiomeProvider;
@@ -48,19 +48,15 @@ public class OldBiomeSource extends BiomeSource {
     private static List<Biome> getBiomesForRegistry(
         long seed,
         Registry<Biome> biomeRegistry, 
-        NbtCompound biomeSettings, 
-        Optional<NbtCompound> caveBiomeSettings
+        NbtCompound biomeSettings,
+        NbtCompound caveBiomeSettings
     ) {
-        NbtCompound caveSettings = caveBiomeSettings.orElse(
-            CaveBiomeProviderSettings.createSettingsDefault(BuiltInTypes.CaveBiome.NONE.name)
-        );
-        
         List<Biome> mainBiomes = Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, biomeSettings))
             .apply(seed, biomeSettings, biomeRegistry)
             .getBiomesForRegistry();
         
-        List<Biome> caveBiomes = Registries.CAVE_BIOME.get(NbtUtil.readStringOrThrow(NbtTags.CAVE_BIOME_TYPE, caveSettings))
-            .apply(seed, caveSettings, biomeRegistry)
+        List<Biome> caveBiomes = Registries.CAVE_BIOME.get(NbtUtil.readStringOrThrow(NbtTags.CAVE_BIOME_TYPE, caveBiomeSettings))
+            .apply(seed, caveBiomeSettings, biomeRegistry)
             .getBiomesForRegistry();
         
         List<Biome> biomes = new ArrayList<>();
@@ -70,35 +66,36 @@ public class OldBiomeSource extends BiomeSource {
         return biomes;
     }
     
-    public OldBiomeSource(long seed, Registry<Biome> biomeRegistry, NbtCompound biomeSettings, Optional<NbtCompound> caveBiomeSettings) {
+    public OldBiomeSource(
+        long seed,
+        Registry<Biome> biomeRegistry,
+        NbtCompound biomeSettings,
+        NbtCompound caveBiomeSettings,
+        Optional<Integer> version
+    ) {
         super(getBiomesForRegistry(seed, biomeRegistry, biomeSettings, caveBiomeSettings));
+        
+        // Validate mod version
+        ModernBeta.validateVersion(version);
         
         this.seed = seed;
         this.biomeRegistry = biomeRegistry;
         this.biomeSettings = biomeSettings;
         this.caveBiomeSettings = caveBiomeSettings;
-        
-        NbtCompound caveSettings = this.caveBiomeSettings.orElse(
-            CaveBiomeProviderSettings.createSettingsDefault(BuiltInTypes.CaveBiome.NONE.name)
-        );
+        this.version = version;
         
         this.biomeProvider = Registries.BIOME
             .get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, biomeSettings))
             .apply(seed, biomeSettings, biomeRegistry);
         this.caveBiomeProvider = Registries.CAVE_BIOME
-            .get(NbtUtil.readStringOrThrow(NbtTags.CAVE_BIOME_TYPE, caveSettings))
-            .apply(seed, caveSettings, biomeRegistry);
+            .get(NbtUtil.readStringOrThrow(NbtTags.CAVE_BIOME_TYPE,caveBiomeSettings))
+            .apply(seed, caveBiomeSettings, biomeRegistry);
     }
     
     @Environment(EnvType.CLIENT)
     @Override
     public BiomeSource withSeed(long seed) {
-        return new OldBiomeSource(seed, this.biomeRegistry, this.biomeSettings, this.caveBiomeSettings);
-    }
-    
-    @Override
-    protected Codec<? extends BiomeSource> getCodec() {
-        return OldBiomeSource.CODEC;
+        return new OldBiomeSource(seed, this.biomeRegistry, this.biomeSettings, this.caveBiomeSettings, this.version);
     }
     
     public Biome getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {    
@@ -155,13 +152,15 @@ public class OldBiomeSource extends BiomeSource {
     }
     
     public NbtCompound getCaveBiomeSettings() {
-        if (this.caveBiomeSettings.isPresent())
-          return new NbtCompound().copyFrom(this.caveBiomeSettings.get());
-        
-        return new NbtCompound();
+        return new NbtCompound().copyFrom(this.caveBiomeSettings);
     }
 
     public static void register() {
         Registry.register(Registry.BIOME_SOURCE, ModernBeta.createId("old"), CODEC);
+    }
+
+    @Override
+    protected Codec<? extends BiomeSource> getCodec() {
+        return OldBiomeSource.CODEC;
     }
 }

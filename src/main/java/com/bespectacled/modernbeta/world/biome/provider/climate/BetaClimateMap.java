@@ -9,6 +9,7 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.BiomeClimatePoint;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
 import com.bespectacled.modernbeta.util.NbtUtil;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 

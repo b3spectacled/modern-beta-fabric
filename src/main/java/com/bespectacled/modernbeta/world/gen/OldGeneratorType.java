@@ -35,6 +35,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 @Environment(EnvType.CLIENT)
 public class OldGeneratorType {
     private static final String DEFAULT_WORLD_TYPE = BuiltInTypes.Chunk.BETA.name;
+    private static final Optional<Integer> MODERN_BETA_VERSION = Optional.of(ModernBeta.MOD_VERSION);
     private static final GeneratorType OLD;
     
     public static void register() {
@@ -75,10 +76,17 @@ public class OldGeneratorType {
                 generatorOptions.getDimensions(), 
                 new OldChunkGenerator(
                     noiseRegistry,
-                    new OldBiomeSource(generatorOptions.getSeed(), biomeRegistry, biomeSettings, Optional.ofNullable(caveBiomeSettings)), 
+                    new OldBiomeSource(
+                        generatorOptions.getSeed(),
+                        biomeRegistry,
+                        biomeSettings,
+                        caveBiomeSettings,
+                        MODERN_BETA_VERSION
+                    ), 
                     generatorOptions.getSeed(), 
                     chunkGenSettingsSupplier, 
-                    chunkSettings
+                    chunkSettings,
+                    MODERN_BETA_VERSION
                 )
             )
         );
@@ -103,10 +111,17 @@ public class OldGeneratorType {
                 
                 return new OldChunkGenerator(
                     noiseRegistry,
-                    new OldBiomeSource(seed, biomeRegistry, biomeSettings, Optional.ofNullable(caveBiomeSettings)), 
+                    new OldBiomeSource(
+                        seed,
+                        biomeRegistry,
+                        biomeSettings,
+                        caveBiomeSettings,
+                        MODERN_BETA_VERSION
+                    ), 
                     seed, 
                     chunkGenSettingsSupplier, 
-                    chunkSettings
+                    chunkSettings,
+                    MODERN_BETA_VERSION
                 );
             }
         };

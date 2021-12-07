@@ -37,6 +37,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 @Mixin(GeneratorOptions.class)
 public class MixinGeneratorOptions {
     @Unique private static final String MODERN_BETA_LEVEL_TYPE = ModernBeta.MOD_ID; // modern_beta
+    @Unique private static final Optional<Integer> MODERN_BETA_VERSION = Optional.of(ModernBeta.MOD_VERSION);
     
     @Inject(method = "fromProperties", at = @At("HEAD"), cancellable = true)
     private static void injectServerGeneratorType(
@@ -100,10 +101,17 @@ public class MixinGeneratorOptions {
             
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 noiseRegistry,
-                new OldBiomeSource(seed, biomeRegistry, biomeSettings, Optional.of(caveBiomeSettings)), 
+                new OldBiomeSource(
+                    seed,
+                    biomeRegistry,
+                    biomeSettings,
+                    caveBiomeSettings,
+                    MODERN_BETA_VERSION
+                ), 
                 seed,
                 () -> chunkGenSettingsRegistry.get(ModernBeta.createId(worldType)), 
-                chunkSettings
+                chunkSettings,
+                MODERN_BETA_VERSION
             );
             
             // return our chunk generator

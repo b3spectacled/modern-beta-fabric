@@ -1,5 +1,7 @@
 package com.bespectacled.modernbeta;
 
+import java.util.Optional;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,13 +9,12 @@ import org.apache.logging.log4j.Logger;
 import com.bespectacled.modernbeta.client.color.BlockColors;
 import com.bespectacled.modernbeta.command.DebugProviderSettingsCommand;
 import com.bespectacled.modernbeta.compat.Compat;
-
+import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.config.ModernBetaConfigBiome;
 import com.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
 import com.bespectacled.modernbeta.config.ModernBetaConfigCompat;
 import com.bespectacled.modernbeta.config.ModernBetaConfigGeneration;
 import com.bespectacled.modernbeta.config.ModernBetaConfigRendering;
-import com.bespectacled.modernbeta.config.ModernBetaConfig;
 import com.bespectacled.modernbeta.world.biome.OldBiomeModifier;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.OldBiomes;
@@ -33,9 +34,12 @@ import net.minecraft.util.Identifier;
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
     public static final String MOD_NAME = "Modern Beta";
+    public static final int MOD_VERSION = 3;
     
     public static final boolean CLIENT_ENV = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     public static final boolean DEV_ENV = FabricLoader.getInstance().isDevelopmentEnvironment();
+    
+    private static boolean invalidVersion = false;
     
     public static final ModernBetaConfig CONFIG = AutoConfig.register(
         ModernBetaConfig.class, 
@@ -57,7 +61,14 @@ public class ModernBeta implements ModInitializer {
     public static void log(Level level, String message) {
         LOGGER.log(level, "[" + MOD_NAME + "] {}", message);
     }
-
+    
+    public static void validateVersion(Optional<Integer> version) {
+        if (!invalidVersion && (version.isEmpty() || version.get() != MOD_VERSION)) {
+            log(Level.ERROR, "Opening a world made with a different version of Modern Beta, settings may not properly load!");
+            invalidVersion = true;
+        }
+    }
+    
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing Modern Beta...");
