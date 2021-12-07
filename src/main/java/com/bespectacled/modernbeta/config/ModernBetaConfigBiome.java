@@ -1,10 +1,10 @@
 package com.bespectacled.modernbeta.config;
 
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
-import com.bespectacled.modernbeta.api.world.biome.BiomeClimatePoint;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.world.biome.inf.InfBiomes;
 import com.bespectacled.modernbeta.world.biome.pe.PEBiomes;
+import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMapping;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -25,28 +25,28 @@ public class ModernBetaConfigBiome implements ConfigData {
     public boolean vanillaLargeBiomes = false;
     
     // Beta
-    public BiomeClimatePoint betaDesertBiome = new BiomeClimatePoint(BetaBiomes.DESERT_ID.toString(), BetaBiomes.OCEAN_ID.toString());
-    public BiomeClimatePoint betaForestBiome = new BiomeClimatePoint(BetaBiomes.FOREST_ID.toString(), BetaBiomes.OCEAN_ID.toString());
-    public BiomeClimatePoint betaIceDesertBiome = new BiomeClimatePoint(BetaBiomes.TUNDRA_ID.toString(), BetaBiomes.FROZEN_OCEAN_ID.toString());
-    public BiomeClimatePoint betaPlainsBiome = new BiomeClimatePoint(BetaBiomes.PLAINS_ID.toString(), BetaBiomes.OCEAN_ID.toString());
-    public BiomeClimatePoint betaRainforestBiome = new BiomeClimatePoint(BetaBiomes.RAINFOREST_ID.toString(), BetaBiomes.WARM_OCEAN_ID.toString());
-    public BiomeClimatePoint betaSavannaBiome = new BiomeClimatePoint(BetaBiomes.SAVANNA_ID.toString(), BetaBiomes.OCEAN_ID.toString());
-    public BiomeClimatePoint betaShrublandBiome = new BiomeClimatePoint(BetaBiomes.SHRUBLAND_ID.toString(), BetaBiomes.OCEAN_ID.toString());
-    public BiomeClimatePoint betaSeasonalForestBiome = new BiomeClimatePoint(BetaBiomes.SEASONAL_FOREST_ID.toString(), BetaBiomes.LUKEWARM_OCEAN_ID.toString());
-    public BiomeClimatePoint betaSwamplandBiome = new BiomeClimatePoint(BetaBiomes.SWAMPLAND_ID.toString(), BetaBiomes.COLD_OCEAN_ID.toString());
-    public BiomeClimatePoint betaTaigaBiome = new BiomeClimatePoint(BetaBiomes.TAIGA_ID.toString(), BetaBiomes.FROZEN_OCEAN_ID.toString());
-    public BiomeClimatePoint betaTundraBiome = new BiomeClimatePoint(BetaBiomes.TUNDRA_ID.toString(), BetaBiomes.FROZEN_OCEAN_ID.toString());
+    public BetaClimateMapping.Config betaDesertBiome = new BetaClimateMapping.Config(BetaBiomes.DESERT_ID.toString(), BetaBiomes.OCEAN_ID.toString());
+    public BetaClimateMapping.Config betaForestBiome = new BetaClimateMapping.Config(BetaBiomes.FOREST_ID.toString(), BetaBiomes.OCEAN_ID.toString());
+    public BetaClimateMapping.Config betaIceDesertBiome = new BetaClimateMapping.Config(BetaBiomes.TUNDRA_ID.toString(), BetaBiomes.FROZEN_OCEAN_ID.toString());
+    public BetaClimateMapping.Config betaPlainsBiome = new BetaClimateMapping.Config(BetaBiomes.PLAINS_ID.toString(), BetaBiomes.OCEAN_ID.toString());
+    public BetaClimateMapping.Config betaRainforestBiome = new BetaClimateMapping.Config(BetaBiomes.RAINFOREST_ID.toString(), BetaBiomes.WARM_OCEAN_ID.toString());
+    public BetaClimateMapping.Config betaSavannaBiome = new BetaClimateMapping.Config(BetaBiomes.SAVANNA_ID.toString(), BetaBiomes.OCEAN_ID.toString());
+    public BetaClimateMapping.Config betaShrublandBiome = new BetaClimateMapping.Config(BetaBiomes.SHRUBLAND_ID.toString(), BetaBiomes.OCEAN_ID.toString());
+    public BetaClimateMapping.Config betaSeasonalForestBiome = new BetaClimateMapping.Config(BetaBiomes.SEASONAL_FOREST_ID.toString(), BetaBiomes.LUKEWARM_OCEAN_ID.toString());
+    public BetaClimateMapping.Config betaSwamplandBiome = new BetaClimateMapping.Config(BetaBiomes.SWAMPLAND_ID.toString(), BetaBiomes.COLD_OCEAN_ID.toString());
+    public BetaClimateMapping.Config betaTaigaBiome = new BetaClimateMapping.Config(BetaBiomes.TAIGA_ID.toString(), BetaBiomes.FROZEN_OCEAN_ID.toString());
+    public BetaClimateMapping.Config betaTundraBiome = new BetaClimateMapping.Config(BetaBiomes.TUNDRA_ID.toString(), BetaBiomes.FROZEN_OCEAN_ID.toString());
     
     // PE
-    public BiomeClimatePoint peDesertBiome = new BiomeClimatePoint(PEBiomes.PE_DESERT_ID.toString(), PEBiomes.PE_OCEAN_ID.toString());
-    public BiomeClimatePoint peForestBiome = new BiomeClimatePoint(PEBiomes.PE_FOREST_ID.toString(), PEBiomes.PE_OCEAN_ID.toString());
-    public BiomeClimatePoint peIceDesertBiome = new BiomeClimatePoint(PEBiomes.PE_TUNDRA_ID.toString(), PEBiomes.PE_FROZEN_OCEAN_ID.toString());
-    public BiomeClimatePoint pePlainsBiome = new BiomeClimatePoint(PEBiomes.PE_PLAINS_ID.toString(), PEBiomes.PE_OCEAN_ID.toString());
-    public BiomeClimatePoint peRainforestBiome = new BiomeClimatePoint(PEBiomes.PE_RAINFOREST_ID.toString(), PEBiomes.PE_WARM_OCEAN_ID.toString());
-    public BiomeClimatePoint peSavannaBiome = new BiomeClimatePoint(PEBiomes.PE_SAVANNA_ID.toString(), PEBiomes.PE_OCEAN_ID.toString());
-    public BiomeClimatePoint peShrublandBiome = new BiomeClimatePoint(PEBiomes.PE_SHRUBLAND_ID.toString(), PEBiomes.PE_OCEAN_ID.toString());
-    public BiomeClimatePoint peSeasonalForestBiome = new BiomeClimatePoint(PEBiomes.PE_SEASONAL_FOREST_ID.toString(), PEBiomes.PE_LUKEWARM_OCEAN_ID.toString());
-    public BiomeClimatePoint peSwamplandBiome = new BiomeClimatePoint(PEBiomes.PE_SWAMPLAND_ID.toString(), PEBiomes.PE_COLD_OCEAN_ID.toString());
-    public BiomeClimatePoint peTaigaBiome = new BiomeClimatePoint(PEBiomes.PE_TAIGA_ID.toString(), PEBiomes.PE_FROZEN_OCEAN_ID.toString());
-    public BiomeClimatePoint peTundraBiome = new BiomeClimatePoint(PEBiomes.PE_TUNDRA_ID.toString(), PEBiomes.PE_FROZEN_OCEAN_ID.toString());
+    public BetaClimateMapping.Config peDesertBiome = new BetaClimateMapping.Config(PEBiomes.PE_DESERT_ID.toString(), PEBiomes.PE_OCEAN_ID.toString());
+    public BetaClimateMapping.Config peForestBiome = new BetaClimateMapping.Config(PEBiomes.PE_FOREST_ID.toString(), PEBiomes.PE_OCEAN_ID.toString());
+    public BetaClimateMapping.Config peIceDesertBiome = new BetaClimateMapping.Config(PEBiomes.PE_TUNDRA_ID.toString(), PEBiomes.PE_FROZEN_OCEAN_ID.toString());
+    public BetaClimateMapping.Config pePlainsBiome = new BetaClimateMapping.Config(PEBiomes.PE_PLAINS_ID.toString(), PEBiomes.PE_OCEAN_ID.toString());
+    public BetaClimateMapping.Config peRainforestBiome = new BetaClimateMapping.Config(PEBiomes.PE_RAINFOREST_ID.toString(), PEBiomes.PE_WARM_OCEAN_ID.toString());
+    public BetaClimateMapping.Config peSavannaBiome = new BetaClimateMapping.Config(PEBiomes.PE_SAVANNA_ID.toString(), PEBiomes.PE_OCEAN_ID.toString());
+    public BetaClimateMapping.Config peShrublandBiome = new BetaClimateMapping.Config(PEBiomes.PE_SHRUBLAND_ID.toString(), PEBiomes.PE_OCEAN_ID.toString());
+    public BetaClimateMapping.Config peSeasonalForestBiome = new BetaClimateMapping.Config(PEBiomes.PE_SEASONAL_FOREST_ID.toString(), PEBiomes.PE_LUKEWARM_OCEAN_ID.toString());
+    public BetaClimateMapping.Config peSwamplandBiome = new BetaClimateMapping.Config(PEBiomes.PE_SWAMPLAND_ID.toString(), PEBiomes.PE_COLD_OCEAN_ID.toString());
+    public BetaClimateMapping.Config peTaigaBiome = new BetaClimateMapping.Config(PEBiomes.PE_TAIGA_ID.toString(), PEBiomes.PE_FROZEN_OCEAN_ID.toString());
+    public BetaClimateMapping.Config peTundraBiome = new BetaClimateMapping.Config(PEBiomes.PE_TUNDRA_ID.toString(), PEBiomes.PE_FROZEN_OCEAN_ID.toString());
 }

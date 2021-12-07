@@ -6,13 +6,13 @@ import java.util.function.Consumer;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.ActionOptionWrapper;
 import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
-import com.bespectacled.modernbeta.api.world.biome.BiomeClimatePoint;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
+import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMapping;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.NbtCompound;
@@ -26,13 +26,13 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
     private static final String OCEAN_BIOME_DISPLAY_STRING = "createWorld.customize.biome.climateType.ocean";
     private static final String DEEP_OCEAN_BIOME_DISPLAY_STRING = "createWorld.customize.biome.climateType.deepOcean";
     
-    private final Map<String, BiomeClimatePoint> biomeMap;
+    private final Map<String, BetaClimateMapping> climateMap;
     
     private ClimateBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
         super(parent, worldSetting, consumer, settings);
         
         // Create Beta biome map from existing biome settings
-        this.biomeMap = new BetaClimateMap(this.settings.getNbt()).getMap();
+        this.climateMap = new BetaClimateMap(this.settings.getNbt()).getMap();
     }
     
     private ClimateBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
@@ -51,13 +51,13 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
     protected void init() {
         super.init();
         
-        this.biomeMap.entrySet().forEach(
+        this.climateMap.entrySet().forEach(
             e -> this.addBiomePointEntry(e.getKey(), e.getValue())
         );
     }
     
-    private void addBiomePointEntry(String biomePointKey, BiomeClimatePoint biomePoint) {
-        TextOptionWrapper header = new TextOptionWrapper(GuiUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(biomePointKey)));
+    private void addBiomePointEntry(String climateMappingKey, BetaClimateMapping climateMapping) {
+        TextOptionWrapper header = new TextOptionWrapper(GuiUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(climateMappingKey)));
         header.formatting(Formatting.YELLOW).formatting(Formatting.BOLD);
         
         TextOptionWrapper landBiomeText = new TextOptionWrapper(LAND_BIOME_DISPLAY_STRING).formatting(Formatting.GRAY);
@@ -65,12 +65,21 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
         TextOptionWrapper deepOceanBiomeText = new TextOptionWrapper(DEEP_OCEAN_BIOME_DISPLAY_STRING).formatting(Formatting.GRAY);
         
         this.addOption(header);
-        this.addDualOption(landBiomeText, this.createBiomeSelectionScreen(biomePointKey, biomePoint.landBiome(), NbtTags.LAND_BIOME));
-        this.addDualOption(oceanBiomeText, this.createBiomeSelectionScreen(biomePointKey, biomePoint.oceanBiome(), NbtTags.OCEAN_BIOME));
-        this.addDualOption(deepOceanBiomeText, this.createBiomeSelectionScreen(biomePointKey, biomePoint.deepOceanBiome(), NbtTags.DEEP_OCEAN_BIOME));
+        this.addDualOption(
+            landBiomeText,
+            this.createBiomeSelectionScreen(climateMappingKey, climateMapping.landBiome(), NbtTags.LAND_BIOME)
+        );
+        this.addDualOption(
+            oceanBiomeText,
+            this.createBiomeSelectionScreen(climateMappingKey, climateMapping.oceanBiome(), NbtTags.OCEAN_BIOME)
+        );
+        this.addDualOption(
+            deepOceanBiomeText,
+            this.createBiomeSelectionScreen(climateMappingKey, climateMapping.deepOceanBiome(), NbtTags.DEEP_OCEAN_BIOME)
+        );
     }
     
-    private ActionOptionWrapper createBiomeSelectionScreen(String biomePointKey, String biomeId, String climateTypeKey) {
+    private ActionOptionWrapper createBiomeSelectionScreen(String climateMappingKey, Identifier biomeId, String climateTypeKey) {
         return new ActionOptionWrapper(
             GuiUtil.createTranslatableBiomeStringFromId(biomeId),
             "",
@@ -78,13 +87,15 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
                 this,
                 this.registryManager,
                 biome -> {
+                    NbtCompound climateMapping = (NbtCompound) this.settings.getElement(climateMappingKey);
+                    
                     // Queue change
-                    ((NbtCompound)this.settings.getElement(biomePointKey)).putString(climateTypeKey, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString());
+                    climateMapping.putString(climateTypeKey, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString());
                     
                     // Update map for display
-                    this.biomeMap.put(biomePointKey, BiomeClimatePoint.fromCompound(((NbtCompound)this.settings.getElement(biomePointKey))));
+                    this.climateMap.put(climateMappingKey, BetaClimateMapping.fromCompound(climateMapping));
                 },
-                this.registryManager.<Biome>get(Registry.BIOME_KEY).get(new Identifier(biomeId))
+                this.registryManager.<Biome>get(Registry.BIOME_KEY).get(biomeId)
             ))  
         );
     }

@@ -72,7 +72,7 @@ public class ModernBeta implements ModInitializer {
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing Modern Beta...");
-
+        
         // Register mod stuff
         OldStructures.register();
         OldBiomes.register();

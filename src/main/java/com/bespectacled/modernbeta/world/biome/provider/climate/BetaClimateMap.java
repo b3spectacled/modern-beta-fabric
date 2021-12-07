@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.BiomeClimatePoint;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
 import com.bespectacled.modernbeta.util.NbtUtil;
 
@@ -14,18 +13,12 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
 public class BetaClimateMap {
-    private final Map<String, BiomeClimatePoint> biomeMap;
-    
-    private final Identifier[] landBiomeTable;
-    private final Identifier[] oceanBiomeTable;
-    private final Identifier[] deepOceanBiomeTable;
+    private final Map<String, BetaClimateMapping> climateMap;
+    private final BetaClimateMapping[] climateTable;
     
     public BetaClimateMap(NbtCompound biomeProviderSettings) {
-        this.biomeMap = new LinkedHashMap<>();
-        
-        this.landBiomeTable = new Identifier[4096];
-        this.oceanBiomeTable = new Identifier[4096];
-        this.deepOceanBiomeTable = new Identifier[4096];
+        this.climateMap = new LinkedHashMap<>();
+        this.climateTable = new BetaClimateMapping[4096];
         
         this.loadBiomePoint("desert", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaDesertBiome);
         this.loadBiomePoint("forest", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaForestBiome);
@@ -42,8 +35,8 @@ public class BetaClimateMap {
         this.generateBiomeLookup();
     }
     
-    public Map<String, BiomeClimatePoint> getMap() {
-        return new LinkedHashMap<>(this.biomeMap);
+    public Map<String, BetaClimateMapping> getMap() {
+        return new LinkedHashMap<>(this.climateMap);
     }
     
     public Identifier getBiome(double temp, double rain, ClimateType type) {
@@ -51,81 +44,75 @@ public class BetaClimateMap {
         int r = (int) (rain * 63D);
         int ndx = t + r * 64;
         
-        
-        return switch(type) {
-            case LAND -> this.landBiomeTable[ndx];
-            case OCEAN -> this.oceanBiomeTable[ndx];
-            case DEEP_OCEAN -> this.deepOceanBiomeTable[ndx];
-        };
+        return this.climateTable[ndx].biomeByClimateType(type);
     }
     
     public List<Identifier> getBiomeIds() {
         List<Identifier> biomeIds = new ArrayList<>();
-        biomeIds.addAll(this.biomeMap.values().stream().map(p -> new Identifier(p.landBiome())).toList());
-        biomeIds.addAll(this.biomeMap.values().stream().map(p -> new Identifier(p.oceanBiome())).toList());
-        biomeIds.addAll(this.biomeMap.values().stream().map(p -> new Identifier(p.deepOceanBiome())).toList());
+        biomeIds.addAll(this.climateMap.values().stream().map(p -> p.landBiome()).toList());
+        biomeIds.addAll(this.climateMap.values().stream().map(p -> p.oceanBiome()).toList());
+        biomeIds.addAll(this.climateMap.values().stream().map(p -> p.deepOceanBiome()).toList());
         
         return biomeIds;
     }
     
-    private void loadBiomePoint(String key, NbtCompound settings, BiomeClimatePoint alternate) {
-        this.biomeMap.put(key, BiomeClimatePoint.fromCompound(NbtUtil.readCompound(key, settings, alternate.toCompound())));
+    private void loadBiomePoint(String key, NbtCompound settings, BetaClimateMapping.Config alternate) {
+        this.climateMap.put(
+            key,
+            BetaClimateMapping.fromCompound(NbtUtil.readCompound(key, settings, alternate.toCompound()))
+        );
     }
     
     private void generateBiomeLookup() {
         for (int t = 0; t < 64; t++) {
             for (int r = 0; r < 64; r++) {
-                BiomeClimatePoint biomePoint = this.getBiome((float) t / 63F, (float) r / 63F);
-                
-                this.landBiomeTable[t + r * 64] = new Identifier(biomePoint.getByClimate(ClimateType.LAND));
-                this.oceanBiomeTable[t + r * 64] = new Identifier(biomePoint.getByClimate(ClimateType.OCEAN));
-                this.deepOceanBiomeTable[t + r * 64] = new Identifier(biomePoint.getByClimate(ClimateType.DEEP_OCEAN));
+                this.climateTable[t + r * 64] = this.getBiome((float) t / 63F, (float) r / 63F);
             }
         }
     }
     
-    private BiomeClimatePoint getBiome(float temp, float rain) {
+    private BetaClimateMapping getBiome(float temp, float rain) {
         rain *= temp;
 
         if (temp < 0.1F) {
-            return this.biomeMap.get("ice_desert");
+            return this.climateMap.get("ice_desert");
         }
 
         if (rain < 0.2F) {
             if (temp < 0.5F) {
-                return this.biomeMap.get("tundra");
+                return this.climateMap.get("tundra");
             }
             if (temp < 0.95F) {
-                return this.biomeMap.get("savanna");
+                return this.climateMap.get("savanna");
             } else {
-                return this.biomeMap.get("desert");
+                return this.climateMap.get("desert");
             }
         }
 
         if (rain > 0.5F && temp < 0.7F) {
-            return this.biomeMap.get("swampland");
+            return this.climateMap.get("swampland");
         }
 
         if (temp < 0.5F) {
-            return this.biomeMap.get("taiga");
+            return this.climateMap.get("taiga");
         }
 
         if (temp < 0.97F) {
             if (rain < 0.35F) {
-                return this.biomeMap.get("shrubland");
+                return this.climateMap.get("shrubland");
             } else {
-                return this.biomeMap.get("forest");
+                return this.climateMap.get("forest");
             }
         }
 
         if (rain < 0.45F) {
-            return this.biomeMap.get("plains");
+            return this.climateMap.get("plains");
         }
 
         if (rain < 0.9F) {
-            return this.biomeMap.get("seasonal_forest");
+            return this.climateMap.get("seasonal_forest");
         } else {
-            return this.biomeMap.get("rainforest");
+            return this.climateMap.get("rainforest");
         }
     }
 }
