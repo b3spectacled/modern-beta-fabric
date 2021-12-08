@@ -1,10 +1,13 @@
 package com.bespectacled.modernbeta.config;
 
+import java.util.List;
+
 import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.world.biome.inf.InfBiomes;
 import com.bespectacled.modernbeta.world.biome.pe.PEBiomes;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMapping;
+import com.bespectacled.modernbeta.world.biome.provider.climate.VoronoiClimateMapping;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -49,4 +52,15 @@ public class ModernBetaConfigBiome implements ConfigData {
     public BetaClimateMapping.Config peSwamplandBiome = new BetaClimateMapping.Config(PEBiomes.PE_SWAMPLAND_ID.toString(), PEBiomes.PE_COLD_OCEAN_ID.toString());
     public BetaClimateMapping.Config peTaigaBiome = new BetaClimateMapping.Config(PEBiomes.PE_TAIGA_ID.toString(), PEBiomes.PE_FROZEN_OCEAN_ID.toString());
     public BetaClimateMapping.Config peTundraBiome = new BetaClimateMapping.Config(PEBiomes.PE_TUNDRA_ID.toString(), PEBiomes.PE_FROZEN_OCEAN_ID.toString());
+
+    // Voronoi
+    public List<VoronoiClimateMapping.Config> voronoiBiomes = List.of(
+        new VoronoiClimateMapping.Config(BetaBiomes.PLAINS_ID.toString(), BetaBiomes.OCEAN_ID.toString(), BetaBiomes.OCEAN_ID.toString(), 0.5, 0.5),
+        new VoronoiClimateMapping.Config(BetaBiomes.SHRUBLAND_ID.toString(), BetaBiomes.OCEAN_ID.toString(), BetaBiomes.OCEAN_ID.toString(), 0.25, 0.5),
+        new VoronoiClimateMapping.Config(BetaBiomes.SAVANNA_ID.toString(), BetaBiomes.OCEAN_ID.toString(), BetaBiomes.OCEAN_ID.toString(), 0.75, 0.5),
+        new VoronoiClimateMapping.Config(BetaBiomes.FOREST_ID.toString(), BetaBiomes.OCEAN_ID.toString(), BetaBiomes.OCEAN_ID.toString(), 0.75, 0.75),
+        new VoronoiClimateMapping.Config(BetaBiomes.DESERT_ID.toString(), BetaBiomes.OCEAN_ID.toString(), BetaBiomes.OCEAN_ID.toString(), 0.75, 0.25),
+        new VoronoiClimateMapping.Config(BetaBiomes.TUNDRA_ID.toString(), BetaBiomes.FROZEN_OCEAN_ID.toString(), BetaBiomes.FROZEN_OCEAN_ID.toString(), 0.25, 0.25),
+        new VoronoiClimateMapping.Config(BetaBiomes.TAIGA_ID.toString(), BetaBiomes.FROZEN_OCEAN_ID.toString(), BetaBiomes.FROZEN_OCEAN_ID.toString(), 0.25, 0.75)
+    );
 }

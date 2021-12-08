@@ -7,12 +7,11 @@ import java.util.concurrent.Executor;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.provider.VanillaBiomeProvider;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.IndevSpawnLocator;
 
@@ -112,10 +111,9 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
                 Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, 0, z));
                 
                 boolean isCold;
-                if (biomeSource.getBiomeProvider() instanceof VanillaBiomeProvider) {
-                    isCold = biome.isCold(pos);
-                } else if (biomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider) {
-                    isCold = climateBiomeProvider.getClimateSampler().sampleClime(x, z).temp() < 0.5D;
+                if (biomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
+                    climateSampler.sampleForFeatureGeneration()) {
+                    isCold = climateSampler.sampleClime(x, z).temp() < 0.5D;
                 } else {
                     isCold = biome.isCold(pos);
                 }

@@ -9,22 +9,14 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
 public class BetaClimateMapping {
-    private Identifier landBiome;
-    private Identifier oceanBiome;
-    private Identifier deepOceanBiome;
+    private final Identifier landBiome;
+    private final Identifier oceanBiome;
+    private final Identifier deepOceanBiome;
     
     public BetaClimateMapping(Identifier landBiome, Identifier oceanBiome, Identifier deepOceanBiome) {
         this.landBiome = landBiome;
         this.oceanBiome = oceanBiome;
         this.deepOceanBiome = deepOceanBiome;
-    }
-    
-    public BetaClimateMapping(BetaClimateMapping.Config config) {
-        this(
-            new Identifier(config.landBiome),
-            new Identifier(config.oceanBiome),
-            new Identifier(config.deepOceanBiome)
-        );
     }
     
     public Identifier landBiome() {
@@ -72,10 +64,6 @@ public class BetaClimateMapping {
         
         public Config(String landBiome, String oceanBiome) {
             this(landBiome, oceanBiome, oceanBiome);
-        }
-        
-        public BetaClimateMapping toMapping() {
-            return new BetaClimateMapping(this);
         }
         
         public NbtCompound toCompound() {

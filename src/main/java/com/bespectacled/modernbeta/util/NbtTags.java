@@ -35,10 +35,12 @@ public class NbtTags {
     public static final String OUTER_ISLAND_NOISE_SCALE = "outerIslandNoiseScale";
     public static final String OUTER_ISLAND_NOISE_OFFSET = "outerIslandNoiseOffset";
 
-    /* Biome Container */
+    /* Climate Mapping */
     public static final String LAND_BIOME = "landBiome";
     public static final String OCEAN_BIOME = "oceanBiome";
     public static final String DEEP_OCEAN_BIOME = "deepOceanBiome";
+    public static final String TEMP = "temp";
+    public static final String RAIN = "rain";
     
     /* Biome Settings */
     public static final String BIOME_TYPE = "biomeType";

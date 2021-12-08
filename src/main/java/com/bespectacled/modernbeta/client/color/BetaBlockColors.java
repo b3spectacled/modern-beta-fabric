@@ -36,7 +36,7 @@ public final class BetaBlockColors {
             return 8174955; // Default tint, from wiki
         }
         
-        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor()) {
+        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleForBiomeColor()) {
             int x = pos.getX();
             int y = pos.getY();
             int z = pos.getZ();
@@ -56,7 +56,7 @@ public final class BetaBlockColors {
             return 8174955; // Default tint, from wiki
         }
         
-        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor()) {
+        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleForBiomeColor()) {
             int x = pos.getX();
             int y = pos.getY();
             int z = pos.getZ();
@@ -82,7 +82,7 @@ public final class BetaBlockColors {
             return 4764952; // Default tint, from wiki
         }
         
-        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor()) {
+        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleForBiomeColor()) {
             int x = pos.getX();
             int y = pos.getY();
             int z = pos.getZ();
@@ -98,7 +98,7 @@ public final class BetaBlockColors {
     }
     
     public int getReedColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
-        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor()) {
+        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleForBiomeColor()) {
             return 0xFFFFFF;
         }
         

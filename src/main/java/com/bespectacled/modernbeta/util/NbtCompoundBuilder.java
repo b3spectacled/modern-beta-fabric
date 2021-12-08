@@ -10,6 +10,10 @@ public class NbtCompoundBuilder {
         this.compound = new NbtCompound();
     }
     
+    public NbtCompoundBuilder(NbtCompound initial) {
+        this.compound = initial.copy();
+    }
+    
     public NbtCompoundBuilder putString(String key, String value) {
         this.compound.putString(key, value);
         

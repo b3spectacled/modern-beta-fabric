@@ -13,15 +13,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
 import com.bespectacled.modernbeta.client.color.BetaBlockColors;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.ModernBetaClientWorld;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampler;
-import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampler.BetaSkyClimateSampler;
+import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
+import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.fabricmc.api.EnvType;
@@ -72,8 +72,14 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         boolean useFixedSeed = ModernBeta.RENDER_CONFIG.configFixedSeed.useFixedSeed;
         
         // Init with default values
-        this.climateSampler = Optional.ofNullable(useFixedSeed ? new BetaClimateSampler(worldSeed) : null);
-        this.skyClimateSampler = Optional.ofNullable(useFixedSeed ? new BetaSkyClimateSampler(worldSeed) : null);
+        this.climateSampler = Optional.ofNullable(useFixedSeed ? 
+            new BetaBiomeProvider(worldSeed, BiomeProviderSettings.createSettingsBeta(), null) : 
+            null
+        );
+        this.skyClimateSampler = Optional.ofNullable(useFixedSeed ? 
+                new BetaBiomeProvider(worldSeed, BiomeProviderSettings.createSettingsBeta(), null) : 
+            null
+        );
         this.isModernBetaWorld = false;
         
         // Server check
@@ -83,11 +89,14 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
             
             worldSeed = this.client.getServer().getWorld(registryRef).getSeed();
             
-            if (biomeSource instanceof OldBiomeSource oldBiomeSource &&
-                oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider
-            ) {
-                this.climateSampler = Optional.ofNullable(climateBiomeProvider.getClimateSampler());
-                this.skyClimateSampler = Optional.ofNullable(climateBiomeProvider.getSkyClimateSampler());
+            if (biomeSource instanceof OldBiomeSource oldBiomeSource) {
+                BiomeProvider biomeProvider = oldBiomeSource.getBiomeProvider();
+                
+                if (biomeProvider instanceof ClimateSampler climateSampler)
+                    this.climateSampler = Optional.ofNullable(climateSampler);
+                
+                if (biomeProvider instanceof SkyClimateSampler skyClimateSampler)
+                    this.skyClimateSampler = Optional.ofNullable(skyClimateSampler);
             }
             
             this.isModernBetaWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof OldBiomeSource;

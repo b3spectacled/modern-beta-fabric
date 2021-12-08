@@ -10,7 +10,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 
 public final class VanillaBiomeSourceCreator {
-    public static VanillaBiomeSource buildLandBiomeSource(Registry<Biome> biomeRegistry, long seed, NbtCompound settings) {
+    public static VanillaBiomeSource buildLandBiomeSource(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         return new VanillaBiomeSource.Builder(biomeRegistry, seed)
             .writeMixedBiomes(MultiNoiseUtil.ParameterRange.of(-1.0f, -0.93333334f))
             .writePlainsBiomes(MultiNoiseUtil.ParameterRange.of(-0.93333334f, -0.7666667f))
@@ -25,14 +25,14 @@ public final class VanillaBiomeSourceCreator {
             .build();
     }
     
-    public static VanillaBiomeSource buildOceanBiomeSource(Registry<Biome> biomeRegistry, long seed, NbtCompound settings) {
+    public static VanillaBiomeSource buildOceanBiomeSource(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         return new VanillaBiomeSource.Builder(biomeRegistry, seed)
             .writeOceanBiomes()
             .largeBiomes(useLargeBiomes(settings))
             .build();
     }
     
-    public static VanillaBiomeSource buildDeepOceanBiomeSource(Registry<Biome> biomeRegistry, long seed, NbtCompound settings) {
+    public static VanillaBiomeSource buildDeepOceanBiomeSource(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         return new VanillaBiomeSource.Builder(biomeRegistry, seed)
             .writeDeepOceanBiomes()
             .largeBiomes(useLargeBiomes(settings))

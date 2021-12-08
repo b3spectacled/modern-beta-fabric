@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.world.gen.provider;
 import java.util.Random;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
@@ -15,7 +14,8 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateSampler;
+import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
+import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
@@ -68,18 +68,12 @@ public class BetaChunkProvider extends NoiseChunkProvider {
             this.providerSettings, 
             ModernBeta.GEN_CONFIG.sampleClimate
         );
-
-        ClimateSampler climateSampler = new BetaClimateSampler(chunkGenerator.getWorldSeed());
         
-        if (chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource && 
-            oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider
-        ) {
-            if (sampleClimate) {
-                climateSampler = climateBiomeProvider.getClimateSampler();
-            }
-        }
-        
-        this.climateSampler = climateSampler;
+        this.climateSampler = (
+            chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource &&
+            oldBiomeSource.getBiomeProvider() instanceof ClimateSampler sampler &&
+            sampleClimate
+        ) ? sampler : new BetaBiomeProvider(chunkGenerator.getWorldSeed(), BiomeProviderSettings.createSettingsBeta(), null);
         this.spawnLocator = new BeachSpawnLocator(this, this.beachNoiseOctaves);
     }
     

@@ -21,7 +21,16 @@ public interface ClimateSampler {
      * 
      * @return Whether to use climate values for biome tinting.
      */
-    default boolean sampleBiomeColor() {
+    default boolean sampleForBiomeColor() {
         return false;
+    }
+    
+    /**
+     * Indicate whether to sample climate values for features, e.g. freeze top layer.
+     * 
+     * @return Whether to use climate values for feature generation.
+     */
+    default boolean sampleForFeatureGeneration() {
+        return true;
     }
 }

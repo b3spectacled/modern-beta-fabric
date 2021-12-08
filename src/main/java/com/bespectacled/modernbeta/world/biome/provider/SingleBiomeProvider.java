@@ -1,27 +1,33 @@
 package com.bespectacled.modernbeta.world.biome.provider;
 
 import java.util.List;
-import java.util.Optional;
 
-import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
-import com.bespectacled.modernbeta.world.biome.provider.climate.SingleClimateSampler;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class SingleBiomeProvider extends ClimateBiomeProvider {
+public class SingleBiomeProvider extends BiomeProvider implements ClimateSampler {
     private static final Identifier DEFAULT_BIOME_ID = new Identifier("plains");
     
     private final Identifier biomeId;
+    private final Clime biomeClime;
     
     public SingleBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
-        super(seed, settings, biomeRegistry, new SingleClimateSampler(getBiome(settings, biomeRegistry)));
+        super(seed, settings, biomeRegistry);
         
         this.biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
+        this.biomeClime = new Clime(
+            MathHelper.clamp(biomeRegistry.get(this.biomeId).getTemperature(), 0.0, 1.0),
+            MathHelper.clamp(biomeRegistry.get(this.biomeId).getDownfall(), 0.0, 1.0)
+        );
     }
 
     @Override
@@ -33,11 +39,9 @@ public class SingleBiomeProvider extends ClimateBiomeProvider {
     public List<Biome> getBiomesForRegistry() {
         return List.of(this.biomeRegistry.get(this.biomeId));
     }
-    
-    private static Biome getBiome(NbtCompound settings, Registry<Biome> biomeRegistry) {
-        Identifier biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
-        Optional<Biome> biome = biomeRegistry.getOrEmpty(biomeId);
-        
-        return biome.orElse(biomeRegistry.get(DEFAULT_BIOME_ID));
+
+    @Override
+    public Clime sampleClime(int x, int z) {
+        return this.biomeClime;
     }
 }

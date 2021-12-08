@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.world.feature;
 
-import com.bespectacled.modernbeta.api.world.biome.ClimateBiomeProvider;
+import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.mojang.serialization.Codec;
 
@@ -46,9 +46,10 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 
                 double temp;
                 if (generator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource && 
-                    oldBiomeSource.getBiomeProvider() instanceof ClimateBiomeProvider climateBiomeProvider
+                    oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
+                    climateSampler.sampleForFeatureGeneration()
                 ) {
-                    temp = climateBiomeProvider.getClimateSampler().sampleClime(x, z).temp();
+                    temp = climateSampler.sampleClime(x, z).temp();
                 } else {
                     temp = world.getBiome(mutable).getTemperature();
                 }
