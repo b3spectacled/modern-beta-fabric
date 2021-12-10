@@ -64,7 +64,7 @@ public class PerlinNoise {
         int Y = floorY & 0xFF;
         int Z = floorZ & 0xFF;
         
-        // Find relative x, y, z of point in cube.
+        // Find local x, y, z of point in cube.
         x -= floorX;
         y -= floorY;
         z -= floorZ;
@@ -125,34 +125,30 @@ public class PerlinNoise {
         
         // Iterate over a collection of noise points
         for (int sX = 0; sX < sizeX; sX++) {
-            
-            double curX = (x + (double)sX) * scaleX + this.xOrigin;
-            int floorX = MathHelper.floor(curX);
-            
-            int X = floorX & 0xFF;
-            curX -= floorX;
-            
-            double u = fade(curX);
-            
             for (int sZ = 0; sZ < sizeZ; sZ++) {
-                
-                double curZ = (z + (double)sZ) * scaleZ + this.zOrigin;
-                int floorZ = MathHelper.floor(curZ);
-                
-                int Z = floorZ & 0xFF;
-                curZ -= floorZ;
-                
-                double w = fade(curZ);
-                
                 for (int sY = 0; sY < sizeY; sY++) {
-                    
-                    double curY = (y + (double) sY) * scaleY + this.yOrigin;
+                    double curX = (x + (double)sX) * scaleX + this.xOrigin;
+                    double curY = (y + (double)sY) * scaleY + this.yOrigin;
+                    double curZ = (z + (double)sZ) * scaleZ + this.zOrigin;
+
+                    int floorX = MathHelper.floor(curX);
                     int floorY = MathHelper.floor(curY);
+                    int floorZ = MathHelper.floor(curZ);
                     
+                    // Find unit cube that contains point.
+                    int X = floorX & 0xFF;
                     int Y = floorY & 0xFF;
-                    curY -= floorY;
+                    int Z = floorZ & 0xFF;
                     
+                    // Find local x, y, z of point in cube.
+                    curX -= floorX;
+                    curY -= floorY;
+                    curZ -= floorZ;
+                    
+                    // Compute fade curves for x, y, z.
+                    double u = fade(curX);
                     double v = fade(curY);
+                    double w = fade(curZ);
                     
                     if (sY == 0 || Y != flagY) {
                         flagY = Y;
@@ -196,44 +192,13 @@ public class PerlinNoise {
         if (sizeY != 1) {
             this.sampleAlpha(arr, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ, frequency);
         } else {
-            frequency = 1.0D / frequency;
-
             int ndx = 0;
             for (int sX = 0; sX < sizeX; sX++) {
-                double curX = (x + (double)sX) * scaleX + this.xOrigin;
-                int floorX = MathHelper.floor(curX);
-                
-                int X = floorX & 0xFF;
-                curX -= floorX;
-                
-                double u = fade(curX);
-                
                 for (int sZ = 0; sZ < sizeZ; sZ++) {
-                    double curZ = (z + (double) sZ) * scaleZ + this.zOrigin;
-                    int floorZ = MathHelper.floor(curZ);
+                    double curX = (x + (double)sX) * scaleX;
+                    double curZ = (z + (double)sZ) * scaleZ;
                     
-                    int Z = floorZ & 0xFF;
-                    curZ -= floorZ;
-                    
-                    double w = fade(curZ);
-                    
-                    int A = this.permutations[X] + 0;
-                    int AA = this.permutations[A] + Z;
-                    int B = this.permutations[X + 1] + 0;
-                    int BA = this.permutations[B] + Z;
-                    
-                    double lerp0 = lerp(
-                        u,
-                        grad(this.permutations[AA], curX, 0.0D, curZ),
-                        grad(this.permutations[BA], curX - 1.0D, 0.0D, curZ));
-                    double lerp1 = lerp(
-                        u, 
-                        grad(this.permutations[AA + 1], curX, 0.0D, curZ - 1.0D),
-                        grad(this.permutations[BA + 1], curX - 1.0D, 0.0D, curZ - 1.0D));
-                    
-                    double res = lerp(w, lerp0, lerp1);
-                    
-                    arr[ndx++] += res * frequency;
+                    arr[ndx++] += this.sampleXZ(curX, curZ, frequency);
                 }
             }
         }
@@ -252,7 +217,7 @@ public class PerlinNoise {
         int X = floorX & 0xFF;
         int Z = floorZ & 0xFF;
         
-        // Find relative x, y, z of point in cube.
+        // Find local x, y, z of point in cube.
         x -= floorX;
         z -= floorZ;
         
@@ -266,8 +231,7 @@ public class PerlinNoise {
         int BA = this.permutations[B] + Z;
         
         double lerp0 = lerp(
-            u, 
-            //grad(permutations[AA], curX, curZ), // Below should give same result but faster
+            u,
             grad(this.permutations[AA], x, 0.0D, z),
             grad(this.permutations[BA], x - 1.0D, 0.0D, z));
         double lerp1 = lerp(
