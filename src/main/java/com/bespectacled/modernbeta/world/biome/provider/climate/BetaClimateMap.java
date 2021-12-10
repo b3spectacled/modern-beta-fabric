@@ -6,19 +6,20 @@ import java.util.List;
 import java.util.Map;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
+import com.bespectacled.modernbeta.config.ModernBetaConfigBiome;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
 public class BetaClimateMap {
-    private final Map<String, BetaClimateMapping> climateMap;
-    private final BetaClimateMapping[] climateTable;
+    private final Map<String, ClimateMapping> climateMap;
+    private final ClimateMapping[] climateTable;
     
     public BetaClimateMap(NbtCompound biomeProviderSettings) {
         this.climateMap = new LinkedHashMap<>();
-        this.climateTable = new BetaClimateMapping[4096];
+        this.climateTable = new ClimateMapping[4096];
         
         this.loadBiomePoint("desert", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaDesertBiome);
         this.loadBiomePoint("forest", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaForestBiome);
@@ -35,7 +36,7 @@ public class BetaClimateMap {
         this.generateBiomeLookup();
     }
     
-    public Map<String, BetaClimateMapping> getMap() {
+    public Map<String, ClimateMapping> getMap() {
         return new LinkedHashMap<>(this.climateMap);
     }
     
@@ -49,17 +50,17 @@ public class BetaClimateMap {
     
     public List<Identifier> getBiomeIds() {
         List<Identifier> biomeIds = new ArrayList<>();
-        biomeIds.addAll(this.climateMap.values().stream().map(p -> p.landBiome()).toList());
+        biomeIds.addAll(this.climateMap.values().stream().map(p -> p.biome()).toList());
         biomeIds.addAll(this.climateMap.values().stream().map(p -> p.oceanBiome()).toList());
         biomeIds.addAll(this.climateMap.values().stream().map(p -> p.deepOceanBiome()).toList());
         
         return biomeIds;
     }
     
-    private void loadBiomePoint(String key, NbtCompound settings, BetaClimateMapping.Config alternate) {
+    private void loadBiomePoint(String key, NbtCompound settings, ModernBetaConfigBiome.ClimateMapping alternate) {
         this.climateMap.put(
             key,
-            BetaClimateMapping.fromCompound(NbtUtil.readCompound(key, settings, alternate.toCompound()))
+            ClimateMapping.fromCompound(NbtUtil.readCompound(key, settings, alternate.toCompound()))
         );
     }
     
@@ -71,7 +72,7 @@ public class BetaClimateMap {
         }
     }
     
-    private BetaClimateMapping getBiome(float temp, float rain) {
+    private ClimateMapping getBiome(float temp, float rain) {
         rain *= temp;
 
         if (temp < 0.1F) {

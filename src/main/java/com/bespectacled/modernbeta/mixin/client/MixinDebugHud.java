@@ -60,7 +60,7 @@ public class MixinDebugHud {
             
             if (biomeSource instanceof OldBiomeSource oldBiomeSource) {
                 if (oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler) {
-                    Clime clime = climateSampler.sampleClime(x, z);
+                    Clime clime = climateSampler.sample(x, z);
                     double temp = clime.temp();
                     double rain = clime.rain();
                     
@@ -73,13 +73,19 @@ public class MixinDebugHud {
                     );
                 }
                 
-                if (oldBiomeSource.getCaveBiomeProvider() instanceof CaveClimateSampler climateSampler)
+                if (oldBiomeSource.getCaveBiomeProvider() instanceof CaveClimateSampler climateSampler) {
+                    Clime clime = climateSampler.sample(x >> 2, y >> 2, z >> 2);
+                    double temp = clime.temp();
+                    double rain = clime.rain();
+                    
                     info.getReturnValue().add(
                         String.format(
-                            "[Modern Beta] Cave Climate: %.3f",
-                            climateSampler.sample(x >> 2, y >> 2, z >> 2)
+                            "[Modern Beta] Cave Climate Temp: %.3f Rainfall: %.3f",
+                            temp,
+                            rain
                         )
                     );
+                }
             }
             
             if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {

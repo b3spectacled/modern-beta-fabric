@@ -6,6 +6,7 @@ import net.minecraft.nbt.NbtDouble;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtFloat;
 import net.minecraft.nbt.NbtInt;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 
 public class NbtUtil {
@@ -97,6 +98,20 @@ public class NbtUtil {
         return alternate;
     }
     
+    public static NbtList readListOrThrow(String key, NbtCompound tag) {
+        if (tag.contains(key))
+            return (NbtList)tag.get(key);
+        
+        throw new IllegalArgumentException("[Modern Beta] NBT compound does not contain field " + key);
+    }
+    
+    public static NbtList readList(String key, NbtCompound tag, NbtList alternate) {
+        if (tag.contains(key))
+            return (NbtList)tag.get(key);
+        
+        return alternate;
+    }
+    
     /*
      * Conversion methods for extracting primitive values from NbtElement objects
      */
@@ -105,7 +120,7 @@ public class NbtUtil {
         if (element instanceof NbtString nbtString)
             return nbtString.asString();
         
-        throw new IllegalArgumentException("[Modern Beta] NBT Element is not a string! Type:" + element.getType());
+        throw new IllegalArgumentException("[Modern Beta] NBT element is not a string! Type:" + element.getType());
     }
     
     public static String toString(NbtElement element, String alternate) {
@@ -119,7 +134,7 @@ public class NbtUtil {
         if (element instanceof NbtInt nbtInt)
             return nbtInt.intValue();
         
-        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an int! Type: " + element.getType()); 
+        throw new IllegalArgumentException("[Modern Beta] NBT element is not an int! Type: " + element.getType()); 
     }
     
     public static int toInt(NbtElement element, int alternate) {
@@ -133,7 +148,7 @@ public class NbtUtil {
         if (element instanceof NbtFloat nbtFloat) 
             return nbtFloat.floatValue();
         
-        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an float! Type: " + element.getType()); 
+        throw new IllegalArgumentException("[Modern Beta] NBT element is not an float! Type: " + element.getType()); 
     }
     
     public static float toFloat(NbtElement element, float alternate) {
@@ -147,7 +162,7 @@ public class NbtUtil {
         if (element instanceof NbtDouble nbtDouble) 
             return nbtDouble.doubleValue();
         
-        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an double! Type: " + element.getType()); 
+        throw new IllegalArgumentException("[Modern Beta] NBT element is not an double! Type: " + element.getType()); 
     }
     
     public static double toDouble(NbtElement element, double alternate) {
@@ -161,12 +176,26 @@ public class NbtUtil {
         if (element instanceof NbtByte nbtByte) 
             return nbtByte.byteValue() == 1;
         
-        throw new IllegalArgumentException("[Modern Beta] NBT Element is not an byte/boolean! Type: " + element.getType()); 
+        throw new IllegalArgumentException("[Modern Beta] NBT element is not an byte/boolean! Type: " + element.getType()); 
     }
     
     public static boolean toBoolean(NbtElement element, boolean alternate) {
         if (element instanceof NbtByte nbtByte) 
             return nbtByte.byteValue() == 1;
+        
+        return alternate;
+    }
+    
+    public static NbtCompound toCompoundOrThrow(NbtElement element) {
+        if (element instanceof NbtCompound nbtCompound)
+            return nbtCompound;
+        
+        throw new IllegalArgumentException("[Modern Beta] NBT element is not a compound! Type: " + element.getType());  
+    }
+    
+    public static NbtCompound toCompoundOrThrow(NbtElement element, NbtCompound alternate) {
+        if (element instanceof NbtCompound nbtCompound)
+            return nbtCompound;
         
         return alternate;
     }

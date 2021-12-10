@@ -14,7 +14,7 @@ public interface ClimateSampler {
      * 
      * @return A Clime containing temperature/rainfall values in range [0.0, 1.0] sampled at position.
      */
-    Clime sampleClime(int x, int z);
+    Clime sample(int x, int z);
     
     /**
      * Indicate to block colors whether to sample climate values for biome tinting.

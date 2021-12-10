@@ -41,7 +41,7 @@ public class SingleBiomeProvider extends BiomeProvider implements ClimateSampler
     }
 
     @Override
-    public Clime sampleClime(int x, int z) {
+    public Clime sample(int x, int z) {
         return this.biomeClime;
     }
 }

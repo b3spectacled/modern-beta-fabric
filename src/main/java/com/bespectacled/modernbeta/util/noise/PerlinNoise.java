@@ -125,33 +125,26 @@ public class PerlinNoise {
         
         // Iterate over a collection of noise points
         for (int sX = 0; sX < sizeX; sX++) {
-            
-            double curX = (x + (double)sX) * scaleX + this.xOrigin;
-            int floorX = MathHelper.floor(curX);
-            
-            int X = floorX & 0xFF;
-            curX -= floorX;
-            
-            double u = fade(curX);
-            
             for (int sZ = 0; sZ < sizeZ; sZ++) {
-                
-                double curZ = (z + (double)sZ) * scaleZ + this.zOrigin;
-                int floorZ = MathHelper.floor(curZ);
-                
-                int Z = floorZ & 0xFF;
-                curZ -= floorZ;
-                
-                double w = fade(curZ);
-                
                 for (int sY = 0; sY < sizeY; sY++) {
-                    
-                    double curY = (y + (double) sY) * scaleY + this.yOrigin;
+                    double curX = (x + (double)sX) * scaleX + this.xOrigin;
+                    double curZ = (z + (double)sZ) * scaleZ + this.zOrigin;
+                    double curY = (y + (double)sY) * scaleY + this.yOrigin;
+
+                    int floorX = MathHelper.floor(curX);
+                    int floorZ = MathHelper.floor(curZ);
                     int floorY = MathHelper.floor(curY);
                     
+                    int X = floorX & 0xFF;
+                    int Z = floorZ & 0xFF;
                     int Y = floorY & 0xFF;
+                    
+                    curX -= floorX;
+                    curZ -= floorZ;
                     curY -= floorY;
                     
+                    double u = fade(curX);
+                    double w = fade(curZ);
                     double v = fade(curY);
                     
                     if (sY == 0 || Y != flagY) {
@@ -200,21 +193,20 @@ public class PerlinNoise {
 
             int ndx = 0;
             for (int sX = 0; sX < sizeX; sX++) {
-                double curX = (x + (double)sX) * scaleX + this.xOrigin;
-                int floorX = MathHelper.floor(curX);
-                
-                int X = floorX & 0xFF;
-                curX -= floorX;
-                
-                double u = fade(curX);
-                
                 for (int sZ = 0; sZ < sizeZ; sZ++) {
-                    double curZ = (z + (double) sZ) * scaleZ + this.zOrigin;
+                    double curX = (x + (double)sX) * scaleX + this.xOrigin;
+                    double curZ = (z + (double)sZ) * scaleZ + this.zOrigin;
+                    
+                    int floorX = MathHelper.floor(curX);
                     int floorZ = MathHelper.floor(curZ);
-                    
+
+                    int X = floorX & 0xFF;
                     int Z = floorZ & 0xFF;
-                    curZ -= floorZ;
                     
+                    curX -= floorX;
+                    curZ -= floorZ;
+
+                    double u = fade(curX);
                     double w = fade(curZ);
                     
                     int A = this.permutations[X] + 0;

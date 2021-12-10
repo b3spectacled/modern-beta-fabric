@@ -9,7 +9,6 @@ import com.bespectacled.modernbeta.api.world.biome.BiomeBlockResolver;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.biome.OceanBiomeResolver;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
-import com.bespectacled.modernbeta.api.world.biome.climate.ClimateType;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
@@ -17,6 +16,7 @@ import com.bespectacled.modernbeta.util.chunk.ClimateChunk;
 import com.bespectacled.modernbeta.util.chunk.SkyClimateChunk;
 import com.bespectacled.modernbeta.util.noise.SimplexOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
+import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
@@ -80,7 +80,7 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
     }
 
     @Override
-    public Clime sampleClime(int x, int z) {
+    public Clime sample(int x, int z) {
         return this.climateSampler.sampleClime(x, z);
     }
     

@@ -279,7 +279,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
         double densityScale = 128.0;
         double tunnelThreshold = 200.0 / densityScale;
         
-        Clime clime = this.climateSampler.sampleClime(x, z);
+        Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();
         double rain = clime.rain() * temp;
         

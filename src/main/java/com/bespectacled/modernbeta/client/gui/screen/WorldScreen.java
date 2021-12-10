@@ -78,6 +78,7 @@ public class WorldScreen extends GUIScreen {
         this.addDrawableChild(cancelButton);
         
         String biomeType = NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.BIOME_TYPE));
+        String caveBiomeType = NbtUtil.toStringOrThrow(this.getCaveBiomeSetting(NbtTags.CAVE_BIOME_TYPE));
         
         CyclingOptionWrapper<WorldProvider> worldTypeOption = new CyclingOptionWrapper<>(
             "createWorld.customize.worldType", 
@@ -194,8 +195,12 @@ public class WorldScreen extends GUIScreen {
             .apply(this, WorldSetting.CAVE_BIOME);
         
         ActionOptionWrapper caveBiomeSettingsOption = new ActionOptionWrapper(
-            "createWorld.customize.settings",
-            "",
+            caveBiomeType.equals(BuiltInTypes.CaveBiome.SINGLE.name) ?
+                "createWorld.customize.biomeType.biome" : 
+                "createWorld.customize.settings",
+            caveBiomeType.equals(BuiltInTypes.CaveBiome.SINGLE.name) ? 
+                GuiUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getCaveBiomeSetting(NbtTags.SINGLE_BIOME))) : 
+                "",
             caveBiomeSettingsScreen != null ?
                 widget -> this.client.setScreen(caveBiomeSettingsScreen) :
                 null,

@@ -41,7 +41,7 @@ public final class BetaBlockColors {
             int y = pos.getY();
             int z = pos.getZ();
 
-            Clime clime = this.climateSampler.get().sampleClime(x, z);
+            Clime clime = this.climateSampler.get().sample(x, z);
             double temp = MathHelper.clamp(clime.temp() + getTempOffset(y), 0.0, 1.0);
             double rain = clime.rain();
 
@@ -67,7 +67,7 @@ public final class BetaBlockColors {
             y = (int) ((long) y + (shift >> 19 & 31L));
             z = (int) ((long) z + (shift >> 24 & 31L));
             
-            Clime clime = this.climateSampler.get().sampleClime(x, z);
+            Clime clime = this.climateSampler.get().sample(x, z);
             double temp = MathHelper.clamp(clime.temp() + getTempOffset(y), 0.0, 1.0);
             double rain = clime.rain();
 
@@ -87,7 +87,7 @@ public final class BetaBlockColors {
             int y = pos.getY();
             int z = pos.getZ();
             
-            Clime clime = this.climateSampler.get().sampleClime(x, z);
+            Clime clime = this.climateSampler.get().sample(x, z);
             double temp = MathHelper.clamp(clime.temp() + getTempOffset(y), 0.0, 1.0);
             double rain = clime.rain();
             

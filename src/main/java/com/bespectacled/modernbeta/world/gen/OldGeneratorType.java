@@ -15,6 +15,9 @@ import com.bespectacled.modernbeta.mixin.client.MixinMoreOptionsDialogInvoker;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
+import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
+import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 import com.google.common.collect.ImmutableMap;
 
 import net.fabricmc.api.EnvType;
@@ -104,10 +107,13 @@ public class OldGeneratorType {
                     chunkGenSettingsRegistry.get(ModernBeta.createId(Registries.WORLD.get(DEFAULT_WORLD_TYPE).getChunkProvider()));
                     
                 WorldProvider worldProvider = Registries.WORLD.get(DEFAULT_WORLD_TYPE);
+                String worldType = worldProvider.getChunkProvider();
+                String biomeType = worldProvider.getBiomeProvider();
+                String caveBiomeType = worldProvider.getCaveBiomeProvider();
                 
-                NbtCompound chunkSettings = Registries.CHUNK_SETTINGS.get(worldProvider.getChunkProvider()).get();
-                NbtCompound biomeSettings = Registries.BIOME_SETTINGS.get(worldProvider.getBiomeProvider()).get();
-                NbtCompound caveBiomeSettings = Registries.CAVE_BIOME_SETTINGS.get(worldProvider.getCaveBiomeProvider()).get();
+                NbtCompound chunkSettings = Registries.CHUNK_SETTINGS.getOrElse(worldType, () -> ChunkProviderSettings.createSettingsDefault(worldType)).get();
+                NbtCompound biomeSettings = Registries.BIOME_SETTINGS.getOrElse(biomeType, () -> BiomeProviderSettings.createSettingsDefault(biomeType)).get();
+                NbtCompound caveBiomeSettings = Registries.CAVE_BIOME_SETTINGS.getOrElse(caveBiomeType, () -> CaveBiomeProviderSettings.createSettingsDefault(caveBiomeType)).get();
                 
                 return new OldChunkGenerator(
                     noiseRegistry,

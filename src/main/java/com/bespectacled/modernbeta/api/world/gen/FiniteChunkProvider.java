@@ -113,7 +113,7 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
                 boolean isCold;
                 if (biomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
                     climateSampler.sampleForFeatureGeneration()) {
-                    isCold = climateSampler.sampleClime(x, z).temp() < 0.5D;
+                    isCold = climateSampler.sample(x, z).temp() < 0.5D;
                 } else {
                     isCold = biome.isCold(pos);
                 }

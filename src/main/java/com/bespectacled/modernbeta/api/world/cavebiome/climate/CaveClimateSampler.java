@@ -1,14 +1,16 @@
 package com.bespectacled.modernbeta.api.world.cavebiome.climate;
 
+import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
+
 public interface CaveClimateSampler {
     /**
-     * Sample 3D noise for cave climate from given coordinates.
+     * Sample temperature/rainfall values in range [-1.0, 1.0] given block coordinates.
      * 
-     * @param x
-     * @param y
-     * @param z
+     * @param x x-coordinate in block coordinates.
+     * @param y y-coordinate in block coordinates.
+     * @param z z-coordinate in block coordinates.
      * 
-     * @return
+     * @return A Clime containing temperature/rainfall values in range [-1.0, 1.0] sampled at position.
      */
-    double sample(int x, int y, int z);
+    Clime sample(int x, int y, int z);
 }

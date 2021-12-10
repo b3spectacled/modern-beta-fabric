@@ -12,7 +12,7 @@ import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.ClimateChunk;
 import com.bespectacled.modernbeta.util.chunk.FullResBiomeChunk;
 import com.bespectacled.modernbeta.util.chunk.LowResBiomeChunk;
-import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateBiomeRules;
+import com.bespectacled.modernbeta.world.biome.provider.climate.BiomeClimateRules;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeSourceCreator;
 
@@ -72,7 +72,7 @@ public class VanillaBiomeProvider extends BiomeProvider implements ClimateSample
     }
 
     @Override
-    public Clime sampleClime(int x, int z) {
+    public Clime sample(int x, int z) {
         return this.climateSampler.sampleClime(x, z);
     }
     
@@ -86,7 +86,7 @@ public class VanillaBiomeProvider extends BiomeProvider implements ClimateSample
         private final ChunkCache<LowResBiomeChunk> lowResBiomeCache;
         private final ChunkCache<FullResBiomeChunk> fullResBiomeCache;
         private final ChunkCache<ClimateChunk> climateCache;
-        private final ClimateBiomeRules climateRules;
+        private final BiomeClimateRules climateRules;
         
         public VanillaClimateSampler(VanillaBiomeSource biomeSource, Registry<Biome> biomeRegistry) {
             this.biomeSource = biomeSource;
@@ -121,7 +121,7 @@ public class VanillaBiomeProvider extends BiomeProvider implements ClimateSample
                 (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::blendBiomeClimate)
             );
 
-            this.climateRules = new ClimateBiomeRules.Builder()
+            this.climateRules = new BiomeClimateRules.Builder()
                 .add(biome -> biome.getCategory() == Category.EXTREME_HILLS, () -> new Clime(1.0, 1.0))
                 .add(biome -> biome.getCategory() == Category.MOUNTAIN, () -> new Clime(1.0, 1.0))
                 .add(biome -> biome.getCategory() == Category.MESA, () -> new Clime(1.0, 1.0))

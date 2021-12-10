@@ -25,7 +25,7 @@ public class ModernBetaBuiltInWorldProviders {
         DEFAULT = new WorldProvider(
             BuiltInTypes.Chunk.BETA.name,
             BuiltInTypes.Biome.BETA.name,
-            BuiltInTypes.CaveBiome.VANILLA.name, 
+            BuiltInTypes.CaveBiome.VORONOI.name, 
             BetaBiomes.FOREST_ID.toString(), 
             BuiltInTypes.WorldScreen.BASE.name,
             true,
@@ -37,7 +37,7 @@ public class ModernBetaBuiltInWorldProviders {
         BETA = new WorldProvider(
             BuiltInTypes.Chunk.BETA.name,
             BuiltInTypes.Biome.BETA.name,
-            BuiltInTypes.CaveBiome.VANILLA.name, 
+            BuiltInTypes.CaveBiome.VORONOI.name, 
             BetaBiomes.FOREST_ID.toString(), 
             BuiltInTypes.WorldScreen.INF_CLIMATE.name,
             true,
@@ -144,7 +144,7 @@ public class ModernBetaBuiltInWorldProviders {
         BETA_ISLANDS = new WorldProvider(
             BuiltInTypes.Chunk.BETA_ISLANDS.name,
             BuiltInTypes.Biome.BETA.name,
-            BuiltInTypes.CaveBiome.VANILLA.name,
+            BuiltInTypes.CaveBiome.VORONOI.name,
             BetaBiomes.FOREST_ID.toString(),
             BuiltInTypes.WorldScreen.ISLAND.name,
             false,

@@ -12,7 +12,7 @@ import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
-import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMapping;
+import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.NbtCompound;
@@ -26,7 +26,7 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
     private static final String OCEAN_BIOME_DISPLAY_STRING = "createWorld.customize.biome.climateType.ocean";
     private static final String DEEP_OCEAN_BIOME_DISPLAY_STRING = "createWorld.customize.biome.climateType.deepOcean";
     
-    private final Map<String, BetaClimateMapping> climateMap;
+    private final Map<String, ClimateMapping> climateMap;
     
     private ClimateBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
         super(parent, worldSetting, consumer, settings);
@@ -56,7 +56,7 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
         );
     }
     
-    private void addBiomePointEntry(String climateMappingKey, BetaClimateMapping climateMapping) {
+    private void addBiomePointEntry(String climateMappingKey, ClimateMapping climateMapping) {
         TextOptionWrapper header = new TextOptionWrapper(GuiUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(climateMappingKey)));
         header.formatting(Formatting.YELLOW).formatting(Formatting.BOLD);
         
@@ -67,7 +67,7 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
         this.addOption(header);
         this.addDualOption(
             landBiomeText,
-            this.createBiomeSelectionScreen(climateMappingKey, climateMapping.landBiome(), NbtTags.LAND_BIOME)
+            this.createBiomeSelectionScreen(climateMappingKey, climateMapping.biome(), NbtTags.BIOME)
         );
         this.addDualOption(
             oceanBiomeText,
@@ -93,7 +93,7 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
                     climateMapping.putString(climateTypeKey, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString());
                     
                     // Update map for display
-                    this.climateMap.put(climateMappingKey, BetaClimateMapping.fromCompound(climateMapping));
+                    this.climateMap.put(climateMappingKey, ClimateMapping.fromCompound(climateMapping));
                 },
                 this.registryManager.<Biome>get(Registry.BIOME_KEY).get(biomeId)
             ))  

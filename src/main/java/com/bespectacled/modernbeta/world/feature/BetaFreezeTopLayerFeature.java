@@ -49,7 +49,7 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                     oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
                     climateSampler.sampleForFeatureGeneration()
                 ) {
-                    temp = climateSampler.sampleClime(x, z).temp();
+                    temp = climateSampler.sample(x, z).temp();
                 } else {
                     temp = world.getBiome(mutable).getTemperature();
                 }

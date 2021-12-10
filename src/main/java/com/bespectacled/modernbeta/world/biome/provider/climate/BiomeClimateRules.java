@@ -10,15 +10,15 @@ import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
-public class ClimateBiomeRules {
-    private final List<ClimateBiomeRule> rules;
+public class BiomeClimateRules {
+    private final List<BiomeClimateRule> rules;
 
-    private ClimateBiomeRules(List<ClimateBiomeRule> rules) {
+    private BiomeClimateRules(List<BiomeClimateRule> rules) {
         this.rules = rules;
     }
     
     public Clime apply(Biome biome) {
-        for (ClimateBiomeRule rule : this.rules) {
+        for (BiomeClimateRule rule : this.rules) {
             Clime clime = rule.apply(biome);
             
             if (clime != null)
@@ -32,28 +32,28 @@ public class ClimateBiomeRules {
     }
     
     public static class Builder {
-        private final List<ClimateBiomeRule> rules;
+        private final List<BiomeClimateRule> rules;
         
         public Builder() {
             this.rules = new ArrayList<>();
         }
         
         public Builder add(Predicate<Biome> rule, Supplier<Clime> supplier) {
-            this.rules.add(new ClimateBiomeRule(rule, supplier));
+            this.rules.add(new BiomeClimateRule(rule, supplier));
             
             return this;
         }
         
-        public ClimateBiomeRules build() {
-            return new ClimateBiomeRules(this.rules);
+        public BiomeClimateRules build() {
+            return new BiomeClimateRules(this.rules);
         }
     }
     
-    private static class ClimateBiomeRule {
+    private static class BiomeClimateRule {
         private final Predicate<Biome> rule;
         private final Supplier<Clime> supplier;
         
-        public ClimateBiomeRule(Predicate<Biome> rule, Supplier<Clime> supplier) {
+        public BiomeClimateRule(Predicate<Biome> rule, Supplier<Clime> supplier) {
             this.rule = rule;
             this.supplier = supplier;
         }
