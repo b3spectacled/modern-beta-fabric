@@ -234,14 +234,14 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         double densityScale = 128.0;
         double tunnelThreshold = 200.0 / densityScale;
         
-        double scale = this.scaleNoiseOctaves.sample(noiseX, 0, noiseZ, 1.0D, 0.0D, 1.0D);
+        double scale = this.scaleNoiseOctaves.sample(noiseX, noiseZ, 0.0, 0.0, 1.0, 0.0, 1.0);
         scale = (scale + 256D) / 512D;
         
         if (scale > 1.0D) {
             scale = 1.0D; 
         }
 
-        double depth = this.depthNoiseOctaves.sample(noiseX, 0, noiseZ, depthNoiseScaleX, 0.0D, depthNoiseScaleZ);
+        double depth = this.depthNoiseOctaves.sample(noiseX, noiseZ, 0.0, 0.0, depthNoiseScaleX, 0.0, depthNoiseScaleZ);
         depth /= 8000D;
         
         if (depth < 0.0D) {
@@ -282,7 +282,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             
             // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
             double mainNoise = (this.mainNoiseOctaves.sample(
-                noiseX, noiseY, noiseZ, 
+                noiseX, noiseZ, 0, noiseY,
                 coordinateScale / mainNoiseScaleX, 
                 heightScale / mainNoiseScaleY, 
                 coordinateScale / mainNoiseScaleZ
@@ -290,7 +290,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             
             if (mainNoise < 0.0D) {
                 density = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseY, noiseZ, 
+                    noiseX, noiseZ, 0, noiseY,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -298,7 +298,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 
             } else if (mainNoise > 1.0D) {
                 density = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseY, noiseZ, 
+                    noiseX, noiseZ, 0, noiseY,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -306,14 +306,14 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 
             } else {
                 double minLimitNoise = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseY, noiseZ, 
+                    noiseX, noiseZ, 0, noiseY,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
                 ) / lowerLimitScale;
                 
                 double maxLimitNoise = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseY, noiseZ, 
+                    noiseX, noiseZ, 0, noiseY,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale

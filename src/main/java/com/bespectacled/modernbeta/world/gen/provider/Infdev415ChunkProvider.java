@@ -59,6 +59,9 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
         int chunkX = chunkPos.x;
         int chunkZ = chunkPos.z;
         
+        int startX = chunk.getPos().getStartX();
+        int startZ = chunk.getPos().getStartZ();
+        
         int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
@@ -87,8 +90,8 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
         
         for (int localX = 0; localX < 16; ++localX) {
             for (int localZ = 0; localZ < 16; ++localZ) {
-                int x = (chunkX << 4) + localX;
-                int z = (chunkZ << 4) + localZ;
+                int x = startX + localX;
+                int z = startZ + localZ;
                 int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
                 int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 
                     heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 

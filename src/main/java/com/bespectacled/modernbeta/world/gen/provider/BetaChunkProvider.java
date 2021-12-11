@@ -79,32 +79,19 @@ public class BetaChunkProvider extends NoiseChunkProvider {
     
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
-        double scale = 0.03125D;
+        double scale = 0.03125;
 
         ChunkPos chunkPos = chunk.getPos();
         int chunkX = chunkPos.x;
         int chunkZ = chunkPos.z;
         
+        int startX = chunk.getPos().getStartX();
+        int startZ = chunk.getPos().getStartZ();
+        
         int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
-        
-        double[] sandNoise = beachNoiseOctaves.sampleBeta(
-            chunkX * 16, chunkZ * 16, 0.0D, 
-            16, 16, 1,
-            scale, scale, 1.0D);
-        
-        double[] gravelNoise = beachNoiseOctaves.sampleBeta(
-            chunkX * 16, 109.0134D, chunkZ * 16, 
-            16, 1, 16, 
-            scale, 1.0D, scale);
-        
-        double[] surfaceNoise = surfaceNoiseOctaves.sampleBeta(
-            chunkX * 16, chunkZ * 16, 0.0D, 
-            16, 16, 1,
-            scale * 2D, scale * 2D, scale * 2D
-        );
         
         AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
@@ -128,16 +115,29 @@ public class BetaChunkProvider extends NoiseChunkProvider {
 
         for (int localZ = 0; localZ < 16; localZ++) {
             for (int localX = 0; localX < 16; localX++) {
-                int x = (chunkX << 4) + localX;
-                int z = (chunkZ << 4) + localZ;
+                int x = startX + localX;
+                int z = startZ + localZ;
                 int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
                 int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 
                     heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
                     this.worldMinY;
                 
-                boolean genSandBeach = sandNoise[localZ + localX * 16] + rand.nextDouble() * 0.2D > 0.0D;
-                boolean genGravelBeach = gravelNoise[localZ + localX * 16] + rand.nextDouble() * 0.2D > 3D;
-                int surfaceDepth = (int) (surfaceNoise[localZ + localX * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
+                boolean genSandBeach = this.beachNoiseOctaves.sample(
+                    x, 0.0, startZ, localZ,
+                    scale, scale, 1.0
+                ) + rand.nextDouble() * 0.2 > 0.0;
+                
+                boolean genGravelBeach = this.beachNoiseOctaves.sampleXZ(
+                    x, z,
+                    scale, scale
+                ) + rand.nextDouble() * 0.2 > 3.0;
+                
+                double surfaceNoise = this.surfaceNoiseOctaves.sample(
+                    x, 0.0, startZ, localZ,
+                    scale * 2.0, scale * 2.0, scale * 2.0
+                );
+                
+                int surfaceDepth = (int) (surfaceNoise / 3.0 + 3.0 + rand.nextDouble() * 0.25);
                 
                 int runDepth = -1;
                 
@@ -340,9 +340,9 @@ public class BetaChunkProvider extends NoiseChunkProvider {
             
             double densityOffset = this.getOffset(noiseY, heightStretch, depth, scale);
             
-            // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
+            // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.            
             double mainNoise = (this.mainNoiseOctaves.sample(
-                noiseX, noiseY, noiseZ, 
+                noiseX, noiseZ, 0, noiseY, 
                 coordinateScale / mainNoiseScaleX, 
                 heightScale / mainNoiseScaleY, 
                 coordinateScale / mainNoiseScaleZ
@@ -350,7 +350,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
             
             if (mainNoise < 0.0D) {
                 density = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseY, noiseZ, 
+                    noiseX, noiseZ, 0, noiseY, 
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -358,7 +358,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
                 
             } else if (mainNoise > 1.0D) {
                 density = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseY, noiseZ, 
+                    noiseX, noiseZ, 0, noiseY, 
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -366,14 +366,14 @@ public class BetaChunkProvider extends NoiseChunkProvider {
                 
             } else {
                 double minLimitNoise = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseY, noiseZ, 
+                    noiseX, noiseZ, 0, noiseY, 
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
                 ) / lowerLimitScale;
                 
                 double maxLimitNoise = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseY, noiseZ, 
+                    noiseX, noiseZ, 0, noiseY, 
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
