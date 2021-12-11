@@ -18,82 +18,6 @@ public class PerlinOctaveNoise {
             this.noises[i] = new PerlinNoise(random, useOffset);
         }
     }
-
-    /*
-     * Beta 3D array noise sampler.
-     */
-    public double[] sampleBeta(
-        double x,
-        double y,
-        double z, 
-        int sizeX,
-        int sizeY,
-        int sizeZ, 
-        double scaleX,
-        double scaleY,
-        double scaleZ
-    ) {
-        double[] noise = new double[sizeX * sizeY * sizeZ];
-        double frequency = 1.0;
-        
-        for (int i = 0; i < octaves; i++) {
-            this.noises[i].sampleBeta(
-                noise, 
-                x,
-                y,
-                z, 
-                sizeX,
-                sizeY,
-                sizeZ,
-                scaleX * frequency,
-                scaleY * frequency,
-                scaleZ * frequency,
-                frequency
-            );
-            
-            frequency /= 2.0;
-        }
-        
-        return noise;
-    }
-    
-    /*
-     * Alpha 3D array noise sampler.
-     */
-    public double[] sampleAlpha(
-        double x,
-        double y,
-        double z, 
-        int sizeX,
-        int sizeY,
-        int sizeZ, 
-        double scaleX,
-        double scaleY,
-        double scaleZ
-    ) {
-        double[] noise = new double[sizeX * sizeY * sizeZ];
-        double frequency = 1.0;
-        
-        for (int i = 0; i < octaves; i++) {
-            this.noises[i].sampleAlpha(
-                noise, 
-                x,
-                y,
-                z, 
-                sizeX,
-                sizeY,
-                sizeZ,
-                scaleX * frequency,
-                scaleY * frequency,
-                scaleZ * frequency,
-                frequency
-            );
-            
-            frequency /= 2.0;
-        }
-
-        return noise;
-    }
     
     /*
      * Standard 2D Perlin noise sampler.
@@ -103,7 +27,7 @@ public class PerlinOctaveNoise {
         double frequency = 1.0;
         
         for (int i = 0; i < this.octaves; ++i) {
-            total += this.noises[i].sample(x / frequency, y / frequency) * frequency;
+            total += this.noises[i].sampleXY(x / frequency, y / frequency) * frequency;
             frequency *= 2.0;
         }
         
@@ -127,7 +51,7 @@ public class PerlinOctaveNoise {
     
     /*
      * Beta 2D noise sampler.
-     * This functions like sample(x, 0.0, z), except yOrigin is ignored.
+     * This functions like sample(x, 0.0, z), except yOffset is ignored.
      */
     public final double sampleXZ(double x, double z, double scaleX, double scaleZ) {
         double total = 0.0;
@@ -146,24 +70,18 @@ public class PerlinOctaveNoise {
     }
 
     /*
-     * Alpha/Beta 3D noise sampler.
+     * Alpha/Beta 3D Perlin noise sampler.
      */
-    public final double sample(double x, double y, double z, double scaleX, double scaleY, double scaleZ) {
+    public final double sample(double x, double z, double startY, double localY, double scaleX, double scaleY, double scaleZ) {
         double total = 0.0;
         double frequency = 1.0;
-        
+     
         for (int i = 0; i < this.octaves; ++i) {
-            total += this.noises[i].sample(
-                this.maintainPrecision(x * scaleX * frequency), 
-                this.maintainPrecision(y * scaleY * frequency), 
-                this.maintainPrecision(z * scaleZ * frequency), 
-                scaleY * frequency, 
-                y * scaleY * frequency
-            ) / frequency;
+            total += this.noises[i].sample(x, z, startY, localY, scaleX, scaleY, scaleZ, frequency) * frequency;
             
-            frequency /= 2.0;
+            frequency *= 2.0;
         }
-
+        
         return total;
     }
     
