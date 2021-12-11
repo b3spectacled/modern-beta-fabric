@@ -58,9 +58,9 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                 int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
 
                 double surfaceNoise = this.surfaceNoiseOctaves.sample(
-                        x, 0.0, startZ, localZ,
-                        scale * 2.0, scale * 2.0, scale * 2.0
-                    );
+                    x, 0.0, startZ, localZ,
+                    scale * 2.0, scale * 2.0, scale * 2.0
+                );
                     
                 int surfaceDepth = (int) (surfaceNoise / 3.0 + 3.0 + rand.nextDouble() * 0.25);
                 
