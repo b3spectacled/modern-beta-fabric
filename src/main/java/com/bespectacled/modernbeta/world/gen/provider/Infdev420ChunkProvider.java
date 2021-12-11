@@ -48,6 +48,9 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         int chunkX = chunk.getPos().x;
         int chunkZ = chunk.getPos().z;
         
+        int startX = chunk.getPos().getStartX();
+        int startZ = chunk.getPos().getStartZ();
+        
         int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
@@ -56,8 +59,8 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         
         for (int localX = 0; localX < 16; localX++) {
             for (int localZ = 0; localZ < 16; localZ++) {
-                int x = (chunkX << 4) + localX;
-                int z = (chunkZ << 4) + localZ;
+                int x = startX + localX;
+                int z = startZ + localZ;
                 int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
                 
                 boolean genSandBeach = this.beachNoiseOctaves.sample(
@@ -175,7 +178,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             double densityOffset = this.getOffset(noiseY, baseSize, heightStretch);
             
             double mainNoise = (this.mainNoiseOctaves.sample(
-                noiseX, noiseY, noiseZ, 
+                noiseX, noiseZ, 0, noiseY,
                 coordinateScale / mainNoiseScaleX, 
                 heightScale / mainNoiseScaleY, 
                 coordinateScale / mainNoiseScaleZ
@@ -183,7 +186,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             
             if (mainNoise < 0.0D) {
                 density = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseY, noiseZ, 
+                    noiseX, noiseZ, 0, noiseY,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -191,7 +194,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                 
             } else if (mainNoise > 1.0D) {
                 density = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseY, noiseZ, 
+                    noiseX, noiseZ, 0, noiseY,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -199,14 +202,14 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                 
             } else {
                 double minLimitNoise = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseY, noiseZ, 
+                    noiseX, noiseZ, 0, noiseY,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
                 ) / lowerLimitScale;
                 
                 double maxLimitNoise = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseY, noiseZ, 
+                    noiseX, noiseZ, 0, noiseY,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
