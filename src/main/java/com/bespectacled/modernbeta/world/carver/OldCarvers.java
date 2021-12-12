@@ -27,7 +27,7 @@ public class OldCarvers {
                 0.14285715f, // Probability
                 BiasedToBottomHeightProvider.create(YOffset.fixed(0), YOffset.fixed(127), 8), // Y Level
                 ConstantFloatProvider.create(0.5f), // Y scale, for large cave case(?)
-                YOffset.aboveBottom(11), // Lava Level
+                YOffset.aboveBottom(10), // Lava Level
                 CarverDebugConfig.create(false, Blocks.CRIMSON_BUTTON.getDefaultState()), 
                 ConstantFloatProvider.create(1.0f), // Tunnel horizontal scale
                 ConstantFloatProvider.create(1.0f), // Tunnel vertical scale
@@ -44,7 +44,7 @@ public class OldCarvers {
                 0.14285715f, // Probability
                 BiasedToBottomHeightProvider.create(YOffset.fixed(-64), YOffset.fixed(0), 8), // Y Level
                 ConstantFloatProvider.create(0.5f), // Y scale, for large cave case(?)
-                YOffset.aboveBottom(11), // Lava Level
+                YOffset.aboveBottom(10), // Lava Level
                 CarverDebugConfig.create(false, Blocks.CRIMSON_BUTTON.getDefaultState()), 
                 ConstantFloatProvider.create(1.0f), // Tunnel horizontal scale
                 ConstantFloatProvider.create(1.0f), // Tunnel vertical scale

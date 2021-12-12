@@ -5,7 +5,6 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.mixin.MixinPlacedFeatureAccessor;
-import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
@@ -16,14 +15,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.source.BiomeSource.class_6827;
-import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
-import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.decorator.PlacementModifier;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
 public abstract class BaseChunkProvider extends ChunkProvider {
-    private static final int LAVA_LEVEL = -54; // Vanilla: -54;
-    
     protected final Random rand;
     
     protected final Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry;
@@ -41,9 +36,6 @@ public abstract class BaseChunkProvider extends ChunkProvider {
     protected final BlockState defaultBlock;
     protected final BlockState defaultFluid;
     
-    protected final FluidLevelSampler fluidLevelSampler;
-    protected final FluidLevelSampler lavalessFluidLevelSampler;
-
     public BaseChunkProvider(OldChunkGenerator chunkGenerator) {
         this(
             chunkGenerator,
@@ -87,12 +79,6 @@ public abstract class BaseChunkProvider extends ChunkProvider {
         this.defaultFluid = defaultFluid;
         
         this.rand = new Random(seed);
-        
-        FluidLevel lavaFluidLevel = new FluidLevel(LAVA_LEVEL, BlockStates.LAVA); // Vanilla: -54
-        FluidLevel seaFluidLevel = new FluidLevel(seaLevel, this.defaultFluid);
-        
-        this.fluidLevelSampler = (x, y, z) -> y < LAVA_LEVEL ? lavaFluidLevel : seaFluidLevel;
-        this.lavalessFluidLevelSampler = (x, y, z) -> seaFluidLevel;
         
         // Handle bad height values
         if (this.worldMinY > this.worldHeight)
