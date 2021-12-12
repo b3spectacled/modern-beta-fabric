@@ -26,12 +26,12 @@ public class OreVeinRules {
             .build();
         
         SKYLANDS_VEIN_RULES = new NoiseRules.Builder<OreVeinType>()
-            .add(COPPER_MIN, COPPER_MAX, OreVeinType.COAL_UPPER)
+            .add(COPPER_MIN, COPPER_MAX, OreVeinType.COPPER_UPPER)
             .add(IRON_MIN, IRON_MAX, OreVeinType.IRON_UPPER)
             .build();
         
         OLD_VEIN_RULES = new NoiseRules.Builder<OreVeinType>()
-            .add(COPPER_MIN, COPPER_MAX, OreVeinType.COAL_UPPER)
+            .add(COPPER_MIN, COPPER_MAX, OreVeinType.COPPER_UPPER)
             .add(IRON_MIN, IRON_MAX, OreVeinType.IRON_LOWER)
             .build();
     }

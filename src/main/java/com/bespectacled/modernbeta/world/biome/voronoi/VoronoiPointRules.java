@@ -12,12 +12,12 @@ public class VoronoiPointRules<T, S extends VoronoiComparable<S>> {
         this.voronoiPoints = ImmutableList.copyOf(voronoiPoints);
     }
     
-    public VoronoiPoint<T, S> calculateClosestPointTo(S other) {
+    public VoronoiPoint<T, S> calculateClosestPointTo(S comparable) {
         VoronoiPoint<T, S> closestPoint = null;
         double closestDistance = Double.MAX_VALUE;
         
         for (VoronoiPoint<T, S> point : this.voronoiPoints) {
-            double distance = point.comparable().calculateDistanceTo(other);
+            double distance = point.comparable().calculateDistanceTo(comparable);
             
             if (distance < closestDistance) {
                 closestPoint = point;
@@ -39,8 +39,8 @@ public class VoronoiPointRules<T, S extends VoronoiComparable<S>> {
             this.voronoiPoints = new ArrayList<>();
         }
         
-        public Builder<T, S> add(T item, S other) {
-            this.voronoiPoints.add(new VoronoiPoint<>(item, other));
+        public Builder<T, S> add(T item, S comparable) {
+            this.voronoiPoints.add(new VoronoiPoint<>(item, comparable));
             
             return this;
         }

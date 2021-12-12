@@ -60,7 +60,7 @@ public class OldCaveCarver extends CaveCarver {
             double floorLevel = config.floorLevel.get(random);
             
             Carver.SkipPredicate skipPredicate = (carverContext, scaledRelativeX, scaledRelativeY, scaledRelativeZ, relativeY) ->
-                this.isPositionExcluded(scaledRelativeX, scaledRelativeY, scaledRelativeZ, floorLevel);
+                !this.isPositionExcluded(scaledRelativeX, scaledRelativeY, scaledRelativeZ, floorLevel);
 
             int tunnelCount = 1;
             if (random.nextInt(4) == 0) {
@@ -269,13 +269,13 @@ public class OldCaveCarver extends CaveCarver {
         
         // Get min and max extents of tunnel, relative to chunk coords.
         int minX = MathHelper.floor(x - horizontalScale) - mainChunkStartX - 1;         
-        int maxX = (MathHelper.floor(x + horizontalScale) - mainChunkStartX) + 1;
+        int maxX = MathHelper.floor(x + horizontalScale) - mainChunkStartX + 1;
 
         int minY = MathHelper.floor(y - verticalScale) - 1;
         int maxY = MathHelper.floor(y + verticalScale) + 1;
 
         int minZ = MathHelper.floor(z - horizontalScale) - mainChunkStartZ - 1;
-        int maxZ = (MathHelper.floor(z + horizontalScale) - mainChunkStartZ) + 1;
+        int maxZ = MathHelper.floor(z + horizontalScale) - mainChunkStartZ + 1;
 
         if (minX < 0) {
             minX = 0;
@@ -302,39 +302,35 @@ public class OldCaveCarver extends CaveCarver {
             return false;
         }
 
-        for (int relX = minX; relX < maxX; relX++) {
-            double scaledRelX = (((double) (relX + mainChunkX * 16) + 0.5D) - x) / horizontalScale;
+        for (int localX = minX; localX < maxX; localX++) {
+            double scaledRelX = (((double) (localX + mainChunkX * 16) + 0.5D) - x) / horizontalScale;
 
-            for (int relZ = minZ; relZ < maxZ; relZ++) {
-                double scaledRelZ = (((double) (relZ + mainChunkZ * 16) + 0.5D) - z) / horizontalScale;
+            for (int localZ = minZ; localZ < maxZ; localZ++) {
+                double scaledRelZ = (((double) (localZ + mainChunkZ * 16) + 0.5D) - z) / horizontalScale;
                 boolean isGrassBlock = false;
 
-                for (int relY = maxY; relY > minY; relY--) {
-                    double scaledRelY = (((double) (relY - 1) + 0.5D) - y) / verticalScale;
+                for (int localY = maxY; localY > minY; localY--) {
+                    double scaledRelY = (((double) (localY - 1) + 0.5D) - y) / verticalScale;
 
-                    //if (isPositionExcluded(scaledRelX, scaledRelY, scaledRelZ, -0.69999999999999996D)) {
-                    if (skipPredicate.shouldSkip(context, scaledRelX, scaledRelY, scaledRelZ, relY)) {
-                        Block block = chunk.getBlockState(blockPos.set(relX, relY, relZ)).getBlock();
+                    if (skipPredicate.shouldSkip(context, scaledRelX, scaledRelY, scaledRelZ, localY))
+                        continue;
+                        
+                    Block block = chunk.getBlockState(blockPos.set(localX, localY, localZ)).getBlock();
 
-                        if (block == Blocks.GRASS_BLOCK) {
-                            isGrassBlock = true;
-                        }
+                    if (block == Blocks.GRASS_BLOCK) {
+                        isGrassBlock = true;
+                    }
 
-                        // Don't use canCarveBlock for accuracy, for now.
-                        if (ALWAYS_CARVABLE_BLOCKS.contains(block)) { 
-                            //if (relY < 11) { // Set lava below y = 11
-                            // Will not hit this lava check at default minY (-64), since minY is capped at 1,
-                            // however, if world minY is set to 0 (i.e. through noise settings), lava should generate, preserving accuracy.
-                            if (relY < config.lavaLevel.getY(context)) {
-                            //if (relY < context.getMinY() + 11) {
-                                chunk.setBlockState(blockPos.set(relX, relY, relZ), Blocks.LAVA.getDefaultState(), false);
-                            } else {
-                                chunk.setBlockState(blockPos.set(relX, relY, relZ), Blocks.CAVE_AIR.getDefaultState(), false);
+                    // Don't use canCarveBlock for accuracy, for now.
+                    if (ALWAYS_CARVABLE_BLOCKS.contains(block)) { 
+                        if (localY < config.lavaLevel.getY(context)) {
+                            chunk.setBlockState(blockPos.set(localX, localY, localZ), Blocks.LAVA.getDefaultState(), false);
+                        } else {
+                            chunk.setBlockState(blockPos.set(localX, localY, localZ), Blocks.AIR.getDefaultState(), false);
 
-                                // Replaces carved-out dirt with grass, if block that was removed was grass.
-                                if (isGrassBlock && chunk.getBlockState(blockPos.set(relX, relY - 1, relZ)).getBlock() == Blocks.DIRT) {
-                                    chunk.setBlockState(blockPos.set(relX, relY - 1, relZ), Blocks.GRASS_BLOCK.getDefaultState(), false);
-                                }
+                            // Replaces carved-out dirt with grass, if block that was removed was grass.
+                            if (isGrassBlock && chunk.getBlockState(blockPos.set(localX, localY - 1, localZ)).getBlock() == Blocks.DIRT) {
+                                chunk.setBlockState(blockPos.set(localX, localY - 1, localZ), Blocks.GRASS_BLOCK.getDefaultState(), false);
                             }
                         }
                     }
