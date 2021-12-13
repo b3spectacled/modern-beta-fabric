@@ -12,6 +12,7 @@ import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome.CaveBiomeVoronoiPoint;
 import com.bespectacled.modernbeta.util.GuiUtil;
+import com.bespectacled.modernbeta.util.NbtListBuilder;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
@@ -30,6 +31,7 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
     private static final String BIOME_DISPLAY_STRING = "createWorld.customize.biome";
     private static final String TEMP_DISPLAY_STRING = "createWorld.customize.temp";
     private static final String RAIN_DISPLAY_STRING = "createWorld.customize.rain";
+    private static final String NULL_BIOME_DISPLAY_STRING = "createWorld.customize.nullBiome";
 
     private static final String VORONOI_POINTS_DISPLAY_STRING = "createWorld.customize.biome.voronoi.points";
     private static final String ADD_POINT_DISPLAY_STRING = "createWorld.customize.biome.voronoi.addPoint";
@@ -57,8 +59,11 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
     protected void init() {
         super.init();
 
-        // Create voronoi point list from existing biome settings
-        this.voronoiPoints = NbtUtil.readListOrThrow(NbtTags.BIOMES, this.settings.getNbt());
+        // Create cloned voronoi point list from existing biome settings
+        NbtListBuilder builder = new NbtListBuilder();
+        NbtUtil.readListOrThrow(NbtTags.BIOMES, this.settings.getNbt())
+            .forEach(element -> builder.add(element.copy()));
+        this.voronoiPoints = builder.build();
         
         DoubleOptionWrapper<Integer> verticalScaleOption = new DoubleOptionWrapper<>(
             VERTICAL_SCALE_DISPLAY_STRING,
@@ -120,7 +125,7 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
         );
         
         BooleanCyclingOptionWrapper nullBiomeOption = new BooleanCyclingOptionWrapper(
-            "Null biome",
+            NULL_BIOME_DISPLAY_STRING,
             () -> NbtUtil.readBooleanOrThrow(NbtTags.NULL_BIOME, compound),
             value -> {
                 point.nullBiome = value;
@@ -159,6 +164,7 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
             ADD_POINT_DISPLAY_STRING,
             buttonWidget -> {
                 this.voronoiPoints.add(0, CaveBiomeVoronoiPoint.DEFAULT.toCompound());
+                this.updateList();
                 
                 this.client.setScreen(new VoronoiCaveBiomeScreen(
                     (WorldScreen)this.parent,
@@ -175,6 +181,7 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
             REMOVE_POINT_DISPLAY_STRING,
             buttonWidget -> {
                 this.voronoiPoints.remove(compound);
+                this.updateList();
                 
                 this.client.setScreen(new VoronoiCaveBiomeScreen(
                     (WorldScreen)this.parent,
@@ -183,7 +190,7 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
                     this.settings
                 ));
             }
-        ).truncate(false).formatting(Formatting.RED).formatting(Formatting.BOLD);
+        ).truncate(false).formatting(this.voronoiPoints.size() > 1 ? Formatting.RED : Formatting.GRAY).formatting(Formatting.BOLD);
     }
     
     private void updateVoronoiEntry(CaveBiomeVoronoiPoint point, NbtCompound compound) {
@@ -191,5 +198,11 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
         compound.putDouble(NbtTags.TEMP, point.temp);
         compound.putDouble(NbtTags.RAIN, point.rain);
         compound.putBoolean(NbtTags.NULL_BIOME, point.nullBiome);
+        
+        this.updateList();
+    }
+    
+    private void updateList() {
+        this.settings.putElement(NbtTags.BIOMES, this.voronoiPoints);
     }
 }

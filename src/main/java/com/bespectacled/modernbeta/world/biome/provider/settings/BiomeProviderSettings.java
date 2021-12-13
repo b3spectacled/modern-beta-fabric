@@ -23,41 +23,27 @@ public class BiomeProviderSettings {
         return createSettingsBase(biomeType).build();
     }
     
-    public static NbtCompound createSettingsBeta() {
-        return createSettingsOceans(BuiltInTypes.Biome.BETA.name)
-            .putCompound("desert", CONFIG.betaDesertBiome.toCompound())
-            .putCompound("forest", CONFIG.betaForestBiome.toCompound())
-            .putCompound("ice_desert", CONFIG.betaIceDesertBiome.toCompound())
-            .putCompound("plains", CONFIG.betaPlainsBiome.toCompound())
-            .putCompound("rainforest", CONFIG.betaRainforestBiome.toCompound())
-            .putCompound("savanna", CONFIG.betaSavannaBiome.toCompound())
-            .putCompound("shrubland", CONFIG.betaShrublandBiome.toCompound())
-            .putCompound("seasonal_forest", CONFIG.betaSeasonalForestBiome.toCompound())
-            .putCompound("swampland", CONFIG.betaSwamplandBiome.toCompound())
-            .putCompound("taiga", CONFIG.betaTaigaBiome.toCompound())
-            .putCompound("tundra", CONFIG.betaTundraBiome.toCompound())
-            .build();
-    }
-    
     public static NbtCompound createSettingsSingle() {
         return createSettingsBase(BuiltInTypes.Biome.SINGLE.name)
             .putString(NbtTags.SINGLE_BIOME, CONFIG.singleBiome)
             .build();
     }
     
+    public static NbtCompound createSettingsBeta() {
+        NbtCompoundBuilder builder = new NbtCompoundBuilder();
+        CONFIG.betaClimates.entrySet().forEach(e -> builder.putCompound(e.getKey(), e.getValue().toCompound()));
+        
+        return createSettingsOceans(BuiltInTypes.Biome.BETA.name)
+            .putCompound(NbtTags.BIOMES, builder.build())
+            .build();
+    }
+    
     public static NbtCompound createSettingsPE() {
+        NbtCompoundBuilder builder = new NbtCompoundBuilder();
+        CONFIG.peClimates.entrySet().forEach(e -> builder.putCompound(e.getKey(), e.getValue().toCompound()));
+        
         return createSettingsOceans(BuiltInTypes.Biome.PE.name)
-            .putCompound("desert", CONFIG.peDesertBiome.toCompound())
-            .putCompound("forest", CONFIG.peForestBiome.toCompound())
-            .putCompound("ice_desert", CONFIG.peIceDesertBiome.toCompound())
-            .putCompound("plains", CONFIG.pePlainsBiome.toCompound())
-            .putCompound("rainforest", CONFIG.peRainforestBiome.toCompound())
-            .putCompound("savanna", CONFIG.peSavannaBiome.toCompound())
-            .putCompound("shrubland", CONFIG.peShrublandBiome.toCompound())
-            .putCompound("seasonal_forest", CONFIG.peSeasonalForestBiome.toCompound())
-            .putCompound("swampland", CONFIG.peSwamplandBiome.toCompound())
-            .putCompound("taiga", CONFIG.peTaigaBiome.toCompound())
-            .putCompound("tundra", CONFIG.peTundraBiome.toCompound())
+            .putCompound(NbtTags.BIOMES, builder.build())
             .build();
     }
     

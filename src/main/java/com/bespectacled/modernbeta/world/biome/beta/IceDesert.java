@@ -22,7 +22,7 @@ public class IceDesert {
         
         return (new Biome.Builder())
             .precipitation(Biome.Precipitation.SNOW)
-            .category(Biome.Category.ICY)
+            .category(Biome.Category.DESERT)
             .temperature(0.0F)
             .downfall(0.5F)
             .effects((new BiomeEffects.Builder())

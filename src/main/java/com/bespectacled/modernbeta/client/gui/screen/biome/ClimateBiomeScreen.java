@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.client.gui.screen.biome;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -9,9 +10,11 @@ import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
+import com.bespectacled.modernbeta.config.ModernBetaConfigBiome.ClimateMapping;
 import com.bespectacled.modernbeta.util.GuiUtil;
-import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
-import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping;
+import com.bespectacled.modernbeta.util.NbtCompoundBuilder;
+import com.bespectacled.modernbeta.util.NbtTags;
+import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
@@ -49,11 +52,30 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
         super.init();
         
         // Create Beta biome map from existing biome settings
-        this.climateMap = new BetaClimateMap(this.settings.getNbt()).getMap();
+        this.climateMap = this.createMap();
         
         this.climateMap.entrySet().forEach(
             e -> this.addBiomePointEntry(e.getKey(), e.getValue())
         );
+    }
+    
+    private Map<String, ClimateMapping> createMap() {
+        Map<String, ClimateMapping> climateMap = new LinkedHashMap<>();
+        
+        NbtCompound biomes = NbtUtil.readCompoundOrThrow(NbtTags.BIOMES, this.settings.getNbt());
+        for (String key : biomes.getKeys()) {
+            NbtCompound biome = NbtUtil.readCompoundOrThrow(key, biomes);
+            
+            ClimateMapping mapping = new ClimateMapping(
+                NbtUtil.readStringOrThrow(NbtTags.BIOME, biome),
+                NbtUtil.readStringOrThrow(NbtTags.OCEAN_BIOME, biome),
+                NbtUtil.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME, biome)
+            );
+            
+            climateMap.put(key, mapping);
+        }
+        
+        return climateMap;
     }
     
     private void addBiomePointEntry(String key, ClimateMapping mapping) {
@@ -64,16 +86,14 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
         TextOptionWrapper oceanBiomeText = new TextOptionWrapper(OCEAN_BIOME_DISPLAY_STRING).formatting(Formatting.GRAY);
         TextOptionWrapper deepOceanBiomeText = new TextOptionWrapper(DEEP_OCEAN_BIOME_DISPLAY_STRING).formatting(Formatting.GRAY);
         
-        NbtCompound compound = (NbtCompound)this.settings.getElement(key);
-        
         this.addOption(header);
-        this.addDualOption(landBiomeText, this.createBiomeSelectionScreen(compound, ClimateType.LAND));
-        this.addDualOption(oceanBiomeText, this.createBiomeSelectionScreen(compound, ClimateType.OCEAN));
-        this.addDualOption(deepOceanBiomeText, this.createBiomeSelectionScreen(compound, ClimateType.DEEP_OCEAN));
+        this.addDualOption(landBiomeText, this.createBiomeSelectionScreen(key, mapping, ClimateType.LAND));
+        this.addDualOption(oceanBiomeText, this.createBiomeSelectionScreen(key, mapping, ClimateType.OCEAN));
+        this.addDualOption(deepOceanBiomeText, this.createBiomeSelectionScreen(key, mapping, ClimateType.DEEP_OCEAN));
     }
     
-    private ActionOptionWrapper createBiomeSelectionScreen(NbtCompound compound, ClimateType type) {
-        Identifier biomeId = new Identifier(compound.getString(type.tag));
+    private ActionOptionWrapper createBiomeSelectionScreen(String key, ClimateMapping mapping, ClimateType type) {
+        Identifier biomeId = new Identifier(mapping.biomeByClimateType(type));
         
         return new ActionOptionWrapper(
             GuiUtil.createTranslatableBiomeStringFromId(biomeId),
@@ -81,10 +101,19 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
                 this,
                 this.registryManager,
                 biome -> {
-                    compound.putString(type.tag, this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString());
+                    mapping.setBiomeByClimateType(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString(), type);
+                    
+                    this.updateMap();
                 },
                 this.registryManager.<Biome>get(Registry.BIOME_KEY).get(biomeId)
             ))
         );
+    }
+    
+    private void updateMap() {
+        NbtCompoundBuilder builder = new NbtCompoundBuilder();
+        this.climateMap.entrySet().forEach(e -> builder.putCompound(e.getKey(), e.getValue().toCompound()));
+        
+        this.settings.putElement(NbtTags.BIOMES, builder.build());
     }
 }

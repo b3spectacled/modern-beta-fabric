@@ -83,7 +83,7 @@ public class Settings {
         NbtCompound compound = new NbtCompound();
         
         for (Entry<String, NbtElement> change : this.settings.entrySet()) {
-            compound.put(change.getKey(), change.getValue());
+            compound.put(change.getKey(), change.getValue().copy());
         }
         
         return compound;

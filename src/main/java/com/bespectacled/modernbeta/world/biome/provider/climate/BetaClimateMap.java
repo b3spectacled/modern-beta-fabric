@@ -5,8 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.config.ModernBetaConfigBiome;
+import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
 
@@ -17,21 +16,14 @@ public class BetaClimateMap {
     private final Map<String, ClimateMapping> climateMap;
     private final ClimateMapping[] climateTable;
     
-    public BetaClimateMap(NbtCompound biomeProviderSettings) {
+    public BetaClimateMap(NbtCompound settings) {
         this.climateMap = new LinkedHashMap<>();
         this.climateTable = new ClimateMapping[4096];
         
-        this.loadBiomePoint("desert", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaDesertBiome);
-        this.loadBiomePoint("forest", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaForestBiome);
-        this.loadBiomePoint("ice_desert", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaIceDesertBiome);
-        this.loadBiomePoint("plains", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaPlainsBiome);
-        this.loadBiomePoint("rainforest", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaRainforestBiome);
-        this.loadBiomePoint("savanna", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaSavannaBiome);
-        this.loadBiomePoint("shrubland", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaShrublandBiome);
-        this.loadBiomePoint("seasonal_forest", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaSeasonalForestBiome);
-        this.loadBiomePoint("swampland", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaSwamplandBiome);
-        this.loadBiomePoint("taiga", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaTaigaBiome);
-        this.loadBiomePoint("tundra", biomeProviderSettings, ModernBeta.BIOME_CONFIG.betaTundraBiome);
+        NbtCompound biomes = NbtUtil.readCompoundOrThrow(NbtTags.BIOMES, settings);
+        for (String key : biomes.getKeys()) {
+            this.climateMap.put(key, ClimateMapping.fromCompound(NbtUtil.readCompoundOrThrow(key, biomes)));
+        }
         
         this.generateBiomeLookup();
     }
@@ -43,9 +35,8 @@ public class BetaClimateMap {
     public Identifier getBiome(double temp, double rain, ClimateType type) {
         int t = (int) (temp * 63D);
         int r = (int) (rain * 63D);
-        int ndx = t + r * 64;
-        
-        return this.climateTable[ndx].biomeByClimateType(type);
+
+        return this.climateTable[t + r * 64].biomeByClimateType(type);
     }
     
     public List<Identifier> getBiomeIds() {
@@ -55,13 +46,6 @@ public class BetaClimateMap {
         biomeIds.addAll(this.climateMap.values().stream().map(p -> p.deepOceanBiome()).toList());
         
         return biomeIds;
-    }
-    
-    private void loadBiomePoint(String key, NbtCompound settings, ModernBetaConfigBiome.ClimateMapping alternate) {
-        this.climateMap.put(
-            key,
-            ClimateMapping.fromCompound(NbtUtil.readCompound(key, settings, alternate.toCompound()))
-        );
     }
     
     private void generateBiomeLookup() {
