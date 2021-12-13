@@ -43,7 +43,7 @@ public class InfClimateWorldScreen extends InfWorldScreen {
         boolean isSameBiomeType = Registries.WORLD.get(worldType).getBiomeProvider().equals(biomeType);
         boolean climateSampleable = Registries.BIOME
             .get(biomeType)
-            .apply(0L, new NbtCompound(), BuiltinRegistries.BIOME) instanceof ClimateSampler;
+            .apply(0L, Registries.BIOME_SETTINGS.get(biomeType).get(), BuiltinRegistries.BIOME) instanceof ClimateSampler;
         
         // Replace sampleClimate option depending on if climate sampler matches biome type
         if (isSameBiomeType)

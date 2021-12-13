@@ -19,25 +19,25 @@ public class BetaBiomes {
     protected static final boolean ADD_ALTERNATE_STONES = true;
     protected static final boolean ADD_NEW_MINEABLES = true;
     
-    public static final Identifier FOREST_ID = ModernBeta.createId("forest");
-    public static final Identifier SHRUBLAND_ID = ModernBeta.createId("shrubland");
-    public static final Identifier DESERT_ID = ModernBeta.createId("desert");
-    public static final Identifier SAVANNA_ID = ModernBeta.createId("savanna");
-    public static final Identifier PLAINS_ID = ModernBeta.createId("plains");
-    public static final Identifier SEASONAL_FOREST_ID = ModernBeta.createId("seasonal_forest");
-    public static final Identifier RAINFOREST_ID = ModernBeta.createId("rainforest");
-    public static final Identifier SWAMPLAND_ID = ModernBeta.createId("swampland");
-    public static final Identifier TAIGA_ID = ModernBeta.createId("taiga");
-    public static final Identifier TUNDRA_ID = ModernBeta.createId("tundra");
-    public static final Identifier ICE_DESERT_ID = ModernBeta.createId("ice_desert");
+    public static final Identifier FOREST_ID = ModernBeta.createId("beta_forest");
+    public static final Identifier SHRUBLAND_ID = ModernBeta.createId("beta_shrubland");
+    public static final Identifier DESERT_ID = ModernBeta.createId("beta_desert");
+    public static final Identifier SAVANNA_ID = ModernBeta.createId("beta_savanna");
+    public static final Identifier PLAINS_ID = ModernBeta.createId("beta_plains");
+    public static final Identifier SEASONAL_FOREST_ID = ModernBeta.createId("beta_seasonal_forest");
+    public static final Identifier RAINFOREST_ID = ModernBeta.createId("beta_rainforest");
+    public static final Identifier SWAMPLAND_ID = ModernBeta.createId("beta_swampland");
+    public static final Identifier TAIGA_ID = ModernBeta.createId("beta_taiga");
+    public static final Identifier TUNDRA_ID = ModernBeta.createId("beta_tundra");
+    public static final Identifier ICE_DESERT_ID = ModernBeta.createId("beta_ice_desert");
 
-    public static final Identifier OCEAN_ID = ModernBeta.createId("ocean");
-    public static final Identifier LUKEWARM_OCEAN_ID = ModernBeta.createId("lukewarm_ocean");
-    public static final Identifier WARM_OCEAN_ID = ModernBeta.createId("warm_ocean");
-    public static final Identifier COLD_OCEAN_ID = ModernBeta.createId("cold_ocean");
-    public static final Identifier FROZEN_OCEAN_ID = ModernBeta.createId("frozen_ocean");
+    public static final Identifier OCEAN_ID = ModernBeta.createId("beta_ocean");
+    public static final Identifier LUKEWARM_OCEAN_ID = ModernBeta.createId("beta_lukewarm_ocean");
+    public static final Identifier WARM_OCEAN_ID = ModernBeta.createId("beta_warm_ocean");
+    public static final Identifier COLD_OCEAN_ID = ModernBeta.createId("beta_cold_ocean");
+    public static final Identifier FROZEN_OCEAN_ID = ModernBeta.createId("beta_frozen_ocean");
     
-    public static final Identifier SKY_ID = ModernBeta.createId("sky");
+    public static final Identifier SKY_ID = ModernBeta.createId("beta_sky");
     
     public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(
         FOREST_ID,
