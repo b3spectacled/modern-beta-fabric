@@ -37,6 +37,8 @@ public class CaveBiomeProviderSettings {
         });
         
         return createSettingsBase(BuiltInTypes.CaveBiome.VORONOI.name)
+            .putInt(NbtTags.VERTICAL_NOISE_SCALE, CONFIG.verticalNoiseScale)
+            .putInt(NbtTags.HORIZONTAL_NOISE_SCALE, CONFIG.horizontalNoiseScale)
             .putList(NbtTags.BIOMES, builder.build())
             .build();
     }

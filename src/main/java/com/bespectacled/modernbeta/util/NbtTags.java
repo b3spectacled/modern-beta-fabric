@@ -40,6 +40,7 @@ public class NbtTags {
     public static final String BIOME = "biome";
     public static final String OCEAN_BIOME = "oceanBiome";
     public static final String DEEP_OCEAN_BIOME = "deepOceanBiome";
+    public static final String NULL_BIOME = "nullBiome";
     
     public static final String TEMP = "temp";
     public static final String RAIN = "rain";

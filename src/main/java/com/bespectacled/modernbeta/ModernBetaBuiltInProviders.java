@@ -5,6 +5,7 @@ import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.client.gui.screen.biome.ClimateBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.biome.SingleBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.biome.VanillaBiomeScreen;
+import com.bespectacled.modernbeta.client.gui.screen.cavebiome.VoronoiCaveBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.IndevWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.InfClimateWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.InfWorldScreen;
@@ -132,6 +133,7 @@ public class ModernBetaBuiltInProviders {
         Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.DEFAULT_ID, (screen, worldSetting) -> null);
         Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.CaveBiome.NONE.name, (screen, worldSetting) -> null);
         Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.CaveBiome.SINGLE.name, SingleBiomeScreen::create);
+        Registries.CAVE_BIOME_SCREEN.register(BuiltInTypes.CaveBiome.VORONOI.name, VoronoiCaveBiomeScreen::create);
     }
     
     // Register default world providers

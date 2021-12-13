@@ -8,9 +8,15 @@ import net.minecraft.util.Identifier;
 
 public class ClimateMapping {
     public enum ClimateType {
-        LAND,
-        OCEAN,
-        DEEP_OCEAN
+        LAND(NbtTags.BIOME),
+        OCEAN(NbtTags.OCEAN_BIOME),
+        DEEP_OCEAN(NbtTags.DEEP_OCEAN_BIOME);
+        
+        public final String tag;
+        
+        private ClimateType(String tag) {
+            this.tag = tag;
+        }
     }
     
     private final Identifier biome;

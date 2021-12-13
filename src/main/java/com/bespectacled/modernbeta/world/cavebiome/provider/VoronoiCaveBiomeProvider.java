@@ -16,7 +16,6 @@ import com.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointRules;
 import com.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointRules.VoronoiPoint;
 
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
@@ -71,17 +70,15 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
     
     private static VoronoiPointRules<Identifier, Clime> buildRules(NbtCompound settings) {
         VoronoiPointRules.Builder<Identifier, Clime> builder = new VoronoiPointRules.Builder<>();
-        NbtList list = NbtUtil.readListOrThrow(NbtTags.BIOMES, settings);
         
-        list.stream().forEach(e -> {
+        NbtUtil.readListOrThrow(NbtTags.BIOMES, settings).stream().forEach(e -> {
             NbtCompound compound = NbtUtil.toCompoundOrThrow(e);
             String biome = NbtUtil.readStringOrThrow(NbtTags.BIOME, compound);
             double temp = NbtUtil.readDoubleOrThrow(NbtTags.TEMP, compound);
             double rain = NbtUtil.readDoubleOrThrow(NbtTags.RAIN, compound);
+            boolean nullBiome = NbtUtil.readBooleanOrThrow(NbtTags.NULL_BIOME, compound);
             
-            // Parse 'null' or any variation of capitalization as null biome Identifier
-            Identifier biomeId = biome.equalsIgnoreCase("null") ? null : new Identifier(biome);
-            
+            Identifier biomeId = nullBiome ? null : new Identifier(biome);
             builder.add(biomeId, new Clime(temp, rain));
         });
         

@@ -21,7 +21,6 @@
     "createWorld.customize.biomeType.single": "Single",
     "createWorld.customize.biomeType.vanilla": "Vanilla",
     "createWorld.customize.biomeType.pe": "Pocket Edition",
-    "createWorld.customize.biomeType.biome": "Biome",
     
     "createWorld.customize.caveBiomeType": "Cave Biome Type",
     "createWorld.customize.caveBiomeType.none": "None",
@@ -85,6 +84,10 @@
     "createWorld.customize.indev.levelType.floating": "Floating",
     "createWorld.customize.indev.levelType.inland": "Inland",
     
+    "createWorld.customize.biome": "Biome",
+    "createWorld.customize.temp": "Temperature",
+    "createWorld.customize.rain": "Rainfall",
+    
     "createWorld.customize.biome.generateOceans": "Assign Ocean Biomes",
     "createWorld.customize.biome.largeBiomes": "Large Biomes",
     
@@ -93,6 +96,11 @@
     "createWorld.customize.biome.climateType.deepOcean": "Deep Ocean",
     
     "createWorld.customize.biome.generateOceans.tooltip": "Replace biomes in bodies of water with ocean biomes.",
+    
+    "createWorld.customize.biome.voronoi.points": "Voronoi Points",
+    "createWorld.customize.biome.voronoi.point": "Point",
+    "createWorld.customize.biome.voronoi.addPoint": "Add Point",
+    "createWorld.customize.biome.voronoi.removePoint": "Remove Point",
     
     "createWorld.customize.caveBiome.useNoise": "Use Noise",
     "createWorld.customize.caveBiome.verticalNoiseScale": "Vertical Noise Scale",

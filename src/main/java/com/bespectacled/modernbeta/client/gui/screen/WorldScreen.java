@@ -166,46 +166,30 @@ public class WorldScreen extends GUIScreen {
         
         ActionOptionWrapper worldSettingsOption = new ActionOptionWrapper(
             "createWorld.customize.settings",
-            "",
-            worldSettingsScreen != null ?
-                widget -> this.client.setScreen(worldSettingsScreen) :
-                null,
-            () -> this.client.textRenderer.wrapLines(new LiteralText(this.settingsToString(WorldSetting.CHUNK)), 250)
-        );
+            worldSettingsScreen != null ? widget -> this.client.setScreen(worldSettingsScreen) : null
+        ).tooltips(() -> this.client.textRenderer.wrapLines(new LiteralText(this.settingsToString(WorldSetting.CHUNK)), 250));
         
         Screen biomeSettingsScreen = Registries.BIOME_SCREEN
             .getOrDefault(NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.BIOME, NbtTags.BIOME_TYPE)))
             .apply(this, WorldSetting.BIOME); 
         
         ActionOptionWrapper biomeSettingsOption = new ActionOptionWrapper(
-            biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ?
-                "createWorld.customize.biomeType.biome" : 
-                "createWorld.customize.settings",
-            biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? 
-                GuiUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.SINGLE_BIOME))) : 
-                "",
-            biomeSettingsScreen != null ? 
-                widget -> this.client.setScreen(biomeSettingsScreen) : 
-                null,
-            () -> this.client.textRenderer.wrapLines(new LiteralText(this.settingsToString(WorldSetting.BIOME)), 250)
-        );
+            biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? "createWorld.customize.biome" :  "createWorld.customize.settings",
+            biomeSettingsScreen != null ? widget -> this.client.setScreen(biomeSettingsScreen) : null
+        ).suffix(biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? 
+            GuiUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.SINGLE_BIOME))) : ""
+        ).tooltips(() -> this.client.textRenderer.wrapLines(new LiteralText(this.settingsToString(WorldSetting.BIOME)), 250));
         
         Screen caveBiomeSettingsScreen = Registries.CAVE_BIOME_SCREEN
             .getOrDefault(NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.CAVE_BIOME, NbtTags.CAVE_BIOME_TYPE)))
             .apply(this, WorldSetting.CAVE_BIOME);
         
         ActionOptionWrapper caveBiomeSettingsOption = new ActionOptionWrapper(
-            caveBiomeType.equals(BuiltInTypes.CaveBiome.SINGLE.name) ?
-                "createWorld.customize.biomeType.biome" : 
-                "createWorld.customize.settings",
-            caveBiomeType.equals(BuiltInTypes.CaveBiome.SINGLE.name) ? 
-                GuiUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getCaveBiomeSetting(NbtTags.SINGLE_BIOME))) : 
-                "",
-            caveBiomeSettingsScreen != null ?
-                widget -> this.client.setScreen(caveBiomeSettingsScreen) :
-                null,
-            () -> this.client.textRenderer.wrapLines(new LiteralText(this.settingsToString(WorldSetting.CAVE_BIOME)), 250)
-        );
+            caveBiomeType.equals(BuiltInTypes.CaveBiome.SINGLE.name) ? "createWorld.customize.biome" : "createWorld.customize.settings",
+            caveBiomeSettingsScreen != null ? widget -> this.client.setScreen(caveBiomeSettingsScreen) : null
+        ).suffix(caveBiomeType.equals(BuiltInTypes.CaveBiome.SINGLE.name) ? 
+            GuiUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getCaveBiomeSetting(NbtTags.SINGLE_BIOME))) :  ""
+        ).tooltips(() -> this.client.textRenderer.wrapLines(new LiteralText(this.settingsToString(WorldSetting.CAVE_BIOME)), 250));
         
         this.addDualOption(worldTypeOption, worldSettingsOption);
         this.addDualOption(biomeTypeOption, biomeSettingsOption);

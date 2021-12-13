@@ -1,16 +1,15 @@
 package com.bespectacled.modernbeta.client.gui.option;
 
+import java.util.List;
 import java.util.function.Function;
-
-import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.Option;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 
 /*
  * Option Wrapper for arbitrary actions (i.e. opening new screens)
@@ -19,24 +18,20 @@ public class ActionOption extends Option {
     private final String key;
     private final String suffix;
     private final ButtonWidget.PressAction onPress;
+    private final List<Formatting> formattingList;
+    private final Function<MinecraftClient, ActionButtonWidget.TooltipFactory> tooltips;
+    private final boolean truncate;
     private final boolean active;
-    private Function<MinecraftClient, ActionButtonWidget.TooltipFactory> tooltips;
     
     private ActionButtonWidget button;
-    
-    public ActionOption(String key, String suffix, ButtonWidget.PressAction onPress) {
-        this(key, suffix, onPress, true);
-    }
-    
-    public ActionOption(String key, String suffix, ButtonWidget.PressAction onPress, boolean active) {
-        this(key, suffix, onPress, client -> () -> ImmutableList.of(), active);
-    }
     
     public ActionOption(
         String key,
         String suffix,
         ButtonWidget.PressAction onPress,
+        List<Formatting> formattingList,
         Function<MinecraftClient, ActionButtonWidget.TooltipFactory> tooltips,
+        boolean truncate,
         boolean active
     ) {
         super(key);
@@ -44,26 +39,30 @@ public class ActionOption extends Option {
         this.key = key;
         this.suffix = suffix;
         this.onPress = onPress;
+        this.formattingList = formattingList;
         this.tooltips = tooltips;
+        this.truncate = truncate;
         this.active = active;
     }
 
     @Override
     public ClickableWidget createButton(GameOptions options, int x, int y, int width) {
-        MutableText buttonText = new TranslatableText(this.key);
-        MutableText suffixText = new TranslatableText(this.suffix);
+        TranslatableText buttonText = new TranslatableText(this.key);
+        TranslatableText suffixText = new TranslatableText(this.suffix);
         
         if (!this.suffix.isEmpty() || this.suffix == null) {
             buttonText.append(": ");
             
             // Truncate suffix string if too long
-            if (suffixText.getString().length() > 16) {
+            if (truncate && suffixText.getString().length() > 16) {
                 suffixText = new TranslatableText(suffixText.asTruncatedString(16));
                 suffixText.append("...");
             }
             
             buttonText.append(suffixText);
         }
+        
+        this.formattingList.forEach(f -> buttonText.formatted(f));
         
         this.button = new ActionButtonWidget(
             x, y, width, 20,
@@ -77,12 +76,4 @@ public class ActionOption extends Option {
         
         return this.button;
     }
-    
-    public ActionOption tooltip(Function<MinecraftClient, ActionButtonWidget.TooltipFactory> tooltips) {
-        this.tooltips = tooltips;
-        
-        return this;
-    }
-    
-    
 }
