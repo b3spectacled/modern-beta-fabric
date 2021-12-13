@@ -12,7 +12,6 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 
 import net.minecraft.nbt.NbtByte;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.BuiltinRegistries;
 

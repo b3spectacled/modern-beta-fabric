@@ -23,7 +23,7 @@ public class ChunkProviderSettings {
     }
     
     private static NbtCompoundBuilder createSettingsPreInf(String worldType) {
-        return createSettingsBase(worldType)
+        return createSettingsInf(worldType)
             .putInt(NbtTags.LEVEL_WIDTH, CONFIG.levelWidth)
             .putInt(NbtTags.LEVEL_LENGTH, CONFIG.levelLength)
             .putInt(NbtTags.LEVEL_HEIGHT, CONFIG.levelHeight)

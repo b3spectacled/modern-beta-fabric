@@ -256,7 +256,7 @@ public class WorldScreen extends GUIScreen {
         boolean isSameBiomeType = worldProvider.getBiomeProvider().equals(biomeType);
         boolean isClimateSampler = Registries.BIOME
             .get(biomeType)
-            .apply(0L, new NbtCompound(), BuiltinRegistries.BIOME) instanceof ClimateSampler;
+            .apply(0L, Registries.BIOME_SETTINGS.get(biomeType).get(), BuiltinRegistries.BIOME) instanceof ClimateSampler;
         
         if (isClimateSampler && this.worldSettings.hasElement(WorldSetting.CHUNK, NbtTags.SAMPLE_CLIMATE))
             this.worldSettings.putElement(WorldSetting.CHUNK, NbtTags.SAMPLE_CLIMATE, NbtByte.of(isSameBiomeType));
@@ -276,16 +276,20 @@ public class WorldScreen extends GUIScreen {
         
         for (String key : keys) {
             if (row >= cutoff) {
-                builder.append(String.format("... and %d more", keys.size() - cutoff));
+                builder.append(String.format("... and %d more...", keys.size() - cutoff));
                 break;
             }
 
             NbtElement element = settings.get(key);
-            String elementAsString = (element instanceof NbtByte nbtByte) ?
+            String elementStr = (element instanceof NbtByte nbtByte) ?
                 Boolean.valueOf(nbtByte.byteValue() == 1).toString():
                 element.toString();
             
-            builder.append(String.format("* %s: %s", key, elementAsString));
+            // Truncate string if too long
+            if (elementStr.length() > 50)
+                elementStr = "[ ... ]";
+            
+            builder.append(String.format("* %s: %s", key, elementStr));
             if (row < keys.size() - 1)
                 builder.append("\n");
             
