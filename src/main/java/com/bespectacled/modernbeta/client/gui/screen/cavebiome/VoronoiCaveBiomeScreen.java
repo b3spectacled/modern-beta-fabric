@@ -80,21 +80,19 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
             value -> this.putSetting(NbtTags.HORIZONTAL_NOISE_SCALE, NbtInt.of(value.intValue()))
         );
         
-        TextOptionWrapper voronoiHeader = new TextOptionWrapper(VORONOI_POINTS_DISPLAY_STRING);
-        voronoiHeader.formatting(Formatting.YELLOW).formatting(Formatting.BOLD);
+        TextOptionWrapper voronoiHeader = new TextOptionWrapper(VORONOI_POINTS_DISPLAY_STRING)
+            .formatting(Formatting.YELLOW)
+            .formatting(Formatting.BOLD);
             
         this.addOption(verticalScaleOption);
         this.addOption(horizontalScaleOption);
         this.addOption(voronoiHeader);
         
         this.addOption(this.addVoronoiEntry());
-        this.voronoiPoints.forEach(
-            element -> {
-                NbtCompound compound = (NbtCompound)element;
-                
-                this.createVoronoiOption(compound);
-            }
-        );
+        for (int i = 0; i < this.voronoiPoints.size(); ++i) {
+            this.addOption(new TextOptionWrapper("Point " + (i + 1)).formatting(Formatting.YELLOW));
+            this.createVoronoiOption(NbtUtil.toCompoundOrThrow(this.voronoiPoints.get(i)));
+        }
     }
     
     private void createVoronoiOption(NbtCompound compound) {

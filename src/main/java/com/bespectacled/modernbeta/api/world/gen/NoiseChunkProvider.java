@@ -221,7 +221,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             (sampler, x, y, z) -> null;
         
         // Samplers
-        this.noiseCaveSampler = new NoiseCaveSampler(noiseRegistry, randomDeriver, this.noiseMinY);
+        this.noiseCaveSampler = new NoiseCaveSampler(this.noiseColumnSampler);
         
         this.oreVeinSampler = new OreVeinSampler(
             noiseRegistry, 
