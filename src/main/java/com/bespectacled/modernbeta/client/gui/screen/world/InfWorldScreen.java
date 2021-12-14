@@ -76,7 +76,7 @@ public class InfWorldScreen extends SettingsScreen {
             value -> this.putSetting(NbtTags.GEN_DEEPSLATE, NbtByte.of(value))
         );
         
-        TextOptionWrapper hydrogenText = new TextOptionWrapper(HYDROGEN_LOADED_STRING, Formatting.RED);
+        TextOptionWrapper hydrogenText = new TextOptionWrapper(HYDROGEN_LOADED_STRING).formatting(Formatting.RED);
         
         if (isHydrogenLoaded && !isSingleBiome)
             this.addOption(hydrogenText);

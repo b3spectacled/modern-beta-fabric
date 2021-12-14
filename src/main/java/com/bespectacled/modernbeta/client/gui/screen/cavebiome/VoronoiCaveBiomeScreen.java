@@ -20,6 +20,8 @@ import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtInt;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -35,6 +37,7 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
     private static final String NULL_BIOME_DISPLAY_STRING = "createWorld.customize.nullBiome";
 
     private static final String VORONOI_POINTS_DISPLAY_STRING = "createWorld.customize.biome.voronoi.points";
+    private static final String VORONOI_POINT_DISPLAY_STRING = "createWorld.customize.biome.voronoi.point";
     private static final String ADD_POINT_DISPLAY_STRING = "createWorld.customize.biome.voronoi.addPoint";
     private static final String REMOVE_POINT_DISPLAY_STRING = "createWorld.customize.biome.voronoi.removePoint";
     
@@ -80,7 +83,8 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
             value -> this.putSetting(NbtTags.HORIZONTAL_NOISE_SCALE, NbtInt.of(value.intValue()))
         );
         
-        TextOptionWrapper voronoiHeader = new TextOptionWrapper(VORONOI_POINTS_DISPLAY_STRING)
+        MutableText voronoiHeaderText = new TranslatableText(VORONOI_POINTS_DISPLAY_STRING).append(" (" + this.voronoiPoints.size() + ")");
+        TextOptionWrapper voronoiHeader = new TextOptionWrapper(voronoiHeaderText)
             .formatting(Formatting.YELLOW)
             .formatting(Formatting.BOLD);
             
@@ -90,7 +94,9 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
         
         this.addOption(this.addVoronoiEntry());
         for (int i = 0; i < this.voronoiPoints.size(); ++i) {
-            this.addOption(new TextOptionWrapper("Point " + (i + 1)).formatting(Formatting.YELLOW));
+            MutableText pointHeaderText = new TranslatableText(VORONOI_POINT_DISPLAY_STRING).append(" " + Integer.toString(i + 1));
+            
+            this.addOption(new TextOptionWrapper(pointHeaderText).formatting(Formatting.YELLOW));
             this.createVoronoiOption(NbtUtil.toCompoundOrThrow(this.voronoiPoints.get(i)));
         }
     }

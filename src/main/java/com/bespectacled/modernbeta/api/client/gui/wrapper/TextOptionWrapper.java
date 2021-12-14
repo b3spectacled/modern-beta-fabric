@@ -6,20 +6,22 @@ import java.util.List;
 import com.bespectacled.modernbeta.client.gui.option.TextOption;
 
 import net.minecraft.client.option.Option;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 public class TextOptionWrapper implements OptionWrapper {
-    private final String key;
+    private final MutableText text;
     private final List<Formatting> formattingList;
     
-    public TextOptionWrapper(String key) {
-        this.key = key;
+    public TextOptionWrapper(MutableText text) {
+        this.text = text;
         this.formattingList = new ArrayList<Formatting>();
     }
     
-    public TextOptionWrapper(String key, Formatting initialFormatting) {
-        this(key);
-        this.formattingList.add(initialFormatting);
+    public TextOptionWrapper(String key) {
+        this.text = new TranslatableText(key);
+        this.formattingList = new ArrayList<Formatting>();
     }
     
     public TextOptionWrapper formatting(Formatting formatting) {
@@ -35,6 +37,6 @@ public class TextOptionWrapper implements OptionWrapper {
 
     @Override
     public Option create(boolean active) {
-        return new TextOption(this.key, this.formattingList);
+        return new TextOption(this.text, this.formattingList);
     }
 }

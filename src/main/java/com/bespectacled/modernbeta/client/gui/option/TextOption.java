@@ -10,6 +10,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.Option;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
@@ -18,30 +19,29 @@ import net.minecraft.util.math.MathHelper;
  * Option Wrapper for Static Text Field
  */
 public class TextOption extends Option {
-    private final String key;
+    private final MutableText text;
     private final List<Formatting> formattingList;
     
     private ClickableWidget button;
     
-    public TextOption(String key, List<Formatting> formattingList) {
-        super(key);
+    public TextOption(MutableText text, List<Formatting> formattingList) {
+        super(text.asString());
         
-        this.key = key;
+        this.text = text;
         this.formattingList = formattingList;
     }
     
-    public TextOption(String key) {
-        this(key, List.of());
+    public TextOption(TranslatableText text) {
+        this(text, List.of());
     }
 
     @Override
     public ClickableWidget createButton(GameOptions options, int x, int y, int width) {
-        TranslatableText buttonText = new TranslatableText(this.key);
-        this.formattingList.forEach(f -> buttonText.formatted(f));
+        this.formattingList.forEach(f -> this.text.formatted(f));
         
         this.button = new ButtonWidget(
             x, y, width, 20,
-            buttonText,
+            this.text,
             (buttonWidget) -> {}
         ) {
             @Override
