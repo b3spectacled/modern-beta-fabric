@@ -207,7 +207,7 @@ public abstract class NoiseChunkProvider extends BaseChunkProvider {
             this.dummyNoiseChunkSampler,
             this.defaultFluid,
             this.seaLevel,
-            ChunkProvider.LAVA_LEVEL,
+            this.worldMinY + 10,
             this.worldMinY,
             this.worldHeight,
             this.verticalNoiseResolution,

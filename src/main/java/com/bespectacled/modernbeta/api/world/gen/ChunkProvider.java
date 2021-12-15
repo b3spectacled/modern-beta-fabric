@@ -32,8 +32,6 @@ import net.minecraft.world.gen.random.ChunkRandom;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public abstract class ChunkProvider {
-    public static final int LAVA_LEVEL = -54; // Vanilla: -54;
-    
     protected final OldChunkGenerator chunkGenerator;
     
     protected final long seed;
