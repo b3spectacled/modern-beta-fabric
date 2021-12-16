@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.world.biome.OldBiomeStructures;
+import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -21,24 +22,24 @@ public class MixinConfiguredStructureFeatures {
     private static void addStructuresToBiomes(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, CallbackInfo info) {
         /* Beta Biomes */
         
-        OldBiomeStructures.addOceanStructures(consumer, ModernBeta.createId("cold_ocean"), false);
-        OldBiomeStructures.addDesertStructures(consumer, ModernBeta.createId("desert"), true);
-        OldBiomeStructures.addForestStructures(consumer, ModernBeta.createId("forest"));
-        OldBiomeStructures.addOceanStructures(consumer, ModernBeta.createId("frozen_ocean"), false);
-        OldBiomeStructures.addDesertStructures(consumer, ModernBeta.createId("ice_desert"), false);
-        OldBiomeStructures.addOceanStructures(consumer, ModernBeta.createId("lukewarm_ocean"), true);
-        OldBiomeStructures.addOceanStructures(consumer, ModernBeta.createId("ocean"), false);
-        OldBiomeStructures.addPlainsStructures(consumer, ModernBeta.createId("plains"));
-        OldBiomeStructures.addRainforestStructures(consumer, ModernBeta.createId("rainforest"));
-        OldBiomeStructures.addLowlandStructures(consumer, ModernBeta.createId("savanna"));
-        OldBiomeStructures.addSeasonalForest(consumer, ModernBeta.createId("seasonal_forest"));
-        OldBiomeStructures.addLowlandStructures(consumer, ModernBeta.createId("shrubland"));
-        OldBiomeStructures.addSwamplandStructures(consumer, ModernBeta.createId("swampland"));
-        OldBiomeStructures.addTaigaStructures(consumer, ModernBeta.createId("taiga"));
-        OldBiomeStructures.addTundraStructures(consumer, ModernBeta.createId("tundra"));
-        OldBiomeStructures.addOceanStructures(consumer, ModernBeta.createId("warm_ocean"), true);
+        OldBiomeStructures.addOceanStructures(consumer, ModernBeta.createId("beta_cold_ocean"), false);
+        OldBiomeStructures.addDesertStructures(consumer, ModernBeta.createId("beta_desert"), true);
+        OldBiomeStructures.addForestStructures(consumer, ModernBeta.createId("beta_forest"));
+        OldBiomeStructures.addOceanStructures(consumer, ModernBeta.createId("beta_frozen_ocean"), false);
+        OldBiomeStructures.addDesertStructures(consumer, ModernBeta.createId("beta_ice_desert"), false);
+        OldBiomeStructures.addOceanStructures(consumer, ModernBeta.createId("beta_lukewarm_ocean"), true);
+        OldBiomeStructures.addOceanStructures(consumer, ModernBeta.createId("beta_ocean"), false);
+        OldBiomeStructures.addPlainsStructures(consumer, ModernBeta.createId("beta_plains"));
+        OldBiomeStructures.addRainforestStructures(consumer, ModernBeta.createId("beta_rainforest"));
+        OldBiomeStructures.addLowlandStructures(consumer, ModernBeta.createId("beta_savanna"));
+        OldBiomeStructures.addSeasonalForest(consumer, ModernBeta.createId("beta_seasonal_forest"));
+        OldBiomeStructures.addLowlandStructures(consumer, ModernBeta.createId("beta_shrubland"));
+        OldBiomeStructures.addSwamplandStructures(consumer, ModernBeta.createId("beta_swampland"));
+        OldBiomeStructures.addTaigaStructures(consumer, ModernBeta.createId("beta_taiga"));
+        OldBiomeStructures.addTundraStructures(consumer, ModernBeta.createId("beta_tundra"));
+        OldBiomeStructures.addOceanStructures(consumer, ModernBeta.createId("beta_warm_ocean"), true);
         
-        OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("sky"));
+        OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("beta_sky"));
         
         /* PE Biomes */
         
