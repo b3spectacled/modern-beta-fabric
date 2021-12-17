@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.world.biome.OldBiomeStructures;
-import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -86,6 +85,4 @@ public class MixinConfiguredStructureFeatures {
         OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("indev_snowy"));
         OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("indev_woods"));
     }
-    
-    
 }

@@ -115,8 +115,6 @@ public class ModernBeta implements ModInitializer {
         if (DEV_ENV) {
             DebugProviderSettingsCommand.register();
         }
-        
-        log(Level.INFO, "Initialized Modern Beta!");
 
         // Man, I am not good at this...
     }
