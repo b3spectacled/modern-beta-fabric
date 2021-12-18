@@ -115,7 +115,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                         continue;
                     }
                         
-                    if (runDepth == 0) blockState = (y >= this.seaLevel - 1) ? topBlock : fillerBlock;
+                    if (runDepth == 0) blockState = y >= this.seaLevel ? topBlock : fillerBlock;
                     if (runDepth == 1) blockState = fillerBlock;
                     
                     runDepth++;
