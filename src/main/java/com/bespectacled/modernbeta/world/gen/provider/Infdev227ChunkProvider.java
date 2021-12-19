@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.world.gen.BaseChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkImitable;
 import com.bespectacled.modernbeta.api.world.gen.SurfaceConfig;
 import com.bespectacled.modernbeta.util.BlockColumnHolder;
@@ -34,10 +34,24 @@ import net.minecraft.world.gen.HeightContext;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.Blender;
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.random.AtomicSimpleRandom;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
-public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseChunkImitable {
+public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkImitable {
+    private final int worldMinY;
+    private final int worldHeight;
+    private final int worldTopY;
+    private final int seaLevel;
+    
+    private final int bedrockFloor;
+    
+    private final boolean generateDeepslate;
+    
+    private final BlockState defaultBlock;
+    private final BlockState defaultFluid;
+    
     private final boolean generateInfdevPyramid;
     private final boolean generateInfdevWall;
 
@@ -54,17 +68,30 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
     public Infdev227ChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         
+        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().get();
+        GenerationShapeConfig shapeConfig = generatorSettings.getGenerationShapeConfig();
+        
+        this.worldMinY = shapeConfig.minimumY();
+        this.worldHeight = shapeConfig.height();
+        this.worldTopY = worldHeight + worldMinY;
+        this.seaLevel = generatorSettings.getSeaLevel();
+        this.bedrockFloor = 0;
+        this.generateDeepslate = NbtUtil.readBoolean(NbtTags.GEN_DEEPSLATE, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.generateDeepslate);
+
+        this.defaultBlock = generatorSettings.getDefaultBlock();
+        this.defaultFluid = generatorSettings.getDefaultFluid();
+        
         // Noise Generators
-        this.noiseOctavesA = new PerlinOctaveNoise(rand, 16, true); 
-        this.noiseOctavesB = new PerlinOctaveNoise(rand, 16, true);
-        this.noiseOctavesC = new PerlinOctaveNoise(rand, 8, true);
-        this.noiseOctavesD = new PerlinOctaveNoise(rand, 4, true);
-        this.noiseOctavesE = new PerlinOctaveNoise(rand, 4, true);
-        this.noiseOctavesF = new PerlinOctaveNoise(rand, 5, true);
-        new PerlinOctaveNoise(rand, 3, true);
-        new PerlinOctaveNoise(rand, 3, true);
-        new PerlinOctaveNoise(rand, 3, true);
-        this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
+        this.noiseOctavesA = new PerlinOctaveNoise(random, 16, true); 
+        this.noiseOctavesB = new PerlinOctaveNoise(random, 16, true);
+        this.noiseOctavesC = new PerlinOctaveNoise(random, 8, true);
+        this.noiseOctavesD = new PerlinOctaveNoise(random, 4, true);
+        this.noiseOctavesE = new PerlinOctaveNoise(random, 4, true);
+        this.noiseOctavesF = new PerlinOctaveNoise(random, 5, true);
+        new PerlinOctaveNoise(random, 3, true);
+        new PerlinOctaveNoise(random, 3, true);
+        new PerlinOctaveNoise(random, 3, true);
+        this.forestNoiseOctaves = new PerlinOctaveNoise(random, 8, true);
 
         this.generateInfdevPyramid = NbtUtil.readBoolean(
             NbtTags.GEN_INFDEV_PYRAMID,

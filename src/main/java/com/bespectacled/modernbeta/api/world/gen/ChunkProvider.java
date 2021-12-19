@@ -1,13 +1,18 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
+import com.bespectacled.modernbeta.mixin.MixinPlacedFeatureAccessor;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.feature.placement.OldNoiseBasedCountPlacementModifier;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
 import com.bespectacled.modernbeta.world.gen.OldNoiseColumnSampler;
@@ -18,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeSource.class_6827;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
@@ -28,6 +34,8 @@ import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
+import net.minecraft.world.gen.decorator.PlacementModifier;
+import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.random.ChunkRandom;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
@@ -37,7 +45,7 @@ public abstract class ChunkProvider {
     protected final long seed;
     protected final Supplier<ChunkGeneratorSettings> generatorSettings;
     protected final NbtCompound providerSettings;
-    protected SpawnLocator spawnLocator;
+    protected final Random random;
     
     protected final OldNoiseColumnSampler noiseColumnSampler;
     protected final OldChunkNoiseSampler dummyNoiseChunkSampler;
@@ -47,6 +55,8 @@ public abstract class ChunkProvider {
     protected final OldSurfaceBuilder surfaceBuilder;
     
     private final FluidLevelSampler emptyFluidLevelSampler;
+    
+    protected SpawnLocator spawnLocator;
     
     /**
      * Construct a Modern Beta chunk provider with seed and settings.
@@ -59,7 +69,7 @@ public abstract class ChunkProvider {
         this.seed = chunkGenerator.getWorldSeed();
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
         this.providerSettings = chunkGenerator.getChunkSettings();
-        this.spawnLocator = SpawnLocator.DEFAULT;
+        this.random = new Random(seed);
 
         this.emptyFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
         
@@ -96,6 +106,8 @@ public abstract class ChunkProvider {
             this,
             this.generatorSettings.get().getDefaultBlock()
         );
+        
+        this.spawnLocator = SpawnLocator.DEFAULT;
     }
     
     /**
@@ -233,5 +245,45 @@ public abstract class ChunkProvider {
      */
     public Biome getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {
         return this.chunkGenerator.getBiomeSource().getBiome(biomeX, biomeY, biomeZ, noiseSampler);
+    }
+    
+    /**
+     * Get a new Random object initialized with chunk coordinates for seed, for surface generation.
+     * 
+     * @param chunkX x-coordinate in chunk coordinates.
+     * @param chunkZ z-coordinate in chunk coordinates.
+     * 
+     * @return New Random object initialized with chunk coordinates for seed.
+     */
+    protected Random createSurfaceRandom(int chunkX, int chunkZ) {
+        long seed = (long)chunkX * 0x4f9939f508L + (long)chunkZ * 0x1ef1565bd5L;
+        
+        return new Random(seed);
+    }
+    
+    /**
+     * Sets forest density using PerlinOctaveNoise sampler created with world seed.
+     * Checks every placed feature in the biome source feature list,
+     * and if it uses OldNoiseBasedCountPlacementModifier, replaces the noise sampler.
+     * 
+     * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
+     */
+    protected void setForestOctaves(PerlinOctaveNoise forestOctaves) {
+        List<class_6827> generationSteps = this.chunkGenerator.getBiomeSource().method_38115();
+        
+        for (class_6827 step : generationSteps) {
+            List<PlacedFeature> featureList = step.features();
+            
+            for (PlacedFeature placedFeature : featureList) {
+                MixinPlacedFeatureAccessor accessor = (MixinPlacedFeatureAccessor)placedFeature;
+                List<PlacementModifier> modifiers = accessor.getPlacementModifiers();
+                
+                for (PlacementModifier modifier : modifiers) {
+                    if (modifier instanceof OldNoiseBasedCountPlacementModifier noiseModifier) {
+                        noiseModifier.setOctaves(forestOctaves);
+                    }
+                }
+            }
+        }
     }
 }

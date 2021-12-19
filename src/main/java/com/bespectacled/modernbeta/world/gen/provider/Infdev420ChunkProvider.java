@@ -38,13 +38,13 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         super(chunkGenerator);
         
         // Noise Generators
-        this.minLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
-        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(rand, 16, true);
-        this.mainNoiseOctaves = new PerlinOctaveNoise(rand, 8, true);
-        this.beachNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
-        this.surfaceNoiseOctaves = new PerlinOctaveNoise(rand, 4, true);
-        new PerlinOctaveNoise(rand, 5, true); // Unused in original source
-        this.forestNoiseOctaves = new PerlinOctaveNoise(rand, 5, true);
+        this.minLimitNoiseOctaves = new PerlinOctaveNoise(random, 16, true);
+        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(random, 16, true);
+        this.mainNoiseOctaves = new PerlinOctaveNoise(random, 8, true);
+        this.beachNoiseOctaves = new PerlinOctaveNoise(random, 4, true);
+        this.surfaceNoiseOctaves = new PerlinOctaveNoise(random, 4, true);
+        new PerlinOctaveNoise(random, 5, true); // Unused in original source
+        this.forestNoiseOctaves = new PerlinOctaveNoise(random, 5, true);
 
         setForestOctaves(forestNoiseOctaves);
         

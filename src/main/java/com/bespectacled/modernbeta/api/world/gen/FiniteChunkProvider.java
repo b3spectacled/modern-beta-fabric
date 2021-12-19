@@ -34,8 +34,23 @@ import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.Blender;
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 
-public abstract class FiniteChunkProvider extends BaseChunkProvider implements NoiseChunkImitable {
+public abstract class FiniteChunkProvider extends ChunkProvider implements NoiseChunkImitable {
+    protected final int worldMinY;
+    protected final int worldHeight;
+    protected final int worldTopY;
+    protected final int seaLevel;
+    
+    protected final int bedrockFloor;
+    protected final int bedrockCeiling;
+    
+    protected final boolean generateDeepslate;
+    
+    protected final BlockState defaultBlock;
+    protected final BlockState defaultFluid;
+    
     protected final int levelWidth;
     protected final int levelLength;
     protected final int levelHeight;
@@ -47,28 +62,26 @@ public abstract class FiniteChunkProvider extends BaseChunkProvider implements N
     private boolean pregenerated;
     
     public FiniteChunkProvider(OldChunkGenerator chunkGenerator) {
-        this(
-            chunkGenerator,
-            NbtUtil.readInt(NbtTags.LEVEL_WIDTH, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.levelWidth),
-            NbtUtil.readInt(NbtTags.LEVEL_LENGTH, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.levelLength),
-            NbtUtil.readInt(NbtTags.LEVEL_HEIGHT, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.levelHeight),
-            NbtUtil.readFloat(NbtTags.LEVEL_CAVE_RADIUS, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.caveRadius)
-        );
-    }
-    
-    public FiniteChunkProvider(
-        OldChunkGenerator chunkGenerator,
-        int levelWidth,
-        int levelLength,
-        int levelHeight,
-        float caveRadius
-    ) {
         super(chunkGenerator);
         
-        this.levelWidth = levelWidth;
-        this.levelLength = levelLength;
-        this.levelHeight = levelHeight;
-        this.caveRadius = caveRadius;
+        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().get();
+        GenerationShapeConfig shapeConfig = generatorSettings.getGenerationShapeConfig();
+        
+        this.worldMinY = shapeConfig.minimumY();
+        this.worldHeight = shapeConfig.height();
+        this.worldTopY = worldHeight + worldMinY;
+        this.seaLevel = generatorSettings.getSeaLevel();
+        this.bedrockFloor = 0;
+        this.bedrockCeiling = Integer.MIN_VALUE;
+        this.generateDeepslate = NbtUtil.readBoolean(NbtTags.GEN_DEEPSLATE, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.generateDeepslate);
+
+        this.defaultBlock = generatorSettings.getDefaultBlock();
+        this.defaultFluid = generatorSettings.getDefaultFluid();
+        
+        this.levelWidth = NbtUtil.readInt(NbtTags.LEVEL_WIDTH, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.levelWidth);
+        this.levelLength = NbtUtil.readInt(NbtTags.LEVEL_LENGTH, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.levelLength);
+        this.levelHeight = NbtUtil.readInt(NbtTags.LEVEL_HEIGHT, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.levelHeight);
+        this.caveRadius = NbtUtil.readFloat(NbtTags.LEVEL_CAVE_RADIUS, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.caveRadius);
         
         this.heightmap = new int[this.levelWidth * this.levelLength];
         this.blockArr = new Block[this.levelWidth][this.levelHeight][this.levelLength];
