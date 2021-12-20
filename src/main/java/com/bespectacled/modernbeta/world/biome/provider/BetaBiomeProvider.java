@@ -149,7 +149,7 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
         }
     }
     
-    public static class BetaSkyClimateSampler {
+    private static class BetaSkyClimateSampler {
         private final SimplexOctaveNoise tempNoiseOctaves;
         
         private final ChunkCache<SkyClimateChunk> skyClimateCache;

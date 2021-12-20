@@ -38,6 +38,10 @@ public class OldSurfaceRules {
         return MaterialRules.sequence(runDepthCondition, materialRules);
     }
     
+    public static MaterialRules.MaterialRule createVanilla(boolean hasSurface) {
+        return VanillaSurfaceRules.createDefaultRule(hasSurface, false, false);
+    }
+    
     private static RegistryKey<Biome> biomeKey(Identifier id) {
         return RegistryKey.of(Registry.BIOME_KEY, id);
     }

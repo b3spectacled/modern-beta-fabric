@@ -33,7 +33,11 @@ public class VoronoiPointRules<T, S extends VoronoiComparable<S>> {
     }
     
     public List<T> getItems() {
-        return this.voronoiPoints.stream().map(p -> p.item()).toList();
+        return this.voronoiPoints
+            .stream()
+            .filter(p -> p.item() != null)
+            .map(p -> p.item())
+            .toList();
     }
     
     public static class Builder<T, S extends VoronoiComparable<S>> {
