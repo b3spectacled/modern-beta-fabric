@@ -1,9 +1,7 @@
 package com.bespectacled.modernbeta.world.cavebiome.provider;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
@@ -13,7 +11,6 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointRules;
-import com.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointRules.VoronoiPoint;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -47,20 +44,14 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
     @Override
     public Biome getBiome(int biomeX, int biomeY, int biomeZ) {
         Clime clime = this.sample(biomeX, biomeY, biomeZ);
-        VoronoiPoint<Identifier, Clime> point = this.rules.calculateClosestPointTo(clime);
+        Identifier biomeId = this.rules.calculateClosestTo(clime);
         
-        return point == null ? null : this.biomeRegistry.get(point.item());
+        return biomeId == null ? null : this.biomeRegistry.get(biomeId);
     }
     
     @Override
     public List<Biome> getBiomesForRegistry() {
-        Set<Identifier> biomeIds = new HashSet<>();
-        this.rules.getRules().stream().forEach(p -> {
-            if (p.item() != null)
-                biomeIds.add(p.item());
-        });
-        
-        return biomeIds.stream().map(id -> this.biomeRegistry.get(id)).toList();
+        return this.rules.getItems().stream().distinct().map(id -> this.biomeRegistry.get(id)).toList();
     }
 
     @Override
