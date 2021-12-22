@@ -15,7 +15,6 @@ import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.feature.placement.OldNoiseBasedCountPlacementModifier;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
-import com.bespectacled.modernbeta.world.gen.OldNoiseColumnSampler;
 import com.bespectacled.modernbeta.world.gen.OldSurfaceBuilder;
 
 import net.minecraft.nbt.NbtCompound;
@@ -27,6 +26,7 @@ import net.minecraft.world.biome.source.BiomeSource.class_6827;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
@@ -47,7 +47,7 @@ public abstract class ChunkProvider {
     protected final NbtCompound providerSettings;
     protected final Random random;
     
-    protected final OldNoiseColumnSampler noiseColumnSampler;
+    protected final NoiseColumnSampler noiseColumnSampler;
     protected final OldChunkNoiseSampler dummyNoiseChunkSampler;
     
     protected final ChunkRandom.RandomProvider randomProvider;
@@ -74,11 +74,19 @@ public abstract class ChunkProvider {
         this.emptyFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
         
         // Modified NoiseColumnSampler and ChunkNoiseSampler
-        GenerationShapeConfig shapeConfig = chunkGenerator.getGeneratorSettings().get().getGenerationShapeConfig();
+        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().get();
+        GenerationShapeConfig shapeConfig = generatorSettings.getGenerationShapeConfig();
         int verticalNoiseResolution = shapeConfig.verticalSize() * 4;
         int horizontalNoiseResolution = shapeConfig.horizontalSize() * 4;
         
-        this.noiseColumnSampler = new OldNoiseColumnSampler(this);
+        this.noiseColumnSampler = new NoiseColumnSampler(
+            shapeConfig,
+            generatorSettings.hasNoiseCaves(),
+            this.seed,
+            chunkGenerator.getNoiseRegistry(),
+            generatorSettings.getRandomProvider()
+        );
+        
         this.dummyNoiseChunkSampler = new OldChunkNoiseSampler(
             horizontalNoiseResolution,
             verticalNoiseResolution,
@@ -210,13 +218,6 @@ public abstract class ChunkProvider {
      */
     public OldChunkGenerator getChunkGenerator() {
         return this.chunkGenerator;
-    }
-    
-    /**
-     * @return OldNoiseColumnSampler.
-     */
-    public OldNoiseColumnSampler getNoiseColumnSampler() {
-        return this.noiseColumnSampler;
     }
     
     /**

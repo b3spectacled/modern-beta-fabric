@@ -4,7 +4,6 @@
   "package": "com.bespectacled.modernbeta.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "MixinChunkGeneratorSettingsInvoker",
     "MixinConfiguredStructureFeatures",
     "MixinConfiguredStructureFeaturesAccessor",
     "MixinGeneratorOptions",

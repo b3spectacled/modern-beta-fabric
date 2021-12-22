@@ -12,7 +12,6 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.noise.BaseNoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoiseProvider;
 import com.bespectacled.modernbeta.api.world.gen.noise.VanillaNoiseProvider;
-import com.bespectacled.modernbeta.mixin.MixinChunkGeneratorSettingsInvoker;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
@@ -138,10 +137,10 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         this.topSlide = shapeConfig.topSlide();
         this.bottomSlide = shapeConfig.bottomSlide();
         
-        this.generateNoiseCaves = ((MixinChunkGeneratorSettingsInvoker)(Object)generatorSettings).invokeHasNoiseCaves();
-        this.generateAquifers = ((MixinChunkGeneratorSettingsInvoker)(Object)generatorSettings).invokeHasAquifers();
-        this.generateOreVeins = ((MixinChunkGeneratorSettingsInvoker)(Object)generatorSettings).invokeHasOreVeins();
-        this.generateNoodleCaves = ((MixinChunkGeneratorSettingsInvoker)(Object)generatorSettings).invokeHasNoodleCaves();
+        this.generateNoiseCaves = generatorSettings.hasNoiseCaves();
+        this.generateAquifers = generatorSettings.hasAquifers();
+        this.generateOreVeins = generatorSettings.hasOreVeins();
+        this.generateNoodleCaves = generatorSettings.hasNoodleCaves();
         
         this.baseNoiseCache = new ChunkCache<>(
             "base_noise",
