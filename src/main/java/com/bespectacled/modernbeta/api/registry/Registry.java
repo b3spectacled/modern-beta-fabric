@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,13 +41,12 @@ public final class Registry<T> {
         return this.map.get(key);
     }
     
-    public T getOrElse(String key, T alternate) {
+    public Optional<T> getOrEmpty(String key) {
         if (!this.contains(key)) {
-            ModernBeta.log(Level.WARN, "Registry " + this.name + " does not contain entry named " + key + ", getting supplied default.");
-            return alternate;
+            ModernBeta.log(Level.WARN, "Registry " + this.name + " does not contain entry named " + key);
         }
-        
-        return this.map.get(key);
+            
+        return Optional.ofNullable(this.map.get(key));
     }
 
     public T getOrDefault(String key) {
@@ -58,21 +58,8 @@ public final class Registry<T> {
         return this.map.get(key);
     }
     
-    public T getOrAlternate(String key, String alternate) {
-        if (!this.contains(key)) {
-            ModernBeta.log(Level.WARN, "Registry " + this.name + " does not contain entry named " + key + ", defaulting to " + alternate);
-            return this.get(alternate);
-        }
-        
-        return this.map.get(key);
-    }
-    
     public boolean contains(String key) {
         return this.map.containsKey(key);
-    }
-    
-    public boolean containsExceptDefault(String key) {
-        return this.map.containsKey(key) && !key.equals(ModernBetaBuiltInTypes.DEFAULT_ID);
     }
     
     public Set<String> getKeySet() {

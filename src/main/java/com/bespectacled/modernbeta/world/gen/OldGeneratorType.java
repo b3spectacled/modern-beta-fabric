@@ -111,9 +111,20 @@ public class OldGeneratorType {
                 String biomeType = worldProvider.getBiomeProvider();
                 String caveBiomeType = worldProvider.getCaveBiomeProvider();
                 
-                NbtCompound chunkSettings = Registries.CHUNK_SETTINGS.getOrElse(worldType, () -> ChunkProviderSettings.createSettingsDefault(worldType)).get();
-                NbtCompound biomeSettings = Registries.BIOME_SETTINGS.getOrElse(biomeType, () -> BiomeProviderSettings.createSettingsDefault(biomeType)).get();
-                NbtCompound caveBiomeSettings = Registries.CAVE_BIOME_SETTINGS.getOrElse(caveBiomeType, () -> CaveBiomeProviderSettings.createSettingsDefault(caveBiomeType)).get();
+                NbtCompound chunkSettings = Registries.CHUNK_SETTINGS
+                    .getOrEmpty(worldType)
+                    .orElse(() -> ChunkProviderSettings.createSettingsDefault(worldType))
+                    .get();
+                
+                NbtCompound biomeSettings = Registries.BIOME_SETTINGS
+                    .getOrEmpty(biomeType)
+                    .orElse(() -> BiomeProviderSettings.createSettingsDefault(biomeType))
+                    .get();
+                
+                NbtCompound caveBiomeSettings = Registries.CAVE_BIOME_SETTINGS
+                    .getOrEmpty(caveBiomeType)
+                    .orElse(() -> CaveBiomeProviderSettings.createSettingsDefault(caveBiomeType))
+                    .get();
                 
                 return new OldChunkGenerator(
                     noiseRegistry,

@@ -89,24 +89,26 @@ public class WorldScreen extends GUIScreen {
                 this.worldSettings.clearAll();
                 this.worldSettings.putCompound(
                     WorldSetting.CHUNK, 
-                    Registries.CHUNK_SETTINGS.getOrElse(
-                        value.getChunkProvider(), 
-                        () -> ChunkProviderSettings.createSettingsDefault(value.getChunkProvider())
-                    ).get()
+                    Registries.CHUNK_SETTINGS
+                        .getOrEmpty(value.getChunkProvider())
+                        .orElse(() -> ChunkProviderSettings.createSettingsDefault(value.getChunkProvider()))
+                        .get()
                 );
+
                 this.worldSettings.putCompound(
                     WorldSetting.BIOME, 
-                    Registries.BIOME_SETTINGS.getOrElse(
-                        value.getBiomeProvider(),
-                        () -> BiomeProviderSettings.createSettingsDefault(value.getBiomeProvider())
-                    ).get()
+                    Registries.BIOME_SETTINGS
+                        .getOrEmpty(value.getBiomeProvider())
+                        .orElse(() -> BiomeProviderSettings.createSettingsDefault(value.getBiomeProvider()))
+                        .get()
                 );
+                
                 this.worldSettings.putCompound(
                     WorldSetting.CAVE_BIOME, 
-                    Registries.CAVE_BIOME_SETTINGS.getOrElse(
-                        value.getCaveBiomeProvider(), 
-                        () -> CaveBiomeProviderSettings.createSettingsDefault(value.getCaveBiomeProvider())
-                    ).get()
+                    Registries.CAVE_BIOME_SETTINGS
+                        .getOrEmpty(value.getCaveBiomeProvider())
+                        .orElse(() -> CaveBiomeProviderSettings.createSettingsDefault(value.getCaveBiomeProvider()))
+                        .get()
                 );
                 
                 // Replace single biome if applicable
@@ -127,10 +129,10 @@ public class WorldScreen extends GUIScreen {
                 this.worldSettings.clearSettings(WorldSetting.BIOME);
                 this.worldSettings.putCompound(
                     WorldSetting.BIOME,
-                    Registries.BIOME_SETTINGS.getOrElse(
-                        value,
-                        () -> BiomeProviderSettings.createSettingsDefault(value)
-                    ).get()
+                    Registries.BIOME_SETTINGS
+                        .getOrEmpty(value)
+                        .orElse(() -> BiomeProviderSettings.createSettingsDefault(value))
+                        .get()
                 );
                 
                 // Replace single biome if applicable
@@ -150,10 +152,10 @@ public class WorldScreen extends GUIScreen {
                 this.worldSettings.clearSettings(WorldSetting.CAVE_BIOME);
                 this.worldSettings.putCompound(
                     WorldSetting.CAVE_BIOME, 
-                    Registries.CAVE_BIOME_SETTINGS.getOrElse(
-                        value, 
-                        () -> CaveBiomeProviderSettings.createSettingsDefault(value)
-                    ).get()
+                    Registries.CAVE_BIOME_SETTINGS
+                        .getOrEmpty(value)
+                        .orElse(() -> CaveBiomeProviderSettings.createSettingsDefault(value))
+                        .get()
                 );
             
                 this.resetWorldScreen(this.worldProvider);

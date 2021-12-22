@@ -84,20 +84,20 @@ public class MixinGeneratorOptions {
             String biomeType = ModernBeta.BIOME_CONFIG.biomeType;
             String caveBiomeType = ModernBeta.CAVE_BIOME_CONFIG.caveBiomeType;
 
-            NbtCompound chunkSettings = Registries.CHUNK_SETTINGS.getOrElse(
-                worldType, 
-                () -> ChunkProviderSettings.createSettingsDefault(worldType)
-            ).get();
+            NbtCompound chunkSettings = Registries.CHUNK_SETTINGS
+                .getOrEmpty(worldType)
+                .orElse(() -> ChunkProviderSettings.createSettingsDefault(worldType))
+                .get();
             
-            NbtCompound biomeSettings = Registries.BIOME_SETTINGS.getOrElse(
-                biomeType, 
-                () -> BiomeProviderSettings.createSettingsDefault(biomeType)
-            ).get();
+            NbtCompound biomeSettings = Registries.BIOME_SETTINGS
+                .getOrEmpty(biomeType)
+                .orElse(() -> BiomeProviderSettings.createSettingsDefault(biomeType))
+                .get();
             
-            NbtCompound caveBiomeSettings = Registries.CAVE_BIOME_SETTINGS.getOrElse(
-                caveBiomeType, 
-                () -> CaveBiomeProviderSettings.createSettingsDefault(caveBiomeType)
-            ).get();
+            NbtCompound caveBiomeSettings = Registries.CAVE_BIOME_SETTINGS
+                .getOrEmpty(caveBiomeType)
+                .orElse(() -> CaveBiomeProviderSettings.createSettingsDefault(caveBiomeType))
+                .get();
             
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 noiseRegistry,
