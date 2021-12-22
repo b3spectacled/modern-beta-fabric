@@ -1,6 +1,5 @@
 package com.bespectacled.modernbeta;
 
-import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
@@ -23,11 +22,11 @@ public class ModernBetaBuiltInWorldProviders {
     
     static {
         DEFAULT = new WorldProvider(
-            BuiltInTypes.Chunk.BETA.name,
-            BuiltInTypes.Biome.BETA.name,
-            BuiltInTypes.CaveBiome.VORONOI.name, 
+            ModernBetaBuiltInTypes.Chunk.BETA.name,
+            ModernBetaBuiltInTypes.Biome.BETA.name,
+            ModernBetaBuiltInTypes.CaveBiome.VORONOI.name, 
             BetaBiomes.FOREST_ID.toString(), 
-            BuiltInTypes.WorldScreen.BASE.name,
+            ModernBetaBuiltInTypes.WorldScreen.BASE.name,
             true,
             false,
             true,
@@ -35,11 +34,11 @@ public class ModernBetaBuiltInWorldProviders {
         );
         
         BETA = new WorldProvider(
-            BuiltInTypes.Chunk.BETA.name,
-            BuiltInTypes.Biome.BETA.name,
-            BuiltInTypes.CaveBiome.VORONOI.name, 
+            ModernBetaBuiltInTypes.Chunk.BETA.name,
+            ModernBetaBuiltInTypes.Biome.BETA.name,
+            ModernBetaBuiltInTypes.CaveBiome.VORONOI.name, 
             BetaBiomes.FOREST_ID.toString(), 
-            BuiltInTypes.WorldScreen.INF_CLIMATE.name,
+            ModernBetaBuiltInTypes.WorldScreen.INF_CLIMATE.name,
             true,
             false,
             true,
@@ -47,11 +46,11 @@ public class ModernBetaBuiltInWorldProviders {
         );
         
         SKYLANDS = new WorldProvider(
-            BuiltInTypes.Chunk.SKYLANDS.name,
-            BuiltInTypes.Biome.SINGLE.name, 
-            BuiltInTypes.CaveBiome.NONE.name, 
+            ModernBetaBuiltInTypes.Chunk.SKYLANDS.name,
+            ModernBetaBuiltInTypes.Biome.SINGLE.name, 
+            ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
             BetaBiomes.SKY_ID.toString(), 
-            BuiltInTypes.DEFAULT_ID,
+            ModernBetaBuiltInTypes.DEFAULT_ID,
             false,
             false,
             false,
@@ -59,11 +58,11 @@ public class ModernBetaBuiltInWorldProviders {
         );
         
         ALPHA = new WorldProvider(
-            BuiltInTypes.Chunk.ALPHA.name,
-            BuiltInTypes.Biome.SINGLE.name, 
-            BuiltInTypes.CaveBiome.NONE.name, 
+            ModernBetaBuiltInTypes.Chunk.ALPHA.name,
+            ModernBetaBuiltInTypes.Biome.SINGLE.name, 
+            ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
             InfBiomes.ALPHA_ID.toString(), 
-            BuiltInTypes.WorldScreen.INF.name,
+            ModernBetaBuiltInTypes.WorldScreen.INF.name,
             true,
             false,
             false,
@@ -71,11 +70,11 @@ public class ModernBetaBuiltInWorldProviders {
         );
         
         INFDEV_611 = new WorldProvider(
-            BuiltInTypes.Chunk.INFDEV_611.name,
-            BuiltInTypes.Biome.SINGLE.name,
-            BuiltInTypes.CaveBiome.NONE.name,
+            ModernBetaBuiltInTypes.Chunk.INFDEV_611.name,
+            ModernBetaBuiltInTypes.Biome.SINGLE.name,
+            ModernBetaBuiltInTypes.CaveBiome.NONE.name,
             InfBiomes.INFDEV_611_ID.toString(),
-            BuiltInTypes.WorldScreen.INF.name,
+            ModernBetaBuiltInTypes.WorldScreen.INF.name,
             false,
             true,
             false,
@@ -83,11 +82,11 @@ public class ModernBetaBuiltInWorldProviders {
         );
         
         INFDEV_420 = new WorldProvider(
-            BuiltInTypes.Chunk.INFDEV_420.name,
-            BuiltInTypes.Biome.SINGLE.name, 
-            BuiltInTypes.CaveBiome.NONE.name, 
+            ModernBetaBuiltInTypes.Chunk.INFDEV_420.name,
+            ModernBetaBuiltInTypes.Biome.SINGLE.name, 
+            ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
             InfBiomes.INFDEV_420_ID.toString(), 
-            BuiltInTypes.WorldScreen.INF.name,
+            ModernBetaBuiltInTypes.WorldScreen.INF.name,
             true,
             false,
             false,
@@ -95,22 +94,22 @@ public class ModernBetaBuiltInWorldProviders {
         );
         
         INFDEV_415 = new WorldProvider(
-            BuiltInTypes.Chunk.INFDEV_415.name,
-            BuiltInTypes.Biome.SINGLE.name, 
-            BuiltInTypes.CaveBiome.NONE.name, 
+            ModernBetaBuiltInTypes.Chunk.INFDEV_415.name,
+            ModernBetaBuiltInTypes.Biome.SINGLE.name, 
+            ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
             InfBiomes.INFDEV_415_ID.toString(), 
-            BuiltInTypes.WorldScreen.INF.name,
+            ModernBetaBuiltInTypes.WorldScreen.INF.name,
             true,
             false,
             false, true
         );
         
         INFDEV_227 = new WorldProvider(
-            BuiltInTypes.Chunk.INFDEV_227.name, 
-            BuiltInTypes.Biome.SINGLE.name, 
-            BuiltInTypes.CaveBiome.NONE.name, 
+            ModernBetaBuiltInTypes.Chunk.INFDEV_227.name, 
+            ModernBetaBuiltInTypes.Biome.SINGLE.name, 
+            ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
             InfBiomes.INFDEV_227_ID.toString(), 
-            BuiltInTypes.WorldScreen.INFDEV_227.name,
+            ModernBetaBuiltInTypes.WorldScreen.INFDEV_227.name,
             true,
             false,
             false,
@@ -118,11 +117,11 @@ public class ModernBetaBuiltInWorldProviders {
         );
         
         INDEV = new WorldProvider(
-            BuiltInTypes.Chunk.INDEV.name,
-            BuiltInTypes.Biome.SINGLE.name, 
-            BuiltInTypes.CaveBiome.NONE.name, 
+            ModernBetaBuiltInTypes.Chunk.INDEV.name,
+            ModernBetaBuiltInTypes.Biome.SINGLE.name, 
+            ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
             IndevBiomes.INDEV_NORMAL_ID.toString(), 
-            BuiltInTypes.WorldScreen.INDEV.name,
+            ModernBetaBuiltInTypes.WorldScreen.INDEV.name,
             true,
             false,
             false,
@@ -130,11 +129,11 @@ public class ModernBetaBuiltInWorldProviders {
         );
         
         CLASSIC_0_30 = new WorldProvider(
-            BuiltInTypes.Chunk.CLASSIC_0_30.name,
-            BuiltInTypes.Biome.SINGLE.name, 
-            BuiltInTypes.CaveBiome.NONE.name,
+            ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.name,
+            ModernBetaBuiltInTypes.Biome.SINGLE.name, 
+            ModernBetaBuiltInTypes.CaveBiome.NONE.name,
             IndevBiomes.INDEV_NORMAL_ID.toString(), 
-            BuiltInTypes.WorldScreen.PRE_INF.name,
+            ModernBetaBuiltInTypes.WorldScreen.PRE_INF.name,
             true,
             false,
             false,
@@ -142,11 +141,11 @@ public class ModernBetaBuiltInWorldProviders {
         );
         
         BETA_ISLANDS = new WorldProvider(
-            BuiltInTypes.Chunk.BETA_ISLANDS.name,
-            BuiltInTypes.Biome.BETA.name,
-            BuiltInTypes.CaveBiome.VORONOI.name,
+            ModernBetaBuiltInTypes.Chunk.BETA_ISLANDS.name,
+            ModernBetaBuiltInTypes.Biome.BETA.name,
+            ModernBetaBuiltInTypes.CaveBiome.VORONOI.name,
             BetaBiomes.FOREST_ID.toString(),
-            BuiltInTypes.WorldScreen.ISLAND.name,
+            ModernBetaBuiltInTypes.WorldScreen.ISLAND.name,
             false,
             true,
             true,
@@ -154,11 +153,11 @@ public class ModernBetaBuiltInWorldProviders {
         );
         
         PE = new WorldProvider(
-            BuiltInTypes.Chunk.PE.name,
-            BuiltInTypes.Biome.PE.name,
-            BuiltInTypes.CaveBiome.NONE.name,
+            ModernBetaBuiltInTypes.Chunk.PE.name,
+            ModernBetaBuiltInTypes.Biome.PE.name,
+            ModernBetaBuiltInTypes.CaveBiome.NONE.name,
             PEBiomes.PE_FOREST_ID.toString(),
-            BuiltInTypes.WorldScreen.INF_CLIMATE.name,
+            ModernBetaBuiltInTypes.WorldScreen.INF_CLIMATE.name,
             true,
             false,
             false,

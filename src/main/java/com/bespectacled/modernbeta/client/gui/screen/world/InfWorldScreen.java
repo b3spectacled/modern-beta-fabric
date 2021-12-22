@@ -2,14 +2,14 @@ package com.bespectacled.modernbeta.client.gui.screen.world;
 
 import java.util.function.Consumer;
 
+import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.api.client.gui.screen.SettingsScreen;
-import com.bespectacled.modernbeta.api.client.gui.wrapper.BooleanCyclingOptionWrapper;
-import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
-import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
+import com.bespectacled.modernbeta.client.gui.wrapper.BooleanCyclingOptionWrapper;
+import com.bespectacled.modernbeta.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.compat.Compat;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
@@ -45,7 +45,7 @@ public class InfWorldScreen extends SettingsScreen {
         String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
         
         boolean isHydrogenLoaded = Compat.isLoaded("hydrogen");
-        boolean isSingleBiome = biomeType.equals(BuiltInTypes.Biome.SINGLE.name);
+        boolean isSingleBiome = biomeType.equals(ModernBetaBuiltInTypes.Biome.SINGLE.name);
         boolean showDeepslateOption = Registries.WORLD.get(worldType).showGenerateDeepslate();
         
         /*

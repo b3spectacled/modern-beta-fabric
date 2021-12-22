@@ -3,15 +3,15 @@ package com.bespectacled.modernbeta.client.gui.screen;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.ModernBetaBuiltInWorldProviders;
-import com.bespectacled.modernbeta.api.client.gui.wrapper.ActionOptionWrapper;
-import com.bespectacled.modernbeta.api.client.gui.wrapper.CyclingOptionWrapper;
-import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.client.gui.WorldSettings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
+import com.bespectacled.modernbeta.client.gui.wrapper.ActionOptionWrapper;
+import com.bespectacled.modernbeta.client.gui.wrapper.CyclingOptionWrapper;
 import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
@@ -174,9 +174,9 @@ public class WorldScreen extends GUIScreen {
             .apply(this, WorldSetting.BIOME); 
         
         ActionOptionWrapper biomeSettingsOption = new ActionOptionWrapper(
-            biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? "createWorld.customize.biome" :  "createWorld.customize.settings",
+            biomeType.equals(ModernBetaBuiltInTypes.Biome.SINGLE.name) ? "createWorld.customize.biome" :  "createWorld.customize.settings",
             biomeSettingsScreen != null ? widget -> this.client.setScreen(biomeSettingsScreen) : null
-        ).suffix(biomeType.equals(BuiltInTypes.Biome.SINGLE.name) ? 
+        ).suffix(biomeType.equals(ModernBetaBuiltInTypes.Biome.SINGLE.name) ? 
             GuiUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.SINGLE_BIOME))) : ""
         ).tooltips(() -> this.client.textRenderer.wrapLines(new LiteralText(this.settingsToString(WorldSetting.BIOME)), 250));
         
@@ -185,9 +185,9 @@ public class WorldScreen extends GUIScreen {
             .apply(this, WorldSetting.CAVE_BIOME);
         
         ActionOptionWrapper caveBiomeSettingsOption = new ActionOptionWrapper(
-            caveBiomeType.equals(BuiltInTypes.CaveBiome.SINGLE.name) ? "createWorld.customize.biome" : "createWorld.customize.settings",
+            caveBiomeType.equals(ModernBetaBuiltInTypes.CaveBiome.SINGLE.name) ? "createWorld.customize.biome" : "createWorld.customize.settings",
             caveBiomeSettingsScreen != null ? widget -> this.client.setScreen(caveBiomeSettingsScreen) : null
-        ).suffix(caveBiomeType.equals(BuiltInTypes.CaveBiome.SINGLE.name) ? 
+        ).suffix(caveBiomeType.equals(ModernBetaBuiltInTypes.CaveBiome.SINGLE.name) ? 
             GuiUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getCaveBiomeSetting(NbtTags.SINGLE_BIOME))) :  ""
         ).tooltips(() -> this.client.textRenderer.wrapLines(new LiteralText(this.settingsToString(WorldSetting.CAVE_BIOME)), 250));
         
@@ -214,7 +214,7 @@ public class WorldScreen extends GUIScreen {
     
     protected void setDefaultSingleBiome(String biomeType, String defaultBiome) {
         // Replace default single biome with one supplied by world provider, if switching to Single biome type
-        if (biomeType.equals(BuiltInTypes.Biome.SINGLE.name)) { 
+        if (biomeType.equals(ModernBetaBuiltInTypes.Biome.SINGLE.name)) { 
             this.worldSettings.putElement(WorldSetting.BIOME, NbtTags.SINGLE_BIOME, NbtString.of(defaultBiome));
         }
     }

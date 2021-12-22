@@ -1,6 +1,6 @@
-package com.bespectacled.modernbeta.api.registry;
+package com.bespectacled.modernbeta;
 
-public final class BuiltInTypes {
+public final class ModernBetaBuiltInTypes {
     public static final String DEFAULT_ID = "default";
     
     public enum Chunk {

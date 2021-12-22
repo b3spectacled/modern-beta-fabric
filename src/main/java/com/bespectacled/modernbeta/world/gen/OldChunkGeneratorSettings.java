@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.world.gen;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.util.BlockStates;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -55,17 +55,17 @@ public class OldChunkGeneratorSettings {
     }
     
     static {
-        BETA = ModernBeta.createId(BuiltInTypes.Chunk.BETA.name);
-        ALPHA = ModernBeta.createId(BuiltInTypes.Chunk.ALPHA.name);
-        SKYLANDS = ModernBeta.createId(BuiltInTypes.Chunk.SKYLANDS.name);
-        INFDEV_611 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_611.name);
-        INFDEV_420 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_420.name);
-        INFDEV_415 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_415.name);
-        INFDEV_227 = ModernBeta.createId(BuiltInTypes.Chunk.INFDEV_227.name);
-        INDEV = ModernBeta.createId(BuiltInTypes.Chunk.INDEV.name);
-        CLASSIC_0_30 = ModernBeta.createId(BuiltInTypes.Chunk.CLASSIC_0_30.name);
-        BETA_ISLANDS = ModernBeta.createId(BuiltInTypes.Chunk.BETA_ISLANDS.name);
-        PE = ModernBeta.createId(BuiltInTypes.Chunk.PE.name);
+        BETA = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.BETA.name);
+        ALPHA = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.ALPHA.name);
+        SKYLANDS = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.SKYLANDS.name);
+        INFDEV_611 = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.INFDEV_611.name);
+        INFDEV_420 = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.INFDEV_420.name);
+        INFDEV_415 = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.INFDEV_415.name);
+        INFDEV_227 = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.INFDEV_227.name);
+        INDEV = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.INDEV.name);
+        CLASSIC_0_30 = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.name);
+        BETA_ISLANDS = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.BETA_ISLANDS.name);
+        PE = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.PE.name);
 
         BETA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, true, true, true, true, true);
         ALPHA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.ALPHA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, true, true, true, true, true);

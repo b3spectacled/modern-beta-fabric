@@ -1,8 +1,9 @@
-package com.bespectacled.modernbeta.api.client.gui.wrapper;
+package com.bespectacled.modernbeta.client.gui.wrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bespectacled.modernbeta.api.client.gui.wrapper.OptionWrapper;
 import com.bespectacled.modernbeta.client.gui.option.TextOption;
 
 import net.minecraft.client.option.Option;

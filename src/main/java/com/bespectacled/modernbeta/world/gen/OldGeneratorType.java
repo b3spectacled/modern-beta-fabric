@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.client.gui.WorldSettings;
@@ -37,7 +37,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 @Environment(EnvType.CLIENT)
 public class OldGeneratorType {
-    private static final String DEFAULT_WORLD_TYPE = BuiltInTypes.Chunk.BETA.name;
+    private static final String DEFAULT_WORLD_TYPE = ModernBetaBuiltInTypes.Chunk.BETA.name;
     private static final Optional<Integer> MODERN_BETA_VERSION = Optional.of(ModernBeta.MOD_VERSION);
     private static final GeneratorType OLD;
     

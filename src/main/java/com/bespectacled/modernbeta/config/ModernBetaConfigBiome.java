@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.config;
 
 import java.util.Map;
 
-import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
@@ -18,7 +18,7 @@ import net.minecraft.nbt.NbtCompound;
 public class ModernBetaConfigBiome implements ConfigData {
 
     // General
-    public String biomeType = BuiltInTypes.Biome.BETA.name;
+    public String biomeType = ModernBetaBuiltInTypes.Biome.BETA.name;
     
     // Oceans
     public boolean generateOceans = true;

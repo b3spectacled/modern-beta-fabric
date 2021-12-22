@@ -3,13 +3,13 @@ package com.bespectacled.modernbeta.client.gui.screen.cavebiome;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.api.client.gui.screen.SettingsScreen;
-import com.bespectacled.modernbeta.api.client.gui.wrapper.ActionOptionWrapper;
-import com.bespectacled.modernbeta.api.client.gui.wrapper.BooleanCyclingOptionWrapper;
-import com.bespectacled.modernbeta.api.client.gui.wrapper.DoubleOptionWrapper;
-import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
+import com.bespectacled.modernbeta.client.gui.wrapper.ActionOptionWrapper;
+import com.bespectacled.modernbeta.client.gui.wrapper.BooleanCyclingOptionWrapper;
+import com.bespectacled.modernbeta.client.gui.wrapper.DoubleOptionWrapper;
+import com.bespectacled.modernbeta.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome.CaveBiomeVoronoiPoint;
 import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.util.NbtListBuilder;

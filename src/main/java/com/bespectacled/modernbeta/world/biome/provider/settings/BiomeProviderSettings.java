@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.world.biome.provider.settings;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.config.ModernBetaConfigBiome;
 import com.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import com.bespectacled.modernbeta.util.NbtTags;
@@ -24,7 +24,7 @@ public class BiomeProviderSettings {
     }
     
     public static NbtCompound createSettingsSingle() {
-        return createSettingsBase(BuiltInTypes.Biome.SINGLE.name)
+        return createSettingsBase(ModernBetaBuiltInTypes.Biome.SINGLE.name)
             .putString(NbtTags.SINGLE_BIOME, CONFIG.singleBiome)
             .build();
     }
@@ -33,7 +33,7 @@ public class BiomeProviderSettings {
         NbtCompoundBuilder builder = new NbtCompoundBuilder();
         CONFIG.betaClimates.entrySet().forEach(e -> builder.putCompound(e.getKey(), e.getValue().toCompound()));
         
-        return createSettingsOceans(BuiltInTypes.Biome.BETA.name)
+        return createSettingsOceans(ModernBetaBuiltInTypes.Biome.BETA.name)
             .putCompound(NbtTags.BIOMES, builder.build())
             .build();
     }
@@ -42,13 +42,13 @@ public class BiomeProviderSettings {
         NbtCompoundBuilder builder = new NbtCompoundBuilder();
         CONFIG.peClimates.entrySet().forEach(e -> builder.putCompound(e.getKey(), e.getValue().toCompound()));
         
-        return createSettingsOceans(BuiltInTypes.Biome.PE.name)
+        return createSettingsOceans(ModernBetaBuiltInTypes.Biome.PE.name)
             .putCompound(NbtTags.BIOMES, builder.build())
             .build();
     }
     
     public static NbtCompound createSettingsVanilla() {
-        return createSettingsOceans(BuiltInTypes.Biome.VANILLA.name)
+        return createSettingsOceans(ModernBetaBuiltInTypes.Biome.VANILLA.name)
             .putBoolean(NbtTags.VANILLA_LARGE_BIOMES, CONFIG.vanillaLargeBiomes)
             .build();
     }

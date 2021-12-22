@@ -4,12 +4,12 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.client.gui.wrapper.CyclingOptionWrapper;
-import com.bespectacled.modernbeta.api.client.gui.wrapper.DoubleOptionWrapper;
-import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
+import com.bespectacled.modernbeta.client.gui.wrapper.CyclingOptionWrapper;
+import com.bespectacled.modernbeta.client.gui.wrapper.DoubleOptionWrapper;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
@@ -52,7 +52,7 @@ public class IndevWorldScreen extends InfWorldScreen {
         
         Supplier<ChunkGeneratorSettings> chunkGenSettings = () -> this.registryManager
             .<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY)
-            .get(ModernBeta.createId(BuiltInTypes.Chunk.INDEV.name));
+            .get(ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.INDEV.name));
             
         int topY = chunkGenSettings.get().getGenerationShapeConfig().height() + chunkGenSettings.get().getGenerationShapeConfig().minimumY();
         

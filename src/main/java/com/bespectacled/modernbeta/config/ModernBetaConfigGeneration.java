@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.config;
 
-import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
 
@@ -10,7 +10,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 @Config(name = "config_generation")
 public class ModernBetaConfigGeneration implements ConfigData {
     // General
-    public String worldType = BuiltInTypes.Chunk.BETA.name;
+    public String worldType = ModernBetaBuiltInTypes.Chunk.BETA.name;
     
     // Infinite
     public boolean generateOceanShrines = true;

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 
 import com.bespectacled.modernbeta.ModernBeta;
+import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 
 public final class Registry<T> {
     private final String name;
@@ -51,7 +52,7 @@ public final class Registry<T> {
     public T getOrDefault(String key) {
         if (!this.contains(key)) {
             ModernBeta.log(Level.WARN, "Registry " + this.name + " does not contain entry named " + key + ", getting default entry.");
-            return this.get(BuiltInTypes.DEFAULT_ID);
+            return this.get(ModernBetaBuiltInTypes.DEFAULT_ID);
         }
         
         return this.map.get(key);
@@ -71,20 +72,20 @@ public final class Registry<T> {
     }
     
     public boolean containsExceptDefault(String key) {
-        return this.map.containsKey(key) && !key.equals(BuiltInTypes.DEFAULT_ID);
+        return this.map.containsKey(key) && !key.equals(ModernBetaBuiltInTypes.DEFAULT_ID);
     }
     
     public Set<String> getKeySet() {
         return this.map.keySet()
             .stream()
-            .filter(k -> !k.equals(BuiltInTypes.DEFAULT_ID))
+            .filter(k -> !k.equals(ModernBetaBuiltInTypes.DEFAULT_ID))
             .collect(Collectors.toCollection(LinkedHashSet::new));
     }
     
     public List<T> getEntries() {
         return this.map.entrySet()
             .stream()
-            .filter(e -> !e.getKey().equals(BuiltInTypes.DEFAULT_ID))
+            .filter(e -> !e.getKey().equals(ModernBetaBuiltInTypes.DEFAULT_ID))
             .map(e -> e.getValue())
             .collect(Collectors.toList());
     }

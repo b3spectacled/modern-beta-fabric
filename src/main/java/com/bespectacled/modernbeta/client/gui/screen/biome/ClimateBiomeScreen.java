@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.client.gui.wrapper.ActionOptionWrapper;
-import com.bespectacled.modernbeta.api.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.client.gui.Settings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
+import com.bespectacled.modernbeta.client.gui.wrapper.ActionOptionWrapper;
+import com.bespectacled.modernbeta.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.config.ModernBetaConfigBiome.ClimateMapping;
 import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.util.NbtCompoundBuilder;

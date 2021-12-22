@@ -1,7 +1,7 @@
 package com.bespectacled.modernbeta.world.gen.provider.settings;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.config.ModernBetaConfigGeneration;
 import com.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import com.bespectacled.modernbeta.util.NbtTags;
@@ -40,51 +40,51 @@ public class ChunkProviderSettings {
     }
     
     public static NbtCompound createSettingsBeta() {
-        return createSettingsClimate(BuiltInTypes.Chunk.BETA.name).build();
+        return createSettingsClimate(ModernBetaBuiltInTypes.Chunk.BETA.name).build();
     }
     
     public static NbtCompound createSettingsSkylands() {
-        return createSettingsBase(BuiltInTypes.Chunk.SKYLANDS.name)
+        return createSettingsBase(ModernBetaBuiltInTypes.Chunk.SKYLANDS.name)
             .putBoolean(NbtTags.GEN_OCEANS, false)
             .build();
     }
     
     public static NbtCompound createSettingsAlpha() {
-        return createSettingsInf(BuiltInTypes.Chunk.ALPHA.name).build();
+        return createSettingsInf(ModernBetaBuiltInTypes.Chunk.ALPHA.name).build();
     }
     
     public static NbtCompound createSettingsInfdev611() {
-        return createSettingsInf(BuiltInTypes.Chunk.INFDEV_611.name).build();
+        return createSettingsInf(ModernBetaBuiltInTypes.Chunk.INFDEV_611.name).build();
     }
     
     public static NbtCompound createSettingsInfdev415() {
-        return createSettingsInf(BuiltInTypes.Chunk.INFDEV_415.name).build();
+        return createSettingsInf(ModernBetaBuiltInTypes.Chunk.INFDEV_415.name).build();
     }
     
     public static NbtCompound createSettingsInfdev420() {
-        return createSettingsInf(BuiltInTypes.Chunk.INFDEV_420.name).build();
+        return createSettingsInf(ModernBetaBuiltInTypes.Chunk.INFDEV_420.name).build();
     }
     
     public static NbtCompound createSettingsInfdev227() {
-        return createSettingsInf(BuiltInTypes.Chunk.INFDEV_227.name)
+        return createSettingsInf(ModernBetaBuiltInTypes.Chunk.INFDEV_227.name)
             .putBoolean(NbtTags.GEN_INFDEV_PYRAMID, CONFIG.generateInfdevPyramid)
             .putBoolean(NbtTags.GEN_INFDEV_WALL, CONFIG.generateInfdevWall)
             .build();
     }
     
     public static NbtCompound createSettingsIndev() {
-        return createSettingsPreInf(BuiltInTypes.Chunk.INDEV.name)
+        return createSettingsPreInf(ModernBetaBuiltInTypes.Chunk.INDEV.name)
             .putString(NbtTags.LEVEL_TYPE, CONFIG.levelType)
             .putString(NbtTags.LEVEL_THEME, CONFIG.levelTheme)
             .build();
     }
     
     public static NbtCompound createSettingsClassic030() {
-        return createSettingsPreInf(BuiltInTypes.Chunk.CLASSIC_0_30.name).build();
+        return createSettingsPreInf(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.name).build();
     }
     
     public static NbtCompound createSettingsIslands() {
-        return createSettingsClimate(BuiltInTypes.Chunk.BETA_ISLANDS.name)
+        return createSettingsClimate(ModernBetaBuiltInTypes.Chunk.BETA_ISLANDS.name)
             .putBoolean(NbtTags.GEN_OUTER_ISLANDS, CONFIG.generateOuterIslands)
             .putInt(NbtTags.CENTER_ISLAND_RADIUS, CONFIG.centerIslandRadius)
             .putFloat(NbtTags.CENTER_ISLAND_FALLOFF, CONFIG.centerIslandFalloff)
@@ -96,6 +96,6 @@ public class ChunkProviderSettings {
     }
     
     public static NbtCompound createSettingsPE() {
-        return createSettingsClimate(BuiltInTypes.Chunk.PE.name).build();
+        return createSettingsClimate(ModernBetaBuiltInTypes.Chunk.PE.name).build();
     }
 }

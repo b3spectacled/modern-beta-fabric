@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.config;
 
 import java.util.List;
 
-import com.bespectacled.modernbeta.api.registry.BuiltInTypes;
+import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import com.bespectacled.modernbeta.util.NbtTags;
 
@@ -14,7 +14,7 @@ import net.minecraft.world.biome.BiomeKeys;
 @Config(name = "config_cave_biome")
 public class ModernBetaConfigCaveBiome implements ConfigData {
     // General
-    public String caveBiomeType = BuiltInTypes.CaveBiome.SINGLE.name;
+    public String caveBiomeType = ModernBetaBuiltInTypes.CaveBiome.SINGLE.name;
     
     // Single
     public String singleBiome = BiomeKeys.LUSH_CAVES.getValue().toString();
