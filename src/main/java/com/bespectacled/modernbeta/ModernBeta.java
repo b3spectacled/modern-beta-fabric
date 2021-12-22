@@ -1,5 +1,8 @@
 package com.bespectacled.modernbeta;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.apache.logging.log4j.Level;
@@ -15,6 +18,7 @@ import com.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
 import com.bespectacled.modernbeta.config.ModernBetaConfigCompat;
 import com.bespectacled.modernbeta.config.ModernBetaConfigGeneration;
 import com.bespectacled.modernbeta.config.ModernBetaConfigRendering;
+import com.bespectacled.modernbeta.data.ModernBetaDataGenerator;
 import com.bespectacled.modernbeta.world.biome.OldBiomeModifier;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.OldBiomes;
@@ -114,6 +118,7 @@ public class ModernBeta implements ModInitializer {
         // Register dev-only stuff, i.e. commands, etc.
         if (DEV_ENV) {
             DebugProviderSettingsCommand.register();
+            //ModernBetaDataGenerator.generateData();
         }
 
         // Man, I am not good at this...
