@@ -31,12 +31,8 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
     
     private Map<String, ClimateMapping> climateMap;
     
-    private ClimateBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
-        super(parent, worldSetting, consumer, settings);
-    }
-    
     private ClimateBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
-        this(parent, worldSetting, consumer, new Settings(parent.getWorldSettings().getNbt(worldSetting)));
+        super(parent, worldSetting, consumer);
     }
     
     public static ClimateBiomeScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {

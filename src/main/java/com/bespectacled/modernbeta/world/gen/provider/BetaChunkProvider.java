@@ -71,9 +71,9 @@ public class BetaChunkProvider extends NoiseChunkProvider {
         
         this.climateSampler = (
             chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource &&
-            oldBiomeSource.getBiomeProvider() instanceof ClimateSampler sampler &&
+            oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
             sampleClimate
-        ) ? sampler : new BetaBiomeProvider(chunkGenerator.getWorldSeed(), BiomeProviderSettings.createSettingsBeta(), null);
+        ) ? climateSampler : new BetaBiomeProvider(chunkGenerator.getWorldSeed(), BiomeProviderSettings.createSettingsBeta(), null);
         this.spawnLocator = new BeachSpawnLocator(this, this.beachNoiseOctaves);
     }
     

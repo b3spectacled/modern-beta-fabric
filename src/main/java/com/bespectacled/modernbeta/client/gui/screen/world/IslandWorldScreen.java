@@ -30,17 +30,20 @@ public class IslandWorldScreen extends InfClimateWorldScreen {
     private static final String CENTER_OCEAN_RADIUS_TOOLTIP = "createWorld.customize.island.centerOceanRadius.tooltip";
     private static final String OUTER_ISLAND_NOISE_SCALE_TOOLTIP = "createWorld.customize.island.outerIslandNoiseScale.tooltip";
     private static final String OUTER_ISLAND_NOISE_OFFSET_TOOLTIP = "createWorld.customize.island.outerIslandNoiseOffset.tooltip";
-
-    protected IslandWorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
-        super(parent, worldSetting, consumer, settings);
+    
+    protected IslandWorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings setting) {
+        super(parent, worldSetting, consumer, setting);
+    }
+    
+    protected IslandWorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
+        super(parent, worldSetting, consumer);
     }
 
     public static IslandWorldScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
         return new IslandWorldScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt()),
-            new Settings(worldScreen.getWorldSettings().getNbt(worldSetting))
+            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt())
         );
     }
     

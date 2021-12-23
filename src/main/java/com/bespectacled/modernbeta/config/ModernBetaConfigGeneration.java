@@ -15,7 +15,7 @@ public class ModernBetaConfigGeneration implements ConfigData {
     // Infinite
     public boolean generateOceanShrines = true;
     public boolean generateMonuments = false;
-    public boolean sampleClimate = false;
+    public boolean sampleClimate = true;
     public boolean generateDeepslate = true;
 
     // Infdev 227

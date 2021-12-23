@@ -45,6 +45,11 @@ public abstract class GUIScreen extends Screen {
         }
     }
     
+    @Override
+    public void tick() {
+        super.tick();
+    }
+    
     public void addOption(OptionWrapper option) {
         this.buttonList.addSingleOptionEntry(option.create());
     }

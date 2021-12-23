@@ -15,11 +15,10 @@ import net.minecraft.text.TranslatableText;
 
 public abstract class OceanBiomeScreen extends SettingsScreen {
     private static final String GENERATE_OCEANS_DISPLAY_STRING = "createWorld.customize.biome.generateOceans";
-    
     private static final String GENERATE_OCEANS_TOOLTIP = "createWorld.customize.biome.generateOceans.tooltip";
-
-    protected OceanBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
-        super(parent, worldSetting, consumer, settings);
+    
+    protected OceanBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
+        super(parent, worldSetting, consumer);
     }
     
     @Override

@@ -15,16 +15,15 @@ public class Infdev227WorldScreen extends InfWorldScreen {
     private static final String INFDEV_PYRAMID_DISPLAY_STRING = "createWorld.customize.infdev.generateInfdevPyramid";
     private static final String INFDEV_WALL_DISPLAY_STRING = "createWorld.customize.infdev.generateInfdevWall";
 
-    protected Infdev227WorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
-        super(parent, worldSetting, consumer, settings);
+    protected Infdev227WorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
+        super(parent, worldSetting, consumer);
     }
 
     public static Infdev227WorldScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
         return new Infdev227WorldScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt()),
-            new Settings(worldScreen.getWorldSettings().getNbt(worldSetting))
+            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt())
         );
     }
     

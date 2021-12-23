@@ -14,12 +14,8 @@ import net.minecraft.nbt.NbtByte;
 public class VanillaBiomeScreen extends OceanBiomeScreen {
     private static final String LARGE_BIOMES_DISPLAY_STRING = "createWorld.customize.biome.largeBiomes";
     
-    private VanillaBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
-        super(parent, worldSetting, consumer, settings);
-    }
-    
     private VanillaBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
-        this(parent, worldSetting, consumer, new Settings(parent.getWorldSettings().getNbt(worldSetting)));
+        super(parent, worldSetting, consumer);
     }
     
     public static VanillaBiomeScreen create(WorldScreen parent, WorldSetting worldSetting) {

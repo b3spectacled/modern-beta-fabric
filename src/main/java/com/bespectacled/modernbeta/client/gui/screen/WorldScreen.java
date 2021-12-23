@@ -7,7 +7,6 @@ import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.ModernBetaBuiltInWorldProviders;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
-import com.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import com.bespectacled.modernbeta.client.gui.WorldSettings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.wrapper.ActionOptionWrapper;
@@ -29,7 +28,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public class WorldScreen extends GUIScreen {
@@ -252,17 +250,7 @@ public class WorldScreen extends GUIScreen {
         }
     }
     
-    private void postProcessOptions(WorldProvider worldProvider) {
-        // Replace sampleClimate option depending on if climate sampler matches biome type
-        String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
-        boolean isSameBiomeType = worldProvider.getBiomeProvider().equals(biomeType);
-        boolean isClimateSampler = Registries.BIOME
-            .get(biomeType)
-            .apply(0L, Registries.BIOME_SETTINGS.get(biomeType).get(), BuiltinRegistries.BIOME) instanceof ClimateSampler;
-        
-        if (isClimateSampler && this.worldSettings.hasElement(WorldSetting.CHUNK, NbtTags.SAMPLE_CLIMATE))
-            this.worldSettings.putElement(WorldSetting.CHUNK, NbtTags.SAMPLE_CLIMATE, NbtByte.of(isSameBiomeType));
-    }
+    private void postProcessOptions(WorldProvider worldProvider) {}
     
     private String settingsToString(WorldSetting setting) {
         NbtCompound settings = this.worldSettings.getNbt(setting);

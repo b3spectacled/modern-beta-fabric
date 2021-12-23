@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.client.gui.screen.world;
 
 import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.api.client.gui.screen.SettingsScreen;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.client.gui.Settings;
@@ -23,17 +22,20 @@ public class InfWorldScreen extends SettingsScreen {
     private static final String GENERATE_OCEAN_SHRINES_DISPLAY_STRING = "createWorld.customize.inf.generateOceanShrines";
     private static final String GENERATE_MONUMENTS_DISPLAY_STRING = "createWorld.customize.inf.generateMonuments";
     private static final String GENERATE_DEEPSLATE_DISPLAY_STRING = "createWorld.customize.inf.generateDeepslate";
+    
+    protected InfWorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings setting) {
+        super(parent, worldSetting, consumer, setting);
+    }
 
-    protected InfWorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
-        super(parent, worldSetting, consumer, settings);
+    protected InfWorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
+        super(parent, worldSetting, consumer);
     }
 
     public static InfWorldScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
         return new InfWorldScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt()),
-            new Settings(worldScreen.getWorldSettings().getNbt(worldSetting))
+            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt())
         );
     }
     
@@ -42,21 +44,9 @@ public class InfWorldScreen extends SettingsScreen {
         super.init();
         
         String worldType = NbtUtil.toStringOrThrow(this.getSetting(NbtTags.WORLD_TYPE));
-        String biomeType = NbtUtil.toStringOrThrow(this.worldSettings.getElement(WorldSetting.BIOME, NbtTags.BIOME_TYPE));
         
         boolean isHydrogenLoaded = Compat.isLoaded("hydrogen");
-        boolean isSingleBiome = biomeType.equals(ModernBetaBuiltInTypes.Biome.SINGLE.name);
         boolean showDeepslateOption = Registries.WORLD.get(worldType).showGenerateDeepslate();
-        
-        /*
-        boolean isSingleBiomeAndHasOceanShrine = isSingleBiome ? 
-            this.registryManager
-            .<Biome>get(Registry.BIOME_KEY)
-            .get(new Identifier(NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.SINGLE_BIOME))))
-            .getGenerationSettings()
-            .hasStructureFeature(OldStructures.OCEAN_SHRINE_STRUCTURE) : 
-            false;
-        */
 
         BooleanCyclingOptionWrapper generateOceanShrines = new BooleanCyclingOptionWrapper(
             GENERATE_OCEAN_SHRINES_DISPLAY_STRING,
@@ -78,11 +68,11 @@ public class InfWorldScreen extends SettingsScreen {
         
         TextOptionWrapper hydrogenText = new TextOptionWrapper(HYDROGEN_LOADED_STRING).formatting(Formatting.RED);
         
-        if (isHydrogenLoaded && !isSingleBiome)
+        if (isHydrogenLoaded)
             this.addOption(hydrogenText);
         
-        this.addOption(generateOceanShrines, !isHydrogenLoaded && !isSingleBiome);
-        this.addOption(generateMonuments, !isHydrogenLoaded && !isSingleBiome);
+        this.addOption(generateOceanShrines, !isHydrogenLoaded);
+        this.addOption(generateMonuments, !isHydrogenLoaded);
         this.addOption(generateDeepslate, showDeepslateOption);
     }
 }

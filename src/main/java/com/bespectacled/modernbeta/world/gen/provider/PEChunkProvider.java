@@ -74,9 +74,9 @@ public class PEChunkProvider extends NoiseChunkProvider {
         
         this.climateSampler = (
             chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource &&
-            oldBiomeSource.getBiomeProvider() instanceof ClimateSampler sampler &&
+            oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
             sampleClimate
-        ) ? sampler : new PEBiomeProvider(chunkGenerator.getWorldSeed(), BiomeProviderSettings.createSettingsBeta(), null);
+        ) ? climateSampler : new PEBiomeProvider(chunkGenerator.getWorldSeed(), BiomeProviderSettings.createSettingsBeta(), null);
         this.spawnLocator = new PESpawnLocator(this, this.beachNoiseOctaves);
     }
     

@@ -27,16 +27,15 @@ public class PreInfWorldScreen extends InfWorldScreen {
     private static final String LEVEL_HEIGHT_TOOLTIP = "createWorld.customize.indev.levelHeight.tooltip";
     private static final String CAVE_RADIUS_TOOLTIP = "createWorld.customize.indev.caveRadius.tooltip";
 
-    protected PreInfWorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
-        super(parent, worldSetting, consumer, settings);
+    protected PreInfWorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
+        super(parent, worldSetting, consumer);
     }
 
     public static PreInfWorldScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
         return new PreInfWorldScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt()),
-            new Settings(worldScreen.getWorldSettings().getNbt(worldSetting))
+            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt())
         );
     }
     

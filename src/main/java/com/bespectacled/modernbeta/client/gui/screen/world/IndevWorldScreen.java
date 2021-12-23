@@ -1,7 +1,6 @@
 package com.bespectacled.modernbeta.client.gui.screen.world;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
@@ -20,6 +19,7 @@ import net.minecraft.nbt.NbtInt;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 public class IndevWorldScreen extends InfWorldScreen {
@@ -33,16 +33,15 @@ public class IndevWorldScreen extends InfWorldScreen {
     private static final String LEVEL_HEIGHT_TOOLTIP = "createWorld.customize.indev.levelHeight.tooltip";
     private static final String CAVE_RADIUS_TOOLTIP = "createWorld.customize.indev.caveRadius.tooltip";
 
-    protected IndevWorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
-        super(parent, worldSetting, consumer, settings);
+    protected IndevWorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
+        super(parent, worldSetting, consumer);
     }
 
     public static IndevWorldScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
         return new IndevWorldScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt()),
-            new Settings(worldScreen.getWorldSettings().getNbt(worldSetting))
+            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt())
         );
     }
     
@@ -50,12 +49,23 @@ public class IndevWorldScreen extends InfWorldScreen {
     protected void init() {
         super.init();
         
-        Supplier<ChunkGeneratorSettings> chunkGenSettings = () -> this.registryManager
+        // Generator settings governs generation height.
+        // Dimension settings governs logical height.
+        // Both need to be checked.
+        
+        ChunkGeneratorSettings generatorSettings = this.registryManager
             .<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY)
             .get(ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.INDEV.name));
-            
-        int topY = chunkGenSettings.get().getGenerationShapeConfig().height() + chunkGenSettings.get().getGenerationShapeConfig().minimumY();
         
+        DimensionType dimensionType = this.registryManager
+            .<DimensionType>get(Registry.DIMENSION_TYPE_KEY)
+            .get(DimensionType.OVERWORLD_ID);
+            
+        int genTopY = generatorSettings.getGenerationShapeConfig().height() + generatorSettings.getGenerationShapeConfig().minimumY();
+        int dimTopY = dimensionType.getHeight() + dimensionType.getMinimumY();
+        
+        int topY = Math.min(genTopY, dimTopY);
+
         CyclingOptionWrapper<IndevTheme> levelTheme = new CyclingOptionWrapper<>(
             LEVEL_THEME_DISPLAY_STRING,
             IndevTheme.values(),

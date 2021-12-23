@@ -3,7 +3,6 @@ package com.bespectacled.modernbeta.api.client.gui.screen;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.client.gui.Settings;
-import com.bespectacled.modernbeta.client.gui.WorldSettings;
 import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.GUIScreen;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
@@ -14,17 +13,15 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.registry.DynamicRegistryManager;
 
 public abstract class SettingsScreen extends GUIScreen {
-    protected final WorldSettings worldSettings;
+    protected final WorldSetting worldSetting;
     protected final Consumer<Settings> consumer;
+    protected final Settings settings;
     
     protected final DynamicRegistryManager registryManager;
-    protected final Settings settings;
-    protected final WorldSetting worldSetting;
     
     protected SettingsScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
         super("createWorld.customize.settings.title", parent);
 
-        this.worldSettings = parent.getWorldSettings();
         this.worldSetting = worldSetting;
         this.consumer = consumer;
         this.settings = settings;
