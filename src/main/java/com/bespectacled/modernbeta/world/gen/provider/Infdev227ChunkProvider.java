@@ -16,6 +16,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
@@ -76,10 +77,17 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
 
     public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
         BlockPos.Mutable pos = new BlockPos.Mutable();
-        Random rand = this.createSurfaceRandom(chunk.getPos().x, chunk.getPos().z);
+
+        ChunkPos chunkPos = chunk.getPos();
+        int chunkX = chunkPos.x;
+        int chunkZ = chunkPos.z;
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
+        
+        int bedrockFloor = this.worldMinY + this.bedrockFloor;
+        
+        Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
         
         for (int localX = 0; localX < 16; ++localX) {
             for (int localZ = 0; localZ < 16; ++localZ) {
@@ -97,7 +105,16 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                 boolean usedCustomSurface = this.useCustomSurfaceBuilder(biome, biomeSource.getBiomeRegistry().getId(biome), region, chunk, rand, pos);
                 
                 for (int y = this.worldHeight - Math.abs(this.worldMinY) - 1; y >= this.worldMinY; --y) {
-                    BlockState blockState = chunk.getBlockState(pos.set(localX, y, localZ));
+                    BlockState blockState;
+                    pos.set(localX, y, localZ);
+                    
+                    // Place bedrock
+                    if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
+                        chunk.setBlockState(pos, BlockStates.BEDROCK, false);
+                        continue;
+                    }
+                    
+                    blockState = chunk.getBlockState(pos);
                     
                     boolean inFluid = blockState.equals(BlockStates.AIR) || blockState.equals(this.defaultFluid);
                     
@@ -128,17 +145,16 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
 
     @Override
     public int getHeight(int x, int z, Type type) {
-        int groundHeight = this.sampleHeightmap(x, z) + 1;
+        int height = this.sampleHeightmap(x, z);
         
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && groundHeight < this.seaLevel)
-            groundHeight = this.seaLevel;
+        if (type == Heightmap.Type.WORLD_SURFACE_WG && height < this.seaLevel)
+            height = this.seaLevel;
         
-        return groundHeight;
+        return height + 1;
     }
     
     protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         Random rand = new Random();
-        Random chunkRand = this.createSurfaceRandom(chunk.getPos().x, chunk.getPos().z);
         
         Heightmap heightmapOCEAN = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSURFACE = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
@@ -149,8 +165,6 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
-        
-        int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Block defaultBlock = this.defaultBlock.getBlock();
         Block defaultFluid = this.defaultFluid.getBlock();
@@ -163,24 +177,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                 int z = startZ + localZ;
                 int rZ = z / 1024;
                 
-                float noiseA = (float)(
-                    this.noiseOctavesA.sample(x / 0.03125f, 0.0, z / 0.03125f) - 
-                    this.noiseOctavesB.sample(x / 0.015625f, 0.0, z / 0.015625f)) / 512.0f / 4.0f;
-                float noiseB = (float)this.noiseOctavesE.sampleXY(x / 4.0f, z / 4.0f);
-                float noiseC = (float)this.noiseOctavesF.sampleXY(x / 8.0f, z / 8.0f) / 8.0f;
-                
-                noiseB = noiseB > 0.0f ? 
-                    ((float)(this.noiseOctavesC.sampleXY(x * 0.25714284f * 2.0f, z * 0.25714284f * 2.0f) * noiseC / 4.0)) :
-                    ((float)(this.noiseOctavesD.sampleXY(x * 0.25714284f, z * 0.25714284f) * noiseC));
-                
-                int heightVal = (int)(noiseA + this.seaLevel + noiseB);
-
-                if ((float)this.noiseOctavesE.sampleXY(x, z) < 0.0f) {
-                    heightVal = heightVal / 2 << 1;
-                    if ((float)this.noiseOctavesE.sampleXY(x / 5, z / 5) < 0.0f) {
-                        ++heightVal;
-                    }
-                }
+                int heightVal = this.sampleHeightmap(x, z);
                 
                 for (int y = this.worldMinY; y < this.worldTopY; ++y) {
                     Block block = Blocks.AIR;
@@ -231,10 +228,6 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
                             block = Blocks.BRICKS;     
                     }
                     
-                    if (y <= bedrockFloor + chunkRand.nextInt(5)) {
-                        block = Blocks.BEDROCK;
-                    }
-                    
                     BlockState blockState = this.getBlockState(
                         structureWeightSampler,
                         blockSource,
@@ -252,13 +245,7 @@ public class Infdev227ChunkProvider extends BaseChunkProvider implements NoiseCh
         }
     }
     
-    protected int sampleHeightmap(int sampleX, int sampleZ) {
-        int startX = (sampleX >> 4) << 4;
-        int startZ = (sampleZ >> 4) << 4;
-        
-        int x = startX + Math.abs(sampleX) % 16;
-        int z = startZ + Math.abs(sampleZ) % 16;
-        
+    private int sampleHeightmap(int x, int z) {
         float noiseA = (float)(
             this.noiseOctavesA.sample(x / 0.03125f, 0.0, z / 0.03125f) - 
             this.noiseOctavesB.sample(x / 0.015625f, 0.0, z / 0.015625f)) / 512.0f / 4.0f;
