@@ -154,9 +154,16 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
+                    BlockState blockState;
                     pos.set(localX, y, localZ);
 
-                    // Randomly place bedrock from y=0 to y=5
+                    // Place deepslate
+                    blockState = this.sampleDeepslateState(x, y, z);
+                    if (blockState != null) {
+                        chunk.setBlockState(pos, blockState, false);
+                    }
+                    
+                    // Place bedrock
                     if (y <= bedrockFloor + rand.nextInt(6) - 1) {
                         chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
@@ -182,7 +189,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
 
-                    BlockState blockState = chunk.getBlockState(pos);
+                    blockState = chunk.getBlockState(pos);
 
                     if (blockState.isAir()) { // Skip if air block
                         runDepth = -1;

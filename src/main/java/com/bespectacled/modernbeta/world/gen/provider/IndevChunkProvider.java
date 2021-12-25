@@ -9,6 +9,7 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.blocksource.SimpleBlockSource;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
 
@@ -183,8 +184,8 @@ public class IndevChunkProvider extends FiniteChunkProvider {
         
         BlockState blockState = block.getDefaultState();
         BlockState modifiedBlockState = this.getBlockState(
-            weightSampler, 
-            blockSource, 
+            weightSampler,
+            SimpleBlockSource.DEFAULT,
             x, y, z, 
             block, 
             this.defaultBlock.getBlock(), 

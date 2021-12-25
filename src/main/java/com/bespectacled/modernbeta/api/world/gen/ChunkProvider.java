@@ -10,6 +10,8 @@ import java.util.function.Supplier;
 import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import com.bespectacled.modernbeta.mixin.MixinPlacedFeatureAccessor;
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.util.NbtTags;
+import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.feature.placement.OldNoiseBasedCountPlacementModifier;
@@ -17,8 +19,10 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
 import com.bespectacled.modernbeta.world.gen.OldSurfaceBuilder;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
@@ -36,7 +40,9 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.decorator.PlacementModifier;
 import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.world.gen.random.AbstractRandom;
 import net.minecraft.world.gen.random.ChunkRandom;
+import net.minecraft.world.gen.random.RandomDeriver;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public abstract class ChunkProvider {
@@ -51,8 +57,12 @@ public abstract class ChunkProvider {
     protected final OldChunkNoiseSampler dummyNoiseChunkSampler;
     
     protected final ChunkRandom.RandomProvider randomProvider;
+    protected final RandomDeriver randomDeriver;
+    
     protected final MaterialRules.MaterialRule surfaceRule;
     protected final OldSurfaceBuilder surfaceBuilder;
+    
+    protected final boolean generateDeepslate;
     
     private final FluidLevelSampler emptyFluidLevelSampler;
     
@@ -102,9 +112,10 @@ public abstract class ChunkProvider {
         );
         
         this.randomProvider = chunkGenerator.getGeneratorSettings().get().getRandomProvider();
-        this.surfaceRule = chunkGenerator.getGeneratorSettings().get().getSurfaceRule();
+        this.randomDeriver = this.randomProvider.create(this.seed).createRandomDeriver();
         
         // Modified SurfaceBuilder
+        this.surfaceRule = chunkGenerator.getGeneratorSettings().get().getSurfaceRule();
         this.surfaceBuilder = new OldSurfaceBuilder(
             chunkGenerator.getNoiseRegistry(), 
             chunkGenerator.getGeneratorSettings().get().getDefaultBlock(), 
@@ -114,6 +125,8 @@ public abstract class ChunkProvider {
             this,
             this.generatorSettings.get().getDefaultBlock()
         );
+        
+        this.generateDeepslate = NbtUtil.readBoolean(NbtTags.GEN_DEEPSLATE, this.providerSettings, false);
         
         this.spawnLocator = SpawnLocator.DEFAULT;
     }
@@ -262,6 +275,31 @@ public abstract class ChunkProvider {
         return new Random(seed);
     }
     
+    /**
+     * Samples blockstate for placing deepslate gradient during surface generation.
+     * 
+     * @param x x-coordinate in block coordinates.
+     * @param y y-coordinate in block coordinates.
+     * @param z z-coordinate in block coordinates.
+     * 
+     * @return Null or deepslate blockstate.
+     */
+    protected BlockState sampleDeepslateState(int x, int y, int z) {
+        int minY = 0;
+        int maxY = 8;
+        
+        if (!this.generateDeepslate || y >= maxY)
+            return null;
+        
+        if (y <= minY)
+            return BlockStates.DEEPSLATE;
+        
+        double yThreshold = MathHelper.lerpFromProgress(y, minY, maxY, 1.0, 0.0);
+        AbstractRandom random = this.randomDeriver.createRandom(x, y, z);
+        
+        return (double)random.nextFloat() < yThreshold ? BlockStates.DEEPSLATE : null;
+    }
+
     /**
      * Sets forest density using PerlinOctaveNoise sampler created with world seed.
      * Checks every placed feature in the biome source feature list,

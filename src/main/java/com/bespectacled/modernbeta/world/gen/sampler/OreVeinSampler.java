@@ -1,15 +1,14 @@
 package com.bespectacled.modernbeta.world.gen.sampler;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.util.noise.NoiseRules;
+import com.bespectacled.modernbeta.world.gen.blocksource.SimpleBlockSource;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.noise.NoiseParametersKeys;
 import net.minecraft.world.gen.random.AbstractRandom;
 import net.minecraft.world.gen.random.RandomDeriver;
@@ -22,7 +21,7 @@ public class OreVeinSampler extends NoiseSampler {
     
     private final RandomDeriver orePosRandomDeriver;
     
-    private final BlockSource blockSource;
+    private final SimpleBlockSource deepslateSampler;
     private final NoiseRules<OreVeinType> oreVeinRules;
     
     public OreVeinSampler(
@@ -30,8 +29,8 @@ public class OreVeinSampler extends NoiseSampler {
         RandomDeriver randomDeriver,
         int horizontalNoiseResolution,
         int verticalNoiseResolution,
-        BlockSource blockSource,
-        String chunkProviderType
+        SimpleBlockSource deepslateSampler,
+        NoiseRules<OreVeinType> oreVeinRules
     ) {
         super(horizontalNoiseResolution, verticalNoiseResolution);
         
@@ -42,8 +41,8 @@ public class OreVeinSampler extends NoiseSampler {
         
         this.orePosRandomDeriver = randomDeriver.createRandom(ModernBeta.createId("ore")).createRandomDeriver();
         
-        this.blockSource = blockSource;
-        this.oreVeinRules = Registries.ORE_VEIN_RULES.get(chunkProviderType);
+        this.deepslateSampler = deepslateSampler;
+        this.oreVeinRules = oreVeinRules;
     }
     
     public void sampleOreVeinNoise(double[] buffer, int x, int z, int minY, int noiseSizeY) {
@@ -74,8 +73,8 @@ public class OreVeinSampler extends NoiseSampler {
             return null;
         
         // Sample block source to get correct ore and filler block type
-        BlockState stoneBlock = this.blockSource.apply(null, x, y, z);
-        boolean inDeepslate = stoneBlock != null && stoneBlock.isOf(Blocks.DEEPSLATE);
+        BlockState blockState = this.deepslateSampler.apply(x, y, z);
+        boolean inDeepslate = blockState != null && blockState.isOf(Blocks.DEEPSLATE);
 
         BlockState fillerBlock = inDeepslate ? veinType.deepslateFillerBlock() : veinType.stoneFillerBlock();
         BlockState oreBlock = inDeepslate ? veinType.deepslateOreBlock() : veinType.stoneOreBlock();

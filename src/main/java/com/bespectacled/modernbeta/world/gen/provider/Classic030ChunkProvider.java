@@ -6,6 +6,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoiseCombined;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.blocksource.SimpleBlockSource;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -79,7 +80,7 @@ public class Classic030ChunkProvider extends FiniteChunkProvider {
         BlockState blockState = block.getDefaultState();
         BlockState modifiedBlockState = this.getBlockState(
             weightSampler,
-            blockSource,
+            SimpleBlockSource.DEFAULT,
             x, y, z,
             block,
             this.defaultBlock.getBlock(),

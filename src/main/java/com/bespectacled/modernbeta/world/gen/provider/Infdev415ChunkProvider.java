@@ -138,9 +138,16 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                 );
                 
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; --y) {
+                    BlockState blockState;
                     pos.set(localX, y, localZ);
+
+                    // Place deepslate
+                    blockState = this.sampleDeepslateState(x, y, z);
+                    if (blockState != null) {
+                        chunk.setBlockState(pos, blockState, false);
+                    }
                     
-                    // Randomly place bedrock from y=0 to y=5
+                    // Place bedrock
                     if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
                         chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
@@ -156,7 +163,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
                     
-                    BlockState blockState = chunk.getBlockState(pos);
+                    blockState = chunk.getBlockState(pos);
                     
                     if (blockState.isAir()) {
                         runDepth = -1;

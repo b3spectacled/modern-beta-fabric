@@ -1,12 +1,12 @@
 package com.bespectacled.modernbeta.api.world.gen;
 
 import com.bespectacled.modernbeta.util.BlockStates;
+import com.bespectacled.modernbeta.world.gen.blocksource.SimpleBlockSource;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.gen.BlockSource;
 import net.minecraft.world.gen.StructureWeightSampler;
 
 public interface NoiseChunkImitable {
@@ -26,7 +26,7 @@ public interface NoiseChunkImitable {
      */
     default BlockState getBlockState(
         StructureWeightSampler weightSampler, 
-        BlockSource blockSource, 
+        SimpleBlockSource blockSource, 
         int x, int y, int z, 
         Block block, 
         Block defaultBlock,
@@ -42,7 +42,7 @@ public interface NoiseChunkImitable {
         BlockState blockState = block.getDefaultState();
         
         if (clampedDensity > 0.0) { 
-            blockState = blockSource.apply(null, x, y, z);
+            blockState = blockSource.apply(x, y, z);
             
             if (blockState == null)
                 blockState = block.getDefaultState();

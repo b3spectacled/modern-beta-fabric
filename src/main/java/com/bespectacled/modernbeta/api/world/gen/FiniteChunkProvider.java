@@ -149,6 +149,8 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
     
     @Override
     public int getHeight(int x, int z, Type type) {
+        int seaLevel = this.getSeaLevel();
+        
         x += this.levelWidth / 2;
         z += this.levelLength / 2;
         
@@ -157,7 +159,6 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
         
         this.pregenerateTerrainOrWait();
         int height = this.getLevelHighestBlock(x, z);
-        int seaLevel = this.getSeaLevel();
         
         if (type == Heightmap.Type.WORLD_SURFACE_WG && height < seaLevel) 
             height = seaLevel;
