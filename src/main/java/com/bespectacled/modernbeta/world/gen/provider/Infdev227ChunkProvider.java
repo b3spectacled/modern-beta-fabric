@@ -171,12 +171,14 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
 
                 for (int y = this.worldHeight - Math.abs(this.worldMinY) - 1; y >= this.worldMinY; --y) {
                     BlockState blockState;
+                    
                     pos.set(localX, y, localZ);
-
+                    blockState = chunk.getBlockState(pos);
+                    
                     // Place deepslate
-                    blockState = this.sampleDeepslateState(x, y, z);
-                    if (blockState != null) {
-                        chunk.setBlockState(pos, blockState, false);
+                    BlockState deepslateState = this.sampleDeepslateState(x, y, z);
+                    if (deepslateState != null && blockState.isOf(this.defaultBlock.getBlock())) {
+                        chunk.setBlockState(pos, deepslateState, false);
                     }
                     
                     // Place bedrock
@@ -184,9 +186,7 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
                         chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
                     }
-                    
-                    blockState = chunk.getBlockState(pos);
-                    
+
                     boolean inFluid = blockState.equals(BlockStates.AIR) || blockState.equals(this.defaultFluid);
                     
                     // Skip if used custom surface generation or if below minimum surface level.
