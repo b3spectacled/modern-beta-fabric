@@ -54,8 +54,8 @@ public class OldGeneratorConfig {
         // e.g. 15 / 128.0 = 0.1171875
         
         BETA_SHAPE_CONFIG = GenerationShapeConfig.create(
-            0,
-            128,
+            -64,
+            192,
             BETA_SAMPLING_CONFIG, 
             new SlideConfig(-0.078125, 3, 0),
             new SlideConfig(0.1171875, 3, 0),
