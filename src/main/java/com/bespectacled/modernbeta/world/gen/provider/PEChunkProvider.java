@@ -91,6 +91,22 @@ public class PEChunkProvider extends NoiseChunkProvider {
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
 
+        double[] sandNoise = beachNoiseOctaves.sampleBeta(
+            chunkX * 16, chunkZ * 16, 0.0D, 
+            16, 16, 1,
+            scale, scale, 1.0D);
+        
+        double[] gravelNoise = beachNoiseOctaves.sampleBeta(
+            chunkX * 16, 109.0134D, chunkZ * 16, 
+            16, 1, 16, 
+            scale, 1.0D, scale);
+        
+        double[] surfaceNoise = surfaceNoiseOctaves.sampleBeta(
+            chunkX * 16, chunkZ * 16, 0.0D, 
+            16, 16, 1,
+            scale * 2D, scale * 2D, scale * 2D
+        );
+        
         for (int localZ = 0; localZ < 16; localZ++) {
             for (int localX = 0; localX < 16; localX++) {
                 int x = startX + localX;
@@ -98,22 +114,9 @@ public class PEChunkProvider extends NoiseChunkProvider {
                 int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
                 
                 // MCPE uses nextFloat() instead of nextDouble()
-                boolean genSandBeach = this.beachNoiseOctaves.sample(
-                    x, 0.0, startZ, localZ,
-                    scale, scale, 1.0
-                ) + rand.nextFloat() * 0.2 > 0.0;
-                
-                boolean genGravelBeach = this.beachNoiseOctaves.sampleXZ(
-                    x, z,
-                    scale, scale
-                ) + rand.nextFloat() * 0.2 > 3.0;
-                
-                double surfaceNoise = this.surfaceNoiseOctaves.sample(
-                    x, 0.0, startZ, localZ,
-                    scale * 2.0, scale * 2.0, scale * 2.0
-                );
-                
-                int surfaceDepth = (int) (surfaceNoise / 3.0 + 3.0 + rand.nextFloat() * 0.25);
+                boolean genSandBeach = sandNoise[localZ + localX * 16] + rand.nextFloat() * 0.2D > 0.0D;
+                boolean genGravelBeach = gravelNoise[localZ + localX * 16] + rand.nextFloat() * 0.2D > 3D;
+                int surfaceDepth = (int) (surfaceNoise[localZ + localX * 16] / 3D + 3D + rand.nextFloat() * 0.25D);
                 
                 int runDepth = -1;
                 
@@ -289,7 +292,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
             
             // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
             double mainNoise = (this.mainNoiseOctaves.sample(
-                noiseX, noiseZ, 0, noiseY, 
+                noiseX, noiseY, noiseZ,
                 coordinateScale / mainNoiseScaleX, 
                 heightScale / mainNoiseScaleY, 
                 coordinateScale / mainNoiseScaleZ
@@ -297,7 +300,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
             
             if (mainNoise < 0.0D) {
                 density = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY, 
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -305,7 +308,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
                 
             } else if (mainNoise > 1.0D) {
                 density = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY, 
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -313,14 +316,14 @@ public class PEChunkProvider extends NoiseChunkProvider {
                 
             } else {
                 double minLimitNoise = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY, 
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
                 ) / lowerLimitScale;
                 
                 double maxLimitNoise = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY, 
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale

@@ -51,18 +51,19 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
 
+        double[] surfaceNoise = surfaceNoiseOctaves.sampleBeta(
+            chunkX * 16, chunkZ * 16, 0.0D, 
+            16, 16, 1,
+            scale * 2D, scale * 2D, scale * 2D
+        );
+        
         for (int localZ = 0; localZ < 16; localZ++) {
             for (int localX = 0; localX < 16; localX++) {
                 int x = startX + localX; 
                 int z = startZ + localZ;
                 int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
 
-                double surfaceNoise = this.surfaceNoiseOctaves.sample(
-                    x, 0.0, startZ, localZ,
-                    scale * 2.0, scale * 2.0, scale * 2.0
-                );
-                    
-                int surfaceDepth = (int) (surfaceNoise / 3.0 + 3.0 + rand.nextDouble() * 0.25);
+                int surfaceDepth = (int) (surfaceNoise[localZ + localX * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
                 
                 int runDepth = -1;
 
@@ -150,7 +151,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             
             // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.            
             double mainNoise = (this.mainNoiseOctaves.sample(
-                noiseX, noiseZ, 0, noiseY, 
+                noiseX, noiseY, noiseZ,
                 coordinateScale / mainNoiseScaleX, 
                 heightScale / mainNoiseScaleY, 
                 coordinateScale / mainNoiseScaleZ
@@ -158,7 +159,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             
             if (mainNoise < 0.0D) {
                 density = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY, 
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -166,7 +167,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                 
             } else if (mainNoise > 1.0D) {
                 density = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY, 
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -174,14 +175,14 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                 
             } else {
                 double minLimitNoise = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY, 
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
                 ) / lowerLimitScale;
                 
                 double maxLimitNoise = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY, 
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
