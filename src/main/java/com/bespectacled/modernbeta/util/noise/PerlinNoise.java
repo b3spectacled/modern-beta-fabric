@@ -10,9 +10,9 @@ import net.minecraft.util.math.MathHelper;
 public class PerlinNoise {
     private int permutations[]; 
     
-    public double xOffset;
-    public double yOffset;
-    public double zOffset;
+    public double offsetX;
+    public double offsetY;
+    public double offsetZ;
 
     public PerlinNoise() {
         this(new Random(), false); 
@@ -22,12 +22,12 @@ public class PerlinNoise {
         // Generate permutation array
         this.permutations = new int[512];
 
-        this.xOffset = this.yOffset = this.zOffset = 0;
+        this.offsetX = this.offsetY = this.offsetZ = 0;
         
         if (useOffset) {
-            this.xOffset = random.nextDouble() * 256D;
-            this.yOffset = random.nextDouble() * 256D;
-            this.zOffset = random.nextDouble() * 256D; 
+            this.offsetX = random.nextDouble() * 256D;
+            this.offsetY = random.nextDouble() * 256D;
+            this.offsetZ = random.nextDouble() * 256D; 
         } 
         
         for (int i = 0; i < 256; i++) {
@@ -46,14 +46,14 @@ public class PerlinNoise {
         }
     }
 
-    public double sampleXY(double x, double y) {
+    public double sample(double x, double y) {
         return this.sample(x, y, 0.0);
     }
 
     public double sample(double x, double y, double z) {
-        x += this.xOffset;
-        y += this.yOffset;
-        z += this.zOffset;
+        x += this.offsetX;
+        y += this.offsetY;
+        z += this.offsetZ;
         
         int floorX = MathHelper.floor(x);
         int floorY = MathHelper.floor(y);
@@ -106,12 +106,120 @@ public class PerlinNoise {
                     grad(this.permutations[BB + 1], x - 1.0, y - 1.0, z - 1.0)))
         );
     }
+   
+    public void sampleAlpha(
+        double arr[], 
+        double x, double y, double z, 
+        int sizeX, int sizeY, int sizeZ, 
+        double scaleX, double scaleY, double scaleZ, 
+        double frequency
+    ) {
+        int ndx = 0;
+        frequency = 1.0D / frequency;
+        int flagY = -1;
+        
+        double lerp0 = 0.0D;
+        double lerp1 = 0.0D;
+        double lerp2 = 0.0D;
+        double lerp3 = 0.0D;
+        
+        // Iterate over a collection of noise points
+        for (int sX = 0; sX < sizeX; sX++) {
+            for (int sZ = 0; sZ < sizeZ; sZ++) {
+                for (int sY = 0; sY < sizeY; sY++) {
+                    double curX = (x + (double)sX) * scaleX + this.offsetX;
+                    double curY = (y + (double)sY) * scaleY + this.offsetY;
+                    double curZ = (z + (double)sZ) * scaleZ + this.offsetZ;
+
+                    int floorX = MathHelper.floor(curX);
+                    int floorY = MathHelper.floor(curY);
+                    int floorZ = MathHelper.floor(curZ);
+                    
+                    // Find unit cube that contains point.
+                    int X = floorX & 0xFF;
+                    int Y = floorY & 0xFF;
+                    int Z = floorZ & 0xFF;
+                    
+                    // Find local x, y, z of point in cube.
+                    curX -= floorX;
+                    curY -= floorY;
+                    curZ -= floorZ;
+                    
+                    // Compute fade curves for x, y, z.
+                    double u = fade(curX);
+                    double v = fade(curY);
+                    double w = fade(curZ);
+                    
+                    if (sY == 0 || Y != flagY) {
+                        flagY = Y;
+                        
+                        int A =  this.permutations[X] + Y;
+                        int AA = this.permutations[A] + Z;
+                        int AB = this.permutations[A + 1] + Z;
+                        int B =  this.permutations[X + 1] + Y;
+                        int BA = this.permutations[B] + Z;
+                        int BB = this.permutations[B + 1] + Z;
+                        
+                        lerp0 = lerp(
+                            u,
+                            grad(this.permutations[AA], curX, curY, curZ),
+                            grad(this.permutations[BA], curX - 1.0D, curY, curZ)
+                        );
+                        
+                        lerp1 = lerp(
+                            u,
+                            grad(this.permutations[AB], curX, curY - 1.0D, curZ),
+                            grad(this.permutations[BB], curX - 1.0D, curY - 1.0D, curZ)
+                        );
+                        
+                        lerp2 = lerp(
+                            u,
+                            grad(this.permutations[AA + 1], curX, curY, curZ - 1.0D),
+                            grad(this.permutations[BA + 1], curX - 1.0D, curY, curZ - 1.0D)
+                        );
+                        
+                        lerp3 = lerp(
+                            u,
+                            grad(this.permutations[AB + 1], curX, curY - 1.0D, curZ - 1.0D),
+                            grad(this.permutations[BB + 1], curX - 1.0D, curY - 1.0D, curZ - 1.0D)
+                        );
+                    }
+                    
+                    double res = lerp(w, lerp(v, lerp0, lerp1), lerp(v, lerp2, lerp3));
+                    
+                    arr[ndx++] += res * frequency;
+                }
+            }
+        }
+    }
+
+    public void sampleBeta(
+        double arr[], 
+        double x, double y, double z, 
+        int sizeX, int sizeY, int sizeZ, 
+        double scaleX, double scaleY, double scaleZ, 
+        double frequency
+    ) {
+        if (sizeY != 1) {
+            this.sampleAlpha(arr, x, y, z, sizeX, sizeY, sizeZ, scaleX, scaleY, scaleZ, frequency);
+        } else {
+            int ndx = 0;
+            for (int sX = 0; sX < sizeX; sX++) {
+                for (int sZ = 0; sZ < sizeZ; sZ++) {
+                    double curX = (x + (double)sX) * scaleX;
+                    double curZ = (z + (double)sZ) * scaleZ;
+                    
+                    arr[ndx++] += this.sampleXZ(curX, curZ, frequency);
+                }
+            }
+        }
+    }
     
     public double sampleXZ(double x, double z, double frequency) {
         frequency = 1.0D / frequency;
         
-        x = x + this.xOffset;
-        z = z + this.zOffset;
+        x = x + this.offsetX;
+        z = z + this.offsetZ;
         
         int floorX = MathHelper.floor(x);
         int floorZ = MathHelper.floor(z);
@@ -146,68 +254,48 @@ public class PerlinNoise {
         
         return res * frequency;
     }
-
+    
     /*
-     * Point-based implementation of Beta Perlin sampler,
-     * accounting for Y unit cube idiosyncrasy.
-     * 
-     * When using in cases where y is fixed (i.e. gravel beach sampling), use sampleXZ instead.
-     * 
+     * From vanilla PerlinNoiseSampler.
      */
-    public double sample(double x, double z, double startY, double localY, double scaleX, double scaleY, double scaleZ, double frequency) {
-        double y = startY + localY;
+    public double sampleXYZ(double x, double y, double z, double yScale, double yMax) {
+        x += this.offsetX;
+        y += this.offsetY;
+        z += this.offsetZ;
         
-        double scaledX = x * scaleX / frequency;
-        double scaledY = y * scaleY / frequency;
-        double scaledZ = z * scaleZ / frequency;
+        int floorX = MathHelper.floor(x);
+        int floorY = MathHelper.floor(y);
+        int floorZ = MathHelper.floor(z);
         
-        double curX = scaledX + this.xOffset;
-        double curY = scaledY + this.yOffset;
-        double curZ = scaledZ + this.zOffset;
+        x -= floorX;
+        y -= floorY;
+        z -= floorZ;
         
-        int floorX = MathHelper.floor(curX);
-        int floorY = MathHelper.floor(curY);
-        int floorZ = MathHelper.floor(curZ);
+        double yOffset = 0.0;
+        if (yScale != 0.0) {
+            if (yMax >= 0.0 && yMax < y) {
+                yOffset = yMax;
+            } else {
+                yOffset = y;
+            }
+            
+            yOffset = MathHelper.floor(yOffset / yScale + 1.0000000116860974E-7) * yScale;
+        } else {
+            yOffset = 0.0;
+        }
         
-        // Compute fade curves for x, y, z.
-        double u = fade(curX - floorX);
-        double v = fade(curY - floorY);
-        double w = fade(curZ - floorZ);
-        
-        // Find unit cube that contains initial y.
-        int Y = MathHelper.floor(floorY) & 0xFF;
-        
-        // Account for Beta/Alpha implementation;
-        // curY is only recalculated when:
-        // * localY == 0
-        // * unitY of cube changes
-        // However, y fade curve is calculated using current y value.
-        double actualY = this.calculateActualY(startY, localY, scaleY, Y, frequency);
-        
-        return this.compute(curX, actualY, curZ, u, v, w);
+        return this.sampleXYZ(floorX, floorY, floorZ, x, y - yOffset, z, y);
     }
     
-    private double compute(double curX, double curY, double curZ, double u, double v, double w) {
-        double lerp0;
-        double lerp1;
-        double lerp2;
-        double lerp3;
-        
-        int floorX = MathHelper.floor(curX);
-        int floorY = MathHelper.floor(curY);
-        int floorZ = MathHelper.floor(curZ);
-        
+    /*
+     * From vanilla PerlinNoiseSampler.
+     */
+    private double sampleXYZ(int floorX, int floorY, int floorZ, double localX, double localOffsetY, double localZ, double localY) {
         // Find unit cube that contains point.
         int X = floorX & 0xFF;
         int Y = floorY & 0xFF;
         int Z = floorZ & 0xFF;
         
-        // Find local x, y, z of point in cube.
-        curX -= floorX;
-        curY -= floorY;
-        curZ -= floorZ;
-        
-        // Hash coordinates of the 8 cube corners.
         int A =  this.permutations[X] + Y;
         int AA = this.permutations[A] + Z;
         int AB = this.permutations[A + 1] + Z;
@@ -215,49 +303,24 @@ public class PerlinNoise {
         int BA = this.permutations[B] + Z;
         int BB = this.permutations[B + 1] + Z;
         
-        lerp0 = lerp(
-            u,
-            grad(this.permutations[AA], curX, curY, curZ),
-            grad(this.permutations[BA], curX - 1.0D, curY, curZ)
-        );
+        // Calculate dot of hashed gradient vector against 8 location vectors.
+        double grad0 = grad(this.permutations[AA], localX, localOffsetY, localZ);
+        double grad1 = grad(this.permutations[BA], localX - 1.0, localOffsetY, localZ);
         
-        lerp1 = lerp(
-            u,
-            grad(this.permutations[AB], curX, curY - 1.0D, curZ),
-            grad(this.permutations[BB], curX - 1.0D, curY - 1.0D, curZ)
-        );
+        double grad2 = grad(this.permutations[AB], localX, localOffsetY - 1.0, localZ);
+        double grad3 = grad(this.permutations[BB], localX - 1.0, localOffsetY - 1.0, localZ);
         
-        lerp2 = lerp(
-            u,
-            grad(this.permutations[AA + 1], curX, curY, curZ - 1.0D),
-            grad(this.permutations[BA + 1], curX - 1.0D, curY, curZ - 1.0D)
-        );
+        double grad4 = grad(this.permutations[AA + 1], localX, localOffsetY, localZ - 1.0);
+        double grad5 = grad(this.permutations[BA + 1], localX - 1.0, localOffsetY, localZ - 1.0);
         
-        lerp3 = lerp(
-            u,
-            grad(this.permutations[AB + 1], curX, curY - 1.0D, curZ - 1.0D),
-            grad(this.permutations[BB + 1], curX - 1.0D, curY - 1.0D, curZ - 1.0D)
-        );
+        double grad6 = grad(this.permutations[AB + 1], localX, localOffsetY - 1.0, localZ - 1.0);
+        double grad7 = grad(this.permutations[BB + 1], localX - 1.0, localOffsetY - 1.0, localZ - 1.0);
         
-        return lerp(w, lerp(v, lerp0, lerp1), lerp(v, lerp2, lerp3));
-    }
-    
-    private double calculateActualY(double startY, double localY, double scaleY, int unitY, double frequency) {
-        while (localY > 0) {
-            double scaledY = (double)(startY + localY) * scaleY / frequency + this.yOffset;
-            
-            int floorY = MathHelper.floor(scaledY);
-            int Y = floorY & 0xFF;
-            
-            if (Y != unitY) {
-                localY++;
-                break;
-            }
-            
-            localY--;
-        }
-
-        return (double)(startY + localY) * scaleY / frequency + this.yOffset;
+        double u = fade(localX);
+        double v = fade(localY);
+        double w = fade(localZ);
+        
+        return MathHelper.lerp3(u, v, w, grad0, grad1, grad2, grad3, grad4, grad5, grad6, grad7);
     }
 
     private static double lerp(double delta, double start, double end) {

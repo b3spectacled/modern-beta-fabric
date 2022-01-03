@@ -245,7 +245,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             double densityOffset = this.getOffset(noiseY, baseSize, heightStretch);
             
             double mainNoise = (this.mainNoiseOctaves.sample(
-                noiseX, noiseZ, 0, noiseY,
+                noiseX, noiseY, noiseZ,
                 coordinateScale / mainNoiseScaleX, 
                 heightScale / mainNoiseScaleY, 
                 coordinateScale / mainNoiseScaleZ
@@ -253,7 +253,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             
             if (mainNoise < 0.0D) {
                 density = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY,
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -261,7 +261,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                 
             } else if (mainNoise > 1.0D) {
                 density = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY,
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -269,14 +269,14 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                 
             } else {
                 double minLimitNoise = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY,
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
                 ) / lowerLimitScale;
                 
                 double maxLimitNoise = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY,
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale

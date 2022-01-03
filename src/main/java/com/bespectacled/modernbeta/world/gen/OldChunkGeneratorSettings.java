@@ -68,7 +68,7 @@ public class OldChunkGeneratorSettings {
         BETA_ISLANDS = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.BETA_ISLANDS.name);
         PE = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.PE.name);
 
-        BETA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, true, true, true, true, true);
+        BETA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, true, false, true, true, true);
         ALPHA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.ALPHA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, true, true, true, true, true);
         SKYLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.SKYLANDS_SHAPE_CONFIG, BlockStates.STONE, BlockStates.AIR, OldSurfaceRules.createVanilla(false), 0, false, false, false, true, true, true);
         INFDEV_611_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_611_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, true, true, true, true, true);

@@ -69,34 +69,6 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
-        
-        // Create arrays so noise can be incorrectly sampled for accuracy
-        double[] sandNoise = new double[256];
-        double[] gravelNoise = new double[256];
-        double[] surfaceNoise = new double[256];
-        
-        for (int localX = 0; localX < 16; localX++) {
-            for (int localZ = 0; localZ < 16; localZ++) {
-                int x = startX + localX;
-                int z = startZ + localZ;
-                
-                sandNoise[localZ + localX * 16] = this.beachNoiseOctaves.sample(
-                    x, 0.0, startZ, localZ,
-                    scale, scale, 1.0
-                );
-                
-                // Swapped indices are intentional for accuracy.
-                gravelNoise[localX + localZ * 16] = this.beachNoiseOctaves.sample(
-                    z, x, 109.0134, 0.0,
-                    scale, 1.0, scale
-                );
-                
-                surfaceNoise[localZ + localX * 16] = this.surfaceNoiseOctaves.sample(
-                    x, 0.0, startZ, localZ,
-                    scale * 2.0, scale * 2.0, scale * 2.0
-                );
-            }
-        }
 
         AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
@@ -117,6 +89,24 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
             context
         );
         MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
+        
+        double[] sandNoise = beachNoiseOctaves.sampleAlpha(
+            chunkX * 16, chunkZ * 16, 0.0D,
+            16, 16, 1,
+            scale, scale, 1.0D
+        );
+        
+        double[] gravelNoise = beachNoiseOctaves.sampleAlpha(
+            chunkZ * 16, 109.0134D, chunkX * 16,
+            16, 1, 16,
+            scale, 1.0D, scale
+        );
+        
+        double[] surfaceNoise = surfaceNoiseOctaves.sampleAlpha(
+            chunkX * 16, chunkZ * 16, 0.0D,
+            16, 16, 1,
+            scale * 2D, scale * 2D, scale * 2D
+        );
         
         for (int localX = 0; localX < 16; localX++) {
             for (int localZ = 0; localZ < 16; localZ++) {
@@ -274,14 +264,14 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         double densityScale = 128.0;
         double tunnelThreshold = 200.0 / densityScale;
         
-        double scale = this.scaleNoiseOctaves.sample(noiseX, noiseZ, 0.0, 0.0, 1.0, 0.0, 1.0);
+        double scale = this.scaleNoiseOctaves.sample(noiseX, 0, noiseZ, 1.0, 0.0, 1.0);
         scale = (scale + 256D) / 512D;
         
         if (scale > 1.0D) {
             scale = 1.0D; 
         }
 
-        double depth = this.depthNoiseOctaves.sample(noiseX, noiseZ, 0.0, 0.0, depthNoiseScaleX, 0.0, depthNoiseScaleZ);
+        double depth = this.depthNoiseOctaves.sample(noiseX, 0, noiseZ, depthNoiseScaleX, 0.0, depthNoiseScaleZ);
         depth /= 8000D;
         
         if (depth < 0.0D) {
@@ -322,7 +312,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
             
             // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
             double mainNoise = (this.mainNoiseOctaves.sample(
-                noiseX, noiseZ, 0, noiseY,
+                noiseX, noiseY, noiseZ,
                 coordinateScale / mainNoiseScaleX, 
                 heightScale / mainNoiseScaleY, 
                 coordinateScale / mainNoiseScaleZ
@@ -330,7 +320,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
             
             if (mainNoise < 0.0D) {
                 density = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY,
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -338,7 +328,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                 
             } else if (mainNoise > 1.0D) {
                 density = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY,
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
@@ -346,14 +336,14 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
                 
             } else {
                 double minLimitNoise = this.minLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY,
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
                 ) / lowerLimitScale;
                 
                 double maxLimitNoise = this.maxLimitNoiseOctaves.sample(
-                    noiseX, noiseZ, 0, noiseY,
+                    noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
