@@ -4,13 +4,13 @@ import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
-import com.bespectacled.modernbeta.client.gui.Settings;
-import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.client.gui.wrapper.CyclingOptionWrapper;
 import com.bespectacled.modernbeta.client.gui.wrapper.DoubleOptionWrapper;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.util.settings.Settings;
+import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
 

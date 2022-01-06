@@ -18,6 +18,7 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
+import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.blocksource.BlockSourceRules;
 import com.bespectacled.modernbeta.world.gen.blocksource.SimpleBlockSource;
@@ -99,6 +100,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     public NoiseChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         
+        Settings providerSettings = chunkGenerator.getChunkSettings();
         ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().get();
         GenerationShapeConfig shapeConfig = generatorSettings.getGenerationShapeConfig();
         
@@ -110,7 +112,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         this.seaLevel = generatorSettings.getSeaLevel();
         this.bedrockFloor = 0;
         this.bedrockCeiling = Integer.MIN_VALUE;
-        this.generateDeepslate = NbtUtil.readBoolean(NbtTags.GEN_DEEPSLATE, chunkGenerator.getChunkSettings(), ModernBeta.GEN_CONFIG.generateDeepslate);
+        this.generateDeepslate = NbtUtil.toBoolean(providerSettings.get(NbtTags.GEN_DEEPSLATE), ModernBeta.GEN_CONFIG.generateDeepslate);
 
         this.defaultBlock = generatorSettings.getDefaultBlock();
         this.defaultFluid = generatorSettings.getDefaultFluid();

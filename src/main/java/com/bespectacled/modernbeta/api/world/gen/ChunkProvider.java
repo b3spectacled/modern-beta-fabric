@@ -13,6 +13,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.feature.placement.OldNoiseBasedCountPlacementModifier;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
@@ -20,7 +21,6 @@ import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
 import com.bespectacled.modernbeta.world.gen.OldSurfaceBuilder;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
@@ -50,7 +50,7 @@ public abstract class ChunkProvider {
     
     protected final long seed;
     protected final Supplier<ChunkGeneratorSettings> generatorSettings;
-    protected final NbtCompound providerSettings;
+    protected final Settings providerSettings;
     protected final Random random;
     
     protected final NoiseColumnSampler noiseColumnSampler;
@@ -126,7 +126,7 @@ public abstract class ChunkProvider {
             this.generatorSettings.get().getDefaultBlock()
         );
         
-        this.generateDeepslate = NbtUtil.readBoolean(NbtTags.GEN_DEEPSLATE, this.providerSettings, false);
+        this.generateDeepslate = NbtUtil.toBoolean(this.providerSettings.get(NbtTags.GEN_DEEPSLATE), false);
         
         this.spawnLocator = SpawnLocator.DEFAULT;
     }

@@ -3,12 +3,12 @@ package com.bespectacled.modernbeta.client.gui.screen.biome;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.api.client.gui.screen.SettingsScreen;
-import com.bespectacled.modernbeta.client.gui.Settings;
-import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.client.gui.wrapper.BooleanCyclingOptionWrapper;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.util.settings.Settings;
+import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 
 import net.minecraft.nbt.NbtByte;
 import net.minecraft.text.TranslatableText;

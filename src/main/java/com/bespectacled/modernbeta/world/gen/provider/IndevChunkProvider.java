@@ -54,15 +54,13 @@ public class IndevChunkProvider extends FiniteChunkProvider {
     public IndevChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         
-        this.levelType = IndevType.fromName(NbtUtil.readString(
-            NbtTags.LEVEL_TYPE,
-            this.providerSettings,
+        this.levelType = IndevType.fromName(NbtUtil.toString(
+            this.providerSettings.get(NbtTags.LEVEL_TYPE),
             ModernBeta.GEN_CONFIG.levelType
         ));
         
-        this.levelTheme = IndevTheme.fromName(NbtUtil.readString(
-            NbtTags.LEVEL_THEME,
-            this.providerSettings,
+        this.levelTheme = IndevTheme.fromName(NbtUtil.toString(
+            this.providerSettings.get(NbtTags.LEVEL_THEME),
             ModernBeta.GEN_CONFIG.levelTheme
         ));
         

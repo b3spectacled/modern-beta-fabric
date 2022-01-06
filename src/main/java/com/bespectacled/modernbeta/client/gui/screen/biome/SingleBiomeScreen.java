@@ -1,9 +1,9 @@
 package com.bespectacled.modernbeta.client.gui.screen.biome;
 
-import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.NbtString;
@@ -16,7 +16,7 @@ public class SingleBiomeScreen {
         return new CustomizeBuffetLevelScreen(
             worldScreen, 
             worldScreen.getRegistryManager(),
-            biome -> worldScreen.getWorldSettings().putElement(
+            biome -> worldScreen.getWorldSettings().put(
                 worldSetting, 
                 NbtTags.SINGLE_BIOME, 
                 NbtString.of(worldScreen.getRegistryManager().<Biome>get(Registry.BIOME_KEY).getId(biome).toString())
@@ -24,7 +24,7 @@ public class SingleBiomeScreen {
             worldScreen
                 .getRegistryManager()
                 .<Biome>get(Registry.BIOME_KEY)
-                .get(new Identifier(NbtUtil.toStringOrThrow(worldScreen.getWorldSettings().getElement(worldSetting, NbtTags.SINGLE_BIOME))))
+                .get(new Identifier(NbtUtil.toStringOrThrow(worldScreen.getWorldSettings().get(worldSetting, NbtTags.SINGLE_BIOME))))
         );
     }
 }

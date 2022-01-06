@@ -45,7 +45,7 @@ public class BiomeInjector {
         this.oldBiomeSource = oldBiomeSource;
         this.chunkProvider = oldChunkGenerator.getChunkProvider();
         
-        boolean generatesOceans = NbtUtil.readBoolean(NbtTags.GEN_OCEANS, this.oldBiomeSource.getBiomeSettings(), false);
+        boolean generatesOceans = NbtUtil.toBoolean(this.oldBiomeSource.getBiomeSettings().get(NbtTags.GEN_OCEANS), false);
         
         Predicate<BiomeInjectionContext> oceanPredicate = context -> 
             this.atOceanDepth(context.topHeight, OCEAN_MIN_DEPTH) && 

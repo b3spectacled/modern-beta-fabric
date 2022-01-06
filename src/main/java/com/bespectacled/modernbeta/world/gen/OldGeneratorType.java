@@ -7,13 +7,13 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
-import com.bespectacled.modernbeta.client.gui.WorldSettings;
-import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.mixin.client.MixinMoreOptionsDialogInvoker;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.util.settings.WorldSettings;
+import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
@@ -157,15 +157,15 @@ public class OldGeneratorType {
                         // If settings already present, create new compound tag and copy from source,
                         // otherwise, not copying will modify original settings.
                         NbtCompound chunkSettings = chunkGenerator instanceof OldChunkGenerator oldChunkGenerator ?
-                            oldChunkGenerator.getChunkSettings() :
+                            oldChunkGenerator.getChunkSettings().getNbt() :
                             Registries.CHUNK_SETTINGS.get(worldProvider.getChunkProvider()).get();
                         
                         NbtCompound biomeSettings = biomeSource instanceof OldBiomeSource oldBiomeSource ? 
-                            oldBiomeSource.getBiomeSettings() : 
+                            oldBiomeSource.getBiomeSettings().getNbt() : 
                             Registries.BIOME_SETTINGS.get(worldProvider.getBiomeProvider()).get();
 
                         NbtCompound caveSettings = biomeSource instanceof OldBiomeSource oldBiomeSource ? 
-                            oldBiomeSource.getCaveBiomeSettings() :
+                            oldBiomeSource.getCaveBiomeSettings().getNbt() :
                             Registries.CAVE_BIOME_SETTINGS.get(worldProvider.getCaveBiomeProvider()).get();
                         
                         return new WorldScreen(

@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.client.gui.Settings;
-import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.client.gui.wrapper.ActionOptionWrapper;
 import com.bespectacled.modernbeta.client.gui.wrapper.TextOptionWrapper;
@@ -15,6 +13,8 @@ import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.util.settings.Settings;
+import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
@@ -110,6 +110,6 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
         NbtCompoundBuilder builder = new NbtCompoundBuilder();
         this.climateMap.entrySet().forEach(e -> builder.putCompound(e.getKey(), e.getValue().toCompound()));
         
-        this.settings.putElement(NbtTags.BIOMES, builder.build());
+        this.settings.put(NbtTags.BIOMES, builder.build());
     }
 }

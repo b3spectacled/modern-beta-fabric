@@ -5,12 +5,12 @@ import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
-import com.bespectacled.modernbeta.client.gui.Settings;
-import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.client.gui.wrapper.DoubleOptionWrapper;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.util.settings.Settings;
+import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 
 import net.minecraft.nbt.NbtFloat;
 import net.minecraft.nbt.NbtInt;

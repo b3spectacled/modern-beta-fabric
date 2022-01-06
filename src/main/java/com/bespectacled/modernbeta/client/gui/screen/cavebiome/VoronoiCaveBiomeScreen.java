@@ -3,8 +3,6 @@ package com.bespectacled.modernbeta.client.gui.screen.cavebiome;
 import java.util.function.Consumer;
 
 import com.bespectacled.modernbeta.api.client.gui.screen.SettingsScreen;
-import com.bespectacled.modernbeta.client.gui.Settings;
-import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.client.gui.wrapper.ActionOptionWrapper;
 import com.bespectacled.modernbeta.client.gui.wrapper.BooleanCyclingOptionWrapper;
@@ -15,6 +13,9 @@ import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.util.NbtListBuilder;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.util.settings.MutableSettings;
+import com.bespectacled.modernbeta.util.settings.Settings;
+import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 
 import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.NbtCompound;
@@ -48,7 +49,7 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
     }
     
     private VoronoiCaveBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
-        this(parent, worldSetting, consumer, new Settings(parent.getWorldSettings().getNbt(worldSetting)));
+        this(parent, worldSetting, consumer, new MutableSettings(parent.getWorldSettings().getNbt(worldSetting)));
     }
     
     public static VoronoiCaveBiomeScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
@@ -208,6 +209,6 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
     }
     
     private void updateList() {
-        this.settings.putElement(NbtTags.BIOMES, this.voronoiPoints);
+        this.settings.put(NbtTags.BIOMES, this.voronoiPoints);
     }
 }

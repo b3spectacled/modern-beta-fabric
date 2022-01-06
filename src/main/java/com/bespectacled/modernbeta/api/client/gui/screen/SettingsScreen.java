@@ -2,10 +2,11 @@ package com.bespectacled.modernbeta.api.client.gui.screen;
 
 import java.util.function.Consumer;
 
-import com.bespectacled.modernbeta.client.gui.Settings;
-import com.bespectacled.modernbeta.client.gui.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.client.gui.screen.GUIScreen;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
+import com.bespectacled.modernbeta.util.settings.MutableSettings;
+import com.bespectacled.modernbeta.util.settings.Settings;
+import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -32,7 +33,7 @@ public abstract class SettingsScreen extends GUIScreen {
     protected SettingsScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
         // Create new settings independent of main world settings storage.
         // Will only be applied to main world settings when 'Done'.
-        this(parent, worldSetting, consumer, new Settings(parent.getWorldSettings().getNbt(worldSetting)));
+        this(parent, worldSetting, consumer, new MutableSettings(parent.getWorldSettings().getNbt(worldSetting)));
     }
     
     @Override
@@ -66,14 +67,14 @@ public abstract class SettingsScreen extends GUIScreen {
     /* Convenience methods */
     
     protected void putSetting(String key, NbtElement element) {
-        this.settings.putElement(key, element);
+        this.settings.put(key, element);
     }
     
     protected boolean hasSetting(String key) {
-        return this.settings.hasElement(key);
+        return this.settings.containsKey(key);
     }
     
     protected NbtElement getSetting(String key) {
-        return this.settings.getElement(key);
+        return this.settings.get(key);
     }
 }

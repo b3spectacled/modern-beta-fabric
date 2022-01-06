@@ -75,9 +75,8 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         
         // Get climate sampler from biome provider if exists and enabled,
         // else create new default Beta climate sampler.
-        boolean sampleClimate = NbtUtil.readBoolean(
-            NbtTags.SAMPLE_CLIMATE, 
-            this.providerSettings, 
+        boolean sampleClimate = NbtUtil.toBoolean(
+            this.providerSettings.get(NbtTags.SAMPLE_CLIMATE), 
             ModernBeta.GEN_CONFIG.sampleClimate
         );
 
@@ -89,45 +88,38 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         this.spawnLocator = new BeachSpawnLocator(this, this.beachNoiseOctaves);
         
         // Beta Islands settings
-        this.generateOuterIslands = NbtUtil.readBoolean(
-            NbtTags.GEN_OUTER_ISLANDS,
-            this.providerSettings,
+        this.generateOuterIslands = NbtUtil.toBoolean(
+            this.providerSettings.get(NbtTags.GEN_OUTER_ISLANDS),
             ModernBeta.GEN_CONFIG.generateOuterIslands
         );
         
-        this.centerIslandRadius = NbtUtil.readInt(
-            NbtTags.CENTER_ISLAND_RADIUS,
-            this.providerSettings,
+        this.centerIslandRadius = NbtUtil.toInt(
+            this.providerSettings.get(NbtTags.CENTER_ISLAND_RADIUS),
             ModernBeta.GEN_CONFIG.centerIslandRadius
         );
         
-        this.centerIslandFalloff = NbtUtil.readFloat(
-            NbtTags.CENTER_ISLAND_FALLOFF,
-            this.providerSettings,
+        this.centerIslandFalloff = NbtUtil.toFloat(
+            this.providerSettings.get(NbtTags.CENTER_ISLAND_FALLOFF),
             ModernBeta.GEN_CONFIG.centerIslandFalloff
         );
         
-        this.centerOceanLerpDistance = NbtUtil.readInt(
-            NbtTags.CENTER_OCEAN_LERP_DIST,
-            this.providerSettings,
+        this.centerOceanLerpDistance = NbtUtil.toInt(
+            this.providerSettings.get(NbtTags.CENTER_OCEAN_LERP_DIST),
             ModernBeta.GEN_CONFIG.centerOceanLerpDistance
         );
         
-        this.centerOceanRadius = NbtUtil.readInt(
-            NbtTags.CENTER_OCEAN_RADIUS,
-            this.providerSettings,
+        this.centerOceanRadius = NbtUtil.toInt(
+            this.providerSettings.get(NbtTags.CENTER_ISLAND_RADIUS),
             ModernBeta.GEN_CONFIG.centerOceanRadius
         );
         
-        this.outerIslandNoiseScale = NbtUtil.readFloat(
-            NbtTags.OUTER_ISLAND_NOISE_SCALE,
-            this.providerSettings,
+        this.outerIslandNoiseScale = NbtUtil.toFloat(
+            this.providerSettings.get(NbtTags.OUTER_ISLAND_NOISE_SCALE),
             ModernBeta.GEN_CONFIG.outerIslandNoiseScale
         );
         
-        this.outerIslandNoiseOffset = NbtUtil.readFloat(
-            NbtTags.OUTER_ISLAND_NOISE_OFFSET,
-            this.providerSettings,
+        this.outerIslandNoiseOffset = NbtUtil.toFloat(
+            this.providerSettings.get(NbtTags.OUTER_ISLAND_NOISE_OFFSET),
             ModernBeta.GEN_CONFIG.outerIslandNoiseOffset
         );     
     }

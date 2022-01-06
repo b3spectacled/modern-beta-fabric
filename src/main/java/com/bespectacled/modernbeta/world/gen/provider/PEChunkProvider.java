@@ -66,9 +66,8 @@ public class PEChunkProvider extends NoiseChunkProvider {
         
         // Get climate sampler from biome provider if exists and enabled,
         // else create new default Beta climate sampler.
-        boolean sampleClimate = NbtUtil.readBoolean(
-            NbtTags.SAMPLE_CLIMATE, 
-            this.providerSettings, 
+        boolean sampleClimate = NbtUtil.toBoolean(
+            this.providerSettings.get(NbtTags.SAMPLE_CLIMATE), 
             ModernBeta.GEN_CONFIG.sampleClimate
         );
         
