@@ -12,6 +12,8 @@ import com.bespectacled.modernbeta.client.gui.wrapper.CyclingOptionWrapper;
 import com.bespectacled.modernbeta.util.GuiUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.util.settings.MutableSettings;
+import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.util.settings.WorldSettings;
 import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
@@ -24,7 +26,6 @@ import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.nbt.NbtByte;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.text.LiteralText;
@@ -85,7 +86,7 @@ public class WorldScreen extends GUIScreen {
             value -> {
                 // Queue world type changes
                 this.worldSettings.clear();
-                this.worldSettings.putCompound(
+                this.worldSettings.replace(
                     WorldSetting.CHUNK, 
                     Registries.CHUNK_SETTINGS
                         .getOrEmpty(value.getChunkProvider())
@@ -93,7 +94,7 @@ public class WorldScreen extends GUIScreen {
                         .get()
                 );
 
-                this.worldSettings.putCompound(
+                this.worldSettings.replace(
                     WorldSetting.BIOME, 
                     Registries.BIOME_SETTINGS
                         .getOrEmpty(value.getBiomeProvider())
@@ -101,7 +102,7 @@ public class WorldScreen extends GUIScreen {
                         .get()
                 );
                 
-                this.worldSettings.putCompound(
+                this.worldSettings.replace(
                     WorldSetting.CAVE_BIOME, 
                     Registries.CAVE_BIOME_SETTINGS
                         .getOrEmpty(value.getCaveBiomeProvider())
@@ -125,7 +126,7 @@ public class WorldScreen extends GUIScreen {
             value -> {
                 // Queue biome settings changes
                 this.worldSettings.clear(WorldSetting.BIOME);
-                this.worldSettings.putCompound(
+                this.worldSettings.replace(
                     WorldSetting.BIOME,
                     Registries.BIOME_SETTINGS
                         .getOrEmpty(value)
@@ -148,7 +149,7 @@ public class WorldScreen extends GUIScreen {
             value -> {
                 // Queue cave biome settings changes
                 this.worldSettings.clear(WorldSetting.CAVE_BIOME);
-                this.worldSettings.putCompound(
+                this.worldSettings.replace(
                     WorldSetting.CAVE_BIOME, 
                     Registries.CAVE_BIOME_SETTINGS
                         .getOrEmpty(value)
@@ -253,10 +254,10 @@ public class WorldScreen extends GUIScreen {
     private void postProcessOptions(WorldProvider worldProvider) {}
     
     private String settingsToString(WorldSetting setting) {
-        NbtCompound settings = this.worldSettings.getNbt(setting);
+        Settings settings = MutableSettings.copyOf(this.worldSettings.get(setting));
         
         StringBuilder builder = new StringBuilder().append("Settings\n");
-        Set<String> keys = settings.getKeys();
+        Set<String> keys = settings.keySet();
         
         // Remove main settings tag
         keys.remove(setting.tag);

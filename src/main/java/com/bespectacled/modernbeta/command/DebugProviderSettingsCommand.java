@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.command;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
+import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
@@ -25,24 +26,39 @@ public class DebugProviderSettingsCommand {
         if (source.getWorld().getChunkManager().getChunkGenerator() instanceof OldChunkGenerator oldChunkGenerator) {
             validWorld = true;
             
-            String chunkSettings = oldChunkGenerator.getChunkSettings().getNbt().asString();
+            StringBuilder builder = new StringBuilder();
+            Settings chunkSettings = oldChunkGenerator.getChunkSettings();
             
+            chunkSettings.keySet().forEach(key -> {
+                builder.append(String.format("* %s: %s\n", key, chunkSettings.get(key).toString()));
+            });
+
             source.sendFeedback(new LiteralText("Chunk Provider Settings:").formatted(Formatting.YELLOW), false);
-            source.sendFeedback(new LiteralText(chunkSettings), false);
+            source.sendFeedback(new LiteralText(builder.toString()), false);
         }
         
         if (source.getWorld().getChunkManager().getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) {
             validWorld = true;
             
-            String biomeSettings = oldBiomeSource.getBiomeSettings().getNbt().asString();
+            StringBuilder builder0 = new StringBuilder();
+            Settings biomeSettings = oldBiomeSource.getBiomeSettings();
+            
+            biomeSettings.keySet().forEach(key -> {
+                builder0.append(String.format("* %s: %s\n", key, biomeSettings.get(key).toString()));
+            });
             
             source.sendFeedback(new LiteralText("Biome Provider Settings:").formatted(Formatting.YELLOW), false);
-            source.sendFeedback(new LiteralText(biomeSettings), false);
+            source.sendFeedback(new LiteralText(builder0.toString()), false);
             
-            String caveSettings = oldBiomeSource.getCaveBiomeSettings().getNbt().asString();
+            StringBuilder builder1 = new StringBuilder();
+            Settings caveBiomeSettings = oldBiomeSource.getCaveBiomeSettings();
+            
+            caveBiomeSettings.keySet().forEach(key -> {
+                builder1.append(String.format("* %s: %s\n", key, caveBiomeSettings.get(key).toString()));
+            });
             
             source.sendFeedback(new LiteralText("Cave Biome Provider Settings:").formatted(Formatting.YELLOW), false);
-            source.sendFeedback(new LiteralText(caveSettings), false);
+            source.sendFeedback(new LiteralText(builder1.toString()), false);
         }
 
         if (validWorld) {

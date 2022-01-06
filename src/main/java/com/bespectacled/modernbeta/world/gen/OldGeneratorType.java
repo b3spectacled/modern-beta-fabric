@@ -13,6 +13,7 @@ import com.bespectacled.modernbeta.mixin.client.MixinMoreOptionsDialogInvoker;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.settings.ImmutableSettings;
+import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.util.settings.WorldSettings;
 import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
@@ -25,7 +26,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.world.GeneratorType;
 import net.minecraft.client.world.GeneratorType.ScreenProvider;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -112,19 +112,19 @@ public class OldGeneratorType {
                 String biomeType = worldProvider.getBiomeProvider();
                 String caveBiomeType = worldProvider.getCaveBiomeProvider();
                 
-                ImmutableSettings chunkSettings = new ImmutableSettings(Registries.CHUNK_SETTINGS
+                ImmutableSettings chunkSettings = ImmutableSettings.copyOf(Registries.CHUNK_SETTINGS
                     .getOrEmpty(worldType)
                     .orElse(() -> ChunkProviderSettings.createSettingsDefault(worldType))
                     .get()
                 );
                 
-                ImmutableSettings biomeSettings = new ImmutableSettings(Registries.BIOME_SETTINGS
+                ImmutableSettings biomeSettings = ImmutableSettings.copyOf(Registries.BIOME_SETTINGS
                     .getOrEmpty(biomeType)
                     .orElse(() -> BiomeProviderSettings.createSettingsDefault(biomeType))
                     .get()
                 );
                     
-                    ImmutableSettings caveBiomeSettings = new ImmutableSettings(Registries.CAVE_BIOME_SETTINGS
+                    ImmutableSettings caveBiomeSettings = ImmutableSettings.copyOf(Registries.CAVE_BIOME_SETTINGS
                     .getOrEmpty(caveBiomeType)
                     .orElse(() -> CaveBiomeProviderSettings.createSettingsDefault(caveBiomeType))
                     .get()
@@ -160,16 +160,16 @@ public class OldGeneratorType {
                         // In the case that settings have been set, and the world edit screen is opened again:
                         // If settings already present, create new compound tag and copy from source,
                         // otherwise, not copying will modify original settings.
-                        NbtCompound chunkSettings = chunkGenerator instanceof OldChunkGenerator oldChunkGenerator ?
-                            oldChunkGenerator.getChunkSettings().getNbt() :
+                        Settings chunkSettings = chunkGenerator instanceof OldChunkGenerator oldChunkGenerator ?
+                            oldChunkGenerator.getChunkSettings() :
                             Registries.CHUNK_SETTINGS.get(worldProvider.getChunkProvider()).get();
                         
-                        NbtCompound biomeSettings = biomeSource instanceof OldBiomeSource oldBiomeSource ? 
-                            oldBiomeSource.getBiomeSettings().getNbt() : 
+                        Settings biomeSettings = biomeSource instanceof OldBiomeSource oldBiomeSource ? 
+                            oldBiomeSource.getBiomeSettings() : 
                             Registries.BIOME_SETTINGS.get(worldProvider.getBiomeProvider()).get();
 
-                        NbtCompound caveSettings = biomeSource instanceof OldBiomeSource oldBiomeSource ? 
-                            oldBiomeSource.getCaveBiomeSettings().getNbt() :
+                        Settings caveSettings = biomeSource instanceof OldBiomeSource oldBiomeSource ? 
+                            oldBiomeSource.getCaveBiomeSettings() :
                             Registries.CAVE_BIOME_SETTINGS.get(worldProvider.getCaveBiomeProvider()).get();
                         
                         return new WorldScreen(

@@ -35,7 +35,7 @@ public class InfWorldScreen extends SettingsScreen {
         return new InfWorldScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt())
+            settings -> worldScreen.getWorldSettings().replace(worldSetting, settings)
         );
     }
     

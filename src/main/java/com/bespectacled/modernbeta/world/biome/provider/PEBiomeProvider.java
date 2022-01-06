@@ -14,10 +14,10 @@ import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.ClimateChunk;
 import com.bespectacled.modernbeta.util.mersenne.MTRandom;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
 import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
 
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -26,7 +26,7 @@ public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, Sk
     private final BetaClimateMap climateMap;
     private final PEClimateSampler climateSampler;
     
-    public PEBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+    public PEBiomeProvider(long seed, Settings settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
         
         this.climateMap = new BetaClimateMap(settings);

@@ -11,6 +11,7 @@ import com.bespectacled.modernbeta.client.gui.screen.world.InfWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.Infdev227WorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.IslandWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.PreInfWorldScreen;
+import com.bespectacled.modernbeta.util.settings.ImmutableSettings;
 import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.PEBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
@@ -33,8 +34,6 @@ import com.bespectacled.modernbeta.world.gen.provider.PEChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.SkylandsChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 import com.bespectacled.modernbeta.world.gen.sampler.OreVeinRules;
-
-import net.minecraft.nbt.NbtCompound;
 
 /*
  * Registration of built-in providers for various things.
@@ -60,7 +59,7 @@ public class ModernBetaBuiltInProviders {
     
     // Register default chunk settings
     public static void registerChunkSettings() {
-        Registries.CHUNK_SETTINGS.register(ModernBetaBuiltInTypes.DEFAULT_ID, () -> new NbtCompound());
+        Registries.CHUNK_SETTINGS.register(ModernBetaBuiltInTypes.DEFAULT_ID, () -> new ImmutableSettings());
         Registries.CHUNK_SETTINGS.register(ModernBetaBuiltInTypes.Chunk.BETA.name, ChunkProviderSettings::createSettingsBeta);
         Registries.CHUNK_SETTINGS.register(ModernBetaBuiltInTypes.Chunk.SKYLANDS.name, ChunkProviderSettings::createSettingsSkylands);
         Registries.CHUNK_SETTINGS.register(ModernBetaBuiltInTypes.Chunk.ALPHA.name, ChunkProviderSettings::createSettingsAlpha);
@@ -85,7 +84,7 @@ public class ModernBetaBuiltInProviders {
     
     // Register default biome settings
     public static void registerBiomeSettings() {
-        Registries.BIOME_SETTINGS.register(ModernBetaBuiltInTypes.DEFAULT_ID, () -> new NbtCompound());
+        Registries.BIOME_SETTINGS.register(ModernBetaBuiltInTypes.DEFAULT_ID, () -> new ImmutableSettings());
         Registries.BIOME_SETTINGS.register(ModernBetaBuiltInTypes.Biome.BETA.name, BiomeProviderSettings::createSettingsBeta);
         Registries.BIOME_SETTINGS.register(ModernBetaBuiltInTypes.Biome.SINGLE.name, BiomeProviderSettings::createSettingsSingle);
         Registries.BIOME_SETTINGS.register(ModernBetaBuiltInTypes.Biome.PE.name, BiomeProviderSettings::createSettingsPE);
@@ -102,7 +101,7 @@ public class ModernBetaBuiltInProviders {
     
     // Registry default cave biome settings
     public static void registerCaveBiomeSettings() {
-        Registries.CAVE_BIOME_SETTINGS.register(ModernBetaBuiltInTypes.DEFAULT_ID, () -> new NbtCompound());
+        Registries.CAVE_BIOME_SETTINGS.register(ModernBetaBuiltInTypes.DEFAULT_ID, () -> new ImmutableSettings());
         Registries.CAVE_BIOME_SETTINGS.register(ModernBetaBuiltInTypes.CaveBiome.NONE.name, CaveBiomeProviderSettings::createSettingsNone);
         Registries.CAVE_BIOME_SETTINGS.register(ModernBetaBuiltInTypes.CaveBiome.SINGLE.name, CaveBiomeProviderSettings::createSettingsSingle);
         Registries.CAVE_BIOME_SETTINGS.register(ModernBetaBuiltInTypes.CaveBiome.VORONOI.name, CaveBiomeProviderSettings::createSettingsVoronoi);

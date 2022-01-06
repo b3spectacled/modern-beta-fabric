@@ -35,7 +35,7 @@ public class PreInfWorldScreen extends InfWorldScreen {
         return new PreInfWorldScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt())
+            settings -> worldScreen.getWorldSettings().replace(worldSetting, settings)
         );
     }
     

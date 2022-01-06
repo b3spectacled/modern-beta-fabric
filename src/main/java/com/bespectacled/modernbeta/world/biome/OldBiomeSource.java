@@ -54,12 +54,12 @@ public class OldBiomeSource extends BiomeSource {
     ) {
         List<Biome> mainBiomes = Registries.BIOME
             .get(NbtUtil.toStringOrThrow(biomeSettings.get(NbtTags.BIOME_TYPE)))
-            .apply(seed, biomeSettings.getNbt(), biomeRegistry)
+            .apply(seed, biomeSettings, biomeRegistry)
             .getBiomesForRegistry();
         
         List<Biome> caveBiomes = Registries.CAVE_BIOME
             .get(NbtUtil.toStringOrThrow(caveBiomeSettings.get(NbtTags.CAVE_BIOME_TYPE)))
-            .apply(seed, caveBiomeSettings.getNbt(), biomeRegistry)
+            .apply(seed, caveBiomeSettings, biomeRegistry)
             .getBiomesForRegistry();
         
         List<Biome> biomes = new ArrayList<>();
@@ -89,11 +89,11 @@ public class OldBiomeSource extends BiomeSource {
         
         this.biomeProvider = Registries.BIOME
             .get(NbtUtil.toStringOrThrow(biomeSettings.get(NbtTags.BIOME_TYPE)))
-            .apply(seed, biomeSettings.getNbt(), biomeRegistry);
+            .apply(seed, biomeSettings, biomeRegistry);
         
         this.caveBiomeProvider = Registries.CAVE_BIOME
             .get(NbtUtil.toStringOrThrow(caveBiomeSettings.get(NbtTags.CAVE_BIOME_TYPE)))
-            .apply(seed, caveBiomeSettings.getNbt(), biomeRegistry);
+            .apply(seed, caveBiomeSettings, biomeRegistry);
     }
     
     @Environment(EnvType.CLIENT)

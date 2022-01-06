@@ -15,15 +15,9 @@ import net.minecraft.nbt.NbtElement;
 public class MutableSettings implements Settings {
     private static final boolean DEBUG = false;
     
-    private final Map<String, NbtElement> entries;
-    
-    public MutableSettings() {
-        this.entries = new LinkedHashMap<>();
-    }
+    private final Map<String, NbtElement> entries = new LinkedHashMap<>();
     
     public MutableSettings(NbtCompound initial) {
-        this();
-        
         this.putCompound(initial);
     }
 
@@ -60,10 +54,7 @@ public class MutableSettings implements Settings {
 
     @Override
     public NbtElement get(String key) {
-        if (this.entries.containsKey(key))
-            return this.entries.get(key);
-        
-        return null;
+        return this.entries.get(key);
     }
     
     @Override
@@ -79,17 +70,6 @@ public class MutableSettings implements Settings {
     @Override
     public Set<String> keySet() {
         return this.entries.keySet();
-    }
-    
-    @Override
-    public NbtCompound getNbt() {
-        NbtCompound compound = new NbtCompound();
-        
-        for (Entry<String, NbtElement> change : this.entries.entrySet()) {
-            compound.put(change.getKey(), change.getValue().copy());
-        }
-        
-        return compound;
     }
 
     public static MutableSettings copyOf(Settings settings) {

@@ -44,19 +44,19 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
     
     private NbtList voronoiPoints;
     
-    private VoronoiCaveBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
-        super(parent, worldSetting, consumer, settings);
+    private VoronoiCaveBiomeScreen(WorldScreen worldScreen, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
+        super(worldScreen, worldSetting, consumer, settings);
     }
     
-    private VoronoiCaveBiomeScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
-        this(parent, worldSetting, consumer, new MutableSettings(parent.getWorldSettings().getNbt(worldSetting)));
+    private VoronoiCaveBiomeScreen(WorldScreen worldScreen, WorldSetting worldSetting, Consumer<Settings> consumer) {
+        this(worldScreen, worldSetting, consumer, MutableSettings.copyOf(worldScreen.getWorldSettings().get(worldSetting)));
     }
     
     public static VoronoiCaveBiomeScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
         return new VoronoiCaveBiomeScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt())
+            settings -> worldScreen.getWorldSettings().replace(worldSetting, settings)
         );
     }
     
@@ -66,7 +66,7 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
 
         // Create cloned voronoi point list from existing biome settings
         NbtListBuilder builder = new NbtListBuilder();
-        NbtUtil.readListOrThrow(NbtTags.BIOMES, this.settings.getNbt())
+        NbtUtil.toListOrThrow(this.settings.get(NbtTags.BIOMES))
             .forEach(element -> builder.add(element.copy()));
         this.voronoiPoints = builder.build();
         

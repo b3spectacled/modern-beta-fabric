@@ -39,7 +39,7 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
         return new ClimateBiomeScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt())
+            settings -> worldScreen.getWorldSettings().replace(worldSetting, settings)
         );
     }
     
@@ -58,7 +58,7 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
     private Map<String, ClimateMapping> createMap() {
         Map<String, ClimateMapping> climateMap = new LinkedHashMap<>();
         
-        NbtCompound biomes = NbtUtil.readCompoundOrThrow(NbtTags.BIOMES, this.settings.getNbt());
+        NbtCompound biomes = NbtUtil.toCompoundOrThrow(this.settings.get(NbtTags.BIOMES));
         for (String key : biomes.getKeys()) {
             NbtCompound biome = NbtUtil.readCompoundOrThrow(key, biomes);
             

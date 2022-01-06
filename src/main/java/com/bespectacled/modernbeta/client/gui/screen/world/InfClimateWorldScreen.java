@@ -28,7 +28,7 @@ public class InfClimateWorldScreen extends InfWorldScreen {
         return new InfClimateWorldScreen(
             worldScreen,
             worldSetting,
-            settings -> worldScreen.getWorldSettings().putCompound(worldSetting, settings.getNbt())
+            settings -> worldScreen.getWorldSettings().replace(worldSetting, settings)
         );
     }
     

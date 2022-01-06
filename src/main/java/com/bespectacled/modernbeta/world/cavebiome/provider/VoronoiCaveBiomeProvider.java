@@ -10,6 +10,7 @@ import com.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSample
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointRules;
 
 import net.minecraft.nbt.NbtCompound;
@@ -22,18 +23,16 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
     private final VoronoiCaveClimateSampler climateSampler;
     private final VoronoiPointRules<Identifier, Clime> rules;
 
-    public VoronoiCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+    public VoronoiCaveBiomeProvider(long seed, Settings settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
         
-        int verticalNoiseScale = NbtUtil.readInt(
-            NbtTags.VERTICAL_NOISE_SCALE,
-            settings, 
+        int verticalNoiseScale = NbtUtil.toInt(
+            settings.get(NbtTags.VERTICAL_NOISE_SCALE),
             ModernBeta.CAVE_BIOME_CONFIG.verticalNoiseScale
         );
         
-        int horizontalNoiseScale = NbtUtil.readInt(
-            NbtTags.HORIZONTAL_NOISE_SCALE,
-            settings, 
+        int horizontalNoiseScale = NbtUtil.toInt(
+            settings.get(NbtTags.HORIZONTAL_NOISE_SCALE),
             ModernBeta.CAVE_BIOME_CONFIG.horizontalNoiseScale
         );
         
@@ -59,10 +58,10 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
         return this.climateSampler.sample(x, y, z);
     }
     
-    private static VoronoiPointRules<Identifier, Clime> buildRules(NbtCompound settings) {
+    private static VoronoiPointRules<Identifier, Clime> buildRules(Settings settings) {
         VoronoiPointRules.Builder<Identifier, Clime> builder = new VoronoiPointRules.Builder<>();
         
-        NbtUtil.readListOrThrow(NbtTags.BIOMES, settings).stream().forEach(e -> {
+        NbtUtil.toListOrThrow(settings.get(NbtTags.BIOMES)).stream().forEach(e -> {
             NbtCompound compound = NbtUtil.toCompoundOrThrow(e);
             String biome = NbtUtil.readStringOrThrow(NbtTags.BIOME, compound);
             double temp = NbtUtil.readDoubleOrThrow(NbtTags.TEMP, compound);

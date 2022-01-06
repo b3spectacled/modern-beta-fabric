@@ -20,20 +20,20 @@ public abstract class SettingsScreen extends GUIScreen {
     
     protected final DynamicRegistryManager registryManager;
     
-    protected SettingsScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
-        super("createWorld.customize.settings.title", parent);
+    protected SettingsScreen(WorldScreen worldScreen, WorldSetting worldSetting, Consumer<Settings> consumer, Settings settings) {
+        super("createWorld.customize.settings.title", worldScreen);
 
         this.worldSetting = worldSetting;
         this.consumer = consumer;
         this.settings = settings;
         
-        this.registryManager = parent.getRegistryManager();
+        this.registryManager = worldScreen.getRegistryManager();
     }
     
-    protected SettingsScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer) {
+    protected SettingsScreen(WorldScreen worldScreen, WorldSetting worldSetting, Consumer<Settings> consumer) {
         // Create new settings independent of main world settings storage.
         // Will only be applied to main world settings when 'Done'.
-        this(parent, worldSetting, consumer, new MutableSettings(parent.getWorldSettings().getNbt(worldSetting)));
+        this(worldScreen, worldSetting, consumer, MutableSettings.copyOf(worldScreen.getWorldSettings().get(worldSetting)));
     }
     
     @Override

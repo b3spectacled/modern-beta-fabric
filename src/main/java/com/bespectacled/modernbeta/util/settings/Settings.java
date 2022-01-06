@@ -18,7 +18,5 @@ public interface Settings {
 
     NbtElement get(String key);
     
-    NbtCompound getNbt();
-    
     Set<String> keySet();
 }

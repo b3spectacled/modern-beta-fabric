@@ -70,7 +70,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
             Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
             ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(generator -> generator.settings),
-            //NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings.getNbt()),
             ImmutableSettings.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings),
             Codec.INT.optionalFieldOf("version").forGetter(generator -> generator.version)
         ).apply(instance, instance.stable(OldChunkGenerator::new)));

@@ -84,19 +84,19 @@ public class MixinGeneratorOptions {
             String biomeType = ModernBeta.BIOME_CONFIG.biomeType;
             String caveBiomeType = ModernBeta.CAVE_BIOME_CONFIG.caveBiomeType;
 
-            ImmutableSettings chunkSettings = new ImmutableSettings(Registries.CHUNK_SETTINGS
+            ImmutableSettings chunkSettings = ImmutableSettings.copyOf(Registries.CHUNK_SETTINGS
                 .getOrEmpty(worldType)
                 .orElse(() -> ChunkProviderSettings.createSettingsDefault(worldType))
                 .get()
             );
             
-            ImmutableSettings biomeSettings = new ImmutableSettings(Registries.BIOME_SETTINGS
+            ImmutableSettings biomeSettings = ImmutableSettings.copyOf(Registries.BIOME_SETTINGS
                 .getOrEmpty(biomeType)
                 .orElse(() -> BiomeProviderSettings.createSettingsDefault(biomeType))
                 .get()
             );
             
-            ImmutableSettings caveBiomeSettings = new ImmutableSettings(Registries.CAVE_BIOME_SETTINGS
+            ImmutableSettings caveBiomeSettings = ImmutableSettings.copyOf(Registries.CAVE_BIOME_SETTINGS
                 .getOrEmpty(caveBiomeType)
                 .orElse(() -> CaveBiomeProviderSettings.createSettingsDefault(caveBiomeType))
                 .get()

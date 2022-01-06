@@ -11,23 +11,23 @@ import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.util.function.TriFunction;
 import com.bespectacled.modernbeta.util.noise.NoiseRules;
+import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.sampler.OreVeinType;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.biome.Biome;
 
 public final class Registries {
-    public static final Registry<TriFunction<Long, NbtCompound, net.minecraft.util.registry.Registry<Biome>, BiomeProvider>> BIOME;
+    public static final Registry<TriFunction<Long, Settings, net.minecraft.util.registry.Registry<Biome>, BiomeProvider>> BIOME;
     public static final Registry<BiFunction<WorldScreen, WorldSetting, Screen>> BIOME_SCREEN;
-    public static final Registry<Supplier<NbtCompound>> BIOME_SETTINGS;
-    public static final Registry<TriFunction<Long, NbtCompound, net.minecraft.util.registry.Registry<Biome>, CaveBiomeProvider>> CAVE_BIOME;
+    public static final Registry<Supplier<Settings>> BIOME_SETTINGS;
+    public static final Registry<TriFunction<Long, Settings, net.minecraft.util.registry.Registry<Biome>, CaveBiomeProvider>> CAVE_BIOME;
     public static final Registry<BiFunction<WorldScreen, WorldSetting, Screen>> CAVE_BIOME_SCREEN;
-    public static final Registry<Supplier<NbtCompound>> CAVE_BIOME_SETTINGS;
+    public static final Registry<Supplier<Settings>> CAVE_BIOME_SETTINGS;
     public static final Registry<Function<OldChunkGenerator, ChunkProvider>> CHUNK;
-    public static final Registry<Supplier<NbtCompound>> CHUNK_SETTINGS;
+    public static final Registry<Supplier<Settings>> CHUNK_SETTINGS;
     public static final Registry<WorldProvider> WORLD;
     public static final Registry<BiFunction<WorldScreen, WorldSetting, Screen>> WORLD_SCREEN;
     public static final Registry<NoiseRules<OreVeinType>> ORE_VEIN_RULES;

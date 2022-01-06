@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
 
 import net.minecraft.nbt.NbtCompound;
@@ -16,11 +17,11 @@ public class BetaClimateMap {
     private final Map<String, ClimateMapping> climateMap;
     private final ClimateMapping[] climateTable;
     
-    public BetaClimateMap(NbtCompound settings) {
+    public BetaClimateMap(Settings settings) {
         this.climateMap = new LinkedHashMap<>();
         this.climateTable = new ClimateMapping[4096];
         
-        NbtCompound biomes = NbtUtil.readCompoundOrThrow(NbtTags.BIOMES, settings);
+        NbtCompound biomes = NbtUtil.toCompoundOrThrow(settings.get(NbtTags.BIOMES));
         for (String key : biomes.getKeys()) {
             this.climateMap.put(key, ClimateMapping.fromCompound(NbtUtil.readCompoundOrThrow(key, biomes)));
         }

@@ -12,11 +12,11 @@ import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.ClimateChunk;
 import com.bespectacled.modernbeta.util.chunk.FullResBiomeChunk;
 import com.bespectacled.modernbeta.util.chunk.LowResBiomeChunk;
+import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.biome.provider.climate.BiomeClimateRules;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeSourceCreator;
 
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
@@ -31,7 +31,7 @@ public class VanillaBiomeProvider extends BiomeProvider implements ClimateSample
     
     private final VanillaClimateSampler climateSampler;
     
-    public VanillaBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+    public VanillaBiomeProvider(long seed, Settings settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
         
         this.vanillaBiomeSource = VanillaBiomeSourceCreator.buildLandBiomeSource(seed, settings, biomeRegistry);

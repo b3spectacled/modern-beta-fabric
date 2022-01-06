@@ -18,11 +18,11 @@ public class VanillaBiomeScreen extends OceanBiomeScreen {
         super(parent, worldSetting, consumer);
     }
     
-    public static VanillaBiomeScreen create(WorldScreen parent, WorldSetting worldSetting) {
+    public static VanillaBiomeScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
         return new VanillaBiomeScreen(
-            parent,
+            worldScreen,
             worldSetting,
-            settings -> parent.getWorldSettings().putCompound(worldSetting, settings.getNbt())
+            settings -> worldScreen.getWorldSettings().replace(worldSetting, settings)
         );
     }
     

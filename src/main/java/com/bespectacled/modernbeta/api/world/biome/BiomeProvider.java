@@ -2,14 +2,15 @@ package com.bespectacled.modernbeta.api.world.biome;
 
 import java.util.List;
 
-import net.minecraft.nbt.NbtCompound;
+import com.bespectacled.modernbeta.util.settings.Settings;
+
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeAccess;
 
 public abstract class BiomeProvider implements BiomeAccess.Storage {
     protected final long seed;
-    protected final NbtCompound settings;
+    protected final Settings settings;
     protected final Registry<Biome> biomeRegistry;
     
     /**
@@ -20,7 +21,7 @@ public abstract class BiomeProvider implements BiomeAccess.Storage {
      * @param settings Biome settings.
      * @param biomeRegistry TODO
      */
-    public BiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+    public BiomeProvider(long seed, Settings settings, Registry<Biome> biomeRegistry) {
         this.seed = seed;
         this.settings = settings;
         this.biomeRegistry = biomeRegistry;

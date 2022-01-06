@@ -193,10 +193,17 @@ public class NbtUtil {
         throw new IllegalArgumentException("[Modern Beta] NBT element is not a compound! Type: " + element.getType());  
     }
     
-    public static NbtCompound toCompoundOrThrow(NbtElement element, NbtCompound alternate) {
+    public static NbtCompound toCompound(NbtElement element, NbtCompound alternate) {
         if (element instanceof NbtCompound nbtCompound)
             return nbtCompound;
         
         return alternate;
+    }
+    
+    public static NbtList toListOrThrow(NbtElement element) {
+        if (element instanceof NbtList nbtList)
+            return nbtList;
+        
+        throw new IllegalArgumentException("[Modern Beta] NBT element is not a list! Type: " + element.getType());  
     }
 }

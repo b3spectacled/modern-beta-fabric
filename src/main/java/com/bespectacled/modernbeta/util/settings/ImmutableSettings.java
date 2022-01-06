@@ -27,15 +27,11 @@ public class ImmutableSettings implements Settings {
         settings -> new Dynamic(NbtOps.INSTANCE, settings.getNbt())
     );
     
-    private final Map<String, NbtElement> entries;
+    private final Map<String, NbtElement> entries = new LinkedHashMap<>();
     
-    public ImmutableSettings() {
-        this.entries = new LinkedHashMap<>();
-    }
+    public ImmutableSettings() {}
     
     public ImmutableSettings(NbtCompound initial) {
-        this();
-
         for (String key : initial.getKeys()) {
             this.entries.put(key, initial.get(key));
         }
@@ -69,10 +65,7 @@ public class ImmutableSettings implements Settings {
 
     @Override
     public NbtElement get(String key) {
-        if (this.entries.containsKey(key))
-            return this.entries.get(key);
-        
-        return null;
+        return this.entries.get(key);
     }
     
     @Override
@@ -80,8 +73,7 @@ public class ImmutableSettings implements Settings {
         return this.entries.keySet();
     }
     
-    @Override
-    public NbtCompound getNbt() {
+    private NbtCompound getNbt() {
         NbtCompound compound = new NbtCompound();
         
         for (Entry<String, NbtElement> change : this.entries.entrySet()) {

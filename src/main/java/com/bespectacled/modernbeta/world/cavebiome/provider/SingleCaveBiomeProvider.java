@@ -5,8 +5,8 @@ import java.util.List;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.util.settings.Settings;
 
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -17,10 +17,10 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider {
     
     private final Identifier biomeId;
     
-    public SingleCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
+    public SingleCaveBiomeProvider(long seed, Settings settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
 
-        this.biomeId = new Identifier(NbtUtil.readString(NbtTags.SINGLE_BIOME, settings, DEFAULT_BIOME_ID.toString()));
+        this.biomeId = new Identifier(NbtUtil.toString(settings.get(NbtTags.SINGLE_BIOME), DEFAULT_BIOME_ID.toString()));
     }
 
     @Override

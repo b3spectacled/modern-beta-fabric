@@ -5,8 +5,8 @@ import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.config.ModernBetaConfigBiome;
 import com.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import com.bespectacled.modernbeta.util.NbtTags;
-
-import net.minecraft.nbt.NbtCompound;
+import com.bespectacled.modernbeta.util.settings.ImmutableSettings;
+import com.bespectacled.modernbeta.util.settings.Settings;
 
 public class BiomeProviderSettings {
     private static final ModernBetaConfigBiome CONFIG = ModernBeta.BIOME_CONFIG;
@@ -19,37 +19,45 @@ public class BiomeProviderSettings {
         return createSettingsBase(biomeType).putBoolean(NbtTags.GEN_OCEANS, CONFIG.generateOceans);
     }
     
-    public static NbtCompound createSettingsDefault(String biomeType) {
-        return createSettingsBase(biomeType).build();
+    public static Settings createSettingsDefault(String biomeType) {
+        return new ImmutableSettings(createSettingsBase(biomeType).build());
     }
     
-    public static NbtCompound createSettingsSingle() {
-        return createSettingsBase(ModernBetaBuiltInTypes.Biome.SINGLE.name)
-            .putString(NbtTags.SINGLE_BIOME, CONFIG.singleBiome)
-            .build();
+    public static Settings createSettingsSingle() {
+        return new ImmutableSettings(
+            createSettingsBase(ModernBetaBuiltInTypes.Biome.SINGLE.name)
+                .putString(NbtTags.SINGLE_BIOME, CONFIG.singleBiome)
+                .build()
+        );
     }
     
-    public static NbtCompound createSettingsBeta() {
+    public static Settings createSettingsBeta() {
         NbtCompoundBuilder builder = new NbtCompoundBuilder();
         CONFIG.betaClimates.entrySet().forEach(e -> builder.putCompound(e.getKey(), e.getValue().toCompound()));
         
-        return createSettingsOceans(ModernBetaBuiltInTypes.Biome.BETA.name)
-            .putCompound(NbtTags.BIOMES, builder.build())
-            .build();
+        return new ImmutableSettings(
+            createSettingsOceans(ModernBetaBuiltInTypes.Biome.BETA.name)
+                .putCompound(NbtTags.BIOMES, builder.build())
+                .build()
+        );
     }
     
-    public static NbtCompound createSettingsPE() {
+    public static Settings createSettingsPE() {
         NbtCompoundBuilder builder = new NbtCompoundBuilder();
         CONFIG.peClimates.entrySet().forEach(e -> builder.putCompound(e.getKey(), e.getValue().toCompound()));
         
-        return createSettingsOceans(ModernBetaBuiltInTypes.Biome.PE.name)
-            .putCompound(NbtTags.BIOMES, builder.build())
-            .build();
+        return new ImmutableSettings(
+            createSettingsOceans(ModernBetaBuiltInTypes.Biome.PE.name)
+                .putCompound(NbtTags.BIOMES, builder.build())
+                .build()
+        );
     }
     
-    public static NbtCompound createSettingsVanilla() {
-        return createSettingsOceans(ModernBetaBuiltInTypes.Biome.VANILLA.name)
-            .putBoolean(NbtTags.VANILLA_LARGE_BIOMES, CONFIG.vanillaLargeBiomes)
-            .build();
+    public static Settings createSettingsVanilla() {
+        return new ImmutableSettings(
+            createSettingsOceans(ModernBetaBuiltInTypes.Biome.VANILLA.name)
+                .putBoolean(NbtTags.VANILLA_LARGE_BIOMES, CONFIG.vanillaLargeBiomes)
+                .build()
+        );
     }
 }

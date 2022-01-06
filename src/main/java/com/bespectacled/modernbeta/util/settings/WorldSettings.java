@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.bespectacled.modernbeta.util.NbtTags;
 
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
 public final class WorldSettings {
@@ -23,30 +22,18 @@ public final class WorldSettings {
     
     private final Map<WorldSetting, MutableSettings> settings = new LinkedHashMap<>();
     
-    public WorldSettings() {
-        for (WorldSetting w : WorldSetting.values()) {
-            this.settings.put(w, new MutableSettings());
-        }
-    }
-    
-    public WorldSettings(WorldSettings worldSettings) {
-        for (WorldSetting w : WorldSetting.values()) {
-            this.settings.put(w, new MutableSettings(worldSettings.getNbt(w)));
-        }
-    }
-    
-    public WorldSettings(NbtCompound chunkSettings, NbtCompound biomeSettings, NbtCompound caveBiomeSettings) {
-        this.settings.put(WorldSetting.CHUNK, new MutableSettings(chunkSettings));
-        this.settings.put(WorldSetting.BIOME, new MutableSettings(biomeSettings));
-        this.settings.put(WorldSetting.CAVE_BIOME, new MutableSettings(caveBiomeSettings));
+    public WorldSettings(Settings chunkSettings, Settings biomeSettings, Settings caveBiomeSettings) {
+        this.settings.put(WorldSetting.CHUNK, MutableSettings.copyOf(chunkSettings));
+        this.settings.put(WorldSetting.BIOME, MutableSettings.copyOf(biomeSettings));
+        this.settings.put(WorldSetting.CAVE_BIOME, MutableSettings.copyOf(caveBiomeSettings));
     }
     
     public void put(WorldSetting settingsKey, String key, NbtElement element) {
         this.settings.get(settingsKey).put(key, element);
     }
     
-    public void putCompound(WorldSetting settingsKey, NbtCompound compound) {
-        this.settings.get(settingsKey).putCompound(compound);
+    public void replace(WorldSetting settingsKey, Settings settings) {
+        this.settings.put(settingsKey, MutableSettings.copyOf(settings));
     }
     
     public void remove(WorldSetting settingsKey, String key) {
@@ -73,9 +60,5 @@ public final class WorldSettings {
     
     public boolean containsKey(WorldSetting settingsKey, String key) {
         return this.settings.get(settingsKey).containsKey(key);
-    }
-    
-    public NbtCompound getNbt(WorldSetting settingsKey) {
-        return this.settings.get(settingsKey).getNbt();
     }
 }
