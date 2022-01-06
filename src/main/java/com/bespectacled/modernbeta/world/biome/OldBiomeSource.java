@@ -19,7 +19,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -33,15 +32,15 @@ public class OldBiomeSource extends BiomeSource {
         .group(
             Codec.LONG.fieldOf("seed").stable().forGetter(biomeSource -> biomeSource.seed),
             RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter(biomeSource -> biomeSource.biomeRegistry),
-            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(biomeSource -> biomeSource.biomeSettings.getNbt()),
-            NbtCompound.CODEC.fieldOf("cave_provider_settings").forGetter(biomeSource -> biomeSource.caveBiomeSettings.getNbt()),
+            ImmutableSettings.CODEC.fieldOf("provider_settings").forGetter(biomeSource -> biomeSource.biomeSettings),
+            ImmutableSettings.CODEC.fieldOf("cave_provider_settings").forGetter(biomeSource -> biomeSource.caveBiomeSettings),
             Codec.INT.optionalFieldOf("version").forGetter(generator -> generator.version)
         ).apply(instance, (instance).stable(OldBiomeSource::new)));
     
     private final long seed;
     private final Registry<Biome> biomeRegistry;
-    private final Settings biomeSettings;
-    private final Settings caveBiomeSettings;
+    private final ImmutableSettings biomeSettings;
+    private final ImmutableSettings caveBiomeSettings;
     private final Optional<Integer> version;
     
     private final BiomeProvider biomeProvider;
@@ -50,15 +49,17 @@ public class OldBiomeSource extends BiomeSource {
     private static List<Biome> getBiomesForRegistry(
         long seed,
         Registry<Biome> biomeRegistry, 
-        NbtCompound biomeSettings,
-        NbtCompound caveBiomeSettings
+        ImmutableSettings biomeSettings,
+        ImmutableSettings caveBiomeSettings
     ) {
-        List<Biome> mainBiomes = Registries.BIOME.get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, biomeSettings))
-            .apply(seed, biomeSettings, biomeRegistry)
+        List<Biome> mainBiomes = Registries.BIOME
+            .get(NbtUtil.toStringOrThrow(biomeSettings.get(NbtTags.BIOME_TYPE)))
+            .apply(seed, biomeSettings.getNbt(), biomeRegistry)
             .getBiomesForRegistry();
         
-        List<Biome> caveBiomes = Registries.CAVE_BIOME.get(NbtUtil.readStringOrThrow(NbtTags.CAVE_BIOME_TYPE, caveBiomeSettings))
-            .apply(seed, caveBiomeSettings, biomeRegistry)
+        List<Biome> caveBiomes = Registries.CAVE_BIOME
+            .get(NbtUtil.toStringOrThrow(caveBiomeSettings.get(NbtTags.CAVE_BIOME_TYPE)))
+            .apply(seed, caveBiomeSettings.getNbt(), biomeRegistry)
             .getBiomesForRegistry();
         
         List<Biome> biomes = new ArrayList<>();
@@ -71,8 +72,8 @@ public class OldBiomeSource extends BiomeSource {
     public OldBiomeSource(
         long seed,
         Registry<Biome> biomeRegistry,
-        NbtCompound biomeSettings,
-        NbtCompound caveBiomeSettings,
+        ImmutableSettings biomeSettings,
+        ImmutableSettings caveBiomeSettings,
         Optional<Integer> version
     ) {
         super(getBiomesForRegistry(seed, biomeRegistry, biomeSettings, caveBiomeSettings));
@@ -82,16 +83,17 @@ public class OldBiomeSource extends BiomeSource {
         
         this.seed = seed;
         this.biomeRegistry = biomeRegistry;
-        this.biomeSettings = new ImmutableSettings(biomeSettings);
-        this.caveBiomeSettings = new ImmutableSettings(caveBiomeSettings);
+        this.biomeSettings = biomeSettings;
+        this.caveBiomeSettings = caveBiomeSettings;
         this.version = version;
         
         this.biomeProvider = Registries.BIOME
-            .get(NbtUtil.readStringOrThrow(NbtTags.BIOME_TYPE, biomeSettings))
-            .apply(seed, biomeSettings, biomeRegistry);
+            .get(NbtUtil.toStringOrThrow(biomeSettings.get(NbtTags.BIOME_TYPE)))
+            .apply(seed, biomeSettings.getNbt(), biomeRegistry);
+        
         this.caveBiomeProvider = Registries.CAVE_BIOME
-            .get(NbtUtil.readStringOrThrow(NbtTags.CAVE_BIOME_TYPE,caveBiomeSettings))
-            .apply(seed, caveBiomeSettings, biomeRegistry);
+            .get(NbtUtil.toStringOrThrow(caveBiomeSettings.get(NbtTags.CAVE_BIOME_TYPE)))
+            .apply(seed, caveBiomeSettings.getNbt(), biomeRegistry);
     }
     
     @Environment(EnvType.CLIENT)
@@ -100,8 +102,8 @@ public class OldBiomeSource extends BiomeSource {
         return new OldBiomeSource(
             seed,
             this.biomeRegistry,
-            this.biomeSettings.getNbt(),
-            this.caveBiomeSettings.getNbt(),
+            this.biomeSettings,
+            this.caveBiomeSettings,
             this.version
         );
     }

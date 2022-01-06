@@ -63,6 +63,10 @@ public final class WorldSettings {
         }
     }
     
+    public Settings get(WorldSetting settingsKey) {
+        return this.settings.get(settingsKey);
+    }
+    
     public NbtElement get(WorldSetting settingsKey, String key) {
         return this.settings.get(settingsKey).get(key);
     }

@@ -5,10 +5,28 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Dynamic;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtOps;
 
 public class ImmutableSettings implements Settings {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static final Codec<ImmutableSettings> CODEC = Codec.PASSTHROUGH.comapFlatMap(
+        dynamic -> {
+            NbtElement element = dynamic.convert(NbtOps.INSTANCE).getValue();
+            if (element instanceof NbtCompound compound) {
+                return DataResult.success(new ImmutableSettings(compound));
+            }
+            
+            return DataResult.error("Not a compound tag: " + element);
+        },
+        settings -> new Dynamic(NbtOps.INSTANCE, settings.getNbt())
+    );
+    
     private final Map<String, NbtElement> entries;
     
     public ImmutableSettings() {

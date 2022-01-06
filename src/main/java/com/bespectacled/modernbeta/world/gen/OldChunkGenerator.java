@@ -30,7 +30,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Util;
 import net.minecraft.util.collection.Pool;
 import net.minecraft.util.dynamic.RegistryLookupCodec;
@@ -71,12 +70,13 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
             Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.worldSeed),
             ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(generator -> generator.settings),
-            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings.getNbt()),
+            //NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings.getNbt()),
+            ImmutableSettings.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings),
             Codec.INT.optionalFieldOf("version").forGetter(generator -> generator.version)
         ).apply(instance, instance.stable(OldChunkGenerator::new)));
 
     private final Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry;
-    private final Settings chunkProviderSettings;
+    private final ImmutableSettings chunkProviderSettings;
     private final ChunkProvider chunkProvider;
     private final String chunkProviderType;
     private final Optional<Integer> version;
@@ -88,7 +88,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         BiomeSource biomeSource,
         long seed,
         Supplier<ChunkGeneratorSettings> settings,
-        NbtCompound chunkProviderSettings,
+        ImmutableSettings chunkProviderSettings,
         Optional<Integer> version
     ) {
         super(noiseRegistry, biomeSource, seed, settings);
@@ -97,7 +97,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         ModernBeta.validateVersion(version);
         
         this.noiseRegistry = noiseRegistry;
-        this.chunkProviderSettings = new ImmutableSettings(chunkProviderSettings);
+        this.chunkProviderSettings = chunkProviderSettings;
         this.chunkProviderType = NbtUtil.toStringOrThrow(chunkProviderSettings.get(NbtTags.WORLD_TYPE));
         this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
         this.version = version;
@@ -278,7 +278,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             this.biomeSource.withSeed(seed),
             seed,
             this.settings,
-            this.chunkProviderSettings.getNbt(),
+            this.chunkProviderSettings,
             this.version
         );
     }

@@ -12,6 +12,7 @@ import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.mixin.client.MixinMoreOptionsDialogInvoker;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
+import com.bespectacled.modernbeta.util.settings.ImmutableSettings;
 import com.bespectacled.modernbeta.util.settings.WorldSettings;
 import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
@@ -59,11 +60,11 @@ public class OldGeneratorType {
         Registry<ChunkGeneratorSettings> chunkGenSettingsRegistry = registryManager.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
         Registry<Biome> biomeRegistry = registryManager.get(Registry.BIOME_KEY);
         
-        NbtCompound chunkSettings = worldSettings.getNbt(WorldSetting.CHUNK);
-        NbtCompound biomeSettings = worldSettings.getNbt(WorldSetting.BIOME);
-        NbtCompound caveBiomeSettings = worldSettings.getNbt(WorldSetting.CAVE_BIOME);
+        ImmutableSettings chunkSettings = ImmutableSettings.copyOf(worldSettings.get(WorldSetting.CHUNK));
+        ImmutableSettings biomeSettings = ImmutableSettings.copyOf(worldSettings.get(WorldSetting.BIOME));
+        ImmutableSettings caveBiomeSettings = ImmutableSettings.copyOf(worldSettings.get(WorldSetting.CAVE_BIOME));
         
-        String worldType = NbtUtil.readStringOrThrow(NbtTags.WORLD_TYPE, chunkSettings);
+        String worldType = NbtUtil.toStringOrThrow(chunkSettings.get(NbtTags.WORLD_TYPE));
         
         Optional<ChunkGeneratorSettings> chunkGenSettings = chunkGenSettingsRegistry.getOrEmpty(ModernBeta.createId(worldType));
         Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = chunkGenSettings.isPresent() ?
@@ -111,20 +112,23 @@ public class OldGeneratorType {
                 String biomeType = worldProvider.getBiomeProvider();
                 String caveBiomeType = worldProvider.getCaveBiomeProvider();
                 
-                NbtCompound chunkSettings = Registries.CHUNK_SETTINGS
+                ImmutableSettings chunkSettings = new ImmutableSettings(Registries.CHUNK_SETTINGS
                     .getOrEmpty(worldType)
                     .orElse(() -> ChunkProviderSettings.createSettingsDefault(worldType))
-                    .get();
+                    .get()
+                );
                 
-                NbtCompound biomeSettings = Registries.BIOME_SETTINGS
+                ImmutableSettings biomeSettings = new ImmutableSettings(Registries.BIOME_SETTINGS
                     .getOrEmpty(biomeType)
                     .orElse(() -> BiomeProviderSettings.createSettingsDefault(biomeType))
-                    .get();
-                
-                NbtCompound caveBiomeSettings = Registries.CAVE_BIOME_SETTINGS
+                    .get()
+                );
+                    
+                    ImmutableSettings caveBiomeSettings = new ImmutableSettings(Registries.CAVE_BIOME_SETTINGS
                     .getOrEmpty(caveBiomeType)
                     .orElse(() -> CaveBiomeProviderSettings.createSettingsDefault(caveBiomeType))
-                    .get();
+                    .get()
+                );
                 
                 return new OldChunkGenerator(
                     noiseRegistry,

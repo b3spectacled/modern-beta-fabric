@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
+import com.bespectacled.modernbeta.util.settings.ImmutableSettings;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
@@ -19,7 +20,6 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 import com.google.common.base.MoreObjects;
 
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -84,20 +84,23 @@ public class MixinGeneratorOptions {
             String biomeType = ModernBeta.BIOME_CONFIG.biomeType;
             String caveBiomeType = ModernBeta.CAVE_BIOME_CONFIG.caveBiomeType;
 
-            NbtCompound chunkSettings = Registries.CHUNK_SETTINGS
+            ImmutableSettings chunkSettings = new ImmutableSettings(Registries.CHUNK_SETTINGS
                 .getOrEmpty(worldType)
                 .orElse(() -> ChunkProviderSettings.createSettingsDefault(worldType))
-                .get();
+                .get()
+            );
             
-            NbtCompound biomeSettings = Registries.BIOME_SETTINGS
+            ImmutableSettings biomeSettings = new ImmutableSettings(Registries.BIOME_SETTINGS
                 .getOrEmpty(biomeType)
                 .orElse(() -> BiomeProviderSettings.createSettingsDefault(biomeType))
-                .get();
+                .get()
+            );
             
-            NbtCompound caveBiomeSettings = Registries.CAVE_BIOME_SETTINGS
+            ImmutableSettings caveBiomeSettings = new ImmutableSettings(Registries.CAVE_BIOME_SETTINGS
                 .getOrEmpty(caveBiomeType)
                 .orElse(() -> CaveBiomeProviderSettings.createSettingsDefault(caveBiomeType))
-                .get();
+                .get()
+            );
             
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 noiseRegistry,
