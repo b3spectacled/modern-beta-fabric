@@ -18,6 +18,18 @@ public class OldPlacedFeatures {
     }
     
     public static RegistryEntry<PlacedFeature> register(String id, RegistryEntry<? extends ConfiguredFeature<?, ?>> registryEntry, PlacementModifier ... modifiers) {
-        return PlacedFeatures.register(ModernBeta.createId(id).toString(), registryEntry, List.of(modifiers));
+        return PlacedFeatures.register(
+            ModernBeta.createId(id).toString(),
+            registryEntry,
+            List.of(modifiers)
+        );
+    }
+    
+    public static RegistryEntry<PlacedFeature> register(String id, RegistryEntry<? extends ConfiguredFeature<?, ?>> registryEntry, List<PlacementModifier> modifiers) {
+        return BuiltinRegistries.add(
+            BuiltinRegistries.PLACED_FEATURE,
+            ModernBeta.createId(id),
+            new PlacedFeature(RegistryEntry.upcast(registryEntry), List.copyOf(modifiers))
+        );
     }
 }

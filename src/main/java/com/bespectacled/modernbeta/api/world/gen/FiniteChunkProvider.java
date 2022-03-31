@@ -123,7 +123,7 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
             for (int localZ = 0; localZ < 16; ++localZ) {
                 int x = startX + localX;
                 int z = startZ + localZ;
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, 0, z));
+                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, 0, z)).value();
                 
                 boolean isCold;
                 if (biomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&

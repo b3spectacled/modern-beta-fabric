@@ -6,6 +6,7 @@ import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.util.settings.Settings;
 
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public class NoCaveBiomeProvider extends CaveBiomeProvider {
@@ -14,12 +15,12 @@ public class NoCaveBiomeProvider extends CaveBiomeProvider {
     }
 
     @Override
-    public Biome getBiome(int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ) {
         return null;
     }
 
     @Override
-    public List<Biome> getBiomesForRegistry() {
+    public List<RegistryEntry<Biome>> getBiomesForRegistry() {
         return List.of();
     }
 }

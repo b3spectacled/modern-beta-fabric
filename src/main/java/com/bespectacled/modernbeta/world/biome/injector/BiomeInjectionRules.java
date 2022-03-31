@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public class BiomeInjectionRules {
@@ -14,9 +15,9 @@ public class BiomeInjectionRules {
         this.rules = rules;
     }
     
-    public Biome test(BiomeInjectionContext context, int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> test(BiomeInjectionContext context, int biomeX, int biomeY, int biomeZ) {
         for (BiomeInjectionRule rule : this.rules) {
-            Biome biome = rule.test(context).apply(biomeX, biomeY, biomeZ);
+            RegistryEntry<Biome> biome = rule.test(context).apply(biomeX, biomeY, biomeZ);
             
             if (biome != null)
                 return biome;

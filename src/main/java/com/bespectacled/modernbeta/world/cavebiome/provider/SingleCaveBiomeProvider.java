@@ -9,6 +9,7 @@ import com.bespectacled.modernbeta.util.settings.Settings;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
@@ -24,12 +25,12 @@ public class SingleCaveBiomeProvider extends CaveBiomeProvider {
     }
 
     @Override
-    public Biome getBiome(int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ) {
         return this.biomeRegistry.get(this.biomeId);
     }
     
     @Override
-    public List<Biome> getBiomesForRegistry() {
+    public List<RegistryEntry<Biome>> getBiomesForRegistry() {
         return List.of(this.biomeRegistry.get(this.biomeId));
     }
 }

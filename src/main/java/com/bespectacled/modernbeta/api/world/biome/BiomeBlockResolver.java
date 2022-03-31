@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.api.world.biome;
 
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public interface BiomeBlockResolver {
@@ -12,5 +13,5 @@ public interface BiomeBlockResolver {
      * 
      * @return A biome at given block coordinates.
      */
-    Biome getBiomeAtBlock(int x, int y, int z);
+    RegistryEntry<Biome> getBiomeAtBlock(int x, int y, int z);
 }

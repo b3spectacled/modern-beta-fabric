@@ -80,8 +80,8 @@ public class OldVegetationConfiguredFeatures {
             );
         }
         
-        public static RandomPatchFeatureConfig createRandomPatchFeatureConfig(int tries, PlacedFeature feature) {
-            return new RandomPatchFeatureConfig(tries, XZ_SPREAD, Y_SPREAD, () -> feature);
+        public static RandomPatchFeatureConfig createRandomPatchFeatureConfig(int tries, RegistryEntry<PlacedFeature> feature) {
+            return new RandomPatchFeatureConfig(tries, XZ_SPREAD, Y_SPREAD, feature);
         }
         
         public static RandomPatchFeatureConfig createRandomPatchFeatureConfig(ConfiguredFeature<?, ?> feature, List<Block> validGround, int tries) {

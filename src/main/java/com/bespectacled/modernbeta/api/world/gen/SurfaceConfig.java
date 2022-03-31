@@ -4,6 +4,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
 
@@ -14,8 +15,8 @@ public record SurfaceConfig(BlockState topBlock, BlockState fillerBlock) {
     private static final SurfaceConfig NETHER = new SurfaceConfig(Blocks.NETHERRACK.getDefaultState(), Blocks.NETHERRACK.getDefaultState());
     private static final SurfaceConfig THEEND = new SurfaceConfig(Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState());
     
-    public static SurfaceConfig getSurfaceConfig(Biome biome) {
-        Category category = biome.getCategory();
+    public static SurfaceConfig getSurfaceConfig(RegistryEntry<Biome> biome) {
+        Category category = Biome.getCategory(biome);
         
         return switch(category) {
             case DESERT -> DESERT;

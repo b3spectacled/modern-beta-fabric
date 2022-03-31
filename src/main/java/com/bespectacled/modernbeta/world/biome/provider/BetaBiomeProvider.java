@@ -21,6 +21,8 @@ import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.C
 
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, SkyClimateSampler, BiomeBlockResolver, OceanBiomeResolver {
@@ -37,7 +39,7 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
     }
 
     @Override
-    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         int x = biomeX << 2;
         int z = biomeZ << 2;
         
@@ -49,7 +51,7 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
     }
  
     @Override
-    public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         int x = biomeX << 2;
         int z = biomeZ << 2;
         
@@ -61,7 +63,7 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
     }
     
     @Override
-    public Biome getBiomeAtBlock(int x, int y, int z) {
+    public RegistryEntry<Biome> getBiomeAtBlock(int x, int y, int z) {
         Clime clime = this.climateSampler.sampleClime(x, z);
         double temp = clime.temp();
         double rain = clime.rain();
@@ -70,7 +72,7 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
     }
 
     @Override
-    public List<Biome> getBiomesForRegistry() {
+    public List<RegistryEntry<Biome>> getBiomesForRegistry() {
         return this.climateMap.getBiomeIds().stream().map(i -> this.biomeRegistry.get(i)).collect(Collectors.toList());
     }
 

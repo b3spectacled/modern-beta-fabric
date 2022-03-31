@@ -10,14 +10,14 @@ import org.apache.logging.log4j.Level;
 import com.bespectacled.modernbeta.ModernBeta;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.report.WorldgenListProvider;
+import net.minecraft.data.report.WorldgenProvider;
 
 public class ModernBetaDataGenerator {
     private static final Path PATH = Paths.get("..\\src\\main\\resources\\data\\generated");
     
     public static void generateData() {
         DataGenerator dataGenerator = new DataGenerator(PATH, List.of());
-        dataGenerator.addProvider(new WorldgenListProvider(dataGenerator));
+        dataGenerator.addProvider(new WorldgenProvider(dataGenerator));
 
         try {
             dataGenerator.run();

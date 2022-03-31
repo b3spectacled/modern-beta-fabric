@@ -6,8 +6,10 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.gen.YOffset;
 import net.minecraft.world.gen.carver.Carver;
+import net.minecraft.world.gen.carver.CarverConfig;
 import net.minecraft.world.gen.carver.CarverDebugConfig;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
@@ -19,7 +21,7 @@ public class OldCarvers {
         new OldCaveCarver(CaveCarverConfig.CAVE_CODEC)
     );
     
-    public static final ConfiguredCarver<?> CONF_OLD_BETA_CAVE_CARVER = register(
+    public static final RegistryEntry<ConfiguredCarver<CaveCarverConfig>> CONF_OLD_BETA_CAVE_CARVER = register(
         "old_beta_cave", 
         new ConfiguredCarver<CaveCarverConfig>(
             OLD_BETA_CAVE_CARVER, 
@@ -36,7 +38,7 @@ public class OldCarvers {
         )
     );
     
-    public static final ConfiguredCarver<?> CONF_OLD_BETA_CAVE_CARVER_DEEP = register(
+    public static final RegistryEntry<ConfiguredCarver<CaveCarverConfig>> CONF_OLD_BETA_CAVE_CARVER_DEEP = register(
         "old_beta_cave_deep", 
         new ConfiguredCarver<CaveCarverConfig>(
             OLD_BETA_CAVE_CARVER, 
@@ -58,7 +60,7 @@ public class OldCarvers {
         return Registry.register(Registry.CARVER, ModernBeta.createId(id), carver);
     }
     
-    private static ConfiguredCarver<?> register(String id, ConfiguredCarver<?> carver) {
-        return Registry.register(BuiltinRegistries.CONFIGURED_CARVER, ModernBeta.createId(id), carver);
+    private static <WC extends CarverConfig> RegistryEntry<ConfiguredCarver<WC>> register(String id, ConfiguredCarver<WC> carver) {
+        return BuiltinRegistries.method_40360(BuiltinRegistries.CONFIGURED_CARVER, id, carver);
     }
 }

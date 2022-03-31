@@ -258,7 +258,7 @@ public abstract class ChunkProvider {
      * @return A biome.
      */
     public Biome getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {
-        return this.chunkGenerator.getBiomeSource().getBiome(biomeX, biomeY, biomeZ, noiseSampler);
+        return this.chunkGenerator.getBiomeSource().getBiome(biomeX, biomeY, biomeZ, noiseSampler).value();
     }
     
     /**
@@ -314,7 +314,7 @@ public abstract class ChunkProvider {
             List<PlacedFeature> featureList = step.features();
             
             for (PlacedFeature placedFeature : featureList) {
-                MixinPlacedFeatureAccessor accessor = (MixinPlacedFeatureAccessor)placedFeature;
+                MixinPlacedFeatureAccessor accessor = (MixinPlacedFeatureAccessor)(Object)placedFeature;
                 List<PlacementModifier> modifiers = accessor.getPlacementModifiers();
                 
                 for (PlacementModifier modifier : modifiers) {

@@ -18,6 +18,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -83,7 +84,7 @@ public class BiomeInjector {
         // Replace biomes from biome container
         for (int sectionY = 0; sectionY < chunk.countVerticalSections(); ++sectionY) {
             ChunkSection section = chunk.getSection(sectionY);
-            PalettedContainer<Biome> container = section.getBiomeContainer();
+            PalettedContainer<RegistryEntry<Biome>> container = section.getBiomeContainer();
             
             container.lock();
             try {
@@ -117,7 +118,7 @@ public class BiomeInjector {
                             int y = (localBiomeY + yOffset) << 2;
                             
                             context.setY(y);
-                            Biome biome = this.sample(context, biomeX, biomeY, biomeZ);
+                            RegistryEntry<Biome> biome = this.sample(context, biomeX, biomeY, biomeZ);
                             
                             if (biome != null) {
                                 container.swapUnsafe(localBiomeX, localBiomeY, localBiomeZ, biome);
@@ -136,7 +137,7 @@ public class BiomeInjector {
         }
     }
     
-    public Biome sample(BiomeInjectionContext context, int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> sample(BiomeInjectionContext context, int biomeX, int biomeY, int biomeZ) {
         return this.rules.test(context, biomeX, biomeY, biomeZ);
     }
     

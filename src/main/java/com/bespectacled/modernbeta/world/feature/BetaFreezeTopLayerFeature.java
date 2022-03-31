@@ -51,7 +51,7 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 ) {
                     temp = climateSampler.sample(x, z).temp();
                 } else {
-                    temp = world.getBiome(mutable).getTemperature();
+                    temp = world.getBiome(mutable).value().getTemperature();
                 }
                 
                 if (canSetIce(world, mutableDown, false, temp)) {

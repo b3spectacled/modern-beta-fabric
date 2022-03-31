@@ -5,6 +5,7 @@ import java.util.List;
 import com.bespectacled.modernbeta.util.settings.Settings;
 
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public abstract class CaveBiomeProvider {
@@ -34,14 +35,14 @@ public abstract class CaveBiomeProvider {
      * 
      * @return A biome at given biome coordinates. May return null, in which case original biome is not replaced.
      */
-    public abstract Biome getBiome(int biomeX, int biomeY, int biomeZ);
+    public abstract RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ);
     
     /**
      * Gets a list of biomes for biome source, for the purpose of locating structures, etc.
      * 
      * @return A list of biomes.
      */
-    public List<Biome> getBiomesForRegistry() {
+    public List<RegistryEntry<Biome>> getBiomesForRegistry() {
         return List.of();
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bespectacled.modernbeta.world.feature.configured.OldOreConfiguredFeatures;
 
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.gen.YOffset;
 import net.minecraft.world.gen.placementmodifier.BiomePlacementModifier;
 import net.minecraft.world.gen.placementmodifier.CountPlacementModifier;
@@ -21,12 +22,15 @@ public class OldOrePlacedFeatures {
         return modifiers(CountPlacementModifier.of(count), modifier);
     }
     
-    public static final PlacedFeature ORE_CLAY = OldPlacedFeatures.register(
-        "ore_clay", OldOreConfiguredFeatures.ORE_CLAY.withPlacement(modifiersWithCount(33, HeightRangePlacementModifier.uniform(YOffset.fixed(0), YOffset.fixed(127))))
+    public static final RegistryEntry<PlacedFeature> ORE_CLAY = OldPlacedFeatures.register(
+        "ore_clay",
+        OldOreConfiguredFeatures.ORE_CLAY,
+        modifiersWithCount(33, HeightRangePlacementModifier.uniform(YOffset.fixed(0), YOffset.fixed(127)))
     );
     
-    public static final PlacedFeature ORE_EMERALD_Y95 = OldPlacedFeatures.register(
+    public static final RegistryEntry<PlacedFeature> ORE_EMERALD_Y95 = OldPlacedFeatures.register(
         "ore_emerald_y95",
-        OldOreConfiguredFeatures.ORE_EMERALD_Y95.withPlacement(modifiersWithCount(11, HeightRangePlacementModifier.uniform(YOffset.fixed(95), YOffset.fixed(256))))
+        OldOreConfiguredFeatures.ORE_EMERALD_Y95,
+        modifiersWithCount(11, HeightRangePlacementModifier.uniform(YOffset.fixed(95), YOffset.fixed(256)))
     );
 }

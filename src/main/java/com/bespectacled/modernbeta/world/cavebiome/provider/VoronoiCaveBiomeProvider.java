@@ -17,6 +17,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveClimateSampler {
@@ -41,7 +42,7 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
     }
 
     @Override
-    public Biome getBiome(int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ) {
         Clime clime = this.sample(biomeX, biomeY, biomeZ);
         Identifier biomeId = this.rules.calculateClosestTo(clime);
         
@@ -49,7 +50,7 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
     }
     
     @Override
-    public List<Biome> getBiomesForRegistry() {
+    public List<RegistryEntry<Biome>> getBiomesForRegistry() {
         return this.rules.getItems().stream().distinct().map(id -> this.biomeRegistry.get(id)).toList();
     }
 

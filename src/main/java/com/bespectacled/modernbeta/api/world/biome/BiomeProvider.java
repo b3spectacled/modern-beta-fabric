@@ -5,6 +5,7 @@ import java.util.List;
 import com.bespectacled.modernbeta.util.settings.Settings;
 
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeAccess;
 
@@ -37,14 +38,14 @@ public abstract class BiomeProvider implements BiomeAccess.Storage {
      * 
      * @return A biome at given biome coordinates.
      */
-    public abstract Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ);
+    public abstract RegistryEntry<Biome> getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ);
     
     /**
      * Gets a list of biomes for biome source, for the purpose of locating structures, etc.
      * 
      * @return A list of biomes.
      */
-    public List<Biome> getBiomesForRegistry() {
+    public List<RegistryEntry<Biome>> getBiomesForRegistry() {
         return List.of();
     }
 }
