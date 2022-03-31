@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.world.feature.placed;
 
 import com.bespectacled.modernbeta.world.feature.configured.OldMiscConfiguredFeatures;
 
-import net.minecraft.world.gen.decorator.PlacementModifier;
+import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
 public class OldMiscPlacedFeatures {

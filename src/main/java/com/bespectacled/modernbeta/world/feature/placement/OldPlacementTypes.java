@@ -4,8 +4,8 @@ import com.bespectacled.modernbeta.ModernBeta;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.decorator.PlacementModifier;
-import net.minecraft.world.gen.decorator.PlacementModifierType;
+import net.minecraft.world.gen.placementmodifier.PlacementModifier;
+import net.minecraft.world.gen.placementmodifier.PlacementModifierType;
 
 public class OldPlacementTypes<P extends PlacementModifier> {
     public static final PlacementModifierType<BetaNoiseBasedCountPlacementModifier> BETA_NOISE_BASED_COUNT;

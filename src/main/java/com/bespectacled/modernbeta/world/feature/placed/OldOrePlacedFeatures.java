@@ -5,11 +5,11 @@ import java.util.List;
 import com.bespectacled.modernbeta.world.feature.configured.OldOreConfiguredFeatures;
 
 import net.minecraft.world.gen.YOffset;
-import net.minecraft.world.gen.decorator.BiomePlacementModifier;
-import net.minecraft.world.gen.decorator.CountPlacementModifier;
-import net.minecraft.world.gen.decorator.HeightRangePlacementModifier;
-import net.minecraft.world.gen.decorator.PlacementModifier;
-import net.minecraft.world.gen.decorator.SquarePlacementModifier;
+import net.minecraft.world.gen.placementmodifier.BiomePlacementModifier;
+import net.minecraft.world.gen.placementmodifier.CountPlacementModifier;
+import net.minecraft.world.gen.placementmodifier.HeightRangePlacementModifier;
+import net.minecraft.world.gen.placementmodifier.PlacementModifier;
+import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
 public class OldOrePlacedFeatures {

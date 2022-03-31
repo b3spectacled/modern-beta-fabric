@@ -7,7 +7,7 @@ import com.bespectacled.modernbeta.world.feature.placement.noise.BetaNoiseBasedC
 import com.bespectacled.modernbeta.world.feature.placement.noise.OldNoiseBasedCount;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.decorator.AbstractCountPlacementModifier;
+import net.minecraft.world.gen.placementmodifier.AbstractCountPlacementModifier;
 
 public abstract class OldNoiseBasedCountPlacementModifier extends AbstractCountPlacementModifier {
     protected final int count;

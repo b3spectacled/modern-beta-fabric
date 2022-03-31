@@ -5,7 +5,7 @@ import com.bespectacled.modernbeta.world.feature.placement.noise.Infdev611NoiseB
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.world.gen.decorator.PlacementModifierType;
+import net.minecraft.world.gen.placementmodifier.PlacementModifierType;
 
 public class Infdev611NoiseBasedCountPlacementModifier extends OldNoiseBasedCountPlacementModifier {
     public static final Codec<Infdev611NoiseBasedCountPlacementModifier> MODIFIER_CODEC = RecordCodecBuilder.create(
