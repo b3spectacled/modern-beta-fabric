@@ -50,7 +50,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
         super(chunkGenerator);
         
         // Use Mersenne Twister random instead of Java random
-        MTRandom mtRand = new MTRandom(chunkGenerator.worldSeed);
+        MTRandom mtRand = new MTRandom(chunkGenerator.getWorldSeed());
         
         // Noise Generators
         this.minLimitNoiseOctaves = new PerlinOctaveNoise(mtRand, 16, true);

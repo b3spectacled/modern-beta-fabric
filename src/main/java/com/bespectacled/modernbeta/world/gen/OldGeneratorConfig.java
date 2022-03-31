@@ -1,21 +1,11 @@
 package com.bespectacled.modernbeta.world.gen;
 
-import java.util.Optional;
-
-import com.google.common.collect.Maps;
-
 import net.minecraft.world.biome.source.util.VanillaTerrainParametersCreator;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.NoiseSamplingConfig;
 import net.minecraft.world.gen.chunk.SlideConfig;
-import net.minecraft.world.gen.chunk.StrongholdConfig;
-import net.minecraft.world.gen.chunk.StructuresConfig;
 
 public class OldGeneratorConfig {
-    public static final StructuresConfig STRUCTURES;
-    public static final Optional<StrongholdConfig> INDEV_STRONGHOLD;
-    public static final StructuresConfig INDEV_STRUCTURES;
-    
     public static final NoiseSamplingConfig BETA_SAMPLING_CONFIG;
     public static final NoiseSamplingConfig ALPHA_SAMPLING_CONFIG;
     public static final NoiseSamplingConfig SKYLANDS_SAMPLING_CONFIG;
@@ -37,10 +27,6 @@ public class OldGeneratorConfig {
     public static final GenerationShapeConfig BETA_SHAPE_CONFIG_LARGE_BIOMES;
     
     static {
-        STRUCTURES = new StructuresConfig(true);
-        INDEV_STRONGHOLD = Optional.of(new StrongholdConfig(0, 0, 1));
-        INDEV_STRUCTURES = new StructuresConfig(INDEV_STRONGHOLD, Maps.newHashMap(StructuresConfig.DEFAULT_STRUCTURES));
-
         BETA_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
         ALPHA_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
         SKYLANDS_SAMPLING_CONFIG = new NoiseSamplingConfig(2.0, 1.0, 80.0, 160.0);
