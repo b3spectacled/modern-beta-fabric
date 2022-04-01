@@ -21,6 +21,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.BlockSource;
@@ -231,7 +232,7 @@ public class IndevChunkProvider extends FiniteChunkProvider {
     }
 
     @Override
-    protected BlockState postProcessSurfaceState(BlockState blockState, Biome biome, BlockPos pos, boolean isCold) {
+    protected BlockState postProcessSurfaceState(BlockState blockState, RegistryEntry<Biome> biome, BlockPos pos, boolean isCold) {
         SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
         BlockState topBlock = surfaceConfig.topBlock();
         BlockState fillerBlock = surfaceConfig.fillerBlock();

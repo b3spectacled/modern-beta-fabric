@@ -20,6 +20,7 @@ import com.bespectacled.modernbeta.world.biome.vanilla.VanillaBiomeSourceCreator
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.source.BiomeAccess;
@@ -42,33 +43,33 @@ public class VanillaBiomeProvider extends BiomeProvider implements ClimateSample
     }
 
     @Override
-    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.climateSampler.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
     @Override
-    public Biome getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.oceanBiomeSource.getBiome(biomeX, biomeY, biomeZ);
     }
     
     @Override
-    public Biome getDeepOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> getDeepOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
         return this.deepOceanBiomeSource.getBiome(biomeX, biomeY, biomeZ);
     }
     
     @Override
-    public Biome getBiomeAtBlock(int x, int y, int z) {
+    public RegistryEntry<Biome> getBiomeAtBlock(int x, int y, int z) {
         return this.climateSampler.getBiomeAtBlock(x, z);
     }
     
     @Override
-    public List<Biome> getBiomesForRegistry() {
-        List<Biome> biomes = new ArrayList<>();
-        biomes.addAll(this.vanillaBiomeSource.getBiomes());
-        biomes.addAll(this.oceanBiomeSource.getBiomes());
-        biomes.addAll(this.deepOceanBiomeSource.getBiomes());
+    public List<RegistryEntry<Biome>> getBiomesForRegistry() {
+        List<RegistryEntry<Biome>> biomeKeys = new ArrayList<>();
+        biomeKeys.addAll(this.vanillaBiomeSource.getBiomes());
+        biomeKeys.addAll(this.oceanBiomeSource.getBiomes());
+        biomeKeys.addAll(this.deepOceanBiomeSource.getBiomes());
         
-        return biomes;
+        return biomeKeys;
     }
 
     @Override
@@ -122,10 +123,10 @@ public class VanillaBiomeProvider extends BiomeProvider implements ClimateSample
             );
 
             this.climateRules = new BiomeClimateRules.Builder()
-                .add(biome -> biome.getCategory() == Category.EXTREME_HILLS, () -> new Clime(1.0, 1.0))
-                .add(biome -> biome.getCategory() == Category.MOUNTAIN, () -> new Clime(1.0, 1.0))
-                .add(biome -> biome.getCategory() == Category.MESA, () -> new Clime(1.0, 1.0))
-                .add(biome -> biome.getCategory() == Category.SWAMP, () -> new Clime(0.0, 0.0))
+                .add(biome -> Biome.getCategory(biome) == Category.EXTREME_HILLS, () -> new Clime(1.0, 1.0))
+                .add(biome -> Biome.getCategory(biome) == Category.MOUNTAIN, () -> new Clime(1.0, 1.0))
+                .add(biome -> Biome.getCategory(biome) == Category.MESA, () -> new Clime(1.0, 1.0))
+                .add(biome -> Biome.getCategory(biome) == Category.SWAMP, () -> new Clime(0.0, 0.0))
                 .build();
         }
         
@@ -137,14 +138,14 @@ public class VanillaBiomeProvider extends BiomeProvider implements ClimateSample
         }
 
         @Override
-        public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+        public RegistryEntry<Biome> getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
             int chunkX = biomeX >> 2;
             int chunkZ = biomeZ >> 2;
             
             return this.lowResBiomeCache.get(chunkX, chunkZ).sampleBiome(biomeX, biomeZ);
         }
         
-        public Biome getBiomeAtBlock(int x, int z) {
+        public RegistryEntry<Biome> getBiomeAtBlock(int x, int z) {
             int chunkX = x >> 4;
             int chunkZ = z >> 4;
             
@@ -164,7 +165,7 @@ public class VanillaBiomeProvider extends BiomeProvider implements ClimateSample
                     int chunkX = curX >> 4;
                     int chunkZ = curZ >> 4;
                     
-                    Biome biome = this.fullResBiomeCache.get(chunkX, chunkZ).sampleBiome(curX, curZ);
+                    RegistryEntry<Biome> biome = this.fullResBiomeCache.get(chunkX, chunkZ).sampleBiome(curX, curZ);
                     Clime clime = this.climateRules.apply(biome);
                     
                     temp += clime.temp();

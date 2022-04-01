@@ -101,7 +101,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         super(chunkGenerator);
         
         Settings providerSettings = chunkGenerator.getChunkSettings();
-        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().get();
+        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
         GenerationShapeConfig shapeConfig = generatorSettings.getGenerationShapeConfig();
         
         this.noiseRegistry = chunkGenerator.getNoiseRegistry();
@@ -212,7 +212,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
      */
     @Override
     public CompletableFuture<Chunk> provideChunk(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
-        GenerationShapeConfig shapeConfig = this.generatorSettings.get().getGenerationShapeConfig();
+        GenerationShapeConfig shapeConfig = this.generatorSettings.value().getGenerationShapeConfig();
         
         int minY = Math.max(shapeConfig.minimumY(), chunk.getBottomY());
         int topY = Math.min(shapeConfig.minimumY() + shapeConfig.height(), chunk.getTopY());

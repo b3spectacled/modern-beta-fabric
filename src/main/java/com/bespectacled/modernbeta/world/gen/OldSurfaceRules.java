@@ -5,10 +5,6 @@ import com.bespectacled.modernbeta.world.biome.pe.PEBiomes;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 import net.minecraft.world.gen.surfacebuilder.VanillaSurfaceRules;
 
@@ -25,10 +21,10 @@ public class OldSurfaceRules {
         
         MaterialRules.MaterialRule sandRule = MaterialRules.sequence(MaterialRules.condition(MaterialRules.STONE_DEPTH_CEILING, SANDSTONE), SAND);
         MaterialRules.MaterialCondition desertCondition = MaterialRules.biome(
-            biomeKey(BetaBiomes.DESERT_ID),
-            biomeKey(BetaBiomes.ICE_DESERT_ID),
-            biomeKey(PEBiomes.PE_DESERT_ID),
-            biomeKey(PEBiomes.PE_ICE_DESERT_ID)
+            BetaBiomes.DESERT_KEY,
+            BetaBiomes.ICE_DESERT_KEY,
+            PEBiomes.PE_DESERT_ID,
+            PEBiomes.PE_ICE_DESERT_ID
         );
         MaterialRules.MaterialRule desertRule = MaterialRules.condition(desertCondition, sandRule);
         
@@ -40,9 +36,5 @@ public class OldSurfaceRules {
     
     public static MaterialRules.MaterialRule createVanilla(boolean hasSurface) {
         return VanillaSurfaceRules.createDefaultRule(hasSurface, false, false);
-    }
-    
-    private static RegistryKey<Biome> biomeKey(Identifier id) {
-        return RegistryKey.of(Registry.BIOME_KEY, id);
     }
 }

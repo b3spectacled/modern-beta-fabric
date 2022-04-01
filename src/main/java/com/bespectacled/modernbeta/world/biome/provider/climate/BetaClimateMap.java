@@ -11,7 +11,8 @@ import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
 
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
 
 public class BetaClimateMap {
     private final Map<String, ClimateMapping> climateMap;
@@ -33,20 +34,20 @@ public class BetaClimateMap {
         return new LinkedHashMap<>(this.climateMap);
     }
     
-    public Identifier getBiome(double temp, double rain, ClimateType type) {
+    public RegistryKey<Biome> getBiome(double temp, double rain, ClimateType type) {
         int t = (int) (temp * 63D);
         int r = (int) (rain * 63D);
 
         return this.climateTable[t + r * 64].biomeByClimateType(type);
     }
     
-    public List<Identifier> getBiomeIds() {
-        List<Identifier> biomeIds = new ArrayList<>();
-        biomeIds.addAll(this.climateMap.values().stream().map(p -> p.biome()).toList());
-        biomeIds.addAll(this.climateMap.values().stream().map(p -> p.oceanBiome()).toList());
-        biomeIds.addAll(this.climateMap.values().stream().map(p -> p.deepOceanBiome()).toList());
+    public List<RegistryKey<Biome>> getBiomeKeys() {
+        List<RegistryKey<Biome>> biomeKeys = new ArrayList<>();
+        biomeKeys.addAll(this.climateMap.values().stream().map(p -> p.biome()).toList());
+        biomeKeys.addAll(this.climateMap.values().stream().map(p -> p.oceanBiome()).toList());
+        biomeKeys.addAll(this.climateMap.values().stream().map(p -> p.deepOceanBiome()).toList());
         
-        return biomeIds;
+        return biomeKeys;
     }
     
     private void generateBiomeLookup() {

@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler.NoiseParameters;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
@@ -31,10 +32,10 @@ import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 public class OldSurfaceBuilder extends SurfaceBuilder {
     // Set for specifying which biomes should use their vanilla surface builders.
     // Done on per-biome basis for best mod compatibility.
-    private static final Set<Identifier> BIOMES_WITH_CUSTOM_SURFACES = new HashSet<Identifier>(
+    private static final Set<RegistryKey<Biome>> BIOMES_WITH_CUSTOM_SURFACES = new HashSet<RegistryKey<Biome>>(
         Stream.concat(
-            CompatBiomes.BIOMES_WITH_CUSTOM_SURFACES.stream().map(b -> new Identifier(b)), 
-            ModernBeta.COMPAT_CONFIG.biomesWithCustomSurfaces.stream().map(b -> new Identifier(b))
+            CompatBiomes.BIOMES_WITH_CUSTOM_SURFACES.stream(), 
+            ModernBeta.COMPAT_CONFIG.biomesWithCustomSurfaces.stream().map(b -> RegistryKey.of(Registry.BIOME_KEY, new Identifier(b)))
         ).toList()
     );
     
@@ -64,7 +65,7 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         BiomeAccess biomeAccess,
         BlockColumnHolder column, 
         Chunk chunk,
-        Biome biome,
+        RegistryEntry<Biome> biome,
         MaterialRules.MaterialRuleContext ruleContext,
         MaterialRules.BlockStateRule blockStateRule,
         int localX,
@@ -72,9 +73,8 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         int surfaceTopY
     ) {
         MixinSurfaceBuilderAccessor accessor = this.injectAccessor(this);
-        RegistryKey<Biome> biomeKey = biomeRegistry.getKey(biome).orElseThrow(() -> new IllegalStateException("Unregistered biome: " + biome));
         
-        if (!BIOMES_WITH_CUSTOM_SURFACES.contains(biomeKey.getValue())) {
+        if (biome.getKey().isPresent() && !BIOMES_WITH_CUSTOM_SURFACES.contains(biome.getKey().get())) {
             return false;
         }
         
@@ -93,7 +93,7 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         column.setPos(x, z);
         
         // Generate eroded badlands hoodoos, as stone initially
-        if (biomeKey == BiomeKeys.ERODED_BADLANDS) {
+        if (biome.matchesKey(BiomeKeys.ERODED_BADLANDS)) {
             accessor.invokePlaceBadlandsPillar(column.getBlockColumn(), x, z, surfaceMinY, chunk);
             
             // Re-sample height after hoodoo generation
@@ -160,8 +160,8 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
             column.getBlockColumn().setState(y, blockState);
         }
         
-        if (biomeKey == BiomeKeys.FROZEN_OCEAN || biomeKey == BiomeKeys.DEEP_FROZEN_OCEAN) {
-            accessor.invokePlaceIceberg(surfaceMinY, biome, column.getBlockColumn(), pos, x, z, height);
+        if (biome.matchesKey(BiomeKeys.FROZEN_OCEAN) || biome.matchesKey( BiomeKeys.DEEP_FROZEN_OCEAN)) {
+            accessor.invokePlaceIceberg(surfaceMinY, biome.value(), column.getBlockColumn(), pos, x, z, height);
         }
         
         return true;

@@ -5,6 +5,9 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
 
 public class ClimateMapping {
     public enum ClimateType {
@@ -19,29 +22,29 @@ public class ClimateMapping {
         }
     }
     
-    private final Identifier biome;
-    private final Identifier oceanBiome;
-    private final Identifier deepOceanBiome;
+    private final RegistryKey<Biome> biome;
+    private final RegistryKey<Biome> oceanBiome;
+    private final RegistryKey<Biome> deepOceanBiome;
     
-    public ClimateMapping(Identifier biome, Identifier oceanBiome, Identifier deepOceanBiome) {
+    public ClimateMapping(RegistryKey<Biome> biome, RegistryKey<Biome> oceanBiome, RegistryKey<Biome> deepOceanBiome) {
         this.biome = biome;
         this.oceanBiome = oceanBiome;
         this.deepOceanBiome = deepOceanBiome;
     }
     
-    public Identifier biome() {
+    public RegistryKey<Biome> biome() {
         return this.biome;
     }
     
-    public Identifier oceanBiome() {
+    public RegistryKey<Biome> oceanBiome() {
         return this.oceanBiome;
     }
     
-    public Identifier deepOceanBiome() {
+    public RegistryKey<Biome> deepOceanBiome() {
         return this.deepOceanBiome;
     }
     
-    public Identifier biomeByClimateType(ClimateType type) {
+    public RegistryKey<Biome> biomeByClimateType(ClimateType type) {
         return switch(type) {
             case LAND -> this.biome;
             case OCEAN -> this.oceanBiome;
@@ -51,9 +54,13 @@ public class ClimateMapping {
     
     public static ClimateMapping fromCompound(NbtCompound compound) {
         return new ClimateMapping(
-            new Identifier(NbtUtil.readStringOrThrow(NbtTags.BIOME, compound)),
-            new Identifier(NbtUtil.readStringOrThrow(NbtTags.OCEAN_BIOME, compound)),
-            new Identifier(NbtUtil.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME, compound))
+            key(new Identifier(NbtUtil.readStringOrThrow(NbtTags.BIOME, compound))),
+            key(new Identifier(NbtUtil.readStringOrThrow(NbtTags.OCEAN_BIOME, compound))),
+            key(new Identifier(NbtUtil.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME, compound)))
         );
+    }
+    
+    private static RegistryKey<Biome> key(Identifier id) {
+        return RegistryKey.of(Registry.BIOME_KEY, id);
     }
 }

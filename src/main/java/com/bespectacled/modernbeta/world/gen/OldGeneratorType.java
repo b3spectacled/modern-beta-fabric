@@ -1,7 +1,6 @@
 package com.bespectacled.modernbeta.world.gen;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
@@ -29,6 +28,8 @@ import net.minecraft.client.world.GeneratorType.ScreenProvider;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.dimension.DimensionType;
@@ -65,11 +66,9 @@ public class OldGeneratorType {
         ImmutableSettings caveBiomeSettings = ImmutableSettings.copyOf(worldSettings.get(WorldSetting.CAVE_BIOME));
         
         String worldType = NbtUtil.toStringOrThrow(chunkSettings.get(NbtTags.WORLD_TYPE));
+        RegistryKey<ChunkGeneratorSettings> worldTypeKey = RegistryKey.of(Registry.CHUNK_GENERATOR_SETTINGS_KEY, ModernBeta.createId(worldType));
         
-        Optional<ChunkGeneratorSettings> chunkGenSettings = chunkGenSettingsRegistry.getOrEmpty(ModernBeta.createId(worldType));
-        Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = chunkGenSettings.isPresent() ?
-            () -> chunkGenSettings.get() :
-            () -> chunkGenSettingsRegistry.getOrThrow(ChunkGeneratorSettings.OVERWORLD);
+        RegistryEntry<ChunkGeneratorSettings> chunkGenSettings = chunkGenSettingsRegistry.getOrCreateEntry(worldTypeKey);
         
         return new GeneratorOptions(
             generatorOptions.getSeed(),
@@ -88,7 +87,7 @@ public class OldGeneratorType {
                         MODERN_BETA_VERSION
                     ), 
                     generatorOptions.getSeed(), 
-                    chunkGenSettingsSupplier, 
+                    chunkGenSettings, 
                     chunkSettings,
                     MODERN_BETA_VERSION
                 )
@@ -104,8 +103,11 @@ public class OldGeneratorType {
                 Registry<ChunkGeneratorSettings> chunkGenSettingsRegistry = registryManager.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
                 Registry<Biome> biomeRegistry = registryManager.get(Registry.BIOME_KEY);
                 
-                Supplier<ChunkGeneratorSettings> chunkGenSettingsSupplier = () -> 
-                    chunkGenSettingsRegistry.get(ModernBeta.createId(Registries.WORLD.get(DEFAULT_WORLD_TYPE).getChunkProvider()));
+                RegistryKey<ChunkGeneratorSettings> worldTypeKey = RegistryKey.of(
+                    Registry.CHUNK_GENERATOR_SETTINGS_KEY,
+                    ModernBeta.createId(Registries.WORLD.get(DEFAULT_WORLD_TYPE).getChunkProvider())
+                );
+                RegistryEntry<ChunkGeneratorSettings> chunkGenSettings = chunkGenSettingsRegistry.getOrCreateEntry(worldTypeKey);
                     
                 WorldProvider worldProvider = Registries.WORLD.get(DEFAULT_WORLD_TYPE);
                 String worldType = worldProvider.getChunkProvider();
@@ -140,7 +142,7 @@ public class OldGeneratorType {
                         MODERN_BETA_VERSION
                     ), 
                     seed, 
-                    chunkGenSettingsSupplier, 
+                    chunkGenSettings, 
                     chunkSettings,
                     MODERN_BETA_VERSION
                 );

@@ -18,11 +18,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveClimateSampler {
     private final VoronoiCaveClimateSampler climateSampler;
-    private final VoronoiPointRules<Identifier, Clime> rules;
+    private final VoronoiPointRules<RegistryKey<Biome>, Clime> rules;
 
     public VoronoiCaveBiomeProvider(long seed, Settings settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
@@ -44,14 +45,14 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
     @Override
     public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ) {
         Clime clime = this.sample(biomeX, biomeY, biomeZ);
-        Identifier biomeId = this.rules.calculateClosestTo(clime);
+        RegistryKey<Biome> biomeKey = this.rules.calculateClosestTo(clime);
         
-        return biomeId == null ? null : this.biomeRegistry.get(biomeId);
+        return biomeKey == null ? null : this.biomeRegistry.getOrCreateEntry(biomeKey);
     }
     
     @Override
     public List<RegistryEntry<Biome>> getBiomesForRegistry() {
-        return this.rules.getItems().stream().distinct().map(id -> this.biomeRegistry.get(id)).toList();
+        return this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrCreateEntry(key)).toList();
     }
 
     @Override
@@ -59,8 +60,8 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
         return this.climateSampler.sample(x, y, z);
     }
     
-    private static VoronoiPointRules<Identifier, Clime> buildRules(Settings settings) {
-        VoronoiPointRules.Builder<Identifier, Clime> builder = new VoronoiPointRules.Builder<>();
+    private static VoronoiPointRules<RegistryKey<Biome>, Clime> buildRules(Settings settings) {
+        VoronoiPointRules.Builder<RegistryKey<Biome>, Clime> builder = new VoronoiPointRules.Builder<>();
         
         NbtUtil.toListOrThrow(settings.get(NbtTags.BIOMES)).stream().forEach(e -> {
             NbtCompound compound = NbtUtil.toCompoundOrThrow(e);
@@ -69,8 +70,8 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
             double rain = NbtUtil.readDoubleOrThrow(NbtTags.RAIN, compound);
             boolean nullBiome = NbtUtil.readBooleanOrThrow(NbtTags.NULL_BIOME, compound);
             
-            Identifier biomeId = nullBiome ? null : new Identifier(biome);
-            builder.add(biomeId, new Clime(temp, rain));
+            RegistryKey<Biome> biomeKey = nullBiome ? null : RegistryKey.of(Registry.BIOME_KEY, new Identifier(biome));
+            builder.add(biomeKey, new Clime(temp, rain));
         });
         
         return builder.build();

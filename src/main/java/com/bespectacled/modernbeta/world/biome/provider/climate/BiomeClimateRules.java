@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import com.bespectacled.modernbeta.api.world.biome.climate.Clime;
 
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public class BiomeClimateRules {
@@ -17,7 +18,7 @@ public class BiomeClimateRules {
         this.rules = rules;
     }
     
-    public Clime apply(Biome biome) {
+    public Clime apply(RegistryEntry<Biome> biome) {
         for (BiomeClimateRule rule : this.rules) {
             Clime clime = rule.apply(biome);
             
@@ -25,8 +26,8 @@ public class BiomeClimateRules {
                 return clime;
         }
         
-        double temp = MathHelper.clamp(biome.getTemperature(), 0.0, 1.0);
-        double rain = MathHelper.clamp(biome.getDownfall(), 0.0, 1.0);
+        double temp = MathHelper.clamp(biome.value().getTemperature(), 0.0, 1.0);
+        double rain = MathHelper.clamp(biome.value().getDownfall(), 0.0, 1.0);
         
         return new Clime(temp, rain);
     }
@@ -38,7 +39,7 @@ public class BiomeClimateRules {
             this.rules = new ArrayList<>();
         }
         
-        public Builder add(Predicate<Biome> rule, Supplier<Clime> supplier) {
+        public Builder add(Predicate<RegistryEntry<Biome>> rule, Supplier<Clime> supplier) {
             this.rules.add(new BiomeClimateRule(rule, supplier));
             
             return this;
@@ -50,15 +51,15 @@ public class BiomeClimateRules {
     }
     
     private static class BiomeClimateRule {
-        private final Predicate<Biome> rule;
+        private final Predicate<RegistryEntry<Biome>> rule;
         private final Supplier<Clime> supplier;
         
-        public BiomeClimateRule(Predicate<Biome> rule, Supplier<Clime> supplier) {
+        public BiomeClimateRule(Predicate<RegistryEntry<Biome>> rule, Supplier<Clime> supplier) {
             this.rule = rule;
             this.supplier = supplier;
         }
         
-        public Clime apply(Biome biome) {
+        public Clime apply(RegistryEntry<Biome> biome) {
             if (this.rule.test(biome))
                 return this.supplier.get();
             

@@ -1,14 +1,9 @@
 package com.bespectacled.modernbeta.world.biome.beta;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.world.biome.OldBiomes;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
@@ -19,72 +14,67 @@ public class BetaBiomes {
     protected static final boolean ADD_ALTERNATE_STONES = true;
     protected static final boolean ADD_NEW_MINEABLES = true;
     
-    public static final Identifier FOREST_ID = ModernBeta.createId("beta_forest");
-    public static final Identifier SHRUBLAND_ID = ModernBeta.createId("beta_shrubland");
-    public static final Identifier DESERT_ID = ModernBeta.createId("beta_desert");
-    public static final Identifier SAVANNA_ID = ModernBeta.createId("beta_savanna");
-    public static final Identifier PLAINS_ID = ModernBeta.createId("beta_plains");
-    public static final Identifier SEASONAL_FOREST_ID = ModernBeta.createId("beta_seasonal_forest");
-    public static final Identifier RAINFOREST_ID = ModernBeta.createId("beta_rainforest");
-    public static final Identifier SWAMPLAND_ID = ModernBeta.createId("beta_swampland");
-    public static final Identifier TAIGA_ID = ModernBeta.createId("beta_taiga");
-    public static final Identifier TUNDRA_ID = ModernBeta.createId("beta_tundra");
-    public static final Identifier ICE_DESERT_ID = ModernBeta.createId("beta_ice_desert");
+    public static final RegistryKey<Biome> FOREST_KEY = OldBiomes.register(ModernBeta.createId("beta_forest"));
+    public static final RegistryKey<Biome> SHRUBLAND_KEY = OldBiomes.register(ModernBeta.createId("beta_shrubland"));
+    public static final RegistryKey<Biome> DESERT_KEY = OldBiomes.register(ModernBeta.createId("beta_desert"));
+    public static final RegistryKey<Biome> SAVANNA_KEY = OldBiomes.register(ModernBeta.createId("beta_savanna"));
+    public static final RegistryKey<Biome> PLAINS_KEY = OldBiomes.register(ModernBeta.createId("beta_plains"));
+    public static final RegistryKey<Biome> SEASONAL_FOREST_KEY = OldBiomes.register(ModernBeta.createId("beta_seasonal_forest"));
+    public static final RegistryKey<Biome> RAINFOREST_KEY = OldBiomes.register(ModernBeta.createId("beta_rainforest"));
+    public static final RegistryKey<Biome> SWAMPLAND_KEY = OldBiomes.register(ModernBeta.createId("beta_swampland"));
+    public static final RegistryKey<Biome> TAIGA_KEY = OldBiomes.register(ModernBeta.createId("beta_taiga"));
+    public static final RegistryKey<Biome> TUNDRA_KEY = OldBiomes.register(ModernBeta.createId("beta_tundra"));
+    public static final RegistryKey<Biome> ICE_DESERT_KEY = OldBiomes.register(ModernBeta.createId("beta_ice_desert"));
 
-    public static final Identifier OCEAN_ID = ModernBeta.createId("beta_ocean");
-    public static final Identifier LUKEWARM_OCEAN_ID = ModernBeta.createId("beta_lukewarm_ocean");
-    public static final Identifier WARM_OCEAN_ID = ModernBeta.createId("beta_warm_ocean");
-    public static final Identifier COLD_OCEAN_ID = ModernBeta.createId("beta_cold_ocean");
-    public static final Identifier FROZEN_OCEAN_ID = ModernBeta.createId("beta_frozen_ocean");
+    public static final RegistryKey<Biome> OCEAN_KEY = OldBiomes.register(ModernBeta.createId("beta_ocean"));
+    public static final RegistryKey<Biome> LUKEWARM_OCEAN_KEY = OldBiomes.register(ModernBeta.createId("beta_lukewarm_ocean"));
+    public static final RegistryKey<Biome> WARM_OCEAN_KEY = OldBiomes.register(ModernBeta.createId("beta_warm_ocean"));
+    public static final RegistryKey<Biome> COLD_OCEAN_KEY = OldBiomes.register(ModernBeta.createId("beta_cold_ocean"));
+    public static final RegistryKey<Biome> FROZEN_OCEAN_KEY = OldBiomes.register(ModernBeta.createId("beta_frozen_ocean"));
     
-    public static final Identifier SKY_ID = ModernBeta.createId("beta_sky");
+    public static final RegistryKey<Biome> SKY_KEY = OldBiomes.register(ModernBeta.createId("beta_sky"));
     
-    public static final ImmutableList<Identifier> BIOMES = ImmutableList.of(
-        FOREST_ID,
-        SHRUBLAND_ID, 
-        DESERT_ID,
-        SAVANNA_ID, 
-        PLAINS_ID,
-        SEASONAL_FOREST_ID, 
-        RAINFOREST_ID,
-        SWAMPLAND_ID, 
-        TAIGA_ID,
-        TUNDRA_ID, 
-        ICE_DESERT_ID,
+    public static final ImmutableList<RegistryKey<Biome>> BIOME_KEYS = ImmutableList.of(
+        FOREST_KEY,
+        SHRUBLAND_KEY, 
+        DESERT_KEY,
+        SAVANNA_KEY, 
+        PLAINS_KEY,
+        SEASONAL_FOREST_KEY, 
+        RAINFOREST_KEY,
+        SWAMPLAND_KEY, 
+        TAIGA_KEY,
+        TUNDRA_KEY, 
+        ICE_DESERT_KEY,
 
-        OCEAN_ID, 
-        LUKEWARM_OCEAN_ID,
-        WARM_OCEAN_ID, 
-        COLD_OCEAN_ID,
-        FROZEN_OCEAN_ID,
+        OCEAN_KEY, 
+        LUKEWARM_OCEAN_KEY,
+        WARM_OCEAN_KEY, 
+        COLD_OCEAN_KEY,
+        FROZEN_OCEAN_KEY,
 
-        SKY_ID
+        SKY_KEY
     );
     
-    public static final List<RegistryKey<Biome>> BIOME_KEYS = BIOMES
-        .stream()
-        .map(i -> RegistryKey.of(Registry.BIOME_KEY, i))
-        .collect(Collectors.toList());
-    
     public static void registerBiomes() {
-        OldBiomes.register(FOREST_ID, Forest.BIOME);
-        OldBiomes.register(SHRUBLAND_ID, Shrubland.BIOME);
-        OldBiomes.register(DESERT_ID, Desert.BIOME);
-        OldBiomes.register(SAVANNA_ID, Savanna.BIOME);
-        OldBiomes.register(PLAINS_ID, Plains.BIOME);
-        OldBiomes.register(SEASONAL_FOREST_ID, SeasonalForest.BIOME);
-        OldBiomes.register(RAINFOREST_ID, Rainforest.BIOME);
-        OldBiomes.register(SWAMPLAND_ID, Swampland.BIOME);
-        OldBiomes.register(TAIGA_ID, Taiga.BIOME);
-        OldBiomes.register(TUNDRA_ID, Tundra.BIOME);
-        OldBiomes.register(ICE_DESERT_ID, IceDesert.BIOME);
+        OldBiomes.register(FOREST_KEY, Forest.BIOME);
+        OldBiomes.register(SHRUBLAND_KEY, Shrubland.BIOME);
+        OldBiomes.register(DESERT_KEY, Desert.BIOME);
+        OldBiomes.register(SAVANNA_KEY, Savanna.BIOME);
+        OldBiomes.register(PLAINS_KEY, Plains.BIOME);
+        OldBiomes.register(SEASONAL_FOREST_KEY, SeasonalForest.BIOME);
+        OldBiomes.register(RAINFOREST_KEY, Rainforest.BIOME);
+        OldBiomes.register(SWAMPLAND_KEY, Swampland.BIOME);
+        OldBiomes.register(TAIGA_KEY, Taiga.BIOME);
+        OldBiomes.register(TUNDRA_KEY, Tundra.BIOME);
+        OldBiomes.register(ICE_DESERT_KEY, IceDesert.BIOME);
         
-        OldBiomes.register(OCEAN_ID, Ocean.BIOME);
-        OldBiomes.register(LUKEWARM_OCEAN_ID, LukewarmOcean.BIOME);
-        OldBiomes.register(WARM_OCEAN_ID, WarmOcean.BIOME);
-        OldBiomes.register(COLD_OCEAN_ID, ColdOcean.BIOME);
-        OldBiomes.register(FROZEN_OCEAN_ID, FrozenOcean.BIOME);
+        OldBiomes.register(OCEAN_KEY, Ocean.BIOME);
+        OldBiomes.register(LUKEWARM_OCEAN_KEY, LukewarmOcean.BIOME);
+        OldBiomes.register(WARM_OCEAN_KEY, WarmOcean.BIOME);
+        OldBiomes.register(COLD_OCEAN_KEY, ColdOcean.BIOME);
+        OldBiomes.register(FROZEN_OCEAN_KEY, FrozenOcean.BIOME);
         
-        OldBiomes.register(SKY_ID, Sky.BIOME);
+        OldBiomes.register(SKY_KEY, Sky.BIOME);
     }
 }

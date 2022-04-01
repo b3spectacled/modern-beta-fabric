@@ -11,14 +11,19 @@ import com.bespectacled.modernbeta.world.biome.pe.PEBiomes;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class OldBiomes { 
-    public static final Map<Identifier, Biome> MODERN_BETA_BIOME_MAP = new HashMap<Identifier, Biome>();
+    public static final Map<RegistryKey<Biome>, Biome> MODERN_BETA_BIOME_MAP = new HashMap<>();
     
-    public static Biome register(Identifier id, Biome biome) {
-        MODERN_BETA_BIOME_MAP.put(id, biome);
-        return Registry.register(BuiltinRegistries.BIOME, id, biome);
+    public static void register(RegistryKey<Biome> key, Biome biome) {
+        MODERN_BETA_BIOME_MAP.put(key, biome);
+        Registry.register(BuiltinRegistries.BIOME, key, biome);
+    }
+    
+    public static RegistryKey<Biome> register(Identifier id) {
+        return RegistryKey.of(Registry.BIOME_KEY, id);
     }
     
     public static void register() {

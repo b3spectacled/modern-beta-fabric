@@ -25,6 +25,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
@@ -66,7 +67,7 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
         super(chunkGenerator);
         
         Settings providerSettings = chunkGenerator.getChunkSettings();
-        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().get();
+        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
         GenerationShapeConfig shapeConfig = generatorSettings.getGenerationShapeConfig();
         
         this.worldMinY = shapeConfig.minimumY();
@@ -123,14 +124,14 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
             for (int localZ = 0; localZ < 16; ++localZ) {
                 int x = startX + localX;
                 int z = startZ + localZ;
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, 0, z)).value();
+                RegistryEntry<Biome> biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, 0, z));
                 
                 boolean isCold;
                 if (biomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
                     climateSampler.sampleForFeatureGeneration()) {
                     isCold = climateSampler.sample(x, z).temp() < 0.5D;
                 } else {
-                    isCold = biome.isCold(pos);
+                    isCold = biome.value().isCold(pos);
                 }
                 
                 for (int y = worldTopY - 1; y >= this.worldMinY; --y) {
@@ -238,7 +239,7 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
     
     protected abstract void generateBedrock(Chunk chunk, Block block, BlockPos pos);
 
-    protected abstract BlockState postProcessSurfaceState(BlockState blockState, Biome biome, BlockPos pos, boolean isCold);
+    protected abstract BlockState postProcessSurfaceState(BlockState blockState, RegistryEntry<Biome> biome, BlockPos pos, boolean isCold);
     
     protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         int chunkX = chunk.getPos().x;

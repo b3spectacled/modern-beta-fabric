@@ -22,7 +22,6 @@ import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.C
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, SkyClimateSampler, BiomeBlockResolver, OceanBiomeResolver {
@@ -47,7 +46,7 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return this.biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
+        return this.biomeRegistry.getOrCreateEntry(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
     }
  
     @Override
@@ -59,7 +58,7 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return this.biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.OCEAN));
+        return this.biomeRegistry.getOrCreateEntry(this.climateMap.getBiome(temp, rain, ClimateType.OCEAN));
     }
     
     @Override
@@ -68,12 +67,12 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return this.biomeRegistry.get(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
+        return this.biomeRegistry.getOrCreateEntry(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
     }
 
     @Override
     public List<RegistryEntry<Biome>> getBiomesForRegistry() {
-        return this.climateMap.getBiomeIds().stream().map(i -> this.biomeRegistry.get(i)).collect(Collectors.toList());
+        return this.climateMap.getBiomeKeys().stream().map(k -> this.biomeRegistry.getOrCreateEntry(k)).collect(Collectors.toList());
     }
 
     @Override

@@ -23,7 +23,7 @@ import com.google.common.base.MoreObjects;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
@@ -112,7 +112,7 @@ public class MixinGeneratorOptions {
                     MODERN_BETA_VERSION
                 ), 
                 seed,
-                () -> chunkGenSettingsRegistry.get(ModernBeta.createId(worldType)), 
+                chunkGenSettingsRegistry.getOrCreateEntry(RegistryKey.of(Registry.CHUNK_GENERATOR_SETTINGS_KEY, ModernBeta.createId(worldType))), 
                 chunkSettings,
                 MODERN_BETA_VERSION
             );

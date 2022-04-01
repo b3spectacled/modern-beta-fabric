@@ -24,6 +24,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
@@ -63,7 +64,7 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
     public Infdev227ChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         
-        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().get();
+        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
         GenerationShapeConfig shapeConfig = generatorSettings.getGenerationShapeConfig();
         
         this.worldMinY = shapeConfig.minimumY();
@@ -146,7 +147,7 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
                 int z = startZ + localZ;
                 int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
                 
-                Biome biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
+                RegistryEntry<Biome> biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
                 
                 SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
                 BlockState topBlock = surfaceConfig.topBlock();

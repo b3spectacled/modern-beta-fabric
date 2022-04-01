@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.function.Supplier;
 
 import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import com.bespectacled.modernbeta.mixin.MixinPlacedFeatureAccessor;
@@ -23,6 +22,7 @@ import com.bespectacled.modernbeta.world.gen.OldSurfaceBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
@@ -49,7 +49,7 @@ public abstract class ChunkProvider {
     protected final OldChunkGenerator chunkGenerator;
     
     protected final long seed;
-    protected final Supplier<ChunkGeneratorSettings> generatorSettings;
+    protected final RegistryEntry<ChunkGeneratorSettings> generatorSettings;
     protected final Settings providerSettings;
     protected final Random random;
     
@@ -84,7 +84,7 @@ public abstract class ChunkProvider {
         this.emptyFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
         
         // Modified NoiseColumnSampler and ChunkNoiseSampler
-        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().get();
+        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
         GenerationShapeConfig shapeConfig = generatorSettings.getGenerationShapeConfig();
         int verticalNoiseResolution = shapeConfig.verticalSize() * 4;
         int horizontalNoiseResolution = shapeConfig.horizontalSize() * 4;
@@ -105,25 +105,25 @@ public abstract class ChunkProvider {
             0, 
             0,
             null,
-            this.generatorSettings,
+            () -> this.generatorSettings.value(),
             this.emptyFluidLevelSampler,
             Blender.getNoBlending(),
             this
         );
         
-        this.randomProvider = chunkGenerator.getGeneratorSettings().get().getRandomProvider();
+        this.randomProvider = chunkGenerator.getGeneratorSettings().value().getRandomProvider();
         this.randomDeriver = this.randomProvider.create(this.seed).createRandomDeriver();
         
         // Modified SurfaceBuilder
-        this.surfaceRule = chunkGenerator.getGeneratorSettings().get().getSurfaceRule();
+        this.surfaceRule = chunkGenerator.getGeneratorSettings().value().getSurfaceRule();
         this.surfaceBuilder = new OldSurfaceBuilder(
             chunkGenerator.getNoiseRegistry(), 
-            chunkGenerator.getGeneratorSettings().get().getDefaultBlock(), 
-            chunkGenerator.getGeneratorSettings().get().getSeaLevel(), 
+            chunkGenerator.getGeneratorSettings().value().getDefaultBlock(), 
+            chunkGenerator.getGeneratorSettings().value().getSeaLevel(), 
             this.seed, 
             this.randomProvider,
             this,
-            this.generatorSettings.get().getDefaultBlock()
+            this.generatorSettings.value().getDefaultBlock()
         );
         
         this.generateDeepslate = NbtUtil.toBoolean(this.providerSettings.get(NbtTags.GEN_DEEPSLATE), false);
@@ -183,21 +183,21 @@ public abstract class ChunkProvider {
      * @return Total world height in blocks.
      */
     public int getWorldHeight() {
-        return this.generatorSettings.get().getGenerationShapeConfig().height();
+        return this.generatorSettings.value().getGenerationShapeConfig().height();
     }
     
     /**
      * @return Minimum Y coordinate in block coordinates.
      */
     public int getWorldMinY() {
-        return this.generatorSettings.get().getGenerationShapeConfig().minimumY();
+        return this.generatorSettings.value().getGenerationShapeConfig().minimumY();
     }
     
     /**
      * @return World sea level in block coordinates.
      */
     public int getSeaLevel() {
-        return this.generatorSettings.get().getSeaLevel();
+        return this.generatorSettings.value().getSeaLevel();
     }
     
     /**
@@ -257,8 +257,8 @@ public abstract class ChunkProvider {
      * 
      * @return A biome.
      */
-    public Biome getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {
-        return this.chunkGenerator.getBiomeSource().getBiome(biomeX, biomeY, biomeZ, noiseSampler).value();
+    public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {
+        return this.chunkGenerator.getBiomeSource().getBiome(biomeX, biomeY, biomeZ, noiseSampler);
     }
     
     /**

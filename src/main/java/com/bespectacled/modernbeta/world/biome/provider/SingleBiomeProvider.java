@@ -12,32 +12,34 @@ import com.bespectacled.modernbeta.util.settings.Settings;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class SingleBiomeProvider extends BiomeProvider implements ClimateSampler {
     private static final Identifier DEFAULT_BIOME_ID = new Identifier("plains");
     
-    private final Identifier biomeId;
+    private final RegistryKey<Biome> biomeKey;
     private final Clime biomeClime;
     
     public SingleBiomeProvider(long seed, Settings settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
         
-        this.biomeId = new Identifier(NbtUtil.toString(settings.get(NbtTags.SINGLE_BIOME), DEFAULT_BIOME_ID.toString()));
+        this.biomeKey = RegistryKey.of(Registry.BIOME_KEY, new Identifier(NbtUtil.toString(settings.get(NbtTags.SINGLE_BIOME), DEFAULT_BIOME_ID.toString())));
         this.biomeClime = new Clime(
-            MathHelper.clamp(biomeRegistry.get(this.biomeId).getTemperature(), 0.0, 1.0),
-            MathHelper.clamp(biomeRegistry.get(this.biomeId).getDownfall(), 0.0, 1.0)
+            MathHelper.clamp(biomeRegistry.get(this.biomeKey).getTemperature(), 0.0, 1.0),
+            MathHelper.clamp(biomeRegistry.get(this.biomeKey).getDownfall(), 0.0, 1.0)
         );
     }
 
     @Override
-    public Biome getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeRegistry.get(this.biomeId);
+    public RegistryEntry<Biome> getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+        return this.biomeRegistry.getOrCreateEntry(this.biomeKey);
     }
     
     @Override
-    public List<Biome> getBiomesForRegistry() {
-        return List.of(this.biomeRegistry.get(this.biomeId));
+    public List<RegistryEntry<Biome>> getBiomesForRegistry() {
+        return List.of(this.biomeRegistry.getOrCreateEntry(this.biomeKey));
     }
 
     @Override

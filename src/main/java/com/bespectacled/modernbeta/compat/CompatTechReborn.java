@@ -32,7 +32,6 @@ public class CompatTechReborn {
                     OldBiomes.MODERN_BETA_BIOME_MAP
                     .keySet()
                     .stream()
-                    .map(i -> RegistryKey.of(Registry.BIOME_KEY, i))
                     .toList()
                 ), 
                 GenerationStep.Feature.UNDERGROUND_ORES,  

@@ -14,6 +14,7 @@ import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
@@ -81,12 +82,12 @@ public class PESpawnLocator implements SpawnLocator {
             noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
             this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
         
-        Biome biome = (this.chunkProvider.getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) ? 
+        RegistryEntry<Biome> biome = (this.chunkProvider.getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) ? 
             oldBiomeSource.getBiomeForSurfaceGen(x, y, z) :
             this.chunkProvider.getBiome(x >> 2, y >> 2, z >> 2, null);
         
         return 
-            (biome.getCategory() == Category.DESERT && y >= seaLevel) || 
+            (Biome.getCategory(biome) == Category.DESERT && y >= seaLevel) || 
             (this.beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) > 0.0 && y >= seaLevel && y <= seaLevel + 2);
     }
 }

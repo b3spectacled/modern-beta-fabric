@@ -6,12 +6,12 @@ import com.bespectacled.modernbeta.world.feature.configured.OldOreConfiguredFeat
 
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.gen.YOffset;
+import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.placementmodifier.BiomePlacementModifier;
 import net.minecraft.world.gen.placementmodifier.CountPlacementModifier;
 import net.minecraft.world.gen.placementmodifier.HeightRangePlacementModifier;
 import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier;
-import net.minecraft.world.gen.feature.PlacedFeature;
 
 public class OldOrePlacedFeatures {
     private static List<PlacementModifier> modifiers(PlacementModifier first, PlacementModifier second) {
