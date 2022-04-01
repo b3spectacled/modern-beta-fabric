@@ -12,10 +12,12 @@ import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
+import net.minecraft.world.biome.source.util.MultiNoiseUtil.NoiseHypercube;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil.ParameterRange;
 import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
@@ -30,17 +32,17 @@ public class VanillaBiomeSource {
     // Currently, large biomes option only works with Xoroshiro random type.
     private static final ChunkRandom.RandomProvider RANDOM_TYPE = ChunkRandom.RandomProvider.XOROSHIRO;
     
-    private final MultiNoiseUtil.Entries<Supplier<Biome>> biomeEntries;
+    private final MultiNoiseUtil.Entries<RegistryEntry<Biome>> biomeEntries;
     private final MultiNoiseBiomeSource biomeSource;
     private final NoiseColumnSampler columnSampler;
     private final long seed;
     
     private VanillaBiomeSource(
-        ImmutableList<Pair<MultiNoiseUtil.NoiseHypercube, Supplier<Biome>>> biomeList,
+        List<Pair<NoiseHypercube, RegistryEntry<Biome>>> biomeList,
         long seed,
         boolean largeBiomes
     ) {
-        this.biomeEntries = new MultiNoiseUtil.Entries<Supplier<Biome>>(biomeList);
+        this.biomeEntries = new MultiNoiseUtil.Entries<RegistryEntry<Biome>>(biomeList);
         this.biomeSource = new MultiNoiseBiomeSource(this.biomeEntries, Optional.empty());
         this.columnSampler = new NoiseColumnSampler(
             largeBiomes ? LARGE_BIOME_SHAPE_CONFIG : NORMAL_BIOME_SHAPE_CONFIG,
@@ -52,16 +54,16 @@ public class VanillaBiomeSource {
         this.seed = seed;
     }
     
-    public Biome getBiome(int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ) {
         return this.biomeSource.getBiome(biomeX, biomeY, biomeZ, this.columnSampler);
     }
     
-    public MultiNoiseUtil.Entries<Supplier<Biome>> getBiomeEntries() {
+    public MultiNoiseUtil.Entries<RegistryEntry<Biome>> getBiomeEntries() {
         return this.biomeEntries;
     }
     
-    public List<Biome> getBiomes() {
-        return this.biomeEntries.getEntries().stream().map(p -> p.getSecond().get()).toList();
+    public List<RegistryEntry<Biome>> getBiomes() {
+        return this.biomeEntries.getEntries().stream().map(p -> p.getSecond()).toList();
     }
     
     public long getSeed() {
@@ -69,7 +71,7 @@ public class VanillaBiomeSource {
     }
     
     public static class Builder {
-        private final ImmutableList.Builder<Pair<MultiNoiseUtil.NoiseHypercube, Supplier<Biome>>> builder;
+        private final ImmutableList.Builder<Pair<MultiNoiseUtil.NoiseHypercube, RegistryEntry<Biome>>> builder;
         private final ExtendedVanillaBiomeParameters biomeParameters;
         private final Consumer<Pair<MultiNoiseUtil.NoiseHypercube, RegistryKey<Biome>>> parameters;
         private final long seed;
@@ -78,7 +80,7 @@ public class VanillaBiomeSource {
         public Builder(Registry<Biome> biomeRegistry, long seed) {
             this.builder = ImmutableList.builder(); 
             this.biomeParameters = new ExtendedVanillaBiomeParameters();
-            this.parameters = pair -> this.builder.add(pair.mapSecond(key -> () -> biomeRegistry.getOrThrow(key)));
+            this.parameters = pair -> this.builder.add(pair.mapSecond(biomeRegistry::getOrCreateEntry));
             this.seed = seed;
             this.largeBiomes = false;
         }

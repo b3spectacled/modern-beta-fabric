@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.structure.StructureGeneratorFactory;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
@@ -28,10 +29,10 @@ public class MixinOceanMonumentFeature {
             boolean shouldStartAt = oldChunkGenerator.generatesMonuments();
             
             if (shouldStartAt) {
-                Set<Biome> set = oldChunkGenerator.getBiomesInArea(offsetX, chunkGenerator.getSeaLevel(), offsetZ, 29);
+                Set<RegistryEntry<Biome>> set = oldChunkGenerator.getBiomesInArea(offsetX, chunkGenerator.getSeaLevel(), offsetZ, 29);
                 
-                for (Biome biome : set) {
-                    if (biome.getCategory() == Biome.Category.OCEAN || biome.getCategory() == Biome.Category.RIVER) continue;
+                for (RegistryEntry<Biome> biome : set) {
+                    if (Biome.getCategory(biome) == Biome.Category.OCEAN || Biome.getCategory(biome) == Biome.Category.RIVER) continue;
                     
                     shouldStartAt = false;
                 }

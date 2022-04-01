@@ -12,6 +12,7 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.minecraft.structure.StructureGeneratorFactory;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
@@ -22,7 +23,7 @@ public class MixinStructureGeneratorFactoryContext {
     @Shadow private ChunkGenerator comp_306;
     @Shadow private ChunkPos comp_309;
     @Shadow private HeightLimitView comp_311;
-    @Shadow private Predicate<Biome> comp_312;
+    @Shadow private Predicate<RegistryEntry<Biome>> comp_312;
     
     @Inject(method = "isBiomeValid", at = @At("HEAD"), cancellable = true)
     private void injectCheckForBiomeOnTop(Heightmap.Type heightmap, CallbackInfoReturnable<Boolean> info) {
@@ -31,7 +32,7 @@ public class MixinStructureGeneratorFactoryContext {
             int z = this.comp_309.getCenterZ();
             int y = this.comp_306.getHeightInGround(x, z, heightmap, this.comp_311);
             
-            Biome biome = oldChunkGenerator.getInjectedBiomeAtBlock(x, y, z);
+            RegistryEntry<Biome> biome = oldChunkGenerator.getInjectedBiomeAtBlock(x, y, z);
             
             info.setReturnValue(this.comp_312.test(biome));
         }

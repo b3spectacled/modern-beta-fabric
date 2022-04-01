@@ -6,6 +6,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.random.ChunkRandom;
 
@@ -51,7 +52,7 @@ public class OldChunkGeneratorSettings {
     }
     
     private static ChunkGeneratorSettings register(Identifier id, ChunkGeneratorSettings settings) {
-        BuiltinRegistries.<ChunkGeneratorSettings, ChunkGeneratorSettings>add(BuiltinRegistries.CHUNK_GENERATOR_SETTINGS, id, settings);
+        BuiltinRegistries.add(BuiltinRegistries.CHUNK_GENERATOR_SETTINGS, id, settings);
         return settings;
     }
     

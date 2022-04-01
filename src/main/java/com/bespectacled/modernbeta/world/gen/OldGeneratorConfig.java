@@ -1,11 +1,22 @@
 package com.bespectacled.modernbeta.world.gen;
 
+import com.google.common.collect.ImmutableMap;
+
 import net.minecraft.world.biome.source.util.VanillaTerrainParametersCreator;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.NoiseSamplingConfig;
 import net.minecraft.world.gen.chunk.SlideConfig;
+import net.minecraft.world.gen.chunk.placement.ConcentricRingsStructurePlacement;
+import net.minecraft.world.gen.chunk.placement.StructurePlacement;
+import net.minecraft.world.gen.chunk.placement.StructuresConfig;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 public class OldGeneratorConfig {
+    public static final StructuresConfig STRUCTURES;
+    public static final ConcentricRingsStructurePlacement INDEV_STRONGHOLD_PLACEMENT;
+    public static final ImmutableMap<StructureFeature<?>, StructurePlacement> INDEV_STRUCTURE_PLACEMENTS;
+    public static final StructuresConfig INDEV_STRUCTURES;
+    
     public static final NoiseSamplingConfig BETA_SAMPLING_CONFIG;
     public static final NoiseSamplingConfig ALPHA_SAMPLING_CONFIG;
     public static final NoiseSamplingConfig SKYLANDS_SAMPLING_CONFIG;
@@ -27,6 +38,14 @@ public class OldGeneratorConfig {
     public static final GenerationShapeConfig BETA_SHAPE_CONFIG_LARGE_BIOMES;
     
     static {
+        STRUCTURES = new StructuresConfig(true);
+        INDEV_STRONGHOLD_PLACEMENT = new ConcentricRingsStructurePlacement(0, 0, 1);
+        INDEV_STRUCTURE_PLACEMENTS = ImmutableMap.<StructureFeature<?>, StructurePlacement>builder()
+            .putAll(StructuresConfig.DEFAULT_PLACEMENTS)
+            .put(StructureFeature.STRONGHOLD, INDEV_STRONGHOLD_PLACEMENT)
+            .build();
+        INDEV_STRUCTURES = new StructuresConfig(INDEV_STRUCTURE_PLACEMENTS);
+        
         BETA_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
         ALPHA_SAMPLING_CONFIG = new NoiseSamplingConfig(1.0, 1.0, 80.0, 160.0);
         SKYLANDS_SAMPLING_CONFIG = new NoiseSamplingConfig(2.0, 1.0, 80.0, 160.0);

@@ -37,6 +37,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
@@ -325,7 +326,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         return this.chunkProviderType;
     }
     
-    public Biome getInjectedBiomeAtBlock(int x, int y, int z) {
+    public RegistryEntry<Biome> getInjectedBiomeAtBlock(int x, int y, int z) {
         int biomeX = x >> 2;
         int biomeY = y >> 2;
         int biomeZ = z >> 2;
@@ -338,12 +339,12 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             BlockStates.AIR;
         
         BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, topHeight, minHeight, state, state).setY(y);
-        Biome biome = this.biomeInjector.sample(context, biomeX, biomeY, biomeZ);
+        RegistryEntry<Biome> biome = this.biomeInjector.sample(context, biomeX, biomeY, biomeZ);
         
         return biome != null ? biome : this.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
     
-    public Set<Biome> getBiomesInArea(int startX, int startY, int startZ, int radius) {
+    public Set<RegistryEntry<Biome>> getBiomesInArea(int startX, int startY, int startZ, int radius) {
         int minX = BiomeCoords.fromBlock(startX - radius);
         int minZ = BiomeCoords.fromBlock(startZ - radius);
         
@@ -353,7 +354,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         int rangeX = maxX - minX + 1;
         int rangeZ = maxZ - minZ + 1;
         
-        HashSet<Biome> set = Sets.newHashSet();
+        HashSet<RegistryEntry<Biome>> set = Sets.newHashSet();
         for (int localZ = 0; localZ < rangeZ; ++localZ) {
             for (int localX = 0; localX < rangeX; ++localX) {
                 int biomeX = minX + localX;
