@@ -28,7 +28,9 @@ public class SingleBiomeScreen {
                 .getOrCreateEntry(
                     RegistryKey.of(
                         Registry.BIOME_KEY,
-                        new Identifier(NbtUtil.toStringOrThrow(worldScreen.getWorldSettings().get(worldSetting, NbtTags.SINGLE_BIOME)))
+                        new Identifier(
+                            NbtUtil.toStringOrThrow(worldScreen.getWorldSettings().get(worldSetting, NbtTags.SINGLE_BIOME))
+                        )
                     )
                 )
         );

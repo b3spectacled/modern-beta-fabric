@@ -3,23 +3,22 @@ package com.bespectacled.modernbeta.world.gen.provider.indev;
 import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
 
 import net.minecraft.util.Formatting;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.util.Identifier;
 
 public enum IndevTheme {
-    NORMAL(0, "normal", IndevBiomes.INDEV_NORMAL_KEY, Formatting.GREEN),
-    HELL(1, "hell", IndevBiomes.INDEV_HELL_KEY, Formatting.RED),
-    PARADISE(2, "paradise", IndevBiomes.INDEV_PARADISE_KEY, Formatting.YELLOW),
-    WOODS(3, "woods", IndevBiomes.INDEV_WOODS_KEY, Formatting.AQUA);
+    NORMAL(0, "normal", IndevBiomes.INDEV_NORMAL_KEY.getValue(), Formatting.GREEN),
+    HELL(1, "hell", IndevBiomes.INDEV_HELL_KEY.getValue(), Formatting.RED),
+    PARADISE(2, "paradise", IndevBiomes.INDEV_PARADISE_KEY.getValue(), Formatting.YELLOW),
+    WOODS(3, "woods", IndevBiomes.INDEV_WOODS_KEY.getValue(), Formatting.AQUA);
     
     private static final String PREFIX = "createWorld.customize.indev.levelTheme";
     
     private final int id;
     private final String name;
-    private final RegistryKey<Biome> defaultBiome;
+    private final Identifier defaultBiome;
     private final Formatting color;
     
-    private IndevTheme(int id, String name, RegistryKey<Biome> defaultBiome, Formatting color) {
+    private IndevTheme(int id, String name, Identifier defaultBiome, Formatting color) {
         this.id = id;
         this.name = name;
         this.defaultBiome = defaultBiome;
@@ -34,7 +33,7 @@ public enum IndevTheme {
         return this.name;
     }
     
-    public RegistryKey<Biome> getDefaultBiome() {
+    public Identifier getDefaultBiome() {
         return this.defaultBiome;
     }
     
