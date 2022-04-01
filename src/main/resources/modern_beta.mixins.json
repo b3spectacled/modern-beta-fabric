@@ -14,11 +14,7 @@
     "MixinSpawnLocating",
     "MixinStructureGeneratorFactoryContext",
     "MixinSurfaceBuilderAccessor",
-    "MixinVanillaBiomeParametersAccessor",
-    "heightprovider.MixinUniformHeightProvider",
-    "heightprovider.MixinBiasedToBottomHeightProvider",
-    "heightprovider.MixinTrapezoidHeightProvider",
-    "heightprovider.MixinVeryBiasedToBottomHeightProvider"
+    "MixinVanillaBiomeParametersAccessor"
   ],
   "client": [
     "client.MixinBackgroundRenderer",
