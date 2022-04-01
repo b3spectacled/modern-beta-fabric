@@ -33,6 +33,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -59,7 +60,7 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         ClientPlayNetworkHandler netHandler,
         ClientWorld.Properties properties,
         RegistryKey<World> registryRef,
-        DimensionType dimensionType,
+        RegistryEntry<DimensionType> dimensionType,
         int loadDistance,
         int simulationDistance,
         Supplier<Profiler> profiler,

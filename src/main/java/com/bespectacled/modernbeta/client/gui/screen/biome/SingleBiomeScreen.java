@@ -9,22 +9,30 @@ import net.minecraft.client.gui.screen.CustomizeBuffetLevelScreen;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.BiomeKeys;
 
 public class SingleBiomeScreen {
     public static CustomizeBuffetLevelScreen create(WorldScreen worldScreen, WorldSetting worldSetting) {
         return new CustomizeBuffetLevelScreen(
             worldScreen, 
             worldScreen.getRegistryManager(),
-            biome -> worldScreen.getWorldSettings().put(
+            biomeKey -> worldScreen.getWorldSettings().put(
                 worldSetting, 
                 NbtTags.SINGLE_BIOME, 
-                NbtString.of(worldScreen.getRegistryManager().<Biome>get(Registry.BIOME_KEY).getId(biome).toString())
+                NbtString.of(biomeKey.getKey().orElseGet(() -> BiomeKeys.PLAINS).getValue().toString())
             ),
             worldScreen
                 .getRegistryManager()
-                .<Biome>get(Registry.BIOME_KEY)
-                .get(new Identifier(NbtUtil.toStringOrThrow(worldScreen.getWorldSettings().get(worldSetting, NbtTags.SINGLE_BIOME))))
+                .get(Registry.BIOME_KEY)
+                .getOrCreateEntry(
+                    RegistryKey.of(
+                        Registry.BIOME_KEY,
+                        new Identifier(NbtUtil.toStringOrThrow(worldScreen.getWorldSettings().get(worldSetting, NbtTags.SINGLE_BIOME)))
+                    )
+                )
         );
     }
+    
+    
 }

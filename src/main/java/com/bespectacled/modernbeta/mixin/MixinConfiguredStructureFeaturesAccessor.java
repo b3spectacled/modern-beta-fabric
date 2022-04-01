@@ -1,13 +1,12 @@
 package com.bespectacled.modernbeta.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 
 @Mixin(ConfiguredStructureFeatures.class)
 public interface MixinConfiguredStructureFeaturesAccessor {
+    /*
     @Accessor("PILLAGER_OUTPOST")
     public static ConfiguredStructureFeature<?, ?> getPillagerOutpost() {
         throw new AssertionError();
@@ -121,4 +120,5 @@ public interface MixinConfiguredStructureFeaturesAccessor {
     public static ConfiguredStructureFeature<?, ?> getRuinedPortalOcean() {
         throw new AssertionError();
     }
+    */
 }

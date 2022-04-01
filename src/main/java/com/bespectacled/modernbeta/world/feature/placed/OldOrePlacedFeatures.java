@@ -23,7 +23,7 @@ public class OldOrePlacedFeatures {
     }
     
     public static final RegistryEntry<PlacedFeature> ORE_CLAY = OldPlacedFeatures.register(
-        "ore_clay",
+        "ore_clay_",
         OldOreConfiguredFeatures.ORE_CLAY,
         modifiersWithCount(33, HeightRangePlacementModifier.uniform(YOffset.fixed(0), YOffset.fixed(127)))
     );

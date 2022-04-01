@@ -1,25 +1,15 @@
 package com.bespectacled.modernbeta.mixin;
 
-import java.util.function.BiConsumer;
-
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.world.biome.OldBiomeStructures;
-
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 
 @Mixin(ConfiguredStructureFeatures.class)
 public class MixinConfiguredStructureFeatures {
+    /*
     @Inject(method = "registerAll", at = @At("TAIL"))
     private static void addStructuresToBiomes(BiConsumer<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> consumer, CallbackInfo info) {
-        /* Beta Biomes */
+        // Beta Biomes
         
         OldBiomeStructures.addOceanStructures(consumer, ModernBeta.createId("beta_cold_ocean"), false);
         OldBiomeStructures.addDesertStructures(consumer, ModernBeta.createId("beta_desert"), true);
@@ -40,7 +30,7 @@ public class MixinConfiguredStructureFeatures {
         
         OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("beta_sky"));
         
-        /* PE Biomes */
+        // PE Biomes
         
         OldBiomeStructures.addOceanStructures(consumer, ModernBeta.createId("pe_cold_ocean"), false);
         OldBiomeStructures.addDesertStructures(consumer, ModernBeta.createId("pe_desert"), true);
@@ -59,7 +49,7 @@ public class MixinConfiguredStructureFeatures {
         OldBiomeStructures.addTundraStructures(consumer, ModernBeta.createId("pe_tundra"));
         OldBiomeStructures.addOceanStructures(consumer, ModernBeta.createId("pe_warm_ocean"), true);
         
-        /* Inf Biomes */
+        // Inf Biomes
         
         OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("alpha"));
         OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("alpha_winter"));
@@ -77,7 +67,7 @@ public class MixinConfiguredStructureFeatures {
         OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("infdev_611_winter"));
         
         
-        /* Indev Biomes */
+        // Indev Biomes
         
         OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("indev_normal"));
         OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("indev_hell"));
@@ -85,4 +75,5 @@ public class MixinConfiguredStructureFeatures {
         OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("indev_snowy"));
         OldBiomeStructures.addCommonStructures(consumer, ModernBeta.createId("indev_woods"));
     }
+    */
 }

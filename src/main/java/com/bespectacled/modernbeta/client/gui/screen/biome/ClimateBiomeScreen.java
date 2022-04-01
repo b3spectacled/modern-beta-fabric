@@ -22,7 +22,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 
 public class ClimateBiomeScreen extends OceanBiomeScreen {
     private static final String LAND_BIOME_DISPLAY_STRING = "createWorld.customize.biome.climateType.land";
@@ -90,18 +92,19 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
     
     private ActionOptionWrapper createBiomeSelectionScreen(String key, ClimateMapping mapping, ClimateType type) {
         Identifier biomeId = new Identifier(mapping.biomeByClimateType(type));
+        RegistryKey<Biome> biomeKey = RegistryKey.of(Registry.BIOME_KEY, biomeId);
         
         return new ActionOptionWrapper(
             GuiUtil.createTranslatableBiomeStringFromId(biomeId),
             buttonWidget -> this.client.setScreen(new CustomizeBuffetLevelScreen(
                 this,
                 this.registryManager,
-                biome -> {
-                    mapping.setBiomeByClimateType(this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString(), type);
+                newBiomeKey -> {
+                    mapping.setBiomeByClimateType(newBiomeKey.getKey().orElseGet(() -> BiomeKeys.PLAINS).getValue().toString(), type);
                     
                     this.updateMap();
                 },
-                this.registryManager.<Biome>get(Registry.BIOME_KEY).get(biomeId)
+                this.registryManager.<Biome>get(Registry.BIOME_KEY).getOrCreateEntry(biomeKey)
             ))
         );
     }

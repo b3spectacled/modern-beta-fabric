@@ -20,6 +20,6 @@ public class OldConfiguredFeatures {
         ConfiguredFeature<FC, F> configuredFeature = new ConfiguredFeature<FC, F>(feature, featureConfig);
         
         CONFIGURED_FEATURES.put(featureId, configuredFeature);
-        return BuiltinRegistries.method_40360(BuiltinRegistries.CONFIGURED_FEATURE, id, configuredFeature);
+        return BuiltinRegistries.method_40360(BuiltinRegistries.CONFIGURED_FEATURE, featureId.toString(), configuredFeature);
     }
 }

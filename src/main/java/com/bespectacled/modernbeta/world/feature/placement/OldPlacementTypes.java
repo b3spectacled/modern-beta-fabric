@@ -20,6 +20,8 @@ public class OldPlacementTypes<P extends PlacementModifier> {
         return Registry.register(Registry.PLACEMENT_MODIFIER_TYPE, ModernBeta.createId(id), () -> codec);
     }
     
+    public static void register() {}
+    
     static {
         BETA_NOISE_BASED_COUNT = register("beta_noise_based_count", BetaNoiseBasedCountPlacementModifier.MODIFIER_CODEC);
         ALPHA_NOISE_BASED_COUNT = register("alpha_noise_based_count", AlphaNoiseBasedCountPlacementModifier.MODIFIER_CODEC);

@@ -26,7 +26,9 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 
 public class VoronoiCaveBiomeScreen extends SettingsScreen {
     private static final String VERTICAL_SCALE_DISPLAY_STRING = "createWorld.customize.caveBiome.verticalNoiseScale";
@@ -149,18 +151,19 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
     
     private ActionOptionWrapper createBiomeSelectionScreen(CaveBiomeVoronoiPoint point, NbtCompound compound) {
         Identifier biomeId = new Identifier(point.biome);
+        RegistryKey<Biome> biomeKey = RegistryKey.of(Registry.BIOME_KEY, biomeId);
         
         return new ActionOptionWrapper(
             BIOME_DISPLAY_STRING,
             buttonWidget -> this.client.setScreen(new CustomizeBuffetLevelScreen(
                 this,
                 this.registryManager,
-                biome -> {
-                    point.biome = this.registryManager.<Biome>get(Registry.BIOME_KEY).getId(biome).toString();
+                newBiomeKey -> {
+                    point.biome = newBiomeKey.getKey().orElseGet(() -> BiomeKeys.PLAINS).getValue().toString();
                     
                     this.updateVoronoiEntry(point, compound);
                 },
-                this.registryManager.<Biome>get(Registry.BIOME_KEY).get(biomeId)
+                this.registryManager.<Biome>get(Registry.BIOME_KEY).getOrCreateEntry(biomeKey)
             ))
         ).suffix(GuiUtil.createTranslatableBiomeStringFromId(biomeId)).truncate(false);
     }

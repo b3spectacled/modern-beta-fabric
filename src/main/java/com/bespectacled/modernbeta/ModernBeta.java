@@ -18,6 +18,7 @@ import com.bespectacled.modernbeta.config.ModernBetaConfigRendering;
 import com.bespectacled.modernbeta.world.biome.OldBiomeModifier;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.OldBiomes;
+import com.bespectacled.modernbeta.world.feature.placement.OldPlacementTypes;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.OldChunkGeneratorSettings;
 import com.bespectacled.modernbeta.world.gen.OldGeneratorType;
@@ -79,6 +80,7 @@ public class ModernBeta implements ModInitializer {
         OldBiomeSource.register();
         OldChunkGenerator.register();
         OldChunkGeneratorSettings.register();
+        OldPlacementTypes.register();
         
         // Add Ocean Shrine to vanilla oceans, when using vanilla biome type.
         OldBiomeModifier.addShrineToOceans();
