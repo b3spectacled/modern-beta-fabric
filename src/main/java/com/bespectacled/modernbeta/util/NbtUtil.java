@@ -7,6 +7,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtFloat;
 import net.minecraft.nbt.NbtInt;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtShort;
 import net.minecraft.nbt.NbtString;
 
 public class NbtUtil {
@@ -134,12 +135,18 @@ public class NbtUtil {
         if (element instanceof NbtInt nbtInt)
             return nbtInt.intValue();
         
+        if (element instanceof NbtShort nbtShort)
+            return nbtShort.intValue();
+        
         throw new IllegalArgumentException("[Modern Beta] NBT element is not an int! Type: " + element.getType()); 
     }
     
     public static int toInt(NbtElement element, int alternate) {
         if (element instanceof NbtInt nbtInt) 
             return nbtInt.intValue();
+        
+        if (element instanceof NbtShort nbtShort)
+            return nbtShort.intValue();
         
         return alternate;
     }

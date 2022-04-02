@@ -44,17 +44,17 @@ public class ModernBetaConfigBiome implements ConfigData {
     );
     
     public Map<String, ClimateMapping> peClimates = createClimateMapping(
-        new ClimateMapping(PEBiomes.PE_DESERT_ID.toString(), PEBiomes.PE_OCEAN_ID.getValue().toString()),
-        new ClimateMapping(PEBiomes.PE_FOREST_ID.toString(), PEBiomes.PE_OCEAN_ID.getValue().toString()),
-        new ClimateMapping(PEBiomes.PE_TUNDRA_ID.toString(), PEBiomes.PE_FROZEN_OCEAN_ID.getValue().toString()),
-        new ClimateMapping(PEBiomes.PE_PLAINS_ID.toString(), PEBiomes.PE_OCEAN_ID.getValue().toString()),
-        new ClimateMapping(PEBiomes.PE_RAINFOREST_ID.toString(), PEBiomes.PE_WARM_OCEAN_ID.getValue().toString()),
-        new ClimateMapping(PEBiomes.PE_SAVANNA_ID.toString(), PEBiomes.PE_OCEAN_ID.getValue().toString()),
-        new ClimateMapping(PEBiomes.PE_SHRUBLAND_ID.toString(), PEBiomes.PE_OCEAN_ID.getValue().toString()),
-        new ClimateMapping(PEBiomes.PE_SEASONAL_FOREST_ID.toString(), PEBiomes.PE_LUKEWARM_OCEAN_ID.getValue().toString()),
-        new ClimateMapping(PEBiomes.PE_SWAMPLAND_ID.toString(), PEBiomes.PE_COLD_OCEAN_ID.getValue().toString()),
-        new ClimateMapping(PEBiomes.PE_TAIGA_ID.toString(), PEBiomes.PE_FROZEN_OCEAN_ID.getValue().toString()),
-        new ClimateMapping(PEBiomes.PE_TUNDRA_ID.toString(), PEBiomes.PE_FROZEN_OCEAN_ID.getValue().toString())
+        new ClimateMapping(PEBiomes.PE_DESERT_KEY.getValue().toString(), PEBiomes.PE_OCEAN_KEY.getValue().toString()),
+        new ClimateMapping(PEBiomes.PE_FOREST_KEY.getValue().toString(), PEBiomes.PE_OCEAN_KEY.getValue().toString()),
+        new ClimateMapping(PEBiomes.PE_TUNDRA_KEY.getValue().toString(), PEBiomes.PE_FROZEN_OCEAN_KEY.getValue().toString()),
+        new ClimateMapping(PEBiomes.PE_PLAINS_KEY.getValue().toString(), PEBiomes.PE_OCEAN_KEY.getValue().toString()),
+        new ClimateMapping(PEBiomes.PE_RAINFOREST_KEY.getValue().toString(), PEBiomes.PE_WARM_OCEAN_KEY.getValue().toString()),
+        new ClimateMapping(PEBiomes.PE_SAVANNA_KEY.getValue().toString(), PEBiomes.PE_OCEAN_KEY.getValue().toString()),
+        new ClimateMapping(PEBiomes.PE_SHRUBLAND_KEY.getValue().toString(), PEBiomes.PE_OCEAN_KEY.getValue().toString()),
+        new ClimateMapping(PEBiomes.PE_SEASONAL_FOREST_KEY.getValue().toString(), PEBiomes.PE_LUKEWARM_OCEAN_KEY.getValue().toString()),
+        new ClimateMapping(PEBiomes.PE_SWAMPLAND_KEY.getValue().toString(), PEBiomes.PE_COLD_OCEAN_KEY.getValue().toString()),
+        new ClimateMapping(PEBiomes.PE_TAIGA_KEY.getValue().toString(), PEBiomes.PE_FROZEN_OCEAN_KEY.getValue().toString()),
+        new ClimateMapping(PEBiomes.PE_TUNDRA_KEY.getValue().toString(), PEBiomes.PE_FROZEN_OCEAN_KEY.getValue().toString())
     );
     
     private static Map<String, ClimateMapping> createClimateMapping(

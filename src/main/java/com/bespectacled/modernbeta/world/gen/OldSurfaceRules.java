@@ -23,8 +23,8 @@ public class OldSurfaceRules {
         MaterialRules.MaterialCondition desertCondition = MaterialRules.biome(
             BetaBiomes.DESERT_KEY,
             BetaBiomes.ICE_DESERT_KEY,
-            PEBiomes.PE_DESERT_ID,
-            PEBiomes.PE_ICE_DESERT_ID
+            PEBiomes.PE_DESERT_KEY,
+            PEBiomes.PE_ICE_DESERT_KEY
         );
         MaterialRules.MaterialRule desertRule = MaterialRules.condition(desertCondition, sandRule);
         

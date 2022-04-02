@@ -156,7 +156,7 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Chunk.PE.name,
             ModernBetaBuiltInTypes.Biome.PE.name,
             ModernBetaBuiltInTypes.CaveBiome.NONE.name,
-            PEBiomes.PE_FOREST_ID.getValue().toString(),
+            PEBiomes.PE_FOREST_KEY.getValue().toString(),
             ModernBetaBuiltInTypes.WorldScreen.INF_CLIMATE.name,
             true,
             false,
