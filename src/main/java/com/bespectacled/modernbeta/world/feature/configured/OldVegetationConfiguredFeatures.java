@@ -5,13 +5,10 @@ import java.util.List;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.world.feature.placed.OldTreePlacedFeatures;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.collection.DataPool;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.world.gen.blockpredicate.BlockPredicate;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.PlacedFeature;
@@ -64,33 +61,17 @@ public class OldVegetationConfiguredFeatures {
         
         public static final RandomPatchFeatureConfig MUSHROOM_HELL;
         
-        private static BlockPredicate createBlockPredicate(List<Block> validGround) {
-            BlockPredicate predicate = !validGround.isEmpty() ? 
-                BlockPredicate.bothOf(BlockPredicate.IS_AIR, BlockPredicate.matchingBlocks(validGround, new BlockPos(0, -1, 0))) : 
-                BlockPredicate.IS_AIR;
-            
-            return predicate;
-        }
-        
         public static RandomPatchFeatureConfig createRandomPatchFeatureConfig(int tries, RegistryEntry<PlacedFeature> feature) {
             return new RandomPatchFeatureConfig(tries, XZ_SPREAD, Y_SPREAD, feature);
         }
         
-        private static RandomPatchFeatureConfig createRandomPatchFeatureConfig(BlockStateProvider block, int tries) {
-            return createRandomPatchFeatureConfig(tries, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(block)));
-        }
-        
         static {
-            //DANDELION_PLACED_FEATURE = Feature.SIMPLE_BLOCK,new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.DANDELION))).withInAirFilter();
-            //POPPY_PLACED_FEATURE = Feature.SIMPLE_BLOCK,new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.POPPY))).withInAirFilter();
-            
             DANDELION_PLACED_FEATURE = PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.DANDELION)));
             POPPY_PLACED_FEATURE = PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.POPPY)));
             
             GRASS_FEATURE = PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.GRASS)));
             LUSH_GRASS_FEATURE = PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(pool().add(BlockStates.GRASS, 1).add(BlockStates.FERN, 4))));
             
-            //MUSHROOM_HELL_FEATURE = Feature.SIMPLE_BLOCK,new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(pool().add(Blocks.BROWN_MUSHROOM.getDefaultState(), 2).add(Blocks.RED_MUSHROOM.getDefaultState(), 1))));
             MUSHROOM_HELL_FEATURE = PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(pool().add(Blocks.BROWN_MUSHROOM.getDefaultState(), 2).add(Blocks.RED_MUSHROOM.getDefaultState(), 1))));
             
             // # of tries in Beta equivalent is 128, but here it seems to generate too much grass,

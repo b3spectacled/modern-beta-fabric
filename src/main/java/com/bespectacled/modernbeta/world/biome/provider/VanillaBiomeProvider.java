@@ -89,6 +89,7 @@ public class VanillaBiomeProvider extends BiomeProvider implements ClimateSample
         private final ChunkCache<ClimateChunk> climateCache;
         private final BiomeClimateRules climateRules;
         
+        @SuppressWarnings("deprecation")
         public VanillaClimateSampler(VanillaBiomeSource biomeSource, Registry<Biome> biomeRegistry) {
             this.biomeSource = biomeSource;
             this.biomeAccess = new BiomeAccess(this, biomeSource.getSeed());

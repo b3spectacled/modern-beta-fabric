@@ -34,6 +34,7 @@ import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.HeightContext;
 import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public class PEChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -107,7 +108,6 @@ public class PEChunkProvider extends NoiseChunkProvider {
         BiomeAccess biomeAccess = region.getBiomeAccess();
         Registry<Biome> biomeRegistry = region.getRegistryManager().get(Registry.BIOME_KEY);
         
-        /*
         MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(
             this.surfaceBuilder,
             chunk,
@@ -117,7 +117,6 @@ public class PEChunkProvider extends NoiseChunkProvider {
             context
         );
         MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
-        */
         
         double[] sandNoise = beachNoiseOctaves.sampleBeta(
             chunkX * 16, chunkZ * 16, 0.0D, 
@@ -157,7 +156,6 @@ public class PEChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = surfaceConfig.topBlock();
                 BlockState fillerBlock = surfaceConfig.fillerBlock();
 
-                /*
                 boolean usedCustomSurface = this.surfaceBuilder.buildSurfaceColumn(
                     region.getRegistryManager().get(Registry.BIOME_KEY),
                     region.getBiomeAccess(), 
@@ -170,8 +168,6 @@ public class PEChunkProvider extends NoiseChunkProvider {
                     localZ,
                     surfaceTopY
                 );
-                */
-                boolean usedCustomSurface = false;
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
@@ -295,7 +291,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
         
         // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
         double densityScale = 128.0;
-        double tunnelThreshold = 200.0 / densityScale;
+        //double tunnelThreshold = 200.0 / densityScale;
         
         Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();

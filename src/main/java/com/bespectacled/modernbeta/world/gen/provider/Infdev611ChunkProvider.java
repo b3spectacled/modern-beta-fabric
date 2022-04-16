@@ -26,6 +26,7 @@ import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.HeightContext;
 import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public class Infdev611ChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -80,7 +81,6 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         BiomeAccess biomeAccess = region.getBiomeAccess();
         Registry<Biome> biomeRegistry = region.getRegistryManager().get(Registry.BIOME_KEY);
         
-        /*
         MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(
             this.surfaceBuilder,
             chunk,
@@ -90,8 +90,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             context
         );
         MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
-        */
-        
+
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.
         for (int localX = 0; localX < 16; localX++) {
@@ -128,7 +127,6 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = surfaceConfig.topBlock();
                 BlockState fillerBlock = surfaceConfig.fillerBlock();
 
-                /*
                 boolean usedCustomSurface = this.surfaceBuilder.buildSurfaceColumn(
                     region.getRegistryManager().get(Registry.BIOME_KEY),
                     region.getBiomeAccess(), 
@@ -140,8 +138,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                     localX,
                     localZ,
                     surfaceTopY
-                );*/
-                boolean usedCustomSurface = false;
+                );
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
@@ -245,7 +242,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         
         // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
         double densityScale = 128.0;
-        double tunnelThreshold = 200.0 / densityScale;
+        //double tunnelThreshold = 200.0 / densityScale;
         
         double scale = this.scaleNoiseOctaves.sample(noiseX, 0, noiseZ, 1.0D, 0.0, 1.0);
         scale = (scale + 256D) / 512D;

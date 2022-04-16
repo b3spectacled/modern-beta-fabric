@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.util;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.BlockColumn;
 
@@ -19,7 +20,15 @@ public class BlockColumnHolder {
 
             @Override
             public void setState(int y, BlockState state) {
-                chunk.setBlockState(pos.setY(y), state, false);
+                HeightLimitView view = chunk.getHeightLimitView();
+                
+                if (y >= view.getBottomY() && y < view.getTopY()) {
+                    chunk.setBlockState(pos.setY(y), state, false);
+                    
+                    if (!state.getFluidState().isEmpty()) {
+                        chunk.markBlockForPostProcessing(pos);
+                    }
+                }
             }
 
             public String toString() {

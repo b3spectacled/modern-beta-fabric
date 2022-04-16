@@ -37,6 +37,7 @@ import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
+import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkImitable {
     private final int worldMinY;
@@ -130,7 +131,6 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
         BiomeAccess biomeAccess = region.getBiomeAccess();
         Registry<Biome> biomeRegistry = region.getRegistryManager().get(Registry.BIOME_KEY);
         
-        /*
         MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(
             this.surfaceBuilder,
             chunk,
@@ -140,8 +140,7 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
             context
         );
         MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
-        */
-        
+
         for (int localX = 0; localX < 16; ++localX) {
             for (int localZ = 0; localZ < 16; ++localZ) {
                 int x = startX + localX;
@@ -154,7 +153,6 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
                 BlockState topBlock = surfaceConfig.topBlock();
                 BlockState fillerBlock = surfaceConfig.fillerBlock();
 
-                /*
                 boolean usedCustomSurface = this.surfaceBuilder.buildSurfaceColumn(
                     region.getRegistryManager().get(Registry.BIOME_KEY),
                     region.getBiomeAccess(), 
@@ -167,8 +165,6 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
                     localZ,
                     surfaceTopY
                 );
-                */
-                boolean usedCustomSurface = false;
 
                 int runDepth = 0;
 

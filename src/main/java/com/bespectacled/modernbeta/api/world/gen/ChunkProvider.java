@@ -18,6 +18,7 @@ import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.feature.placement.OldNoiseBasedCountPlacementModifier;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
+import com.bespectacled.modernbeta.world.gen.OldSurfaceBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -45,6 +46,7 @@ import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 import net.minecraft.world.gen.random.AbstractRandom;
 import net.minecraft.world.gen.random.ChunkRandom;
 import net.minecraft.world.gen.random.RandomDeriver;
+import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public abstract class ChunkProvider {
     protected final OldChunkGenerator chunkGenerator;
@@ -57,14 +59,16 @@ public abstract class ChunkProvider {
     protected final Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry;
     protected final NoiseRouter noiseRouter;
     
-    protected final OldChunkNoiseSampler dummyNoiseChunkSampler;
-
+    private final FluidLevelSampler emptyFluidLevelSampler;
     protected final ChunkRandom.RandomProvider randomProvider;
     protected final RandomDeriver randomDeriver;
     
-    protected final boolean generateDeepslate;
+    protected final OldChunkNoiseSampler dummyNoiseChunkSampler;
     
-    private final FluidLevelSampler emptyFluidLevelSampler;
+    protected final MaterialRules.MaterialRule surfaceRule;
+    protected final OldSurfaceBuilder surfaceBuilder;
+    
+    protected final boolean generateDeepslate;
     
     protected SpawnLocator spawnLocator;
     
@@ -106,6 +110,18 @@ public abstract class ChunkProvider {
             this.emptyFluidLevelSampler,
             Blender.getNoBlending(),
             this
+        );
+        
+        // Modified SurfaceBuilder
+        this.surfaceRule = chunkGenerator.getGeneratorSettings().value().surfaceRule();
+        this.surfaceBuilder = new OldSurfaceBuilder(
+            chunkGenerator.getNoiseRegistry(), 
+            chunkGenerator.getGeneratorSettings().value().defaultBlock(), 
+            chunkGenerator.getGeneratorSettings().value().seaLevel(), 
+            this.seed, 
+            this.randomProvider,
+            this,
+            this.generatorSettings.value().defaultBlock()
         );
         
         this.generateDeepslate = NbtUtil.toBoolean(this.providerSettings.get(NbtTags.GEN_DEEPSLATE), false);
@@ -217,6 +233,13 @@ public abstract class ChunkProvider {
      */
     public OldChunkGenerator getChunkGenerator() {
         return this.chunkGenerator;
+    }
+    
+    /**
+     * @return OldSurfaceBuilder.
+     */
+    public OldSurfaceBuilder getSurfaceBuilder() {
+        return this.surfaceBuilder;
     }
     
     /**

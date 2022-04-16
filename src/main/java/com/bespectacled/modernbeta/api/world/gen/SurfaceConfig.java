@@ -16,6 +16,7 @@ public record SurfaceConfig(BlockState topBlock, BlockState fillerBlock) {
     private static final SurfaceConfig THEEND = new SurfaceConfig(Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState());
     
     public static SurfaceConfig getSurfaceConfig(RegistryEntry<Biome> biome) {
+        @SuppressWarnings("deprecation")
         Category category = Biome.getCategory(biome);
         
         return switch(category) {

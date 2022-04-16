@@ -26,6 +26,7 @@ import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.HeightContext;
 import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public class Infdev420ChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -80,7 +81,6 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         BiomeAccess biomeAccess = region.getBiomeAccess();
         Registry<Biome> biomeRegistry = region.getRegistryManager().get(Registry.BIOME_KEY);
         
-        /*
         MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(
             this.surfaceBuilder,
             chunk,
@@ -90,7 +90,6 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             context
         );
         MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
-        */
 
         for (int localX = 0; localX < 16; localX++) {
             for (int localZ = 0; localZ < 16; localZ++) {
@@ -126,7 +125,6 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = surfaceConfig.topBlock();
                 BlockState fillerBlock = surfaceConfig.fillerBlock();
 
-                /*
                 boolean usedCustomSurface = this.surfaceBuilder.buildSurfaceColumn(
                     region.getRegistryManager().get(Registry.BIOME_KEY),
                     region.getBiomeAccess(), 
@@ -139,8 +137,6 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                     localZ,
                     surfaceTopY
                 );
-                */
-                boolean usedCustomSurface = false;
                 
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; --y) {
                     BlockState blockState;
@@ -241,7 +237,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         
         // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
         double densityScale = 128.0; 
-        double tunnelThreshold = 50.0 / densityScale;
+        //double tunnelThreshold = 50.0 / densityScale;
         
         for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;

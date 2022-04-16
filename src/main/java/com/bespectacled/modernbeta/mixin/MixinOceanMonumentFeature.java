@@ -18,6 +18,7 @@ import net.minecraft.world.gen.feature.OceanMonumentFeature;
 
 @Mixin(OceanMonumentFeature.class)
 public class MixinOceanMonumentFeature {
+    @SuppressWarnings("deprecation")
     @Inject(method = "canGenerate", at = @At("HEAD"), cancellable = true) 
     private static void injectCanGenerate(StructureGeneratorFactory.Context<DefaultFeatureConfig> structureInfo, CallbackInfoReturnable<Boolean> info) {
         ChunkGenerator chunkGenerator = structureInfo.chunkGenerator();

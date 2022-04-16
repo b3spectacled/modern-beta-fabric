@@ -296,9 +296,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public Optional<BlockState> applyMaterialRule(CarverContext context, Function<BlockPos, RegistryEntry<Biome>> function, Chunk chunk, ChunkNoiseSampler arg3, BlockPos arg4, boolean bl) {
         // TODO: Look more closely into this
-        //return this.chunkProvider.get().applyMaterialRule(this.settings.value().getSurfaceRule(), context, function, chunk, arg3, arg4, bl);
-        
-        return Optional.of(this.defaultBlock);
+        return this.chunkProvider.getSurfaceBuilder().applyMaterialRule(this.settings.value().surfaceRule(), context, function, chunk, arg3, arg4, bl);
     }
     
     public long getWorldSeed() {
