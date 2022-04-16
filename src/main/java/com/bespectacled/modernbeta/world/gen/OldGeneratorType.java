@@ -25,6 +25,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.world.GeneratorType;
 import net.minecraft.client.world.GeneratorType.ScreenProvider;
+import net.minecraft.structure.StructureSet;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -56,6 +57,7 @@ public class OldGeneratorType {
         GeneratorOptions generatorOptions,
         WorldSettings worldSettings
     ) {
+        Registry<StructureSet> structuresRegistry = registryManager.get(Registry.STRUCTURE_SET_KEY);
         Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry = registryManager.get(Registry.NOISE_WORLDGEN);
         Registry<DimensionType> dimensionRegistry = registryManager.get(Registry.DIMENSION_TYPE_KEY);
         Registry<ChunkGeneratorSettings> chunkGenSettingsRegistry = registryManager.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
@@ -78,6 +80,7 @@ public class OldGeneratorType {
                 dimensionRegistry, 
                 generatorOptions.getDimensions(), 
                 new OldChunkGenerator(
+                    structuresRegistry,
                     noiseRegistry,
                     new OldBiomeSource(
                         generatorOptions.getSeed(),
@@ -99,6 +102,7 @@ public class OldGeneratorType {
         OLD = new GeneratorType("old") {
             @Override
             protected ChunkGenerator getChunkGenerator(DynamicRegistryManager registryManager, long seed) {
+                Registry<StructureSet> structuresRegistry = registryManager.get(Registry.STRUCTURE_SET_KEY);
                 Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry = registryManager.get(Registry.NOISE_WORLDGEN);
                 Registry<ChunkGeneratorSettings> chunkGenSettingsRegistry = registryManager.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
                 Registry<Biome> biomeRegistry = registryManager.get(Registry.BIOME_KEY);
@@ -133,6 +137,7 @@ public class OldGeneratorType {
                 );
                 
                 return new OldChunkGenerator(
+                    structuresRegistry,
                     noiseRegistry,
                     new OldBiomeSource(
                         seed,

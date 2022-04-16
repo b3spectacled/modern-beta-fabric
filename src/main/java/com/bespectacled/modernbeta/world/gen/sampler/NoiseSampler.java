@@ -1,7 +1,6 @@
 package com.bespectacled.modernbeta.world.gen.sampler;
 
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
-import net.minecraft.world.gen.NoiseHelper;
 
 public abstract class NoiseSampler {
     private final int horizontalNoiseResolution;
@@ -30,6 +29,7 @@ public abstract class NoiseSampler {
             int noiseY = actualY * this.verticalNoiseResolution;
             int noiseZ = z * this.horizontalNoiseResolution;
             
+            /*
             noise = NoiseHelper.lerpFromProgress(
                 sampler, 
                 (double)noiseX * horizontalScale, 
@@ -37,6 +37,9 @@ public abstract class NoiseSampler {
                 (double)noiseZ * horizontalScale, 
                 -1.0, 1.0
             );
+            */
+            
+            noise = 0.0;
             
             buffer[y] = noise;
         }

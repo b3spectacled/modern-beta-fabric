@@ -26,11 +26,10 @@ import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeSource.class_6827;
+import net.minecraft.world.biome.source.BiomeSource.IndexedFeatures;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
@@ -52,15 +51,9 @@ public abstract class ChunkProvider {
     protected final RegistryEntry<ChunkGeneratorSettings> generatorSettings;
     protected final Settings providerSettings;
     protected final Random random;
-    
-    protected final NoiseColumnSampler noiseColumnSampler;
-    protected final OldChunkNoiseSampler dummyNoiseChunkSampler;
-    
+
     protected final ChunkRandom.RandomProvider randomProvider;
     protected final RandomDeriver randomDeriver;
-    
-    protected final MaterialRules.MaterialRule surfaceRule;
-    protected final OldSurfaceBuilder surfaceBuilder;
     
     protected final boolean generateDeepslate;
     
@@ -82,49 +75,8 @@ public abstract class ChunkProvider {
         this.random = new Random(seed);
 
         this.emptyFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
-        
-        // Modified NoiseColumnSampler and ChunkNoiseSampler
-        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
-        GenerationShapeConfig shapeConfig = generatorSettings.getGenerationShapeConfig();
-        int verticalNoiseResolution = shapeConfig.verticalSize() * 4;
-        int horizontalNoiseResolution = shapeConfig.horizontalSize() * 4;
-        
-        this.noiseColumnSampler = new NoiseColumnSampler(
-            shapeConfig,
-            generatorSettings.hasNoiseCaves(),
-            this.seed,
-            chunkGenerator.getNoiseRegistry(),
-            generatorSettings.getRandomProvider()
-        );
-        
-        this.dummyNoiseChunkSampler = new OldChunkNoiseSampler(
-            horizontalNoiseResolution,
-            verticalNoiseResolution,
-            16 / horizontalNoiseResolution,
-            this.noiseColumnSampler,
-            0, 
-            0,
-            null,
-            () -> this.generatorSettings.value(),
-            this.emptyFluidLevelSampler,
-            Blender.getNoBlending(),
-            this
-        );
-        
         this.randomProvider = chunkGenerator.getGeneratorSettings().value().getRandomProvider();
         this.randomDeriver = this.randomProvider.create(this.seed).createRandomDeriver();
-        
-        // Modified SurfaceBuilder
-        this.surfaceRule = chunkGenerator.getGeneratorSettings().value().getSurfaceRule();
-        this.surfaceBuilder = new OldSurfaceBuilder(
-            chunkGenerator.getNoiseRegistry(), 
-            chunkGenerator.getGeneratorSettings().value().getDefaultBlock(), 
-            chunkGenerator.getGeneratorSettings().value().getSeaLevel(), 
-            this.seed, 
-            this.randomProvider,
-            this,
-            this.generatorSettings.value().getDefaultBlock()
-        );
         
         this.generateDeepslate = NbtUtil.toBoolean(this.providerSettings.get(NbtTags.GEN_DEEPSLATE), false);
         
@@ -183,21 +135,21 @@ public abstract class ChunkProvider {
      * @return Total world height in blocks.
      */
     public int getWorldHeight() {
-        return this.generatorSettings.value().getGenerationShapeConfig().height();
+        return this.generatorSettings.value().generationShapeConfig().height();
     }
     
     /**
      * @return Minimum Y coordinate in block coordinates.
      */
     public int getWorldMinY() {
-        return this.generatorSettings.value().getGenerationShapeConfig().minimumY();
+        return this.generatorSettings.value().generationShapeConfig().minimumY();
     }
     
     /**
      * @return World sea level in block coordinates.
      */
     public int getSeaLevel() {
-        return this.generatorSettings.value().getSeaLevel();
+        return this.generatorSettings.value().seaLevel();
     }
     
     /**
@@ -207,6 +159,10 @@ public abstract class ChunkProvider {
      */
     public AquiferSampler getAquiferSampler(Chunk chunk) {
         return AquiferSampler.seaLevel(this.emptyFluidLevelSampler);
+    }
+    
+    public FluidLevelSampler getFluidLevelSampler() {
+        return this.emptyFluidLevelSampler;
     }
     
     /**
@@ -231,20 +187,6 @@ public abstract class ChunkProvider {
      */
     public OldChunkGenerator getChunkGenerator() {
         return this.chunkGenerator;
-    }
-    
-    /**
-     * @return OldChunkNoiseSampler.
-     */
-    public OldChunkNoiseSampler getChunkNoiseSampler() {
-       return this.dummyNoiseChunkSampler; 
-    }
-    
-    /**
-     * @return OldSurfaceBuilder.
-     */
-    public OldSurfaceBuilder getSurfaceBuilder() {
-        return this.surfaceBuilder;
     }
     
     /**
@@ -308,9 +250,9 @@ public abstract class ChunkProvider {
      * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
      */
     protected void setForestOctaves(PerlinOctaveNoise forestOctaves) {
-        List<class_6827> generationSteps = this.chunkGenerator.getBiomeSource().method_38115();
+        List<IndexedFeatures> generationSteps = this.chunkGenerator.getBiomeSource().getIndexedFeatures();
         
-        for (class_6827 step : generationSteps) {
+        for (IndexedFeatures step : generationSteps) {
             List<PlacedFeature> featureList = step.features();
             
             for (PlacedFeature placedFeature : featureList) {

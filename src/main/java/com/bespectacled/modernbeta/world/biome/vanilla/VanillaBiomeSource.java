@@ -14,11 +14,11 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil.NoiseHypercube;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil.ParameterRange;
-import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.random.ChunkRandom;
 
@@ -33,7 +33,7 @@ public class VanillaBiomeSource {
     
     private final MultiNoiseUtil.Entries<RegistryEntry<Biome>> biomeEntries;
     private final MultiNoiseBiomeSource biomeSource;
-    private final NoiseColumnSampler columnSampler;
+    //private final NoiseColumnSampler columnSampler;
     private final long seed;
     
     private VanillaBiomeSource(
@@ -43,6 +43,7 @@ public class VanillaBiomeSource {
     ) {
         this.biomeEntries = new MultiNoiseUtil.Entries<RegistryEntry<Biome>>(biomeList);
         this.biomeSource = new MultiNoiseBiomeSource(this.biomeEntries, Optional.empty());
+        /*
         this.columnSampler = new NoiseColumnSampler(
             largeBiomes ? LARGE_BIOME_SHAPE_CONFIG : NORMAL_BIOME_SHAPE_CONFIG,
             GEN_NOISE_CAVES,
@@ -50,11 +51,13 @@ public class VanillaBiomeSource {
             BuiltinRegistries.NOISE_PARAMETERS,
             RANDOM_TYPE
         );
+        */
         this.seed = seed;
     }
     
     public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeSource.getBiome(biomeX, biomeY, biomeZ, this.columnSampler);
+        //return this.biomeSource.getBiome(biomeX, biomeY, biomeZ, this.columnSampler);
+        return BuiltinBiomes.getDefaultBiome();
     }
     
     public MultiNoiseUtil.Entries<RegistryEntry<Biome>> getBiomeEntries() {

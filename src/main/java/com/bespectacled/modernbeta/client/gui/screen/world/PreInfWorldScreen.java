@@ -47,7 +47,7 @@ public class PreInfWorldScreen extends InfWorldScreen {
             .<ChunkGeneratorSettings>get(Registry.CHUNK_GENERATOR_SETTINGS_KEY)
             .get(ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.INDEV.name));
             
-        int topY = chunkGenSettings.get().getGenerationShapeConfig().height() + chunkGenSettings.get().getGenerationShapeConfig().minimumY();
+        int topY = chunkGenSettings.get().generationShapeConfig().height() + chunkGenSettings.get().generationShapeConfig().minimumY();
         
         DoubleOptionWrapper<Integer> levelWidth = new DoubleOptionWrapper<>(
             LEVEL_WIDTH_DISPLAY_STRING,

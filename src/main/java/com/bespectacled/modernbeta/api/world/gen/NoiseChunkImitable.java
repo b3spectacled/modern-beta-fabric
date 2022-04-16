@@ -37,7 +37,7 @@ public interface NoiseChunkImitable {
         
         double clampedDensity = MathHelper.clamp(simDensity / 200.0, -1.0, 1.0);
         clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
-        clampedDensity += weightSampler.calculateNoise(x, y, z);
+        //clampedDensity += weightSampler.calculateNoise(x, y, z);
         
         BlockState blockState = block.getDefaultState();
         

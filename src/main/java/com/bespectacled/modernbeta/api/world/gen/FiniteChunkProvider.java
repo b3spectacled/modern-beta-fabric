@@ -68,18 +68,18 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
         
         Settings providerSettings = chunkGenerator.getChunkSettings();
         ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
-        GenerationShapeConfig shapeConfig = generatorSettings.getGenerationShapeConfig();
+        GenerationShapeConfig shapeConfig = generatorSettings.generationShapeConfig();
         
         this.worldMinY = shapeConfig.minimumY();
         this.worldHeight = shapeConfig.height();
         this.worldTopY = worldHeight + worldMinY;
-        this.seaLevel = generatorSettings.getSeaLevel();
+        this.seaLevel = generatorSettings.seaLevel();
         this.bedrockFloor = 0;
         this.bedrockCeiling = Integer.MIN_VALUE;
         this.generateDeepslate = NbtUtil.toBoolean(providerSettings.get(NbtTags.GEN_DEEPSLATE), ModernBeta.GEN_CONFIG.generateDeepslate);
 
-        this.defaultBlock = generatorSettings.getDefaultBlock();
-        this.defaultFluid = generatorSettings.getDefaultFluid();
+        this.defaultBlock = generatorSettings.defaultBlock();
+        this.defaultFluid = generatorSettings.defaultFluid();
         
         this.levelWidth = NbtUtil.toInt(providerSettings.get(NbtTags.LEVEL_WIDTH), ModernBeta.GEN_CONFIG.levelWidth);
         this.levelLength = NbtUtil.toInt(providerSettings.get(NbtTags.LEVEL_LENGTH), ModernBeta.GEN_CONFIG.levelLength);

@@ -7,11 +7,12 @@ import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.gen.NoiseColumnSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
+import net.minecraft.world.gen.densityfunction.DensityFunctionTypes.class_7050;
+import net.minecraft.world.gen.noise.NoiseRouter;
 
 public class OldChunkNoiseSampler extends ChunkNoiseSampler {
     private static final int OCEAN_HEIGHT_OFFSET = -8;
@@ -22,10 +23,10 @@ public class OldChunkNoiseSampler extends ChunkNoiseSampler {
         int horizontalNoiseResolution, 
         int verticalNoiseResolution, 
         int horizontalSize,
-        NoiseColumnSampler noiseColumnSampler, 
+        NoiseRouter noiseRouter, 
         int x, 
         int z, 
-        ColumnSampler columnSampler, 
+        Supplier<class_7050> noiseType, 
         Supplier<ChunkGeneratorSettings> supplier,
         FluidLevelSampler fluidLevelSampler,
         Blender blender,
@@ -35,10 +36,10 @@ public class OldChunkNoiseSampler extends ChunkNoiseSampler {
             horizontalNoiseResolution, 
             verticalNoiseResolution, 
             horizontalSize,
-            noiseColumnSampler,
+            noiseRouter,
             x, 
             z, 
-            columnSampler, 
+            noiseType.get(), 
             supplier.get(), 
             fluidLevelSampler,
             blender

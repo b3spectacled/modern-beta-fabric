@@ -80,10 +80,10 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     protected final double xzFactor;
     protected final double yFactor;
     
-    protected final boolean generateNoiseCaves;
     protected final boolean generateAquifers;
-    protected final boolean generateOreVeins;
+    protected final boolean generateNoiseCaves;
     protected final boolean generateNoodleCaves;
+    protected final boolean generateOreVeins;
     
     private final SlideConfig topSlide;
     private final SlideConfig bottomSlide;
@@ -91,9 +91,6 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     private final ChunkCache<BaseNoiseProvider> baseNoiseCache;
     private final ChunkCache<HeightmapChunk> heightmapCache;
     
-    private final AquiferSamplerProvider aquiferSamplerProvider;
-    
-    private final NoiseCaveSampler noiseCaveSampler;
     private final OreVeinSampler oreVeinSampler;
     private final NoodleCaveSampler noodleCaveSampler;
     
@@ -102,20 +99,20 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         
         Settings providerSettings = chunkGenerator.getChunkSettings();
         ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
-        GenerationShapeConfig shapeConfig = generatorSettings.getGenerationShapeConfig();
+        GenerationShapeConfig shapeConfig = generatorSettings.generationShapeConfig();
         
         this.noiseRegistry = chunkGenerator.getNoiseRegistry();
         
         this.worldMinY = shapeConfig.minimumY();
         this.worldHeight = shapeConfig.height();
         this.worldTopY = worldHeight + worldMinY;
-        this.seaLevel = generatorSettings.getSeaLevel();
+        this.seaLevel = generatorSettings.seaLevel();
         this.bedrockFloor = 0;
         this.bedrockCeiling = Integer.MIN_VALUE;
         this.generateDeepslate = NbtUtil.toBoolean(providerSettings.get(NbtTags.GEN_DEEPSLATE), ModernBeta.GEN_CONFIG.generateDeepslate);
 
-        this.defaultBlock = generatorSettings.getDefaultBlock();
-        this.defaultFluid = generatorSettings.getDefaultFluid();
+        this.defaultBlock = generatorSettings.defaultBlock();
+        this.defaultFluid = generatorSettings.defaultFluid();
         
         this.verticalNoiseResolution = shapeConfig.verticalSize() * 4;
         this.horizontalNoiseResolution = shapeConfig.horizontalSize() * 4;
@@ -126,19 +123,19 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         this.noiseMinY = MathHelper.floorDiv(this.worldMinY, this.verticalNoiseResolution);
         this.noiseTopY = MathHelper.floorDiv(this.worldMinY + this.worldHeight, this.verticalNoiseResolution);
         
-        this.xzScale = shapeConfig.sampling().getXZScale();
-        this.yScale = shapeConfig.sampling().getYScale();
+        this.xzScale = shapeConfig.sampling().xzScale();
+        this.yScale = shapeConfig.sampling().yScale();
         
-        this.xzFactor = shapeConfig.sampling().getXZFactor();
-        this.yFactor = shapeConfig.sampling().getYFactor();
+        this.xzFactor = shapeConfig.sampling().xzFactor();
+        this.yFactor = shapeConfig.sampling().yFactor();
         
         this.topSlide = shapeConfig.topSlide();
         this.bottomSlide = shapeConfig.bottomSlide();
         
-        this.generateNoiseCaves = generatorSettings.hasNoiseCaves();
         this.generateAquifers = generatorSettings.hasAquifers();
-        this.generateOreVeins = generatorSettings.hasOreVeins();
-        this.generateNoodleCaves = generatorSettings.hasNoodleCaves();
+        this.generateNoiseCaves = false;
+        this.generateNoodleCaves = false;
+        this.generateOreVeins = false;
         
         this.baseNoiseCache = new ChunkCache<>(
             "base_noise",
@@ -168,23 +165,6 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         // Random deriver
         RandomDeriver randomDeriver = this.randomProvider.create(this.seed).createRandomDeriver();
         
-        // Aquifer Sampler Provider
-        this.aquiferSamplerProvider = new AquiferSamplerProvider(
-            noiseRegistry,
-            randomDeriver,
-            this.dummyNoiseChunkSampler,
-            this.defaultFluid,
-            this.seaLevel,
-            this.worldMinY + 10,
-            this.worldMinY,
-            this.worldHeight,
-            this.verticalNoiseResolution,
-            this.generateAquifers
-        );
-        
-        // Samplers
-        this.noiseCaveSampler = new NoiseCaveSampler(this.noiseColumnSampler);
-        
         this.oreVeinSampler = new OreVeinSampler(
             noiseRegistry, 
             randomDeriver,
@@ -212,7 +192,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
      */
     @Override
     public CompletableFuture<Chunk> provideChunk(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
-        GenerationShapeConfig shapeConfig = this.generatorSettings.value().getGenerationShapeConfig();
+        GenerationShapeConfig shapeConfig = this.generatorSettings.value().generationShapeConfig();
         
         int minY = Math.max(shapeConfig.minimumY(), chunk.getBottomY());
         int topY = Math.min(shapeConfig.minimumY() + shapeConfig.height(), chunk.getTopY());
@@ -280,11 +260,6 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         return this.heightmapCache.get(chunkX, chunkZ).getHeight(x, z, type);
     }
     
-    @Override
-    public AquiferSampler getAquiferSampler(Chunk chunk) {
-        return this.aquiferSamplerProvider.provideAquiferSampler(chunk);
-    }
-    
     /**
      * Generates noise for a column at startNoiseX + localNoiseX / startNoiseZ + localNoiseZ.
      * @param primaryBuffer Primary heightmap buffer, with noise caves.
@@ -302,29 +277,6 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         int localNoiseX,
         int localNoiseZ
     );
-
-    /**
-     * Samples density for noise cave.
-     * @param noise Base density.
-     * @param noiseX x-coordinate in absolute noise coordinates.
-     * @param noiseY y-coordinate in absolute noise coordinates.
-     * @param noiseZ z-coordinate in absolute noise coordinates.
-     * 
-     * @return Modified noise density.
-     */
-    protected double sampleNoiseCave(double noise, double tunnelOffset, int noiseX, int noiseY, int noiseZ) {
-        if (this.generateNoiseCaves) {
-            return this.noiseCaveSampler.sample(
-                noise,
-                tunnelOffset,
-                noiseX * this.horizontalNoiseResolution, 
-                noiseY * this.verticalNoiseResolution, 
-                noiseZ * this.horizontalNoiseResolution
-            );
-        }
-        
-        return noise;
-    }
     
     /**
      * Interpolate density to set terrain curve at top and bottom of world.
@@ -570,9 +522,19 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
             
             clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
             clampedDensity = noodleCaveSampler.sample(clampedDensity, x, y, z);
-            clampedDensity += weightSampler.calculateNoise(x, y, z);
+            //clampedDensity += weightSampler.calculateNoise(x, y, z);
             
-            return aquiferSampler.apply(x, y, z, density, clampedDensity);
+            //return aquiferSampler.apply(x, y, z, density, clampedDensity);
+            
+            BlockState state = BlockStates.AIR;
+            
+            if (y < this.seaLevel)
+                state = BlockStates.WATER;
+            
+            if (clampedDensity > 0.0) 
+                state = BlockStates.STONE;
+            
+            return state;
         };
     }
 

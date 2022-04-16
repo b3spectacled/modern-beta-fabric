@@ -7,6 +7,10 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.world.gen.chunk.GenerationShapeConfig;
+import net.minecraft.world.gen.densityfunction.DensityFunctionTypes;
+import net.minecraft.world.gen.densityfunction.DensityFunctions;
+import net.minecraft.world.gen.noise.SimpleNoiseRouter;
 import net.minecraft.world.gen.random.ChunkRandom;
 
 public class OldChunkGeneratorSettings {
@@ -55,6 +59,26 @@ public class OldChunkGeneratorSettings {
         return settings;
     }
     
+    private static SimpleNoiseRouter createDensityFunctions(GenerationShapeConfig shapeConfig, boolean amplified) {
+        return new SimpleNoiseRouter(
+            DensityFunctionTypes.zero(), // Barrier noise
+            DensityFunctionTypes.zero(), // Fluid level floodedness noise
+            DensityFunctionTypes.zero(), // Fluid level spread noise
+            DensityFunctionTypes.zero(), // Lava noise
+            DensityFunctionTypes.zero(), // Temperature
+            DensityFunctionTypes.zero(), // Vegetation
+            DensityFunctionTypes.zero(), // Continents
+            DensityFunctionTypes.zero(), // Erosion
+            DensityFunctionTypes.zero(), // Depth
+            DensityFunctionTypes.zero(), // Ridges
+            DensityFunctionTypes.zero(), // Initial Density
+            DensityFunctionTypes.zero(), // Final Density
+            DensityFunctionTypes.zero(), // Vein Toggle
+            DensityFunctionTypes.zero(), // Vein Ridged
+            DensityFunctionTypes.zero()  // Vein Gap
+        );
+    }
+    
     static {
         BETA = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.BETA.name);
         ALPHA = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.ALPHA.name);
@@ -68,16 +92,114 @@ public class OldChunkGeneratorSettings {
         BETA_ISLANDS = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.BETA_ISLANDS.name);
         PE = ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.PE.name);
 
-        BETA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, true, true, true, true, true);
-        ALPHA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.ALPHA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, true, true, true, true, true);
-        SKYLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.SKYLANDS_SHAPE_CONFIG, BlockStates.STONE, BlockStates.AIR, OldSurfaceRules.createVanilla(false), 0, false, false, false, true, true, true);
-        INFDEV_611_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_611_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, true, true, true, true, true);
-        INFDEV_420_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_420_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, true, true, true, true, true);
-        INFDEV_415_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.INFDEV_415_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, true, true, true, true, true);
-        INFDEV_227_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, false, false, false, false, true);
-        INDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.INDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, false, false, false, false, true);
-        CLASSIC_0_30_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.INDEV_STRUCTURES, OldGeneratorConfig.INDEV_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, false, false, false, false, true);
-        BETA_ISLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.BETA_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, true, true, true, true, true);
-        PE_GENERATOR_SETTINGS = new ChunkGeneratorSettings(OldGeneratorConfig.STRUCTURES, OldGeneratorConfig.PE_SHAPE_CONFIG, BlockStates.STONE, BlockStates.WATER, OldSurfaceRules.createVanilla(true), 64, false, true, true, true, true, true);
+        BETA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(
+            OldGeneratorConfig.BETA_SHAPE_CONFIG,
+            BlockStates.STONE,
+            BlockStates.WATER,
+            createDensityFunctions(OldGeneratorConfig.BETA_SHAPE_CONFIG, false),
+            OldSurfaceRules.createVanilla(true),
+            64,
+            false, true, true, true
+        );
+        
+        ALPHA_GENERATOR_SETTINGS = new ChunkGeneratorSettings(
+            OldGeneratorConfig.ALPHA_SHAPE_CONFIG,
+            BlockStates.STONE,
+            BlockStates.WATER,
+            createDensityFunctions(OldGeneratorConfig.ALPHA_SHAPE_CONFIG, false),
+            OldSurfaceRules.createVanilla(true),
+            64,
+            false, true, true, true
+        );
+        
+        SKYLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(
+            OldGeneratorConfig.SKYLANDS_SHAPE_CONFIG,
+            BlockStates.STONE,
+            BlockStates.AIR,
+            createDensityFunctions(OldGeneratorConfig.SKYLANDS_SHAPE_CONFIG, false),
+            OldSurfaceRules.createVanilla(false),
+            0,
+            false, false, false, true
+        );
+        
+        INFDEV_611_GENERATOR_SETTINGS = new ChunkGeneratorSettings(
+            OldGeneratorConfig.INFDEV_611_SHAPE_CONFIG,
+            BlockStates.STONE,
+            BlockStates.WATER,
+            createDensityFunctions(OldGeneratorConfig.ALPHA_SHAPE_CONFIG, false),
+            OldSurfaceRules.createVanilla(true),
+            64,
+            false, true, true, true
+        );
+        
+        INFDEV_420_GENERATOR_SETTINGS = new ChunkGeneratorSettings(
+            OldGeneratorConfig.INFDEV_420_SHAPE_CONFIG,
+            BlockStates.STONE,
+            BlockStates.WATER,
+            createDensityFunctions(OldGeneratorConfig.INFDEV_420_SHAPE_CONFIG, false),
+            OldSurfaceRules.createVanilla(true),
+            64,
+            false, true, true, true
+        );
+        
+        INFDEV_415_GENERATOR_SETTINGS = new ChunkGeneratorSettings(
+            OldGeneratorConfig.INFDEV_415_SHAPE_CONFIG,
+            BlockStates.STONE,
+            BlockStates.WATER,
+            createDensityFunctions(OldGeneratorConfig.INFDEV_415_SHAPE_CONFIG, false),
+            OldSurfaceRules.createVanilla(true),
+            64,
+            false, true, true, true
+        );
+        
+        INFDEV_227_GENERATOR_SETTINGS = new ChunkGeneratorSettings(
+            OldGeneratorConfig.BETA_SHAPE_CONFIG,
+            BlockStates.STONE,
+            BlockStates.WATER,
+            createDensityFunctions(OldGeneratorConfig.INDEV_SHAPE_CONFIG, false),
+            OldSurfaceRules.createVanilla(true),
+            64,
+            false, false, false, false
+        );
+        
+        INDEV_GENERATOR_SETTINGS = new ChunkGeneratorSettings(
+            OldGeneratorConfig.INDEV_SHAPE_CONFIG,
+            BlockStates.STONE,
+            BlockStates.WATER,
+            createDensityFunctions(OldGeneratorConfig.INDEV_SHAPE_CONFIG, false),
+            OldSurfaceRules.createVanilla(true),
+            64,
+            false, false, false, false
+        );
+        
+        CLASSIC_0_30_GENERATOR_SETTINGS = new ChunkGeneratorSettings(
+            OldGeneratorConfig.INDEV_SHAPE_CONFIG,
+            BlockStates.STONE,
+            BlockStates.WATER,
+            createDensityFunctions(OldGeneratorConfig.INDEV_SHAPE_CONFIG, false),
+            OldSurfaceRules.createVanilla(true),
+            64,
+            false, false, false, false
+        );
+        
+        BETA_ISLANDS_GENERATOR_SETTINGS = new ChunkGeneratorSettings(
+            OldGeneratorConfig.BETA_SHAPE_CONFIG,
+            BlockStates.STONE,
+            BlockStates.WATER,
+            createDensityFunctions(OldGeneratorConfig.BETA_SHAPE_CONFIG, false),
+            OldSurfaceRules.createVanilla(true),
+            64,
+            false, true, true, true
+        );
+        
+        PE_GENERATOR_SETTINGS = new ChunkGeneratorSettings(
+            OldGeneratorConfig.PE_SHAPE_CONFIG,
+            BlockStates.STONE,
+            BlockStates.WATER,
+            createDensityFunctions(OldGeneratorConfig.PE_SHAPE_CONFIG, false),
+            OldSurfaceRules.createVanilla(true),
+            64,
+            false, true, true, true
+        );
     }
 }

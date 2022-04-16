@@ -68,6 +68,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         BiomeAccess biomeAccess = region.getBiomeAccess();
         Registry<Biome> biomeRegistry = region.getRegistryManager().get(Registry.BIOME_KEY);
         
+        /*
         MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(
             this.surfaceBuilder,
             chunk,
@@ -77,6 +78,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             context
         );
         MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
+        */
         
         double[] surfaceNoise = surfaceNoiseOctaves.sampleBeta(
             chunkX * 16, chunkZ * 16, 0.0D, 
@@ -100,6 +102,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = surfaceConfig.topBlock();
                 BlockState fillerBlock = surfaceConfig.fillerBlock();
 
+                /*
                 boolean usedCustomSurface = this.surfaceBuilder.buildSurfaceColumn(
                     region.getRegistryManager().get(Registry.BIOME_KEY),
                     region.getBiomeAccess(), 
@@ -112,6 +115,8 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                     localZ,
                     surfaceTopY
                 );
+                */
+                boolean usedCustomSurface = false;
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
@@ -247,7 +252,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             heightmapDensity = density;
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
+            //density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applySlides(density, y);

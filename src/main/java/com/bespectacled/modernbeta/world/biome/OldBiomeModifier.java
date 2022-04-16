@@ -22,7 +22,7 @@ public class OldBiomeModifier {
     );
     
     public static void addShrineToOceans() {
-        Predicate<BiomeSelectionContext> biomeSelector = BiomeSelectors.includeByKey(VANILLA_OCEANS);
-        BiomeModifications.addStructure(biomeSelector, OldStructures.OCEAN_SHRINE_KEY);
+        //Predicate<BiomeSelectionContext> biomeSelector = BiomeSelectors.includeByKey(VANILLA_OCEANS);
+        //BiomeModifications.addStructure(biomeSelector, OldStructures.OCEAN_SHRINE_KEY);
     }
 }

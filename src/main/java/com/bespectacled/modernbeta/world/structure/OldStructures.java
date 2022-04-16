@@ -2,7 +2,6 @@ package com.bespectacled.modernbeta.world.structure;
 
 import com.bespectacled.modernbeta.ModernBeta;
 
-import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -19,7 +18,7 @@ public class OldStructures {
     
     public static final StructurePieceType.ManagerAware OCEAN_SHRINE_PIECE = OceanShrineGenerator.Piece::new;
     public static final StructureFeature<DefaultFeatureConfig> OCEAN_SHRINE_STRUCTURE = new OceanShrineStructure(DefaultFeatureConfig.CODEC);
-    public static final ConfiguredStructureFeature<DefaultFeatureConfig, ? extends StructureFeature<DefaultFeatureConfig>> CONF_OCEAN_SHRINE_STRUCTURE = OCEAN_SHRINE_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT);
+    //public static final ConfiguredStructureFeature<DefaultFeatureConfig, ? extends StructureFeature<DefaultFeatureConfig>> CONF_OCEAN_SHRINE_STRUCTURE = OCEAN_SHRINE_STRUCTURE.configure(DefaultFeatureConfig.DEFAULT);
     public static final RegistryKey<ConfiguredStructureFeature<?, ?>> OCEAN_SHRINE_KEY = RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, OCEAN_SHRINE_ID);
     
     public static void register() {
@@ -28,7 +27,8 @@ public class OldStructures {
             OCEAN_SHRINE_BASE_ID,
             OCEAN_SHRINE_PIECE
         );
-            
+          
+        /*
         FabricStructureBuilder.create(
             OCEAN_SHRINE_ID, 
             OCEAN_SHRINE_STRUCTURE)
@@ -43,5 +43,6 @@ public class OldStructures {
             OCEAN_SHRINE_KEY.getValue(), 
             CONF_OCEAN_SHRINE_STRUCTURE
         );
+        */
     }
 }

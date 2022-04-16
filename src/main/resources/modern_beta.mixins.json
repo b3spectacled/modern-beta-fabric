@@ -8,13 +8,11 @@
     "MixinConfiguredStructureFeaturesAccessor",
     "MixinGeneratorOptions",
     "MixinMinecraftServer",
-    "MixinNoiseColumnSamplerInvoker",
     "MixinOceanMonumentFeature",
     "MixinPlacedFeatureAccessor",
     "MixinSpawnLocating",
     "MixinStructureGeneratorFactoryContext",
-    "MixinSurfaceBuilderAccessor",
-    "MixinVanillaBiomeParametersAccessor"
+    "MixinSurfaceBuilderAccessor"
   ],
   "client": [
     "client.MixinBackgroundRenderer",

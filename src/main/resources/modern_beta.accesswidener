@@ -35,4 +35,4 @@ accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialR
 
 accessible method net/minecraft/client/option/CyclingOption <init> (Ljava/lang/String;Ljava/util/function/Function;Lnet/minecraft/client/option/CyclingOption$Setter;Ljava/util/function/Supplier;)V
 
-accessible method net/minecraft/world/gen/chunk/ChunkNoiseSampler <init> (IIILnet/minecraft/world/gen/NoiseColumnSampler;IILnet/minecraft/world/gen/chunk/ChunkNoiseSampler$ColumnSampler;Lnet/minecraft/world/gen/chunk/ChunkGeneratorSettings;Lnet/minecraft/world/gen/chunk/AquiferSampler$FluidLevelSampler;Lnet/minecraft/world/gen/chunk/Blender;)V
+accessible method net/minecraft/world/gen/chunk/ChunkNoiseSampler <init> (IIILnet/minecraft/world/gen/noise/NoiseRouter;IILnet/minecraft/world/gen/densityfunction/DensityFunctionTypes$class_7050;Lnet/minecraft/world/gen/chunk/ChunkGeneratorSettings;Lnet/minecraft/world/gen/chunk/AquiferSampler$FluidLevelSampler;Lnet/minecraft/world/gen/chunk/Blender;)V

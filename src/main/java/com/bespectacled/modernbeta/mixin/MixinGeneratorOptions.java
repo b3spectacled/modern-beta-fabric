@@ -20,6 +20,8 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 import com.google.common.base.MoreObjects;
 
+import net.minecraft.server.dedicated.ServerPropertiesHandler;
+import net.minecraft.structure.StructureSet;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
@@ -41,22 +43,22 @@ public class MixinGeneratorOptions {
     
     @Inject(method = "fromProperties", at = @At("HEAD"), cancellable = true)
     private static void injectServerGeneratorType(
-        DynamicRegistryManager registryManager, 
-        Properties properties,
+        DynamicRegistryManager registryManager,
+        ServerPropertiesHandler.WorldGenProperties properties,
         CallbackInfoReturnable<GeneratorOptions> info
     ) {
         // Exit if server.properties file not yet created
-        if (properties.get("level-type") == null) {
+        if (properties.levelType() == null) {
             return;
         }
 
-        String levelType = properties.get("level-type").toString().trim().toLowerCase();
+        String levelType = properties.levelType().toString().trim().toLowerCase();
         
         // Check for Modern Beta world type
         if (levelType.equals(MODERN_BETA_LEVEL_TYPE)) {
             
             // get or generate seed
-            String seedField = (String) MoreObjects.firstNonNull(properties.get("level-seed"), "");
+            String seedField = (String) MoreObjects.firstNonNull(properties.levelSeed(), "");
             long seed = new Random().nextLong();
             
             if (!seedField.isEmpty()) {
@@ -72,13 +74,14 @@ public class MixinGeneratorOptions {
             
             Registry<DimensionType> dimensionRegistry = registryManager.get(Registry.DIMENSION_TYPE_KEY);
             Registry<ChunkGeneratorSettings> chunkGenSettingsRegistry = registryManager.get(Registry.CHUNK_GENERATOR_SETTINGS_KEY);
+            Registry<StructureSet> structuresRegistry = registryManager.get(Registry.STRUCTURE_SET_KEY);
             Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry = registryManager.get(Registry.NOISE_WORLDGEN);
             Registry<Biome> biomeRegistry = registryManager.get(Registry.BIOME_KEY);
             
             Registry<DimensionOptions> dimensionOptions = DimensionType.createDefaultDimensionOptions(registryManager, seed);
 
-            String generate_structures = (String) properties.get("generate-structures");
-            boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
+            //String generate_structures = (String) properties.get("generate-structures");
+            //boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
             
             String worldType = ModernBeta.GEN_CONFIG.worldType;
             String biomeType = ModernBeta.BIOME_CONFIG.biomeType;
@@ -103,6 +106,7 @@ public class MixinGeneratorOptions {
             );
             
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
+                structuresRegistry,
                 noiseRegistry,
                 new OldBiomeSource(
                     seed,
@@ -120,7 +124,7 @@ public class MixinGeneratorOptions {
             // return our chunk generator
             info.setReturnValue(new GeneratorOptions(
                 seed, 
-                generateStructures, 
+                properties.generateStructures(), 
                 false,
                 GeneratorOptions.getRegistryWithReplacedOverworldGenerator(dimensionRegistry, dimensionOptions, chunkGenerator)));
         }

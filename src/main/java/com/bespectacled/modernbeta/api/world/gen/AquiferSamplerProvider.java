@@ -100,17 +100,6 @@ public class AquiferSamplerProvider {
         int noiseMinY = MathHelper.floorDiv(minY, this.verticalNoiseResolution);
         int noiseTopY = MathHelper.floorDiv(topY - minY, this.verticalNoiseResolution);
         
-        return AquiferSampler.aquifer(
-            this.chunkSampler, 
-            chunk.getPos(), 
-            this.aquiferBarrierNoise, 
-            this.aquiferFluidLevelFloodedNoise,
-            this.aquiferLevelSpreadNoise,
-            this.aquiferLavaNoise, 
-            this.aquiferRandomDeriver,
-            noiseMinY * this.verticalNoiseResolution, 
-            noiseTopY * this.verticalNoiseResolution, 
-            this.fluidLevelSampler
-        );
+        return AquiferSampler.seaLevel(this.lavalessFluidLevelSampler);
     }
 }

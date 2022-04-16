@@ -61,7 +61,7 @@ public class IndevWorldScreen extends InfWorldScreen {
             .<DimensionType>get(Registry.DIMENSION_TYPE_KEY)
             .get(DimensionType.OVERWORLD_ID);
             
-        int genTopY = generatorSettings.getGenerationShapeConfig().height() + generatorSettings.getGenerationShapeConfig().minimumY();
+        int genTopY = generatorSettings.generationShapeConfig().height() + generatorSettings.generationShapeConfig().minimumY();
         int dimTopY = dimensionType.getHeight() + dimensionType.getMinimumY();
         
         int topY = Math.min(genTopY, dimTopY);

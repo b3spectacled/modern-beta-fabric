@@ -65,16 +65,16 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
         super(chunkGenerator);
         
         ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
-        GenerationShapeConfig shapeConfig = generatorSettings.getGenerationShapeConfig();
+        GenerationShapeConfig shapeConfig = generatorSettings.generationShapeConfig();
         
         this.worldMinY = shapeConfig.minimumY();
         this.worldHeight = shapeConfig.height();
         this.worldTopY = worldHeight + worldMinY;
-        this.seaLevel = generatorSettings.getSeaLevel();
+        this.seaLevel = generatorSettings.seaLevel();
         this.bedrockFloor = 0;
 
-        this.defaultBlock = generatorSettings.getDefaultBlock();
-        this.defaultFluid = generatorSettings.getDefaultFluid();
+        this.defaultBlock = generatorSettings.defaultBlock();
+        this.defaultFluid = generatorSettings.defaultFluid();
         
         // Noise Generators
         this.noiseOctavesA = new PerlinOctaveNoise(random, 16, true); 
@@ -131,6 +131,7 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
         BiomeAccess biomeAccess = region.getBiomeAccess();
         Registry<Biome> biomeRegistry = region.getRegistryManager().get(Registry.BIOME_KEY);
         
+        /*
         MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(
             this.surfaceBuilder,
             chunk,
@@ -140,6 +141,7 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
             context
         );
         MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
+        */
         
         for (int localX = 0; localX < 16; ++localX) {
             for (int localZ = 0; localZ < 16; ++localZ) {
@@ -153,6 +155,7 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
                 BlockState topBlock = surfaceConfig.topBlock();
                 BlockState fillerBlock = surfaceConfig.fillerBlock();
 
+                /*
                 boolean usedCustomSurface = this.surfaceBuilder.buildSurfaceColumn(
                     region.getRegistryManager().get(Registry.BIOME_KEY),
                     region.getBiomeAccess(), 
@@ -165,6 +168,8 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
                     localZ,
                     surfaceTopY
                 );
+                */
+                boolean usedCustomSurface = false;
 
                 int runDepth = 0;
 

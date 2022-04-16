@@ -17,6 +17,7 @@ import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.PEBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
+import com.bespectacled.modernbeta.world.gen.AquiferNoisePos;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.PESpawnLocator;
 
@@ -98,6 +99,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
 
         AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
+        AquiferNoisePos noisePos = new AquiferNoisePos();
         
         // Surface builder stuff
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
@@ -106,6 +108,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
         BiomeAccess biomeAccess = region.getBiomeAccess();
         Registry<Biome> biomeRegistry = region.getRegistryManager().get(Registry.BIOME_KEY);
         
+        /*
         MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(
             this.surfaceBuilder,
             chunk,
@@ -115,6 +118,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
             context
         );
         MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
+        */
         
         double[] sandNoise = beachNoiseOctaves.sampleBeta(
             chunkX * 16, chunkZ * 16, 0.0D, 
@@ -154,6 +158,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
                 BlockState topBlock = surfaceConfig.topBlock();
                 BlockState fillerBlock = surfaceConfig.fillerBlock();
 
+                /*
                 boolean usedCustomSurface = this.surfaceBuilder.buildSurfaceColumn(
                     region.getRegistryManager().get(Registry.BIOME_KEY),
                     region.getBiomeAccess(), 
@@ -166,6 +171,8 @@ public class PEChunkProvider extends NoiseChunkProvider {
                     localZ,
                     surfaceTopY
                 );
+                */
+                boolean usedCustomSurface = false;
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
@@ -228,7 +235,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
                         runDepth = surfaceDepth;
                         
                         if (y < this.seaLevel && topBlock.isAir()) { // Generate water bodies
-                            BlockState fluidBlock = aquiferSampler.apply(x, y, z, 0.0, 0.0);
+                            BlockState fluidBlock = aquiferSampler.apply(noisePos.setBlockCoords(x, y, z), 0.0);
                             
                             boolean isAir = fluidBlock == null;
                             topBlock = isAir ? BlockStates.AIR : fluidBlock;
@@ -404,7 +411,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
             heightmapDensity = density;
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
+            //density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applySlides(density, y);
