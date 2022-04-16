@@ -37,7 +37,6 @@ import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
-import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkImitable {
     private final int worldMinY;

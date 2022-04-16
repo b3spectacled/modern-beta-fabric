@@ -7,9 +7,8 @@ import com.bespectacled.modernbeta.util.settings.Settings;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeAccess;
 
-public abstract class BiomeProvider implements BiomeAccess.Storage {
+public abstract class BiomeProvider {
     protected final long seed;
     protected final Settings settings;
     protected final Registry<Biome> biomeRegistry;

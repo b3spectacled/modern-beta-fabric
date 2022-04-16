@@ -1,11 +1,20 @@
 package com.bespectacled.modernbeta.mixin;
 
+import java.util.function.Consumer;
+
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
+
+import com.mojang.datafixers.util.Pair;
+
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.biome.source.util.VanillaBiomeParameters;
 
 @Mixin(VanillaBiomeParameters.class)
 public interface MixinVanillaBiomeParametersAccessor {
-    /*
     @Invoker("writeCaveBiomes")
     public void invokeWriteCaveBiomes(Consumer<Pair<MultiNoiseUtil.NoiseHypercube, RegistryKey<Biome>>> parameters);
     
@@ -37,12 +46,11 @@ public interface MixinVanillaBiomeParametersAccessor {
     );
     
     @Accessor
-    public MultiNoiseUtil.ParameterRange[] getTEMPERATURE_PARAMETERS();
+    public MultiNoiseUtil.ParameterRange[] getTemperatureParameters();
     
     @Accessor
-    public MultiNoiseUtil.ParameterRange getDEFAULT_PARAMETER();
+    public MultiNoiseUtil.ParameterRange getDefaultParameter();
     
     @Accessor
-    public RegistryKey<Biome>[][] getOCEAN_BIOMES();
-    */
+    public RegistryKey<Biome>[][] getOceanBiomes();
 }

@@ -13,7 +13,6 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.densityfunction.DensityFunction;
 import net.minecraft.world.gen.densityfunction.DensityFunctionTypes;
-import net.minecraft.world.gen.densityfunction.DensityFunctions;
 import net.minecraft.world.gen.noise.NoiseParametersKeys;
 import net.minecraft.world.gen.noise.SimpleNoiseRouter;
 import net.minecraft.world.gen.random.ChunkRandom;
@@ -68,7 +67,7 @@ public class OldChunkGeneratorSettings {
         return BuiltinRegistries.NOISE_PARAMETERS.entryOf(arg);
     }
     
-    private static SimpleNoiseRouter createDensityFunctions(GenerationShapeConfig shapeConfig, boolean amplified) {
+    public static SimpleNoiseRouter createDensityFunctions(GenerationShapeConfig shapeConfig, boolean amplified) {
         DensityFunction aquiferBarrier = DensityFunctionTypes.noise(getNoiseParameter(NoiseParametersKeys.AQUIFER_BARRIER), 0.5);
         DensityFunction aquiferFloodedness = DensityFunctionTypes.noise(getNoiseParameter(NoiseParametersKeys.AQUIFER_FLUID_LEVEL_FLOODEDNESS), 0.67);
         DensityFunction aquiferSpread = DensityFunctionTypes.noise(getNoiseParameter(NoiseParametersKeys.AQUIFER_FLUID_LEVEL_SPREAD), 0.7142857142857143);

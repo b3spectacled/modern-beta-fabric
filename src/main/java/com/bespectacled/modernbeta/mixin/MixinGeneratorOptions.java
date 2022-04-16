@@ -1,7 +1,6 @@
 package com.bespectacled.modernbeta.mixin;
 
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Random;
 
 import org.spongepowered.asm.mixin.Mixin;

@@ -22,7 +22,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.HeightContext;
-import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public class SkylandsChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;

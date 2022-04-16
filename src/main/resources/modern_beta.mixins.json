@@ -12,7 +12,9 @@
     "MixinPlacedFeatureAccessor",
     "MixinSpawnLocating",
     "MixinStructureGeneratorFactoryContext",
-    "MixinSurfaceBuilderAccessor"
+    "MixinSurfaceBuilderAccessor",
+    "MixinVanillaBiomeParametersAccessor",
+    "MixinDensityFunctionsAccessor"
   ],
   "client": [
     "client.MixinBackgroundRenderer",

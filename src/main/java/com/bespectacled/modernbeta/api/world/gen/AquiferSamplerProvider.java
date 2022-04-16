@@ -5,8 +5,6 @@ import com.bespectacled.modernbeta.util.BlockStates;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;

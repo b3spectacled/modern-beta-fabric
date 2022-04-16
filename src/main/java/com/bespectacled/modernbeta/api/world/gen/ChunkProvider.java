@@ -18,7 +18,6 @@ import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.feature.placement.OldNoiseBasedCountPlacementModifier;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
-import com.bespectacled.modernbeta.world.gen.OldSurfaceBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -40,14 +39,12 @@ import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
-import net.minecraft.world.gen.densityfunction.DensityFunctionTypes;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.noise.NoiseRouter;
 import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 import net.minecraft.world.gen.random.AbstractRandom;
 import net.minecraft.world.gen.random.ChunkRandom;
 import net.minecraft.world.gen.random.RandomDeriver;
-import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public abstract class ChunkProvider {
     protected final OldChunkGenerator chunkGenerator;

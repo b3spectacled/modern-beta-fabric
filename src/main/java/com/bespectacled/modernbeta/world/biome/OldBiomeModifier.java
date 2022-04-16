@@ -1,13 +1,7 @@
 package com.bespectacled.modernbeta.world.biome;
 
-import java.util.function.Predicate;
-
-import com.bespectacled.modernbeta.world.structure.OldStructures;
 import com.google.common.collect.ImmutableList;
 
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
