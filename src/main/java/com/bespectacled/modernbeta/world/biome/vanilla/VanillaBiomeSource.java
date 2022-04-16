@@ -89,28 +89,28 @@ public class VanillaBiomeSource {
         
         public Builder writeMixedBiomes(ParameterRange range) {
             MixinVanillaBiomeParametersAccessor invoker = this.getInvoker();
-            invoker.invokeWriteMixedBiomes(this.parameters, range);
+            //invoker.invokeWriteMixedBiomes(this.parameters, range);
             
             return this;
         }
         
         public Builder writePlainsBiomes(ParameterRange range) {
             MixinVanillaBiomeParametersAccessor invoker = this.getInvoker();
-            invoker.invokeWritePlainsBiomes(this.parameters, range);
+            //invoker.invokeWritePlainsBiomes(this.parameters, range);
             
             return this;
         }
         
         public Builder writeMountainousBiomes(ParameterRange range) {
             MixinVanillaBiomeParametersAccessor invoker = this.getInvoker();
-            invoker.invokeWriteMountainousBiomes(this.parameters, range);
+            //invoker.invokeWriteMountainousBiomes(this.parameters, range);
             
             return this;
         }
         
         public Builder writeOceanBiomes() {
             MixinVanillaBiomeParametersAccessor invoker = this.getInvoker();
-            invoker.invokeWriteOceanBiomes(this.parameters);
+            //invoker.invokeWriteOceanBiomes(this.parameters);
             
             return this;
         }

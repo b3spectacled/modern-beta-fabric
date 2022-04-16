@@ -1,4 +1,4 @@
-package com.bespectacled.modernbeta.world.gen;
+package com.bespectacled.modernbeta.util.noise;
 
 import net.minecraft.world.gen.densityfunction.DensityFunction;
 

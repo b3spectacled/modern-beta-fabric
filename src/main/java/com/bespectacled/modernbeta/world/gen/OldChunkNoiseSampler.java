@@ -24,7 +24,7 @@ public class OldChunkNoiseSampler extends ChunkNoiseSampler {
         int verticalNoiseResolution, 
         int horizontalSize,
         NoiseRouter noiseRouter, 
-        int x, 
+        int x,
         int z, 
         Supplier<class_7050> noiseType, 
         Supplier<ChunkGeneratorSettings> supplier,

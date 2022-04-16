@@ -18,13 +18,12 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
+import com.bespectacled.modernbeta.util.noise.SimpleNoisePos;
 import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.world.gen.SimpleNoisePos;
 import com.bespectacled.modernbeta.world.gen.blocksource.BlockSourceRules;
 import com.bespectacled.modernbeta.world.gen.blocksource.SimpleBlockSource;
 import com.bespectacled.modernbeta.world.gen.sampler.DensitySampler;
-import com.bespectacled.modernbeta.world.gen.sampler.NoiseCaveSampler;
 import com.bespectacled.modernbeta.world.gen.sampler.NoodleCaveSampler;
 import com.bespectacled.modernbeta.world.gen.sampler.OreVeinSampler;
 import com.google.common.collect.Sets;
@@ -34,8 +33,6 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
@@ -51,7 +48,6 @@ import net.minecraft.world.gen.chunk.SlideConfig;
 import net.minecraft.world.gen.random.RandomDeriver;
 
 public abstract class NoiseChunkProvider extends ChunkProvider {
-    protected final Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry;
     
     protected final int worldMinY;
     protected final int worldHeight;
@@ -92,6 +88,8 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     private final ChunkCache<BaseNoiseProvider> baseNoiseCache;
     private final ChunkCache<HeightmapChunk> heightmapCache;
     
+    private final AquiferSamplerProvider aquiferSamplerProvider;
+    
     private final OreVeinSampler oreVeinSampler;
     private final NoodleCaveSampler noodleCaveSampler;
     
@@ -101,8 +99,6 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         Settings providerSettings = chunkGenerator.getChunkSettings();
         ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
         GenerationShapeConfig shapeConfig = generatorSettings.generationShapeConfig();
-        
-        this.noiseRegistry = chunkGenerator.getNoiseRegistry();
         
         this.worldMinY = shapeConfig.minimumY();
         this.worldHeight = shapeConfig.height();
@@ -165,6 +161,20 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         
         // Random deriver
         RandomDeriver randomDeriver = this.randomProvider.create(this.seed).createRandomDeriver();
+        
+     // Aquifer Sampler Provider
+        this.aquiferSamplerProvider = new AquiferSamplerProvider(
+            this.noiseRouter,
+            randomDeriver,
+            this.dummyNoiseChunkSampler,
+            this.defaultFluid,
+            this.seaLevel,
+            this.worldMinY + 10,
+            this.worldMinY,
+            this.worldHeight,
+            this.verticalNoiseResolution,
+            this.generateAquifers
+        );
         
         this.oreVeinSampler = new OreVeinSampler(
             noiseRegistry, 
@@ -259,6 +269,11 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         int chunkZ = z >> 4;
         
         return this.heightmapCache.get(chunkX, chunkZ).getHeight(x, z, type);
+    }
+    
+    @Override
+    public AquiferSampler getAquiferSampler(Chunk chunk) {
+        return this.aquiferSamplerProvider.provideAquiferSampler(chunk);
     }
     
     /**
@@ -526,17 +541,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
             clampedDensity = noodleCaveSampler.sample(clampedDensity, x, y, z);
             clampedDensity += weightSampler.sample(noisePos.setBlockCoords(x, y, z));
             
-            //return aquiferSampler.apply(x, y, z, density, clampedDensity);
-            
-            BlockState state = BlockStates.AIR;
-            
-            if (y < this.seaLevel)
-                state = BlockStates.WATER;
-            
-            if (clampedDensity > 0.0) 
-                state = BlockStates.STONE;
-            
-            return state;
+            return aquiferSampler.apply(noisePos, clampedDensity);
         };
     }
 

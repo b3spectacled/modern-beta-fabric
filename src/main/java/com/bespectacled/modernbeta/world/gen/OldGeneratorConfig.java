@@ -1,14 +1,9 @@
 package com.bespectacled.modernbeta.world.gen;
 
-import com.google.common.collect.ImmutableMap;
-
 import net.minecraft.world.biome.source.util.VanillaTerrainParametersCreator;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.NoiseSamplingConfig;
 import net.minecraft.world.gen.chunk.SlideConfig;
-import net.minecraft.world.gen.chunk.placement.ConcentricRingsStructurePlacement;
-import net.minecraft.world.gen.chunk.placement.StructurePlacement;
-import net.minecraft.world.gen.feature.StructureFeature;
 
 public class OldGeneratorConfig {
     //public static final StructuresConfig STRUCTURES;

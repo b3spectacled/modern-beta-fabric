@@ -12,6 +12,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
+import com.bespectacled.modernbeta.util.noise.SimpleDensityFunction;
 import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.feature.placement.OldNoiseBasedCountPlacementModifier;
@@ -22,6 +23,8 @@ import com.bespectacled.modernbeta.world.gen.OldSurfaceBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
@@ -37,7 +40,9 @@ import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
+import net.minecraft.world.gen.densityfunction.DensityFunctionTypes;
 import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.world.gen.noise.NoiseRouter;
 import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 import net.minecraft.world.gen.random.AbstractRandom;
 import net.minecraft.world.gen.random.ChunkRandom;
@@ -51,6 +56,11 @@ public abstract class ChunkProvider {
     protected final RegistryEntry<ChunkGeneratorSettings> generatorSettings;
     protected final Settings providerSettings;
     protected final Random random;
+
+    protected final Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry;
+    protected final NoiseRouter noiseRouter;
+    
+    protected final OldChunkNoiseSampler dummyNoiseChunkSampler;
 
     protected final ChunkRandom.RandomProvider randomProvider;
     protected final RandomDeriver randomDeriver;
@@ -73,10 +83,33 @@ public abstract class ChunkProvider {
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
         this.providerSettings = chunkGenerator.getChunkSettings();
         this.random = new Random(seed);
+        
+        this.noiseRegistry = this.chunkGenerator.getNoiseRegistry();
+        this.noiseRouter = this.generatorSettings.value().method_41099(this.noiseRegistry, this.seed);
 
         this.emptyFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
         this.randomProvider = chunkGenerator.getGeneratorSettings().value().getRandomProvider();
         this.randomDeriver = this.randomProvider.create(this.seed).createRandomDeriver();
+
+        // Modified ChunkNoiseSampler
+        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
+        GenerationShapeConfig shapeConfig = generatorSettings.generationShapeConfig();
+        int verticalNoiseResolution = shapeConfig.verticalSize() * 4;
+        int horizontalNoiseResolution = shapeConfig.horizontalSize() * 4;
+        
+        this.dummyNoiseChunkSampler = new OldChunkNoiseSampler(
+            horizontalNoiseResolution,
+            verticalNoiseResolution,
+            16 / horizontalNoiseResolution,
+            this.noiseRouter,
+            0, 
+            0,
+            () -> SimpleDensityFunction.INSTANCE,
+            () -> this.generatorSettings.value(),
+            this.emptyFluidLevelSampler,
+            Blender.getNoBlending(),
+            this
+        );
         
         this.generateDeepslate = NbtUtil.toBoolean(this.providerSettings.get(NbtTags.GEN_DEEPSLATE), false);
         

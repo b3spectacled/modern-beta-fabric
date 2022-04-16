@@ -5,11 +5,16 @@ import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.util.BlockStates;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
+import net.minecraft.world.gen.densityfunction.DensityFunction;
 import net.minecraft.world.gen.densityfunction.DensityFunctionTypes;
 import net.minecraft.world.gen.densityfunction.DensityFunctions;
+import net.minecraft.world.gen.noise.NoiseParametersKeys;
 import net.minecraft.world.gen.noise.SimpleNoiseRouter;
 import net.minecraft.world.gen.random.ChunkRandom;
 
@@ -59,12 +64,21 @@ public class OldChunkGeneratorSettings {
         return settings;
     }
     
+    private static RegistryEntry<DoublePerlinNoiseSampler.NoiseParameters> getNoiseParameter(RegistryKey<DoublePerlinNoiseSampler.NoiseParameters> arg) {
+        return BuiltinRegistries.NOISE_PARAMETERS.entryOf(arg);
+    }
+    
     private static SimpleNoiseRouter createDensityFunctions(GenerationShapeConfig shapeConfig, boolean amplified) {
+        DensityFunction aquiferBarrier = DensityFunctionTypes.noise(getNoiseParameter(NoiseParametersKeys.AQUIFER_BARRIER), 0.5);
+        DensityFunction aquiferFloodedness = DensityFunctionTypes.noise(getNoiseParameter(NoiseParametersKeys.AQUIFER_FLUID_LEVEL_FLOODEDNESS), 0.67);
+        DensityFunction aquiferSpread = DensityFunctionTypes.noise(getNoiseParameter(NoiseParametersKeys.AQUIFER_FLUID_LEVEL_SPREAD), 0.7142857142857143);
+        DensityFunction aquiferLava = DensityFunctionTypes.noise(getNoiseParameter(NoiseParametersKeys.AQUIFER_LAVA));
+        
         return new SimpleNoiseRouter(
-            DensityFunctionTypes.zero(), // Barrier noise
-            DensityFunctionTypes.zero(), // Fluid level floodedness noise
-            DensityFunctionTypes.zero(), // Fluid level spread noise
-            DensityFunctionTypes.zero(), // Lava noise
+            aquiferBarrier,              // Barrier noise
+            aquiferFloodedness,          // Fluid level floodedness noise
+            aquiferSpread,               // Fluid level spread noise
+            aquiferLava,                 // Lava noise
             DensityFunctionTypes.zero(), // Temperature
             DensityFunctionTypes.zero(), // Vegetation
             DensityFunctionTypes.zero(), // Continents

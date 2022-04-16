@@ -15,6 +15,7 @@ public class ExtendedVanillaBiomeParameters extends VanillaBiomeParameters {
     public void writeDeepOceanBiomes(Consumer<Pair<MultiNoiseUtil.NoiseHypercube, RegistryKey<Biome>>> parameters) {
         MixinVanillaBiomeParametersAccessor accessor = ((MixinVanillaBiomeParametersAccessor)this);
         
+        /*
         MultiNoiseUtil.ParameterRange[] temperatureParams = accessor.getTEMPERATURE_PARAMETERS();
         MultiNoiseUtil.ParameterRange defaultParam = accessor.getDEFAULT_PARAMETER();
         RegistryKey<Biome>[] deepOceanBiomes = accessor.getOCEAN_BIOMES()[0];
@@ -23,6 +24,7 @@ public class ExtendedVanillaBiomeParameters extends VanillaBiomeParameters {
             MultiNoiseUtil.ParameterRange temperatureRange = temperatureParams[i];
             accessor.invokeWriteBiomeParameters(parameters, temperatureRange, defaultParam, defaultParam, defaultParam, defaultParam, 0.0f, deepOceanBiomes[i]);
         }
+        */
     }
     
     /*
@@ -31,7 +33,8 @@ public class ExtendedVanillaBiomeParameters extends VanillaBiomeParameters {
     @Override
     protected void writeOceanBiomes(Consumer<Pair<MultiNoiseUtil.NoiseHypercube, RegistryKey<Biome>>> parameters) {
         MixinVanillaBiomeParametersAccessor accessor = ((MixinVanillaBiomeParametersAccessor)this);
-        
+
+        /*
         MultiNoiseUtil.ParameterRange[] temperatureParams = accessor.getTEMPERATURE_PARAMETERS();
         MultiNoiseUtil.ParameterRange defaultParam = accessor.getDEFAULT_PARAMETER();
         RegistryKey<Biome>[] oceanBiomes = accessor.getOCEAN_BIOMES()[1];
@@ -40,6 +43,7 @@ public class ExtendedVanillaBiomeParameters extends VanillaBiomeParameters {
             MultiNoiseUtil.ParameterRange temperatureRange = temperatureParams[i];
             accessor.invokeWriteBiomeParameters(parameters, temperatureRange, defaultParam, defaultParam, defaultParam, defaultParam, 0.0f, oceanBiomes[i]);
         }
+        */
     }
     
     /*
