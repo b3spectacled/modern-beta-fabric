@@ -20,6 +20,7 @@ import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.SimpleNoisePos;
 import com.bespectacled.modernbeta.world.gen.blocksource.BlockSourceRules;
 import com.bespectacled.modernbeta.world.gen.blocksource.SimpleBlockSource;
 import com.bespectacled.modernbeta.world.gen.sampler.DensitySampler;
@@ -337,7 +338,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         NoiseProvider baseNoiseProvider = this.baseNoiseCache.get(chunkX, chunkZ);
         DensitySampler noodleCaveSampler = this.createNoodleCaveNoiseProviders(chunkPos, noiseProviders::add);
         SimpleBlockSource oreVeinBlockSource = this.createOreVeinProviders(chunkPos, noiseProviders::add);
-        SimpleBlockSource baseBlockSource = this.getBaseBlockSource(baseNoiseProvider, structureWeightSampler, aquiferSampler, noodleCaveSampler);
+        SimpleBlockSource baseBlockSource = this.getBaseBlockSource(baseNoiseProvider, structureWeightSampler, aquiferSampler, noodleCaveSampler, new SimpleNoisePos());
         
         // Create and populate block sources
         BlockSourceRules blockSources = new BlockSourceRules.Builder()
@@ -514,7 +515,8 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         NoiseProvider baseNoiseProvider,
         StructureWeightSampler weightSampler,
         AquiferSampler aquiferSampler,
-        DensitySampler noodleCaveSampler
+        DensitySampler noodleCaveSampler,
+        SimpleNoisePos noisePos
     ) {
         return (x, y, z) -> {
             double density = baseNoiseProvider.sample();
@@ -522,7 +524,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
             
             clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
             clampedDensity = noodleCaveSampler.sample(clampedDensity, x, y, z);
-            //clampedDensity += weightSampler.calculateNoise(x, y, z);
+            clampedDensity += weightSampler.sample(noisePos.setBlockCoords(x, y, z));
             
             //return aquiferSampler.apply(x, y, z, density, clampedDensity);
             

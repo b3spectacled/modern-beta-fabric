@@ -9,7 +9,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.gen.AquiferNoisePos;
+import com.bespectacled.modernbeta.world.gen.SimpleNoisePos;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
@@ -74,7 +74,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
 
         AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
-        AquiferNoisePos noisePos = new AquiferNoisePos();
+        SimpleNoisePos noisePos = new SimpleNoisePos();
 
         // Surface builder stuff
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
