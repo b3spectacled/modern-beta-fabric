@@ -4,8 +4,6 @@
   "package": "com.bespectacled.modernbeta.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "MixinConfiguredStructureFeatures",
-    "MixinConfiguredStructureFeaturesAccessor",
     "MixinGeneratorOptions",
     "MixinMinecraftServer",
     "MixinOceanMonumentFeature",

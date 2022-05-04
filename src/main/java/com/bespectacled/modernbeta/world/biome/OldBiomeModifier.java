@@ -7,6 +7,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
 public class OldBiomeModifier {
+    /*
     private static ImmutableList<RegistryKey<Biome>> VANILLA_OCEANS = ImmutableList.of(
         BiomeKeys.OCEAN,
         BiomeKeys.COLD_OCEAN,
@@ -19,4 +20,5 @@ public class OldBiomeModifier {
         //Predicate<BiomeSelectionContext> biomeSelector = BiomeSelectors.includeByKey(VANILLA_OCEANS);
         //BiomeModifications.addStructure(biomeSelector, OldStructures.OCEAN_SHRINE_KEY);
     }
+    */
 }

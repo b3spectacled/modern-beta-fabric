@@ -82,9 +82,6 @@ public class ModernBeta implements ModInitializer {
         OldChunkGeneratorSettings.register();
         OldPlacementTypes.register();
         
-        // Add Ocean Shrine to vanilla oceans, when using vanilla biome type.
-        OldBiomeModifier.addShrineToOceans();
-        
         // Set up mod compatibility
         Compat.setupCompat();
         

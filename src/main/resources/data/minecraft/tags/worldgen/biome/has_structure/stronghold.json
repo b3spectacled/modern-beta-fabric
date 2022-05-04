@@ -1,0 +1,47 @@
+{
+  "replace": false,
+  "values": [
+    "modern_beta:beta_sky",
+    
+    "modern_beta:beta_desert",
+    "modern_beta:beta_forest",
+    "modern_beta:beta_ice_desert",
+    "modern_beta:beta_plains",
+    "modern_beta:beta_savanna",
+    "modern_beta:beta_seasonal_forest",
+    "modern_beta:beta_shrubland",
+    "modern_beta:beta_swampland",
+    "modern_beta:beta_rainforest",
+    "modern_beta:beta_taiga",
+    "modern_beta:beta_tundra",
+    
+    "modern_beta:pe_desert",
+    "modern_beta:pe_forest",
+    "modern_beta:pe_ice_desert",
+    "modern_beta:pe_plains",
+    "modern_beta:pe_savanna",
+    "modern_beta:pe_seasonal_forest",
+    "modern_beta:pe_shrubland",
+    "modern_beta:pe_swampland",
+    "modern_beta:pe_rainforest",
+    "modern_beta:pe_taiga",
+    "modern_beta:pe_tundra",
+    
+    "modern_beta:alpha",
+    "modern_beta:alpha_winter",
+    "modern_beta:infdev_611",
+    "modern_beta:infdev_611_winter",
+    "modern_beta:infdev_420",
+    "modern_beta:infdev_420_winter",
+    "modern_beta:infdev_415",
+    "modern_beta:infdev_415_winter",
+    "modern_beta:infdev_227",
+    "modern_beta:infdev_227_winter",
+    
+    "modern_beta:indev_normal",
+    "modern_beta:indev_hell",
+    "modern_beta:indev_paradise",
+    "modern_beta:indev_woods",
+    "modern_beta:indev_snowy"
+  ]
+}

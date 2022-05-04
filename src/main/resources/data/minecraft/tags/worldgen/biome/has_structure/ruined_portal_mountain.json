@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:is_badlands",
+    "#minecraft:is_hill",
+    "#minecraft:is_mountain"
+  ]
+}

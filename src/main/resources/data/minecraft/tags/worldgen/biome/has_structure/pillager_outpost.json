@@ -1,0 +1,24 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:is_mountain",
+    
+    "modern_beta:beta_sky",
+    
+    "modern_beta:beta_desert",
+    "modern_beta:beta_ice_desert",
+    "modern_beta:beta_plains",
+    "modern_beta:beta_savanna",
+    "modern_beta:beta_shrubland",
+    "modern_beta:beta_taiga",
+    "modern_beta:beta_tundra",
+    
+    "modern_beta:pe_desert",
+    "modern_beta:pe_ice_desert",
+    "modern_beta:pe_plains",
+    "modern_beta:pe_savanna",
+    "modern_beta:pe_shrubland",
+    "modern_beta:pe_taiga",
+    "modern_beta:pe_tundra"
+  ]
+}
