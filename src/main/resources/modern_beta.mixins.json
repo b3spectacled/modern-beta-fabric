@@ -9,6 +9,7 @@
     "MixinOceanMonumentFeature",
     "MixinPlacedFeatureAccessor",
     "MixinSpawnLocating",
+    "MixinStructureFeatureAccessor",
     "MixinStructureGeneratorFactoryContext",
     "MixinSurfaceBuilderAccessor",
     "MixinVanillaBiomeParametersAccessor",

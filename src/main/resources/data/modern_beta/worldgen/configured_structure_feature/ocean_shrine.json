@@ -1,0 +1,25 @@
+{
+  "config": {},
+  "biomes": "#modern_beta:has_structure/ocean_shrine",
+  "adapt_noise": true,
+  "spawn_overrides": {
+    "monster": {
+      "bounding_box": "full",
+      "spawns": [
+        {
+          "type": "minecraft:guardian",
+          "weight": 1,
+          "minCount": 0,
+          "maxCount": 1
+        },
+        {
+          "type": "minecraft:squid",
+          "weight": 4,
+          "minCount": 0,
+          "maxCount": 0
+        }
+      ]
+    }
+  },
+  "type": "modern_beta:ocean_shrine"
+}

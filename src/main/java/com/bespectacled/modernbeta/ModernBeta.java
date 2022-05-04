@@ -15,7 +15,6 @@ import com.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
 import com.bespectacled.modernbeta.config.ModernBetaConfigCompat;
 import com.bespectacled.modernbeta.config.ModernBetaConfigGeneration;
 import com.bespectacled.modernbeta.config.ModernBetaConfigRendering;
-import com.bespectacled.modernbeta.world.biome.OldBiomeModifier;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.biome.OldBiomes;
 import com.bespectacled.modernbeta.world.feature.placement.OldPlacementTypes;

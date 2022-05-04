@@ -150,7 +150,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         AquiferSampler aquiferSampler = this.chunkProvider.getAquiferSampler(chunk);
         
         // Chunk Noise Sampler used to sample surface level
-        //ChunkNoiseSampler chunkNoiseSampler = this.chunkProvider.getChunkNoiseSampler();
         ChunkNoiseSampler chunkNoiseSampler = chunk.getOrCreateChunkNoiseSampler(
             this.getNoiseRouter(),
             () -> new StructureWeightSampler(accessor, chunk),
@@ -181,10 +180,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
                         this.getHeight(startX, startZ, Heightmap.Type.OCEAN_FLOOR_WG),
                         startZ
                 )).value().getGenerationSettings();
-                
-                //List<Supplier<ConfiguredCarver<?>>> carverList = genSettings.getCarversForStep(genCarver);
-                //ListIterator<Supplier<ConfiguredCarver<?>>> carverIterator = carverList.listIterator();
-                
                 Iterable<RegistryEntry<ConfiguredCarver<?>>> carverList = genSettings.getCarversForStep(genStep);
 
                 for(RegistryEntry<ConfiguredCarver<?>> carverEntry : carverList) {
@@ -241,19 +236,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         
         return new VerticalBlockSample(minY, column);
     }
-    
-    /*
-    @Override
-    public Pool<SpawnSettings.SpawnEntry> getEntitySpawnList(RegistryEntry<Biome> biome, StructureAccessor structureAccessor, SpawnGroup spawnGroup, BlockPos blockPos) {
-        if (spawnGroup == SpawnGroup.MONSTER) {
-            if (structureAccessor.getStructureAt(blockPos, OldStructures.OCEAN_SHRINE_STRUCTURE).hasChildren()) {
-                return OceanShrineStructure.getMonsterSpawns();
-            }
-        }
-
-        return super.getEntitySpawnList(biome, structureAccessor, spawnGroup, blockPos);
-    }
-    */
 
     @Override
     public int getWorldHeight() {

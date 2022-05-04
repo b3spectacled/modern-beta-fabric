@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "modern_beta:ocean_shrine",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "salt": 357,
+    "spacing": 64,
+    "separation": 16,
+    "type": "minecraft:random_spread"
+  }
+}
