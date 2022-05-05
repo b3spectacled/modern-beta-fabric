@@ -162,7 +162,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         // Random deriver
         RandomDeriver randomDeriver = this.randomProvider.create(this.seed).createRandomDeriver();
         
-     // Aquifer Sampler Provider
+        // Aquifer Sampler Provider
         this.aquiferSamplerProvider = new AquiferSamplerProvider(
             this.noiseRouter,
             randomDeriver,

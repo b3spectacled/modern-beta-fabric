@@ -1,0 +1,7 @@
+{
+  "config": {},
+  "biomes": "#modern_beta:has_structure/indev_stronghold",
+  "adapt_noise": true,
+  "spawn_overrides": {},
+  "type": "minecraft:stronghold"
+}

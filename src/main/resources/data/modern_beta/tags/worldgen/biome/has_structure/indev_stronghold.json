@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "modern_beta:indev_normal",
+    "modern_beta:indev_hell",
+    "modern_beta:indev_paradise",
+    "modern_beta:indev_woods",
+    "modern_beta:indev_snowy"
+  ]
+}
