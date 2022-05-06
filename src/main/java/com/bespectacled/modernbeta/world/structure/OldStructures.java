@@ -5,8 +5,8 @@ import com.bespectacled.modernbeta.mixin.MixinStructureFeatureAccessor;
 
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 
 public class OldStructures {
     private static final Identifier OCEAN_SHRINE_ID = ModernBeta.createId("ocean_shrine");

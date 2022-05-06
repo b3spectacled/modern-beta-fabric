@@ -9,6 +9,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.OldSurfaceRules;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -19,10 +20,7 @@ import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.HeightContext;
-import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public class SkylandsChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise minLimitNoiseOctaves;
@@ -63,20 +61,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
 
         // Surface builder stuff
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
-        HeightContext context = new HeightContext(this.chunkGenerator, region);
-        
-        BiomeAccess biomeAccess = region.getBiomeAccess();
-        Registry<Biome> biomeRegistry = region.getRegistryManager().get(Registry.BIOME_KEY);
-        
-        MaterialRules.MaterialRuleContext ruleContext = new MaterialRules.MaterialRuleContext(
-            this.surfaceBuilder,
-            chunk,
-            this.dummyNoiseChunkSampler,
-            biomeAccess::getBiome,
-            biomeRegistry,
-            context
-        );
-        MaterialRules.BlockStateRule blockStateRule = this.surfaceRule.apply(ruleContext);
+        OldSurfaceRules surfaceRules = new OldSurfaceRules(region, chunk, this.chunkGenerator);
         
         double[] surfaceNoise = surfaceNoiseOctaves.sampleBeta(
             chunkX * 16, chunkZ * 16, 0.0D, 
@@ -106,8 +91,8 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                     blockColumn, 
                     chunk, 
                     biome, 
-                    ruleContext, 
-                    blockStateRule,
+                    surfaceRules.getRuleContext(), 
+                    surfaceRules.getBlockStateRule(),
                     localX,
                     localZ,
                     surfaceTopY

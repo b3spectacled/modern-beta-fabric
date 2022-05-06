@@ -243,6 +243,20 @@ public abstract class ChunkProvider {
     }
     
     /**
+     * @return MaterialRule
+     */
+    public MaterialRules.MaterialRule getSurfaceRule() {
+        return this.surfaceRule;
+    }
+    
+    /**
+     * @return OldChunkNoiseSampler.
+     */
+    public OldChunkNoiseSampler getChunkNoiseSampler() {
+        return this.dummyNoiseChunkSampler;
+    }
+    
+    /**
      * Samples biome at given biome coordinates.
      * 
      * @param biomeX x-coordinate in biome coordinates.

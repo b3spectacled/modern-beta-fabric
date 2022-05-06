@@ -74,6 +74,7 @@ public class PESpawnLocator implements SpawnLocator {
         return Optional.of(new BlockPos(x, y, z));
     }
 
+    @SuppressWarnings("deprecation")
     private boolean isSandAt(int x, int z, HeightLimitView world) {
         double eighth = 0.03125D;
         int seaLevel = this.chunkProvider.getSeaLevel();
