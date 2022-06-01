@@ -9,7 +9,7 @@ import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.client.gui.wrapper.ActionOptionWrapper;
 import com.bespectacled.modernbeta.client.gui.wrapper.CyclingOptionWrapper;
-import com.bespectacled.modernbeta.util.GuiUtil;
+import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.settings.MutableSettings;
@@ -178,7 +178,7 @@ public class WorldScreen extends GUIScreen {
             biomeType.equals(ModernBetaBuiltInTypes.Biome.SINGLE.name) ? "createWorld.customize.biome" :  "createWorld.customize.settings",
             biomeSettingsScreen != null ? widget -> this.client.setScreen(biomeSettingsScreen) : null
         ).suffix(biomeType.equals(ModernBetaBuiltInTypes.Biome.SINGLE.name) ? 
-            GuiUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.SINGLE_BIOME))) : ""
+            GUIUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getBiomeSetting(NbtTags.SINGLE_BIOME))) : ""
         ).tooltips(() -> this.client.textRenderer.wrapLines(new LiteralText(this.settingsToString(WorldSetting.BIOME)), 250));
         
         Screen caveBiomeSettingsScreen = Registries.CAVE_BIOME_SCREEN
@@ -189,7 +189,7 @@ public class WorldScreen extends GUIScreen {
             caveBiomeType.equals(ModernBetaBuiltInTypes.CaveBiome.SINGLE.name) ? "createWorld.customize.biome" : "createWorld.customize.settings",
             caveBiomeSettingsScreen != null ? widget -> this.client.setScreen(caveBiomeSettingsScreen) : null
         ).suffix(caveBiomeType.equals(ModernBetaBuiltInTypes.CaveBiome.SINGLE.name) ? 
-            GuiUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getCaveBiomeSetting(NbtTags.SINGLE_BIOME))) :  ""
+            GUIUtil.createTranslatableBiomeStringFromId(NbtUtil.toStringOrThrow(this.getCaveBiomeSetting(NbtTags.SINGLE_BIOME))) :  ""
         ).tooltips(() -> this.client.textRenderer.wrapLines(new LiteralText(this.settingsToString(WorldSetting.CAVE_BIOME)), 250));
         
         this.addDualOption(worldTypeOption, worldSettingsOption);

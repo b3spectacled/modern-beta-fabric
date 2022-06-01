@@ -78,7 +78,7 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
             null
         );
         this.skyClimateSampler = Optional.ofNullable(useFixedSeed ? 
-                new BetaBiomeProvider(worldSeed, BiomeProviderSettings.createSettingsBeta(), null) : 
+            new BetaBiomeProvider(worldSeed, BiomeProviderSettings.createSettingsBeta(), null) : 
             null
         );
         this.isModernBetaWorld = false;

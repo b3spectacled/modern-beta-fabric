@@ -222,7 +222,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         
         // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
         double densityScale = 128.0; 
-        //double tunnelThreshold = 50.0 / densityScale;
+        double tunnelThreshold = 50.0 / densityScale;
         
         for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
@@ -283,7 +283,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             heightmapDensity = density;
             
             // Sample for noise caves
-            //density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applySlides(density, y);

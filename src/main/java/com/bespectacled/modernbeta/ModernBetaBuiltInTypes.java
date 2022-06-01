@@ -47,13 +47,12 @@ public final class ModernBetaBuiltInTypes {
     }
     
     public enum WorldScreen {
-        BASE("base"),
-        INF("inf"),
+        BETA("beta"),
+        NOISE("noise"),
         INFDEV_227("infdev_227"),
-        PRE_INF("pre_inf"),
         INDEV("indev"),
-        ISLAND("island"),
-        INF_CLIMATE("inf_climate")
+        CLASSIC("classic"),
+        ISLAND("island")
         ;
         
         public final String name;

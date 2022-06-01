@@ -44,14 +44,13 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
     
     public OldSurfaceBuilder(
         Registry<NoiseParameters> noiseRegistry, 
-        BlockState blockState, 
+        BlockState defaultState, 
         int seaLevel, 
         long seed, 
         RandomProvider randomProvider,
-        ChunkProvider chunkProvider,
-        BlockState defaultState
+        ChunkProvider chunkProvider
     ) {
-        super(noiseRegistry, blockState, seaLevel, seed, randomProvider);
+        super(noiseRegistry, defaultState, seaLevel, seed, RandomProvider.XOROSHIRO);
         
         //this.chunkProvider = chunkProvider;
         this.defaultState = defaultState;
@@ -95,11 +94,9 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         // Generate eroded badlands hoodoos, as stone initially
         if (biome.matchesKey(BiomeKeys.ERODED_BADLANDS)) {
             accessor.invokePlaceBadlandsPillar(column.getBlockColumn(), x, z, surfaceMinY, chunk);
-            
-            // Re-sample height after hoodoo generation
-            height = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, localX, localZ) + 1;
         }
         
+        int newHeight = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, localX, localZ) + 1;
         ruleContext.initHorizontalContext(x, z);
         
         int stoneDepthAbove = 0;
@@ -108,8 +105,8 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
         int solidHeight = Integer.MAX_VALUE;
         int minimumY = chunk.getBottomY();
         
-        for (int y = height; y >= minimumY; --y) {
-            BlockState columnState = column.getBlockColumn().getState(y);
+        for (int y = newHeight; y >= minimumY; --y) {
+            BlockState columnState = column.getState(y);
             BlockState blockState;
             
             pos.set(x, y, z);
@@ -131,8 +128,8 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
             if (solidHeight >= y) {
                 solidHeight = DimensionType.field_35479;
                 
-                for (int solidY = y - 1; y >= surfaceMinY - 1; --solidY) {
-                    blockState = column.getBlockColumn().getState(solidY);
+                for (int solidY = y - 1; y >= minimumY - 1; --solidY) {
+                    blockState = column.getState(solidY);
                     
                     if (this.isSolid(blockState))
                         continue;
@@ -157,10 +154,10 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
             if (blockState == null || this.ignoreBlockStateRule(blockState))
                 continue;
             
-            column.getBlockColumn().setState(y, blockState);
+            column.setState(y, blockState);
         }
         
-        if (biome.matchesKey(BiomeKeys.FROZEN_OCEAN) || biome.matchesKey( BiomeKeys.DEEP_FROZEN_OCEAN)) {
+        if (biome.matchesKey(BiomeKeys.FROZEN_OCEAN) || biome.matchesKey(BiomeKeys.DEEP_FROZEN_OCEAN)) {
             accessor.invokePlaceIceberg(surfaceMinY, biome.value(), column.getBlockColumn(), pos, x, z, height);
         }
         

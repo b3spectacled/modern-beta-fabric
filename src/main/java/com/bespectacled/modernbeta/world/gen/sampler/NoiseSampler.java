@@ -1,5 +1,6 @@
 package com.bespectacled.modernbeta.world.gen.sampler;
 
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 
 public abstract class NoiseSampler {
@@ -29,19 +30,21 @@ public abstract class NoiseSampler {
             int noiseY = actualY * this.verticalNoiseResolution;
             int noiseZ = z * this.horizontalNoiseResolution;
             
-            /*
-            noise = NoiseHelper.lerpFromProgress(
+            noise = scaledSample(
                 sampler, 
                 (double)noiseX * horizontalScale, 
                 (double)noiseY * verticalScale, 
                 (double)noiseZ * horizontalScale, 
                 -1.0, 1.0
             );
-            */
-            
-            noise = 0.0;
-            
+
             buffer[y] = noise;
         }
+    }
+    
+    public static double scaledSample(DoublePerlinNoiseSampler sampler, double x, double y, double z, double start, double end) {
+        double noise = sampler.sample(x, y, z);
+        
+        return MathHelper.lerpFromProgress(noise, -1.0, 1.0, start, end);
     }
 }

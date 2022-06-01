@@ -250,7 +250,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         
         // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
         double densityScale = 128.0;
-        //double tunnelThreshold = 200.0 / densityScale;
+        double tunnelThreshold = 200.0 / densityScale;
         
         double scale = this.scaleNoiseOctaves.sample(noiseX, 0, noiseZ, 1.0, 0.0, 1.0);
         scale = (scale + 256D) / 512D;
@@ -350,7 +350,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
             heightmapDensity = density;
             
             // Sample for noise caves
-            //density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applySlides(density, y);

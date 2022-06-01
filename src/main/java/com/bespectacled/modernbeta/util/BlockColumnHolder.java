@@ -41,6 +41,14 @@ public class BlockColumnHolder {
         this.pos.setX(x).setZ(z);
     }
     
+    public BlockState getState(int y) {
+        return this.blockColumn.getState(y);
+    }
+    
+    public void setState(int y, BlockState state) {
+        this.blockColumn.setState(y, state);
+    }
+    
     public BlockColumn getBlockColumn() {
         return this.blockColumn;
     }

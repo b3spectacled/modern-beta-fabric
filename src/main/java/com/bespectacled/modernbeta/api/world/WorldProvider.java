@@ -11,8 +11,9 @@ public final class WorldProvider {
     private final boolean generateOceanShrines;
     private final boolean generateMonuments;
     
+    private final boolean generateNoiseCaves;
+    private final boolean generateNoodleCaves;
     private final boolean generateDeepslate;
-    private final boolean showGenerateDeepslate;
 
     public WorldProvider(
         String chunkProvider,
@@ -23,7 +24,8 @@ public final class WorldProvider {
         boolean generateOceanShrines,
         boolean generateMonuments,
         boolean generateDeepslate,
-        boolean showGenerateDeepslate
+        boolean generateNoodleCaves,
+        boolean generateNoiseCaves
     ) {
         this.chunkProvider = chunkProvider;
         this.worldScreen = worldScreen;
@@ -35,8 +37,9 @@ public final class WorldProvider {
         this.generateOceanShrines = generateOceanShrines;
         this.generateMonuments = generateMonuments;
         
+        this.generateNoiseCaves = generateNoiseCaves;
+        this.generateNoodleCaves = generateNoodleCaves;
         this.generateDeepslate = generateDeepslate;
-        this.showGenerateDeepslate = showGenerateDeepslate;
     }
     
     public String getChunkProvider() {
@@ -71,8 +74,12 @@ public final class WorldProvider {
         return this.generateDeepslate;
     }
     
-    public boolean showGenerateDeepslate() {
-        return this.showGenerateDeepslate;
+    public boolean generateNoiseCaves() {
+        return this.generateNoiseCaves;
+    }
+    
+    public boolean generateNoodleCaves() {
+        return this.generateNoodleCaves;
     }
     
     @Override

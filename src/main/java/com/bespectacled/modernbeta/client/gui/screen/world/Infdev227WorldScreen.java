@@ -2,8 +2,10 @@ package com.bespectacled.modernbeta.client.gui.screen.world;
 
 import java.util.function.Consumer;
 
+import com.bespectacled.modernbeta.api.client.gui.screen.SettingsScreen;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.client.gui.wrapper.BooleanCyclingOptionWrapper;
+import com.bespectacled.modernbeta.util.GUITags;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.settings.Settings;
@@ -11,7 +13,7 @@ import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 
 import net.minecraft.nbt.NbtByte;
 
-public class Infdev227WorldScreen extends InfWorldScreen {
+public class Infdev227WorldScreen extends SettingsScreen {
     private static final String INFDEV_PYRAMID_DISPLAY_STRING = "createWorld.customize.infdev.generateInfdevPyramid";
     private static final String INFDEV_WALL_DISPLAY_STRING = "createWorld.customize.infdev.generateInfdevWall";
 
@@ -31,6 +33,24 @@ public class Infdev227WorldScreen extends InfWorldScreen {
     protected void init() {
         super.init();
         
+        BooleanCyclingOptionWrapper generateDeepslate = new BooleanCyclingOptionWrapper(
+            GUITags.GENERATE_DEEPSLATE_DISPLAY_STRING,
+            () -> NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.GEN_DEEPSLATE)),
+            value -> this.putSetting(NbtTags.GEN_DEEPSLATE, NbtByte.of(value))
+        );
+        
+        BooleanCyclingOptionWrapper generateOceanShrines = new BooleanCyclingOptionWrapper(
+            GUITags.GENERATE_OCEAN_SHRINES_DISPLAY_STRING,
+            () -> NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.GEN_OCEAN_SHRINES)),
+            value -> this.putSetting(NbtTags.GEN_OCEAN_SHRINES, NbtByte.of(value))
+        );
+        
+        BooleanCyclingOptionWrapper generateMonuments = new BooleanCyclingOptionWrapper(
+            GUITags.GENERATE_MONUMENTS_DISPLAY_STRING,
+            () -> NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.GEN_MONUMENTS)),
+            value -> this.putSetting(NbtTags.GEN_MONUMENTS, NbtByte.of(value))
+        );
+        
         BooleanCyclingOptionWrapper generateInfdevPyramid = new BooleanCyclingOptionWrapper(
             INFDEV_PYRAMID_DISPLAY_STRING,
             () -> NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.GEN_INFDEV_PYRAMID)),
@@ -42,7 +62,12 @@ public class Infdev227WorldScreen extends InfWorldScreen {
             () -> NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.GEN_INFDEV_WALL)),
             value -> this.putSetting(NbtTags.GEN_INFDEV_WALL, NbtByte.of(value))
         );
-
+        
+        this.addOption(generateDeepslate);
+        
+        this.addOption(generateOceanShrines);
+        this.addOption(generateMonuments);
+        
         this.addOption(generateInfdevPyramid);
         this.addOption(generateInfdevWall);
     }

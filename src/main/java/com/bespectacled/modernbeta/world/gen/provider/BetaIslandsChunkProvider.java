@@ -322,7 +322,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         
         // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
         double densityScale = 128.0;
-        //double tunnelThreshold = 200.0 / densityScale;
+        double tunnelThreshold = 200.0 / densityScale;
         
         Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();
@@ -392,7 +392,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
             
             double densityOffset = this.getOffset(noiseY, heightStretch, depth, scale);
 
-         // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.            
+            // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.            
             double mainNoise = (this.mainNoiseOctaves.sample(
                 noiseX, noiseY, noiseZ,
                 coordinateScale / mainNoiseScaleX, 
@@ -447,7 +447,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
             heightmapDensity = density;
             
             // Sample for noise caves
-            //density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
+            density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applySlides(density, y);

@@ -2,7 +2,7 @@ package com.bespectacled.modernbeta.util;
 
 import net.minecraft.util.Identifier;
 
-public class GuiUtil {
+public class GUIUtil {
     public static String createTranslatableBiomeStringFromId(String biomeId) {
         return createTranslatableBiomeStringFromId(new Identifier(biomeId));
     }

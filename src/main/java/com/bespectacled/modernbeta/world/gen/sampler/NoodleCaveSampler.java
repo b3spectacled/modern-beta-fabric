@@ -71,6 +71,5 @@ public class NoodleCaveSampler extends NoiseSampler {
         double selectedNoise = Math.max(ridgedFirstNoise, ridgedSecondNoise);
         
         return Math.min(density, selectedNoise);
-        
     }
 }

@@ -5,12 +5,12 @@ import com.bespectacled.modernbeta.client.gui.screen.biome.ClimateBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.biome.SingleBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.biome.VanillaBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.cavebiome.VoronoiCaveBiomeScreen;
+import com.bespectacled.modernbeta.client.gui.screen.world.BetaWorldScreen;
+import com.bespectacled.modernbeta.client.gui.screen.world.ClassicWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.IndevWorldScreen;
-import com.bespectacled.modernbeta.client.gui.screen.world.InfClimateWorldScreen;
-import com.bespectacled.modernbeta.client.gui.screen.world.InfWorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.Infdev227WorldScreen;
 import com.bespectacled.modernbeta.client.gui.screen.world.IslandWorldScreen;
-import com.bespectacled.modernbeta.client.gui.screen.world.PreInfWorldScreen;
+import com.bespectacled.modernbeta.client.gui.screen.world.NoiseWorldScreen;
 import com.bespectacled.modernbeta.util.settings.ImmutableSettings;
 import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.PEBiomeProvider;
@@ -110,11 +110,11 @@ public class ModernBetaBuiltInProviders {
     // Register default world screens
     public static void registerWorldScreens() {
         Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.DEFAULT_ID, (screen, worldSetting) -> null);
-        Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.INF.name, InfWorldScreen::create);
-        Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.INF_CLIMATE.name, InfClimateWorldScreen::create);
+        Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.BETA.name, BetaWorldScreen::create);
+        Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.NOISE.name, NoiseWorldScreen::create);
+        Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.CLASSIC.name, ClassicWorldScreen::create);
         Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.INFDEV_227.name, Infdev227WorldScreen::create);
         Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.ISLAND.name, IslandWorldScreen::create);
-        Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.PRE_INF.name, PreInfWorldScreen::create);
         Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.INDEV.name, IndevWorldScreen::create);
     }
     

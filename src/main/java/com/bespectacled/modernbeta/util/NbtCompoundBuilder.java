@@ -56,6 +56,12 @@ public class NbtCompoundBuilder {
         return this;
     }
     
+    public NbtCompoundBuilder putBuilder(NbtCompoundBuilder builder) {
+        builder.compound.getKeys().forEach(key -> this.compound.put(key, compound.get(key)));
+        
+        return this;
+    }
+    
     public NbtCompound build() {
         return this.compound;
     }

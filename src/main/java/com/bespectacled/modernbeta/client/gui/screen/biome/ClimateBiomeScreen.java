@@ -9,7 +9,7 @@ import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.client.gui.wrapper.ActionOptionWrapper;
 import com.bespectacled.modernbeta.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.config.ModernBetaConfigBiome.ClimateMapping;
-import com.bespectacled.modernbeta.util.GuiUtil;
+import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
@@ -77,7 +77,7 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
     }
     
     private void addBiomePointEntry(String key, ClimateMapping mapping) {
-        TextOptionWrapper header = new TextOptionWrapper(GuiUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(key)));
+        TextOptionWrapper header = new TextOptionWrapper(GUIUtil.createTranslatableBiomeStringFromId(ModernBeta.createId(key)));
         header.formatting(Formatting.YELLOW).formatting(Formatting.BOLD);
         
         TextOptionWrapper landBiomeText = new TextOptionWrapper(LAND_BIOME_DISPLAY_STRING).formatting(Formatting.GRAY);
@@ -95,7 +95,7 @@ public class ClimateBiomeScreen extends OceanBiomeScreen {
         RegistryKey<Biome> biomeKey = RegistryKey.of(Registry.BIOME_KEY, biomeId);
         
         return new ActionOptionWrapper(
-            GuiUtil.createTranslatableBiomeStringFromId(biomeId),
+            GUIUtil.createTranslatableBiomeStringFromId(biomeId),
             buttonWidget -> this.client.setScreen(new CustomizeBuffetLevelScreen(
                 this,
                 this.registryManager,

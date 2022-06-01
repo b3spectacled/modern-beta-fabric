@@ -15,24 +15,17 @@ public class ChunkProviderSettings {
         return new NbtCompoundBuilder().putString(NbtTags.WORLD_TYPE, worldType);
     }
     
-    private static NbtCompoundBuilder createSettingsInf(String worldType) {
+    private static NbtCompoundBuilder createSettingsNoise(String worldType) {
         return createSettingsBase(worldType)
-            .putBoolean(NbtTags.GEN_OCEAN_SHRINES, CONFIG.generateOceanShrines)
-            .putBoolean(NbtTags.GEN_MONUMENTS, CONFIG.generateMonuments)
+            .putBoolean(NbtTags.GEN_NOISE_CAVES, CONFIG.generateNoiseCaves)
+            .putBoolean(NbtTags.GEN_NOODLE_CAVES, CONFIG.generateNoodleCaves)
             .putBoolean(NbtTags.GEN_DEEPSLATE, CONFIG.generateDeepslate);
     }
     
-    private static NbtCompoundBuilder createSettingsPreInf(String worldType) {
-        return createSettingsInf(worldType)
-            .putInt(NbtTags.LEVEL_WIDTH, CONFIG.levelWidth)
-            .putInt(NbtTags.LEVEL_LENGTH, CONFIG.levelLength)
-            .putInt(NbtTags.LEVEL_HEIGHT, CONFIG.levelHeight)
-            .putFloat(NbtTags.LEVEL_CAVE_RADIUS, CONFIG.caveRadius);
-    }
-    
-    private static NbtCompoundBuilder createSettingsClimate(String worldType) {
-        return createSettingsInf(worldType)
-            .putBoolean(NbtTags.SAMPLE_CLIMATE, CONFIG.sampleClimate);
+    private static NbtCompoundBuilder createSettingsOcean(String worldType) {
+        return createSettingsNoise(worldType)
+            .putBoolean(NbtTags.GEN_OCEAN_SHRINES, CONFIG.generateOceanShrines)
+            .putBoolean(NbtTags.GEN_MONUMENTS, CONFIG.generateMonuments);
     }
     
     public static Settings createSettingsDefault(String worldType) {
@@ -43,45 +36,53 @@ public class ChunkProviderSettings {
     
     public static Settings createSettingsBeta() {
         return new ImmutableSettings(
-            createSettingsClimate(ModernBetaBuiltInTypes.Chunk.BETA.name).build()
+            createSettingsOcean(ModernBetaBuiltInTypes.Chunk.BETA.name)
+                .putBoolean(NbtTags.SAMPLE_CLIMATE, CONFIG.sampleClimate)
+                .build()
         );
     }
     
     public static Settings createSettingsSkylands() {
         return new ImmutableSettings(
-            createSettingsBase(ModernBetaBuiltInTypes.Chunk.SKYLANDS.name)
-                .putBoolean(NbtTags.GEN_OCEANS, false)
+            createSettingsNoise(ModernBetaBuiltInTypes.Chunk.SKYLANDS.name)
                 .build()
         );
     }
     
     public static Settings createSettingsAlpha() {
         return new ImmutableSettings(
-            createSettingsInf(ModernBetaBuiltInTypes.Chunk.ALPHA.name).build()
+            createSettingsOcean(ModernBetaBuiltInTypes.Chunk.ALPHA.name)
+                .build()
         );
     }
     
     public static Settings createSettingsInfdev611() {
         return new ImmutableSettings(
-            createSettingsInf(ModernBetaBuiltInTypes.Chunk.INFDEV_611.name).build()
+            createSettingsOcean(ModernBetaBuiltInTypes.Chunk.INFDEV_611.name)
+                .build()
         );
     }
     
     public static Settings createSettingsInfdev415() {
         return new ImmutableSettings(
-            createSettingsInf(ModernBetaBuiltInTypes.Chunk.INFDEV_415.name).build()
+            createSettingsOcean(ModernBetaBuiltInTypes.Chunk.INFDEV_415.name)
+                .build()
         );
     }
     
     public static Settings createSettingsInfdev420() {
         return new ImmutableSettings(
-            createSettingsInf(ModernBetaBuiltInTypes.Chunk.INFDEV_420.name).build()
+            createSettingsOcean(ModernBetaBuiltInTypes.Chunk.INFDEV_420.name)
+                .build()
         );
     }
     
     public static Settings createSettingsInfdev227() {
         return new ImmutableSettings(
-            createSettingsInf(ModernBetaBuiltInTypes.Chunk.INFDEV_227.name)
+            createSettingsBase(ModernBetaBuiltInTypes.Chunk.INFDEV_227.name)
+                .putBoolean(NbtTags.GEN_DEEPSLATE, CONFIG.generateDeepslate)
+                .putBoolean(NbtTags.GEN_OCEAN_SHRINES, CONFIG.generateOceanShrines)
+                .putBoolean(NbtTags.GEN_MONUMENTS, CONFIG.generateMonuments)
                 .putBoolean(NbtTags.GEN_INFDEV_PYRAMID, CONFIG.generateInfdevPyramid)
                 .putBoolean(NbtTags.GEN_INFDEV_WALL, CONFIG.generateInfdevWall)
                 .build()
@@ -90,7 +91,13 @@ public class ChunkProviderSettings {
     
     public static Settings createSettingsIndev() {
         return new ImmutableSettings(
-            createSettingsPreInf(ModernBetaBuiltInTypes.Chunk.INDEV.name)
+            createSettingsBase(ModernBetaBuiltInTypes.Chunk.INDEV.name)
+                .putBoolean(NbtTags.GEN_OCEAN_SHRINES, CONFIG.generateOceanShrines)
+                .putBoolean(NbtTags.GEN_MONUMENTS, CONFIG.generateMonuments)
+                .putInt(NbtTags.LEVEL_WIDTH, CONFIG.levelWidth)
+                .putInt(NbtTags.LEVEL_LENGTH, CONFIG.levelLength)
+                .putInt(NbtTags.LEVEL_HEIGHT, CONFIG.levelHeight)
+                .putFloat(NbtTags.LEVEL_CAVE_RADIUS, CONFIG.caveRadius)
                 .putString(NbtTags.LEVEL_TYPE, CONFIG.levelType)
                 .putString(NbtTags.LEVEL_THEME, CONFIG.levelTheme)
                 .build()
@@ -99,13 +106,21 @@ public class ChunkProviderSettings {
     
     public static Settings createSettingsClassic030() {
         return new ImmutableSettings(
-            createSettingsPreInf(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.name).build()
+            createSettingsBase(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.name)
+                .putBoolean(NbtTags.GEN_OCEAN_SHRINES, CONFIG.generateOceanShrines)
+                .putBoolean(NbtTags.GEN_MONUMENTS, CONFIG.generateMonuments)
+                .putInt(NbtTags.LEVEL_WIDTH, CONFIG.levelWidth)
+                .putInt(NbtTags.LEVEL_LENGTH, CONFIG.levelLength)
+                .putInt(NbtTags.LEVEL_HEIGHT, CONFIG.levelHeight)
+                .putFloat(NbtTags.LEVEL_CAVE_RADIUS, CONFIG.caveRadius)
+                .build()
         );
     }
     
     public static Settings createSettingsIslands() {
         return new ImmutableSettings(
-            createSettingsClimate(ModernBetaBuiltInTypes.Chunk.BETA_ISLANDS.name)
+            createSettingsOcean(ModernBetaBuiltInTypes.Chunk.BETA_ISLANDS.name)
+                .putBoolean(NbtTags.SAMPLE_CLIMATE, CONFIG.sampleClimate)
                 .putBoolean(NbtTags.GEN_OUTER_ISLANDS, CONFIG.generateOuterIslands)
                 .putInt(NbtTags.CENTER_ISLAND_RADIUS, CONFIG.centerIslandRadius)
                 .putFloat(NbtTags.CENTER_ISLAND_FALLOFF, CONFIG.centerIslandFalloff)
@@ -119,7 +134,9 @@ public class ChunkProviderSettings {
     
     public static Settings createSettingsPE() {
         return new ImmutableSettings(
-            createSettingsClimate(ModernBetaBuiltInTypes.Chunk.PE.name).build()
+            createSettingsOcean(ModernBetaBuiltInTypes.Chunk.PE.name)
+                .putBoolean(NbtTags.SAMPLE_CLIMATE, CONFIG.sampleClimate)
+                .build()
         );
     }
 }

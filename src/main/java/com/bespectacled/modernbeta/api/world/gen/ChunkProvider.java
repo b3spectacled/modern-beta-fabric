@@ -120,8 +120,7 @@ public abstract class ChunkProvider {
             chunkGenerator.getGeneratorSettings().value().seaLevel(), 
             this.seed, 
             this.randomProvider,
-            this,
-            this.generatorSettings.value().defaultBlock()
+            this
         );
         
         this.generateDeepslate = NbtUtil.toBoolean(this.providerSettings.get(NbtTags.GEN_DEEPSLATE), false);

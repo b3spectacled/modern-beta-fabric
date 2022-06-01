@@ -26,11 +26,12 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Biome.BETA.name,
             ModernBetaBuiltInTypes.CaveBiome.VORONOI.name, 
             BetaBiomes.FOREST_KEY.getValue().toString(), 
-            ModernBetaBuiltInTypes.WorldScreen.BASE.name,
-            true,
+            ModernBetaBuiltInTypes.DEFAULT_ID,
             false,
-            true,
-            true
+            false,
+            false,
+            false,
+            false
         );
         
         BETA = new WorldProvider(
@@ -38,9 +39,10 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Biome.BETA.name,
             ModernBetaBuiltInTypes.CaveBiome.VORONOI.name, 
             BetaBiomes.FOREST_KEY.getValue().toString(), 
-            ModernBetaBuiltInTypes.WorldScreen.INF_CLIMATE.name,
+            ModernBetaBuiltInTypes.WorldScreen.BETA.name,
             true,
             false,
+            true,
             true,
             true
         );
@@ -50,10 +52,11 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Biome.SINGLE.name, 
             ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
             BetaBiomes.SKY_KEY.getValue().toString(), 
-            ModernBetaBuiltInTypes.DEFAULT_ID,
+            ModernBetaBuiltInTypes.WorldScreen.NOISE.name,
             false,
             false,
             false,
+            true,
             true
         );
         
@@ -62,10 +65,11 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Biome.SINGLE.name, 
             ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
             InfBiomes.ALPHA_KEY.getValue().toString(), 
-            ModernBetaBuiltInTypes.WorldScreen.INF.name,
+            ModernBetaBuiltInTypes.WorldScreen.NOISE.name,
             true,
             false,
-            false,
+            true,
+            true,
             true
         );
         
@@ -74,10 +78,11 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Biome.SINGLE.name,
             ModernBetaBuiltInTypes.CaveBiome.NONE.name,
             InfBiomes.INFDEV_611_KEY.getValue().toString(),
-            ModernBetaBuiltInTypes.WorldScreen.INF.name,
+            ModernBetaBuiltInTypes.WorldScreen.NOISE.name,
             false,
             true,
-            false,
+            true,
+            true,
             true
         );
         
@@ -86,10 +91,11 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Biome.SINGLE.name, 
             ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
             InfBiomes.INFDEV_420_KEY.getValue().toString(), 
-            ModernBetaBuiltInTypes.WorldScreen.INF.name,
+            ModernBetaBuiltInTypes.WorldScreen.NOISE.name,
             true,
             false,
-            false,
+            true,
+            true,
             true
         );
         
@@ -98,10 +104,12 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Biome.SINGLE.name, 
             ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
             InfBiomes.INFDEV_415_KEY.getValue().toString(), 
-            ModernBetaBuiltInTypes.WorldScreen.INF.name,
+            ModernBetaBuiltInTypes.WorldScreen.NOISE.name,
             true,
             false,
-            false, true
+            true,
+            true,
+            true
         );
         
         INFDEV_227 = new WorldProvider(
@@ -113,7 +121,8 @@ public class ModernBetaBuiltInWorldProviders {
             true,
             false,
             false,
-            true
+            false,
+            false
         );
         
         INDEV = new WorldProvider(
@@ -125,6 +134,7 @@ public class ModernBetaBuiltInWorldProviders {
             true,
             false,
             false,
+            false,
             false
         );
         
@@ -133,8 +143,9 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Biome.SINGLE.name, 
             ModernBetaBuiltInTypes.CaveBiome.NONE.name,
             IndevBiomes.INDEV_NORMAL_KEY.getValue().toString(), 
-            ModernBetaBuiltInTypes.WorldScreen.PRE_INF.name,
+            ModernBetaBuiltInTypes.WorldScreen.CLASSIC.name,
             true,
+            false,
             false,
             false,
             false
@@ -149,6 +160,7 @@ public class ModernBetaBuiltInWorldProviders {
             false,
             true,
             true,
+            true,
             true
         );
         
@@ -157,10 +169,11 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Biome.PE.name,
             ModernBetaBuiltInTypes.CaveBiome.NONE.name,
             PEBiomes.PE_FOREST_KEY.getValue().toString(),
-            ModernBetaBuiltInTypes.WorldScreen.INF_CLIMATE.name,
+            ModernBetaBuiltInTypes.WorldScreen.BETA.name,
             true,
             false,
-            false,
+            true,
+            true,
             true
         );
     }

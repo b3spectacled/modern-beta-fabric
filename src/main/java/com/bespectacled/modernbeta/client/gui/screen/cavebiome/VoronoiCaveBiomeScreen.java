@@ -9,7 +9,7 @@ import com.bespectacled.modernbeta.client.gui.wrapper.BooleanCyclingOptionWrappe
 import com.bespectacled.modernbeta.client.gui.wrapper.DoubleOptionWrapper;
 import com.bespectacled.modernbeta.client.gui.wrapper.TextOptionWrapper;
 import com.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome.CaveBiomeVoronoiPoint;
-import com.bespectacled.modernbeta.util.GuiUtil;
+import com.bespectacled.modernbeta.util.GUIUtil;
 import com.bespectacled.modernbeta.util.NbtListBuilder;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
@@ -165,7 +165,7 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
                 },
                 this.registryManager.<Biome>get(Registry.BIOME_KEY).getOrCreateEntry(biomeKey)
             ))
-        ).suffix(GuiUtil.createTranslatableBiomeStringFromId(biomeId)).truncate(false);
+        ).suffix(GUIUtil.createTranslatableBiomeStringFromId(biomeId)).truncate(false);
     }
     
     private ActionOptionWrapper addVoronoiEntry() {

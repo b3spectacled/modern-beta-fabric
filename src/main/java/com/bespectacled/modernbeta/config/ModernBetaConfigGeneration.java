@@ -17,6 +17,8 @@ public class ModernBetaConfigGeneration implements ConfigData {
     public boolean generateMonuments = false;
     public boolean sampleClimate = true;
     public boolean generateDeepslate = true;
+    public boolean generateNoiseCaves = true;
+    public boolean generateNoodleCaves = true;
 
     // Infdev 227
     public boolean generateInfdevPyramid = true;

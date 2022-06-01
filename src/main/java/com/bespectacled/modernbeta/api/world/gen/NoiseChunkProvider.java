@@ -24,6 +24,7 @@ import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.blocksource.BlockSourceRules;
 import com.bespectacled.modernbeta.world.gen.blocksource.SimpleBlockSource;
 import com.bespectacled.modernbeta.world.gen.sampler.DensitySampler;
+import com.bespectacled.modernbeta.world.gen.sampler.NoiseCaveSampler;
 import com.bespectacled.modernbeta.world.gen.sampler.NoodleCaveSampler;
 import com.bespectacled.modernbeta.world.gen.sampler.OreVeinSampler;
 import com.google.common.collect.Sets;
@@ -90,6 +91,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     
     private final AquiferSamplerProvider aquiferSamplerProvider;
     
+    private final NoiseCaveSampler noiseCaveSampler;
     private final OreVeinSampler oreVeinSampler;
     private final NoodleCaveSampler noodleCaveSampler;
     
@@ -129,10 +131,11 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         this.topSlide = shapeConfig.topSlide();
         this.bottomSlide = shapeConfig.bottomSlide();
         
-        this.generateAquifers = generatorSettings.hasAquifers();
-        this.generateNoiseCaves = false;
-        this.generateNoodleCaves = false;
-        this.generateOreVeins = false;
+        this.generateAquifers = generatorSettings.aquifers();
+        this.generateOreVeins = generatorSettings.oreVeins();
+        
+        this.generateNoiseCaves = NbtUtil.toBoolean(providerSettings.get(NbtTags.GEN_NOISE_CAVES), ModernBeta.GEN_CONFIG.generateNoiseCaves);
+        this.generateNoodleCaves = NbtUtil.toBoolean(providerSettings.get(NbtTags.GEN_NOODLE_CAVES), ModernBeta.GEN_CONFIG.generateNoodleCaves);
         
         this.baseNoiseCache = new ChunkCache<>(
             "base_noise",
@@ -176,8 +179,11 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
             this.generateAquifers
         );
         
+        // Samplers
+        this.noiseCaveSampler = new NoiseCaveSampler(this.noiseRegistry, randomDeriver, this.noiseMinY);
+        
         this.oreVeinSampler = new OreVeinSampler(
-            noiseRegistry, 
+            this.noiseRegistry, 
             randomDeriver,
             this.horizontalNoiseResolution,
             this.verticalNoiseResolution,
@@ -186,7 +192,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         );
         
         this.noodleCaveSampler = new NoodleCaveSampler(
-            noiseRegistry,
+            this.noiseRegistry,
             randomDeriver,
             this.horizontalNoiseResolution,
             this.verticalNoiseResolution
@@ -295,6 +301,29 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     );
     
     /**
+     * Samples density for noise cave.
+     * @param noise Base density.
+     * @param noiseX x-coordinate in absolute noise coordinates.
+     * @param noiseY y-coordinate in absolute noise coordinates.
+     * @param noiseZ z-coordinate in absolute noise coordinates.
+     * 
+     * @return Modified noise density.
+     */
+    protected double sampleNoiseCave(double noise, double tunnelOffset, int noiseX, int noiseY, int noiseZ) {
+        if (this.generateNoiseCaves) {
+            return this.noiseCaveSampler.sample(
+                noise,
+                tunnelOffset,
+                noiseX * this.horizontalNoiseResolution, 
+                noiseY * this.verticalNoiseResolution, 
+                noiseZ * this.horizontalNoiseResolution
+            );
+        }
+        
+        return noise;
+    }
+    
+    /**
      * Interpolate density to set terrain curve at top and bottom of world.
      * 
      * @param density Base density.
@@ -353,7 +382,13 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         NoiseProvider baseNoiseProvider = this.baseNoiseCache.get(chunkX, chunkZ);
         DensitySampler noodleCaveSampler = this.createNoodleCaveNoiseProviders(chunkPos, noiseProviders::add);
         SimpleBlockSource oreVeinBlockSource = this.createOreVeinProviders(chunkPos, noiseProviders::add);
-        SimpleBlockSource baseBlockSource = this.getBaseBlockSource(baseNoiseProvider, structureWeightSampler, aquiferSampler, noodleCaveSampler, new SimpleNoisePos());
+        SimpleBlockSource baseBlockSource = this.getBaseBlockSource(
+            baseNoiseProvider,
+            structureWeightSampler,
+            aquiferSampler,
+            noodleCaveSampler,
+            new SimpleNoisePos()
+        );
         
         // Create and populate block sources
         BlockSourceRules blockSources = new BlockSourceRules.Builder()
@@ -599,7 +634,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
             double reducingNoise = noodleThicknessNoise.sample();
             double firstNoise = noodleFirstNoise.sample();
             double secondNoise = noodleSecondNoise.sample();
-            
+
             return this.noodleCaveSampler.sampleDensity(
                 density,
                 x, y, z,
