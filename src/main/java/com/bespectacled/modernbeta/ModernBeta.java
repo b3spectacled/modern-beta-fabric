@@ -34,7 +34,7 @@ import net.minecraft.util.Identifier;
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
     public static final String MOD_NAME = "Modern Beta";
-    public static final int MOD_VERSION = 3;
+    public static final int MOD_VERSION = 4;
     
     public static final boolean CLIENT_ENV = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     public static final boolean DEV_ENV = FabricLoader.getInstance().isDevelopmentEnvironment();
