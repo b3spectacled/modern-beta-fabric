@@ -21,22 +21,27 @@ public class OldBiomeFeatures {
     /* Beta Biomes */
     
     public static void addDesertFeatures(GenerationSettings.Builder builder, boolean pe) {
+        DefaultBiomeFeatures.addFossils(builder);
+        
         addDefaultFeatures(builder, pe ? OldFeatureSettings.PE : OldFeatureSettings.BETA);
         
         DefaultBiomeFeatures.addDesertFeatures(builder);
-        DefaultBiomeFeatures.addFossils(builder);
         
         if (pe) {
             addPEVegetation(builder, false);
             builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.PATCH_CACTUS_PE);
+            
+            DefaultBiomeFeatures.addDefaultMushrooms(builder);
+            DefaultBiomeFeatures.addDefaultVegetation(builder);
         } else {
             builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.PATCH_POPPY);
             builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_DEAD_BUSH_2);
+
+            DefaultBiomeFeatures.addDefaultMushrooms(builder);
+            DefaultBiomeFeatures.addDefaultVegetation(builder);
+            
             builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_CACTUS_DESERT);
         }
-        
-        DefaultBiomeFeatures.addDefaultMushrooms(builder);
-        DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
     public static void addForestFeatures(GenerationSettings.Builder builder, boolean pe) {
@@ -83,6 +88,9 @@ public class OldBiomeFeatures {
         }
         
         builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.FLOWER_PLAIN);
+
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
     public static void addRainforestFeatures(GenerationSettings.Builder builder, boolean pe) {
@@ -315,6 +323,8 @@ public class OldBiomeFeatures {
         
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.TREES_INFDEV_611_BEES);
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
+        
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
     }
     
     public static void addInfdev420Features(GenerationSettings.Builder builder) {
@@ -322,6 +332,8 @@ public class OldBiomeFeatures {
         
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.TREES_INFDEV_420_BEES);
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
+        
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
     }
     
     public static void addInfdev415Features(GenerationSettings.Builder builder) {
@@ -329,6 +341,8 @@ public class OldBiomeFeatures {
         
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.TREES_INFDEV_415_BEES);
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
+        
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
     }
     
     public static void addInfdev227Features(GenerationSettings.Builder builder) {
@@ -336,6 +350,8 @@ public class OldBiomeFeatures {
         
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.PATCH_DANDELION_INFDEV_227);
+        
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
     }
     
     /* Indev Biomes */
@@ -348,6 +364,8 @@ public class OldBiomeFeatures {
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.TREES_INDEV_BEES);
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.MUSHROOM_HELL);
+        
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
     }
     
     public static void addIndevNormalFeatures(GenerationSettings.Builder builder) {
@@ -357,6 +375,8 @@ public class OldBiomeFeatures {
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.PATCH_POPPY);
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.TREES_INDEV_BEES);
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
+
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
     }
     
     public static void addIndevParadiseFeatures(GenerationSettings.Builder builder) {
@@ -365,6 +385,8 @@ public class OldBiomeFeatures {
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.PATCH_FLOWER_PARADISE);
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.TREES_INDEV_BEES);
         builder.feature(Feature.VEGETAL_DECORATION, OldVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
+
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
     }
     
     public static void addIndevSnowyFeatures(GenerationSettings.Builder builder) {
@@ -404,7 +426,6 @@ public class OldBiomeFeatures {
         if (addLakes) addLakes(builder);
         DefaultBiomeFeatures.addDungeons(builder);
         DefaultBiomeFeatures.addDefaultOres(builder);
-        DefaultBiomeFeatures.addDefaultMushrooms(builder);
         if (addSprings) DefaultBiomeFeatures.addSprings(builder);
         DefaultBiomeFeatures.addAmethystGeodes(builder);
     }
