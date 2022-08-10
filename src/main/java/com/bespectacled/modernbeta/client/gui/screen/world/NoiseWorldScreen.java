@@ -14,9 +14,6 @@ import com.bespectacled.modernbeta.util.settings.WorldSettings.WorldSetting;
 import net.minecraft.nbt.NbtByte;
 
 public class NoiseWorldScreen extends SettingsScreen {
-    private static final String GENERATE_NOISE_CAVES_DISPLAY_STRING = "createWorld.customize.noise.generateNoiseCaves";
-    private static final String GENERATE_NOODLE_CAVES_DISPLAY_STRING = "createWorld.customize.noise.generateNoodleCaves";
-
     protected NoiseWorldScreen(WorldScreen parent, WorldSetting worldSetting, Consumer<Settings> consumer, Settings setting) {
         super(parent, worldSetting, consumer, setting);
     }
@@ -37,26 +34,12 @@ public class NoiseWorldScreen extends SettingsScreen {
     protected void init() {
         super.init();
         
-        BooleanCyclingOptionWrapper generateNoiseCaves = new BooleanCyclingOptionWrapper(
-            GENERATE_NOISE_CAVES_DISPLAY_STRING,
-            () -> NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.GEN_NOISE_CAVES)),
-            value -> this.putSetting(NbtTags.GEN_NOISE_CAVES, NbtByte.of(value))
-        );
-        
-        BooleanCyclingOptionWrapper generateNoodleCaves = new BooleanCyclingOptionWrapper(
-            GENERATE_NOODLE_CAVES_DISPLAY_STRING,
-            () -> NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.GEN_NOODLE_CAVES)),
-            value -> this.putSetting(NbtTags.GEN_NOODLE_CAVES, NbtByte.of(value))
-        );
-        
         BooleanCyclingOptionWrapper generateDeepslate = new BooleanCyclingOptionWrapper(
             GUITags.GENERATE_DEEPSLATE_DISPLAY_STRING,
             () -> NbtUtil.toBooleanOrThrow(this.getSetting(NbtTags.GEN_DEEPSLATE)),
             value -> this.putSetting(NbtTags.GEN_DEEPSLATE, NbtByte.of(value))
         );
-        
-        this.addOption(generateNoiseCaves);
-        this.addOption(generateNoodleCaves);
+
         this.addOption(generateDeepslate);
     }
 }

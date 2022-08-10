@@ -33,7 +33,6 @@ import com.bespectacled.modernbeta.world.gen.provider.Infdev611ChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.PEChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.SkylandsChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
-import com.bespectacled.modernbeta.world.gen.sampler.OreVeinRules;
 
 /*
  * Registration of built-in providers for various things.
@@ -148,18 +147,5 @@ public class ModernBetaBuiltInProviders {
         Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.name, ModernBetaBuiltInWorldProviders.CLASSIC_0_30);
         Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.BETA_ISLANDS.name, ModernBetaBuiltInWorldProviders.BETA_ISLANDS);
         Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.PE.name, ModernBetaBuiltInWorldProviders.PE);
-    }
-    
-    // Register default ore vein types, currently bound to chunk type
-    public static void registerOreVeinRules() {
-        Registries.ORE_VEIN_RULES.register(ModernBetaBuiltInTypes.DEFAULT_ID, OreVeinRules.DEFAULT_VEIN_RULES);
-        Registries.ORE_VEIN_RULES.register(ModernBetaBuiltInTypes.Chunk.BETA.name, OreVeinRules.BETA_VEIN_RULES);
-        Registries.ORE_VEIN_RULES.register(ModernBetaBuiltInTypes.Chunk.SKYLANDS.name, OreVeinRules.SKYLANDS_VEIN_RULES);
-        Registries.ORE_VEIN_RULES.register(ModernBetaBuiltInTypes.Chunk.ALPHA.name, OreVeinRules.OLD_VEIN_RULES);
-        Registries.ORE_VEIN_RULES.register(ModernBetaBuiltInTypes.Chunk.INFDEV_611.name, OreVeinRules.OLD_VEIN_RULES);
-        Registries.ORE_VEIN_RULES.register(ModernBetaBuiltInTypes.Chunk.INFDEV_420.name, OreVeinRules.OLD_VEIN_RULES);
-        Registries.ORE_VEIN_RULES.register(ModernBetaBuiltInTypes.Chunk.INFDEV_415.name, OreVeinRules.OLD_VEIN_RULES);
-        Registries.ORE_VEIN_RULES.register(ModernBetaBuiltInTypes.Chunk.BETA_ISLANDS.name, OreVeinRules.BETA_VEIN_RULES);
-        Registries.ORE_VEIN_RULES.register(ModernBetaBuiltInTypes.Chunk.PE.name, OreVeinRules.OLD_VEIN_RULES);
     }
 }
