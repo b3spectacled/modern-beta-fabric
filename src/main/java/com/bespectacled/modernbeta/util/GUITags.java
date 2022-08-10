@@ -5,8 +5,7 @@ public class GUITags {
     public static final String GENERATE_MONUMENTS_DISPLAY_STRING = "createWorld.customize.inf.generateMonuments";
     public static final String GENERATE_DEEPSLATE_DISPLAY_STRING = "createWorld.customize.inf.generateDeepslate";
     
-    public static final String GENERATE_NOISE_CAVES_DISPLAY_STRING = "createWorld.customize.noise.generateNoiseCaves";
-    public static final String GENERATE_NOODLE_CAVES_DISPLAY_STRING = "createWorld.customize.noise.generateNoodleCaves";
+    public static final String NOISE_POST_PROCESSOR_DISPLAY_STRING = "createWorld.customize.noise.noisePostProcessor";
     
     public static final String SAMPLE_CLIMATE_DISPLAY_STRING = "createWorld.customize.inf.sampleClimate";
     public static final String SAMPLE_CLIMATE_TOOLTIP = "createWorld.customize.inf.sampleClimate.tooltip";

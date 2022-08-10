@@ -34,8 +34,8 @@
     
     "createWorld.customize.hydrogenLoaded": "Hydrogen detected! 'Assign Ocean Biomes' option is disabled.",
     
-    "createWorld.customize.noise.generateNoiseCaves": "Generate Noise Caves",
-    "createWorld.customize.noise.generateNoodleCaves": "Generate Noodle Caves",
+    "createWorld.customize.noise.noisePostProcessor": "Noise Post Processor",
+    "createWorld.customize.noise.noisePostProcessor.none": "None",
     
     "createWorld.customize.inf.generateOceanShrines": "Generate Ocean Shrines",
     "createWorld.customize.inf.generateMonuments": "Generate Monuments",

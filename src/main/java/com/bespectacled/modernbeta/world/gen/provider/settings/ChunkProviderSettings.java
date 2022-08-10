@@ -17,9 +17,8 @@ public class ChunkProviderSettings {
     
     private static NbtCompoundBuilder createSettingsNoise(String worldType) {
         return createSettingsBase(worldType)
-            .putBoolean(NbtTags.GEN_NOISE_CAVES, CONFIG.generateNoiseCaves)
-            .putBoolean(NbtTags.GEN_NOODLE_CAVES, CONFIG.generateNoodleCaves)
-            .putBoolean(NbtTags.GEN_DEEPSLATE, CONFIG.generateDeepslate);
+            .putBoolean(NbtTags.GEN_DEEPSLATE, CONFIG.generateDeepslate)
+            .putString(NbtTags.NOISE_POST_PROCESSOR, CONFIG.noisePostProcessor);
     }
     
     private static NbtCompoundBuilder createSettingsOcean(String worldType) {
