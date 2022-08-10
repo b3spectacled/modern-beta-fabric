@@ -9,6 +9,7 @@ import java.util.concurrent.Executor;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.world.gen.noise.BaseNoiseProvider;
+import com.bespectacled.modernbeta.api.world.gen.noise.NoisePostProcessor;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoiseProvider;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
@@ -72,7 +73,6 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     protected final double yFactor;
     
     protected final boolean generateAquifers;
-    protected final boolean hasNoisePostProcessor;
     
     private final SlideConfig topSlide;
     private final SlideConfig bottomSlide;
@@ -81,6 +81,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     private final ChunkCache<HeightmapChunk> heightmapCache;
     
     private final AquiferSamplerProvider aquiferSamplerProvider;
+    private final NoisePostProcessor noisePostProcessor;
     
     public NoiseChunkProvider(OldChunkGenerator chunkGenerator) {
         super(chunkGenerator);
@@ -119,7 +120,6 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         this.bottomSlide = shapeConfig.bottomSlide();
         
         this.generateAquifers = generatorSettings.aquifers();
-        this.hasNoisePostProcessor = false;
 
         this.baseNoiseCache = new ChunkCache<>(
             "base_noise",
@@ -162,6 +162,8 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
             this.verticalNoiseResolution,
             this.generateAquifers
         );
+        
+        this.noisePostProcessor = NoisePostProcessor.DEFAULT;
     }
 
     /**
@@ -275,8 +277,16 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
      * @return Modified noise density.
      */
     protected double sampleNoisePostProcessor(double noise, int noiseX, int noiseY, int noiseZ) {
-
-        return noise;
+        return this.noisePostProcessor.sample(noise, noiseX, noiseY, noiseZ);
+    }
+    
+    /**
+     * Check if default noise post processor (i.e. NONE) is being used.
+     * 
+     * @return Whether default noise post processor is being used.
+     */
+    protected boolean hasNoisePostProcessor() {
+        return this.noisePostProcessor != NoisePostProcessor.DEFAULT;
     }
     
     /**

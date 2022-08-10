@@ -59,4 +59,13 @@ public final class ModernBetaBuiltInTypes {
         
         private WorldScreen(String name) { this.name = name; }
     }
+    
+    public enum NoisePostProcessor {
+        NONE("none")
+        ;
+        
+        public final String name;
+        
+        private NoisePostProcessor(String name) { this.name = name; }
+    }
 }

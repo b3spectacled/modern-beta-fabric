@@ -1,6 +1,7 @@
 package com.bespectacled.modernbeta;
 
 import com.bespectacled.modernbeta.api.registry.Registries;
+import com.bespectacled.modernbeta.api.world.gen.noise.NoisePostProcessor;
 import com.bespectacled.modernbeta.client.gui.screen.biome.ClimateBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.biome.SingleBiomeScreen;
 import com.bespectacled.modernbeta.client.gui.screen.biome.VanillaBiomeScreen;
@@ -147,5 +148,9 @@ public class ModernBetaBuiltInProviders {
         Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.name, ModernBetaBuiltInWorldProviders.CLASSIC_0_30);
         Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.BETA_ISLANDS.name, ModernBetaBuiltInWorldProviders.BETA_ISLANDS);
         Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.PE.name, ModernBetaBuiltInWorldProviders.PE);
+    }
+    
+    public static void registerNoisePostProcessors() {
+        Registries.NOISE_POST_PROCESSORS.register(ModernBetaBuiltInTypes.NoisePostProcessor.NONE.name, NoisePostProcessor.DEFAULT);
     }
 }
