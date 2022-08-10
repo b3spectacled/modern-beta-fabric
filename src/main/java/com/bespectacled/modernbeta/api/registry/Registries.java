@@ -8,6 +8,7 @@ import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import com.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
+import com.bespectacled.modernbeta.api.world.gen.noise.NoisePostProcessor;
 import com.bespectacled.modernbeta.client.gui.screen.WorldScreen;
 import com.bespectacled.modernbeta.util.function.TriFunction;
 import com.bespectacled.modernbeta.util.settings.Settings;
@@ -28,6 +29,7 @@ public final class Registries {
     public static final Registry<Supplier<Settings>> CHUNK_SETTINGS;
     public static final Registry<WorldProvider> WORLD;
     public static final Registry<BiFunction<WorldScreen, WorldSetting, Screen>> WORLD_SCREEN;
+    public static final Registry<NoisePostProcessor> NOISE_POST_PROCESSORS;
     
     static {
         BIOME = new Registry<>("BIOME");
@@ -40,5 +42,6 @@ public final class Registries {
         CHUNK_SETTINGS = new Registry<>("CHUNK_SETTINGS");
         WORLD = new Registry<>("WORLD");
         WORLD_SCREEN = new Registry<>("WORLD_SCREEN");
+        NOISE_POST_PROCESSORS = new Registry<>("NOISE_POST_PROCESSOR");
     }
 }

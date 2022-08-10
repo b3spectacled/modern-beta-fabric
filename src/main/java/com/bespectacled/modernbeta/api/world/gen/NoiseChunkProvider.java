@@ -72,9 +72,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     protected final double yFactor;
     
     protected final boolean generateAquifers;
-    protected final boolean generateNoiseCaves;
-    protected final boolean generateNoodleCaves;
-    protected final boolean generateOreVeins;
+    protected final boolean hasNoisePostProcessor;
     
     private final SlideConfig topSlide;
     private final SlideConfig bottomSlide;
@@ -121,11 +119,8 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         this.bottomSlide = shapeConfig.bottomSlide();
         
         this.generateAquifers = generatorSettings.aquifers();
-        this.generateOreVeins = generatorSettings.oreVeins();
-        
-        this.generateNoiseCaves = NbtUtil.toBoolean(providerSettings.get(NbtTags.GEN_NOISE_CAVES), ModernBeta.GEN_CONFIG.generateNoiseCaves);
-        this.generateNoodleCaves = NbtUtil.toBoolean(providerSettings.get(NbtTags.GEN_NOODLE_CAVES), ModernBeta.GEN_CONFIG.generateNoodleCaves);
-        
+        this.hasNoisePostProcessor = false;
+
         this.baseNoiseCache = new ChunkCache<>(
             "base_noise",
             1536,
@@ -271,17 +266,16 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     );
     
     /**
-     * Samples density for noise cave.
+     * Samples density for noise post processor.
+     * 
      * @param noise Base density.
      * @param noiseX x-coordinate in absolute noise coordinates.
      * @param noiseY y-coordinate in absolute noise coordinates.
      * @param noiseZ z-coordinate in absolute noise coordinates.
-     * 
      * @return Modified noise density.
      */
-    protected double sampleNoiseCave(double noise, double tunnelOffset, int noiseX, int noiseY, int noiseZ) {
-        if (this.generateNoiseCaves) {}
-        
+    protected double sampleNoisePostProcessor(double noise, int noiseX, int noiseY, int noiseZ) {
+
         return noise;
     }
     

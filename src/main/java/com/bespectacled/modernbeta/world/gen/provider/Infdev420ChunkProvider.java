@@ -81,7 +81,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                 int x = startX + localX;
                 int z = startZ + localZ;
                 int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
-                int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 
+                int surfaceMinY = (this.hasNoisePostProcessor) ? 
                     heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
                     this.worldMinY;
                 
@@ -221,8 +221,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         double heightStretch = 12D;
         
         // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
-        double densityScale = 128.0; 
-        double tunnelThreshold = 50.0 / densityScale;
+        double densityScale = 128.0;
         
         for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
@@ -283,7 +282,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             heightmapDensity = density;
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
+            density = this.sampleNoisePostProcessor(density, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applySlides(density, y);

@@ -169,7 +169,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
                 int x = startX + localX;
                 int z = startZ + localZ;
                 int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
-                int surfaceMinY = (this.generateNoiseCaves || this.generateNoodleCaves) ? 
+                int surfaceMinY = (this.hasNoisePostProcessor) ? 
                     heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
                     this.worldMinY;
                 
@@ -322,8 +322,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         
         // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
         double densityScale = 128.0;
-        double tunnelThreshold = 200.0 / densityScale;
-        
+
         Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();
         double rain = clime.rain() * temp;
@@ -447,7 +446,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
             heightmapDensity = density;
             
             // Sample for noise caves
-            density = this.sampleNoiseCave(density, tunnelThreshold, noiseX, noiseY, noiseZ);
+            density = this.sampleNoisePostProcessor(density, noiseX, noiseY, noiseZ);
             
             // Apply slides
             density = this.applySlides(density, y);
