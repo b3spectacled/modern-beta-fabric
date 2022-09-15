@@ -15,6 +15,8 @@ import net.minecraft.world.gen.random.AtomicSimpleRandom;
 import net.minecraft.world.gen.random.RandomDeriver;
 
 public class AquiferSamplerProvider {
+    private static final int FAR_LANDS_BOUNDARY = 12550821;
+    
     private final NoiseRouter noiseRouter;
     private final RandomDeriver aquiferRandomDeriver;
     
@@ -67,7 +69,14 @@ public class AquiferSamplerProvider {
         FluidLevel lavaFluidLevel = new FluidLevel(lavaLevel, BlockStates.LAVA); // Vanilla: -54
         FluidLevel seaFluidLevel = new FluidLevel(seaLevel, defaultFluid);
         
-        this.fluidLevelSampler = (x, y, z) -> y < lavaLevel ? lavaFluidLevel : seaFluidLevel;
+        this.fluidLevelSampler = (x, y, z) -> {
+            // Do not generate lava past Far Lands boundary
+            if (Math.abs(x) >= FAR_LANDS_BOUNDARY || Math.abs(z) >= FAR_LANDS_BOUNDARY)
+                return seaFluidLevel;
+            
+            return y < lavaLevel ? lavaFluidLevel : seaFluidLevel;
+        };
+        
         this.lavalessFluidLevelSampler = (x, y, z) -> seaFluidLevel;
         
         this.chunkSampler = chunkSampler;
