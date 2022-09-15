@@ -15,6 +15,7 @@ public class CompatTechReborn {
     private static final String FEATURE_SUFFIX = "";
     
     private static final String[] ORES = {
+        /*
         "bauxite_ore",
         "galena_ore",
         "iridium_ore",
@@ -23,6 +24,7 @@ public class CompatTechReborn {
         "sapphire_ore",
         "silver_ore",
         "tin_ore"
+        */
     };
     
     public static void addCompat() {
