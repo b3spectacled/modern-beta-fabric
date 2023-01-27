@@ -3,7 +3,7 @@ package com.bespectacled.modernbeta.command;
 import static net.minecraft.server.command.CommandManager.literal;
 
 import com.bespectacled.modernbeta.util.settings.Settings;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
@@ -37,7 +37,7 @@ public class DebugProviderSettingsCommand {
             source.sendFeedback(new LiteralText(builder.toString()), false);
         }
         
-        if (source.getWorld().getChunkManager().getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) {
+        if (source.getWorld().getChunkManager().getChunkGenerator().getBiomeSource() instanceof ModernBetaBiomeSource oldBiomeSource) {
             validWorld = true;
             
             StringBuilder builder0 = new StringBuilder();

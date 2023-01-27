@@ -10,7 +10,7 @@ import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 
@@ -36,12 +36,12 @@ public class BiomeInjector {
         context.getY() >= context.worldMinY && context.getY() + CAVE_START_OFFSET < context.minHeight;
     
     private final OldChunkGenerator oldChunkGenerator;
-    private final OldBiomeSource oldBiomeSource;
+    private final ModernBetaBiomeSource oldBiomeSource;
     private final ChunkProvider chunkProvider;
     
     private final BiomeInjectionRules rules;
     
-    public BiomeInjector(OldChunkGenerator oldChunkGenerator, OldBiomeSource oldBiomeSource) {
+    public BiomeInjector(OldChunkGenerator oldChunkGenerator, ModernBetaBiomeSource oldBiomeSource) {
         this.oldChunkGenerator = oldChunkGenerator;
         this.oldBiomeSource = oldBiomeSource;
         this.chunkProvider = oldChunkGenerator.getChunkProvider();

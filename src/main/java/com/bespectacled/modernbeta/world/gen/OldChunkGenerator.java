@@ -16,7 +16,7 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.settings.ImmutableSettings;
 import com.bespectacled.modernbeta.util.settings.Settings;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import com.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import com.google.common.collect.Sets;
@@ -99,7 +99,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
         this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
         this.version = version;
     
-        this.biomeInjector = this.biomeSource instanceof OldBiomeSource oldBiomeSource ?
+        this.biomeInjector = this.biomeSource instanceof ModernBetaBiomeSource oldBiomeSource ?
             new BiomeInjector(this, oldBiomeSource) : 
             null;
     }
@@ -123,7 +123,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     @Override
     public void buildSurface(ChunkRegion region, StructureAccessor accessor, Chunk chunk) {
         if (!this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.SURFACE)) {
-            if (this.biomeSource instanceof OldBiomeSource oldBiomeSource) {
+            if (this.biomeSource instanceof ModernBetaBiomeSource oldBiomeSource) {
                 this.chunkProvider.provideSurface(region, chunk, oldBiomeSource);
             } else {
                 super.buildSurface(region, accessor, chunk);

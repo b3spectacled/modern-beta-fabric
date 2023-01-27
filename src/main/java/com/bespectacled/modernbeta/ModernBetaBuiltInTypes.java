@@ -25,7 +25,6 @@ public final class ModernBetaBuiltInTypes {
     public enum Biome {
         BETA("beta"),
         SINGLE("single"),
-        VANILLA("vanilla"),
         PE("pe")
         ;
         

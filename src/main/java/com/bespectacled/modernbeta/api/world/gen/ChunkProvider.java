@@ -14,7 +14,7 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.noise.SimpleDensityFunction;
 import com.bespectacled.modernbeta.util.settings.Settings;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.feature.placement.OldNoiseBasedCountPlacementModifier;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
@@ -146,7 +146,7 @@ public abstract class ChunkProvider {
      * @param chunk
      * @param biomeSource
      */
-    public abstract void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource);
+    public abstract void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource);
     
     /**
      * Sample height at given x/z coordinate. Initially generates heightmap for entire chunk, 

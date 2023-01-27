@@ -15,7 +15,7 @@ import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.noise.SimpleNoisePos;
 import com.bespectacled.modernbeta.util.noise.SimplexNoise;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
@@ -81,7 +81,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         );
 
         this.climateSampler = (
-            chunkGenerator.getBiomeSource() instanceof OldBiomeSource oldBiomeSource &&
+            chunkGenerator.getBiomeSource() instanceof ModernBetaBiomeSource oldBiomeSource &&
             oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
             sampleClimate
         ) ? climateSampler : new BetaBiomeProvider(chunkGenerator.getWorldSeed(), BiomeProviderSettings.createSettingsBeta(), null);
@@ -125,7 +125,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
     }
     
     @Override
-    public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
+    public void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource) {
         double scale = 0.03125;
 
         ChunkPos chunkPos = chunk.getPos();

@@ -16,7 +16,7 @@ import com.bespectacled.modernbeta.api.world.gen.ChunkProvider;
 import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import com.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
@@ -58,7 +58,7 @@ public class MixinDebugHud {
             ChunkGenerator chunkGenerator = serverWorld.getChunkManager().getChunkGenerator();
             BiomeSource biomeSource = chunkGenerator.getBiomeSource();
             
-            if (biomeSource instanceof OldBiomeSource oldBiomeSource) {
+            if (biomeSource instanceof ModernBetaBiomeSource oldBiomeSource) {
                 if (oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler) {
                     Clime clime = climateSampler.sample(x, z);
                     double temp = clime.temp();

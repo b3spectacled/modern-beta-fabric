@@ -19,7 +19,7 @@ import com.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
 import com.bespectacled.modernbeta.client.color.BetaBlockColors;
 import com.bespectacled.modernbeta.util.GenUtil;
 import com.bespectacled.modernbeta.util.ModernBetaClientWorld;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
@@ -90,7 +90,7 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
             
             worldSeed = this.client.getServer().getWorld(registryRef).getSeed();
             
-            if (biomeSource instanceof OldBiomeSource oldBiomeSource) {
+            if (biomeSource instanceof ModernBetaBiomeSource oldBiomeSource) {
                 BiomeProvider biomeProvider = oldBiomeSource.getBiomeProvider();
                 
                 if (biomeProvider instanceof ClimateSampler climateSampler)
@@ -100,7 +100,7 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
                     this.skyClimateSampler = Optional.ofNullable(skyClimateSampler);
             }
             
-            this.isModernBetaWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof OldBiomeSource;
+            this.isModernBetaWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof ModernBetaBiomeSource;
         }
         
         // Set Beta block colors seed.

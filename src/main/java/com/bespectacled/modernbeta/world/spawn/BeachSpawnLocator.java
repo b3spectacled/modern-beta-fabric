@@ -11,7 +11,7 @@ import com.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
 import com.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryEntry;
@@ -76,7 +76,7 @@ public class BeachSpawnLocator implements SpawnLocator {
             noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
             this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
 
-        RegistryEntry<Biome> biome = (this.chunkProvider.getChunkGenerator().getBiomeSource() instanceof OldBiomeSource oldBiomeSource) ? 
+        RegistryEntry<Biome> biome = (this.chunkProvider.getChunkGenerator().getBiomeSource() instanceof ModernBetaBiomeSource oldBiomeSource) ? 
             oldBiomeSource.getBiomeForSurfaceGen(x, y, z) :
             this.chunkProvider.getBiome(x >> 2, y >> 2, z >> 2, null);
         

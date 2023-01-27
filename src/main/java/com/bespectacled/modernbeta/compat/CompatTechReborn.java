@@ -1,6 +1,6 @@
 package com.bespectacled.modernbeta.compat;
 
-import com.bespectacled.modernbeta.world.biome.OldBiomes;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
@@ -29,7 +29,7 @@ public class CompatTechReborn {
         for (String o : ORES) {
             BiomeModifications.addFeature(
                 BiomeSelectors.includeByKey(
-                    OldBiomes.MODERN_BETA_BIOME_MAP
+                    ModernBetaBiomes.MODERN_BETA_BIOME_MAP
                     .keySet()
                     .stream()
                     .toList()

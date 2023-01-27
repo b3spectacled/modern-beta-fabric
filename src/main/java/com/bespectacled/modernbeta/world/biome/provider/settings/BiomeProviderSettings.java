@@ -52,12 +52,4 @@ public class BiomeProviderSettings {
                 .build()
         );
     }
-    
-    public static Settings createSettingsVanilla() {
-        return new ImmutableSettings(
-            createSettingsOceans(ModernBetaBuiltInTypes.Biome.VANILLA.name)
-                .putBoolean(NbtTags.VANILLA_LARGE_BIOMES, CONFIG.vanillaLargeBiomes)
-                .build()
-        );
-    }
 }

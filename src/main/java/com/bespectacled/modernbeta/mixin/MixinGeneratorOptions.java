@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.util.settings.ImmutableSettings;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
@@ -107,7 +107,7 @@ public class MixinGeneratorOptions {
             ChunkGenerator chunkGenerator = new OldChunkGenerator(
                 structuresRegistry,
                 noiseRegistry,
-                new OldBiomeSource(
+                new ModernBetaBiomeSource(
                     seed,
                     biomeRegistry,
                     biomeSettings,

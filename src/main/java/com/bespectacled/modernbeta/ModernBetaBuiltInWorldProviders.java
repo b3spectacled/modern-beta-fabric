@@ -1,9 +1,10 @@
 package com.bespectacled.modernbeta;
 
 import com.bespectacled.modernbeta.api.world.WorldProvider;
+import com.bespectacled.modernbeta.world.biome.alpha.AlphaBiomes;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 import com.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
-import com.bespectacled.modernbeta.world.biome.inf.InfBiomes;
+import com.bespectacled.modernbeta.world.biome.infdev.InfdevBiomes;
 import com.bespectacled.modernbeta.world.biome.pe.PEBiomes;
 
 public class ModernBetaBuiltInWorldProviders {
@@ -64,7 +65,7 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Chunk.ALPHA.name,
             ModernBetaBuiltInTypes.Biome.SINGLE.name, 
             ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
-            InfBiomes.ALPHA_KEY.getValue().toString(), 
+            AlphaBiomes.ALPHA_KEY.getValue().toString(), 
             ModernBetaBuiltInTypes.WorldScreen.NOISE.name,
             true,
             false,
@@ -77,7 +78,7 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Chunk.INFDEV_611.name,
             ModernBetaBuiltInTypes.Biome.SINGLE.name,
             ModernBetaBuiltInTypes.CaveBiome.NONE.name,
-            InfBiomes.INFDEV_611_KEY.getValue().toString(),
+            InfdevBiomes.INFDEV_611_KEY.getValue().toString(),
             ModernBetaBuiltInTypes.WorldScreen.NOISE.name,
             false,
             true,
@@ -90,7 +91,7 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Chunk.INFDEV_420.name,
             ModernBetaBuiltInTypes.Biome.SINGLE.name, 
             ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
-            InfBiomes.INFDEV_420_KEY.getValue().toString(), 
+            InfdevBiomes.INFDEV_420_KEY.getValue().toString(), 
             ModernBetaBuiltInTypes.WorldScreen.NOISE.name,
             true,
             false,
@@ -103,7 +104,7 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Chunk.INFDEV_415.name,
             ModernBetaBuiltInTypes.Biome.SINGLE.name, 
             ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
-            InfBiomes.INFDEV_415_KEY.getValue().toString(), 
+            InfdevBiomes.INFDEV_415_KEY.getValue().toString(), 
             ModernBetaBuiltInTypes.WorldScreen.NOISE.name,
             true,
             false,
@@ -116,7 +117,7 @@ public class ModernBetaBuiltInWorldProviders {
             ModernBetaBuiltInTypes.Chunk.INFDEV_227.name, 
             ModernBetaBuiltInTypes.Biome.SINGLE.name, 
             ModernBetaBuiltInTypes.CaveBiome.NONE.name, 
-            InfBiomes.INFDEV_227_KEY.getValue().toString(), 
+            InfdevBiomes.INFDEV_227_KEY.getValue().toString(), 
             ModernBetaBuiltInTypes.WorldScreen.INFDEV_227.name,
             true,
             false,

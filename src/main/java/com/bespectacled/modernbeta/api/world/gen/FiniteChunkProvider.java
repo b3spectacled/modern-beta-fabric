@@ -12,7 +12,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.settings.Settings;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.IndevSpawnLocator;
 
@@ -112,7 +112,7 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
     }
     
     @Override
-    public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
+    public void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource) {
         BlockPos.Mutable pos = new BlockPos.Mutable();
         
         int startX = chunk.getPos().getStartX();

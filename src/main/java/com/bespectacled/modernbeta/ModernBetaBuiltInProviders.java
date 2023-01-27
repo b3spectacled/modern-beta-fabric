@@ -2,21 +2,10 @@ package com.bespectacled.modernbeta;
 
 import com.bespectacled.modernbeta.api.registry.Registries;
 import com.bespectacled.modernbeta.api.world.gen.noise.NoisePostProcessor;
-import com.bespectacled.modernbeta.client.gui.screen.biome.ClimateBiomeScreen;
-import com.bespectacled.modernbeta.client.gui.screen.biome.SingleBiomeScreen;
-import com.bespectacled.modernbeta.client.gui.screen.biome.VanillaBiomeScreen;
-import com.bespectacled.modernbeta.client.gui.screen.cavebiome.VoronoiCaveBiomeScreen;
-import com.bespectacled.modernbeta.client.gui.screen.world.BetaWorldScreen;
-import com.bespectacled.modernbeta.client.gui.screen.world.ClassicWorldScreen;
-import com.bespectacled.modernbeta.client.gui.screen.world.IndevWorldScreen;
-import com.bespectacled.modernbeta.client.gui.screen.world.Infdev227WorldScreen;
-import com.bespectacled.modernbeta.client.gui.screen.world.IslandWorldScreen;
-import com.bespectacled.modernbeta.client.gui.screen.world.NoiseWorldScreen;
 import com.bespectacled.modernbeta.util.settings.ImmutableSettings;
 import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.PEBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
-import com.bespectacled.modernbeta.world.biome.provider.VanillaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.NoCaveBiomeProvider;
 import com.bespectacled.modernbeta.world.cavebiome.provider.SingleCaveBiomeProvider;
@@ -79,7 +68,6 @@ public class ModernBetaBuiltInProviders {
         Registries.BIOME.register(ModernBetaBuiltInTypes.Biome.BETA.name, BetaBiomeProvider::new);
         Registries.BIOME.register(ModernBetaBuiltInTypes.Biome.SINGLE.name, SingleBiomeProvider::new);
         Registries.BIOME.register(ModernBetaBuiltInTypes.Biome.PE.name, PEBiomeProvider::new);
-        Registries.BIOME.register(ModernBetaBuiltInTypes.Biome.VANILLA.name, VanillaBiomeProvider::new);
     }
     
     // Register default biome settings
@@ -88,7 +76,6 @@ public class ModernBetaBuiltInProviders {
         Registries.BIOME_SETTINGS.register(ModernBetaBuiltInTypes.Biome.BETA.name, BiomeProviderSettings::createSettingsBeta);
         Registries.BIOME_SETTINGS.register(ModernBetaBuiltInTypes.Biome.SINGLE.name, BiomeProviderSettings::createSettingsSingle);
         Registries.BIOME_SETTINGS.register(ModernBetaBuiltInTypes.Biome.PE.name, BiomeProviderSettings::createSettingsPE);
-        Registries.BIOME_SETTINGS.register(ModernBetaBuiltInTypes.Biome.VANILLA.name, BiomeProviderSettings::createSettingsVanilla);
     }
     
     // Register default cave biome providers
@@ -105,33 +92,6 @@ public class ModernBetaBuiltInProviders {
         Registries.CAVE_BIOME_SETTINGS.register(ModernBetaBuiltInTypes.CaveBiome.NONE.name, CaveBiomeProviderSettings::createSettingsNone);
         Registries.CAVE_BIOME_SETTINGS.register(ModernBetaBuiltInTypes.CaveBiome.SINGLE.name, CaveBiomeProviderSettings::createSettingsSingle);
         Registries.CAVE_BIOME_SETTINGS.register(ModernBetaBuiltInTypes.CaveBiome.VORONOI.name, CaveBiomeProviderSettings::createSettingsVoronoi);
-    }
-    
-    // Register default world screens
-    public static void registerWorldScreens() {
-        Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.DEFAULT_ID, (screen, worldSetting) -> null);
-        Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.BETA.name, BetaWorldScreen::create);
-        Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.NOISE.name, NoiseWorldScreen::create);
-        Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.CLASSIC.name, ClassicWorldScreen::create);
-        Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.INFDEV_227.name, Infdev227WorldScreen::create);
-        Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.ISLAND.name, IslandWorldScreen::create);
-        Registries.WORLD_SCREEN.register(ModernBetaBuiltInTypes.WorldScreen.INDEV.name, IndevWorldScreen::create);
-    }
-    
-    // Register default biome settings screens (Note: Match identifiers with biome ids!)
-    public static void registerBiomeScreens() {
-        Registries.BIOME_SCREEN.register(ModernBetaBuiltInTypes.DEFAULT_ID, (screen, worldSetting) -> null);
-        Registries.BIOME_SCREEN.register(ModernBetaBuiltInTypes.Biome.BETA.name, ClimateBiomeScreen::create);
-        Registries.BIOME_SCREEN.register(ModernBetaBuiltInTypes.Biome.SINGLE.name, SingleBiomeScreen::create);
-        Registries.BIOME_SCREEN.register(ModernBetaBuiltInTypes.Biome.PE.name, ClimateBiomeScreen::create);
-        Registries.BIOME_SCREEN.register(ModernBetaBuiltInTypes.Biome.VANILLA.name, VanillaBiomeScreen::create);
-    }
-    
-    public static void registerCaveBiomeScreens() {
-        Registries.CAVE_BIOME_SCREEN.register(ModernBetaBuiltInTypes.DEFAULT_ID, (screen, worldSetting) -> null);
-        Registries.CAVE_BIOME_SCREEN.register(ModernBetaBuiltInTypes.CaveBiome.NONE.name, (screen, worldSetting) -> null);
-        Registries.CAVE_BIOME_SCREEN.register(ModernBetaBuiltInTypes.CaveBiome.SINGLE.name, SingleBiomeScreen::create);
-        Registries.CAVE_BIOME_SCREEN.register(ModernBetaBuiltInTypes.CaveBiome.VORONOI.name, VoronoiCaveBiomeScreen::create);
     }
     
     // Register default world providers

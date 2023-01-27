@@ -15,8 +15,8 @@ import com.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
 import com.bespectacled.modernbeta.config.ModernBetaConfigCompat;
 import com.bespectacled.modernbeta.config.ModernBetaConfigGeneration;
 import com.bespectacled.modernbeta.config.ModernBetaConfigRendering;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
-import com.bespectacled.modernbeta.world.biome.OldBiomes;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
 import com.bespectacled.modernbeta.world.feature.placement.OldPlacementTypes;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.OldChunkGeneratorSettings;
@@ -75,8 +75,8 @@ public class ModernBeta implements ModInitializer {
         
         // Register mod stuff
         OldStructures.register();
-        OldBiomes.register();
-        OldBiomeSource.register();
+        ModernBetaBiomes.register();
+        ModernBetaBiomeSource.register();
         OldChunkGenerator.register();
         OldChunkGeneratorSettings.register();
         OldPlacementTypes.register();
@@ -99,11 +99,6 @@ public class ModernBeta implements ModInitializer {
             
             // Register clientside world providers
             ModernBetaBuiltInProviders.registerWorldProviders();
-            
-            // Register default screen providers
-            ModernBetaBuiltInProviders.registerWorldScreens();
-            ModernBetaBuiltInProviders.registerBiomeScreens();
-            ModernBetaBuiltInProviders.registerCaveBiomeScreens();
             
             // Override default biome grass/foliage colors
             BlockColors.register();

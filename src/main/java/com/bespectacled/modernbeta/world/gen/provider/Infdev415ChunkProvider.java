@@ -9,7 +9,7 @@ import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.noise.SimpleNoisePos;
-import com.bespectacled.modernbeta.world.biome.OldBiomeSource;
+import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.OldSurfaceRules;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
@@ -52,7 +52,7 @@ public class Infdev415ChunkProvider extends NoiseChunkProvider {
     }
 
     @Override
-    public void provideSurface(ChunkRegion region, Chunk chunk, OldBiomeSource biomeSource) {
+    public void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource) {
         double scale = 0.03125D;
         
         ChunkPos chunkPos = chunk.getPos();
