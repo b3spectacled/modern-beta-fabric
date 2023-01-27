@@ -8,8 +8,8 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.FeatureConfig;
 
 public class ModernBetaTreeConfiguredFeatures {
-    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> OLD_FANCY_OAK = ModernBetaConfiguredFeatures.register(
-        "old_fancy_oak",
+    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> BETA_FANCY_OAK = ModernBetaConfiguredFeatures.register(
+        "fancy_oak",
         ModernBetaFeatures.OLD_FANCY_OAK,
         FeatureConfig.DEFAULT
     );   

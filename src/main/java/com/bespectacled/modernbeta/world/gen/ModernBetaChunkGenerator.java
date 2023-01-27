@@ -304,11 +304,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
     public BiomeInjector getBiomeInjector() {
         return this.biomeInjector;
     }
-    
-    public boolean generatesOceanShrines() {
-        return NbtUtil.toBoolean(this.chunkProviderSettings.get(NbtTags.GEN_OCEAN_SHRINES), ModernBeta.GEN_CONFIG.generateOceanShrines);
-    }
-    
+
     public boolean generatesMonuments() {
         return NbtUtil.toBoolean(this.chunkProviderSettings.get(NbtTags.GEN_MONUMENTS), ModernBeta.GEN_CONFIG.generateMonuments);
     }

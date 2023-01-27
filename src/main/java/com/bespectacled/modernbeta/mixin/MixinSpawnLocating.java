@@ -23,8 +23,8 @@ public class MixinSpawnLocating {
     private static void injectFindOverworldSpawnHeight(ServerWorld world, int x, int z, CallbackInfoReturnable<BlockPos> info) {
         ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
         
-        if (chunkGenerator instanceof ModernBetaChunkGenerator oldChunkGenerator && 
-            oldChunkGenerator.getChunkProvider().getSpawnLocator() != SpawnLocator.DEFAULT
+        if (chunkGenerator instanceof ModernBetaChunkGenerator modernBetaChunkGenerator && 
+            modernBetaChunkGenerator.getChunkProvider().getSpawnLocator() != SpawnLocator.DEFAULT
         ) {
             int spawnY = world.getLevelProperties().getSpawnY();
             

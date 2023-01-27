@@ -8,7 +8,7 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 public class ModernBetaFeatures {
-    public static final BetaFreezeTopLayerFeature BETA_FREEZE_TOP_LAYER = (BetaFreezeTopLayerFeature) register(
+    public static final BetaFreezeTopLayerFeature FREEZE_TOP_LAYER = (BetaFreezeTopLayerFeature) register(
         "freeze_top_layer", new BetaFreezeTopLayerFeature(DefaultFeatureConfig.CODEC)
     );
     

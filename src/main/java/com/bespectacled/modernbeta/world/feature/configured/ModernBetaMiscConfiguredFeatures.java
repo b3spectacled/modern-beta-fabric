@@ -8,9 +8,9 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.FeatureConfig;
 
 public class ModernBetaMiscConfiguredFeatures {
-    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> BETA_FREEZE_TOP_LAYER = ModernBetaConfiguredFeatures.register(
-        "beta_freeze_top_layer",
-        ModernBetaFeatures.BETA_FREEZE_TOP_LAYER,
+    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> FREEZE_TOP_LAYER = ModernBetaConfiguredFeatures.register(
+        "freeze_top_layer",
+        ModernBetaFeatures.FREEZE_TOP_LAYER,
         FeatureConfig.DEFAULT
     );
 }

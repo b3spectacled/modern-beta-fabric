@@ -13,8 +13,7 @@ public class ModernBetaConfigGeneration implements ConfigData {
     public String worldType = ModernBetaBuiltInTypes.Chunk.BETA.name;
     
     // Infinite
-    public boolean generateOceanShrines = true;
-    public boolean generateMonuments = false;
+    public boolean generateMonuments = true;
     public boolean sampleClimate = true;
     public boolean generateDeepslate = true;
     public String noisePostProcessor = ModernBetaBuiltInTypes.NoisePostProcessor.NONE.name;

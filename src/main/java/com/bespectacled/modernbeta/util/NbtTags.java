@@ -5,7 +5,6 @@ public class NbtTags {
     public static final String WORLD_TYPE = "worldType";
     
     // Inf
-    public static final String GEN_OCEAN_SHRINES = "generateOceanShrines";
     public static final String GEN_MONUMENTS = "generateMonuments";
     public static final String GEN_DEEPSLATE = "generateDeepslate";
     public static final String NOISE_POST_PROCESSOR = "noisePostProcessor";

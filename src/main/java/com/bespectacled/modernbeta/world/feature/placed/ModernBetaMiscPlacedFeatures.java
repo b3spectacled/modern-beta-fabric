@@ -8,8 +8,8 @@ import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 
 public class ModernBetaMiscPlacedFeatures {
     public static final RegistryEntry<PlacedFeature> BETA_FREEZE_TOP_LAYER = ModernBetaPlacedFeatures.register(
-        "beta_freeze_top_layer",
-        ModernBetaMiscConfiguredFeatures.BETA_FREEZE_TOP_LAYER,
+        "freeze_top_layer",
+        ModernBetaMiscConfiguredFeatures.FREEZE_TOP_LAYER,
         new PlacementModifier[0]
     );
 }

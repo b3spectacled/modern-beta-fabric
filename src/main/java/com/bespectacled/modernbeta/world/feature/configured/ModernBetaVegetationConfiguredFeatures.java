@@ -22,7 +22,7 @@ import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider;
 
 public class ModernBetaVegetationConfiguredFeatures {
-    private static final RegistryEntry<PlacedFeature> OLD_FANCY_OAK = ModernBetaTreePlacedFeatures.OLD_FANCY_OAK;
+    private static final RegistryEntry<PlacedFeature> OLD_FANCY_OAK = ModernBetaTreePlacedFeatures.BETA_FANCY_OAK;
     private static final RegistryEntry<PlacedFeature> OAK_CHECKED = TreePlacedFeatures.OAK_CHECKED;
     private static final RegistryEntry<PlacedFeature> BIRCH_CHECKED = TreePlacedFeatures.BIRCH_CHECKED;
     private static final RegistryEntry<PlacedFeature> OAK_BEES_0002 = TreePlacedFeatures.OAK_BEES_0002;

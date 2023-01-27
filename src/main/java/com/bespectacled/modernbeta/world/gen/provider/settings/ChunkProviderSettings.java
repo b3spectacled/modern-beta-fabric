@@ -23,7 +23,6 @@ public class ChunkProviderSettings {
     
     private static NbtCompoundBuilder createSettingsOcean(String worldType) {
         return createSettingsNoise(worldType)
-            .putBoolean(NbtTags.GEN_OCEAN_SHRINES, CONFIG.generateOceanShrines)
             .putBoolean(NbtTags.GEN_MONUMENTS, CONFIG.generateMonuments);
     }
     
@@ -80,7 +79,6 @@ public class ChunkProviderSettings {
         return new ImmutableSettings(
             createSettingsBase(ModernBetaBuiltInTypes.Chunk.INFDEV_227.name)
                 .putBoolean(NbtTags.GEN_DEEPSLATE, CONFIG.generateDeepslate)
-                .putBoolean(NbtTags.GEN_OCEAN_SHRINES, CONFIG.generateOceanShrines)
                 .putBoolean(NbtTags.GEN_MONUMENTS, CONFIG.generateMonuments)
                 .putBoolean(NbtTags.GEN_INFDEV_PYRAMID, CONFIG.generateInfdevPyramid)
                 .putBoolean(NbtTags.GEN_INFDEV_WALL, CONFIG.generateInfdevWall)
@@ -91,7 +89,6 @@ public class ChunkProviderSettings {
     public static Settings createSettingsIndev() {
         return new ImmutableSettings(
             createSettingsBase(ModernBetaBuiltInTypes.Chunk.INDEV.name)
-                .putBoolean(NbtTags.GEN_OCEAN_SHRINES, CONFIG.generateOceanShrines)
                 .putBoolean(NbtTags.GEN_MONUMENTS, CONFIG.generateMonuments)
                 .putInt(NbtTags.LEVEL_WIDTH, CONFIG.levelWidth)
                 .putInt(NbtTags.LEVEL_LENGTH, CONFIG.levelLength)
@@ -106,7 +103,6 @@ public class ChunkProviderSettings {
     public static Settings createSettingsClassic030() {
         return new ImmutableSettings(
             createSettingsBase(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.name)
-                .putBoolean(NbtTags.GEN_OCEAN_SHRINES, CONFIG.generateOceanShrines)
                 .putBoolean(NbtTags.GEN_MONUMENTS, CONFIG.generateMonuments)
                 .putInt(NbtTags.LEVEL_WIDTH, CONFIG.levelWidth)
                 .putInt(NbtTags.LEVEL_LENGTH, CONFIG.levelLength)

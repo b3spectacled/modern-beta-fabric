@@ -8,9 +8,9 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.PlacedFeatures;
 
 public class ModernBetaTreePlacedFeatures {
-    public static final RegistryEntry<PlacedFeature> OLD_FANCY_OAK = ModernBetaPlacedFeatures.register(
-        "old_fancy_oak",
-        ModernBetaTreeConfiguredFeatures.OLD_FANCY_OAK,
+    public static final RegistryEntry<PlacedFeature> BETA_FANCY_OAK = ModernBetaPlacedFeatures.register(
+        "fancy_oak",
+        ModernBetaTreeConfiguredFeatures.BETA_FANCY_OAK,
         PlacedFeatures.wouldSurvive(Blocks.OAK_SAPLING)
     );
 }
