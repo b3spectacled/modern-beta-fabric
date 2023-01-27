@@ -22,7 +22,7 @@ import com.bespectacled.modernbeta.util.ModernBetaClientWorld;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -100,7 +100,7 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
                     this.skyClimateSampler = Optional.ofNullable(skyClimateSampler);
             }
             
-            this.isModernBetaWorld = chunkGenerator instanceof OldChunkGenerator || biomeSource instanceof ModernBetaBiomeSource;
+            this.isModernBetaWorld = chunkGenerator instanceof ModernBetaChunkGenerator || biomeSource instanceof ModernBetaBiomeSource;
         }
         
         // Set Beta block colors seed.

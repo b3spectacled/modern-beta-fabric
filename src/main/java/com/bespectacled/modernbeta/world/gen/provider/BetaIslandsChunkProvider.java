@@ -18,8 +18,8 @@ import com.bespectacled.modernbeta.util.noise.SimplexNoise;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.world.gen.OldSurfaceRules;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaSurfaceRules;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
 import net.minecraft.block.BlockState;
@@ -57,7 +57,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
 
     private final ClimateSampler climateSampler;
     
-    public BetaIslandsChunkProvider(OldChunkGenerator chunkGenerator) {
+    public BetaIslandsChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         
         // Noise Generators
@@ -146,7 +146,7 @@ public class BetaIslandsChunkProvider extends NoiseChunkProvider {
         
         // Surface builder stuff
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
-        OldSurfaceRules surfaceRules = new OldSurfaceRules(region, chunk, this.chunkGenerator);
+        ModernBetaSurfaceRules surfaceRules = new ModernBetaSurfaceRules(region, chunk, this.chunkGenerator);
         
         double[] sandNoise = beachNoiseOctaves.sampleBeta(
             chunkX * 16, chunkZ * 16, 0.0D, 

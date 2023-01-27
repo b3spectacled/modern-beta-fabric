@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.bespectacled.modernbeta.ModernBeta;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.provider.IndevChunkProvider;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
 
@@ -33,7 +33,7 @@ public class MixinMinecraftServer {
         ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
         BlockPos spawnPos = SpawnLocating.findServerSpawnPoint(world, chunkPos);
         
-        if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
+        if (chunkGenerator instanceof ModernBetaChunkGenerator oldChunkGenerator) {
             ((IntRuleAccessor)world.getGameRules().get(GameRules.SPAWN_RADIUS)).setValue(0); // Ensure a centered spawn
             spawnPos = oldChunkGenerator.getChunkProvider().locateSpawn().orElse(spawnPos);
             

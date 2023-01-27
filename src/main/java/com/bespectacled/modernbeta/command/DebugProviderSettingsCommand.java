@@ -4,7 +4,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
 
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
@@ -23,7 +23,7 @@ public class DebugProviderSettingsCommand {
     private static int execute(ServerCommandSource source) {
         boolean validWorld = false;
         
-        if (source.getWorld().getChunkManager().getChunkGenerator() instanceof OldChunkGenerator oldChunkGenerator) {
+        if (source.getWorld().getChunkManager().getChunkGenerator() instanceof ModernBetaChunkGenerator oldChunkGenerator) {
             validWorld = true;
             
             StringBuilder builder = new StringBuilder();

@@ -15,7 +15,7 @@ import com.bespectacled.modernbeta.util.settings.ImmutableSettings;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
 import com.google.common.base.MoreObjects;
 
@@ -104,7 +104,7 @@ public class MixinGeneratorOptions {
                 .get()
             );
             
-            ChunkGenerator chunkGenerator = new OldChunkGenerator(
+            ChunkGenerator chunkGenerator = new ModernBetaChunkGenerator(
                 structuresRegistry,
                 noiseRegistry,
                 new ModernBetaBiomeSource(

@@ -18,7 +18,7 @@ import com.bespectacled.modernbeta.util.chunk.ChunkCache;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.util.noise.SimpleNoisePos;
 import com.bespectacled.modernbeta.util.settings.Settings;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.blocksource.BlockSourceRules;
 import com.bespectacled.modernbeta.world.gen.blocksource.SimpleBlockSource;
 import com.google.common.collect.Sets;
@@ -83,7 +83,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     private final AquiferSamplerProvider aquiferSamplerProvider;
     private final NoisePostProcessor noisePostProcessor;
     
-    public NoiseChunkProvider(OldChunkGenerator chunkGenerator) {
+    public NoiseChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         
         Settings providerSettings = chunkGenerator.getChunkSettings();

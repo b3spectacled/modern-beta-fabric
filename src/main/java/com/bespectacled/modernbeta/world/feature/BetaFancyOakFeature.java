@@ -16,7 +16,7 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 
-public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> { 
+public class BetaFancyOakFeature extends Feature<DefaultFeatureConfig> { 
     private static final Set<BlockState> DIRT_REPLACEABLE = Set.of(
         BlockStates.DIRT,
         BlockStates.GRASS_BLOCK, 
@@ -29,7 +29,7 @@ public class OldFancyOakFeature extends Feature<DefaultFeatureConfig> {
     private static final int FOLIAGE_BLOB_HEIGHT = 5;
     private static final int TREE_MAX_HEIGHT = 12;
 
-    public OldFancyOakFeature(Codec<DefaultFeatureConfig> configCodec) {
+    public BetaFancyOakFeature(Codec<DefaultFeatureConfig> configCodec) {
         super(configCodec);
     }
     

@@ -22,10 +22,10 @@ import net.minecraft.world.gen.carver.CaveCarver;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 
-public class OldCaveCarver extends CaveCarver {
+public class BetaCaveCarver extends CaveCarver {
     private static final Set<Block> ALWAYS_CARVABLE_BLOCKS;
 
-    public OldCaveCarver(Codec<CaveCarverConfig> codec) {
+    public BetaCaveCarver(Codec<CaveCarverConfig> codec) {
         super(codec);
     }
     

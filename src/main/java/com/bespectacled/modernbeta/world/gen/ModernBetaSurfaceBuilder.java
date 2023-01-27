@@ -29,7 +29,7 @@ import net.minecraft.world.gen.random.ChunkRandom.RandomProvider;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 
-public class OldSurfaceBuilder extends SurfaceBuilder {
+public class ModernBetaSurfaceBuilder extends SurfaceBuilder {
     // Set for specifying which biomes should use their vanilla surface builders.
     // Done on per-biome basis for best mod compatibility.
     private static final Set<RegistryKey<Biome>> BIOMES_WITH_CUSTOM_SURFACES = new HashSet<RegistryKey<Biome>>(
@@ -42,7 +42,7 @@ public class OldSurfaceBuilder extends SurfaceBuilder {
     //private final ChunkProvider chunkProvider;
     private final BlockState defaultState;
     
-    public OldSurfaceBuilder(
+    public ModernBetaSurfaceBuilder(
         Registry<NoiseParameters> noiseRegistry, 
         BlockState defaultState, 
         int seaLevel, 

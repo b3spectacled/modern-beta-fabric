@@ -13,7 +13,7 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
 import com.bespectacled.modernbeta.world.spawn.IndevSpawnLocator;
 
 import net.minecraft.block.Block;
@@ -63,7 +63,7 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
     
     private boolean pregenerated;
     
-    public FiniteChunkProvider(OldChunkGenerator chunkGenerator) {
+    public FiniteChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         
         Settings providerSettings = chunkGenerator.getChunkSettings();

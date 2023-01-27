@@ -5,8 +5,8 @@ import java.util.Map;
 import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import com.bespectacled.modernbeta.util.NbtTags;
+import com.bespectacled.modernbeta.world.biome.alpha.AlphaBiomes;
 import com.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
-import com.bespectacled.modernbeta.world.biome.infdev.InfdevBiomes;
 import com.bespectacled.modernbeta.world.biome.pe.PEBiomes;
 import com.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
 
@@ -24,7 +24,7 @@ public class ModernBetaConfigBiome implements ConfigData {
     public boolean generateOceans = true;
 
     // Single
-    public String singleBiome = InfdevBiomes.ALPHA_KEY.getValue().toString();
+    public String singleBiome = AlphaBiomes.ALPHA_KEY.getValue().toString();
     
     // Vanilla
     public boolean vanillaLargeBiomes = false;

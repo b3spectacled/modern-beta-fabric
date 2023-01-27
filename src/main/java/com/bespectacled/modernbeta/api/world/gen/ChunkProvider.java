@@ -15,10 +15,10 @@ import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.noise.SimpleDensityFunction;
 import com.bespectacled.modernbeta.util.settings.Settings;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import com.bespectacled.modernbeta.world.feature.placement.OldNoiseBasedCountPlacementModifier;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.world.gen.OldChunkNoiseSampler;
-import com.bespectacled.modernbeta.world.gen.OldSurfaceBuilder;
+import com.bespectacled.modernbeta.world.feature.placement.ModernBetaNoiseBasedCountPlacementModifier;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkNoiseSampler;
+import com.bespectacled.modernbeta.world.gen.ModernBetaSurfaceBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -49,7 +49,7 @@ import net.minecraft.world.gen.random.RandomDeriver;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public abstract class ChunkProvider {
-    protected final OldChunkGenerator chunkGenerator;
+    protected final ModernBetaChunkGenerator chunkGenerator;
     
     protected final long seed;
     protected final RegistryEntry<ChunkGeneratorSettings> generatorSettings;
@@ -63,10 +63,10 @@ public abstract class ChunkProvider {
     protected final ChunkRandom.RandomProvider randomProvider;
     protected final RandomDeriver randomDeriver;
     
-    protected final OldChunkNoiseSampler dummyNoiseChunkSampler;
+    protected final ModernBetaChunkNoiseSampler dummyNoiseChunkSampler;
     
     protected final MaterialRules.MaterialRule surfaceRule;
-    protected final OldSurfaceBuilder surfaceBuilder;
+    protected final ModernBetaSurfaceBuilder surfaceBuilder;
     
     protected final boolean generateDeepslate;
     
@@ -75,9 +75,9 @@ public abstract class ChunkProvider {
     /**
      * Construct a Modern Beta chunk provider with seed and settings.
      * 
-     * @param chunkGenerator Parent OldChunkGenerator object used to initialize fields.
+     * @param chunkGenerator Parent ModernBetaChunkGenerator object used to initialize fields.
      */
-    public ChunkProvider(OldChunkGenerator chunkGenerator) {
+    public ChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         this.chunkGenerator = chunkGenerator;
         
         this.seed = chunkGenerator.getWorldSeed();
@@ -98,7 +98,7 @@ public abstract class ChunkProvider {
         int verticalNoiseResolution = shapeConfig.verticalSize() * 4;
         int horizontalNoiseResolution = shapeConfig.horizontalSize() * 4;
         
-        this.dummyNoiseChunkSampler = new OldChunkNoiseSampler(
+        this.dummyNoiseChunkSampler = new ModernBetaChunkNoiseSampler(
             horizontalNoiseResolution,
             verticalNoiseResolution,
             16 / horizontalNoiseResolution,
@@ -114,7 +114,7 @@ public abstract class ChunkProvider {
         
         // Modified SurfaceBuilder
         this.surfaceRule = chunkGenerator.getGeneratorSettings().value().surfaceRule();
-        this.surfaceBuilder = new OldSurfaceBuilder(
+        this.surfaceBuilder = new ModernBetaSurfaceBuilder(
             chunkGenerator.getNoiseRegistry(), 
             chunkGenerator.getGeneratorSettings().value().defaultBlock(), 
             chunkGenerator.getGeneratorSettings().value().seaLevel(), 
@@ -228,16 +228,16 @@ public abstract class ChunkProvider {
     }
     
     /**
-     * @return Parent OldChunkGenerator.
+     * @return Parent ModernBetaChunkGenerator.
      */
-    public OldChunkGenerator getChunkGenerator() {
+    public ModernBetaChunkGenerator getChunkGenerator() {
         return this.chunkGenerator;
     }
     
     /**
-     * @return OldSurfaceBuilder.
+     * @return ModernBetaSurfaceBuilder.
      */
-    public OldSurfaceBuilder getSurfaceBuilder() {
+    public ModernBetaSurfaceBuilder getSurfaceBuilder() {
         return this.surfaceBuilder;
     }
     
@@ -249,9 +249,9 @@ public abstract class ChunkProvider {
     }
     
     /**
-     * @return OldChunkNoiseSampler.
+     * @return ModernBetaChunkNoiseSampler.
      */
-    public OldChunkNoiseSampler getChunkNoiseSampler() {
+    public ModernBetaChunkNoiseSampler getChunkNoiseSampler() {
         return this.dummyNoiseChunkSampler;
     }
     
@@ -311,7 +311,7 @@ public abstract class ChunkProvider {
     /**
      * Sets forest density using PerlinOctaveNoise sampler created with world seed.
      * Checks every placed feature in the biome source feature list,
-     * and if it uses OldNoiseBasedCountPlacementModifier, replaces the noise sampler.
+     * and if it uses ModernBetaNoiseBasedCountPlacementModifier, replaces the noise sampler.
      * 
      * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
      */
@@ -326,7 +326,7 @@ public abstract class ChunkProvider {
                 List<PlacementModifier> modifiers = accessor.getPlacementModifiers();
                 
                 for (PlacementModifier modifier : modifiers) {
-                    if (modifier instanceof OldNoiseBasedCountPlacementModifier noiseModifier) {
+                    if (modifier instanceof ModernBetaNoiseBasedCountPlacementModifier noiseModifier) {
                         noiseModifier.setOctaves(forestOctaves);
                     }
                 }

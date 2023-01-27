@@ -2,8 +2,6 @@ package com.bespectacled.modernbeta.world.biome.infdev;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
-import com.bespectacled.modernbeta.world.biome.alpha.Alpha;
-import com.bespectacled.modernbeta.world.biome.alpha.AlphaWinter;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;

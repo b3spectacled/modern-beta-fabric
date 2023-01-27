@@ -18,8 +18,8 @@ import com.bespectacled.modernbeta.util.noise.SimpleNoisePos;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.PEBiomeProvider;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.world.gen.OldSurfaceRules;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaSurfaceRules;
 import com.bespectacled.modernbeta.world.spawn.PESpawnLocator;
 
 import net.minecraft.block.BlockState;
@@ -46,7 +46,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
     
     private final ClimateSampler climateSampler;
     
-    public PEChunkProvider(OldChunkGenerator chunkGenerator) {
+    public PEChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         
         // Use Mersenne Twister random instead of Java random
@@ -101,7 +101,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
         
         // Surface builder stuff
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
-        OldSurfaceRules surfaceRules = new OldSurfaceRules(region, chunk, this.chunkGenerator);
+        ModernBetaSurfaceRules surfaceRules = new ModernBetaSurfaceRules(region, chunk, this.chunkGenerator);
         
         double[] sandNoise = beachNoiseOctaves.sampleBeta(
             chunkX * 16, chunkZ * 16, 0.0D, 

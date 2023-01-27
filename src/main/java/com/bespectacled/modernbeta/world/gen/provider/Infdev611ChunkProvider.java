@@ -10,8 +10,8 @@ import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.noise.SimpleNoisePos;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.world.gen.OldSurfaceRules;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaSurfaceRules;
 import com.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 
 import net.minecraft.block.BlockState;
@@ -36,7 +36,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise depthNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    public Infdev611ChunkProvider(OldChunkGenerator chunkGenerator) {
+    public Infdev611ChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
 
         // Noise Generators
@@ -74,7 +74,7 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
 
         // Surface builder stuff
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
-        OldSurfaceRules surfaceRules = new OldSurfaceRules(region, chunk, this.chunkGenerator);
+        ModernBetaSurfaceRules surfaceRules = new ModernBetaSurfaceRules(region, chunk, this.chunkGenerator);
 
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.

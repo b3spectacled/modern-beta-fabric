@@ -4,7 +4,7 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 
-public class AlphaNoiseBasedCount implements OldNoiseBasedCount {
+public class AlphaNoiseBasedCount implements ModernBetaNoiseBasedCount {
     private final PerlinOctaveNoise noiseSampler;
     
     public AlphaNoiseBasedCount(Random random) {

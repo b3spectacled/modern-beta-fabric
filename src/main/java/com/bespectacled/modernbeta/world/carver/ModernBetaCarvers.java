@@ -15,16 +15,16 @@ import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.heightprovider.BiasedToBottomHeightProvider;
 
-public class OldCarvers {
-    public static final Carver<CaveCarverConfig> OLD_BETA_CAVE_CARVER = register(
-        "old_beta_cave", 
-        new OldCaveCarver(CaveCarverConfig.CAVE_CODEC)
+public class ModernBetaCarvers {
+    public static final Carver<CaveCarverConfig> BETA_CAVE_CARVER = register(
+        "beta_cave", 
+        new BetaCaveCarver(CaveCarverConfig.CAVE_CODEC)
     );
     
-    public static final RegistryEntry<ConfiguredCarver<CaveCarverConfig>> CONF_OLD_BETA_CAVE_CARVER = register(
-        "old_beta_cave", 
+    public static final RegistryEntry<ConfiguredCarver<CaveCarverConfig>> CONFIGURED_BETA_CAVE_CARVER = register(
+        "beta_cave", 
         new ConfiguredCarver<CaveCarverConfig>(
-            OLD_BETA_CAVE_CARVER, 
+            BETA_CAVE_CARVER, 
             new CaveCarverConfig(
                 0.14285715f, // Probability
                 BiasedToBottomHeightProvider.create(YOffset.fixed(0), YOffset.fixed(127), 8), // Y Level
@@ -38,10 +38,10 @@ public class OldCarvers {
         )
     );
     
-    public static final RegistryEntry<ConfiguredCarver<CaveCarverConfig>> CONF_OLD_BETA_CAVE_CARVER_DEEP = register(
-        "old_beta_cave_deep", 
+    public static final RegistryEntry<ConfiguredCarver<CaveCarverConfig>> CONFIGURED_BETA_CAVE_CARVER_DEEP = register(
+        "beta_cave_deep", 
         new ConfiguredCarver<CaveCarverConfig>(
-            OLD_BETA_CAVE_CARVER, 
+            BETA_CAVE_CARVER, 
             new CaveCarverConfig(
                 0.14285715f, // Probability
                 BiasedToBottomHeightProvider.create(YOffset.fixed(-64), YOffset.fixed(0), 8), // Y Level

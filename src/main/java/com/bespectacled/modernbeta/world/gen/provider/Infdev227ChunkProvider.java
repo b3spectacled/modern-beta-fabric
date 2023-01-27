@@ -14,8 +14,8 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.world.gen.OldSurfaceRules;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaSurfaceRules;
 import com.bespectacled.modernbeta.world.gen.blocksource.SimpleBlockSource;
 
 import net.minecraft.block.Block;
@@ -59,7 +59,7 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
     private final PerlinOctaveNoise noiseOctavesF;
     private final PerlinOctaveNoise forestNoiseOctaves;
 
-    public Infdev227ChunkProvider(OldChunkGenerator chunkGenerator) {
+    public Infdev227ChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         
         ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
@@ -124,7 +124,7 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
         
         // Surface builder stuff
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
-        OldSurfaceRules surfaceRules = new OldSurfaceRules(region, chunk, this.chunkGenerator);
+        ModernBetaSurfaceRules surfaceRules = new ModernBetaSurfaceRules(region, chunk, this.chunkGenerator);
         
         for (int localX = 0; localX < 16; ++localX) {
             for (int localZ = 0; localZ < 16; ++localZ) {

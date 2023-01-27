@@ -5,13 +5,13 @@ import java.util.Optional;
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import com.bespectacled.modernbeta.api.registry.Registries;
-import com.bespectacled.modernbeta.api.world.WorldProvider;
 import com.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import com.bespectacled.modernbeta.util.settings.ImmutableSettings;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import com.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import com.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.world.GeneratorType;
@@ -26,13 +26,16 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 @Environment(EnvType.CLIENT)
-public class OldGeneratorType {
-    private static final String DEFAULT_WORLD_TYPE = ModernBetaBuiltInTypes.Chunk.BETA.name;
+public class ModernBetaGeneratorType {
+    private static final String DEFAULT_CHUNK_TYPE = ModernBetaBuiltInTypes.Chunk.BETA.name;
+    private static final String DEFAULT_BIOME_TYPE = ModernBetaBuiltInTypes.Biome.BETA.name;
+    private static final String DEFAULT_CAVE_BIOME_TYPE = ModernBetaBuiltInTypes.CaveBiome.VORONOI.name;
+    
     private static final Optional<Integer> MODERN_BETA_VERSION = Optional.of(ModernBeta.MOD_VERSION);
-    private static final GeneratorType OLD;
+    private static final GeneratorType MODERN_BETA;
     
     public static void register() {
-        register(OLD);
+        register(MODERN_BETA);
     }
     
     private static void register(GeneratorType type) {
@@ -40,7 +43,7 @@ public class OldGeneratorType {
     }
     
     static {
-        OLD = new GeneratorType("old") {
+        MODERN_BETA = new GeneratorType("modern_beta") {
             @Override
             protected ChunkGenerator getChunkGenerator(DynamicRegistryManager registryManager, long seed) {
                 Registry<StructureSet> structuresRegistry = registryManager.get(Registry.STRUCTURE_SET_KEY);
@@ -50,18 +53,17 @@ public class OldGeneratorType {
                 
                 RegistryKey<ChunkGeneratorSettings> worldTypeKey = RegistryKey.of(
                     Registry.CHUNK_GENERATOR_SETTINGS_KEY,
-                    ModernBeta.createId(Registries.WORLD.get(DEFAULT_WORLD_TYPE).getChunkProvider())
+                    ModernBeta.createId(DEFAULT_CHUNK_TYPE)
                 );
                 RegistryEntry<ChunkGeneratorSettings> chunkGenSettings = chunkGenSettingsRegistry.getOrCreateEntry(worldTypeKey);
-                    
-                WorldProvider worldProvider = Registries.WORLD.get(DEFAULT_WORLD_TYPE);
-                String worldType = worldProvider.getChunkProvider();
-                String biomeType = worldProvider.getBiomeProvider();
-                String caveBiomeType = worldProvider.getCaveBiomeProvider();
+                
+                String chunkType = DEFAULT_CHUNK_TYPE;
+                String biomeType = DEFAULT_BIOME_TYPE;
+                String caveBiomeType = DEFAULT_CAVE_BIOME_TYPE;
                 
                 ImmutableSettings chunkSettings = ImmutableSettings.copyOf(Registries.CHUNK_SETTINGS
-                    .getOrEmpty(worldType)
-                    .orElse(() -> ChunkProviderSettings.createSettingsDefault(worldType))
+                    .getOrEmpty(chunkType)
+                    .orElse(() -> ChunkProviderSettings.createSettingsDefault(chunkType))
                     .get()
                 );
                 
@@ -77,7 +79,7 @@ public class OldGeneratorType {
                     .get()
                 );
                 
-                return new OldChunkGenerator(
+                return new ModernBetaChunkGenerator(
                     structuresRegistry,
                     noiseRegistry,
                     new ModernBetaBiomeSource(

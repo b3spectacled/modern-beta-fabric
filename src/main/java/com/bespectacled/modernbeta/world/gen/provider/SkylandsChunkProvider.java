@@ -8,8 +8,8 @@ import com.bespectacled.modernbeta.util.BlockColumnHolder;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.world.gen.OldSurfaceRules;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaSurfaceRules;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -29,7 +29,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
     private final PerlinOctaveNoise surfaceNoiseOctaves;
     private final PerlinOctaveNoise forestNoiseOctaves;
     
-    public SkylandsChunkProvider(OldChunkGenerator chunkGenerator) {
+    public SkylandsChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
 
         // Noise Generators
@@ -61,7 +61,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
 
         // Surface builder stuff
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
-        OldSurfaceRules surfaceRules = new OldSurfaceRules(region, chunk, this.chunkGenerator);
+        ModernBetaSurfaceRules surfaceRules = new ModernBetaSurfaceRules(region, chunk, this.chunkGenerator);
         
         double[] surfaceNoise = surfaceNoiseOctaves.sampleBeta(
             chunkX * 16, chunkZ * 16, 0.0D, 

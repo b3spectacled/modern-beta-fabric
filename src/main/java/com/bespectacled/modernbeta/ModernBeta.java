@@ -17,11 +17,10 @@ import com.bespectacled.modernbeta.config.ModernBetaConfigGeneration;
 import com.bespectacled.modernbeta.config.ModernBetaConfigRendering;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
-import com.bespectacled.modernbeta.world.feature.placement.OldPlacementTypes;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
-import com.bespectacled.modernbeta.world.gen.OldChunkGeneratorSettings;
-import com.bespectacled.modernbeta.world.gen.OldGeneratorType;
-import com.bespectacled.modernbeta.world.structure.OldStructures;
+import com.bespectacled.modernbeta.world.feature.placement.ModernBetaPlacementTypes;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGeneratorSettings;
+import com.bespectacled.modernbeta.world.gen.ModernBetaGeneratorType;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -34,7 +33,7 @@ import net.minecraft.util.Identifier;
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
     public static final String MOD_NAME = "Modern Beta";
-    public static final int MOD_VERSION = 4;
+    public static final int MOD_VERSION = 5;
     
     public static final boolean CLIENT_ENV = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     public static final boolean DEV_ENV = FabricLoader.getInstance().isDevelopmentEnvironment();
@@ -74,12 +73,11 @@ public class ModernBeta implements ModInitializer {
         log(Level.INFO, "Initializing Modern Beta...");
         
         // Register mod stuff
-        OldStructures.register();
         ModernBetaBiomes.register();
         ModernBetaBiomeSource.register();
-        OldChunkGenerator.register();
-        OldChunkGeneratorSettings.register();
-        OldPlacementTypes.register();
+        ModernBetaChunkGenerator.register();
+        ModernBetaChunkGeneratorSettings.register();
+        ModernBetaPlacementTypes.register();
         
         // Set up mod compatibility
         Compat.setupCompat();
@@ -95,10 +93,7 @@ public class ModernBeta implements ModInitializer {
 
         // Register client-only stuff, i.e. GUI, block colors, etc.
         if (CLIENT_ENV) {
-            OldGeneratorType.register();
-            
-            // Register clientside world providers
-            ModernBetaBuiltInProviders.registerWorldProviders();
+            ModernBetaGeneratorType.register();
             
             // Override default biome grass/foliage colors
             BlockColors.register();
@@ -109,7 +104,5 @@ public class ModernBeta implements ModInitializer {
             DebugProviderSettingsCommand.register();
             //ModernBetaDataGenerator.generateData();
         }
-
-        // Man, I am not good at this...
     }
 }

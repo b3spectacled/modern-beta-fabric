@@ -5,7 +5,7 @@ import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.NoiseSamplingConfig;
 import net.minecraft.world.gen.chunk.SlideConfig;
 
-public class OldGeneratorConfig {
+public class ModernBetaGeneratorConfig {
     public static final NoiseSamplingConfig BETA_SAMPLING_CONFIG;
     public static final NoiseSamplingConfig ALPHA_SAMPLING_CONFIG;
     public static final NoiseSamplingConfig SKYLANDS_SAMPLING_CONFIG;

@@ -14,12 +14,12 @@ import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
 import net.minecraft.world.gen.densityfunction.DensityFunctionTypes.class_7050;
 import net.minecraft.world.gen.noise.NoiseRouter;
 
-public class OldChunkNoiseSampler extends ChunkNoiseSampler {
+public class ModernBetaChunkNoiseSampler extends ChunkNoiseSampler {
     private static final int OCEAN_HEIGHT_OFFSET = -8;
     
     private final ChunkProvider chunkProvider;
     
-    public OldChunkNoiseSampler(
+    public ModernBetaChunkNoiseSampler(
         int horizontalNoiseResolution, 
         int verticalNoiseResolution, 
         int horizontalSize,

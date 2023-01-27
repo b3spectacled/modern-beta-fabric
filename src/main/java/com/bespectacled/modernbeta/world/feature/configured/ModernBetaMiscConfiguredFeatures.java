@@ -1,16 +1,16 @@
 package com.bespectacled.modernbeta.world.feature.configured;
 
-import com.bespectacled.modernbeta.world.feature.OldFeatures;
+import com.bespectacled.modernbeta.world.feature.ModernBetaFeatures;
 
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.FeatureConfig;
 
-public class OldMiscConfiguredFeatures {
-    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> BETA_FREEZE_TOP_LAYER = OldConfiguredFeatures.register(
+public class ModernBetaMiscConfiguredFeatures {
+    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> BETA_FREEZE_TOP_LAYER = ModernBetaConfiguredFeatures.register(
         "beta_freeze_top_layer",
-        OldFeatures.BETA_FREEZE_TOP_LAYER,
+        ModernBetaFeatures.BETA_FREEZE_TOP_LAYER,
         FeatureConfig.DEFAULT
     );
 }

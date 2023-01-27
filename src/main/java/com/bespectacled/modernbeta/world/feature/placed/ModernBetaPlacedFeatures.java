@@ -12,7 +12,7 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.PlacedFeatures;
 import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 
-public class OldPlacedFeatures {
+public class ModernBetaPlacedFeatures {
     public static PlacedFeature register(String id, PlacedFeature feature) {
         return Registry.register(BuiltinRegistries.PLACED_FEATURE, ModernBeta.createId(id), feature);
     }

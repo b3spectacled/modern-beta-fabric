@@ -7,7 +7,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 import net.minecraft.world.gen.placementmodifier.PlacementModifierType;
 
-public class OldPlacementTypes<P extends PlacementModifier> {
+public class ModernBetaPlacementTypes<P extends PlacementModifier> {
     public static final PlacementModifierType<BetaNoiseBasedCountPlacementModifier> BETA_NOISE_BASED_COUNT;
     public static final PlacementModifierType<AlphaNoiseBasedCountPlacementModifier> ALPHA_NOISE_BASED_COUNT;
     public static final PlacementModifierType<Infdev415NoiseBasedCountPlacementModifier> INFDEV_415_NOISE_BASED_COUNT;

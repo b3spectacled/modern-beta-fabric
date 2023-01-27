@@ -8,7 +8,7 @@ import com.bespectacled.modernbeta.util.NbtTags;
 import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoiseCombined;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.blocksource.SimpleBlockSource;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
 import com.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
@@ -52,7 +52,7 @@ public class IndevChunkProvider extends FiniteChunkProvider {
     private int layers;
     private int waterLevel;
 
-    public IndevChunkProvider(OldChunkGenerator chunkGenerator) {
+    public IndevChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         
         this.levelType = IndevType.fromName(NbtUtil.toString(

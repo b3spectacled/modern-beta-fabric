@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
 
 import net.minecraft.structure.StructureGeneratorFactory;
 import net.minecraft.util.math.ChunkPos;
@@ -27,7 +27,7 @@ public class MixinStructureGeneratorFactoryContext {
     
     @Inject(method = "isBiomeValid", at = @At("HEAD"), cancellable = true)
     private void injectCheckForBiomeOnTop(Heightmap.Type heightmap, CallbackInfoReturnable<Boolean> info) {
-        if (this.comp_306 instanceof OldChunkGenerator oldChunkGenerator) {
+        if (this.comp_306 instanceof ModernBetaChunkGenerator oldChunkGenerator) {
             int x = this.comp_309.getCenterX();
             int z = this.comp_309.getCenterZ();
             int y = this.comp_306.getHeightInGround(x, z, heightmap, this.comp_311);

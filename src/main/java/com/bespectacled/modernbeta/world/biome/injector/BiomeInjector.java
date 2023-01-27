@@ -12,7 +12,7 @@ import com.bespectacled.modernbeta.util.NbtUtil;
 import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -35,13 +35,13 @@ public class BiomeInjector {
     public static final Predicate<BiomeInjectionContext> CAVE_PREDICATE = context ->
         context.getY() >= context.worldMinY && context.getY() + CAVE_START_OFFSET < context.minHeight;
     
-    private final OldChunkGenerator oldChunkGenerator;
+    private final ModernBetaChunkGenerator oldChunkGenerator;
     private final ModernBetaBiomeSource oldBiomeSource;
     private final ChunkProvider chunkProvider;
     
     private final BiomeInjectionRules rules;
     
-    public BiomeInjector(OldChunkGenerator oldChunkGenerator, ModernBetaBiomeSource oldBiomeSource) {
+    public BiomeInjector(ModernBetaChunkGenerator oldChunkGenerator, ModernBetaBiomeSource oldBiomeSource) {
         this.oldChunkGenerator = oldChunkGenerator;
         this.oldBiomeSource = oldBiomeSource;
         this.chunkProvider = oldChunkGenerator.getChunkProvider();

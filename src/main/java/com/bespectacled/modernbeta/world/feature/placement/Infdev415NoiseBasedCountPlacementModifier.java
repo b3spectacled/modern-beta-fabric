@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.world.gen.placementmodifier.PlacementModifierType;
 
-public class Infdev415NoiseBasedCountPlacementModifier extends OldNoiseBasedCountPlacementModifier {
+public class Infdev415NoiseBasedCountPlacementModifier extends ModernBetaNoiseBasedCountPlacementModifier {
     public static final Codec<Infdev415NoiseBasedCountPlacementModifier> MODIFIER_CODEC = RecordCodecBuilder.create(
         instance -> instance.group(
             Codec.INT.fieldOf("count").forGetter(arg -> arg.count),
@@ -30,7 +30,7 @@ public class Infdev415NoiseBasedCountPlacementModifier extends OldNoiseBasedCoun
     
     @Override
     public PlacementModifierType<?> getType() {
-        return OldPlacementTypes.INFDEV_415_NOISE_BASED_COUNT;
+        return ModernBetaPlacementTypes.INFDEV_415_NOISE_BASED_COUNT;
     }
 
 }

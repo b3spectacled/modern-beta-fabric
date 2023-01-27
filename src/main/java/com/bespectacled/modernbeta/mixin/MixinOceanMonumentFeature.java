@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
 
 import net.minecraft.structure.StructureGeneratorFactory;
 import net.minecraft.util.registry.RegistryEntry;
@@ -23,7 +23,7 @@ public class MixinOceanMonumentFeature {
     private static void injectCanGenerate(StructureGeneratorFactory.Context<DefaultFeatureConfig> structureInfo, CallbackInfoReturnable<Boolean> info) {
         ChunkGenerator chunkGenerator = structureInfo.chunkGenerator();
         
-        if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
+        if (chunkGenerator instanceof ModernBetaChunkGenerator oldChunkGenerator) {
             int offsetX = structureInfo.chunkPos().getOffsetX(9);
             int offsetZ = structureInfo.chunkPos().getOffsetZ(9);
             

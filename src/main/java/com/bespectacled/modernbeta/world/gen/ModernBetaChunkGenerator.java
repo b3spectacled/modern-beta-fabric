@@ -58,8 +58,8 @@ import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 
-public class OldChunkGenerator extends NoiseChunkGenerator {
-    public static final Codec<OldChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> NoiseChunkGenerator.method_41042(instance).and(
+public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
+    public static final Codec<ModernBetaChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> NoiseChunkGenerator.method_41042(instance).and(
         instance.group(
             RegistryOps.createRegistryCodec(Registry.NOISE_WORLDGEN).forGetter(generator -> generator.noiseRegistry),
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
@@ -67,7 +67,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
             ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(generator -> generator.settings),
             ImmutableSettings.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings),
             Codec.INT.optionalFieldOf("version").forGetter(generator -> generator.version))
-        ).apply(instance, instance.stable(OldChunkGenerator::new)));
+        ).apply(instance, instance.stable(ModernBetaChunkGenerator::new)));
 
     private final Registry<StructureSet> structuresRegistry;
     private final Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry;
@@ -78,7 +78,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
     private final BiomeInjector biomeInjector;
     
-    public OldChunkGenerator(
+    public ModernBetaChunkGenerator(
         Registry<StructureSet> structuresRegistry,
         Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry,
         BiomeSource biomeSource,
@@ -263,7 +263,7 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public ChunkGenerator withSeed(long seed) {
-        return new OldChunkGenerator(
+        return new ModernBetaChunkGenerator(
             this.structuresRegistry,
             this.noiseRegistry,
             this.biomeSource.withSeed(seed),
@@ -368,6 +368,6 @@ public class OldChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     protected Codec<? extends ChunkGenerator> getCodec() {
-        return OldChunkGenerator.CODEC;
+        return ModernBetaChunkGenerator.CODEC;
     }
 }

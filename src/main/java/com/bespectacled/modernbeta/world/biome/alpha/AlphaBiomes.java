@@ -2,6 +2,7 @@ package com.bespectacled.modernbeta.world.biome.alpha;
 
 import com.bespectacled.modernbeta.ModernBeta;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
+
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 

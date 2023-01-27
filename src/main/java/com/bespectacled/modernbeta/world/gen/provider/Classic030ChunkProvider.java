@@ -5,7 +5,7 @@ import com.bespectacled.modernbeta.api.world.gen.SurfaceConfig;
 import com.bespectacled.modernbeta.util.BlockStates;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoiseCombined;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
 import com.bespectacled.modernbeta.world.gen.blocksource.SimpleBlockSource;
 
 import net.minecraft.block.Block;
@@ -35,7 +35,7 @@ public class Classic030ChunkProvider extends FiniteChunkProvider {
     
     private final int waterLevel;
 
-    public Classic030ChunkProvider(OldChunkGenerator chunkGenerator) {
+    public Classic030ChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         
         this.waterLevel = this.levelHeight / 2;

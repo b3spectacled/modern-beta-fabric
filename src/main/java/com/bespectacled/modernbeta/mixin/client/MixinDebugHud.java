@@ -19,7 +19,7 @@ import com.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import com.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import com.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import com.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
-import com.bespectacled.modernbeta.world.gen.OldChunkGenerator;
+import com.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -88,7 +88,7 @@ public class MixinDebugHud {
                 }
             }
             
-            if (chunkGenerator instanceof OldChunkGenerator oldChunkGenerator) {
+            if (chunkGenerator instanceof ModernBetaChunkGenerator oldChunkGenerator) {
                 ChunkProvider chunkProvider = oldChunkGenerator.getChunkProvider();
                 
                 info.getReturnValue().add(

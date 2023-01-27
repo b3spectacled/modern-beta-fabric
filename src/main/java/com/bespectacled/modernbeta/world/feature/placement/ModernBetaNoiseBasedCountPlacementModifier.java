@@ -4,19 +4,19 @@ import java.util.Random;
 
 import com.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import com.bespectacled.modernbeta.world.feature.placement.noise.BetaNoiseBasedCount;
-import com.bespectacled.modernbeta.world.feature.placement.noise.OldNoiseBasedCount;
+import com.bespectacled.modernbeta.world.feature.placement.noise.ModernBetaNoiseBasedCount;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.placementmodifier.AbstractCountPlacementModifier;
 
-public abstract class OldNoiseBasedCountPlacementModifier extends AbstractCountPlacementModifier {
+public abstract class ModernBetaNoiseBasedCountPlacementModifier extends AbstractCountPlacementModifier {
     protected final int count;
     protected final double extraChance;
     protected final int extraCount;
 
-    protected OldNoiseBasedCount noiseDecorator;
+    protected ModernBetaNoiseBasedCount noiseDecorator;
     
-    protected OldNoiseBasedCountPlacementModifier(int count, double extraChance, int extraCount) {
+    protected ModernBetaNoiseBasedCountPlacementModifier(int count, double extraChance, int extraCount) {
         this.count = count;
         this.extraChance = extraChance;
         this.extraCount = extraCount;

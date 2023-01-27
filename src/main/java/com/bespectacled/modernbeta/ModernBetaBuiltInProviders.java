@@ -94,22 +94,6 @@ public class ModernBetaBuiltInProviders {
         Registries.CAVE_BIOME_SETTINGS.register(ModernBetaBuiltInTypes.CaveBiome.VORONOI.name, CaveBiomeProviderSettings::createSettingsVoronoi);
     }
     
-    // Register default world providers
-    public static void registerWorldProviders() {
-        Registries.WORLD.register(ModernBetaBuiltInTypes.DEFAULT_ID, ModernBetaBuiltInWorldProviders.DEFAULT);
-        Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.BETA.name, ModernBetaBuiltInWorldProviders.BETA);
-        Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.SKYLANDS.name, ModernBetaBuiltInWorldProviders.SKYLANDS);
-        Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.ALPHA.name, ModernBetaBuiltInWorldProviders.ALPHA);
-        Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.INFDEV_611.name, ModernBetaBuiltInWorldProviders.INFDEV_611);
-        Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.INFDEV_420.name, ModernBetaBuiltInWorldProviders.INFDEV_420);
-        Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.INFDEV_415.name, ModernBetaBuiltInWorldProviders.INFDEV_415);
-        Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.INFDEV_227.name, ModernBetaBuiltInWorldProviders.INFDEV_227);
-        Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.INDEV.name, ModernBetaBuiltInWorldProviders.INDEV);
-        Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.name, ModernBetaBuiltInWorldProviders.CLASSIC_0_30);
-        Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.BETA_ISLANDS.name, ModernBetaBuiltInWorldProviders.BETA_ISLANDS);
-        Registries.WORLD.register(ModernBetaBuiltInTypes.Chunk.PE.name, ModernBetaBuiltInWorldProviders.PE);
-    }
-    
     public static void registerNoisePostProcessors() {
         Registries.NOISE_POST_PROCESSORS.register(ModernBetaBuiltInTypes.NoisePostProcessor.NONE.name, NoisePostProcessor.DEFAULT);
     }

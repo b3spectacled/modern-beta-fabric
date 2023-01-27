@@ -11,14 +11,14 @@ import net.minecraft.world.gen.HeightContext;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 import net.minecraft.world.gen.surfacebuilder.VanillaSurfaceRules;
 
-public class OldSurfaceRules {
+public class ModernBetaSurfaceRules {
     private final MaterialRules.MaterialRuleContext ruleContext;
     private final MaterialRules.BlockStateRule blockStateRule;
     
-    public OldSurfaceRules(
+    public ModernBetaSurfaceRules(
         ChunkRegion region,
         Chunk chunk,
-        OldChunkGenerator chunkGenerator
+        ModernBetaChunkGenerator chunkGenerator
     ) {
         ChunkProvider chunkProvider = chunkGenerator.getChunkProvider();
         HeightContext context = new HeightContext(chunkGenerator, region);
