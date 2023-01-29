@@ -49,18 +49,6 @@
     "text.autoconfig.modern_beta.option.renderingConfig.configOther.cloudHeight": "Cloud Height",
     "text.autoconfig.modern_beta.option.renderingConfig.configOther.cloudHeight.@Tooltip": "Set cloud render height, range: [0, 320]",
     
-    "biome.modern_beta.forest": "Forest",
-    "biome.modern_beta.shrubland": "Shrubland",
-    "biome.modern_beta.desert": "Desert",
-    "biome.modern_beta.savanna": "Savanna",
-    "biome.modern_beta.plains": "Plains",
-    "biome.modern_beta.seasonal_forest": "Seasonal Forest",
-    "biome.modern_beta.rainforest": "Rainforest",
-    "biome.modern_beta.swampland": "Swampland",
-    "biome.modern_beta.taiga": "Taiga",
-    "biome.modern_beta.tundra": "Tundra",
-    "biome.modern_beta.ice_desert": "Ice Desert",
-    
     "biome.modern_beta.beta_forest": "Beta Forest",
     "biome.modern_beta.beta_shrubland": "Beta Shrubland",
     "biome.modern_beta.beta_desert": "Beta Desert",
@@ -84,16 +72,9 @@
     "biome.modern_beta.alpha_winter": "Alpha Winter",
     
     "biome.modern_beta.infdev_611": "Infdev 611",
-    "biome.modern_beta.infdev_611_winter": "Infdev 611 Winter",
-    
     "biome.modern_beta.infdev_420": "Infdev 420",
-    "biome.modern_beta.infdev_420_winter": "Infdev 420 Winter",
-    
     "biome.modern_beta.infdev_415": "Infdev 415",
-    "biome.modern_beta.infdev_415_winter": "Infdev 415 Winter",
-    
     "biome.modern_beta.infdev_227": "Infdev 227",
-    "biome.modern_beta.infdev_227_winter": "Infdev 227 Winter",
     
     "biome.modern_beta.indev_normal": "Indev Normal",
     "biome.modern_beta.indev_hell": "Indev Hell",
