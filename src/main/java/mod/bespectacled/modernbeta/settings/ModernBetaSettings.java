@@ -23,7 +23,7 @@ public class ModernBetaSettings {
     public ModernBetaSettings(NbtCompound chunkSettings, NbtCompound biomeSettings, NbtCompound caveBiomeSettings) {
         this.chunkSettings = new ModernBetaChunkSettings.Builder(chunkSettings).build();
         this.biomeSettings = new ModernBetaBiomeSettings.Builder(biomeSettings).build();
-        this.caveBiomeSettings = null;
+        this.caveBiomeSettings = new ModernBetaCaveBiomeSettings.Builder(caveBiomeSettings).build();
     }
     
     public static class ModernBetaChunkSettings {
@@ -271,6 +271,10 @@ public class ModernBetaSettings {
                 } else {
                     this.voronoiPoints.addAll(ModernBeta.CAVE_BIOME_CONFIG.voronoiPoints);
                 }
+            }
+            
+            private ModernBetaCaveBiomeSettings build() {
+                return new ModernBetaCaveBiomeSettings(this);
             }
         }
     }

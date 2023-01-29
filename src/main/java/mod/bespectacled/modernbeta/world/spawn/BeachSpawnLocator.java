@@ -6,8 +6,8 @@ import java.util.Random;
 import org.apache.logging.log4j.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.api.world.gen.ChunkProvider;
-import mod.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
+import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
+import mod.bespectacled.modernbeta.api.world.chunk.NoiseChunkProvider;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;

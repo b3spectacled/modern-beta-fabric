@@ -7,9 +7,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
-import mod.bespectacled.modernbeta.world.gen.provider.IndevChunkProvider;
-import mod.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
+import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
+import mod.bespectacled.modernbeta.world.chunk.provider.IndevChunkProvider;
+import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevTheme;
 import net.fabricmc.fabric.mixin.gamerule.IntRuleAccessor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.SpawnLocating;

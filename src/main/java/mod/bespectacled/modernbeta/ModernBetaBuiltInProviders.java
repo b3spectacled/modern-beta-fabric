@@ -1,7 +1,7 @@
 package mod.bespectacled.modernbeta;
 
 import mod.bespectacled.modernbeta.api.registry.Registries;
-import mod.bespectacled.modernbeta.api.world.gen.noise.NoisePostProcessor;
+import mod.bespectacled.modernbeta.api.world.chunk.noise.NoisePostProcessor;
 import mod.bespectacled.modernbeta.util.settings.ImmutableSettings;
 import mod.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import mod.bespectacled.modernbeta.world.biome.provider.PEBiomeProvider;
@@ -11,18 +11,18 @@ import mod.bespectacled.modernbeta.world.cavebiome.provider.NoCaveBiomeProvider;
 import mod.bespectacled.modernbeta.world.cavebiome.provider.SingleCaveBiomeProvider;
 import mod.bespectacled.modernbeta.world.cavebiome.provider.VoronoiCaveBiomeProvider;
 import mod.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
-import mod.bespectacled.modernbeta.world.gen.provider.AlphaChunkProvider;
-import mod.bespectacled.modernbeta.world.gen.provider.BetaChunkProvider;
-import mod.bespectacled.modernbeta.world.gen.provider.BetaIslandsChunkProvider;
-import mod.bespectacled.modernbeta.world.gen.provider.Classic030ChunkProvider;
-import mod.bespectacled.modernbeta.world.gen.provider.IndevChunkProvider;
-import mod.bespectacled.modernbeta.world.gen.provider.Infdev227ChunkProvider;
-import mod.bespectacled.modernbeta.world.gen.provider.Infdev415ChunkProvider;
-import mod.bespectacled.modernbeta.world.gen.provider.Infdev420ChunkProvider;
-import mod.bespectacled.modernbeta.world.gen.provider.Infdev611ChunkProvider;
-import mod.bespectacled.modernbeta.world.gen.provider.PEChunkProvider;
-import mod.bespectacled.modernbeta.world.gen.provider.SkylandsChunkProvider;
-import mod.bespectacled.modernbeta.world.gen.provider.settings.ChunkProviderSettings;
+import mod.bespectacled.modernbeta.world.chunk.provider.AlphaChunkProvider;
+import mod.bespectacled.modernbeta.world.chunk.provider.BetaChunkProvider;
+import mod.bespectacled.modernbeta.world.chunk.provider.BetaIslandsChunkProvider;
+import mod.bespectacled.modernbeta.world.chunk.provider.Classic030ChunkProvider;
+import mod.bespectacled.modernbeta.world.chunk.provider.IndevChunkProvider;
+import mod.bespectacled.modernbeta.world.chunk.provider.Infdev227ChunkProvider;
+import mod.bespectacled.modernbeta.world.chunk.provider.Infdev415ChunkProvider;
+import mod.bespectacled.modernbeta.world.chunk.provider.Infdev420ChunkProvider;
+import mod.bespectacled.modernbeta.world.chunk.provider.Infdev611ChunkProvider;
+import mod.bespectacled.modernbeta.world.chunk.provider.PEChunkProvider;
+import mod.bespectacled.modernbeta.world.chunk.provider.SkylandsChunkProvider;
+import mod.bespectacled.modernbeta.world.chunk.provider.settings.ChunkProviderSettings;
 
 /*
  * Registration of built-in providers for various things.

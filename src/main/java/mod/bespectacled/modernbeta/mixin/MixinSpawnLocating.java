@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
-import mod.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
+import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.server.network.SpawnLocating;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;

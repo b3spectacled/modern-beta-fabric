@@ -6,7 +6,7 @@ import java.util.Random;
 import org.apache.logging.log4j.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.api.world.gen.FiniteChunkProvider;
+import mod.bespectacled.modernbeta.api.world.chunk.FiniteChunkProvider;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;

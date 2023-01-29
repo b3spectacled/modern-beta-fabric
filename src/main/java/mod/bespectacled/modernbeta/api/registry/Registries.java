@@ -5,11 +5,11 @@ import java.util.function.Supplier;
 
 import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import mod.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
-import mod.bespectacled.modernbeta.api.world.gen.ChunkProvider;
-import mod.bespectacled.modernbeta.api.world.gen.noise.NoisePostProcessor;
+import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
+import mod.bespectacled.modernbeta.api.world.chunk.noise.NoisePostProcessor;
 import mod.bespectacled.modernbeta.util.function.TriFunction;
 import mod.bespectacled.modernbeta.util.settings.Settings;
-import mod.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
+import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.world.biome.Biome;
 
 public final class Registries {

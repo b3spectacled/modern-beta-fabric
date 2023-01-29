@@ -4,7 +4,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 import mod.bespectacled.modernbeta.util.settings.Settings;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import mod.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
+import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;

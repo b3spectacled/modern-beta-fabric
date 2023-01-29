@@ -5,14 +5,14 @@ import java.util.function.Predicate;
 import org.apache.logging.log4j.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.api.world.gen.ChunkProvider;
-import mod.bespectacled.modernbeta.api.world.gen.NoiseChunkProvider;
+import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
+import mod.bespectacled.modernbeta.api.world.chunk.NoiseChunkProvider;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
 import mod.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
-import mod.bespectacled.modernbeta.world.gen.ModernBetaChunkGenerator;
+import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;

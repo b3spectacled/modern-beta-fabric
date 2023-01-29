@@ -3,8 +3,8 @@ package mod.bespectacled.modernbeta.config;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
-import mod.bespectacled.modernbeta.world.gen.provider.indev.IndevTheme;
-import mod.bespectacled.modernbeta.world.gen.provider.indev.IndevType;
+import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevTheme;
+import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevType;
 
 @Config(name = "config_chunk")
 public class ModernBetaConfigChunk implements ConfigData {
