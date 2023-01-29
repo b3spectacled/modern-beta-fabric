@@ -17,11 +17,11 @@ import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
 import mod.bespectacled.modernbeta.client.color.BetaBlockColors;
+import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
 import mod.bespectacled.modernbeta.util.GenUtil;
 import mod.bespectacled.modernbeta.util.ModernBetaClientWorld;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
-import mod.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -73,11 +73,11 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         
         // Init with default values
         this.climateSampler = Optional.ofNullable(useFixedSeed ? 
-            new BetaBiomeProvider(worldSeed, BiomeProviderSettings.createSettingsBeta(), null) : 
+            new BetaBiomeProvider(worldSeed, new ModernBetaBiomeSettings().toCompound(), null) : 
             null
         );
         this.skyClimateSampler = Optional.ofNullable(useFixedSeed ? 
-            new BetaBiomeProvider(worldSeed, BiomeProviderSettings.createSettingsBeta(), null) : 
+            new BetaBiomeProvider(worldSeed, new ModernBetaBiomeSettings().toCompound(), null) : 
             null
         );
         this.isModernBetaWorld = false;

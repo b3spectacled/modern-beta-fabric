@@ -15,8 +15,8 @@ import mod.bespectacled.modernbeta.compat.Compat;
 import mod.bespectacled.modernbeta.config.ModernBetaConfig;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigCompat;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigChunk;
+import mod.bespectacled.modernbeta.config.ModernBetaConfigCompat;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigRendering;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
@@ -83,11 +83,8 @@ public class ModernBeta implements ModInitializer {
         
         // Register default providers
         ModernBetaBuiltInProviders.registerChunkProviders();
-        ModernBetaBuiltInProviders.registerChunkSettings();
         ModernBetaBuiltInProviders.registerBiomeProviders();
-        ModernBetaBuiltInProviders.registerBiomeSettings();
         ModernBetaBuiltInProviders.registerCaveBiomeProvider();
-        ModernBetaBuiltInProviders.registerCaveBiomeSettings();
         ModernBetaBuiltInProviders.registerNoisePostProcessors();
 
         // Register client-only stuff, i.e. GUI, block colors, etc.

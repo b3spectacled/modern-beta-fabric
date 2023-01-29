@@ -9,7 +9,6 @@ import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevType;
 @Config(name = "config_chunk")
 public class ModernBetaConfigChunk implements ConfigData {
     public String chunkProvider = ModernBetaBuiltInTypes.Chunk.BETA.name;
-    public boolean useIslands = false;
     public boolean useDeepslate = true;
     
     public float upperLimitScale = 512.0f;
@@ -32,12 +31,13 @@ public class ModernBetaConfigChunk implements ConfigData {
     public int indevLevelLength = 256;
     public int indevLevelHeight = 128;
     public float indevCaveRadius = 1.0f;
-    
-    public boolean islandsUseOuterIslands = true;
-    public float islandsCenterIslandFalloff = 4.0F;
-    public int islandsCenterIslandRadius = 16;
-    public int islandsCenterOceanFalloffDistance = 16;
-    public int islandsCenterOceanRadius = 64;
-    public float islandsOuterIslandNoiseScale = 300F;
-    public float islandsOuterIslandNoiseOffset = 0.25F;
+
+    public boolean islesUseIslands = false;
+    public boolean islesUseOuterIslands = true;
+    public float islesCenterIslandFalloff = 4.0F;
+    public int islesCenterIslandRadius = 16;
+    public int islesCenterOceanFalloffDistance = 16;
+    public int islesCenterOceanRadius = 64;
+    public float islesOuterIslandNoiseScale = 300F;
+    public float islesOuterIslandNoiseOffset = 0.25F;
 }

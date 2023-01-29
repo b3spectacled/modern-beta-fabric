@@ -8,12 +8,10 @@ import java.util.concurrent.Executor;
 
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.mixin.MixinPlacedFeatureAccessor;
+import mod.bespectacled.modernbeta.settings.ModernBetaChunkSettings;
 import mod.bespectacled.modernbeta.util.BlockStates;
-import mod.bespectacled.modernbeta.util.NbtTags;
-import mod.bespectacled.modernbeta.util.NbtUtil;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.util.noise.SimpleDensityFunction;
-import mod.bespectacled.modernbeta.util.settings.Settings;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkNoiseSampler;
@@ -52,7 +50,7 @@ public abstract class ChunkProvider {
     
     protected final long seed;
     protected final RegistryEntry<ChunkGeneratorSettings> generatorSettings;
-    protected final Settings providerSettings;
+    protected final ModernBetaChunkSettings chunkSettings;
     protected final Random random;
 
     protected final Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry;
@@ -67,7 +65,7 @@ public abstract class ChunkProvider {
     protected final MaterialRules.MaterialRule surfaceRule;
     protected final ModernBetaSurfaceBuilder surfaceBuilder;
     
-    protected final boolean generateDeepslate;
+    protected final boolean useDeepslate;
     
     protected SpawnLocator spawnLocator;
     
@@ -81,7 +79,7 @@ public abstract class ChunkProvider {
         
         this.seed = chunkGenerator.getWorldSeed();
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
-        this.providerSettings = chunkGenerator.getChunkSettings();
+        this.chunkSettings = new ModernBetaChunkSettings.Builder(chunkGenerator.getChunkSettings()).build();
         this.random = new Random(seed);
         
         this.noiseRegistry = this.chunkGenerator.getNoiseRegistry();
@@ -122,7 +120,7 @@ public abstract class ChunkProvider {
             this
         );
         
-        this.generateDeepslate = NbtUtil.toBoolean(this.providerSettings.get(NbtTags.USE_DEEPSLATE), false);
+        this.useDeepslate = this.chunkSettings.useDeepslate;
         
         this.spawnLocator = SpawnLocator.DEFAULT;
     }
@@ -295,7 +293,7 @@ public abstract class ChunkProvider {
         int minY = 0;
         int maxY = 8;
         
-        if (!this.generateDeepslate || y >= maxY)
+        if (!this.useDeepslate || y >= maxY)
             return null;
         
         if (y <= minY)

@@ -9,17 +9,13 @@ import java.util.concurrent.Executor;
 
 import com.google.common.collect.Sets;
 
-import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.chunk.noise.BaseNoiseProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.noise.NoisePostProcessor;
 import mod.bespectacled.modernbeta.api.world.chunk.noise.NoiseProvider;
 import mod.bespectacled.modernbeta.util.BlockStates;
-import mod.bespectacled.modernbeta.util.NbtTags;
-import mod.bespectacled.modernbeta.util.NbtUtil;
 import mod.bespectacled.modernbeta.util.chunk.ChunkCache;
 import mod.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
-import mod.bespectacled.modernbeta.util.settings.Settings;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSourceRules;
 import mod.bespectacled.modernbeta.world.chunk.blocksource.SimpleBlockSource;
@@ -52,7 +48,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     protected final int bedrockFloor;
     protected final int bedrockCeiling;
     
-    protected final boolean generateDeepslate;
+    protected final boolean useDeepslate;
     
     protected final BlockState defaultBlock;
     protected final BlockState defaultFluid;
@@ -85,8 +81,7 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
     
     public NoiseChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        
-        Settings providerSettings = chunkGenerator.getChunkSettings();
+
         ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
         GenerationShapeConfig shapeConfig = generatorSettings.generationShapeConfig();
         
@@ -94,9 +89,11 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
         this.worldHeight = shapeConfig.height();
         this.worldTopY = worldHeight + worldMinY;
         this.seaLevel = generatorSettings.seaLevel();
+        
         this.bedrockFloor = 0;
         this.bedrockCeiling = Integer.MIN_VALUE;
-        this.generateDeepslate = NbtUtil.toBoolean(providerSettings.get(NbtTags.USE_DEEPSLATE), ModernBeta.CHUNK_CONFIG.useDeepslate);
+        
+        this.useDeepslate = this.chunkSettings.useDeepslate;
 
         this.defaultBlock = generatorSettings.defaultBlock();
         this.defaultFluid = generatorSettings.defaultFluid();

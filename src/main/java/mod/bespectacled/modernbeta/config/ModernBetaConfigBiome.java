@@ -7,6 +7,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import mod.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import mod.bespectacled.modernbeta.util.NbtTags;
+import mod.bespectacled.modernbeta.util.NbtUtil;
 import mod.bespectacled.modernbeta.world.biome.alpha.AlphaBiomes;
 import mod.bespectacled.modernbeta.world.biome.beta.BetaBiomes;
 import mod.bespectacled.modernbeta.world.biome.pe.PEBiomes;
@@ -19,15 +20,11 @@ public class ModernBetaConfigBiome implements ConfigData {
     public String singleBiome = AlphaBiomes.ALPHA_KEY.getValue().toString();
     public boolean replaceOceanBiomes = true;
     
-    // Beta, PE
     public float tempNoiseScale = 1.0f;
     public float rainNoiseScale = 1.0f;
     public float detailNoiseScale = 1.0f;
     
-    // Vanilla
-    public boolean vanillaLargeBiomes = false; // TODO: REMOVE
-    
-    public Map<String, ClimateMapping> betaClimates = createClimateMapping(
+    public Map<String, ClimateMapping> climates = createClimateMapping(
         new ClimateMapping(BetaBiomes.DESERT_KEY.getValue().toString(), BetaBiomes.OCEAN_KEY.getValue().toString()),
         new ClimateMapping(BetaBiomes.FOREST_KEY.getValue().toString(), BetaBiomes.OCEAN_KEY.getValue().toString()),
         new ClimateMapping(BetaBiomes.TUNDRA_KEY.getValue().toString(), BetaBiomes.FROZEN_OCEAN_KEY.getValue().toString()),
@@ -120,6 +117,14 @@ public class ModernBetaConfigBiome implements ConfigData {
                 .putString(NbtTags.OCEAN_BIOME, this.oceanBiome)
                 .putString(NbtTags.DEEP_OCEAN_BIOME, this.deepOceanBiome)
                 .build();
+        }
+        
+        public static ClimateMapping fromCompound(NbtCompound compound) {
+            return new ClimateMapping(
+                NbtUtil.readStringOrThrow(NbtTags.BIOME, compound),
+                NbtUtil.readStringOrThrow(NbtTags.OCEAN_BIOME, compound),
+                NbtUtil.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME, compound)
+            );
         }
     }
 }

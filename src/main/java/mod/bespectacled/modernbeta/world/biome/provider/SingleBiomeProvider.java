@@ -7,7 +7,7 @@ import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
-import mod.bespectacled.modernbeta.util.settings.Settings;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
@@ -21,7 +21,7 @@ public class SingleBiomeProvider extends BiomeProvider implements ClimateSampler
     private final RegistryKey<Biome> biomeKey;
     private final Clime biomeClime;
     
-    public SingleBiomeProvider(long seed, Settings settings, Registry<Biome> biomeRegistry) {
+    public SingleBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
         
         this.biomeKey = RegistryKey.of(Registry.BIOME_KEY, new Identifier(NbtUtil.toString(settings.get(NbtTags.SINGLE_BIOME), DEFAULT_BIOME_ID.toString())));

@@ -12,13 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.google.common.base.MoreObjects;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.api.registry.Registries;
-import mod.bespectacled.modernbeta.util.settings.ImmutableSettings;
+import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
+import mod.bespectacled.modernbeta.settings.ModernBetaCaveBiomeSettings;
+import mod.bespectacled.modernbeta.settings.ModernBetaChunkSettings;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import mod.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
-import mod.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import mod.bespectacled.modernbeta.world.chunk.provider.settings.ChunkProviderSettings;
 import net.minecraft.server.dedicated.ServerPropertiesHandler;
 import net.minecraft.structure.StructureSet;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
@@ -83,26 +81,6 @@ public class MixinGeneratorOptions {
             //boolean generateStructures = generate_structures == null || Boolean.parseBoolean(generate_structures);
             
             String worldType = ModernBeta.CHUNK_CONFIG.chunkProvider;
-            String biomeType = ModernBeta.BIOME_CONFIG.biomeProvider;
-            String caveBiomeType = ModernBeta.CAVE_BIOME_CONFIG.biomeProvider;
-
-            ImmutableSettings chunkSettings = ImmutableSettings.copyOf(Registries.CHUNK_SETTINGS
-                .getOrEmpty(worldType)
-                .orElse(() -> ChunkProviderSettings.createSettingsDefault(worldType))
-                .get()
-            );
-            
-            ImmutableSettings biomeSettings = ImmutableSettings.copyOf(Registries.BIOME_SETTINGS
-                .getOrEmpty(biomeType)
-                .orElse(() -> BiomeProviderSettings.createSettingsDefault(biomeType))
-                .get()
-            );
-            
-            ImmutableSettings caveBiomeSettings = ImmutableSettings.copyOf(Registries.CAVE_BIOME_SETTINGS
-                .getOrEmpty(caveBiomeType)
-                .orElse(() -> CaveBiomeProviderSettings.createSettingsDefault(caveBiomeType))
-                .get()
-            );
             
             ChunkGenerator chunkGenerator = new ModernBetaChunkGenerator(
                 structuresRegistry,
@@ -110,13 +88,13 @@ public class MixinGeneratorOptions {
                 new ModernBetaBiomeSource(
                     seed,
                     biomeRegistry,
-                    biomeSettings,
-                    caveBiomeSettings,
+                    new ModernBetaBiomeSettings().toCompound(),
+                    new ModernBetaCaveBiomeSettings().toCompound(),
                     MODERN_BETA_VERSION
                 ), 
                 seed,
                 chunkGenSettingsRegistry.getOrCreateEntry(RegistryKey.of(Registry.CHUNK_GENERATOR_SETTINGS_KEY, ModernBeta.createId(worldType))), 
-                chunkSettings,
+                new ModernBetaChunkSettings().toCompound(),
                 MODERN_BETA_VERSION
             );
             

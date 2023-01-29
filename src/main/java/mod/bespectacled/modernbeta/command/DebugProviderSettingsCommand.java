@@ -2,10 +2,10 @@ package mod.bespectacled.modernbeta.command;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
-import mod.bespectacled.modernbeta.util.settings.Settings;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
@@ -26,9 +26,9 @@ public class DebugProviderSettingsCommand {
             validWorld = true;
             
             StringBuilder builder = new StringBuilder();
-            Settings chunkSettings = oldChunkGenerator.getChunkSettings();
+            NbtCompound chunkSettings = oldChunkGenerator.getChunkSettings();
             
-            chunkSettings.keySet().forEach(key -> {
+            chunkSettings.getKeys().forEach(key -> {
                 builder.append(String.format("* %s: %s\n", key, chunkSettings.get(key).toString()));
             });
 
@@ -40,9 +40,9 @@ public class DebugProviderSettingsCommand {
             validWorld = true;
             
             StringBuilder builder0 = new StringBuilder();
-            Settings biomeSettings = oldBiomeSource.getBiomeSettings();
+            NbtCompound biomeSettings = oldBiomeSource.getBiomeSettings();
             
-            biomeSettings.keySet().forEach(key -> {
+            biomeSettings.getKeys().forEach(key -> {
                 builder0.append(String.format("* %s: %s\n", key, biomeSettings.get(key).toString()));
             });
             
@@ -50,9 +50,9 @@ public class DebugProviderSettingsCommand {
             source.sendFeedback(new LiteralText(builder0.toString()), false);
             
             StringBuilder builder1 = new StringBuilder();
-            Settings caveBiomeSettings = oldBiomeSource.getCaveBiomeSettings();
+            NbtCompound caveBiomeSettings = oldBiomeSource.getCaveBiomeSettings();
             
-            caveBiomeSettings.keySet().forEach(key -> {
+            caveBiomeSettings.getKeys().forEach(key -> {
                 builder1.append(String.format("* %s: %s\n", key, caveBiomeSettings.get(key).toString()));
             });
             

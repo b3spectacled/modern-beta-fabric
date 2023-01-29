@@ -15,26 +15,25 @@ public class ModernBetaConfigCaveBiome implements ConfigData {
     public String biomeProvider = ModernBetaBuiltInTypes.CaveBiome.VORONOI.name;
     public String singleBiome = BiomeKeys.LUSH_CAVES.getValue().toString();
     
-    // Voronoi
     public float voronoiHorizontalNoiseScale = 32.0f;
     public float voronoiVerticalNoiseScale = 16.0f;
-    public List<CaveBiomeVoronoiPoint> voronoiPoints = List.of(
-        new CaveBiomeVoronoiPoint("minecraft:the_void", 0.0, 0.5, true),
-        new CaveBiomeVoronoiPoint("minecraft:lush_caves", 0.1, 0.5, false),
-        new CaveBiomeVoronoiPoint("minecraft:the_void", 0.5, 0.5, true),
-        new CaveBiomeVoronoiPoint("minecraft:dripstone_caves", 0.9, 0.5, false),
-        new CaveBiomeVoronoiPoint("minecraft:the_void", 1.0, 0.5, true)
+    public List<VoronoiPointCaveBiome> voronoiPoints = List.of(
+        new VoronoiPointCaveBiome("minecraft:the_void", 0.0, 0.5, true),
+        new VoronoiPointCaveBiome("minecraft:lush_caves", 0.1, 0.5, false),
+        new VoronoiPointCaveBiome("minecraft:the_void", 0.5, 0.5, true),
+        new VoronoiPointCaveBiome("minecraft:dripstone_caves", 0.9, 0.5, false),
+        new VoronoiPointCaveBiome("minecraft:the_void", 1.0, 0.5, true)
     );
     
-    public static class CaveBiomeVoronoiPoint {
-        public static final CaveBiomeVoronoiPoint DEFAULT = new CaveBiomeVoronoiPoint("minecraft:lush_caves", 0.5, 0.5, false);
+    public static class VoronoiPointCaveBiome {
+        public static final VoronoiPointCaveBiome DEFAULT = new VoronoiPointCaveBiome("minecraft:lush_caves", 0.5, 0.5, false);
         
         public String biome;
         public double temp;
         public double rain;
         public boolean nullBiome;
         
-        public CaveBiomeVoronoiPoint(String biome, double temp, double rain, boolean nullBiome) {
+        public VoronoiPointCaveBiome(String biome, double temp, double rain, boolean nullBiome) {
             this.biome = biome;
             this.temp = temp;
             this.rain = rain;

@@ -26,28 +26,28 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 
 public class Infdev420ChunkProvider extends NoiseChunkProvider {
-    private final PerlinOctaveNoise minLimitNoiseOctaves;
-    private final PerlinOctaveNoise maxLimitNoiseOctaves;
-    private final PerlinOctaveNoise mainNoiseOctaves;
-    private final PerlinOctaveNoise beachNoiseOctaves;
-    private final PerlinOctaveNoise surfaceNoiseOctaves;
-    private final PerlinOctaveNoise forestNoiseOctaves;
+    private final PerlinOctaveNoise minLimitOctaveNoise;
+    private final PerlinOctaveNoise maxLimitOctaveNoise;
+    private final PerlinOctaveNoise mainOctaveNoise;
+    private final PerlinOctaveNoise beachOctaveNoise;
+    private final PerlinOctaveNoise surfaceOctaveNoise;
+    private final PerlinOctaveNoise forestOctaveNoise;
     
     public Infdev420ChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
         
         // Noise Generators
-        this.minLimitNoiseOctaves = new PerlinOctaveNoise(random, 16, true);
-        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(random, 16, true);
-        this.mainNoiseOctaves = new PerlinOctaveNoise(random, 8, true);
-        this.beachNoiseOctaves = new PerlinOctaveNoise(random, 4, true);
-        this.surfaceNoiseOctaves = new PerlinOctaveNoise(random, 4, true);
+        this.minLimitOctaveNoise = new PerlinOctaveNoise(random, 16, true);
+        this.maxLimitOctaveNoise = new PerlinOctaveNoise(random, 16, true);
+        this.mainOctaveNoise = new PerlinOctaveNoise(random, 8, true);
+        this.beachOctaveNoise = new PerlinOctaveNoise(random, 4, true);
+        this.surfaceOctaveNoise = new PerlinOctaveNoise(random, 4, true);
         new PerlinOctaveNoise(random, 5, true); // Unused in original source
-        this.forestNoiseOctaves = new PerlinOctaveNoise(random, 5, true);
+        this.forestOctaveNoise = new PerlinOctaveNoise(random, 5, true);
 
-        setForestOctaves(forestNoiseOctaves);
+        setForestOctaves(forestOctaveNoise);
         
-        this.spawnLocator = new BeachSpawnLocator(this, this.beachNoiseOctaves);
+        this.spawnLocator = new BeachSpawnLocator(this, this.beachOctaveNoise);
     }
 
     @Override
@@ -84,19 +84,19 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                     heightmapChunk.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) - 8 : 
                     this.worldMinY;
                 
-                boolean genSandBeach = this.beachNoiseOctaves.sample(
+                boolean genSandBeach = this.beachOctaveNoise.sample(
                     x * scale,
                     z * scale,
                     0.0
                 ) + rand.nextDouble() * 0.2 > 0.0;
                 
-                boolean genGravelBeach = this.beachNoiseOctaves.sample(
+                boolean genGravelBeach = this.beachOctaveNoise.sample(
                     z * scale,
                     109.0134,
                     x * scale
                 ) + rand.nextDouble() * 0.2 > 3.0;
                 
-                int surfaceDepth = (int)(this.surfaceNoiseOctaves.sampleXY(
+                int surfaceDepth = (int)(this.surfaceOctaveNoise.sampleXY(
                     x * scale * 2.0,
                     z * scale * 2.0
                 ) / 3.0 + 3.0 + rand.nextDouble() * 0.25);
@@ -230,7 +230,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             
             double densityOffset = this.getOffset(noiseY, baseSize, heightStretch);
             
-            double mainNoise = (this.mainNoiseOctaves.sample(
+            double mainNoise = (this.mainOctaveNoise.sample(
                 noiseX, noiseY, noiseZ,
                 coordinateScale / mainNoiseScaleX, 
                 heightScale / mainNoiseScaleY, 
@@ -238,7 +238,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             ) / 10D + 1.0D) / 2D;
             
             if (mainNoise < 0.0D) {
-                density = this.minLimitNoiseOctaves.sample(
+                density = this.minLimitOctaveNoise.sample(
                     noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
@@ -246,7 +246,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                 ) / lowerLimitScale;
                 
             } else if (mainNoise > 1.0D) {
-                density = this.maxLimitNoiseOctaves.sample(
+                density = this.maxLimitOctaveNoise.sample(
                     noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
@@ -254,14 +254,14 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
                 ) / upperLimitScale;
                 
             } else {
-                double minLimitNoise = this.minLimitNoiseOctaves.sample(
+                double minLimitNoise = this.minLimitOctaveNoise.sample(
                     noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
                 ) / lowerLimitScale;
                 
-                double maxLimitNoise = this.maxLimitNoiseOctaves.sample(
+                double maxLimitNoise = this.maxLimitOctaveNoise.sample(
                     noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 

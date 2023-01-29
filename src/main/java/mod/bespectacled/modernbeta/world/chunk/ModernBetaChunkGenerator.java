@@ -15,15 +15,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.registry.Registries;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
+import mod.bespectacled.modernbeta.settings.ModernBetaChunkSettings;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
-import mod.bespectacled.modernbeta.util.settings.ImmutableSettings;
-import mod.bespectacled.modernbeta.util.settings.Settings;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
+import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import net.minecraft.block.BlockState;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.StructureSet;
 import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.RegistryOps;
@@ -65,13 +65,13 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
             Codec.LONG.fieldOf("seed").stable().forGetter(generator -> generator.seed),
             ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(generator -> generator.settings),
-            ImmutableSettings.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings),
+            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings),
             Codec.INT.optionalFieldOf("version").forGetter(generator -> generator.version))
         ).apply(instance, instance.stable(ModernBetaChunkGenerator::new)));
 
     private final Registry<StructureSet> structuresRegistry;
     private final Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry;
-    private final ImmutableSettings chunkProviderSettings;
+    private final NbtCompound chunkProviderSettings;
     private final ChunkProvider chunkProvider;
     private final String chunkProviderType;
     private final Optional<Integer> version;
@@ -84,7 +84,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         BiomeSource biomeSource,
         long seed,
         RegistryEntry<ChunkGeneratorSettings> settings,
-        ImmutableSettings chunkProviderSettings,
+        NbtCompound chunkProviderSettings,
         Optional<Integer> version
     ) {
         super(structuresRegistry, noiseRegistry, biomeSource, seed, settings);
@@ -95,7 +95,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         this.structuresRegistry = structuresRegistry;
         this.noiseRegistry = noiseRegistry;
         this.chunkProviderSettings = chunkProviderSettings;
-        this.chunkProviderType = NbtUtil.toStringOrThrow(chunkProviderSettings.get(NbtTags.CHUNK_PROVIDER));
+        this.chunkProviderType = new ModernBetaChunkSettings.Builder(chunkProviderSettings).build().chunkProvider;
         this.chunkProvider = Registries.CHUNK.get(this.chunkProviderType).apply(this);
         this.version = version;
     
@@ -293,7 +293,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         return this.chunkProvider;
     }
     
-    public Settings getChunkSettings() {
+    public NbtCompound getChunkSettings() {
         return this.chunkProviderSettings;
     }
     

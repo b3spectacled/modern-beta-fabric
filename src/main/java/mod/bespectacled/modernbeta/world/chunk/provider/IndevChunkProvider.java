@@ -1,11 +1,8 @@
 package mod.bespectacled.modernbeta.world.chunk.provider;
 
-import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.chunk.FiniteChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
 import mod.bespectacled.modernbeta.util.BlockStates;
-import mod.bespectacled.modernbeta.util.NbtTags;
-import mod.bespectacled.modernbeta.util.NbtUtil;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoiseCombined;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
@@ -53,16 +50,9 @@ public class IndevChunkProvider extends FiniteChunkProvider {
 
     public IndevChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        
-        this.levelType = IndevType.fromName(NbtUtil.toString(
-            this.providerSettings.get(NbtTags.INDEV_LEVEL_TYPE),
-            ModernBeta.CHUNK_CONFIG.indevLevelType
-        ));
-        
-        this.levelTheme = IndevTheme.fromName(NbtUtil.toString(
-            this.providerSettings.get(NbtTags.INDEV_LEVEL_THEME),
-            ModernBeta.CHUNK_CONFIG.indevLevelTheme
-        ));
+
+        this.levelTheme = IndevTheme.fromName(this.chunkSettings.indevLevelTheme);
+        this.levelType = IndevType.fromName(this.chunkSettings.indevLevelType);
         
         this.fluidBlock = this.isFloating() ? BlockStates.AIR : (this.isHell() ? BlockStates.LAVA : this.defaultFluid);
         this.topsoilBlock = this.isHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;

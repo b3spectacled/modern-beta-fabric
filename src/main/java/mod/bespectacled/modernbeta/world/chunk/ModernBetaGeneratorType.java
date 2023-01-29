@@ -4,13 +4,11 @@ import java.util.Optional;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
-import mod.bespectacled.modernbeta.api.registry.Registries;
 import mod.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
-import mod.bespectacled.modernbeta.util.settings.ImmutableSettings;
+import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
+import mod.bespectacled.modernbeta.settings.ModernBetaCaveBiomeSettings;
+import mod.bespectacled.modernbeta.settings.ModernBetaChunkSettings;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import mod.bespectacled.modernbeta.world.biome.provider.settings.BiomeProviderSettings;
-import mod.bespectacled.modernbeta.world.cavebiome.provider.settings.CaveBiomeProviderSettings;
-import mod.bespectacled.modernbeta.world.chunk.provider.settings.ChunkProviderSettings;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.world.GeneratorType;
@@ -27,8 +25,6 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 @Environment(EnvType.CLIENT)
 public class ModernBetaGeneratorType {
     private static final String DEFAULT_CHUNK_TYPE = ModernBetaBuiltInTypes.Chunk.BETA.name;
-    private static final String DEFAULT_BIOME_TYPE = ModernBetaBuiltInTypes.Biome.BETA.name;
-    private static final String DEFAULT_CAVE_BIOME_TYPE = ModernBetaBuiltInTypes.CaveBiome.VORONOI.name;
     
     private static final Optional<Integer> MODERN_BETA_VERSION = Optional.of(ModernBeta.MOD_VERSION);
     private static final GeneratorType MODERN_BETA;
@@ -56,41 +52,19 @@ public class ModernBetaGeneratorType {
                 );
                 RegistryEntry<ChunkGeneratorSettings> chunkGenSettings = chunkGenSettingsRegistry.getOrCreateEntry(worldTypeKey);
                 
-                String chunkType = DEFAULT_CHUNK_TYPE;
-                String biomeType = DEFAULT_BIOME_TYPE;
-                String caveBiomeType = DEFAULT_CAVE_BIOME_TYPE;
-                
-                ImmutableSettings chunkSettings = ImmutableSettings.copyOf(Registries.CHUNK_SETTINGS
-                    .getOrEmpty(chunkType)
-                    .orElse(() -> ChunkProviderSettings.createSettingsDefault(chunkType))
-                    .get()
-                );
-                
-                ImmutableSettings biomeSettings = ImmutableSettings.copyOf(Registries.BIOME_SETTINGS
-                    .getOrEmpty(biomeType)
-                    .orElse(() -> BiomeProviderSettings.createSettingsDefault(biomeType))
-                    .get()
-                );
-                    
-                    ImmutableSettings caveBiomeSettings = ImmutableSettings.copyOf(Registries.CAVE_BIOME_SETTINGS
-                    .getOrEmpty(caveBiomeType)
-                    .orElse(() -> CaveBiomeProviderSettings.createSettingsDefault(caveBiomeType))
-                    .get()
-                );
-                
                 return new ModernBetaChunkGenerator(
                     structuresRegistry,
                     noiseRegistry,
                     new ModernBetaBiomeSource(
                         seed,
                         biomeRegistry,
-                        biomeSettings,
-                        caveBiomeSettings,
+                        new ModernBetaBiomeSettings().toCompound(),
+                        new ModernBetaCaveBiomeSettings().toCompound(),
                         MODERN_BETA_VERSION
                     ), 
                     seed, 
                     chunkGenSettings, 
-                    chunkSettings,
+                    new ModernBetaChunkSettings().toCompound(),
                     MODERN_BETA_VERSION
                 );
             }

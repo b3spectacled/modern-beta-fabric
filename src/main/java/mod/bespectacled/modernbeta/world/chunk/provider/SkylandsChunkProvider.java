@@ -22,26 +22,26 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 
 public class SkylandsChunkProvider extends NoiseChunkProvider {
-    private final PerlinOctaveNoise minLimitNoiseOctaves;
-    private final PerlinOctaveNoise maxLimitNoiseOctaves;
-    private final PerlinOctaveNoise mainNoiseOctaves;
-    private final PerlinOctaveNoise surfaceNoiseOctaves;
-    private final PerlinOctaveNoise forestNoiseOctaves;
+    private final PerlinOctaveNoise minLimitOctaveNoise;
+    private final PerlinOctaveNoise maxLimitOctaveNoise;
+    private final PerlinOctaveNoise mainOctaveNoise;
+    private final PerlinOctaveNoise surfaceOctaveNoise;
+    private final PerlinOctaveNoise forestOctaveNoise;
     
     public SkylandsChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
 
         // Noise Generators
-        this.minLimitNoiseOctaves = new PerlinOctaveNoise(random, 16, true);
-        this.maxLimitNoiseOctaves = new PerlinOctaveNoise(random, 16, true);
-        this.mainNoiseOctaves = new PerlinOctaveNoise(random, 8, true);
+        this.minLimitOctaveNoise = new PerlinOctaveNoise(random, 16, true);
+        this.maxLimitOctaveNoise = new PerlinOctaveNoise(random, 16, true);
+        this.mainOctaveNoise = new PerlinOctaveNoise(random, 8, true);
         new PerlinOctaveNoise(random, 4, true);
-        this.surfaceNoiseOctaves = new PerlinOctaveNoise(random, 4, true);
+        this.surfaceOctaveNoise = new PerlinOctaveNoise(random, 4, true);
         new PerlinOctaveNoise(random, 10, true);
         new PerlinOctaveNoise(random, 16, true);
-        this.forestNoiseOctaves = new PerlinOctaveNoise(random, 8, true);
+        this.forestOctaveNoise = new PerlinOctaveNoise(random, 8, true);
 
-        setForestOctaves(forestNoiseOctaves);
+        setForestOctaves(forestOctaveNoise);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
         ModernBetaSurfaceRules surfaceRules = new ModernBetaSurfaceRules(region, chunk, this.chunkGenerator);
         
-        double[] surfaceNoise = surfaceNoiseOctaves.sampleBeta(
+        double[] surfaceNoise = surfaceOctaveNoise.sampleBeta(
             chunkX * 16, chunkZ * 16, 0.0D, 
             16, 16, 1,
             scale * 2D, scale * 2D, scale * 2D
@@ -179,7 +179,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             double densityOffset = this.getOffset();
             
             // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.            
-            double mainNoise = (this.mainNoiseOctaves.sample(
+            double mainNoise = (this.mainOctaveNoise.sample(
                 noiseX, noiseY, noiseZ,
                 coordinateScale / mainNoiseScaleX, 
                 heightScale / mainNoiseScaleY, 
@@ -187,7 +187,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
             ) / 10D + 1.0D) / 2D;
             
             if (mainNoise < 0.0D) {
-                density = this.minLimitNoiseOctaves.sample(
+                density = this.minLimitOctaveNoise.sample(
                     noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
@@ -195,7 +195,7 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                 ) / lowerLimitScale;
                 
             } else if (mainNoise > 1.0D) {
-                density = this.maxLimitNoiseOctaves.sample(
+                density = this.maxLimitOctaveNoise.sample(
                     noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
@@ -203,14 +203,14 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
                 ) / upperLimitScale;
                 
             } else {
-                double minLimitNoise = this.minLimitNoiseOctaves.sample(
+                double minLimitNoise = this.minLimitOctaveNoise.sample(
                     noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 
                     coordinateScale
                 ) / lowerLimitScale;
                 
-                double maxLimitNoise = this.maxLimitNoiseOctaves.sample(
+                double maxLimitNoise = this.maxLimitOctaveNoise.sample(
                     noiseX, noiseY, noiseZ,
                     coordinateScale, 
                     heightScale, 

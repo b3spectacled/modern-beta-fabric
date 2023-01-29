@@ -7,10 +7,10 @@ import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import mod.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import mod.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
+import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome.VoronoiPointCaveBiome;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
-import mod.bespectacled.modernbeta.util.settings.Settings;
 import mod.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointRules;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -24,7 +24,7 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
     private final VoronoiCaveClimateSampler climateSampler;
     private final VoronoiPointRules<RegistryKey<Biome>, Clime> rules;
 
-    public VoronoiCaveBiomeProvider(long seed, Settings settings, Registry<Biome> biomeRegistry) {
+    public VoronoiCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
         super(seed, settings, biomeRegistry);
         
         float verticalNoiseScale = NbtUtil.toFloat(
@@ -38,7 +38,7 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
         );
         
         this.climateSampler = new VoronoiCaveClimateSampler(seed, verticalNoiseScale, horizontalNoiseScale);
-        this.rules = buildRules(settings);
+        this.rules = buildRules(this.settings.voronoiPoints);
     }
 
     @Override
@@ -59,19 +59,14 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
         return this.climateSampler.sample(x, y, z);
     }
     
-    private static VoronoiPointRules<RegistryKey<Biome>, Clime> buildRules(Settings settings) {
+    private static VoronoiPointRules<RegistryKey<Biome>, Clime> buildRules(List<VoronoiPointCaveBiome> points) {
         VoronoiPointRules.Builder<RegistryKey<Biome>, Clime> builder = new VoronoiPointRules.Builder<>();
         
-        NbtUtil.toListOrThrow(settings.get(NbtTags.BIOMES)).stream().forEach(e -> {
-            NbtCompound compound = NbtUtil.toCompoundOrThrow(e);
-            String biome = NbtUtil.readStringOrThrow(NbtTags.BIOME, compound);
-            double temp = NbtUtil.readDoubleOrThrow(NbtTags.TEMP, compound);
-            double rain = NbtUtil.readDoubleOrThrow(NbtTags.RAIN, compound);
-            boolean nullBiome = NbtUtil.readBooleanOrThrow(NbtTags.NULL_BIOME, compound);
+        for (VoronoiPointCaveBiome point : points) {
+            RegistryKey<Biome> biomeKey = point.nullBiome ? null : RegistryKey.of(Registry.BIOME_KEY, new Identifier(point.biome));
             
-            RegistryKey<Biome> biomeKey = nullBiome ? null : RegistryKey.of(Registry.BIOME_KEY, new Identifier(biome));
-            builder.add(biomeKey, new Clime(temp, rain));
-        });
+            builder.add(biomeKey, new Clime(point.temp, point.rain));
+        }
         
         return builder.build();
     }

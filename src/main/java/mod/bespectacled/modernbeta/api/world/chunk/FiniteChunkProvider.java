@@ -9,9 +9,6 @@ import org.apache.logging.log4j.Level;
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.util.BlockStates;
-import mod.bespectacled.modernbeta.util.NbtTags;
-import mod.bespectacled.modernbeta.util.NbtUtil;
-import mod.bespectacled.modernbeta.util.settings.Settings;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.spawn.IndevSpawnLocator;
@@ -47,7 +44,7 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
     protected final int bedrockFloor;
     protected final int bedrockCeiling;
     
-    protected final boolean generateDeepslate;
+    protected final boolean useDeepslate;
     
     protected final BlockState defaultBlock;
     protected final BlockState defaultFluid;
@@ -64,8 +61,7 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
     
     public FiniteChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        
-        Settings providerSettings = chunkGenerator.getChunkSettings();
+
         ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
         GenerationShapeConfig shapeConfig = generatorSettings.generationShapeConfig();
         
@@ -75,15 +71,15 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
         this.seaLevel = generatorSettings.seaLevel();
         this.bedrockFloor = 0;
         this.bedrockCeiling = Integer.MIN_VALUE;
-        this.generateDeepslate = NbtUtil.toBoolean(providerSettings.get(NbtTags.USE_DEEPSLATE), ModernBeta.CHUNK_CONFIG.useDeepslate);
+        this.useDeepslate = this.chunkSettings.useDeepslate;
 
         this.defaultBlock = generatorSettings.defaultBlock();
         this.defaultFluid = generatorSettings.defaultFluid();
         
-        this.levelWidth = NbtUtil.toInt(providerSettings.get(NbtTags.INDEV_LEVEL_WIDTH), ModernBeta.CHUNK_CONFIG.indevLevelWidth);
-        this.levelLength = NbtUtil.toInt(providerSettings.get(NbtTags.INDEV_LEVEL_LENGTH), ModernBeta.CHUNK_CONFIG.indevLevelLength);
-        this.levelHeight = NbtUtil.toInt(providerSettings.get(NbtTags.INDEV_LEVEL_HEIGHT), ModernBeta.CHUNK_CONFIG.indevLevelHeight);
-        this.caveRadius = NbtUtil.toFloat(providerSettings.get(NbtTags.INDEV_CAVE_RADIUS), ModernBeta.CHUNK_CONFIG.indevCaveRadius);
+        this.levelWidth = this.chunkSettings.indevLevelWidth;
+        this.levelLength = this.chunkSettings.indevLevelLength;
+        this.levelHeight = this.chunkSettings.indevLevelHeight;
+        this.caveRadius = this.chunkSettings.indevCaveRadius;
         
         this.heightmap = new int[this.levelWidth * this.levelLength];
         this.blockArr = new Block[this.levelWidth][this.levelHeight][this.levelLength];

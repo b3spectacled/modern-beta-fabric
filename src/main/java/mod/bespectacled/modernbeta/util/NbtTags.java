@@ -3,7 +3,6 @@ package mod.bespectacled.modernbeta.util;
 public class NbtTags {
     /* Chunk Settings */
     public static final String CHUNK_PROVIDER = "chunkProvider";
-    public static final String USE_ISLANDS = "useIslands";
     public static final String USE_DEEPSLATE = "useDeepslate";
     public static final String NOISE_POST_PROCESSOR = "noisePostProcessor";
     
@@ -34,13 +33,14 @@ public class NbtTags {
     public static final String INDEV_CAVE_RADIUS = "indevCaveRadius";
     
     // Islands
-    public static final String ISLANDS_USE_OUTER_ISLANDS = "generateOuterIslands";
-    public static final String ISLANDS_CENTER_ISLAND_FALLOFF = "centerIslandFalloff";
-    public static final String ISLANDS_CENTER_ISLAND_RADIUS = "centerIslandRadius";
-    public static final String ISLANDS_CENTER_OCEAN_FALLOFF_DIST = "centerOceanFalloffDistance";
-    public static final String ISLANDS_CENTER_OCEAN_RADIUS = "centerOceanRadius";
-    public static final String ISLANDS_OUTER_ISLAND_NOISE_SCALE = "outerIslandNoiseScale";
-    public static final String ISLANDS_OUTER_ISLAND_NOISE_OFFSET = "outerIslandNoiseOffset";
+    public static final String ISLES_USE_ISLANDS = "islesUseIslands";
+    public static final String ISLES_USE_OUTER_ISLANDS = "islesUseOuterIslands";
+    public static final String ISLES_CENTER_ISLAND_FALLOFF = "islesCenterIslandFalloff";
+    public static final String ISLES_CENTER_ISLAND_RADIUS = "islesCenterIslandRadius";
+    public static final String ISLES_CENTER_OCEAN_FALLOFF_DIST = "islesCenterOceanFalloffDistance";
+    public static final String ISLES_CENTER_OCEAN_RADIUS = "islesCenterOceanRadius";
+    public static final String ISLES_OUTER_ISLAND_NOISE_SCALE = "islesOuterIslandNoiseScale";
+    public static final String ISLES_OUTER_ISLAND_NOISE_OFFSET = "islesOuterIslandNoiseOffset";
 
     /* Climate/Voronoi Settings */
     public static final String BIOMES = "biomes";

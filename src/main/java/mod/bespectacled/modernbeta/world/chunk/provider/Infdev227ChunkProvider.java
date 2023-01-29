@@ -4,14 +4,11 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.NoiseChunkImitable;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
 import mod.bespectacled.modernbeta.util.BlockColumnHolder;
 import mod.bespectacled.modernbeta.util.BlockStates;
-import mod.bespectacled.modernbeta.util.NbtTags;
-import mod.bespectacled.modernbeta.util.NbtUtil;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
@@ -47,8 +44,8 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
     private final BlockState defaultBlock;
     private final BlockState defaultFluid;
     
-    private final boolean generateInfdevPyramid;
-    private final boolean generateInfdevWall;
+    private final boolean infdevUsePyramid;
+    private final boolean infdevUseWall;
 
     private final PerlinOctaveNoise noiseOctavesA;
     private final PerlinOctaveNoise noiseOctavesB;
@@ -56,7 +53,7 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
     private final PerlinOctaveNoise noiseOctavesD;
     private final PerlinOctaveNoise noiseOctavesE;
     private final PerlinOctaveNoise noiseOctavesF;
-    private final PerlinOctaveNoise forestNoiseOctaves;
+    private final PerlinOctaveNoise forestOctaveNoise;
 
     public Infdev227ChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
@@ -83,19 +80,12 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
         new PerlinOctaveNoise(random, 3, true);
         new PerlinOctaveNoise(random, 3, true);
         new PerlinOctaveNoise(random, 3, true);
-        this.forestNoiseOctaves = new PerlinOctaveNoise(random, 8, true);
+        this.forestOctaveNoise = new PerlinOctaveNoise(random, 8, true);
 
-        this.generateInfdevPyramid = NbtUtil.toBoolean(
-            this.providerSettings.get(NbtTags.INFDEV_USE_PYRAMID),
-            ModernBeta.CHUNK_CONFIG.infdevUsePyramid
-        );
+        this.infdevUsePyramid = this.chunkSettings.infdevUsePyramid;
+        this.infdevUseWall = this.chunkSettings.infdevUseWall;
         
-        this.generateInfdevWall = NbtUtil.toBoolean(
-            this.providerSettings.get(NbtTags.INFDEV_USE_WALL),
-            ModernBeta.CHUNK_CONFIG.infdevUseWall
-        );
-        
-        setForestOctaves(forestNoiseOctaves);
+        setForestOctaves(forestOctaveNoise);
     }
 
     @Override
@@ -235,7 +225,7 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
                 for (int y = this.worldMinY; y < this.worldTopY; ++y) {
                     Block block = Blocks.AIR;
                     
-                    if (this.generateInfdevWall && (x == 0 || z == 0) && y <= heightVal + 2) {
+                    if (this.infdevUseWall && (x == 0 || z == 0) && y <= heightVal + 2) {
                         block = Blocks.OBSIDIAN;
                     }
                     
@@ -262,7 +252,7 @@ public class Infdev227ChunkProvider extends ChunkProvider implements NoiseChunkI
                         block = defaultFluid;
                     }
                     
-                    if (this.generateInfdevPyramid) {
+                    if (this.infdevUsePyramid) {
                         rand.setSeed(rX + rZ * 13871);
                         int bX = (rX << 10) + 128 + rand.nextInt(512);
                         int bZ = (rZ << 10) + 128 + rand.nextInt(512);

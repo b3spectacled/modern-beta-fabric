@@ -15,10 +15,9 @@ import mod.bespectacled.modernbeta.api.world.biome.OceanBiomeResolver;
 import mod.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
-import mod.bespectacled.modernbeta.util.settings.ImmutableSettings;
-import mod.bespectacled.modernbeta.util.settings.Settings;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -33,15 +32,15 @@ public class ModernBetaBiomeSource extends BiomeSource {
         .group(
             Codec.LONG.fieldOf("seed").stable().forGetter(biomeSource -> biomeSource.seed),
             RegistryOps.createRegistryCodec(Registry.BIOME_KEY).forGetter(biomeSource -> biomeSource.biomeRegistry),
-            ImmutableSettings.CODEC.fieldOf("provider_settings").forGetter(biomeSource -> biomeSource.biomeSettings),
-            ImmutableSettings.CODEC.fieldOf("cave_provider_settings").forGetter(biomeSource -> biomeSource.caveBiomeSettings),
+            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(biomeSource -> biomeSource.biomeSettings),
+            NbtCompound.CODEC.fieldOf("cave_provider_settings").forGetter(biomeSource -> biomeSource.caveBiomeSettings),
             Codec.INT.optionalFieldOf("version").forGetter(generator -> generator.version)
         ).apply(instance, (instance).stable(ModernBetaBiomeSource::new)));
     
     private final long seed;
     private final Registry<Biome> biomeRegistry;
-    private final ImmutableSettings biomeSettings;
-    private final ImmutableSettings caveBiomeSettings;
+    private final NbtCompound biomeSettings;
+    private final NbtCompound caveBiomeSettings;
     private final Optional<Integer> version;
     
     private final BiomeProvider biomeProvider;
@@ -50,8 +49,8 @@ public class ModernBetaBiomeSource extends BiomeSource {
     private static List<RegistryEntry<Biome>> getBiomesForRegistry(
         long seed,
         Registry<Biome> biomeRegistry, 
-        ImmutableSettings biomeSettings,
-        ImmutableSettings caveBiomeSettings
+        NbtCompound biomeSettings,
+        NbtCompound caveBiomeSettings
     ) {
         List<RegistryEntry<Biome>> mainBiomes = Registries.BIOME
             .get(NbtUtil.toStringOrThrow(biomeSettings.get(NbtTags.BIOME_PROVIDER)))
@@ -73,8 +72,8 @@ public class ModernBetaBiomeSource extends BiomeSource {
     public ModernBetaBiomeSource(
         long seed,
         Registry<Biome> biomeRegistry,
-        ImmutableSettings biomeSettings,
-        ImmutableSettings caveBiomeSettings,
+        NbtCompound biomeSettings,
+        NbtCompound caveBiomeSettings,
         Optional<Integer> version
     ) {
         super(getBiomesForRegistry(seed, biomeRegistry, biomeSettings, caveBiomeSettings));
@@ -158,11 +157,11 @@ public class ModernBetaBiomeSource extends BiomeSource {
         return this.caveBiomeProvider;
     }
     
-    public Settings getBiomeSettings() {
+    public NbtCompound getBiomeSettings() {
         return this.biomeSettings;
     }
     
-    public Settings getCaveBiomeSettings() {
+    public NbtCompound getCaveBiomeSettings() {
         return this.caveBiomeSettings;
     }
 

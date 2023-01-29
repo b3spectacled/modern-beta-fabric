@@ -5,11 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import mod.bespectacled.modernbeta.util.NbtTags;
-import mod.bespectacled.modernbeta.util.NbtUtil;
-import mod.bespectacled.modernbeta.util.settings.Settings;
+import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
 import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
@@ -17,13 +14,12 @@ public class BetaClimateMap {
     private final Map<String, ClimateMapping> climateMap;
     private final ClimateMapping[] climateTable;
     
-    public BetaClimateMap(Settings settings) {
+    public BetaClimateMap(ModernBetaBiomeSettings settings) {
         this.climateMap = new LinkedHashMap<>();
         this.climateTable = new ClimateMapping[4096];
         
-        NbtCompound biomes = NbtUtil.toCompoundOrThrow(settings.get(NbtTags.BIOMES));
-        for (String key : biomes.getKeys()) {
-            this.climateMap.put(key, ClimateMapping.fromCompound(NbtUtil.readCompoundOrThrow(key, biomes)));
+        for (String key : settings.climates.keySet()) {
+            this.climateMap.put(key, ClimateMapping.fromCompound(settings.climates.get(key).toCompound()));
         }
         
         this.generateBiomeLookup();

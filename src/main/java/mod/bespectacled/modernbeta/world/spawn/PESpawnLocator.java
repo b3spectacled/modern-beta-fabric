@@ -27,13 +27,13 @@ public class PESpawnLocator implements SpawnLocator {
     private final MTRandom rand;
     
     private final ChunkProvider chunkProvider;
-    private final PerlinOctaveNoise beachNoiseOctaves;
+    private final PerlinOctaveNoise beachOctaveNoise;
     
-    public PESpawnLocator(ChunkProvider chunkProvider, PerlinOctaveNoise beachNoiseOctaves) {
+    public PESpawnLocator(ChunkProvider chunkProvider, PerlinOctaveNoise beachOctaveNoise) {
         this.rand = new MTRandom();
         
         this.chunkProvider = chunkProvider;
-        this.beachNoiseOctaves = beachNoiseOctaves;
+        this.beachOctaveNoise = beachOctaveNoise;
     }
     
     @Override
@@ -88,6 +88,6 @@ public class PESpawnLocator implements SpawnLocator {
         
         return 
             (Biome.getCategory(biome) == Category.DESERT && y >= seaLevel) || 
-            (this.beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) > 0.0 && y >= seaLevel && y <= seaLevel + 2);
+            (this.beachOctaveNoise.sample(x * eighth, z * eighth, 0.0) > 0.0 && y >= seaLevel && y <= seaLevel + 2);
     }
 }

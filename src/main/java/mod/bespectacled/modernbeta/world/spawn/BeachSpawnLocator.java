@@ -27,13 +27,13 @@ public class BeachSpawnLocator implements SpawnLocator {
     private final Random rand;
     
     private final ChunkProvider chunkProvider;
-    private final PerlinOctaveNoise beachNoiseOctaves;
+    private final PerlinOctaveNoise beachOctaveNoise;
     
-    public BeachSpawnLocator(ChunkProvider chunkProvider, PerlinOctaveNoise beachNoiseOctaves) {
+    public BeachSpawnLocator(ChunkProvider chunkProvider, PerlinOctaveNoise beachOctaveNoise) {
         this.rand = new Random();
         
         this.chunkProvider = chunkProvider;
-        this.beachNoiseOctaves = beachNoiseOctaves;
+        this.beachOctaveNoise = beachOctaveNoise;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class BeachSpawnLocator implements SpawnLocator {
         
         return 
             (Biome.getCategory(biome) == Category.DESERT && y >= seaLevel) || 
-            (this.beachNoiseOctaves.sample(x * eighth, z * eighth, 0.0) > 0.0 && y >= seaLevel && y <= seaLevel + 2);
+            (this.beachOctaveNoise.sample(x * eighth, z * eighth, 0.0) > 0.0 && y >= seaLevel && y <= seaLevel + 2);
     }
 
 }
