@@ -3,7 +3,6 @@ package mod.bespectacled.modernbeta.world.chunk;
 import java.util.Optional;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import mod.bespectacled.modernbeta.mixin.client.MixinGeneratorTypeAccessor;
 import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
 import mod.bespectacled.modernbeta.settings.ModernBetaCaveBiomeSettings;
@@ -24,8 +23,6 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 @Environment(EnvType.CLIENT)
 public class ModernBetaGeneratorType {
-    private static final String DEFAULT_CHUNK_TYPE = ModernBetaBuiltInTypes.Chunk.BETA.name;
-    
     private static final Optional<Integer> MODERN_BETA_VERSION = Optional.of(ModernBeta.MOD_VERSION);
     private static final GeneratorType MODERN_BETA;
     
@@ -38,7 +35,7 @@ public class ModernBetaGeneratorType {
     }
     
     static {
-        MODERN_BETA = new GeneratorType("modern_beta") {
+        MODERN_BETA = new GeneratorType(ModernBeta.MOD_ID) {
             @Override
             protected ChunkGenerator getChunkGenerator(DynamicRegistryManager registryManager, long seed) {
                 Registry<StructureSet> structuresRegistry = registryManager.get(Registry.STRUCTURE_SET_KEY);
@@ -48,7 +45,7 @@ public class ModernBetaGeneratorType {
                 
                 RegistryKey<ChunkGeneratorSettings> worldTypeKey = RegistryKey.of(
                     Registry.CHUNK_GENERATOR_SETTINGS_KEY,
-                    ModernBeta.createId(DEFAULT_CHUNK_TYPE)
+                    ModernBeta.createId(ModernBeta.MOD_ID)
                 );
                 RegistryEntry<ChunkGeneratorSettings> chunkGenSettings = chunkGenSettingsRegistry.getOrCreateEntry(worldTypeKey);
                 

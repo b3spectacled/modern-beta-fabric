@@ -18,6 +18,7 @@ import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigChunk;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigCompat;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigRendering;
+import mod.bespectacled.modernbeta.data.ModernBetaDataGenerator;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
@@ -98,7 +99,7 @@ public class ModernBeta implements ModInitializer {
         // Register dev-only stuff, i.e. commands, etc.
         if (DEV_ENV) {
             DebugProviderSettingsCommand.register();
-            //ModernBetaDataGenerator.generateData();
+            ModernBetaDataGenerator.generateData();
         }
     }
 }
