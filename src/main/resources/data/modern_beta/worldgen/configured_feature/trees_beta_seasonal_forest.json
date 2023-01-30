@@ -1,0 +1,12 @@
+{
+  "config": {
+    "features": [
+      {
+        "feature": "modern_beta:fancy_oak",
+        "chance": 0.1
+      }
+    ],
+    "default": "minecraft:oak_checked"
+  },
+  "type": "minecraft:random_selector"
+}

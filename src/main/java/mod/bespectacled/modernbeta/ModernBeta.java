@@ -21,9 +21,11 @@ import mod.bespectacled.modernbeta.config.ModernBetaConfigRendering;
 import mod.bespectacled.modernbeta.data.ModernBetaDataGenerator;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
+import mod.bespectacled.modernbeta.world.carver.ModernBetaCarvers;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGeneratorSettings;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaGeneratorType;
+import mod.bespectacled.modernbeta.world.feature.ModernBetaFeatures;
 import mod.bespectacled.modernbeta.world.feature.placement.ModernBetaPlacementTypes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
@@ -73,6 +75,8 @@ public class ModernBeta implements ModInitializer {
         log(Level.INFO, "Initializing Modern Beta...");
         
         // Register mod stuff
+        ModernBetaFeatures.register();
+        ModernBetaCarvers.register();
         ModernBetaBiomes.register();
         ModernBetaBiomeSource.register();
         ModernBetaChunkGenerator.register();

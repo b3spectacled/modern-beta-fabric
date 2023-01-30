@@ -1,0 +1,27 @@
+{
+  "feature": "modern_beta:ore_emerald_y95",
+  "placement": [
+    {
+      "count": 11,
+      "type": "minecraft:count"
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "height": {
+        "min_inclusive": {
+          "absolute": 95
+        },
+        "max_inclusive": {
+          "absolute": 256
+        },
+        "type": "minecraft:uniform"
+      },
+      "type": "minecraft:height_range"
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

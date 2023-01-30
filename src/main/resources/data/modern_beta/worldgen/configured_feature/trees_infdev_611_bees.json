@@ -1,0 +1,12 @@
+{
+  "config": {
+    "features": [
+      {
+        "feature": "minecraft:oak_bees_0002",
+        "chance": 0.1
+      }
+    ],
+    "default": "minecraft:oak_checked"
+  },
+  "type": "minecraft:random_selector"
+}

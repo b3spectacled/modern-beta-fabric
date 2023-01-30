@@ -62,4 +62,6 @@ public class ModernBetaCarvers {
     private static <WC extends CarverConfig> RegistryEntry<ConfiguredCarver<WC>> register(String id, ConfiguredCarver<WC> carver) {
         return BuiltinRegistries.method_40360(BuiltinRegistries.CONFIGURED_CARVER, id, carver);
     }
+    
+    public static void register() {}
 }

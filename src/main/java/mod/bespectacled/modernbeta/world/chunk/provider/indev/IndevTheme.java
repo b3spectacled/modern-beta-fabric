@@ -1,14 +1,14 @@
 package mod.bespectacled.modernbeta.world.chunk.provider.indev;
 
-import mod.bespectacled.modernbeta.world.biome.indev.IndevBiomes;
+import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 public enum IndevTheme {
-    NORMAL(0, "normal", IndevBiomes.INDEV_NORMAL_KEY.getValue(), Formatting.GREEN),
-    HELL(1, "hell", IndevBiomes.INDEV_HELL_KEY.getValue(), Formatting.RED),
-    PARADISE(2, "paradise", IndevBiomes.INDEV_PARADISE_KEY.getValue(), Formatting.YELLOW),
-    WOODS(3, "woods", IndevBiomes.INDEV_WOODS_KEY.getValue(), Formatting.AQUA);
+    NORMAL(0, "normal", ModernBetaBiomes.INDEV_NORMAL_ID, Formatting.GREEN),
+    HELL(1, "hell", ModernBetaBiomes.INDEV_HELL_ID, Formatting.RED),
+    PARADISE(2, "paradise", ModernBetaBiomes.INDEV_PARADISE_ID, Formatting.YELLOW),
+    WOODS(3, "woods", ModernBetaBiomes.INDEV_WOODS_ID, Formatting.AQUA);
     
     private static final String PREFIX = "createWorld.customize.indev.levelTheme";
     

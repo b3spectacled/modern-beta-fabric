@@ -1,0 +1,19 @@
+{
+  "feature": "minecraft:patch_cactus",
+  "placement": [
+    {
+      "count": 5,
+      "type": "minecraft:count"
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "heightmap": "MOTION_BLOCKING",
+      "type": "modern_beta:heightmap_spread_double"
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

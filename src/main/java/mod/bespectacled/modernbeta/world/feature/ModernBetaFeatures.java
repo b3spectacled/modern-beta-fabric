@@ -22,4 +22,6 @@ public class ModernBetaFeatures {
     private static Feature<?> register(String id, Feature<?> feature) {
         return Registry.register(Registry.FEATURE, ModernBeta.createId(id), feature);
     }
+    
+    public static void register() {}
 }

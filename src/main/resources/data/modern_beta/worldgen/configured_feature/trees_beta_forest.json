@@ -1,0 +1,16 @@
+{
+  "config": {
+    "features": [
+      {
+        "feature": "minecraft:birch_checked",
+        "chance": 0.2
+      },
+      {
+        "feature": "modern_beta:fancy_oak",
+        "chance": 0.33333334
+      }
+    ],
+    "default": "minecraft:oak_checked"
+  },
+  "type": "minecraft:random_selector"
+}
