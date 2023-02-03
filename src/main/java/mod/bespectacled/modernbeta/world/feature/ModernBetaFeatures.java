@@ -1,7 +1,8 @@
 package mod.bespectacled.modernbeta.world.feature;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
@@ -20,7 +21,7 @@ public class ModernBetaFeatures {
     );
     
     private static Feature<?> register(String id, Feature<?> feature) {
-        return Registry.register(Registry.FEATURE, ModernBeta.createId(id), feature);
+        return Registry.register(Registries.FEATURE, ModernBeta.createId(id), feature);
     }
     
     public static void register() {}

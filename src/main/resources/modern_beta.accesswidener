@@ -1,34 +1,10 @@
 accessWidener v1 named
 
-extendable class net/minecraft/world/biome/source/util/VanillaBiomeParameters
-extendable method net/minecraft/world/biome/source/util/VanillaBiomeParameters writeOceanBiomes (Ljava/util/function/Consumer;)V
-extendable method net/minecraft/world/biome/source/util/VanillaBiomeParameters getShoreBiome (II)Lnet/minecraft/util/registry/RegistryKey;
-extendable method net/minecraft/world/biome/source/util/VanillaBiomeParameters writeBiomeParameters (Ljava/util/function/Consumer;Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$ParameterRange;Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$ParameterRange;Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$ParameterRange;Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$ParameterRange;Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$ParameterRange;FLnet/minecraft/util/registry/RegistryKey;)V
-
 extendable class net/minecraft/world/gen/chunk/NoiseChunkGenerator
-accessible field net/minecraft/world/gen/chunk/NoiseChunkGenerator seed J
-
 extendable class net/minecraft/world/gen/chunk/ChunkGenerator
-accessible field net/minecraft/world/gen/chunk/ChunkGenerator field_37261 J
-
-accessible method net/minecraft/world/gen/StructureWeightSampler <init> (Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/world/chunk/Chunk;)V
-
-extendable method net/minecraft/client/world/GeneratorType <init> (Ljava/lang/String;)V
 
 accessible field net/minecraft/world/gen/carver/CaveCarverConfig floorLevel Lnet/minecraft/util/math/floatprovider/FloatProvider;
 
 accessible method net/minecraft/world/gen/stateprovider/SimpleBlockStateProvider <init>  (Lnet/minecraft/block/BlockState;)V
 
-accessible method net/minecraft/world/biome/source/MultiNoiseBiomeSource <init> (Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$Entries;Ljava/util/Optional;)V
-
-accessible class net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRule
-accessible class net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext
-accessible class net/minecraft/world/gen/surfacebuilder/MaterialRules$BlockStateRule
-
-accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext initHorizontalContext (II)V
-accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext initVerticalContext (IIIIII)V
-accessible method net/minecraft/world/gen/surfacebuilder/MaterialRules$MaterialRuleContext <init> (Lnet/minecraft/world/gen/surfacebuilder/SurfaceBuilder;Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/world/gen/chunk/ChunkNoiseSampler;Ljava/util/function/Function;Lnet/minecraft/util/registry/Registry;Lnet/minecraft/world/gen/HeightContext;)V	
-
-accessible method net/minecraft/client/option/CyclingOption <init> (Ljava/lang/String;Ljava/util/function/Function;Lnet/minecraft/client/option/CyclingOption$Setter;Ljava/util/function/Supplier;)V
-
-accessible method net/minecraft/world/gen/chunk/ChunkNoiseSampler <init> (IIILnet/minecraft/world/gen/noise/NoiseRouter;IILnet/minecraft/world/gen/densityfunction/DensityFunctionTypes$class_7050;Lnet/minecraft/world/gen/chunk/ChunkGeneratorSettings;Lnet/minecraft/world/gen/chunk/AquiferSampler$FluidLevelSampler;Lnet/minecraft/world/gen/chunk/Blender;)V
+accessible method net/minecraft/world/gen/chunk/ChunkNoiseSampler createMultiNoiseSampler (Lnet/minecraft/world/gen/noise/NoiseRouter;Ljava/util/List;)Lnet/minecraft/world/biome/source/util/MultiNoiseUtil$MultiNoiseSampler;

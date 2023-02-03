@@ -4,25 +4,22 @@ import java.util.List;
 
 import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public abstract class BiomeProvider {
-    protected final long seed;
     protected final ModernBetaBiomeSettings settings;
-    protected final Registry<Biome> biomeRegistry;
+    protected RegistryEntryLookup<Biome> biomeRegistry;
     
     /**
      * Constructs a Modern Beta biome provider initialized with seed.
      * Additional settings are supplied in NbtCompound parameter.
      * 
-     * @param seed World seed.
      * @param settings Biome settings.
      * @param biomeRegistry TODO
      */
-    public BiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
-        this.seed = seed;
+    public BiomeProvider(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
         this.settings = new ModernBetaBiomeSettings.Builder(settings).build();
         this.biomeRegistry = biomeRegistry;
     }
@@ -46,5 +43,9 @@ public abstract class BiomeProvider {
      */
     public List<RegistryEntry<Biome>> getBiomesForRegistry() {
         return List.of();
+    }
+    
+    public boolean initProvider(long seed) {
+        return true;
     }
 }

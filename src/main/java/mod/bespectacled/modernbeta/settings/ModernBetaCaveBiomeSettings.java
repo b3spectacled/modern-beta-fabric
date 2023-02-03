@@ -74,9 +74,9 @@ public class ModernBetaCaveBiomeSettings {
                     String biome = NbtUtil.readStringOrThrow(NbtTags.BIOME, point);
                     double temp = NbtUtil.readDoubleOrThrow(NbtTags.TEMP, point);
                     double rain = NbtUtil.readDoubleOrThrow(NbtTags.RAIN, point);
-                    boolean nullBiome = NbtUtil.readBooleanOrThrow(NbtTags.NULL_BIOME, point);
+                    double weight = NbtUtil.readDoubleOrThrow(NbtTags.DEPTH, point);
                     
-                    this.voronoiPoints.add(new VoronoiPointCaveBiome(biome, temp, rain, nullBiome));
+                    this.voronoiPoints.add(new VoronoiPointCaveBiome(biome, temp, rain, weight));
                 });
             } else {
                 this.voronoiPoints.addAll(ModernBeta.CAVE_BIOME_CONFIG.voronoiPoints);

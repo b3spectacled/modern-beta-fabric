@@ -13,7 +13,7 @@ import net.minecraft.client.render.WorldRenderer;
 @Mixin(value = WorldRenderer.class, priority = 1)
 public class MixinWorldRenderer {
 	@ModifyVariable(
-        method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V",
+        method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V",
         at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/DimensionEffects;getFogColorOverride(FF)[F")
     )
     private float[] modifySkySunsetCols(float[] skyCols) {

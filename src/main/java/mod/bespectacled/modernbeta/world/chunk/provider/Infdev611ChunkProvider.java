@@ -4,57 +4,60 @@ import java.util.Random;
 
 import mod.bespectacled.modernbeta.api.world.chunk.NoiseChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
-import mod.bespectacled.modernbeta.util.BlockColumnHolder;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import mod.bespectacled.modernbeta.world.chunk.ModernBetaSurfaceRules;
 import mod.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 import net.minecraft.block.BlockState;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.noise.NoiseConfig;
 
 public class Infdev611ChunkProvider extends NoiseChunkProvider {
-    private final PerlinOctaveNoise minLimitOctaveNoise;
-    private final PerlinOctaveNoise maxLimitOctaveNoise;
-    private final PerlinOctaveNoise mainOctaveNoise;
-    private final PerlinOctaveNoise beachOctaveNoise;
-    private final PerlinOctaveNoise surfaceOctaveNoise;
-    private final PerlinOctaveNoise scaleOctaveNoise;
-    private final PerlinOctaveNoise depthOctaveNoise;
-    private final PerlinOctaveNoise forestOctaveNoise;
+    private PerlinOctaveNoise minLimitOctaveNoise;
+    private PerlinOctaveNoise maxLimitOctaveNoise;
+    private PerlinOctaveNoise mainOctaveNoise;
+    private PerlinOctaveNoise beachOctaveNoise;
+    private PerlinOctaveNoise surfaceOctaveNoise;
+    private PerlinOctaveNoise scaleOctaveNoise;
+    private PerlinOctaveNoise depthOctaveNoise;
+    private PerlinOctaveNoise forestOctaveNoise;
     
     public Infdev611ChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
+    }
+    
+    @Override
+    public boolean initProvider(long seed) {
+        this.random.setSeed(seed);
+        
+        this.minLimitOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
+        this.maxLimitOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
+        this.mainOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
+        this.beachOctaveNoise = new PerlinOctaveNoise(this.random, 4, true);
+        this.surfaceOctaveNoise = new PerlinOctaveNoise(this.random, 4, true);
+        this.scaleOctaveNoise = new PerlinOctaveNoise(this.random, 10, true);
+        this.depthOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
+        this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
 
-        // Noise Generators
-        this.minLimitOctaveNoise = new PerlinOctaveNoise(random, 16, true);
-        this.maxLimitOctaveNoise = new PerlinOctaveNoise(random, 16, true);
-        this.mainOctaveNoise = new PerlinOctaveNoise(random, 8, true);
-        this.beachOctaveNoise = new PerlinOctaveNoise(random, 4, true);
-        this.surfaceOctaveNoise = new PerlinOctaveNoise(random, 4, true);
-        this.scaleOctaveNoise = new PerlinOctaveNoise(random, 10, true);
-        this.depthOctaveNoise = new PerlinOctaveNoise(random, 16, true);
-        this.forestOctaveNoise = new PerlinOctaveNoise(random, 8, true);
-
-        setForestOctaves(forestOctaveNoise);
+        this.setForestOctaveNoise(this.forestOctaveNoise);
         
         this.spawnLocator = new BeachSpawnLocator(this, this.beachOctaveNoise);
+        
+        return true;
     }
 
     @Override
-    public void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource) {
+    public void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
         double scale = 0.03125D;
 
         ChunkPos chunkPos = chunk.getPos();
@@ -67,13 +70,9 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
 
-        AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
+        AquiferSampler aquiferSampler = this.getAquiferSampler(chunk, noiseConfig);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
         SimpleNoisePos noisePos = new SimpleNoisePos();
-
-        // Surface builder stuff
-        BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
-        ModernBetaSurfaceRules surfaceRules = new ModernBetaSurfaceRules(region, chunk, this.chunkGenerator);
 
         // Accurate beach/terrain patterns depend on z iterating before x,
         // and array accesses changing accordingly.
@@ -110,19 +109,6 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
                 BlockState topBlock = surfaceConfig.topBlock();
                 BlockState fillerBlock = surfaceConfig.fillerBlock();
-
-                boolean usedCustomSurface = this.surfaceBuilder.buildSurfaceColumn(
-                    region.getRegistryManager().get(Registry.BIOME_KEY),
-                    region.getBiomeAccess(), 
-                    blockColumn, 
-                    chunk, 
-                    biome, 
-                    surfaceRules.getRuleContext(), 
-                    surfaceRules.getBlockStateRule(),
-                    localX,
-                    localZ,
-                    surfaceTopY
-                );
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
@@ -130,12 +116,6 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                     
                     pos.set(localX, y, localZ);
                     blockState = chunk.getBlockState(pos);
-                    
-                    // Place deepslate
-                    BlockState deepslateState = this.sampleDeepslateState(x, y, z);
-                    if (deepslateState != null && blockState.isOf(this.defaultBlock.getBlock())) {
-                        chunk.setBlockState(pos, deepslateState, false);
-                    }
                     
                     // Place bedrock
                     if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
@@ -145,11 +125,6 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                     
                     // Skip if at surface min y
                     if (y < surfaceMinY) {
-                        continue;
-                    }
-                    
-                    // Skip if used custom surface generation.
-                    if (usedCustomSurface) {
                         continue;
                     }
 
@@ -208,24 +183,21 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
 
-        double depthNoiseScaleX = 100D;
-        double depthNoiseScaleZ = 100D;
+        double depthNoiseScaleX = this.chunkSettings.depthNoiseScaleX;
+        double depthNoiseScaleZ = this.chunkSettings.depthNoiseScaleZ;
         
-        double coordinateScale = 684.412D * this.xzScale; 
-        double heightScale = 684.412D * this.yScale;
+        double coordinateScale = this.chunkSettings.coordinateScale;
+        double heightScale = this.chunkSettings.heightScale;
         
-        double mainNoiseScaleX = this.xzFactor; // Default: 80
-        double mainNoiseScaleY = this.yFactor;  // Default: 160
-        double mainNoiseScaleZ = this.xzFactor;
+        double mainNoiseScaleX = this.chunkSettings.mainNoiseScaleX;
+        double mainNoiseScaleY = this.chunkSettings.mainNoiseScaleY;
+        double mainNoiseScaleZ = this.chunkSettings.mainNoiseScaleZ;
 
-        double lowerLimitScale = 512D;
-        double upperLimitScale = 512D;
+        double lowerLimitScale = this.chunkSettings.lowerLimitScale;
+        double upperLimitScale = this.chunkSettings.upperLimitScale;
         
-        double baseSize = 8.5D;
-        double heightStretch = 12D;
-        
-        // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
-        double densityScale = 128.0;
+        double baseSize = this.chunkSettings.baseSize;
+        double heightStretch = this.chunkSettings.stretchY;
         
         double scale = this.scaleOctaveNoise.sample(noiseX, 0, noiseZ, 1.0D, 0.0, 1.0);
         scale = (scale + 256D) / 512D;
@@ -273,7 +245,6 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             
             double densityOffset = this.getOffset(noiseY, heightStretch, depth, scale);
             
-            // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
             double mainNoise = (this.mainOctaveNoise.sample(
                 noiseX, noiseY, noiseZ,
                 coordinateScale / mainNoiseScaleX, 
@@ -318,9 +289,6 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
             density -= densityOffset;
             
-            // Normalize density
-            density /= densityScale;
-            
             // Sample without noise caves
             heightmapDensity = density;
             
@@ -331,8 +299,8 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
             density = this.applySlides(density, y);
             heightmapDensity = this.applySlides(heightmapDensity, y);
             
-            primaryBuffer[y] = MathHelper.clamp(density, -64.0, 64.0);
-            heightmapBuffer[y] = MathHelper.clamp(heightmapDensity, -64.0, 64.0);
+            primaryBuffer[y] = density;
+            heightmapBuffer[y] = heightmapDensity;
         }
     }
     

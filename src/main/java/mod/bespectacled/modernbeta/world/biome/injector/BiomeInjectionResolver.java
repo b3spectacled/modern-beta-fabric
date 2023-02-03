@@ -1,6 +1,6 @@
 package mod.bespectacled.modernbeta.world.biome.injector;
 
-import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 @FunctionalInterface

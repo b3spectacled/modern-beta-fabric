@@ -3,7 +3,8 @@ package mod.bespectacled.modernbeta.world.feature.placement;
 import com.mojang.serialization.Codec;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 import net.minecraft.world.gen.placementmodifier.PlacementModifierType;
 
@@ -17,7 +18,7 @@ public class ModernBetaPlacementTypes<P extends PlacementModifier> {
     public static final PlacementModifierType<HeightmapSpreadDoublePlacementModifier> HEIGHTMAP_SPREAD_DOUBLE;
     
     private static <P extends PlacementModifier> PlacementModifierType<P> register(String id, Codec<P> codec) {
-        return Registry.register(Registry.PLACEMENT_MODIFIER_TYPE, ModernBeta.createId(id), () -> codec);
+        return Registry.register(Registries.PLACEMENT_MODIFIER_TYPE, ModernBeta.createId(id), () -> codec);
     }
     
     public static void register() {}

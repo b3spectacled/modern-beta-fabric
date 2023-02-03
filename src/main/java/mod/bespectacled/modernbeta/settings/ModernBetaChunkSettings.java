@@ -10,13 +10,27 @@ public class ModernBetaChunkSettings {
     public final boolean useDeepslate;
     
     // TODO: Think about putting main noise scale here
+    // TODO: Add slide values here
     
+    public final float coordinateScale;
+    public final float heightScale;
     public final float upperLimitScale;
     public final float lowerLimitScale;
     public final float depthNoiseScaleX;
     public final float depthNoiseScaleZ;
+    public final float mainNoiseScaleX;
+    public final float mainNoiseScaleY;
+    public final float mainNoiseScaleZ;
     public final float baseSize;
     public final float stretchY;
+    
+    public final int topSlideTarget;
+    public final int topSlideSize;
+    public final int topSlideOffset;
+    
+    public final int bottomSlideTarget;
+    public final int bottomSlideSize;
+    public final int bottomSlideOffset;
     
     public final boolean infdevUsePyramid;
     public final boolean infdevUseWall;
@@ -45,12 +59,25 @@ public class ModernBetaChunkSettings {
         this.chunkProvider = builder.chunkProvider;
         this.useDeepslate = builder.useDeepslate;
         
+        this.coordinateScale = builder.coordinateScale;
+        this.heightScale = builder.heightScale;
         this.upperLimitScale = builder.upperLimitScale;
         this.lowerLimitScale = builder.lowerLimitScale;
         this.depthNoiseScaleX = builder.depthNoiseScaleX;
         this.depthNoiseScaleZ = builder.depthNoiseScaleZ;
+        this.mainNoiseScaleX = builder.mainNoiseScaleX;
+        this.mainNoiseScaleY = builder.mainNoiseScaleY;
+        this.mainNoiseScaleZ = builder.mainNoiseScaleZ;
         this.baseSize = builder.baseSize;
         this.stretchY = builder.stretchY;
+
+        this.topSlideTarget = builder.topSlideTarget;
+        this.topSlideSize = builder.topSlideSize;
+        this.topSlideOffset = builder.topSlideOffset;
+        
+        this.bottomSlideTarget = builder.bottomSlideTarget;
+        this.bottomSlideSize = builder.bottomSlideSize;
+        this.bottomSlideOffset = builder.bottomSlideOffset;
         
         this.infdevUsePyramid = builder.infdevUsePyramid;
         this.infdevUseWall = builder.infdevUseWall;
@@ -78,12 +105,25 @@ public class ModernBetaChunkSettings {
         compound.putString(NbtTags.CHUNK_PROVIDER, this.chunkProvider);
         compound.putBoolean(NbtTags.USE_DEEPSLATE, this.useDeepslate);
         
+        compound.putFloat(NbtTags.COORDINATE_SCALE, this.coordinateScale);
+        compound.putFloat(NbtTags.HEIGHT_SCALE, this.heightScale);
         compound.putFloat(NbtTags.UPPER_LIMIT_SCALE, this.upperLimitScale);
         compound.putFloat(NbtTags.LOWER_LIMIT_SCALE, this.lowerLimitScale);
         compound.putFloat(NbtTags.DEPTH_NOISE_SCALE_X, this.depthNoiseScaleX);
         compound.putFloat(NbtTags.DEPTH_NOISE_SCALE_Z, this.depthNoiseScaleZ);
+        compound.putFloat(NbtTags.MAIN_NOISE_SCALE_X, this.mainNoiseScaleX);
+        compound.putFloat(NbtTags.MAIN_NOISE_SCALE_Y, this.mainNoiseScaleY);
+        compound.putFloat(NbtTags.MAIN_NOISE_SCALE_Z, this.mainNoiseScaleZ);
         compound.putFloat(NbtTags.BASE_SIZE, this.baseSize);
         compound.putFloat(NbtTags.STRETCH_Y, this.stretchY);
+        
+        compound.putInt(NbtTags.TOP_SLIDE_TARGET, this.topSlideTarget);
+        compound.putInt(NbtTags.TOP_SLIDE_SIZE, this.topSlideSize);
+        compound.putInt(NbtTags.TOP_SLIDE_OFFSET, this.topSlideOffset);
+        
+        compound.putInt(NbtTags.BOTTOM_SLIDE_TARGET, this.bottomSlideTarget);
+        compound.putInt(NbtTags.BOTTOM_SLIDE_SIZE, this.bottomSlideSize);
+        compound.putInt(NbtTags.BOTTOM_SLIDE_OFFSET, this.bottomSlideOffset);
         
         compound.putBoolean(NbtTags.INFDEV_USE_PYRAMID, this.infdevUsePyramid);
         compound.putBoolean(NbtTags.INFDEV_USE_WALL, this.infdevUseWall);
@@ -111,12 +151,25 @@ public class ModernBetaChunkSettings {
         public String chunkProvider;
         public boolean useDeepslate;
         
+        public float coordinateScale;
+        public float heightScale;
         public float upperLimitScale;
         public float lowerLimitScale;
         public float depthNoiseScaleX;
         public float depthNoiseScaleZ;
+        public float mainNoiseScaleX;
+        public float mainNoiseScaleY;
+        public float mainNoiseScaleZ;
         public float baseSize;
         public float stretchY;
+        
+        public int topSlideTarget;
+        public int topSlideSize;
+        public int topSlideOffset;
+        
+        public int bottomSlideTarget;
+        public int bottomSlideSize;
+        public int bottomSlideOffset;
 
         public boolean infdevUsePyramid;
         public boolean infdevUseWall;
@@ -145,12 +198,25 @@ public class ModernBetaChunkSettings {
             this.chunkProvider = NbtUtil.readString(NbtTags.CHUNK_PROVIDER, compound, ModernBeta.CHUNK_CONFIG.chunkProvider);
             this.useDeepslate = NbtUtil.readBoolean(NbtTags.USE_DEEPSLATE, compound, ModernBeta.CHUNK_CONFIG.useDeepslate);
         
+            this.coordinateScale = NbtUtil.readFloat(NbtTags.COORDINATE_SCALE, compound, ModernBeta.CHUNK_CONFIG.coordinateScale);
+            this.heightScale = NbtUtil.readFloat(NbtTags.HEIGHT_SCALE, compound, ModernBeta.CHUNK_CONFIG.heightScale);
             this.upperLimitScale = NbtUtil.readFloat(NbtTags.UPPER_LIMIT_SCALE, compound, ModernBeta.CHUNK_CONFIG.upperLimitScale);
             this.lowerLimitScale = NbtUtil.readFloat(NbtTags.LOWER_LIMIT_SCALE, compound, ModernBeta.CHUNK_CONFIG.lowerLimitScale);
             this.depthNoiseScaleX = NbtUtil.readFloat(NbtTags.DEPTH_NOISE_SCALE_X, compound, ModernBeta.CHUNK_CONFIG.depthNoiseScaleX);
             this.depthNoiseScaleZ = NbtUtil.readFloat(NbtTags.DEPTH_NOISE_SCALE_Z, compound, ModernBeta.CHUNK_CONFIG.depthNoiseScaleZ);
+            this.mainNoiseScaleX = NbtUtil.readFloat(NbtTags.MAIN_NOISE_SCALE_X, compound, ModernBeta.CHUNK_CONFIG.mainNoiseScaleX);
+            this.mainNoiseScaleY = NbtUtil.readFloat(NbtTags.MAIN_NOISE_SCALE_Y, compound, ModernBeta.CHUNK_CONFIG.mainNoiseScaleY);
+            this.mainNoiseScaleZ = NbtUtil.readFloat(NbtTags.MAIN_NOISE_SCALE_Z, compound, ModernBeta.CHUNK_CONFIG.mainNoiseScaleZ);
             this.baseSize = NbtUtil.readFloat(NbtTags.BASE_SIZE, compound, ModernBeta.CHUNK_CONFIG.baseSize);
             this.stretchY = NbtUtil.readFloat(NbtTags.STRETCH_Y, compound, ModernBeta.CHUNK_CONFIG.stretchY);
+            
+            this.topSlideTarget = NbtUtil.readInt(NbtTags.TOP_SLIDE_TARGET, compound, ModernBeta.CHUNK_CONFIG.topSlideTarget);
+            this.topSlideSize = NbtUtil.readInt(NbtTags.TOP_SLIDE_SIZE, compound, ModernBeta.CHUNK_CONFIG.topSlideSize);
+            this.topSlideOffset = NbtUtil.readInt(NbtTags.TOP_SLIDE_OFFSET, compound, ModernBeta.CHUNK_CONFIG.topSlideOffset);
+            
+            this.bottomSlideTarget = NbtUtil.readInt(NbtTags.BOTTOM_SLIDE_TARGET, compound, ModernBeta.CHUNK_CONFIG.bottomSlideTarget);
+            this.bottomSlideSize = NbtUtil.readInt(NbtTags.BOTTOM_SLIDE_TARGET, compound, ModernBeta.CHUNK_CONFIG.bottomSlideSize);
+            this.bottomSlideOffset = NbtUtil.readInt(NbtTags.BOTTOM_SLIDE_OFFSET, compound, ModernBeta.CHUNK_CONFIG.bottomSlideOffset);
             
             this.infdevUsePyramid = NbtUtil.readBoolean(NbtTags.INFDEV_USE_PYRAMID, compound, ModernBeta.CHUNK_CONFIG.infdevUsePyramid);
             this.infdevUseWall = NbtUtil.readBoolean(NbtTags.INFDEV_USE_WALL, compound, ModernBeta.CHUNK_CONFIG.infdevUseWall);

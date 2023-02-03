@@ -3,12 +3,12 @@ package mod.bespectacled.modernbeta.world.biome.provider.climate;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
-public class ClimateMapping {
+public class BetaClimateMapping {
     public enum ClimateType {
         LAND(NbtTags.BIOME),
         OCEAN(NbtTags.OCEAN_BIOME),
@@ -25,7 +25,7 @@ public class ClimateMapping {
     private final RegistryKey<Biome> oceanBiome;
     private final RegistryKey<Biome> deepOceanBiome;
     
-    public ClimateMapping(RegistryKey<Biome> biome, RegistryKey<Biome> oceanBiome, RegistryKey<Biome> deepOceanBiome) {
+    public BetaClimateMapping(RegistryKey<Biome> biome, RegistryKey<Biome> oceanBiome, RegistryKey<Biome> deepOceanBiome) {
         this.biome = biome;
         this.oceanBiome = oceanBiome;
         this.deepOceanBiome = deepOceanBiome;
@@ -51,8 +51,8 @@ public class ClimateMapping {
         };
     }
     
-    public static ClimateMapping fromCompound(NbtCompound compound) {
-        return new ClimateMapping(
+    public static BetaClimateMapping fromCompound(NbtCompound compound) {
+        return new BetaClimateMapping(
             key(new Identifier(NbtUtil.readStringOrThrow(NbtTags.BIOME, compound))),
             key(new Identifier(NbtUtil.readStringOrThrow(NbtTags.OCEAN_BIOME, compound))),
             key(new Identifier(NbtUtil.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME, compound)))
@@ -60,6 +60,6 @@ public class ClimateMapping {
     }
     
     private static RegistryKey<Biome> key(Identifier id) {
-        return RegistryKey.of(Registry.BIOME_KEY, id);
+        return RegistryKey.of(RegistryKeys.BIOME, id);
     }
 }

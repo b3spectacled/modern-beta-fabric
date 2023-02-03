@@ -3,7 +3,7 @@ package mod.bespectacled.modernbeta.compat;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 

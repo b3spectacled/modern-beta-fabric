@@ -31,7 +31,6 @@ public final class ModernBetaBiomeColors {
     public static final int BETA_COLD_SKY_COLOR = 10263039;
     
     // All colors below extracted from respective original versions, so they should be accurate.
-    
     public static final int BETA_FOG_COLOR = 12638463;
     
     public static final int PE_SKY_COLOR = 2380991;

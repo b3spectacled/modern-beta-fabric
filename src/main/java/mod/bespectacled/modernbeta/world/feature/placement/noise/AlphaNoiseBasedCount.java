@@ -1,14 +1,14 @@
 package mod.bespectacled.modernbeta.world.feature.placement.noise;
 
-import java.util.Random;
 
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
+import net.minecraft.util.math.random.Random;
 
 public class AlphaNoiseBasedCount implements ModernBetaNoiseBasedCount {
     private final PerlinOctaveNoise noiseSampler;
     
     public AlphaNoiseBasedCount(Random random) {
-        this.noiseSampler = new PerlinOctaveNoise(random, 8, true);
+        this.noiseSampler = new PerlinOctaveNoise(new java.util.Random(random.nextInt()), 8, true);
     }
     
     public AlphaNoiseBasedCount(PerlinOctaveNoise noiseSampler) {

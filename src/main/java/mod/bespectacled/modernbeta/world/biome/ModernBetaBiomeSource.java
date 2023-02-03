@@ -2,7 +2,6 @@ package mod.bespectacled.modernbeta.world.biome;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -13,15 +12,15 @@ import mod.bespectacled.modernbeta.api.world.biome.BiomeBlockResolver;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import mod.bespectacled.modernbeta.api.world.biome.OceanBiomeResolver;
 import mod.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
-import mod.bespectacled.modernbeta.util.NbtTags;
-import mod.bespectacled.modernbeta.util.NbtUtil;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
+import mod.bespectacled.modernbeta.settings.ModernBetaCaveBiomeSettings;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.dynamic.RegistryOps;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -30,85 +29,74 @@ import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 public class ModernBetaBiomeSource extends BiomeSource {
     public static final Codec<ModernBetaBiomeSource> CODEC = RecordCodecBuilder.create(instance -> instance
         .group(
-            Codec.LONG.fieldOf("seed").stable().forGetter(biomeSource -> biomeSource.seed),
-            RegistryOps.createRegistryCodec(Registry.BIOME_KEY).forGetter(biomeSource -> biomeSource.biomeRegistry),
+            RegistryOps.getEntryLookupCodec(RegistryKeys.BIOME),
             NbtCompound.CODEC.fieldOf("provider_settings").forGetter(biomeSource -> biomeSource.biomeSettings),
-            NbtCompound.CODEC.fieldOf("cave_provider_settings").forGetter(biomeSource -> biomeSource.caveBiomeSettings),
-            Codec.INT.optionalFieldOf("version").forGetter(generator -> generator.version)
+            NbtCompound.CODEC.fieldOf("cave_provider_settings").forGetter(biomeSource -> biomeSource.caveBiomeSettings)
         ).apply(instance, (instance).stable(ModernBetaBiomeSource::new)));
     
-    private final long seed;
-    private final Registry<Biome> biomeRegistry;
     private final NbtCompound biomeSettings;
     private final NbtCompound caveBiomeSettings;
-    private final Optional<Integer> version;
     
     private final BiomeProvider biomeProvider;
     private final CaveBiomeProvider caveBiomeProvider;
-
+    
+    private boolean initializedBiomeProvider;
+    private boolean initializedCaveBiomeProvider;
+    
     private static List<RegistryEntry<Biome>> getBiomesForRegistry(
-        long seed,
-        Registry<Biome> biomeRegistry, 
+        RegistryEntryLookup<Biome> biomeRegistry,
         NbtCompound biomeSettings,
         NbtCompound caveBiomeSettings
     ) {
-        List<RegistryEntry<Biome>> mainBiomes = Registries.BIOME
-            .get(NbtUtil.toStringOrThrow(biomeSettings.get(NbtTags.BIOME_PROVIDER)))
-            .apply(seed, biomeSettings, biomeRegistry)
-            .getBiomesForRegistry();
+        ModernBetaBiomeSettings modernBetaBiomeSettings = new ModernBetaBiomeSettings.Builder(biomeSettings).build();
+        ModernBetaCaveBiomeSettings modernBetaCaveBiomeSettings = new ModernBetaCaveBiomeSettings.Builder(caveBiomeSettings).build();
         
-        List<RegistryEntry<Biome>> caveBiomes = Registries.CAVE_BIOME
-            .get(NbtUtil.toStringOrThrow(caveBiomeSettings.get(NbtTags.CAVE_BIOME_PROVIDER)))
-            .apply(seed, caveBiomeSettings, biomeRegistry)
-            .getBiomesForRegistry();
+        BiomeProvider biomeProvider  = Registries.BIOME
+            .get(modernBetaBiomeSettings.biomeProvider)
+            .apply(biomeSettings, biomeRegistry);
+        
+        CaveBiomeProvider caveBiomeProvider = Registries.CAVE_BIOME
+            .get(modernBetaCaveBiomeSettings.biomeProvider)
+            .apply(caveBiomeSettings, biomeRegistry);
+        
+        biomeProvider.initProvider(0L);
+        caveBiomeProvider.initProvider(0L);
         
         List<RegistryEntry<Biome>> biomes = new ArrayList<>();
-        biomes.addAll(mainBiomes);
-        biomes.addAll(caveBiomes);
+        biomes.addAll(biomeProvider.getBiomesForRegistry());
+        biomes.addAll(caveBiomeProvider.getBiomesForRegistry());
         
         return biomes;
     }
     
     public ModernBetaBiomeSource(
-        long seed,
-        Registry<Biome> biomeRegistry,
+        RegistryEntryLookup<Biome> biomeRegistry,
         NbtCompound biomeSettings,
-        NbtCompound caveBiomeSettings,
-        Optional<Integer> version
+        NbtCompound caveBiomeSettings
     ) {
-        super(getBiomesForRegistry(seed, biomeRegistry, biomeSettings, caveBiomeSettings));
+        super(getBiomesForRegistry(biomeRegistry, biomeSettings, caveBiomeSettings));
         
-        // Validate mod version
-        ModernBeta.validateVersion(version);
-        
-        this.seed = seed;
-        this.biomeRegistry = biomeRegistry;
         this.biomeSettings = biomeSettings;
         this.caveBiomeSettings = caveBiomeSettings;
-        this.version = version;
+        
+        ModernBetaBiomeSettings modernBetaBiomeSettings = new ModernBetaBiomeSettings.Builder(this.biomeSettings).build();
+        ModernBetaCaveBiomeSettings modernBetaCaveBiomeSettings = new ModernBetaCaveBiomeSettings.Builder(this.caveBiomeSettings).build();
         
         this.biomeProvider = Registries.BIOME
-            .get(NbtUtil.toStringOrThrow(biomeSettings.get(NbtTags.BIOME_PROVIDER)))
-            .apply(seed, biomeSettings, biomeRegistry);
+            .get(modernBetaBiomeSettings.biomeProvider)
+            .apply(biomeSettings, biomeRegistry);
         
         this.caveBiomeProvider = Registries.CAVE_BIOME
-            .get(NbtUtil.toStringOrThrow(caveBiomeSettings.get(NbtTags.CAVE_BIOME_PROVIDER)))
-            .apply(seed, caveBiomeSettings, biomeRegistry);
+            .get(modernBetaCaveBiomeSettings.biomeProvider)
+            .apply(caveBiomeSettings, biomeRegistry);
+        
+        this.initializedBiomeProvider = false;
+        this.initializedCaveBiomeProvider = false;
     }
     
-    @Environment(EnvType.CLIENT)
-    @Override
-    public BiomeSource withSeed(long seed) {
-        return new ModernBetaBiomeSource(
-            seed,
-            this.biomeRegistry,
-            this.biomeSettings,
-            this.caveBiomeSettings,
-            this.version
-        );
-    }
-    
-    public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {    
+    public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {
+        this.initializeBiomeProvider();
+
         return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
     }
 
@@ -127,6 +115,8 @@ public class ModernBetaBiomeSource extends BiomeSource {
     }
     
     public RegistryEntry<Biome> getCaveBiome(int biomeX, int biomeY, int biomeZ) {
+        this.initializeCaveBiomeProvider();
+        
         return this.caveBiomeProvider.getBiome(biomeX, biomeY, biomeZ);
     }
     
@@ -145,10 +135,6 @@ public class ModernBetaBiomeSource extends BiomeSource {
         return region.getBiome(pos);
     }
     
-    public Registry<Biome> getBiomeRegistry() {
-        return this.biomeRegistry;
-    }
-    
     public BiomeProvider getBiomeProvider() {
         return this.biomeProvider;
     }
@@ -164,13 +150,27 @@ public class ModernBetaBiomeSource extends BiomeSource {
     public NbtCompound getCaveBiomeSettings() {
         return this.caveBiomeSettings;
     }
+    
+    public long getWorldSeed() {
+        return ModernBeta.getWorldSeed();
+    }
 
     public static void register() {
-        Registry.register(Registry.BIOME_SOURCE, ModernBeta.createId("old"), CODEC);
+        Registry.register(net.minecraft.registry.Registries.BIOME_SOURCE, ModernBeta.createId(ModernBeta.MOD_ID), CODEC);
     }
 
     @Override
     protected Codec<? extends BiomeSource> getCodec() {
         return ModernBetaBiomeSource.CODEC;
+    }
+    
+    private void initializeBiomeProvider() {
+        if (!this.initializedBiomeProvider)
+            this.initializedBiomeProvider = this.biomeProvider.initProvider(this.getWorldSeed());
+    }
+    
+    private void initializeCaveBiomeProvider() {
+        if (!this.initializedCaveBiomeProvider)
+            this.initializedCaveBiomeProvider = this.caveBiomeProvider.initProvider(this.getWorldSeed());
     }
 }

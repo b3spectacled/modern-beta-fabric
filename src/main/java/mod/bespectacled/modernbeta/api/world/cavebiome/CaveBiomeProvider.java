@@ -4,14 +4,13 @@ import java.util.List;
 
 import mod.bespectacled.modernbeta.settings.ModernBetaCaveBiomeSettings;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public abstract class CaveBiomeProvider {
-    protected final long seed;
     protected final ModernBetaCaveBiomeSettings settings;
-    protected final Registry<Biome> biomeRegistry;
+    protected RegistryEntryLookup<Biome> biomeRegistry;
     
     /**
      * Constructs a Modern Beta cave biome provider initialized with seed.
@@ -20,14 +19,13 @@ public abstract class CaveBiomeProvider {
      * @param seed World seed.
      * @param settings Biome settings.
      */
-    public CaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
-        this.seed = seed;
+    public CaveBiomeProvider(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
         this.settings = new ModernBetaCaveBiomeSettings.Builder(settings).build();
         this.biomeRegistry = biomeRegistry;
     }
     
     /**
-     * Gets a cave biome to overwrite the original biome at given biome coordinates and sufficient depth.
+     * Gets a cave biome to overwrite the original biome at given biome coordinates.
      * 
      * @param biomeX x-coordinate in biome coordinates.
      * @param biomeY y-coordinate in biome coordinates.
@@ -44,5 +42,9 @@ public abstract class CaveBiomeProvider {
      */
     public List<RegistryEntry<Biome>> getBiomesForRegistry() {
         return List.of();
+    }
+    
+    public boolean initProvider(long seed) {
+        return true;
     }
 }

@@ -1,52 +1,79 @@
 package mod.bespectacled.modernbeta.world.chunk;
 
-import java.util.function.Supplier;
-
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.NoiseChunkProvider;
 import mod.bespectacled.modernbeta.util.chunk.HeightmapChunk;
+import mod.bespectacled.modernbeta.util.noise.SimpleDensityFunction;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
-import net.minecraft.world.gen.densityfunction.DensityFunctionTypes.class_7050;
-import net.minecraft.world.gen.noise.NoiseRouter;
+import net.minecraft.world.gen.chunk.GenerationShapeConfig;
+import net.minecraft.world.gen.densityfunction.DensityFunctionTypes;
+import net.minecraft.world.gen.noise.NoiseConfig;
 
 public class ModernBetaChunkNoiseSampler extends ChunkNoiseSampler {
     private static final int OCEAN_HEIGHT_OFFSET = -8;
     
     private final ChunkProvider chunkProvider;
     
-    public ModernBetaChunkNoiseSampler(
-        int horizontalNoiseResolution, 
-        int verticalNoiseResolution, 
+    public static ModernBetaChunkNoiseSampler create(
+        Chunk chunk,
+        NoiseConfig noiseConfig,
+        ChunkGeneratorSettings chunkGeneratorSettings,
+        AquiferSampler.FluidLevelSampler fluidLevelSampler,
+        ChunkProvider chunkProvider
+    ) {
+        GenerationShapeConfig shapeConfig = chunkGeneratorSettings.generationShapeConfig().trimHeight(chunk);
+        ChunkPos chunkPos = chunk.getPos();
+        
+        int horizontalSize = 16 / shapeConfig.horizontalBlockSize();
+        
+        return new ModernBetaChunkNoiseSampler(
+            horizontalSize,
+            noiseConfig,
+            chunkPos.getStartX(),
+            chunkPos.getStartZ(),
+            shapeConfig,
+            SimpleDensityFunction.INSTANCE,
+            chunkGeneratorSettings,
+            fluidLevelSampler,
+            Blender.getNoBlending(),
+            chunkProvider
+        );
+    }
+    
+    private ModernBetaChunkNoiseSampler(
         int horizontalSize,
-        NoiseRouter noiseRouter, 
-        int x,
-        int z, 
-        Supplier<class_7050> noiseType, 
-        Supplier<ChunkGeneratorSettings> supplier,
+        NoiseConfig noiseConfig, 
+        int startX,
+        int startZ,
+        GenerationShapeConfig shapeConfig,
+        DensityFunctionTypes.Beardifying beardifying,
+        ChunkGeneratorSettings settings,
         FluidLevelSampler fluidLevelSampler,
         Blender blender,
         ChunkProvider chunkProvider
     ) {
         super(
-            horizontalNoiseResolution, 
-            verticalNoiseResolution, 
             horizontalSize,
-            noiseRouter,
-            x, 
-            z, 
-            noiseType.get(), 
-            supplier.get(), 
+            noiseConfig,
+            startX,
+            startZ,
+            shapeConfig, 
+            beardifying,
+            settings,
             fluidLevelSampler,
             blender
         );
         
         this.chunkProvider = chunkProvider;
     }
-    
+
     /*
      * Simulates a general y height at x/z block coordinates.
      * Replace vanilla noise implementation with plain height sampling.
@@ -57,7 +84,8 @@ public class ModernBetaChunkNoiseSampler extends ChunkNoiseSampler {
      * Reference: https://twitter.com/henrikkniberg/status/1432615996880310274
      * 
      */
-    public int method_39900(int x, int z) {
+    @Override
+    public int estimateSurfaceHeight(int x, int z) {
         int height = (this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) ?
             noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
             this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);

@@ -15,13 +15,13 @@ import mod.bespectacled.modernbeta.world.spawn.IndevSpawnLocator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
@@ -34,6 +34,7 @@ import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
+import net.minecraft.world.gen.noise.NoiseConfig;
 
 public abstract class FiniteChunkProvider extends ChunkProvider implements NoiseChunkImitable {
     protected final int worldMinY;
@@ -91,7 +92,7 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
     }
 
     @Override
-    public CompletableFuture<Chunk> provideChunk(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
+    public CompletableFuture<Chunk> provideChunk(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk, NoiseConfig noiseConfig) {
         ChunkPos pos = chunk.getPos();
 
         if (this.inWorldBounds(pos.getStartX(), pos.getStartZ())) {
@@ -107,7 +108,7 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
     }
     
     @Override
-    public void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource) {
+    public void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
         BlockPos.Mutable pos = new BlockPos.Mutable();
         
         int startX = chunk.getPos().getStartX();
@@ -247,7 +248,7 @@ public abstract class FiniteChunkProvider extends ChunkProvider implements Noise
         Heightmap heightmapSurface = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
         BlockSource blockSource = (weight, x, y, z) -> null;
-        StructureWeightSampler structureWeightSampler = new StructureWeightSampler(structureAccessor, chunk);
+        StructureWeightSampler structureWeightSampler = StructureWeightSampler.createStructureWeightSampler(structureAccessor, chunk.getPos());
         BlockPos.Mutable pos = new BlockPos.Mutable();
         
         for (int localX = 0; localX < 16; ++localX) {

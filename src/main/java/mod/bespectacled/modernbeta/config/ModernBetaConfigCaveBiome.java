@@ -18,26 +18,34 @@ public class ModernBetaConfigCaveBiome implements ConfigData {
     public float voronoiHorizontalNoiseScale = 32.0f;
     public float voronoiVerticalNoiseScale = 16.0f;
     public List<VoronoiPointCaveBiome> voronoiPoints = List.of(
-        new VoronoiPointCaveBiome("minecraft:the_void", 0.0, 0.5, true),
-        new VoronoiPointCaveBiome("minecraft:lush_caves", 0.1, 0.5, false),
-        new VoronoiPointCaveBiome("minecraft:the_void", 0.5, 0.5, true),
-        new VoronoiPointCaveBiome("minecraft:dripstone_caves", 0.9, 0.5, false),
-        new VoronoiPointCaveBiome("minecraft:the_void", 1.0, 0.5, true)
+        new VoronoiPointCaveBiome("", 0.0, 0.5, 0.75),
+        new VoronoiPointCaveBiome("minecraft:lush_caves", 0.1, 0.5, 0.75),
+        new VoronoiPointCaveBiome("", 0.5, 0.5, 0.75),
+        new VoronoiPointCaveBiome("minecraft:dripstone_caves", 0.9, 0.5, 0.75),
+        new VoronoiPointCaveBiome("", 1.0, 0.5, 0.75),
+
+        new VoronoiPointCaveBiome("", 0.0, 0.5, 0.25),
+        new VoronoiPointCaveBiome("minecraft:lush_caves", 0.2, 0.5, 0.25),
+        new VoronoiPointCaveBiome("", 0.4, 0.5, 0.25),
+        new VoronoiPointCaveBiome("minecraft:deep_dark", 0.5, 0.5, 0.15),
+        new VoronoiPointCaveBiome("", 0.6, 0.5, 0.25),
+        new VoronoiPointCaveBiome("minecraft:dripstone_caves", 0.8, 0.5, 0.25),
+        new VoronoiPointCaveBiome("", 1.0, 0.5, 0.25)
     );
     
     public static class VoronoiPointCaveBiome {
-        public static final VoronoiPointCaveBiome DEFAULT = new VoronoiPointCaveBiome("minecraft:lush_caves", 0.5, 0.5, false);
+        public static final VoronoiPointCaveBiome DEFAULT = new VoronoiPointCaveBiome("minecraft:lush_caves", 0.5, 0.5, 0.0);
         
         public String biome;
         public double temp;
         public double rain;
-        public boolean nullBiome;
+        public double depth;
         
-        public VoronoiPointCaveBiome(String biome, double temp, double rain, boolean nullBiome) {
+        public VoronoiPointCaveBiome(String biome, double temp, double rain, double depth) {
             this.biome = biome;
             this.temp = temp;
             this.rain = rain;
-            this.nullBiome = nullBiome;
+            this.depth = depth;
         }
         
         public NbtCompound toCompound() {
@@ -45,7 +53,7 @@ public class ModernBetaConfigCaveBiome implements ConfigData {
                 .putString(NbtTags.BIOME, this.biome)
                 .putDouble(NbtTags.TEMP, this.temp)
                 .putDouble(NbtTags.RAIN, this.rain)
-                .putBoolean(NbtTags.NULL_BIOME, this.nullBiome)
+                .putDouble(NbtTags.DEPTH, this.depth)
                 .build();
         }
     }

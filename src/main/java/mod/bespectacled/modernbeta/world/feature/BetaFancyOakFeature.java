@@ -1,6 +1,5 @@
 package mod.bespectacled.modernbeta.world.feature;
 
-import java.util.Random;
 import java.util.Set;
 
 import com.mojang.serialization.Codec;
@@ -11,6 +10,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.LocalRandom;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
@@ -38,7 +39,7 @@ public class BetaFancyOakFeature extends Feature<DefaultFeatureConfig> {
         StructureWorldAccess world = featureContext.getWorld();
         BlockPos pos = featureContext.getOrigin();
         Random random = featureContext.getRandom();
-        Random treeRandom = new Random(random.nextLong());
+        Random treeRandom = new LocalRandom(random.nextLong());
         
         TreeInfo treeInfo = new TreeInfo();
         treeInfo.setHeight(5 + treeRandom.nextInt(TREE_MAX_HEIGHT));

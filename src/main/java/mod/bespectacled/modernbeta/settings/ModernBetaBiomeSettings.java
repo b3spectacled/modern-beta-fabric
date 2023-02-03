@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome.ClimateMapping;
+import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome.ConfigClimateMapping;
 import mod.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
@@ -19,7 +19,7 @@ public class ModernBetaBiomeSettings {
     public final float rainNoiseScale;
     public final float detailNoiseScale;
     
-    public final Map<String, ClimateMapping> climates;
+    public final Map<String, ConfigClimateMapping> climates;
     
     public ModernBetaBiomeSettings() {
         this(new Builder());
@@ -49,7 +49,9 @@ public class ModernBetaBiomeSettings {
         compound.putFloat(NbtTags.DETAIL_NOISE_SCALE, this.detailNoiseScale);
         
         NbtCompoundBuilder builder = new NbtCompoundBuilder();
-        this.climates.keySet().forEach(key -> builder.putCompound(key, climates.get(key).toCompound()));
+        ModernBeta.BIOME_CONFIG.climates.keySet().forEach(key -> {
+            builder.putCompound(key, this.climates.get(key).toCompound());
+        });
         compound.put(NbtTags.BIOMES, builder.build());
         
         return compound;
@@ -64,7 +66,7 @@ public class ModernBetaBiomeSettings {
         public float rainNoiseScale;
         public float detailNoiseScale;
         
-        public Map<String, ClimateMapping> climates;
+        public Map<String, ConfigClimateMapping> climates;
         
         public Builder() {
             this(new NbtCompound());
@@ -83,7 +85,10 @@ public class ModernBetaBiomeSettings {
             if (compound.contains(NbtTags.BIOMES)) {
                 NbtCompound biomes = NbtUtil.readCompoundOrThrow(NbtTags.BIOMES, compound);
                 
-                biomes.getKeys().forEach(key -> this.climates.put(key, ClimateMapping.fromCompound(NbtUtil.readCompoundOrThrow(key, biomes))));
+                biomes.getKeys().forEach(key -> {
+                    climates.put(key, ConfigClimateMapping.fromCompound(NbtUtil.readCompoundOrThrow(key, biomes)));
+                });
+                
             } else {
                 this.climates.putAll(ModernBeta.BIOME_CONFIG.climates);
             }

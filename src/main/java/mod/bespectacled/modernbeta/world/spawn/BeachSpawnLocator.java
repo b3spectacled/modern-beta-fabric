@@ -12,12 +12,14 @@ import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Category;
 
 /*
  * Port of Beta 1.7.3 player spawn locator.
@@ -65,8 +67,7 @@ public class BeachSpawnLocator implements SpawnLocator {
         
         return Optional.of(new BlockPos(x, y, z));
     }
-    
-    @SuppressWarnings("deprecation")
+
     private boolean isSandAt(int x, int z, HeightLimitView world) {
         double eighth = 0.03125D;
         int seaLevel = this.chunkProvider.getSeaLevel();
@@ -79,8 +80,8 @@ public class BeachSpawnLocator implements SpawnLocator {
             oldBiomeSource.getBiomeForSurfaceGen(x, y, z) :
             this.chunkProvider.getBiome(x >> 2, y >> 2, z >> 2, null);
         
-        return 
-            (Biome.getCategory(biome) == Category.DESERT && y >= seaLevel) || 
+        return
+            (biome.isIn(TagKey.of(RegistryKeys.BIOME, new Identifier("is_desert"))) && y >= seaLevel) || 
             (this.beachOctaveNoise.sample(x * eighth, z * eighth, 0.0) > 0.0 && y >= seaLevel && y <= seaLevel + 2);
     }
 

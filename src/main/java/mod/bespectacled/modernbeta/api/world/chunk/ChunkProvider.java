@@ -7,65 +7,53 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
+import mod.bespectacled.modernbeta.mixin.MixinChunkGenerator;
 import mod.bespectacled.modernbeta.mixin.MixinPlacedFeatureAccessor;
 import mod.bespectacled.modernbeta.settings.ModernBetaChunkSettings;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
-import mod.bespectacled.modernbeta.util.noise.SimpleDensityFunction;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkNoiseSampler;
-import mod.bespectacled.modernbeta.world.chunk.ModernBetaSurfaceBuilder;
+import mod.bespectacled.modernbeta.world.chunk.blocksource.DeepslateBlockSource;
 import mod.bespectacled.modernbeta.world.feature.placement.ModernBetaNoiseBasedCountPlacementModifier;
-import net.minecraft.block.BlockState;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.math.random.ChunkRandom;
+import net.minecraft.util.math.random.RandomSplitter;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeSource.IndexedFeatures;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
-import net.minecraft.world.gen.chunk.GenerationShapeConfig;
+import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
 import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.world.gen.feature.util.PlacedFeatureIndexer.IndexedFeatures;
+import net.minecraft.world.gen.noise.NoiseConfig;
 import net.minecraft.world.gen.noise.NoiseRouter;
 import net.minecraft.world.gen.placementmodifier.PlacementModifier;
-import net.minecraft.world.gen.random.AbstractRandom;
-import net.minecraft.world.gen.random.ChunkRandom;
-import net.minecraft.world.gen.random.RandomDeriver;
-import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 
 public abstract class ChunkProvider {
     protected final ModernBetaChunkGenerator chunkGenerator;
     
-    protected final long seed;
     protected final RegistryEntry<ChunkGeneratorSettings> generatorSettings;
     protected final ModernBetaChunkSettings chunkSettings;
     protected final Random random;
-
-    protected final Registry<DoublePerlinNoiseSampler.NoiseParameters> noiseRegistry;
+    
     protected final NoiseRouter noiseRouter;
     
     private final FluidLevelSampler emptyFluidLevelSampler;
+    
     protected final ChunkRandom.RandomProvider randomProvider;
-    protected final RandomDeriver randomDeriver;
-    
-    protected final ModernBetaChunkNoiseSampler dummyNoiseChunkSampler;
-    
-    protected final MaterialRules.MaterialRule surfaceRule;
-    protected final ModernBetaSurfaceBuilder surfaceBuilder;
-    
-    protected final boolean useDeepslate;
+    protected final RandomSplitter randomSplitter;
+    protected final DeepslateBlockSource deepslateBlockSource;
     
     protected SpawnLocator spawnLocator;
     
@@ -77,53 +65,22 @@ public abstract class ChunkProvider {
     public ChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         this.chunkGenerator = chunkGenerator;
         
-        this.seed = chunkGenerator.getWorldSeed();
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
         this.chunkSettings = new ModernBetaChunkSettings.Builder(chunkGenerator.getChunkSettings()).build();
-        this.random = new Random(seed);
+        this.random = new Random(chunkGenerator.getWorldSeed());
         
-        this.noiseRegistry = this.chunkGenerator.getNoiseRegistry();
-        this.noiseRouter = this.generatorSettings.value().method_41099(this.noiseRegistry, this.seed);
+        this.noiseRouter = this.generatorSettings.value().noiseRouter();
 
         this.emptyFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
         this.randomProvider = chunkGenerator.getGeneratorSettings().value().getRandomProvider();
-        this.randomDeriver = this.randomProvider.create(this.seed).createRandomDeriver();
-
-        // Modified ChunkNoiseSampler
-        ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
-        GenerationShapeConfig shapeConfig = generatorSettings.generationShapeConfig();
-        int verticalNoiseResolution = shapeConfig.verticalSize() * 4;
-        int horizontalNoiseResolution = shapeConfig.horizontalSize() * 4;
+        this.randomSplitter = this.randomProvider.create(chunkGenerator.getWorldSeed()).nextSplitter();
         
-        this.dummyNoiseChunkSampler = new ModernBetaChunkNoiseSampler(
-            horizontalNoiseResolution,
-            verticalNoiseResolution,
-            16 / horizontalNoiseResolution,
-            this.noiseRouter,
-            0, 
-            0,
-            () -> SimpleDensityFunction.INSTANCE,
-            () -> this.generatorSettings.value(),
-            this.emptyFluidLevelSampler,
-            Blender.getNoBlending(),
-            this
-        );
-        
-        // Modified SurfaceBuilder
-        this.surfaceRule = chunkGenerator.getGeneratorSettings().value().surfaceRule();
-        this.surfaceBuilder = new ModernBetaSurfaceBuilder(
-            chunkGenerator.getNoiseRegistry(), 
-            chunkGenerator.getGeneratorSettings().value().defaultBlock(), 
-            chunkGenerator.getGeneratorSettings().value().seaLevel(), 
-            this.seed, 
-            this.randomProvider,
-            this
-        );
-        
-        this.useDeepslate = this.chunkSettings.useDeepslate;
+        this.deepslateBlockSource = new DeepslateBlockSource(0, 8, this.chunkSettings.useDeepslate, this.randomSplitter);
         
         this.spawnLocator = SpawnLocator.DEFAULT;
     }
+    
+    public abstract boolean initProvider(long seed);
     
     /**
      * Generates base terrain for given chunk and returns it.
@@ -132,9 +89,10 @@ public abstract class ChunkProvider {
      * @param blender TODO
      * @param structureAccessor
      * @param chunk
+     * @param noiseConfig TODO
      * @return A completed chunk.
      */
-    public abstract CompletableFuture<Chunk> provideChunk(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk);
+    public abstract CompletableFuture<Chunk> provideChunk(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk, NoiseConfig noiseConfig);
     
     /**
      * Generates biome-specific surface for given chunk.
@@ -142,8 +100,9 @@ public abstract class ChunkProvider {
      * @param region
      * @param chunk
      * @param biomeSource
+     * @param noiseConfig TODO
      */
-    public abstract void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource);
+    public abstract void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig);
     
     /**
      * Sample height at given x/z coordinate. Initially generates heightmap for entire chunk, 
@@ -199,7 +158,7 @@ public abstract class ChunkProvider {
      * 
      * @return An aquifer sampler.
      */
-    public AquiferSampler getAquiferSampler(Chunk chunk) {
+    public AquiferSampler getAquiferSampler(Chunk chunk, NoiseConfig noiseConfig) {
         return AquiferSampler.seaLevel(this.emptyFluidLevelSampler);
     }
     
@@ -232,27 +191,6 @@ public abstract class ChunkProvider {
     }
     
     /**
-     * @return ModernBetaSurfaceBuilder.
-     */
-    public ModernBetaSurfaceBuilder getSurfaceBuilder() {
-        return this.surfaceBuilder;
-    }
-    
-    /**
-     * @return MaterialRule
-     */
-    public MaterialRules.MaterialRule getSurfaceRule() {
-        return this.surfaceRule;
-    }
-    
-    /**
-     * @return ModernBetaChunkNoiseSampler.
-     */
-    public ModernBetaChunkNoiseSampler getChunkNoiseSampler() {
-        return this.dummyNoiseChunkSampler;
-    }
-    
-    /**
      * Samples biome at given biome coordinates.
      * 
      * @param biomeX x-coordinate in biome coordinates.
@@ -264,6 +202,21 @@ public abstract class ChunkProvider {
      */
     public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {
         return this.chunkGenerator.getBiomeSource().getBiome(biomeX, biomeY, biomeZ, noiseSampler);
+    }
+    
+    /**
+     * Creates a ModernBetaChunkNoiseSampler
+     *
+     */
+    public ChunkNoiseSampler createChunkNoiseSampler(Chunk chunk, StructureAccessor world, Blender blender, NoiseConfig noiseConfig) {
+        return ChunkNoiseSampler.create(
+            chunk,
+            noiseConfig,
+            StructureWeightSampler.createStructureWeightSampler(world, chunk.getPos()),
+            this.generatorSettings.value(),
+            this.getFluidLevelSampler(),
+            blender
+        );
     }
     
     /**
@@ -279,31 +232,6 @@ public abstract class ChunkProvider {
         
         return new Random(seed);
     }
-    
-    /**
-     * Samples blockstate for placing deepslate gradient during surface generation.
-     * 
-     * @param x x-coordinate in block coordinates.
-     * @param y y-coordinate in block coordinates.
-     * @param z z-coordinate in block coordinates.
-     * 
-     * @return Null or deepslate blockstate.
-     */
-    protected BlockState sampleDeepslateState(int x, int y, int z) {
-        int minY = 0;
-        int maxY = 8;
-        
-        if (!this.useDeepslate || y >= maxY)
-            return null;
-        
-        if (y <= minY)
-            return BlockStates.DEEPSLATE;
-        
-        double yThreshold = MathHelper.lerpFromProgress(y, minY, maxY, 1.0, 0.0);
-        AbstractRandom random = this.randomDeriver.createRandom(x, y, z);
-        
-        return (double)random.nextFloat() < yThreshold ? BlockStates.DEEPSLATE : null;
-    }
 
     /**
      * Sets forest density using PerlinOctaveNoise sampler created with world seed.
@@ -312,8 +240,8 @@ public abstract class ChunkProvider {
      * 
      * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
      */
-    protected void setForestOctaves(PerlinOctaveNoise forestOctaves) {
-        List<IndexedFeatures> generationSteps = this.chunkGenerator.getBiomeSource().getIndexedFeatures();
+    protected void setForestOctaveNoise(PerlinOctaveNoise forestOctaves) {
+        List<IndexedFeatures> generationSteps = ((MixinChunkGenerator)this.chunkGenerator).getIndexedFeaturesListSupplier().get();
         
         for (IndexedFeatures step : generationSteps) {
             List<PlacedFeature> featureList = step.features();

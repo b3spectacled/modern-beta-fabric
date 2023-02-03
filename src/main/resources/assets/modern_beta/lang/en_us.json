@@ -1,5 +1,5 @@
 {
-    "generator.modern_beta": "Modern Beta",
+    "generator.modern_beta.modern_beta": "Modern Beta",
     
     "text.autoconfig.modern_beta.title": "Modern Beta Configuration",
 
@@ -80,7 +80,6 @@
     "biome.modern_beta.indev_hell": "Indev Hell",
     "biome.modern_beta.indev_paradise": "Indev Paradise",
     "biome.modern_beta.indev_woods": "Indev Woods",
-    "biome.modern_beta.indev_snowy": "Indev Snowy",
     
     "biome.modern_beta.pe_forest": "PE Forest",
     "biome.modern_beta.pe_shrubland": "PE Shrubland",

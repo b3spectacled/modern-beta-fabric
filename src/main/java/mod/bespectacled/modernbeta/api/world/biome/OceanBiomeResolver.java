@@ -1,6 +1,6 @@
 package mod.bespectacled.modernbeta.api.world.biome;
 
-import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public interface OceanBiomeResolver {

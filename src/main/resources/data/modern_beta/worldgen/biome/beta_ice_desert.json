@@ -7,14 +7,17 @@
   },
   "carvers": {
     "air": [
-      "minecraft:beta_cave",
-      "minecraft:beta_cave_deep",
+      "modern_beta:beta_cave",
+      "modern_beta:beta_cave_deep",
       "minecraft:canyon"
     ]
   },
   "features": [
     [],
-    [],
+    [
+      "minecraft:lake_lava_underground",
+      "minecraft:lake_lava_surface"
+    ],
     [
       "minecraft:amethyst_geode"
     ],
@@ -175,6 +178,5 @@
   "spawn_costs": {},
   "precipitation": "snow",
   "temperature": 0.0,
-  "downfall": 0.5,
-  "category": "desert"
+  "downfall": 0.5
 }

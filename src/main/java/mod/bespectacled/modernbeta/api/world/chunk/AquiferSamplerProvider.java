@@ -4,18 +4,18 @@ import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.LocalRandom;
+import net.minecraft.util.math.random.RandomSplitter;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
 import net.minecraft.world.gen.noise.NoiseRouter;
-import net.minecraft.world.gen.random.AtomicSimpleRandom;
-import net.minecraft.world.gen.random.RandomDeriver;
 
 public class AquiferSamplerProvider {
     private final NoiseRouter noiseRouter;
-    private final RandomDeriver aquiferRandomDeriver;
+    private final RandomSplitter randomSplitter;
     
     private final FluidLevelSampler fluidLevelSampler;
     private final FluidLevelSampler lavalessFluidLevelSampler;
@@ -36,7 +36,7 @@ public class AquiferSamplerProvider {
     ) {
         this(
             noiseRouter,
-            new AtomicSimpleRandom(-1).createRandomDeriver(),
+            new LocalRandom(-1).nextSplitter(),
             null,
             defaultFluid,
             seaLevel,
@@ -50,7 +50,7 @@ public class AquiferSamplerProvider {
     
     public AquiferSamplerProvider(
         NoiseRouter noiseRouter,
-        RandomDeriver randomDeriver,
+        RandomSplitter randomSplitter,
         ChunkNoiseSampler chunkSampler,
         BlockState defaultFluid,
         int seaLevel,
@@ -61,7 +61,7 @@ public class AquiferSamplerProvider {
         boolean generateAquifers
     ) {
         this.noiseRouter = noiseRouter;
-        this.aquiferRandomDeriver = randomDeriver.createRandom(ModernBeta.createId("aquifer")).createRandomDeriver();
+        this.randomSplitter = randomSplitter.split(ModernBeta.createId("aquifer")).nextSplitter();
         
         FluidLevel lavaFluidLevel = new FluidLevel(lavaLevel, BlockStates.LAVA); // Vanilla: -54
         FluidLevel seaFluidLevel = new FluidLevel(seaLevel, defaultFluid);
@@ -92,11 +92,8 @@ public class AquiferSamplerProvider {
         return AquiferSampler.aquifer(
             this.chunkSampler,
             chunk.getPos(),
-            this.noiseRouter.barrierNoise(),
-            this.noiseRouter.fluidLevelFloodednessNoise(),
-            this.noiseRouter.fluidLevelSpreadNoise(),
-            this.noiseRouter.lavaNoise(),
-            this.aquiferRandomDeriver,
+            this.noiseRouter,
+            this.randomSplitter,
             noiseMinY * this.verticalNoiseResolution, 
             noiseTopY * this.verticalNoiseResolution, 
             this.fluidLevelSampler

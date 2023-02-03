@@ -10,18 +10,13 @@
     "modern_beta:alpha",
     "modern_beta:alpha_winter",
     "modern_beta:infdev_611",
-    "modern_beta:infdev_611_winter",
     "modern_beta:infdev_420",
-    "modern_beta:infdev_420_winter",
     "modern_beta:infdev_415",
-    "modern_beta:infdev_415_winter",
     "modern_beta:infdev_227",
-    "modern_beta:infdev_227_winter",
     
     "modern_beta:indev_normal",
     "modern_beta:indev_hell",
     "modern_beta:indev_paradise",
-    "modern_beta:indev_woods",
-    "modern_beta:indev_snowy"
+    "modern_beta:indev_woods"
   ]
 }

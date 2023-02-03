@@ -10,7 +10,6 @@ import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.provider.IndevChunkProvider;
 import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevTheme;
-import net.fabricmc.fabric.mixin.gamerule.IntRuleAccessor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.SpawnLocating;
 import net.minecraft.server.world.ServerWorld;
@@ -33,7 +32,7 @@ public class MixinMinecraftServer {
         BlockPos spawnPos = SpawnLocating.findServerSpawnPoint(world, chunkPos);
         
         if (chunkGenerator instanceof ModernBetaChunkGenerator oldChunkGenerator) {
-            ((IntRuleAccessor)world.getGameRules().get(GameRules.SPAWN_RADIUS)).setValue(0); // Ensure a centered spawn
+            world.getGameRules().get(GameRules.SPAWN_RADIUS).set(0, world.getServer()); // Ensure a centered spawn
             spawnPos = oldChunkGenerator.getChunkProvider().locateSpawn().orElse(spawnPos);
             
             if (spawnPos != null && ModernBeta.DEV_ENV) {
@@ -70,5 +69,4 @@ public class MixinMinecraftServer {
             } default -> {}
         }
     }
-    
 }

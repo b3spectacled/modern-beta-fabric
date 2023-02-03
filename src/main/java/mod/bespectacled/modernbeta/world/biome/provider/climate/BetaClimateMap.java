@@ -5,27 +5,28 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
-import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
-import net.minecraft.util.registry.RegistryKey;
+import mod.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMapping.ClimateType;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class BetaClimateMap {
-    private final Map<String, ClimateMapping> climateMap;
-    private final ClimateMapping[] climateTable;
+    private final Map<String, BetaClimateMapping> climateMap;
+    private final BetaClimateMapping[] climateTable;
     
     public BetaClimateMap(ModernBetaBiomeSettings settings) {
         this.climateMap = new LinkedHashMap<>();
-        this.climateTable = new ClimateMapping[4096];
+        this.climateTable = new BetaClimateMapping[4096];
         
-        for (String key : settings.climates.keySet()) {
-            this.climateMap.put(key, ClimateMapping.fromCompound(settings.climates.get(key).toCompound()));
+        for (String key : ModernBeta.BIOME_CONFIG.climates.keySet()) {
+            this.climateMap.put(key, BetaClimateMapping.fromCompound(ModernBeta.BIOME_CONFIG.climates.get(key).toCompound()));
         }
         
         this.generateBiomeLookup();
     }
     
-    public Map<String, ClimateMapping> getMap() {
+    public Map<String, BetaClimateMapping> getMap() {
         return new LinkedHashMap<>(this.climateMap);
     }
     
@@ -53,7 +54,7 @@ public class BetaClimateMap {
         }
     }
     
-    private ClimateMapping getBiome(float temp, float rain) {
+    private BetaClimateMapping getBiome(float temp, float rain) {
         rain *= temp;
 
         if (temp < 0.1F) {

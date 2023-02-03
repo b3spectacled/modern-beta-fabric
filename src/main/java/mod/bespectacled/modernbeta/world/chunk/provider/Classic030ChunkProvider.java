@@ -11,9 +11,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SnowyBlock;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.BlockSource;
@@ -36,8 +36,13 @@ public class Classic030ChunkProvider extends FiniteChunkProvider {
 
     public Classic030ChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        
+
         this.waterLevel = this.levelHeight / 2;
+    }
+    
+    @Override
+    public boolean initProvider(long seed) {
+        return true;
     }
 
     @Override

@@ -29,11 +29,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.dimension.DimensionType;
@@ -73,13 +73,14 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         
         // Init with default values
         this.climateSampler = Optional.ofNullable(useFixedSeed ? 
-            new BetaBiomeProvider(worldSeed, new ModernBetaBiomeSettings().toCompound(), null) : 
+            new BetaBiomeProvider(new ModernBetaBiomeSettings().toCompound(), null) : 
             null
         );
         this.skyClimateSampler = Optional.ofNullable(useFixedSeed ? 
-            new BetaBiomeProvider(worldSeed, new ModernBetaBiomeSettings().toCompound(), null) : 
+            new BetaBiomeProvider(new ModernBetaBiomeSettings().toCompound(), null) : 
             null
         );
+        
         this.isModernBetaWorld = false;
         
         // Server check

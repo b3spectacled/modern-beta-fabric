@@ -17,8 +17,31 @@ repositories {
 	maven { url 'https://jitpack.io' }
 }
 
+sourceSets {
+	main {
+		resources {
+			srcDirs += [
+					'src/main/generated'
+			]
+		}
+	}
+}
+
 loom {
 	accessWidenerPath = file("src/main/resources/modern_beta.accesswidener")
+	
+	runs {
+		datagen {
+			server()
+			name "Data Generation"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+			vmArg "-Dfabric-api.datagen.strict-validation"
+
+			ideConfigGenerated = true
+			runDir "build/datagen"
+		}
+	}
 }
 
 dependencies {
@@ -36,7 +59,6 @@ dependencies {
 	}
 	
 	modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}")
-	//modImplementation("curse.maven:mod-menu-308702:3348711")
 }
 
 processResources {
@@ -66,9 +88,11 @@ java {
 }
 
 jar {
+	from file('src/main/generated')
 	from("LICENSE") {
 		rename { "${it}_${project.archivesBaseName}"}
 	}
+	dependsOn 'runDatagen'
 }
 
 // configure the maven publication

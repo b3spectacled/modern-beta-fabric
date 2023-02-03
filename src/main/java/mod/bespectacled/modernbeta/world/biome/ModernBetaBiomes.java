@@ -1,12 +1,16 @@
 package mod.bespectacled.modernbeta.world.biome;
 
 import mod.bespectacled.modernbeta.ModernBeta;
+import net.minecraft.registry.Registerable;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.OverworldBiomeCreator;
+import net.minecraft.world.biome.BiomeEffects;
+import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.biome.SpawnSettings;
+import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 
 public class ModernBetaBiomes {
     public static final Identifier BETA_FOREST_ID = ModernBeta.createId("beta_forest");
@@ -58,62 +62,86 @@ public class ModernBetaBiomes {
     public static final Identifier INDEV_PARADISE_ID = ModernBeta.createId("indev_paradise");
     public static final Identifier INDEV_WOODS_ID = ModernBeta.createId("indev_woods");
     
-    public static void register() {
-        register(BETA_FOREST_ID);
-        register(BETA_SHRUBLAND_ID);
-        register(BETA_DESERT_ID);
-        register(BETA_SAVANNA_ID);
-        register(BETA_PLAINS_ID);
-        register(BETA_SEASONAL_FOREST_ID);
-        register(BETA_RAINFOREST_ID);
-        register(BETA_SWAMPLAND_ID);
-        register(BETA_TAIGA_ID);
-        register(BETA_TUNDRA_ID);
-        register(BETA_ICE_DESERT_ID);
+    public static void bootstrap(Registerable<Biome> biomeRegisterable) {
+        register(biomeRegisterable, BETA_FOREST_ID);
+        register(biomeRegisterable, BETA_SHRUBLAND_ID);
+        register(biomeRegisterable, BETA_DESERT_ID);
+        register(biomeRegisterable, BETA_SAVANNA_ID);
+        register(biomeRegisterable, BETA_PLAINS_ID);
+        register(biomeRegisterable, BETA_SEASONAL_FOREST_ID);
+        register(biomeRegisterable, BETA_RAINFOREST_ID);
+        register(biomeRegisterable, BETA_SWAMPLAND_ID);
+        register(biomeRegisterable, BETA_TAIGA_ID);
+        register(biomeRegisterable, BETA_TUNDRA_ID);
+        register(biomeRegisterable, BETA_ICE_DESERT_ID);
 
-        register(BETA_OCEAN_ID);
-        register(BETA_LUKEWARM_OCEAN_ID);
-        register(BETA_WARM_OCEAN_ID);
-        register(BETA_COLD_OCEAN_ID);
-        register(BETA_FROZEN_OCEAN_ID);
+        register(biomeRegisterable, BETA_OCEAN_ID);
+        register(biomeRegisterable, BETA_LUKEWARM_OCEAN_ID);
+        register(biomeRegisterable, BETA_WARM_OCEAN_ID);
+        register(biomeRegisterable, BETA_COLD_OCEAN_ID);
+        register(biomeRegisterable, BETA_FROZEN_OCEAN_ID);
 
-        register(PE_FOREST_ID);
-        register(PE_SHRUBLAND_ID);
-        register(PE_DESERT_ID);
-        register(PE_SAVANNA_ID);
-        register(PE_PLAINS_ID);
-        register(PE_SEASONAL_FOREST_ID);
-        register(PE_RAINFOREST_ID);
-        register(PE_SWAMPLAND_ID);
-        register(PE_TAIGA_ID);
-        register(PE_TUNDRA_ID);
-        register(PE_ICE_DESERT_ID);
+        register(biomeRegisterable, PE_FOREST_ID);
+        register(biomeRegisterable, PE_SHRUBLAND_ID);
+        register(biomeRegisterable, PE_DESERT_ID);
+        register(biomeRegisterable, PE_SAVANNA_ID);
+        register(biomeRegisterable, PE_PLAINS_ID);
+        register(biomeRegisterable, PE_SEASONAL_FOREST_ID);
+        register(biomeRegisterable, PE_RAINFOREST_ID);
+        register(biomeRegisterable, PE_SWAMPLAND_ID);
+        register(biomeRegisterable, PE_TAIGA_ID);
+        register(biomeRegisterable, PE_TUNDRA_ID);
+        register(biomeRegisterable, PE_ICE_DESERT_ID);
 
-        register(PE_OCEAN_ID);
-        register(PE_LUKEWARM_OCEAN_ID);
-        register(PE_WARM_OCEAN_ID);
-        register(PE_COLD_OCEAN_ID);
-        register(PE_FROZEN_OCEAN_ID);
+        register(biomeRegisterable, PE_OCEAN_ID);
+        register(biomeRegisterable, PE_LUKEWARM_OCEAN_ID);
+        register(biomeRegisterable, PE_WARM_OCEAN_ID);
+        register(biomeRegisterable, PE_COLD_OCEAN_ID);
+        register(biomeRegisterable, PE_FROZEN_OCEAN_ID);
 
-        register(ALPHA_ID);
-        register(ALPHA_WINTER_ID);
+        register(biomeRegisterable, ALPHA_ID);
+        register(biomeRegisterable, ALPHA_WINTER_ID);
 
-        register(INFDEV_611_ID);
-        register(INFDEV_420_ID);
-        register(INFDEV_415_ID);
-        register(INFDEV_227_ID);
+        register(biomeRegisterable, INFDEV_611_ID);
+        register(biomeRegisterable, INFDEV_420_ID);
+        register(biomeRegisterable, INFDEV_415_ID);
+        register(biomeRegisterable, INFDEV_227_ID);
 
-        register(INDEV_NORMAL_ID);
-        register(INDEV_HELL_ID);
-        register(INDEV_PARADISE_ID);
-        register(INDEV_WOODS_ID);
+        register(biomeRegisterable, INDEV_NORMAL_ID);
+        register(biomeRegisterable, INDEV_HELL_ID);
+        register(biomeRegisterable, INDEV_PARADISE_ID);
+        register(biomeRegisterable, INDEV_WOODS_ID);
     }
     
-    private static void register(Identifier id) {
-        Registry.register(BuiltinRegistries.BIOME, keyOf(id), OverworldBiomeCreator.createPlains(false, false, false));
+    public static void register() { }
+    
+    private static Biome createPlaceholderBiome() {
+        GenerationSettings.Builder builder = new GenerationSettings.Builder();
+        SpawnSettings.Builder builder2 = new SpawnSettings.Builder();
+        DefaultBiomeFeatures.addPlainsMobs(builder2);
+        
+        return (new Biome.Builder())
+            .precipitation(Biome.Precipitation.NONE)
+            .temperature(0.5F)
+            .downfall(0.5F)
+            .effects((new BiomeEffects.Builder())
+                .waterColor(4159204)
+                .waterFogColor(329011)
+                .fogColor(10518688)
+                .skyColor(0)
+                .moodSound(BiomeMoodSound.CAVE)
+                .build()
+            )
+            .spawnSettings(builder2.build())
+            .generationSettings(builder.build())
+            .build();
+    }
+    
+    private static void register(Registerable<Biome> biomeRegisterable, Identifier id) {
+        biomeRegisterable.register(keyOf(id), createPlaceholderBiome());
     }
     
     private static RegistryKey<Biome> keyOf(Identifier id) {
-        return RegistryKey.of(Registry.BIOME_KEY, id);
+        return RegistryKey.of(RegistryKeys.BIOME, id);
     }
 }

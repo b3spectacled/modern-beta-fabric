@@ -1,11 +1,11 @@
 package mod.bespectacled.modernbeta.world.feature.placement;
 
-import java.util.Random;
-
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.world.feature.placement.noise.BetaNoiseBasedCount;
 import mod.bespectacled.modernbeta.world.feature.placement.noise.ModernBetaNoiseBasedCount;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.LocalRandom;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.gen.placementmodifier.AbstractCountPlacementModifier;
 
 public abstract class ModernBetaNoiseBasedCountPlacementModifier extends AbstractCountPlacementModifier {
@@ -20,7 +20,7 @@ public abstract class ModernBetaNoiseBasedCountPlacementModifier extends Abstrac
         this.extraChance = extraChance;
         this.extraCount = extraCount;
         
-        this.noiseDecorator = new BetaNoiseBasedCount(new Random(0L));
+        this.noiseDecorator = new BetaNoiseBasedCount(new LocalRandom(0L));
     }
     
     @Override

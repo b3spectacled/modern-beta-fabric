@@ -4,24 +4,22 @@
   "package": "mod.bespectacled.modernbeta.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "MixinGeneratorOptions",
+    "MixinChunkGenerator",
+    "MixinChunkSection",
     "MixinMinecraftServer",
     "MixinOceanMonumentFeature",
     "MixinPlacedFeatureAccessor",
     "MixinSpawnLocating",
-    "MixinStructureFeatureAccessor",
+    "MixinStructure",
     "MixinStructureGeneratorFactoryContext",
-    "MixinSurfaceBuilderAccessor",
-    "MixinDensityFunctionsAccessor"
+    "MixinSurfaceBuilderAccessor"
   ],
   "client": [
     "client.MixinBackgroundRenderer",
     "client.MixinClientWorld",
     "client.MixinDebugHud",
     "client.MixinDimensionEffects",
-    "client.MixinGeneratorTypeAccessor",
     "client.MixinInGameHud",
-    "client.MixinMoreOptionsDialogInvoker",
     "client.MixinWorldRenderer"
   ],
   "injectors": {

@@ -3,9 +3,9 @@ package mod.bespectacled.modernbeta.util.noise;
 import java.util.Arrays;
 
 import net.minecraft.world.gen.densityfunction.DensityFunction;
-import net.minecraft.world.gen.densityfunction.DensityFunctionTypes.class_7050;
+import net.minecraft.world.gen.densityfunction.DensityFunctionTypes;
 
-public enum SimpleDensityFunction implements class_7050 {
+public enum SimpleDensityFunction implements DensityFunctionTypes.Beardifying {
     INSTANCE;
 
     @Override
@@ -14,17 +14,17 @@ public enum SimpleDensityFunction implements class_7050 {
     }
 
     @Override
-    public void method_40470(double[] ds, class_6911 arg) {
-        Arrays.fill(ds, 0.0);
+    public void applyEach(double[] densities, DensityFunction.EachApplier applier) {
+        Arrays.fill(densities, 0.0);
+    }
+    
+    @Override
+    public double maxValue() {
+        return 0;
     }
 
     @Override
     public double minValue() {
-        return 0.0;
-    }
-
-    @Override
-    public double maxValue() {
-        return 0.0;
+        return 0;
     }
 }

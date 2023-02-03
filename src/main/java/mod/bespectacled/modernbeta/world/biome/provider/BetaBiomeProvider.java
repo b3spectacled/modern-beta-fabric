@@ -16,24 +16,29 @@ import mod.bespectacled.modernbeta.util.chunk.ClimateChunk;
 import mod.bespectacled.modernbeta.util.chunk.SkyClimateChunk;
 import mod.bespectacled.modernbeta.util.noise.SimplexOctaveNoise;
 import mod.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
-import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
+import mod.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMapping.ClimateType;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, SkyClimateSampler, BiomeBlockResolver, OceanBiomeResolver {
-    private final BetaClimateMap climateMap;
-    private final BetaClimateSampler climateSampler;
-    private final BetaSkyClimateSampler skyClimateSampler;
+    private BetaClimateMap climateMap;
+    private BetaClimateSampler climateSampler;
+    private BetaSkyClimateSampler skyClimateSampler;
     
-    public BetaBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
-        super(seed, settings, biomeRegistry);
-        
+    public BetaBiomeProvider(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
+        super(settings, biomeRegistry);
+    }
+    
+    @Override
+    public boolean initProvider(long seed) {
         this.climateMap = new BetaClimateMap(this.settings);
-        this.climateSampler = new BetaClimateSampler(seed);
-        this.skyClimateSampler = new BetaSkyClimateSampler(seed);
+        this.climateSampler = new BetaClimateSampler(seed, this.settings.tempNoiseScale, this.settings.rainNoiseScale, this.settings.detailNoiseScale);
+        this.skyClimateSampler = new BetaSkyClimateSampler(seed, this.settings.tempNoiseScale);
+        
+        return true;
     }
 
     @Override
@@ -45,7 +50,7 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return this.biomeRegistry.getOrCreateEntry(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
+        return this.biomeRegistry.getOrThrow(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
     }
  
     @Override
@@ -57,7 +62,7 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return this.biomeRegistry.getOrCreateEntry(this.climateMap.getBiome(temp, rain, ClimateType.OCEAN));
+        return this.biomeRegistry.getOrThrow(this.climateMap.getBiome(temp, rain, ClimateType.OCEAN));
     }
     
     @Override
@@ -66,12 +71,12 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return this.biomeRegistry.getOrCreateEntry(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
+        return this.biomeRegistry.getOrThrow(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
     }
 
     @Override
     public List<RegistryEntry<Biome>> getBiomesForRegistry() {
-        return this.climateMap.getBiomeKeys().stream().map(k -> this.biomeRegistry.getOrCreateEntry(k)).collect(Collectors.toList());
+        return this.climateMap.getBiomeKeys().stream().map(key -> this.biomeRegistry.getOrThrow(key)).collect(Collectors.toList());
     }
 
     @Override
@@ -95,24 +100,18 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
     }
     
     private static class BetaClimateSampler {
-        private final SimplexOctaveNoise tempNoiseOctaves;
-        private final SimplexOctaveNoise rainNoiseOctaves;
-        private final SimplexOctaveNoise detailNoiseOctaves;
-        
+        private final SimplexOctaveNoise tempOctaveNoise;
+        private final SimplexOctaveNoise rainOctaveNoise;
+        private final SimplexOctaveNoise detailOctaveNoise;
         private final ChunkCache<ClimateChunk> climateCache;
+        private final double tempNoiseScale;
+        private final double rainNoiseScale;
+        private final double detailNoiseScale;
         
-        private final double tempScale;
-        private final double rainScale;
-        private final double detailScale;
-        
-        public BetaClimateSampler(long seed) {
-            this(seed, 1D);
-        }
-        
-        public BetaClimateSampler(long seed, double climateScale) {
-            this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
-            this.rainNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
-            this.detailNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
+        public BetaClimateSampler(long seed, double tempNoiseScale, double rainNoiseScale, double detailNoiseScale) {
+            this.tempOctaveNoise = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
+            this.rainOctaveNoise = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
+            this.detailOctaveNoise = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
             
             this.climateCache = new ChunkCache<>(
                 "climate", 
@@ -121,9 +120,9 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
                 (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::sampleClimateNoise)
             );
             
-            this.tempScale = 0.02500000037252903D / climateScale;
-            this.rainScale = 0.05000000074505806D / climateScale;
-            this.detailScale = 0.25D / climateScale;
+            this.tempNoiseScale = 0.025 / tempNoiseScale;
+            this.rainNoiseScale = 0.05 / rainNoiseScale;
+            this.detailNoiseScale = 0.25 / detailNoiseScale;
         }
 
         public Clime sampleClime(int x, int z) {
@@ -134,9 +133,9 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
         }
         
         public Clime sampleClimateNoise(int x, int z) {
-            double temp = this.tempNoiseOctaves.sample(x, z, this.tempScale, this.tempScale, 0.25D);
-            double rain = this.rainNoiseOctaves.sample(x, z, this.rainScale, this.rainScale, 0.33333333333333331D);
-            double detail = this.detailNoiseOctaves.sample(x, z, this.detailScale, this.detailScale, 0.58823529411764708D);
+            double temp = this.tempOctaveNoise.sample(x, z, this.tempNoiseScale, this.tempNoiseScale, 0.25D);
+            double rain = this.rainOctaveNoise.sample(x, z, this.rainNoiseScale, this.rainNoiseScale, 0.33333333333333331D);
+            double detail = this.detailOctaveNoise.sample(x, z, this.detailNoiseScale, this.detailNoiseScale, 0.58823529411764708D);
 
             detail = detail * 1.1D + 0.5D;
 
@@ -150,18 +149,12 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
     }
     
     private static class BetaSkyClimateSampler {
-        private final SimplexOctaveNoise tempNoiseOctaves;
-        
+        private final SimplexOctaveNoise tempOctaveNoise;
         private final ChunkCache<SkyClimateChunk> skyClimateCache;
-        
-        private final double tempScale;
-        
-        public BetaSkyClimateSampler(long seed) {
-            this(seed, 1D);
-        }
+        private final double tempNoiseScale;
         
         public BetaSkyClimateSampler(long seed, double climateScale) {
-            this.tempNoiseOctaves = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
+            this.tempOctaveNoise = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
             
             this.skyClimateCache = new ChunkCache<>(
                 "sky", 
@@ -170,7 +163,7 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
                 (chunkX, chunkZ) -> new SkyClimateChunk(chunkX, chunkZ, this::sampleSkyTempNoise)
             );
             
-            this.tempScale = 0.02500000037252903D / climateScale;
+            this.tempNoiseScale = 0.025 / climateScale;
         }
         
         public double sampleSkyTemp(int x, int z) {
@@ -181,7 +174,7 @@ public class BetaBiomeProvider extends BiomeProvider implements ClimateSampler, 
         }
         
         private double sampleSkyTempNoise(int x, int z) {
-            return this.tempNoiseOctaves.sample(x, z, this.tempScale, this.tempScale, 0.5D);
+            return this.tempOctaveNoise.sample(x, z, this.tempNoiseScale, this.tempNoiseScale, 0.5D);
         }
     }
 }

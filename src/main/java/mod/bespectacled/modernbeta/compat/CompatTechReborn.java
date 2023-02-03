@@ -1,12 +1,5 @@
 package mod.bespectacled.modernbeta.compat;
 
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.gen.GenerationStep;
-
 public class CompatTechReborn {
     /*
     private static final String MOD_ID = "techreborn";

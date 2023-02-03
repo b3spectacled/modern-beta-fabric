@@ -11,14 +11,26 @@ public class ModernBetaConfigChunk implements ConfigData {
     public String chunkProvider = ModernBetaBuiltInTypes.Chunk.BETA.name;
     public boolean useDeepslate = true;
     
+    public float coordinateScale = 684.412f;
+    public float heightScale = 684.412f;
     public float upperLimitScale = 512.0f;
     public float lowerLimitScale = 512.0f;;
     public float depthNoiseScaleX = 200.0f;
     public float depthNoiseScaleZ = 200.0f;
+    public float mainNoiseScaleX = 80.0f;
+    public float mainNoiseScaleY = 160.0f;
+    public float mainNoiseScaleZ = 80.0f;
     public float baseSize = 8.5f;
     public float stretchY = 12.0f;
     
-    public boolean generateMonuments = true; // TODO: REMOVE
+    public int topSlideTarget = -10;
+    public int topSlideSize = 3;
+    public int topSlideOffset = 0;
+    
+    public int bottomSlideTarget = 15;
+    public int bottomSlideSize = 3;
+    public int bottomSlideOffset = 0;
+
     public boolean sampleClimate = true;
     public String noisePostProcessor = ModernBetaBuiltInTypes.NoisePostProcessor.NONE.name;
 

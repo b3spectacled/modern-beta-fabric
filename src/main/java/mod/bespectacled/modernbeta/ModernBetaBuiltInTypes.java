@@ -45,20 +45,6 @@ public final class ModernBetaBuiltInTypes {
         private CaveBiome(String name) { this.name = name; }
     }
     
-    public enum WorldScreen {
-        BETA("beta"),
-        NOISE("noise"),
-        INFDEV_227("infdev_227"),
-        INDEV("indev"),
-        CLASSIC("classic"),
-        ISLAND("island")
-        ;
-        
-        public final String name;
-        
-        private WorldScreen(String name) { this.name = name; }
-    }
-    
     public enum NoisePostProcessor {
         NONE("none")
         ;

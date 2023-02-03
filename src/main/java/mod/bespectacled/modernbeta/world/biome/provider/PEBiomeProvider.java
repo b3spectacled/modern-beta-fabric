@@ -15,22 +15,27 @@ import mod.bespectacled.modernbeta.util.chunk.ClimateChunk;
 import mod.bespectacled.modernbeta.util.mersenne.MTRandom;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
-import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
+import mod.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMapping.ClimateType;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, SkyClimateSampler, BiomeBlockResolver, OceanBiomeResolver {
-    private final BetaClimateMap climateMap;
-    private final PEClimateSampler climateSampler;
+    private BetaClimateMap climateMap;
+    private PEClimateSampler climateSampler;
     
-    public PEBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
-        super(seed, settings, biomeRegistry);
-        
+    public PEBiomeProvider(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
+        super(settings, biomeRegistry);
+    }
+    
+    @Override
+    public boolean initProvider(long seed) {
         this.climateMap = new BetaClimateMap(this.settings);
-        this.climateSampler = new PEClimateSampler(seed);
+        this.climateSampler = new PEClimateSampler(seed, this.settings.tempNoiseScale, this.settings.rainNoiseScale, this.settings.detailNoiseScale);
+        
+        return true;
     }
 
     @Override
@@ -42,7 +47,7 @@ public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, Sk
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return this.biomeRegistry.getOrCreateEntry(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
+        return this.biomeRegistry.getOrThrow(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
     }
  
     @Override
@@ -54,7 +59,7 @@ public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, Sk
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return this.biomeRegistry.getOrCreateEntry(this.climateMap.getBiome(temp, rain, ClimateType.OCEAN));
+        return this.biomeRegistry.getOrThrow(this.climateMap.getBiome(temp, rain, ClimateType.OCEAN));
     }
     
     @Override
@@ -63,12 +68,12 @@ public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, Sk
         double temp = clime.temp();
         double rain = clime.rain();
         
-        return this.biomeRegistry.getOrCreateEntry(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
+        return this.biomeRegistry.getOrThrow(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
     }
 
     @Override
     public List<RegistryEntry<Biome>> getBiomesForRegistry() {
-        return this.climateMap.getBiomeKeys().stream().map(i -> this.biomeRegistry.getOrCreateEntry(i)).collect(Collectors.toList());
+        return this.climateMap.getBiomeKeys().stream().map(i -> this.biomeRegistry.getOrThrow(i)).collect(Collectors.toList());
     }
 
     @Override
@@ -92,24 +97,20 @@ public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, Sk
     }
     
     private static class PEClimateSampler {
-        private final PerlinOctaveNoise tempNoiseOctaves;
-        private final PerlinOctaveNoise rainNoiseOctaves;
-        private final PerlinOctaveNoise detailNoiseOctaves;
+        private final PerlinOctaveNoise tempOctaveNoise;
+        private final PerlinOctaveNoise rainOctaveNoise;
+        private final PerlinOctaveNoise detailOctaveNoise;
         
         private final ChunkCache<ClimateChunk> climateCache;
         
-        private final double tempScale;
-        private final double rainScale;
-        private final double detailScale;
+        private final double tempNoiseScale;
+        private final double rainNoiseScale;
+        private final double detailNoiseScale;
         
-        public PEClimateSampler(long seed) {
-            this(seed, 1D);
-        }
-        
-        public PEClimateSampler(long seed, double climateScale) {
-            this.tempNoiseOctaves = new PerlinOctaveNoise(new MTRandom(seed * 9871L), 4, true);
-            this.rainNoiseOctaves = new PerlinOctaveNoise(new MTRandom(seed * 39811L), 4, true);
-            this.detailNoiseOctaves = new PerlinOctaveNoise(new MTRandom(seed * 543321L), 2, true);
+        public PEClimateSampler(long seed, double tempNoiseScale, double rainNoiseScale, double detailNoiseScale) {
+            this.tempOctaveNoise = new PerlinOctaveNoise(new MTRandom(seed * 9871L), 4, true);
+            this.rainOctaveNoise = new PerlinOctaveNoise(new MTRandom(seed * 39811L), 4, true);
+            this.detailOctaveNoise = new PerlinOctaveNoise(new MTRandom(seed * 543321L), 2, true);
             
             this.climateCache = new ChunkCache<>(
                 "climate", 
@@ -118,9 +119,9 @@ public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, Sk
                 (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::sampleClimateNoise)
             );
             
-            this.tempScale = 0.02500000037252903D / climateScale;
-            this.rainScale = 0.05000000074505806D / climateScale;
-            this.detailScale = 0.25D / climateScale;
+            this.tempNoiseScale = 0.025 / tempNoiseScale;
+            this.rainNoiseScale = 0.05 / rainNoiseScale;
+            this.detailNoiseScale = 0.25 / detailNoiseScale;
         }
         
         public Clime sampleClime(int x, int z) {
@@ -138,9 +139,9 @@ public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, Sk
         }
         
         private Clime sampleClimateNoise(int x, int z) {
-            double temp = this.tempNoiseOctaves.sampleXZ(x, z, this.tempScale, this.tempScale);
-            double rain = this.rainNoiseOctaves.sampleXZ(x, z, this.rainScale, this.rainScale);
-            double detail = this.detailNoiseOctaves.sampleXZ(x, z, this.detailScale, this.detailScale);
+            double temp = this.tempOctaveNoise.sampleXZ(x, z, this.tempNoiseScale, this.tempNoiseScale);
+            double rain = this.rainOctaveNoise.sampleXZ(x, z, this.rainNoiseScale, this.rainNoiseScale);
+            double detail = this.detailOctaveNoise.sampleXZ(x, z, this.detailNoiseScale, this.detailNoiseScale);
 
             detail = detail * 1.1D + 0.5D;
 

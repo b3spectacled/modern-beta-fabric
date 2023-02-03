@@ -8,28 +8,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
-import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
-import mod.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
-import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
-import mod.bespectacled.modernbeta.api.world.chunk.NoiseChunkProvider;
-import mod.bespectacled.modernbeta.util.BlockStates;
-import mod.bespectacled.modernbeta.util.chunk.HeightmapChunk;
-import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
-import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
-import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.DebugHud;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Environment(EnvType.CLIENT)
 @Mixin(DebugHud.class)
@@ -38,6 +20,7 @@ public class MixinDebugHud {
     
     @Inject(method = "getLeftText", at = @At("TAIL"))
     private void injectGetLeftText(CallbackInfoReturnable<List<String>> info) {
+        /*
         BlockPos pos = this.client.getCameraEntity().getBlockPos();
         int x = pos.getX();
         int y = pos.getY();
@@ -122,5 +105,6 @@ public class MixinDebugHud {
                 );
             }
         }
+        */
     }
 }

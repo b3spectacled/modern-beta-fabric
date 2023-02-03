@@ -2,22 +2,19 @@ package mod.bespectacled.modernbeta.world.biome.injector;
 
 import java.util.function.Predicate;
 
-import org.apache.logging.log4j.Level;
-
-import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.NoiseChunkProvider;
-import mod.bespectacled.modernbeta.util.NbtTags;
-import mod.bespectacled.modernbeta.util.NbtUtil;
+import mod.bespectacled.modernbeta.mixin.MixinChunkSection;
+import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
 import mod.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
@@ -33,19 +30,22 @@ public class BiomeInjector {
     
     public static final Predicate<BiomeInjectionContext> CAVE_PREDICATE = context ->
         context.getY() >= context.worldMinY && context.getY() + CAVE_START_OFFSET < context.minHeight;
+        
+    public static final Predicate<BiomeInjectionContext> DEEP_CAVE_PREDICATE = context ->
+        context.getY() >= context.worldMinY && context.getY() < context.minHeight / 2;
     
-    private final ModernBetaChunkGenerator oldChunkGenerator;
-    private final ModernBetaBiomeSource oldBiomeSource;
+    private final ModernBetaChunkGenerator modernBetaChunkGenerator;
+    private final ModernBetaBiomeSource modernBetaBiomeSource;
     private final ChunkProvider chunkProvider;
     
     private final BiomeInjectionRules rules;
     
-    public BiomeInjector(ModernBetaChunkGenerator oldChunkGenerator, ModernBetaBiomeSource oldBiomeSource) {
-        this.oldChunkGenerator = oldChunkGenerator;
-        this.oldBiomeSource = oldBiomeSource;
-        this.chunkProvider = oldChunkGenerator.getChunkProvider();
+    public BiomeInjector(ModernBetaChunkGenerator modernBetaChunkGenerator, ModernBetaBiomeSource modernBetaBiomeSource) {
+        this.modernBetaChunkGenerator = modernBetaChunkGenerator;
+        this.modernBetaBiomeSource = modernBetaBiomeSource;
+        this.chunkProvider = modernBetaChunkGenerator.getChunkProvider();
         
-        boolean generatesOceans = NbtUtil.toBoolean(this.oldBiomeSource.getBiomeSettings().get(NbtTags.REPLACE_OCEAN_BIOMES), false);
+        boolean replaceOceanBiomes = new ModernBetaBiomeSettings.Builder(this.modernBetaBiomeSource.getBiomeSettings()).build().replaceOceanBiomes;
         
         Predicate<BiomeInjectionContext> oceanPredicate = context -> 
             this.atOceanDepth(context.topHeight, OCEAN_MIN_DEPTH) && 
@@ -55,12 +55,14 @@ public class BiomeInjector {
             this.atOceanDepth(context.topHeight, DEEP_OCEAN_MIN_DEPTH) && 
             context.topState.isOf(Blocks.WATER);
             
-        BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder()
-            .add(CAVE_PREDICATE, this.oldBiomeSource::getCaveBiome);
+        BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder();
         
-        if (generatesOceans) {
-            builder.add(deepOceanPredicate, this.oldBiomeSource::getDeepOceanBiome);
-            builder.add(oceanPredicate, this.oldBiomeSource::getOceanBiome);
+        builder.add(CAVE_PREDICATE, this.modernBetaBiomeSource::getCaveBiome);
+        builder.add(DEEP_CAVE_PREDICATE, this.modernBetaBiomeSource::getCaveBiome);
+        
+        if (replaceOceanBiomes) {
+            builder.add(deepOceanPredicate, this.modernBetaBiomeSource::getDeepOceanBiome);
+            builder.add(oceanPredicate, this.modernBetaBiomeSource::getOceanBiome);
         }
         
         this.rules = builder.build();
@@ -83,56 +85,50 @@ public class BiomeInjector {
         // Replace biomes from biome container
         for (int sectionY = 0; sectionY < chunk.countVerticalSections(); ++sectionY) {
             ChunkSection section = chunk.getSection(sectionY);
-            PalettedContainer<RegistryEntry<Biome>> container = section.getBiomeContainer();
+            PalettedContainer<RegistryEntry<Biome>> container = section.getBiomeContainer().slice();
             
-            container.lock();
-            try {
-                int yOffset = section.getYOffset() >> 2;
-                
-                for (int localBiomeX = 0; localBiomeX < 4; ++localBiomeX) {
-                    for (int localBiomeZ = 0; localBiomeZ < 4; ++localBiomeZ) {
-                        int biomeX = localBiomeX + startBiomeX;
-                        int biomeZ = localBiomeZ + startBiomeZ;
+            int yOffset = section.getYOffset() >> 2;
+            
+            for (int localBiomeX = 0; localBiomeX < 4; ++localBiomeX) {
+                for (int localBiomeZ = 0; localBiomeZ < 4; ++localBiomeZ) {
+                    int biomeX = localBiomeX + startBiomeX;
+                    int biomeZ = localBiomeZ + startBiomeZ;
+                    
+                    int x = (biomeX << 2) + 2;
+                    int z = (biomeZ << 2) + 2;
+                    
+                    int worldMinY = this.chunkProvider.getWorldMinY();
+                    int topHeight = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+                    int minHeight = this.sampleMinHeightAround(biomeX, biomeZ);
+                    
+                    BlockState topState = chunk.getBlockState(pos.set(x, topHeight, z));
+                    BlockState minState = chunk.getBlockState(pos.set(x, minHeight, z));
+                    
+                    BiomeInjectionContext context = new BiomeInjectionContext(
+                        worldMinY,
+                        topHeight,
+                        minHeight,
+                        topState,
+                        minState
+                    );
+                    
+                    for (int localBiomeY = 0; localBiomeY < 4; ++localBiomeY) {
+                        int biomeY = localBiomeY + yOffset;
+                        int y = (localBiomeY + yOffset) << 2;
                         
-                        int x = (biomeX << 2) + 2;
-                        int z = (biomeZ << 2) + 2;
+                        context.setY(y);
+                        RegistryEntry<Biome> biome = this.sample(context, biomeX, biomeY, biomeZ);
                         
-                        int worldMinY = this.chunkProvider.getWorldMinY();
-                        int topHeight = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-                        int minHeight = this.sampleMinHeightAround(biomeX, biomeZ);
+                        if (biome == null) {
+                            biome = this.modernBetaBiomeSource.getBiome(biomeX, biomeY, biomeZ, null);
+                        }
                         
-                        BlockState topState = chunk.getBlockState(pos.set(x, topHeight, z));
-                        BlockState minState = chunk.getBlockState(pos.set(x, minHeight, z));
-                        
-                        BiomeInjectionContext context = new BiomeInjectionContext(
-                            worldMinY,
-                            topHeight,
-                            minHeight,
-                            topState,
-                            minState
-                        );
-                        
-                        for (int localBiomeY = 0; localBiomeY < 4; ++localBiomeY) {
-                            int biomeY = localBiomeY + yOffset;
-                            int y = (localBiomeY + yOffset) << 2;
-                            
-                            context.setY(y);
-                            RegistryEntry<Biome> biome = this.sample(context, biomeX, biomeY, biomeZ);
-                            
-                            if (biome != null) {
-                                container.swapUnsafe(localBiomeX, localBiomeY, localBiomeZ, biome);
-                            }
-                        }   
-                    }
+                        container.set(localBiomeX, localBiomeY, localBiomeZ, biome);
+                    }   
                 }
-                
-            } catch (Exception e) {
-                ModernBeta.log(Level.ERROR, "Unable to replace biomes!");
-                e.printStackTrace();
-                
-            } finally {
-                container.unlock();
             }
+            
+            ((MixinChunkSection)section).setBiomeContainer(container);
         }
     }
     
@@ -166,6 +162,6 @@ public class BiomeInjector {
     }
 
     private boolean atOceanDepth(int topHeight, int oceanDepth) {
-        return topHeight < this.oldChunkGenerator.getSeaLevel() - oceanDepth;
+        return topHeight < this.modernBetaChunkGenerator.getSeaLevel() - oceanDepth;
     }
 }

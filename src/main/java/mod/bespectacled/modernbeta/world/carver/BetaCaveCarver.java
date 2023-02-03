@@ -1,6 +1,5 @@
 package mod.bespectacled.modernbeta.world.carver;
 
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -9,10 +8,12 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.math.random.LocalRandom;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.carver.Carver;
@@ -146,7 +147,7 @@ public class BetaCaveCarver extends CaveCarver {
         float f2 = 0.0F;
         float f3 = 0.0F;
 
-        Random random = new Random(rand.nextLong());
+        Random random = new LocalRandom(rand.nextLong());
 
         if (branchCount <= 0) {
             int someNumMaxStarts = 8 * 16 - 16;

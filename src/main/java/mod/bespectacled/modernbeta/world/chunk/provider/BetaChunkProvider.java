@@ -7,7 +7,6 @@ import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import mod.bespectacled.modernbeta.api.world.chunk.NoiseChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
 import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
-import mod.bespectacled.modernbeta.util.BlockColumnHolder;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.chunk.HeightmapChunk;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
@@ -15,62 +14,65 @@ import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import mod.bespectacled.modernbeta.world.chunk.ModernBetaSurfaceRules;
 import mod.bespectacled.modernbeta.world.spawn.BeachSpawnLocator;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.noise.NoiseConfig;
 
 public class BetaChunkProvider extends NoiseChunkProvider {
-    private final PerlinOctaveNoise minLimitOctaveNoise;
-    private final PerlinOctaveNoise maxLimitOctaveNoise;
-    private final PerlinOctaveNoise mainOctaveNoise;
-    private final PerlinOctaveNoise beachOctaveNoise;
-    private final PerlinOctaveNoise surfaceOctaveNoise;
-    private final PerlinOctaveNoise scaleOctaveNoise;
-    private final PerlinOctaveNoise depthOctaveNoise;
-    private final PerlinOctaveNoise forestOctaveNoise;
+    private PerlinOctaveNoise minLimitOctaveNoise;
+    private PerlinOctaveNoise maxLimitOctaveNoise;
+    private PerlinOctaveNoise mainOctaveNoise;
+    private PerlinOctaveNoise beachOctaveNoise;
+    private PerlinOctaveNoise surfaceOctaveNoise;
+    private PerlinOctaveNoise scaleOctaveNoise;
+    private PerlinOctaveNoise depthOctaveNoise;
+    private PerlinOctaveNoise forestOctaveNoise;
     
-    private final ClimateSampler climateSampler;
+    private ClimateSampler climateSampler;
     
     public BetaChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-        
-        // Noise Generators
-        this.minLimitOctaveNoise = new PerlinOctaveNoise(random, 16, true);
-        this.maxLimitOctaveNoise = new PerlinOctaveNoise(random, 16, true);
-        this.mainOctaveNoise = new PerlinOctaveNoise(random, 8, true);
-        this.beachOctaveNoise = new PerlinOctaveNoise(random, 4, true);
-        this.surfaceOctaveNoise = new PerlinOctaveNoise(random, 4, true);
-        this.scaleOctaveNoise = new PerlinOctaveNoise(random, 10, true);
-        this.depthOctaveNoise = new PerlinOctaveNoise(random, 16, true);
-        this.forestOctaveNoise = new PerlinOctaveNoise(random, 8, true);
-        
-        this.setForestOctaves(forestOctaveNoise);
-        
-        // Get climate sampler from biome provider if exists and enabled,
-        // else create new default Beta climate sampler.
-        boolean sampleClimate = true;
-        
-        this.climateSampler = (
-            chunkGenerator.getBiomeSource() instanceof ModernBetaBiomeSource oldBiomeSource &&
-            oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
-            sampleClimate
-        ) ? climateSampler : new BetaBiomeProvider(chunkGenerator.getWorldSeed(), new ModernBetaBiomeSettings().toCompound(), null);
-        this.spawnLocator = new BeachSpawnLocator(this, this.beachOctaveNoise);
     }
     
     @Override
-    public void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource) {
+    public boolean initProvider(long seed) {
+        this.random.setSeed(seed);
+        
+        this.minLimitOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
+        this.maxLimitOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
+        this.mainOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
+        this.beachOctaveNoise = new PerlinOctaveNoise(this.random, 4, true);
+        this.surfaceOctaveNoise = new PerlinOctaveNoise(this.random, 4, true);
+        this.scaleOctaveNoise = new PerlinOctaveNoise(this.random, 10, true);
+        this.depthOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
+        this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
+
+        this.setForestOctaveNoise(this.forestOctaveNoise);
+        
+        BetaBiomeProvider biomeProvider = (
+            this.chunkGenerator.getBiomeSource() instanceof ModernBetaBiomeSource biomeSource &&
+            biomeSource.getBiomeProvider() instanceof BetaBiomeProvider betaBiomeProvider
+        ) ? betaBiomeProvider : new BetaBiomeProvider(new ModernBetaBiomeSettings().toCompound(), null);
+        
+        biomeProvider.initProvider(this.chunkGenerator.getWorldSeed());
+        
+        this.climateSampler = biomeProvider;
+        this.spawnLocator = new BeachSpawnLocator(this, this.beachOctaveNoise);
+        
+        return true;
+    }
+    
+    @Override
+    public void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
         double scale = 0.03125;
 
         ChunkPos chunkPos = chunk.getPos();
@@ -85,13 +87,9 @@ public class BetaChunkProvider extends NoiseChunkProvider {
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
         
-        AquiferSampler aquiferSampler = this.getAquiferSampler(chunk);
+        AquiferSampler aquiferSampler = this.getAquiferSampler(chunk, noiseConfig);
         HeightmapChunk heightmapChunk = this.getHeightmapChunk(chunkX, chunkZ);
         SimpleNoisePos noisePos = new SimpleNoisePos();
-        
-        // Surface builder stuff
-        BlockColumnHolder blockColumn = new BlockColumnHolder(chunk);
-        ModernBetaSurfaceRules surfaceRules = new ModernBetaSurfaceRules(region, chunk, this.chunkGenerator);
         
         double[] sandNoise = beachOctaveNoise.sampleBeta(
             chunkX * 16, chunkZ * 16, 0.0D, 
@@ -129,19 +127,6 @@ public class BetaChunkProvider extends NoiseChunkProvider {
                 SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
                 BlockState topBlock = surfaceConfig.topBlock();
                 BlockState fillerBlock = surfaceConfig.fillerBlock();
-
-                boolean usedCustomSurface = this.surfaceBuilder.buildSurfaceColumn(
-                    region.getRegistryManager().get(Registry.BIOME_KEY),
-                    region.getBiomeAccess(), 
-                    blockColumn, 
-                    chunk, 
-                    biome, 
-                    surfaceRules.getRuleContext(), 
-                    surfaceRules.getBlockStateRule(),
-                    localX,
-                    localZ,
-                    surfaceTopY
-                );
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
@@ -149,12 +134,6 @@ public class BetaChunkProvider extends NoiseChunkProvider {
                     
                     pos.set(localX, y, localZ);
                     blockState = chunk.getBlockState(pos);
-                    
-                    // Place deepslate
-                    BlockState deepslateState = this.sampleDeepslateState(x, y, z);
-                    if (deepslateState != null && blockState.isOf(this.defaultBlock.getBlock())) {
-                        chunk.setBlockState(pos, deepslateState, false);
-                    }
                     
                     // Place bedrock
                     if (y <= bedrockFloor + rand.nextInt(5)) {
@@ -167,11 +146,6 @@ public class BetaChunkProvider extends NoiseChunkProvider {
                         continue;
                     }
                     
-                    // Skip if used custom surface generation.
-                    if (usedCustomSurface) {
-                        continue;
-                    }
-
                     if (blockState.isAir()) { // Skip if air block
                         runDepth = -1;
                         continue;
@@ -252,22 +226,19 @@ public class BetaChunkProvider extends NoiseChunkProvider {
         double depthNoiseScaleX = this.chunkSettings.depthNoiseScaleX;
         double depthNoiseScaleZ = this.chunkSettings.depthNoiseScaleZ;
         
-        double coordinateScale = 684.412D * this.xzScale; 
-        double heightScale = 684.412D * this.yScale;
+        double coordinateScale = this.chunkSettings.coordinateScale;
+        double heightScale = this.chunkSettings.heightScale;
         
-        double mainNoiseScaleX = this.xzFactor; // Default: 80
-        double mainNoiseScaleY = this.yFactor;  // Default: 160
-        double mainNoiseScaleZ = this.xzFactor;
+        double mainNoiseScaleX = this.chunkSettings.mainNoiseScaleX;
+        double mainNoiseScaleY = this.chunkSettings.mainNoiseScaleY;
+        double mainNoiseScaleZ = this.chunkSettings.mainNoiseScaleZ;
 
         double lowerLimitScale = this.chunkSettings.lowerLimitScale;
         double upperLimitScale = this.chunkSettings.upperLimitScale;
         
         double baseSize = this.chunkSettings.baseSize;
         double heightStretch = this.chunkSettings.stretchY;
-        
-        // Density norm (sum of 16 octaves of noise / limitScale => [-128, 128])
-        double densityScale = 128.0;
-        
+
         Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();
         double rain = clime.rain() * temp;
@@ -328,8 +299,7 @@ public class BetaChunkProvider extends NoiseChunkProvider {
             double heightmapDensity;
             
             double densityOffset = this.getOffset(noiseY, heightStretch, depth, scale);
-            
-            // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.            
+                       
             double mainNoise = (this.mainOctaveNoise.sample(
                 noiseX, noiseY, noiseZ,
                 coordinateScale / mainNoiseScaleX, 
@@ -370,12 +340,8 @@ public class BetaChunkProvider extends NoiseChunkProvider {
                 
                 density = minLimitNoise + (maxLimitNoise - minLimitNoise) * mainNoise;
             }
-
-            // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
-            density -= densityOffset;
             
-            // Normalize density
-            density /= densityScale;
+            density -= densityOffset;
             
             // Sample without noise caves
             heightmapDensity = density;
@@ -387,8 +353,8 @@ public class BetaChunkProvider extends NoiseChunkProvider {
             density = this.applySlides(density, y);
             heightmapDensity = this.applySlides(heightmapDensity, y);
             
-            primaryBuffer[y] = MathHelper.clamp(density, -64.0, 64.0);
-            heightmapBuffer[y] = MathHelper.clamp(heightmapDensity, -64.0, 64.0);
+            primaryBuffer[y] = density;
+            heightmapBuffer[y] = heightmapDensity;
         }
     }
     

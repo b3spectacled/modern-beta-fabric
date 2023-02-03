@@ -9,7 +9,6 @@ public class Compat {
     public static void setupCompat() {
         try {
             if (isLoaded("techreborn")) CompatTechReborn.addCompat();
-            if (isLoaded("hydrogen")) CompatHydrogen.addCompat();
             
         } catch (Exception e) {
             ModernBeta.log(Level.ERROR, "Something went wrong when attempting to add mod compatibility!");

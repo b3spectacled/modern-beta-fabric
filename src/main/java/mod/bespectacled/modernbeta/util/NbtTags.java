@@ -7,12 +7,25 @@ public class NbtTags {
     public static final String NOISE_POST_PROCESSOR = "noisePostProcessor";
     
     // Noise
+    public static final String COORDINATE_SCALE = "coordinateScale";
+    public static final String HEIGHT_SCALE = "heightScale";
     public static final String UPPER_LIMIT_SCALE = "upperLimitScale";
     public static final String LOWER_LIMIT_SCALE = "lowerLimitScale";
     public static final String DEPTH_NOISE_SCALE_X = "depthNoiseScaleX";
     public static final String DEPTH_NOISE_SCALE_Z = "depthNoiseScaleZ";
+    public static final String MAIN_NOISE_SCALE_X = "mainNoiseScaleX";
+    public static final String MAIN_NOISE_SCALE_Y = "mainNoiseScaleY";
+    public static final String MAIN_NOISE_SCALE_Z = "mainNoiseScaleZ";
     public static final String BASE_SIZE = "baseSize";
     public static final String STRETCH_Y = "stretchY";
+    
+    public static final String TOP_SLIDE_TARGET = "topSlideTarget";
+    public static final String TOP_SLIDE_SIZE = "topSlideSize";
+    public static final String TOP_SLIDE_OFFSET = "topSlideOffset";
+    
+    public static final String BOTTOM_SLIDE_TARGET = "bottomSlideTarget";
+    public static final String BOTTOM_SLIDE_SIZE = "bottomSlideSize";
+    public static final String BOTTOM_SLIDE_OFFSET = "bottomSlideOffset";
     
     // Inf
     public static final String GEN_MONUMENTS = "generateMonuments";
@@ -51,6 +64,7 @@ public class NbtTags {
     
     public static final String TEMP = "temp";
     public static final String RAIN = "rain";
+    public static final String DEPTH = "depth";
     
     /* Biome Settings */
     public static final String BIOME_PROVIDER = "biomeProvider";
@@ -70,7 +84,6 @@ public class NbtTags {
     public static final String CAVE_BIOME_PROVIDER = "biomeProvider";
     
     // Cave Noise
-    public static final String USE_NOISE = "useNoise";
     public static final String VORONOI_HORIZONTAL_NOISE_SCALE = "voronoiHorizontalNoiseScale";
     public static final String VORONOI_VERTICAL_NOISE_SCALE = "voronoiVerticalNoiseScale";
 }

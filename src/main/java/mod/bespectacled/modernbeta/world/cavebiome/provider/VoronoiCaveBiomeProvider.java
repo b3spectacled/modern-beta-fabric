@@ -2,70 +2,64 @@ package mod.bespectacled.modernbeta.world.cavebiome.provider;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
-import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import mod.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import mod.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
+import mod.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClime;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome.VoronoiPointCaveBiome;
-import mod.bespectacled.modernbeta.util.NbtTags;
-import mod.bespectacled.modernbeta.util.NbtUtil;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointRules;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveClimateSampler {
-    private final VoronoiCaveClimateSampler climateSampler;
-    private final VoronoiPointRules<RegistryKey<Biome>, Clime> rules;
+    private VoronoiCaveClimateSampler climateSampler;
+    private VoronoiPointRules<RegistryKey<Biome>, CaveClime> rules;
 
-    public VoronoiCaveBiomeProvider(long seed, NbtCompound settings, Registry<Biome> biomeRegistry) {
-        super(seed, settings, biomeRegistry);
-        
-        float verticalNoiseScale = NbtUtil.toFloat(
-            settings.get(NbtTags.VORONOI_VERTICAL_NOISE_SCALE),
-            ModernBeta.CAVE_BIOME_CONFIG.voronoiVerticalNoiseScale
-        );
-        
-        float horizontalNoiseScale = NbtUtil.toFloat(
-            settings.get(NbtTags.VORONOI_HORIZONTAL_NOISE_SCALE),
-            ModernBeta.CAVE_BIOME_CONFIG.voronoiHorizontalNoiseScale
-        );
-        
-        this.climateSampler = new VoronoiCaveClimateSampler(seed, verticalNoiseScale, horizontalNoiseScale);
+    public VoronoiCaveBiomeProvider(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
+        super(settings, biomeRegistry);
+    }
+    
+    @Override
+    public boolean initProvider(long seed) {
+        this.climateSampler = new VoronoiCaveClimateSampler(seed, this.settings.voronoiVerticalNoiseScale, this.settings.voronoiHorizontalNoiseScale);
         this.rules = buildRules(this.settings.voronoiPoints);
+        
+        return true;
     }
 
     @Override
     public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ) {
-        Clime clime = this.sample(biomeX, biomeY, biomeZ);
+        CaveClime clime = this.sample(biomeX, biomeY, biomeZ);
         RegistryKey<Biome> biomeKey = this.rules.calculateClosestTo(clime);
         
-        return biomeKey == null ? null : this.biomeRegistry.getOrCreateEntry(biomeKey);
+        return biomeKey == null ? null : this.biomeRegistry.getOrThrow(biomeKey);
     }
     
     @Override
-    public List<RegistryEntry<Biome>> getBiomesForRegistry() {
-        return this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrCreateEntry(key)).toList();
+    public List<RegistryEntry<Biome>> getBiomesForRegistry() {        
+        return this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrThrow(key)).collect(Collectors.toList());
     }
 
     @Override
-    public Clime sample(int x, int y, int z) {
+    public CaveClime sample(int x, int y, int z) {
         return this.climateSampler.sample(x, y, z);
     }
     
-    private static VoronoiPointRules<RegistryKey<Biome>, Clime> buildRules(List<VoronoiPointCaveBiome> points) {
-        VoronoiPointRules.Builder<RegistryKey<Biome>, Clime> builder = new VoronoiPointRules.Builder<>();
+    private static VoronoiPointRules<RegistryKey<Biome>, CaveClime> buildRules(List<VoronoiPointCaveBiome> points) {
+        VoronoiPointRules.Builder<RegistryKey<Biome>, CaveClime> builder = new VoronoiPointRules.Builder<>();
         
         for (VoronoiPointCaveBiome point : points) {
-            RegistryKey<Biome> biomeKey = point.nullBiome ? null : RegistryKey.of(Registry.BIOME_KEY, new Identifier(point.biome));
+            RegistryKey<Biome> biomeKey = point.biome.isBlank() ? null : RegistryKey.of(RegistryKeys.BIOME, new Identifier(point.biome));
             
-            builder.add(biomeKey, new Clime(point.temp, point.rain));
+            builder.add(biomeKey, new CaveClime(point.temp, point.rain, point.depth));
         }
         
         return builder.build();
@@ -88,7 +82,7 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
             this.horizontalScale = horizontalScale;
         }
         
-        public Clime sample(int x, int y, int z) {
+        public CaveClime sample(int x, int y, int z) {
             // 1 Octave range: -0.6240559817912857/0.6169702737066762
             // 2 Octave range: -1.4281536012354779/1.4303502066204832
             // 4 Octave range: -7.6556244276339145/7.410194314594666
@@ -121,9 +115,15 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
             tempNoise = (tempNoise + 1.0) / 2D;
             rainNoise = (rainNoise + 1.0) / 2D;
             
-            return new Clime(
+            double depth = y / (double)(64 >> 2);
+            
+            depth += 1.0;
+            depth *= 0.5;
+            
+            return new CaveClime(
                 MathHelper.clamp(tempNoise, 0.0, 1.0),
-                MathHelper.clamp(rainNoise, 0.0, 1.0)
+                MathHelper.clamp(rainNoise, 0.0, 1.0),
+                MathHelper.clamp(depth, 0.0, 1.0)
             );
         }
     }

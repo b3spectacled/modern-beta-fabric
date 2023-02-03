@@ -18,17 +18,14 @@ import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigChunk;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigCompat;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigRendering;
-import mod.bespectacled.modernbeta.data.ModernBetaDataGenerator;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
 import mod.bespectacled.modernbeta.world.carver.ModernBetaCarvers;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGeneratorSettings;
-import mod.bespectacled.modernbeta.world.chunk.ModernBetaGeneratorType;
 import mod.bespectacled.modernbeta.world.feature.ModernBetaFeatures;
 import mod.bespectacled.modernbeta.world.feature.placement.ModernBetaPlacementTypes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 
@@ -54,6 +51,7 @@ public class ModernBeta implements ModInitializer {
     public static final ModernBetaConfigCompat COMPAT_CONFIG = CONFIG.compatConfig;
 
     private static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+    private static long worldSeed;
     
     public static Identifier createId(String name) {
         return new Identifier(MOD_ID, name);
@@ -75,13 +73,12 @@ public class ModernBeta implements ModInitializer {
         log(Level.INFO, "Initializing Modern Beta...");
         
         // Register mod stuff
+        ModernBetaPlacementTypes.register();
         ModernBetaFeatures.register();
         ModernBetaCarvers.register();
-        ModernBetaBiomes.register();
+        
         ModernBetaBiomeSource.register();
         ModernBetaChunkGenerator.register();
-        ModernBetaChunkGeneratorSettings.register();
-        ModernBetaPlacementTypes.register();
         
         // Set up mod compatibility
         Compat.setupCompat();
@@ -92,18 +89,23 @@ public class ModernBeta implements ModInitializer {
         ModernBetaBuiltInProviders.registerCaveBiomeProvider();
         ModernBetaBuiltInProviders.registerNoisePostProcessors();
 
-        // Register client-only stuff, i.e. GUI, block colors, etc.
         if (CLIENT_ENV) {
-            ModernBetaGeneratorType.register();
-            
             // Override default biome grass/foliage colors
             BlockColors.register();
         }
         
-        // Register dev-only stuff, i.e. commands, etc.
         if (DEV_ENV) {
             DebugProviderSettingsCommand.register();
-            ModernBetaDataGenerator.generateData();
+            //ModernBetaDataGenerator.generateData();
         }
+        
+        // Capture world gen seed, very jank.
+        ServerLifecycleEvents.SERVER_STARTING.register((server) -> {
+            worldSeed = server.getSaveProperties().getGeneratorOptions().getSeed();
+        });
+    }
+    
+    public static long getWorldSeed() {
+        return worldSeed;
     }
 }
