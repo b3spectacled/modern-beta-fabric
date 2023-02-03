@@ -2,6 +2,7 @@ package mod.bespectacled.modernbeta.util;
 
 public class NbtTags {
     /* Chunk Settings */
+    
     public static final String CHUNK_PROVIDER = "chunkProvider";
     public static final String NOISE_POST_PROCESSOR = "noisePostProcessor";
     
@@ -9,7 +10,6 @@ public class NbtTags {
     public static final String DEEPSLATE_MIN_Y = "deepslateMinY";
     public static final String DEEPSLATE_MAX_Y = "deepslateMaxY";
     public static final String DEEPSLATE_BLOCK = "deepslateBlock";
-    
     
     // Noise
     public static final String COORDINATE_SCALE = "coordinateScale";
@@ -56,31 +56,29 @@ public class NbtTags {
     public static final String ISLES_OUTER_ISLAND_NOISE_OFFSET = "islesOuterIslandNoiseOffset";
 
     /* Climate/Voronoi Settings */
+    
     public static final String BIOMES = "biomes";
     public static final String BIOME = "biome";
     public static final String OCEAN_BIOME = "oceanBiome";
     public static final String DEEP_OCEAN_BIOME = "deepOceanBiome";
-    public static final String NULL_BIOME = "nullBiome";
     
     public static final String TEMP = "temp";
     public static final String RAIN = "rain";
     public static final String DEPTH = "depth";
     
     /* Biome Settings */
+    
     public static final String BIOME_PROVIDER = "biomeProvider";
     public static final String SINGLE_BIOME = "singleBiome";
     public static final String REPLACE_OCEAN_BIOMES = "replaceOceanBiomes";
     
+    // Beta Noise
     public static final String TEMP_NOISE_SCALE = "tempNoiseScale";
     public static final String RAIN_NOISE_SCALE = "rainNoiseScale";
     public static final String DETAIL_NOISE_SCALE = "detailNoiseScale";
-   
-    // Vanilla
-    public static final String VANILLA_LARGE_BIOMES = "vanillaLargeBiomes";
-    
-    // Single
     
     /* Cave Biome Settings */
+    
     public static final String CAVE_BIOME_PROVIDER = "biomeProvider";
     
     // Cave Noise

@@ -13,7 +13,6 @@ public final class ModernBetaBuiltInTypes {
         INFDEV_227("infdev_227"),
         INDEV("indev"),
         CLASSIC_0_30("classic_0_30"),
-        BETA_ISLANDS("beta_islands"),
         PE("pe")
         ;
         

@@ -3,6 +3,8 @@ package mod.bespectacled.modernbeta.settings;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
+
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome.ConfigClimateMapping;
 import mod.bespectacled.modernbeta.util.NbtCompoundBuilder;
@@ -86,7 +88,7 @@ public class ModernBetaBiomeSettings {
                 NbtCompound biomes = NbtUtil.readCompoundOrThrow(NbtTags.BIOMES, compound);
                 
                 biomes.getKeys().forEach(key -> {
-                    climates.put(key, ConfigClimateMapping.fromCompound(NbtUtil.readCompoundOrThrow(key, biomes)));
+                    this.climates.put(key, ConfigClimateMapping.fromCompound(NbtUtil.readCompoundOrThrow(key, biomes)));
                 });
                 
             } else {

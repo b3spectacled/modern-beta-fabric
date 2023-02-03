@@ -39,21 +39,18 @@ public class IndevChunkProvider extends FiniteChunkProvider {
     private PerlinOctaveNoise sandNoiseOctaves;
     private PerlinOctaveNoise gravelNoiseOctaves;
     
-    private IndevTheme levelTheme;
-    private IndevType levelType;
+    private final IndevTheme levelTheme;
+    private final IndevType levelType;
     
-    private BlockState fluidBlock;
-    private BlockState topsoilBlock;
+    private final BlockState fluidBlock;
+    private final BlockState topsoilBlock;
     
     private int layers;
     private int waterLevel;
 
     public IndevChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
         super(chunkGenerator);
-    }
-    
-    @Override
-    public boolean initProvider(long seed) {
+        
         this.levelTheme = IndevTheme.fromName(this.chunkSettings.indevLevelTheme);
         this.levelType = IndevType.fromName(this.chunkSettings.indevLevelType);
         
@@ -62,7 +59,10 @@ public class IndevChunkProvider extends FiniteChunkProvider {
         
         this.waterLevel = this.levelHeight / 2;
         this.layers = this.isFloating() ? (this.levelHeight - 64) / 48 + 1 : 1;
-        
+    }
+    
+    @Override
+    public boolean initProvider(long seed) {
         return true;
     }
     

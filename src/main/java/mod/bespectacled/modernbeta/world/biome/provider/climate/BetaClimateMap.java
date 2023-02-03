@@ -20,7 +20,7 @@ public class BetaClimateMap {
         this.climateTable = new BetaClimateMapping[4096];
         
         for (String key : ModernBeta.BIOME_CONFIG.climates.keySet()) {
-            this.climateMap.put(key, BetaClimateMapping.fromCompound(ModernBeta.BIOME_CONFIG.climates.get(key).toCompound()));
+            this.climateMap.put(key, BetaClimateMapping.fromCompound(settings.climates.get(key).toCompound()));
         }
         
         this.generateBiomeLookup();
