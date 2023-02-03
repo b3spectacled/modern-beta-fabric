@@ -3,8 +3,6 @@ package mod.bespectacled.modernbeta.settings;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.Level;
-
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome.ConfigClimateMapping;
 import mod.bespectacled.modernbeta.util.NbtCompoundBuilder;
