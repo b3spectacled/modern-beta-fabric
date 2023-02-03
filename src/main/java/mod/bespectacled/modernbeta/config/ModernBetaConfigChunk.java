@@ -9,7 +9,12 @@ import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevType;
 @Config(name = "config_chunk")
 public class ModernBetaConfigChunk implements ConfigData {
     public String chunkProvider = ModernBetaBuiltInTypes.Chunk.BETA.name;
+    public String noisePostProcessor = ModernBetaBuiltInTypes.NoisePostProcessor.NONE.name;
+    
     public boolean useDeepslate = true;
+    public int deepslateMinY = 0;
+    public int deepslateMaxY = 8;
+    public String deepslateBlock = "minecraft:deepslate";
     
     public float coordinateScale = 684.412f;
     public float heightScale = 684.412f;
@@ -31,9 +36,6 @@ public class ModernBetaConfigChunk implements ConfigData {
     public int bottomSlideSize = 3;
     public int bottomSlideOffset = 0;
 
-    public boolean sampleClimate = true;
-    public String noisePostProcessor = ModernBetaBuiltInTypes.NoisePostProcessor.NONE.name;
-
     public boolean infdevUsePyramid = true;
     public boolean infdevUseWall = true;
 
@@ -46,6 +48,7 @@ public class ModernBetaConfigChunk implements ConfigData {
 
     public boolean islesUseIslands = false;
     public boolean islesUseOuterIslands = true;
+    public float islesMaxOceanDepth = 200.0F;
     public float islesCenterIslandFalloff = 4.0F;
     public int islesCenterIslandRadius = 16;
     public int islesCenterOceanFalloffDistance = 16;

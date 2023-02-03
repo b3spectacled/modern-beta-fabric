@@ -3,8 +3,13 @@ package mod.bespectacled.modernbeta.util;
 public class NbtTags {
     /* Chunk Settings */
     public static final String CHUNK_PROVIDER = "chunkProvider";
-    public static final String USE_DEEPSLATE = "useDeepslate";
     public static final String NOISE_POST_PROCESSOR = "noisePostProcessor";
+    
+    public static final String USE_DEEPSLATE = "useDeepslate";
+    public static final String DEEPSLATE_MIN_Y = "deepslateMinY";
+    public static final String DEEPSLATE_MAX_Y = "deepslateMaxY";
+    public static final String DEEPSLATE_BLOCK = "deepslateBlock";
+    
     
     // Noise
     public static final String COORDINATE_SCALE = "coordinateScale";
@@ -27,12 +32,6 @@ public class NbtTags {
     public static final String BOTTOM_SLIDE_SIZE = "bottomSlideSize";
     public static final String BOTTOM_SLIDE_OFFSET = "bottomSlideOffset";
     
-    // Inf
-    public static final String GEN_MONUMENTS = "generateMonuments";
-    
-    // Beta/PE Climate
-    public static final String SAMPLE_CLIMATE = "sampleClimate";
-    
     // Infdev 227
     public static final String INFDEV_USE_PYRAMID = "infdevUsePyramid";
     public static final String INFDEV_USE_WALL = "infdevUseWall";
@@ -48,6 +47,7 @@ public class NbtTags {
     // Islands
     public static final String ISLES_USE_ISLANDS = "islesUseIslands";
     public static final String ISLES_USE_OUTER_ISLANDS = "islesUseOuterIslands";
+    public static final String ISLES_MAX_OCEAN_DEPTH = "islesMaxOceanDepth";
     public static final String ISLES_CENTER_ISLAND_FALLOFF = "islesCenterIslandFalloff";
     public static final String ISLES_CENTER_ISLAND_RADIUS = "islesCenterIslandRadius";
     public static final String ISLES_CENTER_OCEAN_FALLOFF_DIST = "islesCenterOceanFalloffDistance";

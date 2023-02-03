@@ -21,7 +21,6 @@ import mod.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
 import mod.bespectacled.modernbeta.settings.ModernBetaCaveBiomeSettings;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import net.minecraft.SharedConstants;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryEntryLookup;
@@ -31,7 +30,6 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldView;
@@ -165,7 +163,6 @@ public class ModernBetaBiomeSource extends BiomeSource {
             return super.locateBiome(origin, radius, horizontalBlockCheckInterval, verticalBlockCheckInterval, predicate, noiseSampler, world);
         
         Set<RegistryEntry<Biome>> set = this.getBiomes().stream().filter(predicate).collect(Collectors.toUnmodifiableSet());
-        
         if (set.isEmpty()) {
             return null;
         }

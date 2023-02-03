@@ -7,10 +7,11 @@ import net.minecraft.nbt.NbtCompound;
 
 public class ModernBetaChunkSettings {
     public final String chunkProvider;
-    public final boolean useDeepslate;
     
-    // TODO: Think about putting main noise scale here
-    // TODO: Add slide values here
+    public final boolean useDeepslate;
+    public final int deepslateMinY;
+    public final int deepslateMaxY;
+    public final String deepslateBlock;
     
     public final float coordinateScale;
     public final float heightScale;
@@ -44,6 +45,7 @@ public class ModernBetaChunkSettings {
 
     public final boolean islesUseIslands;
     public final boolean islesUseOuterIslands;
+    public final float islesMaxOceanDepth;
     public final float islesCenterIslandFalloff;
     public final int islesCenterIslandRadius;
     public final int islesCenterOceanFalloffDistance;
@@ -57,7 +59,11 @@ public class ModernBetaChunkSettings {
     
     public ModernBetaChunkSettings(ModernBetaChunkSettings.Builder builder) {
         this.chunkProvider = builder.chunkProvider;
+        
         this.useDeepslate = builder.useDeepslate;
+        this.deepslateMinY = builder.deepslateMinY;
+        this.deepslateMaxY = builder.deepslateMaxY;
+        this.deepslateBlock = builder.deepslateBlock;
         
         this.coordinateScale = builder.coordinateScale;
         this.heightScale = builder.heightScale;
@@ -91,6 +97,7 @@ public class ModernBetaChunkSettings {
 
         this.islesUseIslands = builder.islesUseIslands;
         this.islesUseOuterIslands = builder.islesUseOuterIslands;
+        this.islesMaxOceanDepth = builder.islesMaxOceanDepth;
         this.islesCenterIslandFalloff = builder.islesCenterIslandFalloff;
         this.islesCenterIslandRadius = builder.islesCenterIslandRadius;
         this.islesCenterOceanFalloffDistance = builder.islesCenterOceanFalloffDistance;
@@ -103,7 +110,11 @@ public class ModernBetaChunkSettings {
         NbtCompound compound = new NbtCompound();
         
         compound.putString(NbtTags.CHUNK_PROVIDER, this.chunkProvider);
+        
         compound.putBoolean(NbtTags.USE_DEEPSLATE, this.useDeepslate);
+        compound.putInt(NbtTags.DEEPSLATE_MIN_Y, this.deepslateMinY);
+        compound.putInt(NbtTags.DEEPSLATE_MAX_Y, this.deepslateMaxY);
+        compound.putString(NbtTags.DEEPSLATE_BLOCK, this.deepslateBlock);
         
         compound.putFloat(NbtTags.COORDINATE_SCALE, this.coordinateScale);
         compound.putFloat(NbtTags.HEIGHT_SCALE, this.heightScale);
@@ -137,6 +148,7 @@ public class ModernBetaChunkSettings {
 
         compound.putBoolean(NbtTags.ISLES_USE_ISLANDS, this.islesUseIslands);
         compound.putBoolean(NbtTags.ISLES_USE_OUTER_ISLANDS, this.islesUseOuterIslands);
+        compound.putFloat(NbtTags.ISLES_MAX_OCEAN_DEPTH, this.islesMaxOceanDepth);
         compound.putFloat(NbtTags.ISLES_CENTER_ISLAND_FALLOFF, this.islesCenterIslandFalloff);
         compound.putInt(NbtTags.ISLES_CENTER_ISLAND_RADIUS, this.islesCenterIslandRadius);
         compound.putInt(NbtTags.ISLES_CENTER_OCEAN_FALLOFF_DIST, this.islesCenterOceanFalloffDistance);
@@ -149,7 +161,11 @@ public class ModernBetaChunkSettings {
 
     public static class Builder {
         public String chunkProvider;
+        
         public boolean useDeepslate;
+        public int deepslateMinY;
+        public int deepslateMaxY;
+        public String deepslateBlock;
         
         public float coordinateScale;
         public float heightScale;
@@ -183,6 +199,7 @@ public class ModernBetaChunkSettings {
 
         public boolean islesUseIslands;
         public boolean islesUseOuterIslands;
+        public float islesMaxOceanDepth;
         public float islesCenterIslandFalloff;
         public int islesCenterIslandRadius;
         public int islesCenterOceanFalloffDistance;
@@ -196,7 +213,11 @@ public class ModernBetaChunkSettings {
         
         public Builder(NbtCompound compound) {
             this.chunkProvider = NbtUtil.readString(NbtTags.CHUNK_PROVIDER, compound, ModernBeta.CHUNK_CONFIG.chunkProvider);
+            
             this.useDeepslate = NbtUtil.readBoolean(NbtTags.USE_DEEPSLATE, compound, ModernBeta.CHUNK_CONFIG.useDeepslate);
+            this.deepslateMinY = NbtUtil.readInt(NbtTags.DEEPSLATE_MIN_Y, compound, ModernBeta.CHUNK_CONFIG.deepslateMinY);
+            this.deepslateMaxY = NbtUtil.readInt(NbtTags.DEEPSLATE_MAX_Y, compound, ModernBeta.CHUNK_CONFIG.deepslateMaxY);
+            this.deepslateBlock = NbtUtil.readString(NbtTags.DEEPSLATE_BLOCK, compound, ModernBeta.CHUNK_CONFIG.deepslateBlock);
         
             this.coordinateScale = NbtUtil.readFloat(NbtTags.COORDINATE_SCALE, compound, ModernBeta.CHUNK_CONFIG.coordinateScale);
             this.heightScale = NbtUtil.readFloat(NbtTags.HEIGHT_SCALE, compound, ModernBeta.CHUNK_CONFIG.heightScale);
@@ -230,6 +251,7 @@ public class ModernBetaChunkSettings {
 
             this.islesUseIslands = NbtUtil.readBoolean(NbtTags.ISLES_USE_ISLANDS, compound, ModernBeta.CHUNK_CONFIG.islesUseIslands);
             this.islesUseOuterIslands = NbtUtil.readBoolean(NbtTags.ISLES_USE_OUTER_ISLANDS, compound, ModernBeta.CHUNK_CONFIG.islesUseOuterIslands);
+            this.islesMaxOceanDepth = NbtUtil.readFloat(NbtTags.ISLES_MAX_OCEAN_DEPTH, compound, ModernBeta.CHUNK_CONFIG.islesMaxOceanDepth);
             this.islesCenterIslandFalloff = NbtUtil.readFloat(NbtTags.ISLES_CENTER_ISLAND_FALLOFF, compound, ModernBeta.CHUNK_CONFIG.islesCenterIslandFalloff);
             this.islesCenterIslandRadius = NbtUtil.readInt(NbtTags.ISLES_CENTER_ISLAND_RADIUS, compound, ModernBeta.CHUNK_CONFIG.islesCenterIslandRadius);
             this.islesCenterOceanFalloffDistance = NbtUtil.readInt(NbtTags.ISLES_CENTER_OCEAN_FALLOFF_DIST, compound, ModernBeta.CHUNK_CONFIG.islesCenterOceanFalloffDistance);

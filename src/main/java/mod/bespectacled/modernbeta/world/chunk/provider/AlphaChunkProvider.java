@@ -221,6 +221,8 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
         
         double baseSize = this.chunkSettings.baseSize;
         double heightStretch = this.chunkSettings.stretchY;
+        
+        double islandOffset = this.getIslandOffset(startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
 
         double scale = this.scaleOctaveNoise.sample(noiseX, 0, noiseZ, 1.0, 0.0, 1.0);
         scale = (scale + 256D) / 512D;
@@ -268,7 +270,6 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
             
             double densityOffset = this.getOffset(noiseY, heightStretch, depth, scale);
             
-            // Equivalent to current MC noise.sample() function, see NoiseColumnSampler.
             double mainNoise = (this.mainOctaveNoise.sample(
                 noiseX, noiseY, noiseZ,
                 coordinateScale / mainNoiseScaleX, 
@@ -311,6 +312,7 @@ public class AlphaChunkProvider extends NoiseChunkProvider {
             }
 
             density -= densityOffset;
+            density += islandOffset;
             
             // Sample without noise caves
             heightmapDensity = density;

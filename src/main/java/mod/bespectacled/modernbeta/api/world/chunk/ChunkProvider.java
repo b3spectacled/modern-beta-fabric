@@ -16,7 +16,9 @@ import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.blocksource.DeepslateBlockSource;
 import mod.bespectacled.modernbeta.world.feature.placement.ModernBetaNoiseBasedCountPlacementModifier;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.ChunkRandom;
 import net.minecraft.util.math.random.RandomSplitter;
@@ -75,7 +77,13 @@ public abstract class ChunkProvider {
         this.randomProvider = chunkGenerator.getGeneratorSettings().value().getRandomProvider();
         this.randomSplitter = this.randomProvider.create(chunkGenerator.getWorldSeed()).nextSplitter();
         
-        this.deepslateBlockSource = new DeepslateBlockSource(0, 8, this.chunkSettings.useDeepslate, this.randomSplitter);
+        this.deepslateBlockSource = new DeepslateBlockSource(
+            0,
+            8,
+            this.chunkSettings.useDeepslate,
+            Registries.BLOCK.get(new Identifier(this.chunkSettings.deepslateBlock)).getDefaultState(),
+            this.randomSplitter
+        );
         
         this.spawnLocator = SpawnLocator.DEFAULT;
     }

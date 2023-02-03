@@ -239,6 +239,8 @@ public class PEChunkProvider extends NoiseChunkProvider {
         
         double baseSize = this.chunkSettings.baseSize;
         double heightStretch = this.chunkSettings.stretchY;
+
+        double islandOffset = this.getIslandOffset(startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
         
         Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();
@@ -343,6 +345,7 @@ public class PEChunkProvider extends NoiseChunkProvider {
             }
             
             density -= densityOffset;
+            density += islandOffset;
             
             // Sample without noise caves
             heightmapDensity = density;

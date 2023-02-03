@@ -194,6 +194,8 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
         double baseSize = this.chunkSettings.baseSize;
         double heightStretch = this.chunkSettings.stretchY;
         
+        double islandOffset = this.getIslandOffset(startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
+        
         for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;
             
@@ -244,6 +246,7 @@ public class Infdev420ChunkProvider extends NoiseChunkProvider {
             }
             
             density -= densityOffset;
+            density += islandOffset;
             
             // Sample without noise caves
             heightmapDensity = density;

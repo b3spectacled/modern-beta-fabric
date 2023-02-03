@@ -198,6 +198,8 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         
         double baseSize = this.chunkSettings.baseSize;
         double heightStretch = this.chunkSettings.stretchY;
+
+        double islandOffset = this.getIslandOffset(startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
         
         double scale = this.scaleOctaveNoise.sample(noiseX, 0, noiseZ, 1.0D, 0.0, 1.0);
         scale = (scale + 256D) / 512D;
@@ -286,8 +288,8 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
                 density = minLimitNoise + (maxLimitNoise - minLimitNoise) * mainNoise;
             }
 
-            // Equivalent to current MC addition of density offset, see NoiseColumnSampler.
             density -= densityOffset;
+            density += islandOffset;
             
             // Sample without noise caves
             heightmapDensity = density;
