@@ -87,6 +87,10 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
             new BiomeInjector(this, modernBetaBiomeSource) : 
             null;
         
+        if (this.biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
+            modernBetaBiomeSource.setChunkGenerator(this);
+        }
+        
         this.initializedChunkProvider = false;
     }
     
@@ -290,6 +294,12 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         int biomeY = y >> 2;
         int biomeZ = z >> 2;
         
+        return this.getInjectedBiome(biomeX, biomeY, biomeZ, noiseSampler);
+    }
+    
+    public RegistryEntry<Biome> getInjectedBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler) {
+        int y = biomeY << 2;
+        
         int worldMinY = this.chunkProvider.getWorldMinY();
         int topHeight = this.biomeInjector.getCenteredHeight(biomeX, biomeZ);
         int minHeight = this.biomeInjector.sampleMinHeightAround(biomeX, biomeZ);
@@ -301,33 +311,6 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         RegistryEntry<Biome> biome = this.biomeInjector.sample(context, biomeX, biomeY, biomeZ);
         
         return biome != null ? biome : this.getBiomeSource().getBiome(biomeX, biomeY, biomeZ, noiseSampler);
-    }
-    
-    public Set<RegistryEntry<Biome>> getBiomesInArea(int startX, int startY, int startZ, int radius, MultiNoiseSampler noiseSampler) {
-        int minX = BiomeCoords.fromBlock(startX - radius);
-        int minZ = BiomeCoords.fromBlock(startZ - radius);
-        
-        int maxX = BiomeCoords.fromBlock(startX + radius);
-        int maxZ = BiomeCoords.fromBlock(startZ + radius);
-        
-        int rangeX = maxX - minX + 1;
-        int rangeZ = maxZ - minZ + 1;
-        
-        HashSet<RegistryEntry<Biome>> set = Sets.newHashSet();
-        for (int localZ = 0; localZ < rangeZ; ++localZ) {
-            for (int localX = 0; localX < rangeX; ++localX) {
-                int biomeX = minX + localX;
-                int biomeZ = minZ + localZ;
-                
-                int x = biomeX << 2;
-                int z = biomeZ << 2;
-                int y = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-                
-                set.add(this.getInjectedBiomeAtBlock(x, y, z, noiseSampler));
-            }
-        }
-        
-        return set;
     }
 
     public static void register() {

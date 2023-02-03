@@ -7,7 +7,6 @@
     "MixinChunkGenerator",
     "MixinChunkSection",
     "MixinMinecraftServer",
-    "MixinOceanMonumentFeature",
     "MixinPlacedFeatureAccessor",
     "MixinSpawnLocating",
     "MixinStructure",
