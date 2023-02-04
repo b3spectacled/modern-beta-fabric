@@ -2,22 +2,22 @@ package mod.bespectacled.modernbeta;
 
 import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
 import mod.bespectacled.modernbeta.api.world.chunk.noise.NoisePostProcessor;
-import mod.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
-import mod.bespectacled.modernbeta.world.biome.provider.PEBiomeProvider;
-import mod.bespectacled.modernbeta.world.biome.provider.SingleBiomeProvider;
-import mod.bespectacled.modernbeta.world.cavebiome.provider.NoCaveBiomeProvider;
-import mod.bespectacled.modernbeta.world.cavebiome.provider.SingleCaveBiomeProvider;
-import mod.bespectacled.modernbeta.world.cavebiome.provider.VoronoiCaveBiomeProvider;
-import mod.bespectacled.modernbeta.world.chunk.provider.AlphaChunkProvider;
-import mod.bespectacled.modernbeta.world.chunk.provider.BetaChunkProvider;
-import mod.bespectacled.modernbeta.world.chunk.provider.Classic030ChunkProvider;
-import mod.bespectacled.modernbeta.world.chunk.provider.IndevChunkProvider;
-import mod.bespectacled.modernbeta.world.chunk.provider.Infdev227ChunkProvider;
-import mod.bespectacled.modernbeta.world.chunk.provider.Infdev415ChunkProvider;
-import mod.bespectacled.modernbeta.world.chunk.provider.Infdev420ChunkProvider;
-import mod.bespectacled.modernbeta.world.chunk.provider.Infdev611ChunkProvider;
-import mod.bespectacled.modernbeta.world.chunk.provider.PEChunkProvider;
-import mod.bespectacled.modernbeta.world.chunk.provider.SkylandsChunkProvider;
+import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderBeta;
+import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderPE;
+import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderSingle;
+import mod.bespectacled.modernbeta.world.cavebiome.provider.CaveBiomeProviderNone;
+import mod.bespectacled.modernbeta.world.cavebiome.provider.CaveBiomeProviderSingle;
+import mod.bespectacled.modernbeta.world.cavebiome.provider.CaveBiomeProviderVoronoi;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderAlpha;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderBeta;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderClassic030;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderIndev;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderInfdev227;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderInfdev415;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderInfdev420;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderInfdev611;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderPE;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderSkylands;
 
 /*
  * Registration of built-in providers for various things.
@@ -27,33 +27,33 @@ public class ModernBetaBuiltInProviders {
     
     // Register default chunk providers
     public static void registerChunkProviders() {
-        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.DEFAULT_ID, BetaChunkProvider::new);
-        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.BETA.name, BetaChunkProvider::new);
-        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.SKYLANDS.name, SkylandsChunkProvider::new);
-        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.ALPHA.name, AlphaChunkProvider::new);
-        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.INFDEV_611.name, Infdev611ChunkProvider::new);
-        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.INFDEV_420.name, Infdev420ChunkProvider::new);
-        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.INFDEV_415.name, Infdev415ChunkProvider::new);
-        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.INFDEV_227.name, Infdev227ChunkProvider::new);
-        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.INDEV.name, IndevChunkProvider::new);
-        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.name, Classic030ChunkProvider::new);
-        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.PE.name, PEChunkProvider::new);
+        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.DEFAULT_ID, ChunkProviderBeta::new);
+        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.BETA.name, ChunkProviderBeta::new);
+        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.SKYLANDS.name, ChunkProviderSkylands::new);
+        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.ALPHA.name, ChunkProviderAlpha::new);
+        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.INFDEV_611.name, ChunkProviderInfdev611::new);
+        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.INFDEV_420.name, ChunkProviderInfdev420::new);
+        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.INFDEV_415.name, ChunkProviderInfdev415::new);
+        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.INFDEV_227.name, ChunkProviderInfdev227::new);
+        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.INDEV.name, ChunkProviderIndev::new);
+        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.name, ChunkProviderClassic030::new);
+        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.PE.name, ChunkProviderPE::new);
     }
     
     // Register default biome providers
     public static void registerBiomeProviders() {
-        ModernBetaRegistries.BIOME.register(ModernBetaBuiltInTypes.DEFAULT_ID, BetaBiomeProvider::new);
-        ModernBetaRegistries.BIOME.register(ModernBetaBuiltInTypes.Biome.BETA.name, BetaBiomeProvider::new);
-        ModernBetaRegistries.BIOME.register(ModernBetaBuiltInTypes.Biome.SINGLE.name, SingleBiomeProvider::new);
-        ModernBetaRegistries.BIOME.register(ModernBetaBuiltInTypes.Biome.PE.name, PEBiomeProvider::new);
+        ModernBetaRegistries.BIOME.register(ModernBetaBuiltInTypes.DEFAULT_ID, BiomeProviderBeta::new);
+        ModernBetaRegistries.BIOME.register(ModernBetaBuiltInTypes.Biome.BETA.name, BiomeProviderBeta::new);
+        ModernBetaRegistries.BIOME.register(ModernBetaBuiltInTypes.Biome.SINGLE.name, BiomeProviderSingle::new);
+        ModernBetaRegistries.BIOME.register(ModernBetaBuiltInTypes.Biome.PE.name, BiomeProviderPE::new);
     }
     
     // Register default cave biome providers
     public static void registerCaveBiomeProvider() {
-        ModernBetaRegistries.CAVE_BIOME.register(ModernBetaBuiltInTypes.DEFAULT_ID, NoCaveBiomeProvider::new);
-        ModernBetaRegistries.CAVE_BIOME.register(ModernBetaBuiltInTypes.CaveBiome.NONE.name, NoCaveBiomeProvider::new);
-        ModernBetaRegistries.CAVE_BIOME.register(ModernBetaBuiltInTypes.CaveBiome.SINGLE.name, SingleCaveBiomeProvider::new);
-        ModernBetaRegistries.CAVE_BIOME.register(ModernBetaBuiltInTypes.CaveBiome.VORONOI.name, VoronoiCaveBiomeProvider::new);
+        ModernBetaRegistries.CAVE_BIOME.register(ModernBetaBuiltInTypes.DEFAULT_ID, CaveBiomeProviderNone::new);
+        ModernBetaRegistries.CAVE_BIOME.register(ModernBetaBuiltInTypes.CaveBiome.NONE.name, CaveBiomeProviderNone::new);
+        ModernBetaRegistries.CAVE_BIOME.register(ModernBetaBuiltInTypes.CaveBiome.SINGLE.name, CaveBiomeProviderSingle::new);
+        ModernBetaRegistries.CAVE_BIOME.register(ModernBetaBuiltInTypes.CaveBiome.VORONOI.name, CaveBiomeProviderVoronoi::new);
     }
     
     public static void registerNoisePostProcessors() {

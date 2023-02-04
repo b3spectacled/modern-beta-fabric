@@ -3,10 +3,10 @@ package mod.bespectacled.modernbeta.world.biome.injector;
 import java.util.function.Predicate;
 
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
-import mod.bespectacled.modernbeta.api.world.chunk.NoiseChunkProvider;
+import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
 import mod.bespectacled.modernbeta.mixin.MixinChunkSection;
-import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
-import mod.bespectacled.modernbeta.util.chunk.HeightmapChunk;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
+import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
@@ -45,7 +45,7 @@ public class BiomeInjector {
         this.modernBetaBiomeSource = modernBetaBiomeSource;
         this.chunkProvider = modernBetaChunkGenerator.getChunkProvider();
         
-        boolean replaceOceanBiomes = new ModernBetaBiomeSettings.Builder(this.modernBetaBiomeSource.getBiomeSettings()).build().replaceOceanBiomes;
+        boolean replaceOceanBiomes = new ModernBetaSettingsBiome.Builder(this.modernBetaBiomeSource.getBiomeSettings()).build().replaceOceanBiomes;
         
         Predicate<BiomeInjectionContext> oceanPredicate = context -> 
             this.atOceanDepth(context.topHeight, OCEAN_MIN_DEPTH) && 
@@ -141,8 +141,8 @@ public class BiomeInjector {
         int x = (biomeX << 2) + 2;
         int z = (biomeZ << 2) + 2;
         
-        return this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider ?
-            noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
+        return this.chunkProvider instanceof ChunkProviderNoise noiseChunkProvider ?
+            noiseChunkProvider.getHeight(x, z, ChunkHeightmap.Type.SURFACE_FLOOR) :
             this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
     }
     

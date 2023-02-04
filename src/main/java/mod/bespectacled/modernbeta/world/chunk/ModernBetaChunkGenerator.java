@@ -9,7 +9,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
-import mod.bespectacled.modernbeta.settings.ModernBetaChunkSettings;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
@@ -77,7 +77,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         
         this.settings = settings;
         this.chunkProviderSettings = chunkProviderSettings;
-        this.chunkProviderType = new ModernBetaChunkSettings.Builder(chunkProviderSettings).build().chunkProvider;
+        this.chunkProviderType = new ModernBetaSettingsChunk.Builder(chunkProviderSettings).build().chunkProvider;
         this.chunkProvider = ModernBetaRegistries.CHUNK.get(this.chunkProviderType).apply(this);
     
         this.biomeInjector = this.biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource ?

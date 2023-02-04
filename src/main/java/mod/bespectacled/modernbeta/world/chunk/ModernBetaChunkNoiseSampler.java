@@ -1,8 +1,8 @@
 package mod.bespectacled.modernbeta.world.chunk;
 
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
-import mod.bespectacled.modernbeta.api.world.chunk.NoiseChunkProvider;
-import mod.bespectacled.modernbeta.util.chunk.HeightmapChunk;
+import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
+import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.util.noise.SimpleDensityFunction;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.Heightmap;
@@ -86,8 +86,8 @@ public class ModernBetaChunkNoiseSampler extends ChunkNoiseSampler {
      */
     @Override
     public int estimateSurfaceHeight(int x, int z) {
-        int height = (this.chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) ?
-            noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR) :
+        int height = (this.chunkProvider instanceof ChunkProviderNoise noiseChunkProvider) ?
+            noiseChunkProvider.getHeight(x, z, ChunkHeightmap.Type.SURFACE_FLOOR) :
             this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
         
         int seaLevel = this.chunkProvider.getSeaLevel();

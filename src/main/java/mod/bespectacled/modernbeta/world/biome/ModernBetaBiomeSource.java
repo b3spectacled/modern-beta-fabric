@@ -14,12 +14,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
-import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverBlock;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
+import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverBlock;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverOcean;
 import mod.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
-import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
-import mod.bespectacled.modernbeta.settings.ModernBetaCaveBiomeSettings;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsCaveBiome;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registry;
@@ -63,8 +63,8 @@ public class ModernBetaBiomeSource extends BiomeSource {
         NbtCompound biomeSettings,
         NbtCompound caveBiomeSettings
     ) {
-        ModernBetaBiomeSettings modernBetaBiomeSettings = new ModernBetaBiomeSettings.Builder(biomeSettings).build();
-        ModernBetaCaveBiomeSettings modernBetaCaveBiomeSettings = new ModernBetaCaveBiomeSettings.Builder(caveBiomeSettings).build();
+        ModernBetaSettingsBiome modernBetaBiomeSettings = new ModernBetaSettingsBiome.Builder(biomeSettings).build();
+        ModernBetaSettingsCaveBiome modernBetaCaveBiomeSettings = new ModernBetaSettingsCaveBiome.Builder(caveBiomeSettings).build();
         
         BiomeProvider biomeProvider  = ModernBetaRegistries.BIOME
             .get(modernBetaBiomeSettings.biomeProvider)
@@ -94,8 +94,8 @@ public class ModernBetaBiomeSource extends BiomeSource {
         this.biomeSettings = biomeSettings;
         this.caveBiomeSettings = caveBiomeSettings;
         
-        ModernBetaBiomeSettings modernBetaBiomeSettings = new ModernBetaBiomeSettings.Builder(this.biomeSettings).build();
-        ModernBetaCaveBiomeSettings modernBetaCaveBiomeSettings = new ModernBetaCaveBiomeSettings.Builder(this.caveBiomeSettings).build();
+        ModernBetaSettingsBiome modernBetaBiomeSettings = new ModernBetaSettingsBiome.Builder(this.biomeSettings).build();
+        ModernBetaSettingsCaveBiome modernBetaCaveBiomeSettings = new ModernBetaSettingsCaveBiome.Builder(this.caveBiomeSettings).build();
         
         this.biomeProvider = ModernBetaRegistries.BIOME
             .get(modernBetaBiomeSettings.biomeProvider)

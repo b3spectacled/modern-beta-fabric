@@ -16,12 +16,12 @@ import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSamplerSky;
-import mod.bespectacled.modernbeta.client.color.BetaBlockColors;
-import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
-import mod.bespectacled.modernbeta.util.GenUtil;
+import mod.bespectacled.modernbeta.client.color.BlockColorsBeta;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
 import mod.bespectacled.modernbeta.util.ModernBetaClientWorld;
+import mod.bespectacled.modernbeta.util.SeedUtil;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import mod.bespectacled.modernbeta.world.biome.provider.BetaBiomeProvider;
+import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderBeta;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -68,16 +68,16 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         long seed,
         CallbackInfo info
     ) {
-        long worldSeed = GenUtil.parseSeed(ModernBeta.RENDER_CONFIG.configFixedSeed.fixedSeed);
+        long worldSeed = SeedUtil.parseSeed(ModernBeta.RENDER_CONFIG.configFixedSeed.fixedSeed);
         boolean useFixedSeed = ModernBeta.RENDER_CONFIG.configFixedSeed.useFixedSeed;
         
         // Init with default values
         this.climateSampler = Optional.ofNullable(useFixedSeed ? 
-            new BetaBiomeProvider(new ModernBetaBiomeSettings().toCompound(), null) : 
+            new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null) : 
             null
         );
         this.skyClimateSampler = Optional.ofNullable(useFixedSeed ? 
-            new BetaBiomeProvider(new ModernBetaBiomeSettings().toCompound(), null) : 
+            new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null) : 
             null
         );
         
@@ -104,7 +104,7 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         }
         
         // Set Beta block colors seed.
-        BetaBlockColors.INSTANCE.setSeed(worldSeed, this.climateSampler);
+        BlockColorsBeta.INSTANCE.setSeed(worldSeed, this.climateSampler);
     }
     
     @Inject(method = "getSkyColor", at = @At("HEAD"))

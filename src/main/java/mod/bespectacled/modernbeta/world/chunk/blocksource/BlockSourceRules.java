@@ -6,20 +6,20 @@ import java.util.List;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import net.minecraft.block.BlockState;
 
-public class BlockSourceRules implements SimpleBlockSource {
+public class BlockSourceRules implements BlockSource {
     private static final boolean DEBUG = false;
     
-    private final List<SimpleBlockSource> rules;
+    private final List<BlockSource> rules;
     private final BlockState defaultBlock;
     
-    private BlockSourceRules(List<SimpleBlockSource> blockSources, BlockState defaultBlock) {
+    private BlockSourceRules(List<BlockSource> blockSources, BlockState defaultBlock) {
         this.rules = blockSources;
         this.defaultBlock = defaultBlock;
     }
 
     @Override
     public BlockState apply(int x, int y, int z) {
-        for (SimpleBlockSource blockSource : this.rules) {
+        for (BlockSource blockSource : this.rules) {
             BlockState blockState = blockSource.apply(x, y, z);
             
             if (blockState != null)
@@ -30,13 +30,13 @@ public class BlockSourceRules implements SimpleBlockSource {
     }
     
     public static class Builder {
-        private final List<SimpleBlockSource> rules;
+        private final List<BlockSource> rules;
         
         public Builder() {
             this.rules = new ArrayList<>();
         }
         
-        public Builder add(SimpleBlockSource blockSource) {
+        public Builder add(BlockSource blockSource) {
             this.rules.add(blockSource);
             
             return this;

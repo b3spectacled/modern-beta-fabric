@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
 import mod.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMapping.ClimateType;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
@@ -15,7 +15,7 @@ public class BetaClimateMap {
     private final Map<String, BetaClimateMapping> climateMap;
     private final BetaClimateMapping[] climateTable;
     
-    public BetaClimateMap(ModernBetaBiomeSettings settings) {
+    public BetaClimateMap(ModernBetaSettingsBiome settings) {
         this.climateMap = new LinkedHashMap<>();
         this.climateTable = new BetaClimateMapping[4096];
         

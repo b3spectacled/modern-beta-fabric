@@ -1,8 +1,8 @@
 package mod.bespectacled.modernbeta.command;
 
-import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
-import mod.bespectacled.modernbeta.settings.ModernBetaCaveBiomeSettings;
-import mod.bespectacled.modernbeta.settings.ModernBetaChunkSettings;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsCaveBiome;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -28,7 +28,7 @@ public class DebugProviderSettingsCommand {
             validWorld = true;
             
             StringBuilder builder = new StringBuilder();
-            NbtCompound chunkSettings = new ModernBetaChunkSettings.Builder(modernBetaChunkGenerator.getChunkSettings()).build().toCompound();
+            NbtCompound chunkSettings = new ModernBetaSettingsChunk.Builder(modernBetaChunkGenerator.getChunkSettings()).build().toCompound();
             
             chunkSettings.getKeys().forEach(key -> {
                 builder.append(String.format("* %s: %s\n", key, chunkSettings.get(key).toString()));
@@ -42,7 +42,7 @@ public class DebugProviderSettingsCommand {
             validWorld = true;
             
             StringBuilder builder0 = new StringBuilder();
-            NbtCompound biomeSettings = new ModernBetaBiomeSettings.Builder(modernBetaBiomeSource.getBiomeSettings()).build().toCompound();
+            NbtCompound biomeSettings = new ModernBetaSettingsBiome.Builder(modernBetaBiomeSource.getBiomeSettings()).build().toCompound();
             
             biomeSettings.getKeys().forEach(key -> {
                 builder0.append(String.format("* %s: %s\n", key, biomeSettings.get(key).toString()));
@@ -52,7 +52,7 @@ public class DebugProviderSettingsCommand {
             source.sendFeedback(Text.literal(builder0.toString()), false);
             
             StringBuilder builder1 = new StringBuilder();
-            NbtCompound caveBiomeSettings = new ModernBetaCaveBiomeSettings.Builder(modernBetaBiomeSource.getCaveBiomeSettings()).build().toCompound();
+            NbtCompound caveBiomeSettings = new ModernBetaSettingsCaveBiome.Builder(modernBetaBiomeSource.getCaveBiomeSettings()).build().toCompound();
             
             caveBiomeSettings.getKeys().forEach(key -> {
                 builder1.append(String.format("* %s: %s\n", key, caveBiomeSettings.get(key).toString()));

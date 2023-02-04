@@ -6,7 +6,7 @@ import net.minecraft.world.biome.Biome;
 public interface BiomeResolverOcean {
     
     /**
-     * Gets an ocean biome to overwrite the original biome at given biome coordinates and sufficient depth.
+     * Gets an ocean biome to overwrite the original biome at given biome coordinates.
      * 
      * @param biomeX x-coordinate in biome coordinates.
      * @param biomeY y-coordinate in biome coordinates.
@@ -17,7 +17,7 @@ public interface BiomeResolverOcean {
     RegistryEntry<Biome> getOceanBiome(int biomeX, int biomeY, int biomeZ);
     
     /**
-     * Gets a deep ocean biome to overwrite the original biome at given biome coordinates and sufficient depth.
+     * Gets a deep ocean biome to overwrite the original biome at given biome coordinates.
      * 
      * @param biomeX x-coordinate in biome coordinates.
      * @param biomeY y-coordinate in biome coordinates.

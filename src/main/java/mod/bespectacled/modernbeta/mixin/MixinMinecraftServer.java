@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import mod.bespectacled.modernbeta.world.chunk.provider.IndevChunkProvider;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderIndev;
 import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevTheme;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.SpawnLocating;
@@ -39,7 +39,7 @@ public class MixinMinecraftServer {
                 ModernBeta.log(Level.INFO, String.format("Spawning at %d/%d/%d", spawnPos.getX(), spawnPos.getY(), spawnPos.getZ()));
             }
             
-            if (spawnPos != null && oldChunkGenerator.getChunkProvider() instanceof IndevChunkProvider indevChunkProvider) {
+            if (spawnPos != null && oldChunkGenerator.getChunkProvider() instanceof ChunkProviderIndev indevChunkProvider) {
                 
                 // Generate Indev house
                 indevChunkProvider.generateIndevHouse(world, spawnPos);

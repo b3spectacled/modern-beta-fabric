@@ -26,7 +26,7 @@ public class AquiferSamplerProvider {
     
     private final int worldMinY;
     private final int worldHeight;
-    private final int verticalNoiseResolution;
+    private final int noiseResolutionVertical;
     
     private final boolean generateAquifers;
     
@@ -59,7 +59,7 @@ public class AquiferSamplerProvider {
         int lavaLevel,
         int worldMinY,
         int worldHeight, 
-        int verticalNoiseResolution,
+        int noiseResolutionVertical,
         boolean generateAquifers
     ) {
         this.noiseRouter = noiseRouter;
@@ -82,7 +82,7 @@ public class AquiferSamplerProvider {
         
         this.worldMinY = worldMinY;
         this.worldHeight = worldHeight;
-        this.verticalNoiseResolution = verticalNoiseResolution;
+        this.noiseResolutionVertical = noiseResolutionVertical;
         
         this.generateAquifers = generateAquifers;
     }
@@ -95,16 +95,16 @@ public class AquiferSamplerProvider {
         int minY = Math.max(this.worldMinY, chunk.getBottomY());
         int topY = Math.min(this.worldMinY + this.worldHeight, chunk.getTopY());
         
-        int noiseMinY = MathHelper.floorDiv(minY, this.verticalNoiseResolution);
-        int noiseTopY = MathHelper.floorDiv(topY - minY, this.verticalNoiseResolution);
+        int noiseMinY = MathHelper.floorDiv(minY, this.noiseResolutionVertical);
+        int noiseTopY = MathHelper.floorDiv(topY - minY, this.noiseResolutionVertical);
         
         return AquiferSampler.aquifer(
             this.chunkSampler,
             chunk.getPos(),
             this.noiseRouter,
             this.randomSplitter,
-            noiseMinY * this.verticalNoiseResolution, 
-            noiseTopY * this.verticalNoiseResolution, 
+            noiseMinY * this.noiseResolutionVertical, 
+            noiseTopY * this.noiseResolutionVertical, 
             this.fluidLevelSampler
         );
     }

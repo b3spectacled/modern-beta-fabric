@@ -2,14 +2,14 @@ package mod.bespectacled.modernbeta.api.world.cavebiome;
 
 import java.util.List;
 
-import mod.bespectacled.modernbeta.settings.ModernBetaCaveBiomeSettings;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsCaveBiome;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public abstract class CaveBiomeProvider {
-    protected final ModernBetaCaveBiomeSettings settings;
+    protected final ModernBetaSettingsCaveBiome settings;
     protected RegistryEntryLookup<Biome> biomeRegistry;
     
     /**
@@ -20,7 +20,7 @@ public abstract class CaveBiomeProvider {
      * @param settings Biome settings.
      */
     public CaveBiomeProvider(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
-        this.settings = new ModernBetaCaveBiomeSettings.Builder(settings).build();
+        this.settings = new ModernBetaSettingsCaveBiome.Builder(settings).build();
         this.biomeRegistry = biomeRegistry;
     }
     

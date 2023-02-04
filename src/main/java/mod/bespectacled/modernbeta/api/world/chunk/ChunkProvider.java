@@ -9,13 +9,13 @@ import java.util.concurrent.Executor;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.mixin.MixinChunkGenerator;
 import mod.bespectacled.modernbeta.mixin.MixinPlacedFeatureAccessor;
-import mod.bespectacled.modernbeta.settings.ModernBetaChunkSettings;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import mod.bespectacled.modernbeta.world.chunk.blocksource.DeepslateBlockSource;
-import mod.bespectacled.modernbeta.world.feature.placement.ModernBetaNoiseBasedCountPlacementModifier;
+import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSourceDeepslate;
+import mod.bespectacled.modernbeta.world.feature.placement.NoiseBasedCountPlacementModifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
@@ -42,20 +42,20 @@ import net.minecraft.world.gen.noise.NoiseConfig;
 import net.minecraft.world.gen.noise.NoiseRouter;
 import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 
-public abstract class ChunkProvider {
+public abstract class ChunkProvider {    
+    private final FluidLevelSampler emptyFluidLevelSampler;
+    
     protected final ModernBetaChunkGenerator chunkGenerator;
     
     protected final RegistryEntry<ChunkGeneratorSettings> generatorSettings;
-    protected final ModernBetaChunkSettings chunkSettings;
+    protected final ModernBetaSettingsChunk chunkSettings;
     protected final Random random;
     
     protected final NoiseRouter noiseRouter;
     
-    private final FluidLevelSampler emptyFluidLevelSampler;
-    
     protected final ChunkRandom.RandomProvider randomProvider;
     protected final RandomSplitter randomSplitter;
-    protected final DeepslateBlockSource deepslateBlockSource;
+    protected final BlockSourceDeepslate blockSourceDeepslate;
     
     protected SpawnLocator spawnLocator;
     
@@ -68,7 +68,7 @@ public abstract class ChunkProvider {
         this.chunkGenerator = chunkGenerator;
         
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
-        this.chunkSettings = new ModernBetaChunkSettings.Builder(chunkGenerator.getChunkSettings()).build();
+        this.chunkSettings = new ModernBetaSettingsChunk.Builder(chunkGenerator.getChunkSettings()).build();
         this.random = new Random(chunkGenerator.getWorldSeed());
         
         this.noiseRouter = this.generatorSettings.value().noiseRouter();
@@ -77,7 +77,7 @@ public abstract class ChunkProvider {
         this.randomProvider = chunkGenerator.getGeneratorSettings().value().getRandomProvider();
         this.randomSplitter = this.randomProvider.create(chunkGenerator.getWorldSeed()).nextSplitter();
         
-        this.deepslateBlockSource = new DeepslateBlockSource(
+        this.blockSourceDeepslate = new BlockSourceDeepslate(
             0,
             8,
             this.chunkSettings.useDeepslate,
@@ -259,7 +259,7 @@ public abstract class ChunkProvider {
                 List<PlacementModifier> modifiers = accessor.getPlacementModifiers();
                 
                 for (PlacementModifier modifier : modifiers) {
-                    if (modifier instanceof ModernBetaNoiseBasedCountPlacementModifier noiseModifier) {
+                    if (modifier instanceof NoiseBasedCountPlacementModifier noiseModifier) {
                         noiseModifier.setOctaves(forestOctaves);
                     }
                 }
