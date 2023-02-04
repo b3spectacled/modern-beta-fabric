@@ -21,7 +21,7 @@ public class SingleBiomeProvider extends BiomeProvider {
     }
 
     @Override
-    public RegistryEntry<Biome> getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ) {
         return this.biomeRegistry.getOrThrow(this.biomeKey);
     }
     

@@ -64,9 +64,7 @@
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_sugar_cane",
-      "minecraft:patch_pumpkin",
-      "minecraft:seagrass_warm",
-      "minecraft:kelp_warm"
+      "minecraft:patch_pumpkin"
     ],
     [
       "modern_beta:freeze_top_layer"

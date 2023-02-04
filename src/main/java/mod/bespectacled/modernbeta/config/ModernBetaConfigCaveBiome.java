@@ -17,6 +17,8 @@ public class ModernBetaConfigCaveBiome implements ConfigData {
     
     public float voronoiHorizontalNoiseScale = 32.0f;
     public float voronoiVerticalNoiseScale = 16.0f;
+    public int voronoiDepthMinY = -64;
+    public int voronoiDepthMaxY = 64;
     public List<VoronoiPointCaveBiome> voronoiPoints = List.of(
         new VoronoiPointCaveBiome("", 0.0, 0.5, 0.75),
         new VoronoiPointCaveBiome("minecraft:lush_caves", 0.1, 0.5, 0.75),
@@ -27,7 +29,7 @@ public class ModernBetaConfigCaveBiome implements ConfigData {
         new VoronoiPointCaveBiome("", 0.0, 0.5, 0.25),
         new VoronoiPointCaveBiome("minecraft:lush_caves", 0.2, 0.5, 0.25),
         new VoronoiPointCaveBiome("", 0.4, 0.5, 0.25),
-        new VoronoiPointCaveBiome("minecraft:deep_dark", 0.5, 0.5, 0.15),
+        new VoronoiPointCaveBiome("minecraft:deep_dark", 0.5, 0.5, 0.25),
         new VoronoiPointCaveBiome("", 0.6, 0.5, 0.25),
         new VoronoiPointCaveBiome("minecraft:dripstone_caves", 0.8, 0.5, 0.25),
         new VoronoiPointCaveBiome("", 1.0, 0.5, 0.25)

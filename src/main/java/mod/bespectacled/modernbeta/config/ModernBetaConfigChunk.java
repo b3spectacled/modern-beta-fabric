@@ -9,32 +9,32 @@ import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevType;
 @Config(name = "config_chunk")
 public class ModernBetaConfigChunk implements ConfigData {
     public String chunkProvider = ModernBetaBuiltInTypes.Chunk.BETA.name;
-    public String noisePostProcessor = ModernBetaBuiltInTypes.NoisePostProcessor.NONE.name;
     
     public boolean useDeepslate = true;
     public int deepslateMinY = 0;
     public int deepslateMaxY = 8;
     public String deepslateBlock = "minecraft:deepslate";
+
+    public String noisePostProcessor = ModernBetaBuiltInTypes.NoisePostProcessor.NONE.name;
+    public float noiseCoordinateScale = 684.412f;
+    public float noiseHeightScale = 684.412f;
+    public float noiseUpperLimitScale = 512.0f;
+    public float noiseLowerLimitScale = 512.0f;;
+    public float noiseDepthNoiseScaleX = 200.0f;
+    public float noiseDepthNoiseScaleZ = 200.0f;
+    public float noiseMainNoiseScaleX = 80.0f;
+    public float noiseMainNoiseScaleY = 160.0f;
+    public float noiseMainNoiseScaleZ = 80.0f;
+    public float noiseBaseSize = 8.5f;
+    public float noiseStretchY = 12.0f;
     
-    public float coordinateScale = 684.412f;
-    public float heightScale = 684.412f;
-    public float upperLimitScale = 512.0f;
-    public float lowerLimitScale = 512.0f;;
-    public float depthNoiseScaleX = 200.0f;
-    public float depthNoiseScaleZ = 200.0f;
-    public float mainNoiseScaleX = 80.0f;
-    public float mainNoiseScaleY = 160.0f;
-    public float mainNoiseScaleZ = 80.0f;
-    public float baseSize = 8.5f;
-    public float stretchY = 12.0f;
+    public int noiseTopSlideTarget = -10;
+    public int noiseTopSlideSize = 3;
+    public int noiseTopSlideOffset = 0;
     
-    public int topSlideTarget = -10;
-    public int topSlideSize = 3;
-    public int topSlideOffset = 0;
-    
-    public int bottomSlideTarget = 15;
-    public int bottomSlideSize = 3;
-    public int bottomSlideOffset = 0;
+    public int noiseBottomSlideTarget = 15;
+    public int noiseBottomSlideSize = 3;
+    public int noiseBottomSlideOffset = 0;
 
     public boolean infdevUsePyramid = true;
     public boolean infdevUseWall = true;

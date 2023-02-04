@@ -183,21 +183,21 @@ public class Infdev611ChunkProvider extends NoiseChunkProvider {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
 
-        double depthNoiseScaleX = this.chunkSettings.depthNoiseScaleX;
-        double depthNoiseScaleZ = this.chunkSettings.depthNoiseScaleZ;
+        double depthNoiseScaleX = this.chunkSettings.noiseDepthNoiseScaleX;
+        double depthNoiseScaleZ = this.chunkSettings.noiseDepthNoiseScaleZ;
         
-        double coordinateScale = this.chunkSettings.coordinateScale;
-        double heightScale = this.chunkSettings.heightScale;
+        double coordinateScale = this.chunkSettings.noiseCoordinateScale;
+        double heightScale = this.chunkSettings.noiseHeightScale;
         
-        double mainNoiseScaleX = this.chunkSettings.mainNoiseScaleX;
-        double mainNoiseScaleY = this.chunkSettings.mainNoiseScaleY;
-        double mainNoiseScaleZ = this.chunkSettings.mainNoiseScaleZ;
+        double mainNoiseScaleX = this.chunkSettings.noiseMainNoiseScaleX;
+        double mainNoiseScaleY = this.chunkSettings.noiseMainNoiseScaleY;
+        double mainNoiseScaleZ = this.chunkSettings.noiseMainNoiseScaleZ;
 
-        double lowerLimitScale = this.chunkSettings.lowerLimitScale;
-        double upperLimitScale = this.chunkSettings.upperLimitScale;
+        double lowerLimitScale = this.chunkSettings.noiseLowerLimitScale;
+        double upperLimitScale = this.chunkSettings.noiseUpperLimitScale;
         
-        double baseSize = this.chunkSettings.baseSize;
-        double heightStretch = this.chunkSettings.stretchY;
+        double baseSize = this.chunkSettings.noiseBaseSize;
+        double heightStretch = this.chunkSettings.noiseStretchY;
 
         double islandOffset = this.getIslandOffset(startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
         

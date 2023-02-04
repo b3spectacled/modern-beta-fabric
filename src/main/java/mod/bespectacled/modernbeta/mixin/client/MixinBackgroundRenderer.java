@@ -31,7 +31,7 @@ public class MixinBackgroundRenderer {
         at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/DimensionEffects;getFogColorOverride(FF)[F")
     )
     private static float[] modifyFogSunsetCols(float[] skyCols) {
-        return ModernBeta.RENDER_CONFIG.configOther.renderAlphaSunset ? null : skyCols;
+        return ModernBeta.RENDER_CONFIG.configOther.useAlphaSunset ? null : skyCols;
     }
     
     @Inject(method = "render", at = @At("HEAD"))
@@ -55,7 +55,7 @@ public class MixinBackgroundRenderer {
         index = 7
     )
     private static float modifyFogWeighting(float weight) {
-        return isOldWorld && ModernBeta.RENDER_CONFIG.configBiomeColor.renderOldFogColor ? oldFogWeight : weight;
+        return isOldWorld && ModernBeta.RENDER_CONFIG.configBiomeColor.useOldFogColor ? oldFogWeight : weight;
     }
     
     @Unique

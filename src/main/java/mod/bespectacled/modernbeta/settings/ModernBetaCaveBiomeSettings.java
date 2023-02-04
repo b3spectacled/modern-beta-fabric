@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mod.bespectacled.modernbeta.ModernBeta;
+import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome.VoronoiPointCaveBiome;
 import mod.bespectacled.modernbeta.util.NbtListBuilder;
 import mod.bespectacled.modernbeta.util.NbtTags;
@@ -11,11 +12,15 @@ import mod.bespectacled.modernbeta.util.NbtUtil;
 import net.minecraft.nbt.NbtCompound;
 
 public class ModernBetaCaveBiomeSettings {
+    private static final ModernBetaConfigCaveBiome CONFIG = ModernBeta.CAVE_BIOME_CONFIG;
+    
     public final String biomeProvider;
     public final String singleBiome;
     
     public final float voronoiHorizontalNoiseScale;
     public final float voronoiVerticalNoiseScale;
+    public final int voronoiDepthMinY;
+    public final int voronoiDepthMaxY;
     public final List<VoronoiPointCaveBiome> voronoiPoints;
     
     public ModernBetaCaveBiomeSettings() {
@@ -28,6 +33,8 @@ public class ModernBetaCaveBiomeSettings {
         
         this.voronoiHorizontalNoiseScale = builder.voronoiHorizontalNoiseScale;
         this.voronoiVerticalNoiseScale = builder.voronoiVerticalNoiseScale;
+        this.voronoiDepthMinY = builder.voronoiDepthMinY;
+        this.voronoiDepthMaxY = builder.voronoiDepthMaxY;
         this.voronoiPoints = builder.voronoiPoints;
     }
     
@@ -53,6 +60,8 @@ public class ModernBetaCaveBiomeSettings {
         
         public float voronoiHorizontalNoiseScale;
         public float voronoiVerticalNoiseScale;
+        public int voronoiDepthMinY;
+        public int voronoiDepthMaxY;
         public List<VoronoiPointCaveBiome> voronoiPoints;
         
         public Builder() {
@@ -60,11 +69,13 @@ public class ModernBetaCaveBiomeSettings {
         }
         
         public Builder(NbtCompound compound) {
-            this.biomeProvider = NbtUtil.readString(NbtTags.BIOME_PROVIDER, compound, ModernBeta.CAVE_BIOME_CONFIG.biomeProvider);
-            this.singleBiome = NbtUtil.readString(NbtTags.SINGLE_BIOME, compound, ModernBeta.CAVE_BIOME_CONFIG.singleBiome);
+            this.biomeProvider = NbtUtil.readString(NbtTags.BIOME_PROVIDER, compound, CONFIG.biomeProvider);
+            this.singleBiome = NbtUtil.readString(NbtTags.SINGLE_BIOME, compound, CONFIG.singleBiome);
             
-            this.voronoiHorizontalNoiseScale = NbtUtil.readFloat(NbtTags.VORONOI_HORIZONTAL_NOISE_SCALE, compound, ModernBeta.CAVE_BIOME_CONFIG.voronoiHorizontalNoiseScale);
-            this.voronoiVerticalNoiseScale = NbtUtil.readFloat(NbtTags.VORONOI_VERTICAL_NOISE_SCALE, compound, ModernBeta.CAVE_BIOME_CONFIG.voronoiVerticalNoiseScale);
+            this.voronoiDepthMinY = NbtUtil.readInt(NbtTags.VORONOI_DEPTH_MIN_Y, compound, CONFIG.voronoiDepthMinY);
+            this.voronoiDepthMaxY = NbtUtil.readInt(NbtTags.VORONOI_DEPTH_MAX_Y, compound, CONFIG.voronoiDepthMaxY);
+            this.voronoiHorizontalNoiseScale = NbtUtil.readFloat(NbtTags.VORONOI_HORIZONTAL_NOISE_SCALE, compound, CONFIG.voronoiHorizontalNoiseScale);
+            this.voronoiVerticalNoiseScale = NbtUtil.readFloat(NbtTags.VORONOI_VERTICAL_NOISE_SCALE, compound, CONFIG.voronoiVerticalNoiseScale);
             
             this.voronoiPoints = new ArrayList<>();
             if (compound.contains(NbtTags.BIOMES)) {
@@ -79,7 +90,7 @@ public class ModernBetaCaveBiomeSettings {
                     this.voronoiPoints.add(new VoronoiPointCaveBiome(biome, temp, rain, weight));
                 });
             } else {
-                this.voronoiPoints.addAll(ModernBeta.CAVE_BIOME_CONFIG.voronoiPoints);
+                this.voronoiPoints.addAll(CONFIG.voronoiPoints);
             }
         }
         

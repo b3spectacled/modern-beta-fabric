@@ -8,7 +8,6 @@ import net.fabricmc.loader.api.FabricLoader;
 public class Compat {
     public static void setupCompat() {
         try {
-            if (isLoaded("techreborn")) CompatTechReborn.addCompat();
             
         } catch (Exception e) {
             ModernBeta.log(Level.ERROR, "Something went wrong when attempting to add mod compatibility!");

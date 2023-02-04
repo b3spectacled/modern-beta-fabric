@@ -24,7 +24,7 @@ public class MixinInGameHud {
     
     @Inject(method = "render", at = @At("TAIL"))
     private void injectDebugVersion(MatrixStack matrices, float tickDelta, CallbackInfo info) {
-        if (ModernBeta.RENDER_CONFIG.configOther.renderGameVersion && !this.client.options.debugEnabled) {
+        if (ModernBeta.RENDER_CONFIG.configOther.useGameVersion && !this.client.options.debugEnabled) {
             this.renderDebugVersion(matrices);
         }
     }

@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.api.world.biome.BiomeBlockResolver;
+import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverBlock;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
-import mod.bespectacled.modernbeta.api.world.biome.OceanBiomeResolver;
+import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverOcean;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
-import mod.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
+import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSamplerSky;
 import mod.bespectacled.modernbeta.util.chunk.ChunkCache;
 import mod.bespectacled.modernbeta.util.chunk.ClimateChunk;
 import mod.bespectacled.modernbeta.util.mersenne.MTRandom;
@@ -22,7 +22,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
-public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, SkyClimateSampler, BiomeBlockResolver, OceanBiomeResolver {
+public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, ClimateSamplerSky, BiomeResolverBlock, BiomeResolverOcean {
     private BetaClimateMap climateMap;
     private PEClimateSampler climateSampler;
     
@@ -33,13 +33,18 @@ public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, Sk
     @Override
     public boolean initProvider(long seed) {
         this.climateMap = new BetaClimateMap(this.settings);
-        this.climateSampler = new PEClimateSampler(seed, this.settings.tempNoiseScale, this.settings.rainNoiseScale, this.settings.detailNoiseScale);
+        this.climateSampler = new PEClimateSampler(
+            seed,
+            this.settings.betaTempNoiseScale,
+            this.settings.betaRainNoiseScale,
+            this.settings.betaDetailNoiseScale
+        );
         
         return true;
     }
 
     @Override
-    public RegistryEntry<Biome> getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ) {
         int x = biomeX << 2;
         int z = biomeZ << 2;
         
@@ -51,7 +56,7 @@ public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, Sk
     }
  
     @Override
-    public RegistryEntry<Biome> getOceanBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ) {
+    public RegistryEntry<Biome> getOceanBiome(int biomeX, int biomeY, int biomeZ) {
         int x = biomeX << 2;
         int z = biomeZ << 2;
         
@@ -63,7 +68,7 @@ public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, Sk
     }
     
     @Override
-    public RegistryEntry<Biome> getBiomeAtBlock(int x, int y, int z) {
+    public RegistryEntry<Biome> getBiomeBlock(int x, int y, int z) {
         Clime clime = this.climateSampler.sampleClime(x, z);
         double temp = clime.temp();
         double rain = clime.rain();
@@ -88,12 +93,12 @@ public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, Sk
     
     @Override
     public boolean sampleForBiomeColor() {
-        return ModernBeta.RENDER_CONFIG.configBiomeColor.renderPEBetaBiomeColor;
+        return ModernBeta.RENDER_CONFIG.configBiomeColor.usePEBetaBiomeColor;
     }
     
     @Override
     public boolean sampleSkyColor() {
-        return ModernBeta.RENDER_CONFIG.configBiomeColor.renderPEBetaSkyColor;
+        return ModernBeta.RENDER_CONFIG.configBiomeColor.usePEBetaSkyColor;
     }
     
     private static class PEClimateSampler {
@@ -119,9 +124,9 @@ public class PEBiomeProvider extends BiomeProvider implements ClimateSampler, Sk
                 (chunkX, chunkZ) -> new ClimateChunk(chunkX, chunkZ, this::sampleClimateNoise)
             );
             
-            this.tempNoiseScale = 0.025 / tempNoiseScale;
-            this.rainNoiseScale = 0.05 / rainNoiseScale;
-            this.detailNoiseScale = 0.25 / detailNoiseScale;
+            this.tempNoiseScale = tempNoiseScale;
+            this.rainNoiseScale = rainNoiseScale;
+            this.detailNoiseScale = detailNoiseScale;
         }
         
         public Clime sampleClime(int x, int z) {

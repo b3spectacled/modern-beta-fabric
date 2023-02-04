@@ -16,7 +16,6 @@ import mod.bespectacled.modernbeta.config.ModernBetaConfig;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigChunk;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigCompat;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigRendering;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.carver.ModernBetaCarvers;
@@ -48,7 +47,6 @@ public class ModernBeta implements ModInitializer {
     public static final ModernBetaConfigBiome BIOME_CONFIG = CONFIG.biomeConfig;
     public static final ModernBetaConfigCaveBiome CAVE_BIOME_CONFIG = CONFIG.caveBiomeConfig;
     public static final ModernBetaConfigRendering RENDER_CONFIG = CONFIG.renderingConfig;
-    public static final ModernBetaConfigCompat COMPAT_CONFIG = CONFIG.compatConfig;
 
     private static final Logger LOGGER = LogManager.getLogger(MOD_ID);
     private static long worldSeed;

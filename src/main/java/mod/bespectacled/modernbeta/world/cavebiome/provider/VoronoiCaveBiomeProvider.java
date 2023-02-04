@@ -29,7 +29,13 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
     
     @Override
     public boolean initProvider(long seed) {
-        this.climateSampler = new VoronoiCaveClimateSampler(seed, this.settings.voronoiVerticalNoiseScale, this.settings.voronoiHorizontalNoiseScale);
+        this.climateSampler = new VoronoiCaveClimateSampler(
+            seed,
+            this.settings.voronoiVerticalNoiseScale,
+            this.settings.voronoiHorizontalNoiseScale,
+            this.settings.voronoiDepthMinY,
+            this.settings.voronoiDepthMaxY
+        );
         this.rules = buildRules(this.settings.voronoiPoints);
         
         return true;
@@ -73,13 +79,19 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
         private final float verticalScale;
         private final float horizontalScale;
         
-        public VoronoiCaveClimateSampler(long seed, float verticalScale, float horizontalScale) {
+        private final int depthMinY;
+        private final int depthMaxY;
+        
+        public VoronoiCaveClimateSampler(long seed, float verticalScale, float horizontalScale, int depthMinY, int depthMaxY) {
             this.tempNoiseOctaves = new PerlinOctaveNoise(new Random(seed * 9871L), 2, true);
             this.rainNoiseOctaves = new PerlinOctaveNoise(new Random(seed * 39811L), 2, true);
             this.detailNoiseOctaves = new PerlinOctaveNoise(new Random(seed * 543321L), 1, true);
             
             this.verticalScale = verticalScale;
             this.horizontalScale = horizontalScale;
+            
+            this.depthMinY = depthMinY >> 2;
+            this.depthMaxY = depthMaxY >> 2;
         }
         
         public CaveClime sample(int x, int y, int z) {
@@ -115,10 +127,11 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
             tempNoise = (tempNoise + 1.0) / 2D;
             rainNoise = (rainNoise + 1.0) / 2D;
             
-            double depth = y / (double)(64 >> 2);
+            int depthHeight = this.depthMaxY - this.depthMinY;
+            double depth = MathHelper.clamp(y, this.depthMinY, this.depthMaxY);
             
-            depth += 1.0;
-            depth *= 0.5;
+            depth -= this.depthMinY;
+            depth /= depthHeight;
             
             return new CaveClime(
                 MathHelper.clamp(tempNoise, 0.0, 1.0),

@@ -1,6 +1,6 @@
 package mod.bespectacled.modernbeta.api.world.biome.climate;
 
-public interface SkyClimateSampler {
+public interface ClimateSamplerSky {
     /**
      * Sample temperature value from given coordinates, 
      * to use to provide sky color.

@@ -18,11 +18,10 @@ public class ModernBetaConfigBiome implements ConfigData {
     public String singleBiome = ModernBetaBiomes.ALPHA_ID.toString();
     public boolean replaceOceanBiomes = true;
     
-    public float tempNoiseScale = 1.0f;
-    public float rainNoiseScale = 1.0f;
-    public float detailNoiseScale = 1.0f;
-    
-    public Map<String, ConfigClimateMapping> climates = createClimateMapping(
+    public float betaTempNoiseScale = 0.025f;
+    public float betaRainNoiseScale = 0.05f;
+    public float betaDetailNoiseScale = 0.25f;
+    public Map<String, ConfigClimateMapping> betaClimates = createClimateMapping(
         new ConfigClimateMapping(ModernBetaBiomes.BETA_DESERT_ID.toString(), ModernBetaBiomes.BETA_OCEAN_ID.toString()),
         new ConfigClimateMapping(ModernBetaBiomes.BETA_FOREST_ID.toString(), ModernBetaBiomes.BETA_OCEAN_ID.toString()),
         new ConfigClimateMapping(ModernBetaBiomes.BETA_TUNDRA_ID.toString(), ModernBetaBiomes.BETA_FROZEN_OCEAN_ID.toString()),

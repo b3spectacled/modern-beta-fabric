@@ -14,16 +14,16 @@ import org.apache.logging.log4j.Level;
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 
-public final class Registry<T> {
+public final class ModernBetaRegistry<T> {
     private final String name;
     private final Map<String, T> map; // Use LinkedHashMap so entries are displayed in order if retrieved as list.
     
-    protected Registry(String name) {
+    protected ModernBetaRegistry(String name) {
         this.name = name;
         this.map = new LinkedHashMap<String, T>();
     }
     
-    protected Registry() {
+    protected ModernBetaRegistry() {
         this("");
     }
     

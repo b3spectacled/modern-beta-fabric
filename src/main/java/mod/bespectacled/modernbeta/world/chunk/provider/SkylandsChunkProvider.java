@@ -137,15 +137,15 @@ public class SkylandsChunkProvider extends NoiseChunkProvider {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
         
-        double coordinateScale = this.chunkSettings.coordinateScale;
-        double heightScale = this.chunkSettings.heightScale;
+        double coordinateScale = this.chunkSettings.noiseCoordinateScale;
+        double heightScale = this.chunkSettings.noiseHeightScale;
         
-        double mainNoiseScaleX = this.chunkSettings.mainNoiseScaleX;
-        double mainNoiseScaleY = this.chunkSettings.mainNoiseScaleY;
-        double mainNoiseScaleZ = this.chunkSettings.mainNoiseScaleZ;
+        double mainNoiseScaleX = this.chunkSettings.noiseMainNoiseScaleX;
+        double mainNoiseScaleY = this.chunkSettings.noiseMainNoiseScaleY;
+        double mainNoiseScaleZ = this.chunkSettings.noiseMainNoiseScaleZ;
 
-        double lowerLimitScale = this.chunkSettings.lowerLimitScale;
-        double upperLimitScale = this.chunkSettings.upperLimitScale;
+        double lowerLimitScale = this.chunkSettings.noiseLowerLimitScale;
+        double upperLimitScale = this.chunkSettings.noiseUpperLimitScale;
         
         for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;

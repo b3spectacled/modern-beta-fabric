@@ -4,7 +4,6 @@ public class NbtTags {
     /* Chunk Settings */
     
     public static final String CHUNK_PROVIDER = "chunkProvider";
-    public static final String NOISE_POST_PROCESSOR = "noisePostProcessor";
     
     public static final String USE_DEEPSLATE = "useDeepslate";
     public static final String DEEPSLATE_MIN_Y = "deepslateMinY";
@@ -12,25 +11,26 @@ public class NbtTags {
     public static final String DEEPSLATE_BLOCK = "deepslateBlock";
     
     // Noise
-    public static final String COORDINATE_SCALE = "coordinateScale";
-    public static final String HEIGHT_SCALE = "heightScale";
-    public static final String UPPER_LIMIT_SCALE = "upperLimitScale";
-    public static final String LOWER_LIMIT_SCALE = "lowerLimitScale";
-    public static final String DEPTH_NOISE_SCALE_X = "depthNoiseScaleX";
-    public static final String DEPTH_NOISE_SCALE_Z = "depthNoiseScaleZ";
-    public static final String MAIN_NOISE_SCALE_X = "mainNoiseScaleX";
-    public static final String MAIN_NOISE_SCALE_Y = "mainNoiseScaleY";
-    public static final String MAIN_NOISE_SCALE_Z = "mainNoiseScaleZ";
-    public static final String BASE_SIZE = "baseSize";
-    public static final String STRETCH_Y = "stretchY";
+    public static final String NOISE_POST_PROCESSOR = "noisePostProcessor";
+    public static final String NOISE_COORDINATE_SCALE = "noiseCoordinateScale";
+    public static final String NOISE_HEIGHT_SCALE = "noiseHeightScale";
+    public static final String NOISE_UPPER_LIMIT_SCALE = "noiseUpperLimitScale";
+    public static final String NOISE_LOWER_LIMIT_SCALE = "noiseLowerLimitScale";
+    public static final String NOISE_DEPTH_NOISE_SCALE_X = "noiseDepthNoiseScaleX";
+    public static final String NOISE_DEPTH_NOISE_SCALE_Z = "noiseDepthNoiseScaleZ";
+    public static final String NOISE_MAIN_NOISE_SCALE_X = "noiseMainNoiseScaleX";
+    public static final String NOISE_MAIN_NOISE_SCALE_Y = "noiseMainNoiseScaleY";
+    public static final String NOISE_MAIN_NOISE_SCALE_Z = "noiseMainNoiseScaleZ";
+    public static final String NOISE_BASE_SIZE = "noiseBaseSize";
+    public static final String NOISE_STRETCH_Y = "noiseStretchY";
     
-    public static final String TOP_SLIDE_TARGET = "topSlideTarget";
-    public static final String TOP_SLIDE_SIZE = "topSlideSize";
-    public static final String TOP_SLIDE_OFFSET = "topSlideOffset";
+    public static final String NOISE_TOP_SLIDE_TARGET = "noiseTopSlideTarget";
+    public static final String NOISE_TOP_SLIDE_SIZE = "noiseTopSlideSize";
+    public static final String NOISE_TOP_SLIDE_OFFSET = "noiseTopSlideOffset";
     
-    public static final String BOTTOM_SLIDE_TARGET = "bottomSlideTarget";
-    public static final String BOTTOM_SLIDE_SIZE = "bottomSlideSize";
-    public static final String BOTTOM_SLIDE_OFFSET = "bottomSlideOffset";
+    public static final String NOISE_BOTTOM_SLIDE_TARGET = "noiseBottomSlideTarget";
+    public static final String NOISE_BOTTOM_SLIDE_SIZE = "noiseBottomSlideSize";
+    public static final String NOISE_BOTTOM_SLIDE_OFFSET = "noiseBottomSlideOffset";
     
     // Infdev 227
     public static final String INFDEV_USE_PYRAMID = "infdevUsePyramid";
@@ -73,9 +73,9 @@ public class NbtTags {
     public static final String REPLACE_OCEAN_BIOMES = "replaceOceanBiomes";
     
     // Beta Noise
-    public static final String TEMP_NOISE_SCALE = "tempNoiseScale";
-    public static final String RAIN_NOISE_SCALE = "rainNoiseScale";
-    public static final String DETAIL_NOISE_SCALE = "detailNoiseScale";
+    public static final String BETA_TEMP_NOISE_SCALE = "betaTempNoiseScale";
+    public static final String BETA_RAIN_NOISE_SCALE = "betaRainNoiseScale";
+    public static final String BETA_DETAIL_NOISE_SCALE = "betaDetailNoiseScale";
     
     /* Cave Biome Settings */
     
@@ -84,4 +84,6 @@ public class NbtTags {
     // Cave Noise
     public static final String VORONOI_HORIZONTAL_NOISE_SCALE = "voronoiHorizontalNoiseScale";
     public static final String VORONOI_VERTICAL_NOISE_SCALE = "voronoiVerticalNoiseScale";
+    public static final String VORONOI_DEPTH_MIN_Y = "voronoiDepthMinY";
+    public static final String VORONOI_DEPTH_MAX_Y = "voronoiDepthMaxY";
 }

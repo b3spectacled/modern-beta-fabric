@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import mod.bespectacled.modernbeta.ModernBeta;
+import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome.ConfigClimateMapping;
 import mod.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import mod.bespectacled.modernbeta.util.NbtTags;
@@ -11,15 +12,17 @@ import mod.bespectacled.modernbeta.util.NbtUtil;
 import net.minecraft.nbt.NbtCompound;
 
 public class ModernBetaBiomeSettings {
+    private static final ModernBetaConfigBiome CONFIG = ModernBeta.BIOME_CONFIG;
+    
     public final String biomeProvider;
     public final String singleBiome;
     public final boolean replaceOceanBiomes;
     
-    public final float tempNoiseScale;
-    public final float rainNoiseScale;
-    public final float detailNoiseScale;
+    public final float betaTempNoiseScale;
+    public final float betaRainNoiseScale;
+    public final float betaDetailNoiseScale;
     
-    public final Map<String, ConfigClimateMapping> climates;
+    public final Map<String, ConfigClimateMapping> betaClimates;
     
     public ModernBetaBiomeSettings() {
         this(new Builder());
@@ -30,11 +33,11 @@ public class ModernBetaBiomeSettings {
         this.singleBiome = builder.singleBiome;
         this.replaceOceanBiomes = builder.replaceOceanBiomes;
         
-        this.tempNoiseScale = builder.tempNoiseScale;
-        this.rainNoiseScale = builder.rainNoiseScale;
-        this.detailNoiseScale = builder.detailNoiseScale;
+        this.betaTempNoiseScale = builder.betaTempNoiseScale;
+        this.betaRainNoiseScale = builder.betaRainNoiseScale;
+        this.betaDetailNoiseScale = builder.betaDetailNoiseScale;
         
-        this.climates = builder.climates;
+        this.betaClimates = builder.betaClimates;
     }
     
     public NbtCompound toCompound() {
@@ -44,13 +47,13 @@ public class ModernBetaBiomeSettings {
         compound.putString(NbtTags.SINGLE_BIOME, this.singleBiome);
         compound.putBoolean(NbtTags.REPLACE_OCEAN_BIOMES, this.replaceOceanBiomes);
         
-        compound.putFloat(NbtTags.TEMP_NOISE_SCALE, this.tempNoiseScale);
-        compound.putFloat(NbtTags.RAIN_NOISE_SCALE, this.rainNoiseScale);
-        compound.putFloat(NbtTags.DETAIL_NOISE_SCALE, this.detailNoiseScale);
+        compound.putFloat(NbtTags.BETA_TEMP_NOISE_SCALE, this.betaTempNoiseScale);
+        compound.putFloat(NbtTags.BETA_RAIN_NOISE_SCALE, this.betaRainNoiseScale);
+        compound.putFloat(NbtTags.BETA_DETAIL_NOISE_SCALE, this.betaDetailNoiseScale);
         
         NbtCompoundBuilder builder = new NbtCompoundBuilder();
-        ModernBeta.BIOME_CONFIG.climates.keySet().forEach(key -> {
-            builder.putCompound(key, this.climates.get(key).toCompound());
+        CONFIG.betaClimates.keySet().forEach(key -> {
+            builder.putCompound(key, this.betaClimates.get(key).toCompound());
         });
         compound.put(NbtTags.BIOMES, builder.build());
         
@@ -62,35 +65,35 @@ public class ModernBetaBiomeSettings {
         public String singleBiome;
         public boolean replaceOceanBiomes;
         
-        public float tempNoiseScale;
-        public float rainNoiseScale;
-        public float detailNoiseScale;
+        public float betaTempNoiseScale;
+        public float betaRainNoiseScale;
+        public float betaDetailNoiseScale;
         
-        public Map<String, ConfigClimateMapping> climates;
+        public Map<String, ConfigClimateMapping> betaClimates;
         
         public Builder() {
             this(new NbtCompound());
         }
         
         public Builder(NbtCompound compound) {
-            this.biomeProvider = NbtUtil.readString(NbtTags.BIOME_PROVIDER, compound, ModernBeta.BIOME_CONFIG.biomeProvider);
-            this.singleBiome = NbtUtil.readString(NbtTags.SINGLE_BIOME, compound, ModernBeta.BIOME_CONFIG.singleBiome);
-            this.replaceOceanBiomes = NbtUtil.readBoolean(NbtTags.REPLACE_OCEAN_BIOMES, compound, ModernBeta.BIOME_CONFIG.replaceOceanBiomes);
+            this.biomeProvider = NbtUtil.readString(NbtTags.BIOME_PROVIDER, compound, CONFIG.biomeProvider);
+            this.singleBiome = NbtUtil.readString(NbtTags.SINGLE_BIOME, compound, CONFIG.singleBiome);
+            this.replaceOceanBiomes = NbtUtil.readBoolean(NbtTags.REPLACE_OCEAN_BIOMES, compound, CONFIG.replaceOceanBiomes);
             
-            this.tempNoiseScale = NbtUtil.readFloat(NbtTags.TEMP_NOISE_SCALE, compound, ModernBeta.BIOME_CONFIG.tempNoiseScale);
-            this.rainNoiseScale = NbtUtil.readFloat(NbtTags.RAIN_NOISE_SCALE, compound, ModernBeta.BIOME_CONFIG.rainNoiseScale);
-            this.detailNoiseScale = NbtUtil.readFloat(NbtTags.DETAIL_NOISE_SCALE, compound, ModernBeta.BIOME_CONFIG.detailNoiseScale);
+            this.betaTempNoiseScale = NbtUtil.readFloat(NbtTags.BETA_TEMP_NOISE_SCALE, compound, CONFIG.betaTempNoiseScale);
+            this.betaRainNoiseScale = NbtUtil.readFloat(NbtTags.BETA_RAIN_NOISE_SCALE, compound, CONFIG.betaRainNoiseScale);
+            this.betaDetailNoiseScale = NbtUtil.readFloat(NbtTags.BETA_DETAIL_NOISE_SCALE, compound, CONFIG.betaDetailNoiseScale);
             
-            this.climates = new LinkedHashMap<>();
+            this.betaClimates = new LinkedHashMap<>();
             if (compound.contains(NbtTags.BIOMES)) {
                 NbtCompound biomes = NbtUtil.readCompoundOrThrow(NbtTags.BIOMES, compound);
                 
                 biomes.getKeys().forEach(key -> {
-                    this.climates.put(key, ConfigClimateMapping.fromCompound(NbtUtil.readCompoundOrThrow(key, biomes)));
+                    this.betaClimates.put(key, ConfigClimateMapping.fromCompound(NbtUtil.readCompoundOrThrow(key, biomes)));
                 });
                 
             } else {
-                this.climates.putAll(ModernBeta.BIOME_CONFIG.climates);
+                this.betaClimates.putAll(CONFIG.betaClimates);
             }
         }
         

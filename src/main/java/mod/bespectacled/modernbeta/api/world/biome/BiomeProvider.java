@@ -34,7 +34,7 @@ public abstract class BiomeProvider {
      * 
      * @return A biome at given biome coordinates.
      */
-    public abstract RegistryEntry<Biome> getBiomeForNoiseGen(int biomeX, int biomeY, int biomeZ);
+    public abstract RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ);
     
     /**
      * Gets a list of biomes for biome source, for the purpose of locating structures, etc.

@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
-import mod.bespectacled.modernbeta.api.world.biome.climate.SkyClimateSampler;
+import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSamplerSky;
 import mod.bespectacled.modernbeta.client.color.BetaBlockColors;
 import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
 import mod.bespectacled.modernbeta.util.GenUtil;
@@ -46,7 +46,7 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
     
     @Unique private Vec3d capturedPos;
     @Unique private Optional<ClimateSampler> climateSampler;
-    @Unique private Optional<SkyClimateSampler> skyClimateSampler;
+    @Unique private Optional<ClimateSamplerSky> skyClimateSampler;
     @Unique private boolean isModernBetaWorld;
     
     @Override
@@ -96,7 +96,7 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
                 if (biomeProvider instanceof ClimateSampler climateSampler)
                     this.climateSampler = Optional.ofNullable(climateSampler);
                 
-                if (biomeProvider instanceof SkyClimateSampler skyClimateSampler)
+                if (biomeProvider instanceof ClimateSamplerSky skyClimateSampler)
                     this.skyClimateSampler = Optional.ofNullable(skyClimateSampler);
             }
             

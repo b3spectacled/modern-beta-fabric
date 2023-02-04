@@ -281,14 +281,14 @@ public abstract class NoiseChunkProvider extends ChunkProvider {
      * @return Modified noise density.
      */
     protected double applySlides(double density, int noiseY) {
-        if (this.chunkSettings.topSlideSize > 0.0) {
-            double delta = ((double)(this.noiseSizeY - noiseY) - this.chunkSettings.topSlideOffset) / this.chunkSettings.topSlideSize;
-            density = MathHelper.clampedLerp(this.chunkSettings.topSlideTarget, density, delta);
+        if (this.chunkSettings.noiseTopSlideSize > 0.0) {
+            double delta = ((double)(this.noiseSizeY - noiseY) - this.chunkSettings.noiseTopSlideOffset) / this.chunkSettings.noiseTopSlideSize;
+            density = MathHelper.clampedLerp(this.chunkSettings.noiseTopSlideTarget, density, delta);
         }
         
-        if (this.chunkSettings.bottomSlideSize > 0.0) {
-            double delta = ((double)noiseY - this.chunkSettings.bottomSlideOffset) / this.chunkSettings.bottomSlideSize;
-            density = MathHelper.clampedLerp(this.chunkSettings.bottomSlideTarget, density, delta);
+        if (this.chunkSettings.noiseBottomSlideSize > 0.0) {
+            double delta = ((double)noiseY - this.chunkSettings.noiseBottomSlideOffset) / this.chunkSettings.noiseBottomSlideSize;
+            density = MathHelper.clampedLerp(this.chunkSettings.noiseBottomSlideTarget, density, delta);
         }
         
         return density;

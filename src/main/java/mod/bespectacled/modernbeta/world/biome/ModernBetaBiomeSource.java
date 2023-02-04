@@ -13,10 +13,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.api.registry.Registries;
-import mod.bespectacled.modernbeta.api.world.biome.BiomeBlockResolver;
+import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
+import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverBlock;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
-import mod.bespectacled.modernbeta.api.world.biome.OceanBiomeResolver;
+import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverOcean;
 import mod.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import mod.bespectacled.modernbeta.settings.ModernBetaBiomeSettings;
 import mod.bespectacled.modernbeta.settings.ModernBetaCaveBiomeSettings;
@@ -66,11 +66,11 @@ public class ModernBetaBiomeSource extends BiomeSource {
         ModernBetaBiomeSettings modernBetaBiomeSettings = new ModernBetaBiomeSettings.Builder(biomeSettings).build();
         ModernBetaCaveBiomeSettings modernBetaCaveBiomeSettings = new ModernBetaCaveBiomeSettings.Builder(caveBiomeSettings).build();
         
-        BiomeProvider biomeProvider  = Registries.BIOME
+        BiomeProvider biomeProvider  = ModernBetaRegistries.BIOME
             .get(modernBetaBiomeSettings.biomeProvider)
             .apply(biomeSettings, biomeRegistry);
         
-        CaveBiomeProvider caveBiomeProvider = Registries.CAVE_BIOME
+        CaveBiomeProvider caveBiomeProvider = ModernBetaRegistries.CAVE_BIOME
             .get(modernBetaCaveBiomeSettings.biomeProvider)
             .apply(caveBiomeSettings, biomeRegistry);
         
@@ -97,11 +97,11 @@ public class ModernBetaBiomeSource extends BiomeSource {
         ModernBetaBiomeSettings modernBetaBiomeSettings = new ModernBetaBiomeSettings.Builder(this.biomeSettings).build();
         ModernBetaCaveBiomeSettings modernBetaCaveBiomeSettings = new ModernBetaCaveBiomeSettings.Builder(this.caveBiomeSettings).build();
         
-        this.biomeProvider = Registries.BIOME
+        this.biomeProvider = ModernBetaRegistries.BIOME
             .get(modernBetaBiomeSettings.biomeProvider)
             .apply(biomeSettings, biomeRegistry);
         
-        this.caveBiomeProvider = Registries.CAVE_BIOME
+        this.caveBiomeProvider = ModernBetaRegistries.CAVE_BIOME
             .get(modernBetaCaveBiomeSettings.biomeProvider)
             .apply(caveBiomeSettings, biomeRegistry);
         
@@ -115,7 +115,7 @@ public class ModernBetaBiomeSource extends BiomeSource {
     public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {
         this.initializeBiomeProvider();
 
-        return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        return this.biomeProvider.getBiome(biomeX, biomeY, biomeZ);
     }
     
     @Override
@@ -189,17 +189,17 @@ public class ModernBetaBiomeSource extends BiomeSource {
     }
 
     public RegistryEntry<Biome> getOceanBiome(int biomeX, int biomeY, int biomeZ) {
-        if (this.biomeProvider instanceof OceanBiomeResolver oceanBiomeResolver)
-            return oceanBiomeResolver.getOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        if (this.biomeProvider instanceof BiomeResolverOcean oceanBiomeResolver)
+            return oceanBiomeResolver.getOceanBiome(biomeX, biomeY, biomeZ);
         
-        return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        return this.biomeProvider.getBiome(biomeX, biomeY, biomeZ);
     }
     
     public RegistryEntry<Biome> getDeepOceanBiome(int biomeX, int biomeY, int biomeZ) {
-        if (this.biomeProvider instanceof OceanBiomeResolver oceanBiomeResolver)
-            return oceanBiomeResolver.getDeepOceanBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        if (this.biomeProvider instanceof BiomeResolverOcean oceanBiomeResolver)
+            return oceanBiomeResolver.getDeepOceanBiome(biomeX, biomeY, biomeZ);
         
-        return this.biomeProvider.getBiomeForNoiseGen(biomeX, biomeY, biomeZ);
+        return this.biomeProvider.getBiome(biomeX, biomeY, biomeZ);
     }
     
     public RegistryEntry<Biome> getCaveBiome(int biomeX, int biomeY, int biomeZ) {
@@ -209,16 +209,16 @@ public class ModernBetaBiomeSource extends BiomeSource {
     }
     
     public RegistryEntry<Biome> getBiomeForSurfaceGen(int x, int y, int z) {
-        if (this.biomeProvider instanceof BiomeBlockResolver biomeResolver) {
-            return biomeResolver.getBiomeAtBlock(x, y, z);
+        if (this.biomeProvider instanceof BiomeResolverBlock biomeResolver) {
+            return biomeResolver.getBiomeBlock(x, y, z);
         }
         
-        return this.biomeProvider.getBiomeForNoiseGen(x >> 2, y >> 2, z >> 2);
+        return this.biomeProvider.getBiome(x >> 2, y >> 2, z >> 2);
     }
     
     public RegistryEntry<Biome> getBiomeForSurfaceGen(ChunkRegion region, BlockPos pos) {
-        if (this.biomeProvider instanceof BiomeBlockResolver biomeResolver)
-            return biomeResolver.getBiomeAtBlock(pos.getX(), pos.getY(), pos.getZ());
+        if (this.biomeProvider instanceof BiomeResolverBlock biomeResolver)
+            return biomeResolver.getBiomeBlock(pos.getX(), pos.getY(), pos.getZ());
         
         return region.getBiome(pos);
     }

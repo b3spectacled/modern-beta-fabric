@@ -26,27 +26,27 @@ public class ModernBetaConfigRendering implements ConfigData {
     
     public static class ConfigBiomeColor {
         @ConfigEntry.Gui.Tooltip(count = 2)
-        public boolean renderBetaSkyColor = true;
+        public boolean useBetaSkyColor = true;
 
         @ConfigEntry.Gui.Tooltip(count = 3)
-        public boolean renderBetaBiomeColor = true;
+        public boolean useBetaBiomeColor = true;
         
         @ConfigEntry.Gui.Tooltip(count = 2)
-        public boolean renderPEBetaSkyColor = false;
+        public boolean usePEBetaSkyColor = false;
 
         @ConfigEntry.Gui.Tooltip(count = 3)
-        public boolean renderPEBetaBiomeColor = false;
+        public boolean usePEBetaBiomeColor = false;
         
         @ConfigEntry.Gui.Tooltip(count = 2)
-        public boolean renderOldFogColor = true;
+        public boolean useOldFogColor = true;
     }
     
     public static class ConfigOther {
         @ConfigEntry.Gui.Tooltip(count = 1)
-        public boolean renderAlphaSunset = false;
+        public boolean useAlphaSunset = false;
 
         @ConfigEntry.Gui.Tooltip(count = 1)
-        public boolean renderGameVersion = false;
+        public boolean useGameVersion = false;
         
         @ConfigEntry.Gui.Tooltip(count = 1)
         @ConfigEntry.BoundedDiscrete(min = 0, max = 320)

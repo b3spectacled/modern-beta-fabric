@@ -3,7 +3,7 @@ package mod.bespectacled.modernbeta.api.world.biome;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
-public interface BiomeBlockResolver {
+public interface BiomeResolverBlock {
     /**
      * Gets a biome at given block coordinates, for purpose of surface generation.
      * 
@@ -13,5 +13,5 @@ public interface BiomeBlockResolver {
      * 
      * @return A biome at given block coordinates.
      */
-    RegistryEntry<Biome> getBiomeAtBlock(int x, int y, int z);
+    RegistryEntry<Biome> getBiomeBlock(int x, int y, int z);
 }
