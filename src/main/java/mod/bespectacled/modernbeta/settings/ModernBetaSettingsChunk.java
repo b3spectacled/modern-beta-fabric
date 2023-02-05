@@ -244,7 +244,7 @@ public class ModernBetaSettingsChunk {
             this.noiseTopSlideOffset = NbtUtil.readInt(NbtTags.NOISE_TOP_SLIDE_OFFSET, compound, CONFIG.noiseTopSlideOffset);
             
             this.noiseBottomSlideTarget = NbtUtil.readInt(NbtTags.NOISE_BOTTOM_SLIDE_TARGET, compound, CONFIG.noiseBottomSlideTarget);
-            this.noiseBottomSlideSize = NbtUtil.readInt(NbtTags.NOISE_BOTTOM_SLIDE_TARGET, compound, CONFIG.noiseBottomSlideSize);
+            this.noiseBottomSlideSize = NbtUtil.readInt(NbtTags.NOISE_BOTTOM_SLIDE_SIZE, compound, CONFIG.noiseBottomSlideSize);
             this.noiseBottomSlideOffset = NbtUtil.readInt(NbtTags.NOISE_BOTTOM_SLIDE_OFFSET, compound, CONFIG.noiseBottomSlideOffset);
             
             this.infdevUsePyramid = NbtUtil.readBoolean(NbtTags.INFDEV_USE_PYRAMID, compound, CONFIG.infdevUsePyramid);
