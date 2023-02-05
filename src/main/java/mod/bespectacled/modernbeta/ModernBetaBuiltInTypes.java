@@ -1,5 +1,7 @@
 package mod.bespectacled.modernbeta;
 
+import net.minecraft.registry.tag.BiomeTags;
+
 public final class ModernBetaBuiltInTypes {
     public static final String DEFAULT_ID = "default";
     
@@ -43,6 +45,18 @@ public final class ModernBetaBuiltInTypes {
         public final String name;
         
         private CaveBiome(String name) { this.name = name; }
+    }
+    
+    public enum SurfaceConfig {
+        DESERT("is_desert"),
+        BADLANDS(BiomeTags.IS_BADLANDS.id().toString()),
+        NETHER(BiomeTags.IS_NETHER.id().toString()),
+        THEEND(BiomeTags.IS_END.id().toString())
+        ;
+        
+        public final String id;
+        
+        private SurfaceConfig(String name) { this.id = name; }
     }
     
     public enum NoisePostProcessor {

@@ -2,10 +2,6 @@ package mod.bespectacled.modernbeta.api.world.chunk.noise;
 
 import net.minecraft.util.math.MathHelper;
 
-/*
- * A shoddy imitation of NoiseColumnSampler that is hopefully flexible enough
- * to accommodate Beta terrain generation and 1.18 gen changes, argh!
- */
 public abstract class NoiseProvider {
     protected final int noiseSizeX;
     protected final int noiseSizeY;

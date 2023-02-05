@@ -15,7 +15,7 @@ public class ModernBetaConfigChunk implements ConfigData {
     public int deepslateMaxY = 8;
     public String deepslateBlock = "minecraft:deepslate";
 
-    public String noisePostProcessor = ModernBetaBuiltInTypes.NoisePostProcessor.NONE.name;
+    //public String noisePostProcessor = ModernBetaBuiltInTypes.NoisePostProcessor.NONE.name;
     public float noiseCoordinateScale = 684.412f;
     public float noiseHeightScale = 684.412f;
     public float noiseUpperLimitScale = 512.0f;

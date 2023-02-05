@@ -85,6 +85,7 @@ public class ModernBeta implements ModInitializer {
         ModernBetaBuiltInProviders.registerChunkProviders();
         ModernBetaBuiltInProviders.registerBiomeProviders();
         ModernBetaBuiltInProviders.registerCaveBiomeProviders();
+        ModernBetaBuiltInProviders.registerSurfaceConfigs();
         ModernBetaBuiltInProviders.registerNoisePostProcessors();
 
         if (CLIENT_ENV) {

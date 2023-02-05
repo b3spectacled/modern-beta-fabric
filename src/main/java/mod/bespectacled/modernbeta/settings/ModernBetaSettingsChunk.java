@@ -226,7 +226,7 @@ public class ModernBetaSettingsChunk {
             this.deepslateMaxY = NbtUtil.readInt(NbtTags.DEEPSLATE_MAX_Y, compound, CONFIG.deepslateMaxY);
             this.deepslateBlock = NbtUtil.readString(NbtTags.DEEPSLATE_BLOCK, compound, CONFIG.deepslateBlock);
         
-            this.noisePostProcessor = NbtUtil.readString(NbtTags.NOISE_POST_PROCESSOR, compound, CONFIG.noisePostProcessor);
+            //this.noisePostProcessor = NbtUtil.readString(NbtTags.NOISE_POST_PROCESSOR, compound, CONFIG.noisePostProcessor);
             this.noiseCoordinateScale = NbtUtil.readFloat(NbtTags.NOISE_COORDINATE_SCALE, compound, CONFIG.noiseCoordinateScale);
             this.noiseHeightScale = NbtUtil.readFloat(NbtTags.NOISE_HEIGHT_SCALE, compound, CONFIG.noiseHeightScale);
             this.noiseUpperLimitScale = NbtUtil.readFloat(NbtTags.NOISE_UPPER_LIMIT_SCALE, compound, CONFIG.noiseUpperLimitScale);

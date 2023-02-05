@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -75,6 +76,13 @@ public final class ModernBetaRegistry<T> {
             .filter(e -> !e.getKey().equals(ModernBetaBuiltInTypes.DEFAULT_ID))
             .map(e -> e.getValue())
             .collect(Collectors.toList());
+    }
+    
+    public Set<Entry<String, T>> getEntrySet() {
+        return this.map.entrySet()
+            .stream()
+            .filter(e -> !e.getKey().equals(ModernBetaBuiltInTypes.DEFAULT_ID))
+            .collect(Collectors.toSet());
     }
 }
   
