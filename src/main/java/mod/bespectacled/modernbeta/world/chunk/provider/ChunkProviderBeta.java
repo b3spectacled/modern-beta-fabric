@@ -182,7 +182,7 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
                         runDepth = surfaceDepth;
                         
                         if (y < this.seaLevel && topBlock.isAir()) { // Generate water bodies
-                            BlockState fluidBlock = aquiferSampler.apply(noisePos.setBlockCoords(x, y, z), 0.0);
+                            BlockState fluidBlock = aquiferSampler.apply(noisePos.set(x, y, z), 0.0);
                             
                             boolean isAir = fluidBlock == null;
                             topBlock = isAir ? BlockStates.AIR : fluidBlock;

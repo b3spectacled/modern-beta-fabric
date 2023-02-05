@@ -54,10 +54,15 @@ public class NbtTags {
     public static final String ISLES_CENTER_OCEAN_RADIUS = "islesCenterOceanRadius";
     public static final String ISLES_OUTER_ISLAND_NOISE_SCALE = "islesOuterIslandNoiseScale";
     public static final String ISLES_OUTER_ISLAND_NOISE_OFFSET = "islesOuterIslandNoiseOffset";
-
+    
+    /* Biome Settings */
+    
+    public static final String BIOME_PROVIDER = "biomeProvider";
+    public static final String SINGLE_BIOME = "singleBiome";
+    public static final String USE_OCEAN_BIOMES = "useOceanBiomes";
+    
     /* Climate/Voronoi Settings */
     
-    public static final String BIOMES = "biomes";
     public static final String BIOME = "biome";
     public static final String OCEAN_BIOME = "oceanBiome";
     public static final String DEEP_OCEAN_BIOME = "deepOceanBiome";
@@ -66,24 +71,18 @@ public class NbtTags {
     public static final String RAIN = "rain";
     public static final String DEPTH = "depth";
     
-    /* Biome Settings */
+    public static final String CLIMATE_TEMP_NOISE_SCALE = "climateTempNoiseScale";
+    public static final String CLIMATE_RAIN_NOISE_SCALE = "climateRainNoiseScale";
+    public static final String CLIMATE_DETAIL_NOISE_SCALE = "climateDetailNoiseScale";
+    public static final String CLIMATE_MAPPINGS = "climateMappings";
     
-    public static final String BIOME_PROVIDER = "biomeProvider";
-    public static final String SINGLE_BIOME = "singleBiome";
-    public static final String REPLACE_OCEAN_BIOMES = "replaceOceanBiomes";
-    
-    // Beta Noise
-    public static final String BETA_TEMP_NOISE_SCALE = "betaTempNoiseScale";
-    public static final String BETA_RAIN_NOISE_SCALE = "betaRainNoiseScale";
-    public static final String BETA_DETAIL_NOISE_SCALE = "betaDetailNoiseScale";
-    
-    /* Cave Biome Settings */
-    
-    public static final String CAVE_BIOME_PROVIDER = "biomeProvider";
-    
-    // Cave Noise
     public static final String VORONOI_HORIZONTAL_NOISE_SCALE = "voronoiHorizontalNoiseScale";
     public static final String VORONOI_VERTICAL_NOISE_SCALE = "voronoiVerticalNoiseScale";
     public static final String VORONOI_DEPTH_MIN_Y = "voronoiDepthMinY";
     public static final String VORONOI_DEPTH_MAX_Y = "voronoiDepthMaxY";
+    public static final String VORONOI_POINTS = "voronoiPoints";
+    
+    /* Cave Biome Settings */
+    
+    public static final String CAVE_BIOME_PROVIDER = "biomeProvider";
 }

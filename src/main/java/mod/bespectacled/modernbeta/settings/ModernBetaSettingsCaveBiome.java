@@ -5,7 +5,7 @@ import java.util.List;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome.VoronoiPointCaveBiome;
+import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome.ConfigVoronoiPoint;
 import mod.bespectacled.modernbeta.util.NbtListBuilder;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
@@ -21,7 +21,7 @@ public class ModernBetaSettingsCaveBiome {
     public final float voronoiVerticalNoiseScale;
     public final int voronoiDepthMinY;
     public final int voronoiDepthMaxY;
-    public final List<VoronoiPointCaveBiome> voronoiPoints;
+    public final List<ConfigVoronoiPoint> voronoiPoints;
     
     public ModernBetaSettingsCaveBiome() {
         this(new Builder());
@@ -49,7 +49,7 @@ public class ModernBetaSettingsCaveBiome {
         
         NbtListBuilder builder = new NbtListBuilder();
         this.voronoiPoints.forEach(p -> builder.add(p.toCompound()));
-        compound.put(NbtTags.BIOMES, builder.build());
+        compound.put(NbtTags.VORONOI_POINTS, builder.build());
         
         return compound;
     }
@@ -62,7 +62,7 @@ public class ModernBetaSettingsCaveBiome {
         public float voronoiVerticalNoiseScale;
         public int voronoiDepthMinY;
         public int voronoiDepthMaxY;
-        public List<VoronoiPointCaveBiome> voronoiPoints;
+        public List<ConfigVoronoiPoint> voronoiPoints;
         
         public Builder() {
             this(new NbtCompound());
@@ -78,24 +78,28 @@ public class ModernBetaSettingsCaveBiome {
             this.voronoiVerticalNoiseScale = NbtUtil.readFloat(NbtTags.VORONOI_VERTICAL_NOISE_SCALE, compound, CONFIG.voronoiVerticalNoiseScale);
             
             this.voronoiPoints = new ArrayList<>();
-            if (compound.contains(NbtTags.BIOMES)) {
-                NbtUtil.toListOrThrow(compound.get(NbtTags.BIOMES)).stream().forEach(e -> {
+            if (compound.contains(NbtTags.VORONOI_POINTS)) {
+                NbtUtil.toListOrThrow(compound.get(NbtTags.VORONOI_POINTS)).stream().forEach(e -> {
                     NbtCompound point = NbtUtil.toCompoundOrThrow(e);
                     
                     String biome = NbtUtil.readStringOrThrow(NbtTags.BIOME, point);
                     double temp = NbtUtil.readDoubleOrThrow(NbtTags.TEMP, point);
                     double rain = NbtUtil.readDoubleOrThrow(NbtTags.RAIN, point);
-                    double weight = NbtUtil.readDoubleOrThrow(NbtTags.DEPTH, point);
+                    double depth = NbtUtil.readDoubleOrThrow(NbtTags.DEPTH, point);
                     
-                    this.voronoiPoints.add(new VoronoiPointCaveBiome(biome, temp, rain, weight));
+                    this.voronoiPoints.add(new ConfigVoronoiPoint(biome, temp, rain, depth));
                 });
             } else {
                 this.voronoiPoints.addAll(CONFIG.voronoiPoints);
             }
+            
+            this.loadDeprecated(compound);
         }
         
         public ModernBetaSettingsCaveBiome build() {
             return new ModernBetaSettingsCaveBiome(this);
         }
+        
+        private void loadDeprecated(NbtCompound compound) {}
     }
 }

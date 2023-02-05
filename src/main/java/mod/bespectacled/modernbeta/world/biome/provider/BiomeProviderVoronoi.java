@@ -1,51 +1,47 @@
 package mod.bespectacled.modernbeta.world.biome.provider;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverBlock;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverOcean;
-import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
-import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSamplerSky;
 import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
+import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome.ConfigVoronoiPoint;
 import mod.bespectacled.modernbeta.util.chunk.ChunkCache;
 import mod.bespectacled.modernbeta.util.chunk.ChunkClimate;
-import mod.bespectacled.modernbeta.util.chunk.ChunkClimateSky;
 import mod.bespectacled.modernbeta.util.noise.SimplexOctaveNoise;
-import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMap;
-import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
+import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping;
+import mod.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointRules;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
-public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, ClimateSamplerSky, BiomeResolverBlock, BiomeResolverOcean {
-    private ClimateMap climateMap;
-    private BetaClimateSampler climateSampler;
-    private BetaClimateSamplerSky climateSamplerSky;
+public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolverBlock, BiomeResolverOcean {
+    private VoronoiClimateSampler climateSampler;
+    private VoronoiPointRules<ClimateMapping, Clime> rules;
     
-    public BiomeProviderBeta(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
+    public BiomeProviderVoronoi(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
         super(settings, biomeRegistry);
     }
     
     @Override
     public boolean initProvider(long seed) {
-        this.climateMap = new ClimateMap(this.settings);
-        this.climateSampler = new BetaClimateSampler(
+        this.climateSampler = new VoronoiClimateSampler(
             seed,
             this.settings.climateTempNoiseScale,
             this.settings.climateRainNoiseScale,
             this.settings.climateDetailNoiseScale
         );
-        this.climateSamplerSky = new BetaClimateSamplerSky(
-            seed,
-            this.settings.climateTempNoiseScale
-        );
-        
+        this.rules = buildRules(this.settings.voronoiPoints);
+
         return true;
     }
 
@@ -55,10 +51,9 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
         int z = biomeZ << 2;
         
         Clime clime = this.climateSampler.sampleClime(x, z);
-        double temp = clime.temp();
-        double rain = clime.rain();
+        ClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
         
-        return this.biomeRegistry.getOrThrow(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
+        return this.biomeRegistry.getOrThrow(climateMapping.biome());
     }
  
     @Override
@@ -67,10 +62,9 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
         int z = biomeZ << 2;
         
         Clime clime = this.climateSampler.sampleClime(x, z);
-        double temp = clime.temp();
-        double rain = clime.rain();
+        ClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
         
-        return this.biomeRegistry.getOrThrow(this.climateMap.getBiome(temp, rain, ClimateType.OCEAN));
+        return this.biomeRegistry.getOrThrow(climateMapping.oceanBiome());
     }
     
     @Override
@@ -79,47 +73,44 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
         int z = biomeZ << 2;
         
         Clime clime = this.climateSampler.sampleClime(x, z);
-        double temp = clime.temp();
-        double rain = clime.rain();
+        ClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
         
-        return this.biomeRegistry.getOrThrow(this.climateMap.getBiome(temp, rain, ClimateType.DEEP_OCEAN));
+        return this.biomeRegistry.getOrThrow(climateMapping.deepOceanBiome());
     }
     
     @Override
     public RegistryEntry<Biome> getBiomeBlock(int x, int y, int z) {
         Clime clime = this.climateSampler.sampleClime(x, z);
-        double temp = clime.temp();
-        double rain = clime.rain();
+        ClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
         
-        return this.biomeRegistry.getOrThrow(this.climateMap.getBiome(temp, rain, ClimateType.LAND));
+        return this.biomeRegistry.getOrThrow(climateMapping.biome());
     }
 
     @Override
     public List<RegistryEntry<Biome>> getBiomesForRegistry() {
-        return this.climateMap.getBiomeKeys().stream().map(key -> this.biomeRegistry.getOrThrow(key)).collect(Collectors.toList());
-    }
-
-    @Override
-    public double sampleSkyTemp(int x, int z) {
-        return this.climateSamplerSky.sampleSkyTemp(x, z);
-    }
-
-    @Override
-    public Clime sample(int x, int z) {
-        return this.climateSampler.sampleClime(x, z);
+        List<RegistryEntry<Biome>> biomes = new ArrayList<>();
+        biomes.addAll(this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrThrow(key.biome())).collect(Collectors.toList()));
+        biomes.addAll(this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrThrow(key.oceanBiome())).collect(Collectors.toList()));
+        biomes.addAll(this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrThrow(key.deepOceanBiome())).collect(Collectors.toList()));
+        
+        return biomes;
     }
     
-    @Override
-    public boolean sampleForBiomeColor() {
-        return ModernBeta.RENDER_CONFIG.configBiomeColor.useBetaBiomeColor;
+    private static VoronoiPointRules<ClimateMapping, Clime> buildRules(List<ConfigVoronoiPoint> points) {
+        VoronoiPointRules.Builder<ClimateMapping, Clime> builder = new VoronoiPointRules.Builder<>();
+        
+        for (ConfigVoronoiPoint point : points) {
+            RegistryKey<Biome> biome = point.biome.isBlank() ? null : RegistryKey.of(RegistryKeys.BIOME, new Identifier(point.biome));
+            RegistryKey<Biome> oceanBiome = point.oceanBiome.isBlank() ? null : RegistryKey.of(RegistryKeys.BIOME, new Identifier(point.oceanBiome));
+            RegistryKey<Biome> deepOceanBiome = point.deepOceanBiome.isBlank() ? null : RegistryKey.of(RegistryKeys.BIOME, new Identifier(point.deepOceanBiome));
+            
+            builder.add(new ClimateMapping(biome, oceanBiome, deepOceanBiome), new Clime(point.temp, point.rain));
+        }
+        
+        return builder.build();
     }
     
-    @Override
-    public boolean sampleSkyColor() {
-        return ModernBeta.RENDER_CONFIG.configBiomeColor.useBetaSkyColor;
-    }
-    
-    private static class BetaClimateSampler {
+    private static class VoronoiClimateSampler {
         private final SimplexOctaveNoise tempOctaveNoise;
         private final SimplexOctaveNoise rainOctaveNoise;
         private final SimplexOctaveNoise detailOctaveNoise;
@@ -130,7 +121,7 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
         private final double rainNoiseScale;
         private final double detailNoiseScale;
         
-        public BetaClimateSampler(long seed, double tempNoiseScale, double rainNoiseScale, double detailNoiseScale) {
+        public VoronoiClimateSampler(long seed, double tempNoiseScale, double rainNoiseScale, double detailNoiseScale) {
             this.tempOctaveNoise = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
             this.rainOctaveNoise = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
             this.detailOctaveNoise = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
@@ -167,38 +158,6 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
             temp = 1.0D - (1.0D - temp) * (1.0D - temp);
             
             return new Clime(MathHelper.clamp(temp, 0.0, 1.0), MathHelper.clamp(rain, 0.0, 1.0));
-        }
-    }
-    
-    private static class BetaClimateSamplerSky {
-        private final SimplexOctaveNoise tempOctaveNoise;
-        
-        private final ChunkCache<ChunkClimateSky> chunkCacheClimateSky;
-        
-        private final double tempNoiseScale;
-        
-        public BetaClimateSamplerSky(long seed, double tempNoiseScale) {
-            this.tempOctaveNoise = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
-            
-            this.chunkCacheClimateSky = new ChunkCache<>(
-                "sky", 
-                256, 
-                true, 
-                (chunkX, chunkZ) -> new ChunkClimateSky(chunkX, chunkZ, this::sampleSkyTempNoise)
-            );
-            
-            this.tempNoiseScale = tempNoiseScale;
-        }
-        
-        public double sampleSkyTemp(int x, int z) {
-            int chunkX = x >> 4;
-            int chunkZ = z >> 4;
-            
-            return this.chunkCacheClimateSky.get(chunkX, chunkZ).sampleTemp(x, z);
-        }
-        
-        private double sampleSkyTempNoise(int x, int z) {
-            return this.tempOctaveNoise.sample(x, z, this.tempNoiseScale, this.tempNoiseScale, 0.5D);
         }
     }
 }

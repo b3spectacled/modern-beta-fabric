@@ -5,6 +5,7 @@ import mod.bespectacled.modernbeta.api.world.chunk.noise.NoisePostProcessor;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderBeta;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderPE;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderSingle;
+import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderVoronoi;
 import mod.bespectacled.modernbeta.world.cavebiome.provider.CaveBiomeProviderNone;
 import mod.bespectacled.modernbeta.world.cavebiome.provider.CaveBiomeProviderSingle;
 import mod.bespectacled.modernbeta.world.cavebiome.provider.CaveBiomeProviderVoronoi;
@@ -46,10 +47,11 @@ public class ModernBetaBuiltInProviders {
         ModernBetaRegistries.BIOME.register(ModernBetaBuiltInTypes.Biome.BETA.name, BiomeProviderBeta::new);
         ModernBetaRegistries.BIOME.register(ModernBetaBuiltInTypes.Biome.SINGLE.name, BiomeProviderSingle::new);
         ModernBetaRegistries.BIOME.register(ModernBetaBuiltInTypes.Biome.PE.name, BiomeProviderPE::new);
+        ModernBetaRegistries.BIOME.register(ModernBetaBuiltInTypes.Biome.VORONOI.name, BiomeProviderVoronoi::new);
     }
     
     // Register default cave biome providers
-    public static void registerCaveBiomeProvider() {
+    public static void registerCaveBiomeProviders() {
         ModernBetaRegistries.CAVE_BIOME.register(ModernBetaBuiltInTypes.DEFAULT_ID, CaveBiomeProviderNone::new);
         ModernBetaRegistries.CAVE_BIOME.register(ModernBetaBuiltInTypes.CaveBiome.NONE.name, CaveBiomeProviderNone::new);
         ModernBetaRegistries.CAVE_BIOME.register(ModernBetaBuiltInTypes.CaveBiome.SINGLE.name, CaveBiomeProviderSingle::new);

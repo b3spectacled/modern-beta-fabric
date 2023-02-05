@@ -12,21 +12,21 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 
 public class CaveBiomeProviderSingle extends CaveBiomeProvider {
-    private final RegistryKey<Biome> biomeKey;
+    private final RegistryKey<Biome> biome;
     
     public CaveBiomeProviderSingle(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
         super(settings, biomeRegistry);
 
-        this.biomeKey = RegistryKey.of(RegistryKeys.BIOME, new Identifier(this.settings.singleBiome));
+        this.biome = RegistryKey.of(RegistryKeys.BIOME, new Identifier(this.settings.singleBiome));
     }
 
     @Override
     public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ) {
-        return this.biomeRegistry.getOrThrow(this.biomeKey);
+        return this.biomeRegistry.getOrThrow(this.biome);
     }
     
     @Override
     public List<RegistryEntry<Biome>> getBiomesForRegistry() {
-        return List.of(this.biomeRegistry.getOrThrow(this.biomeKey));
+        return List.of(this.biomeRegistry.getOrThrow(this.biome));
     }
 }

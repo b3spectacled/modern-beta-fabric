@@ -19,7 +19,7 @@ public class SimpleNoisePos implements DensityFunction.NoisePos {
         this.blockZ = blockZ;
     }
     
-    public SimpleNoisePos setBlockCoords(int blockX, int blockY, int blockZ) {
+    public SimpleNoisePos set(int blockX, int blockY, int blockZ) {
         this.blockX = blockX;
         this.blockY = blockY;
         this.blockZ = blockZ;

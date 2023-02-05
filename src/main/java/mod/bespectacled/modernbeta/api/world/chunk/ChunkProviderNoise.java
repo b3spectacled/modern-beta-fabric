@@ -575,7 +575,7 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
             double clampedDensity = MathHelper.clamp(density / 200.0, -1.0, 1.0);
             
             clampedDensity = clampedDensity / 2.0 - clampedDensity * clampedDensity * clampedDensity / 24.0;
-            clampedDensity += weightSampler.sample(noisePos.setBlockCoords(x, y, z));
+            clampedDensity += weightSampler.sample(noisePos.set(x, y, z));
             
             return aquiferSampler.apply(noisePos, clampedDensity);
         };

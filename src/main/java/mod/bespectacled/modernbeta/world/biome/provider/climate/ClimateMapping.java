@@ -8,7 +8,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 
-public class BetaClimateMapping {
+public class ClimateMapping {
     public enum ClimateType {
         LAND(NbtTags.BIOME),
         OCEAN(NbtTags.OCEAN_BIOME),
@@ -25,7 +25,7 @@ public class BetaClimateMapping {
     private final RegistryKey<Biome> oceanBiome;
     private final RegistryKey<Biome> deepOceanBiome;
     
-    public BetaClimateMapping(RegistryKey<Biome> biome, RegistryKey<Biome> oceanBiome, RegistryKey<Biome> deepOceanBiome) {
+    public ClimateMapping(RegistryKey<Biome> biome, RegistryKey<Biome> oceanBiome, RegistryKey<Biome> deepOceanBiome) {
         this.biome = biome;
         this.oceanBiome = oceanBiome;
         this.deepOceanBiome = deepOceanBiome;
@@ -51,8 +51,8 @@ public class BetaClimateMapping {
         };
     }
     
-    public static BetaClimateMapping fromCompound(NbtCompound compound) {
-        return new BetaClimateMapping(
+    public static ClimateMapping fromCompound(NbtCompound compound) {
+        return new ClimateMapping(
             key(new Identifier(NbtUtil.readStringOrThrow(NbtTags.BIOME, compound))),
             key(new Identifier(NbtUtil.readStringOrThrow(NbtTags.OCEAN_BIOME, compound))),
             key(new Identifier(NbtUtil.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME, compound)))

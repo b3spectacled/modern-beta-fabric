@@ -29,9 +29,6 @@
     "main": [
       "mod.bespectacled.modernbeta.ModernBeta"  
     ],
-    "fabric-datagen": [
-      "mod.bespectacled.modernbeta.data.ModernBetaDataGeneratorEntrypoint"
-    ],
     "modmenu": [
       "mod.bespectacled.modernbeta.config.ModernBetaModMenu"
     ]

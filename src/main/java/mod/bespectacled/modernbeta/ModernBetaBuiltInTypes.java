@@ -24,7 +24,8 @@ public final class ModernBetaBuiltInTypes {
     public enum Biome {
         BETA("beta"),
         SINGLE("single"),
-        PE("pe")
+        PE("pe"),
+        VORONOI("voronoi")
         ;
         
         public final String name;

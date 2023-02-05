@@ -14,8 +14,8 @@ import mod.bespectacled.modernbeta.util.chunk.ChunkCache;
 import mod.bespectacled.modernbeta.util.chunk.ChunkClimate;
 import mod.bespectacled.modernbeta.util.mersenne.MTRandom;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
-import mod.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMap;
-import mod.bespectacled.modernbeta.world.biome.provider.climate.BetaClimateMapping.ClimateType;
+import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMap;
+import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -23,7 +23,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
 public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, ClimateSamplerSky, BiomeResolverBlock, BiomeResolverOcean {
-    private BetaClimateMap climateMap;
+    private ClimateMap climateMap;
     private PEClimateSampler climateSampler;
     
     public BiomeProviderPE(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
@@ -32,12 +32,12 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
     
     @Override
     public boolean initProvider(long seed) {
-        this.climateMap = new BetaClimateMap(this.settings);
+        this.climateMap = new ClimateMap(this.settings);
         this.climateSampler = new PEClimateSampler(
             seed,
-            this.settings.betaTempNoiseScale,
-            this.settings.betaRainNoiseScale,
-            this.settings.betaDetailNoiseScale
+            this.settings.climateTempNoiseScale,
+            this.settings.climateRainNoiseScale,
+            this.settings.climateDetailNoiseScale
         );
         
         return true;
@@ -65,6 +65,18 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
         double rain = clime.rain();
         
         return this.biomeRegistry.getOrThrow(this.climateMap.getBiome(temp, rain, ClimateType.OCEAN));
+    }
+    
+    @Override
+    public RegistryEntry<Biome> getDeepOceanBiome(int biomeX, int biomeY, int biomeZ) {
+        int x = biomeX << 2;
+        int z = biomeZ << 2;
+        
+        Clime clime = this.climateSampler.sampleClime(x, z);
+        double temp = clime.temp();
+        double rain = clime.rain();
+        
+        return this.biomeRegistry.getOrThrow(this.climateMap.getBiome(temp, rain, ClimateType.DEEP_OCEAN));
     }
     
     @Override

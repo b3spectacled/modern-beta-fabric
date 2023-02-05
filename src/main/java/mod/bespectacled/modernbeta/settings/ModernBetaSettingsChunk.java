@@ -266,10 +266,14 @@ public class ModernBetaSettingsChunk {
             this.islesCenterOceanRadius = NbtUtil.readInt(NbtTags.ISLES_CENTER_OCEAN_RADIUS, compound, CONFIG.islesCenterOceanRadius);
             this.islesOuterIslandNoiseScale = NbtUtil.readFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_SCALE, compound, CONFIG.islesOuterIslandNoiseScale);
             this.islesOuterIslandNoiseOffset = NbtUtil.readFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_OFFSET, compound, CONFIG.islesOuterIslandNoiseOffset);
+            
+            this.loadDeprecated(compound);
         }
         
         public ModernBetaSettingsChunk build() {
             return new ModernBetaSettingsChunk(this);
         }
+        
+        private void loadDeprecated(NbtCompound compound) {}
     }
 }

@@ -19,31 +19,31 @@ public class ModernBetaConfigCaveBiome implements ConfigData {
     public float voronoiVerticalNoiseScale = 16.0f;
     public int voronoiDepthMinY = -64;
     public int voronoiDepthMaxY = 64;
-    public List<VoronoiPointCaveBiome> voronoiPoints = List.of(
-        new VoronoiPointCaveBiome("", 0.0, 0.5, 0.75),
-        new VoronoiPointCaveBiome("minecraft:lush_caves", 0.1, 0.5, 0.75),
-        new VoronoiPointCaveBiome("", 0.5, 0.5, 0.75),
-        new VoronoiPointCaveBiome("minecraft:dripstone_caves", 0.9, 0.5, 0.75),
-        new VoronoiPointCaveBiome("", 1.0, 0.5, 0.75),
+    public List<ConfigVoronoiPoint> voronoiPoints = List.of(
+        new ConfigVoronoiPoint("", 0.0, 0.5, 0.75),
+        new ConfigVoronoiPoint("minecraft:lush_caves", 0.1, 0.5, 0.75),
+        new ConfigVoronoiPoint("", 0.5, 0.5, 0.75),
+        new ConfigVoronoiPoint("minecraft:dripstone_caves", 0.9, 0.5, 0.75),
+        new ConfigVoronoiPoint("", 1.0, 0.5, 0.75),
 
-        new VoronoiPointCaveBiome("", 0.0, 0.5, 0.25),
-        new VoronoiPointCaveBiome("minecraft:lush_caves", 0.2, 0.5, 0.25),
-        new VoronoiPointCaveBiome("", 0.4, 0.5, 0.25),
-        new VoronoiPointCaveBiome("minecraft:deep_dark", 0.5, 0.5, 0.25),
-        new VoronoiPointCaveBiome("", 0.6, 0.5, 0.25),
-        new VoronoiPointCaveBiome("minecraft:dripstone_caves", 0.8, 0.5, 0.25),
-        new VoronoiPointCaveBiome("", 1.0, 0.5, 0.25)
+        new ConfigVoronoiPoint("", 0.0, 0.5, 0.25),
+        new ConfigVoronoiPoint("minecraft:lush_caves", 0.2, 0.5, 0.25),
+        new ConfigVoronoiPoint("", 0.4, 0.5, 0.25),
+        new ConfigVoronoiPoint("minecraft:deep_dark", 0.5, 0.5, 0.25),
+        new ConfigVoronoiPoint("", 0.6, 0.5, 0.25),
+        new ConfigVoronoiPoint("minecraft:dripstone_caves", 0.8, 0.5, 0.25),
+        new ConfigVoronoiPoint("", 1.0, 0.5, 0.25)
     );
     
-    public static class VoronoiPointCaveBiome {
-        public static final VoronoiPointCaveBiome DEFAULT = new VoronoiPointCaveBiome("minecraft:lush_caves", 0.5, 0.5, 0.0);
+    public static class ConfigVoronoiPoint {
+        public static final ConfigVoronoiPoint DEFAULT = new ConfigVoronoiPoint("minecraft:lush_caves", 0.5, 0.5, 0.0);
         
         public String biome;
         public double temp;
         public double rain;
         public double depth;
         
-        public VoronoiPointCaveBiome(String biome, double temp, double rain, double depth) {
+        public ConfigVoronoiPoint(String biome, double temp, double rain, double depth) {
             this.biome = biome;
             this.temp = temp;
             this.rain = rain;

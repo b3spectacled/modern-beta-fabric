@@ -45,20 +45,25 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 mutableDown.set(mutable).move(Direction.DOWN, 1);
                 
                 double temp;
+                double coldThreshold;
+                
                 if (generator.getBiomeSource() instanceof ModernBetaBiomeSource oldBiomeSource && 
                     oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
                     climateSampler.sampleForFeatureGeneration()
                 ) {
                     temp = climateSampler.sample(x, z).temp();
+                    coldThreshold = 0.5;
+                    
                 } else {
                     temp = world.getBiome(mutable).value().getTemperature();
+                    coldThreshold = 0.15;
                 }
                 
-                if (canSetIce(world, mutableDown, false, temp)) {
+                if (canSetIce(world, mutableDown, false, temp, coldThreshold)) {
                     world.setBlockState(mutableDown, Blocks.ICE.getDefaultState(), 2);
                 }
 
-                if (canSetSnow(world, mutable, temp)) {
+                if (canSetSnow(world, mutable, temp, coldThreshold)) {
                     world.setBlockState(mutable, Blocks.SNOW.getDefaultState(), 2);
 
                     BlockState blockState = world.getBlockState(mutableDown);
@@ -71,11 +76,12 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
         return true;
     }
 
-    private boolean canSetIce(WorldView worldView, BlockPos blockPos, boolean doWaterCheck, double temp) {
-        if (temp >= 0.5D) {
+    private boolean canSetIce(WorldView worldView, BlockPos blockPos, boolean doWaterCheck, double temp, double coldThreshold) {
+        if (temp >= coldThreshold) {
             return false;
         }
-        if (blockPos.getY() >= 0 && blockPos.getY() < 256 && worldView.getLightLevel(LightType.BLOCK, blockPos) < 10) {
+        
+        if (blockPos.getY() >= worldView.getBottomY() && blockPos.getY() < worldView.getTopY() && worldView.getLightLevel(LightType.BLOCK, blockPos) < 10) {
             BlockState blockState = worldView.getBlockState(blockPos);
             FluidState fluidState = worldView.getFluidState(blockPos);
 
@@ -84,28 +90,36 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                     return true;
                 }
 
-                boolean submerged = worldView.isWater(blockPos.west()) && worldView.isWater(blockPos.east())
-                        && worldView.isWater(blockPos.north()) && worldView.isWater(blockPos.south());
+                boolean submerged = 
+                    worldView.isWater(blockPos.west()) &&
+                    worldView.isWater(blockPos.east()) &&
+                    worldView.isWater(blockPos.north()) &&
+                    worldView.isWater(blockPos.south());
+                
                 if (!submerged) {
                     return true;
                 }
             }
         }
+        
         return false;
     }
 
-    private boolean canSetSnow(WorldView worldView, BlockPos blockPos, double temp) {
-        double heightTemp = temp - ((double) (blockPos.getY() - 64) / 64D) * 0.29999999999999999D;
+    private boolean canSetSnow(WorldView worldView, BlockPos blockPos, double temp, double coldThreshold) {
+        double heightTemp = temp - ((double) (blockPos.getY() - 64) / 64D) * 0.3D;
 
-        if (heightTemp >= 0.5D) {
+        if (heightTemp >= coldThreshold) {
             return false;
         }
+        
         if (blockPos.getY() >= 0 && blockPos.getY() < 256 && worldView.getLightLevel(LightType.BLOCK, blockPos) < 10) {
             BlockState blockState = worldView.getBlockState(blockPos);
+            
             if (blockState.isAir() && Blocks.SNOW.getDefaultState().canPlaceAt(worldView, blockPos)) {
                 return true;
             }
         }
+        
         return false;
     }
 

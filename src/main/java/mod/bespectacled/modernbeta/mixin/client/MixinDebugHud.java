@@ -8,10 +8,29 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import mod.bespectacled.modernbeta.ModernBeta;
+import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
+import mod.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
+import mod.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClime;
+import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
+import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
+import mod.bespectacled.modernbeta.util.BlockStates;
+import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
+import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
+import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
+import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
+import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.DebugHud;
+import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Heightmap.Type;
+import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Environment(EnvType.CLIENT)
 @Mixin(DebugHud.class)
@@ -20,7 +39,6 @@ public class MixinDebugHud {
     
     @Inject(method = "getLeftText", at = @At("TAIL"))
     private void injectGetLeftText(CallbackInfoReturnable<List<String>> info) {
-        /*
         BlockPos pos = this.client.getCameraEntity().getBlockPos();
         int x = pos.getX();
         int y = pos.getY();
@@ -56,7 +74,7 @@ public class MixinDebugHud {
                 }
                 
                 if (oldBiomeSource.getCaveBiomeProvider() instanceof CaveClimateSampler climateSampler) {
-                    Clime clime = climateSampler.sample(x >> 2, y >> 2, z >> 2);
+                    CaveClime clime = climateSampler.sample(x >> 2, y >> 2, z >> 2);
                     double temp = clime.temp();
                     double rain = clime.rain();
                     
@@ -76,17 +94,17 @@ public class MixinDebugHud {
                 info.getReturnValue().add(
                     String.format(
                         "[Modern Beta] Chunk Provider WS height: %d OF height: %d Sea level: %d", 
-                        chunkProvider.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG),
-                        chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR),
+                        chunkProvider.getHeight(x, z, Type.WORLD_SURFACE_WG),
+                        chunkProvider.getHeight(x, z, Type.OCEAN_FLOOR),
                         chunkProvider.getSeaLevel()
                     )
                 );
                 
-                if (chunkProvider instanceof NoiseChunkProvider noiseChunkProvider) {
+                if (chunkProvider instanceof ChunkProviderNoise noiseChunkProvider) {
                     info.getReturnValue().add(
                         String.format(
                             "[Modern Beta] Noise Chunk Provider WSF height: %d", 
-                            noiseChunkProvider.getHeight(x, z, HeightmapChunk.Type.SURFACE_FLOOR)
+                            noiseChunkProvider.getHeight(x, z, ChunkHeightmap.Type.SURFACE_FLOOR)
                         )
                     );
                 }
@@ -99,12 +117,11 @@ public class MixinDebugHud {
                 
                 info.getReturnValue().add(
                     String.format(
-                        "[Modern Beta] Valid cave position: %b",
+                        "[Modern Beta] Valid cave biome position: %b",
                         canPlaceCave
                     )
                 );
             }
         }
-        */
     }
 }
