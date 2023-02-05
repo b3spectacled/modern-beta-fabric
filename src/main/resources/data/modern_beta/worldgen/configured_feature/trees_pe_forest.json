@@ -1,0 +1,12 @@
+{
+  "config": {
+    "features": [
+      {
+        "feature": "minecraft:birch_checked",
+        "chance": 0.2
+      }
+    ],
+    "default": "minecraft:oak_checked"
+  },
+  "type": "minecraft:random_selector"
+}
