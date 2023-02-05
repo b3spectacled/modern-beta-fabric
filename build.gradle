@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.12-SNAPSHOT'
+	id 'fabric-loom' version '1.1-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -17,31 +17,8 @@ repositories {
 	maven { url 'https://jitpack.io' }
 }
 
-sourceSets {
-	main {
-		resources {
-			srcDirs += [
-					'src/main/generated'
-			]
-		}
-	}
-}
-
 loom {
 	accessWidenerPath = file("src/main/resources/modern_beta.accesswidener")
-	
-	runs {
-		datagen {
-			server()
-			name "Data Generation"
-			vmArg "-Dfabric-api.datagen"
-			vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
-			vmArg "-Dfabric-api.datagen.strict-validation"
-
-			ideConfigGenerated = true
-			runDir "build/datagen"
-		}
-	}
 }
 
 dependencies {
@@ -88,11 +65,9 @@ java {
 }
 
 jar {
-	from file('src/main/generated')
 	from("LICENSE") {
 		rename { "${it}_${project.archivesBaseName}"}
 	}
-	dependsOn 'runDatagen'
 }
 
 // configure the maven publication
