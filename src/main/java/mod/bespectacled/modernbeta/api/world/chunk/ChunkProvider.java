@@ -16,9 +16,7 @@ import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSourceDeepslate;
 import mod.bespectacled.modernbeta.world.feature.placement.NoiseBasedCountPlacementModifier;
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.ChunkRandom;
 import net.minecraft.util.math.random.RandomSplitter;
@@ -39,7 +37,6 @@ import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.util.PlacedFeatureIndexer.IndexedFeatures;
 import net.minecraft.world.gen.noise.NoiseConfig;
-import net.minecraft.world.gen.noise.NoiseRouter;
 import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 
 public abstract class ChunkProvider {    
@@ -50,8 +47,6 @@ public abstract class ChunkProvider {
     protected final RegistryEntry<ChunkGeneratorSettings> generatorSettings;
     protected final ModernBetaSettingsChunk chunkSettings;
     protected final Random random;
-    
-    protected final NoiseRouter noiseRouter;
     
     protected final ChunkRandom.RandomProvider randomProvider;
     protected final RandomSplitter randomSplitter;
@@ -70,20 +65,11 @@ public abstract class ChunkProvider {
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
         this.chunkSettings = new ModernBetaSettingsChunk.Builder(chunkGenerator.getChunkSettings()).build();
         this.random = new Random(chunkGenerator.getWorldSeed());
-        
-        this.noiseRouter = this.generatorSettings.value().noiseRouter();
 
         this.emptyFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
         this.randomProvider = chunkGenerator.getGeneratorSettings().value().getRandomProvider();
         this.randomSplitter = this.randomProvider.create(chunkGenerator.getWorldSeed()).nextSplitter();
-        
-        this.blockSourceDeepslate = new BlockSourceDeepslate(
-            0,
-            8,
-            this.chunkSettings.useDeepslate,
-            Registries.BLOCK.get(new Identifier(this.chunkSettings.deepslateBlock)).getDefaultState(),
-            this.randomSplitter
-        );
+        this.blockSourceDeepslate = new BlockSourceDeepslate(this.chunkSettings, this.randomSplitter);
         
         this.spawnLocator = SpawnLocator.DEFAULT;
     }
@@ -170,6 +156,11 @@ public abstract class ChunkProvider {
         return AquiferSampler.seaLevel(this.emptyFluidLevelSampler);
     }
     
+    /**
+     * Get empty fluid level sampler.
+     * 
+     * @return Empty FluidLevelSampler.
+     */
     public FluidLevelSampler getFluidLevelSampler() {
         return this.emptyFluidLevelSampler;
     }

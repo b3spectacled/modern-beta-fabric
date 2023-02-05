@@ -1,6 +1,9 @@
 package mod.bespectacled.modernbeta.world.chunk.blocksource;
 
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import net.minecraft.block.BlockState;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.math.random.RandomSplitter;
@@ -12,11 +15,11 @@ public class BlockSourceDeepslate implements BlockSource {
     private final BlockState deepslateBlock;
     private final RandomSplitter randomSplitter;
     
-    public BlockSourceDeepslate(int minY, int maxY, boolean useDeepslate, BlockState deepslateBlock, RandomSplitter randomSplitter) {
-        this.minY = minY;
-        this.maxY = maxY;
-        this.useDeepslate = useDeepslate;
-        this.deepslateBlock = deepslateBlock;
+    public BlockSourceDeepslate(ModernBetaSettingsChunk chunkSettings, RandomSplitter randomSplitter) {
+        this.minY = chunkSettings.deepslateMinY;
+        this.maxY = chunkSettings.deepslateMaxY;
+        this.useDeepslate = chunkSettings.useDeepslate;
+        this.deepslateBlock = Registries.BLOCK.get(new Identifier(chunkSettings.deepslateBlock)).getDefaultState();
         this.randomSplitter = randomSplitter;
     }
     

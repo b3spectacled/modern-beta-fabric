@@ -203,6 +203,14 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
         return this.chunkCacheHeightmap.get(chunkX, chunkZ).getHeight(x, z, type);
     }
     
+    /**
+     * Create a new aquifer sampler.
+     * 
+     * @param chunk
+     * @param noiseConfig
+     * 
+     * @return A new aquifer sampler.
+     */
     @Override
     public AquiferSampler getAquiferSampler(Chunk chunk, NoiseConfig noiseConfig) {
         RandomSplitter randomDeriver = this.randomProvider.create(this.chunkGenerator.getWorldSeed()).nextSplitter();
@@ -215,7 +223,7 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
         );
         
         AquiferSamplerProvider aquiferSamplerProvider = new AquiferSamplerProvider(
-            this.noiseRouter,
+            this.generatorSettings.value().noiseRouter(),
             randomDeriver,
             noiseSampler,
             this.defaultFluid,
@@ -514,6 +522,16 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
         return new ChunkHeightmap(heightmapSurface, heightmapOcean, heightmapSurfaceFloor);
     }
     
+    /**
+     * Calculate a noise offset for generating islands.
+     * 
+     * @param startNoiseX
+     * @param startNoiseZ
+     * @param localNoiseX
+     * @param localNoiseZ
+     * 
+     * @return A noise addition.
+     */
     protected double getIslandOffset(int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
         if (!this.chunkSettings.islesUseIslands)
             return 0;
@@ -581,6 +599,15 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
         };
     }
     
+    /**
+     * Debug method for testing generation steps.
+     * 
+     * @param chunkX
+     * @param chunkZ
+     * @param chunkStatus
+     * 
+     * @return True if current chunk generation step should be skipped.
+     */
     @Override
     public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
         if (chunkStatus == ChunkStatus.CARVERS)
