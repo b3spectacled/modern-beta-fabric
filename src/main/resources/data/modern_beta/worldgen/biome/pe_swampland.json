@@ -158,6 +158,12 @@
         "weight": 5,
         "minCount": 2,
         "maxCount": 5
+      },
+      {
+        "type": "minecraft:frog",
+        "maxCount": 5,
+        "minCount": 2,
+        "weight": 10
       }
     ],
     "ambient": [
