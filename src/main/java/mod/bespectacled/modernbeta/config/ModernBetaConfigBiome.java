@@ -12,6 +12,7 @@ import mod.bespectacled.modernbeta.util.NbtUtil;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
 import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.biome.BiomeKeys;
 
 @Config(name = "config_biome")
 public class ModernBetaConfigBiome implements ConfigData {
@@ -36,15 +37,15 @@ public class ModernBetaConfigBiome implements ConfigData {
         new ConfigClimateMapping(ModernBetaBiomes.BETA_TUNDRA_ID.toString(), ModernBetaBiomes.BETA_FROZEN_OCEAN_ID.toString())
     );
     public List<ConfigVoronoiPoint> voronoiPoints = List.of(
-        new ConfigVoronoiPoint(ModernBetaBiomes.BETA_TUNDRA_ID.toString(), ModernBetaBiomes.BETA_FROZEN_OCEAN_ID.toString(), 0.0, 0.0),
-        new ConfigVoronoiPoint(ModernBetaBiomes.BETA_TAIGA_ID.toString(), ModernBetaBiomes.BETA_FROZEN_OCEAN_ID.toString(), 0.0, 0.5),
-        new ConfigVoronoiPoint(ModernBetaBiomes.BETA_SWAMPLAND_ID.toString(), ModernBetaBiomes.BETA_COLD_OCEAN_ID.toString(), 0.0, 1.0),
-        new ConfigVoronoiPoint(ModernBetaBiomes.BETA_SAVANNA_ID.toString(), ModernBetaBiomes.BETA_OCEAN_ID.toString(), 0.5, 0.0),
-        new ConfigVoronoiPoint(ModernBetaBiomes.BETA_FOREST_ID.toString(), ModernBetaBiomes.BETA_OCEAN_ID.toString(), 0.5, 0.5),
-        new ConfigVoronoiPoint(ModernBetaBiomes.BETA_SHRUBLAND_ID.toString(), ModernBetaBiomes.BETA_OCEAN_ID.toString(), 0.5, 1.0),
-        new ConfigVoronoiPoint(ModernBetaBiomes.BETA_DESERT_ID.toString(), ModernBetaBiomes.BETA_OCEAN_ID.toString(), 1.0, 0.0),
-        new ConfigVoronoiPoint(ModernBetaBiomes.BETA_PLAINS_ID.toString(), ModernBetaBiomes.BETA_OCEAN_ID.toString(), 1.0, 0.5),
-        new ConfigVoronoiPoint(ModernBetaBiomes.BETA_RAINFOREST_ID.toString(), ModernBetaBiomes.BETA_WARM_OCEAN_ID.toString(), 1.0, 1.0)
+        new ConfigVoronoiPoint(BiomeKeys.SNOWY_PLAINS.getValue().toString(), BiomeKeys.FROZEN_OCEAN.getValue().toString(), 0.0, 0.0),
+        new ConfigVoronoiPoint(BiomeKeys.SNOWY_TAIGA.getValue().toString(), BiomeKeys.FROZEN_OCEAN.getValue().toString(), 0.0, 0.5),
+        new ConfigVoronoiPoint(BiomeKeys.SWAMP.getValue().toString(), BiomeKeys.COLD_OCEAN.getValue().toString(), 0.0, 1.0),
+        new ConfigVoronoiPoint(BiomeKeys.SAVANNA.getValue().toString(), BiomeKeys.OCEAN.getValue().toString(), 0.5, 0.0),
+        new ConfigVoronoiPoint(BiomeKeys.FOREST.getValue().toString(), BiomeKeys.OCEAN.getValue().toString(), 0.5, 0.5),
+        new ConfigVoronoiPoint(BiomeKeys.PLAINS.getValue().toString(), BiomeKeys.OCEAN.getValue().toString(), 0.5, 1.0),
+        new ConfigVoronoiPoint(BiomeKeys.DESERT.getValue().toString(), BiomeKeys.LUKEWARM_OCEAN.getValue().toString(), 1.0, 0.0),
+        new ConfigVoronoiPoint(BiomeKeys.DARK_FOREST.getValue().toString(), BiomeKeys.LUKEWARM_OCEAN.getValue().toString(), 1.0, 0.5),
+        new ConfigVoronoiPoint(BiomeKeys.JUNGLE.getValue().toString(), BiomeKeys.WARM_OCEAN.getValue().toString(), 1.0, 1.0)
     );
     
     private static Map<String, ConfigClimateMapping> createClimateMapping(
