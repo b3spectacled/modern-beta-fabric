@@ -74,6 +74,7 @@ public class ModernBetaBiomeMobs {
     
     public static void addSwamplandMobs(SpawnSettings.Builder spawnSettings) {
         spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(EntityType.SLIME, 1, 1, 1));
+        spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnEntry(EntityType.FROG, 10, 2, 5));
     }
     
     public static void addTaigaMobs(SpawnSettings.Builder spawnSettings) {

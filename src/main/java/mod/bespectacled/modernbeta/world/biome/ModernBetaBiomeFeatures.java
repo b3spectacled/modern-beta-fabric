@@ -76,11 +76,11 @@ public class ModernBetaBiomeFeatures {
         
         if (pe) {
             addPEVegetation(builder, true);
-            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_PE_FOREST_BEES);
+            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_PE_FOREST);
         } else {
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_DANDELION_2);
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
-            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_FOREST);
+            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_FOREST_BEES);
             
             builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.FOREST_FLOWERS);
             builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_GRASS_FOREST);
@@ -125,10 +125,10 @@ public class ModernBetaBiomeFeatures {
         
         if (pe) {
             addPEVegetation(builder, true);
-            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_PE_RAINFOREST_BEES);
+            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_PE_RAINFOREST);
         } else {
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
-            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_RAINFOREST);
+            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_RAINFOREST_BEES);
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_RAINFOREST_10);
             builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.FOREST_FLOWERS);
         }
@@ -147,7 +147,7 @@ public class ModernBetaBiomeFeatures {
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_PE_SPARSE);
         } else {
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
-            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_SPARSE);
+            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_SPARSE_BEES);
         }
         
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
@@ -159,11 +159,11 @@ public class ModernBetaBiomeFeatures {
         
         if (pe) {
             addPEVegetation(builder, true);
-            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_PE_SEASONAL_FOREST_BEES);
+            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_PE_SEASONAL_FOREST);
         } else {
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_DANDELION_4);
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
-            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_SEASONAL_FOREST);
+            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_SEASONAL_FOREST_BEES);
             builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_GRASS_FOREST);
         }
         
@@ -179,7 +179,7 @@ public class ModernBetaBiomeFeatures {
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_PE_SPARSE);
         } else {
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
-            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_SPARSE);
+            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_SPARSE_BEES);
         }
         
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
@@ -205,7 +205,7 @@ public class ModernBetaBiomeFeatures {
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_PE_SPARSE);
         } else {
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
-            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_SPARSE);
+            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_SPARSE_BEES);
             builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.FLOWER_SWAMP);
             builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_WATERLILY);
         }
@@ -258,9 +258,11 @@ public class ModernBetaBiomeFeatures {
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
         DefaultBiomeFeatures.addDefaultVegetation(builder);
         
-        builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_NORMAL);
-        builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_SIMPLE);
-        builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.KELP_COLD);
+        if (!pe) {
+            builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_NORMAL);
+            builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_SIMPLE);
+            builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.KELP_COLD);
+        }
     }
     
     public static void addColdOceanFeatures(GenerationSettings.LookupBackedBuilder builder, boolean pe) {
@@ -276,9 +278,11 @@ public class ModernBetaBiomeFeatures {
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
         DefaultBiomeFeatures.addDefaultVegetation(builder);
         
-        builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_COLD);
-        builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_SIMPLE);
-        builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.KELP_COLD);
+        if (!pe) {
+            builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_COLD);
+            builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_SIMPLE);
+            builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.KELP_COLD);
+        }
     }
     
     public static void addFrozenOceanFeatures(GenerationSettings.LookupBackedBuilder builder, boolean pe) {
@@ -308,8 +312,10 @@ public class ModernBetaBiomeFeatures {
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
         DefaultBiomeFeatures.addDefaultVegetation(builder);
 
-        builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_WARM);
-        builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.KELP_WARM);
+        if (!pe) {
+            builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_WARM);
+            builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.KELP_WARM);
+        }
     }
     
     public static void addWarmOceanFeatures(GenerationSettings.LookupBackedBuilder builder, boolean pe) {
@@ -325,9 +331,11 @@ public class ModernBetaBiomeFeatures {
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
         DefaultBiomeFeatures.addDefaultVegetation(builder);
         
-        builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.WARM_OCEAN_VEGETATION);
-        builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_WARM);
-        builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEA_PICKLE);
+        if (!pe) {
+            builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.WARM_OCEAN_VEGETATION);
+            builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_WARM);
+            builder.feature(Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEA_PICKLE);
+        }
     }
     
     /* Inf Biomes */
@@ -338,7 +346,7 @@ public class ModernBetaBiomeFeatures {
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_DANDELION_2);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_CACTUS_ALPHA);
-        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_ALPHA_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_ALPHA);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
         
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
@@ -348,7 +356,7 @@ public class ModernBetaBiomeFeatures {
     public static void addInfdev611Features(GenerationSettings.LookupBackedBuilder builder) {
         addDefaultFeatures(builder, ModernBetaFeatureSettings.INFDEV_611);
         
-        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INFDEV_611_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INFDEV_611);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
         
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
@@ -357,7 +365,7 @@ public class ModernBetaBiomeFeatures {
     public static void addInfdev420Features(GenerationSettings.LookupBackedBuilder builder) {
         addDefaultFeatures(builder, ModernBetaFeatureSettings.INFDEV_420);
         
-        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INFDEV_420_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INFDEV_420);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
         
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
@@ -366,7 +374,7 @@ public class ModernBetaBiomeFeatures {
     public static void addInfdev415Features(GenerationSettings.LookupBackedBuilder builder) {
         addDefaultFeatures(builder, ModernBetaFeatureSettings.INFDEV_415);
         
-        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INFDEV_415_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INFDEV_415);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
         
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
@@ -388,7 +396,7 @@ public class ModernBetaBiomeFeatures {
         
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_DANDELION_2);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
-        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INDEV_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INDEV);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.MUSHROOM_HELL);
         
@@ -400,7 +408,7 @@ public class ModernBetaBiomeFeatures {
         
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_DANDELION_2);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
-        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INDEV_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INDEV);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
 
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
@@ -410,7 +418,7 @@ public class ModernBetaBiomeFeatures {
         addDefaultFeatures(builder, ModernBetaFeatureSettings.INDEV);
         
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_FLOWER_PARADISE);
-        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INDEV_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INDEV);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
 
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
@@ -425,7 +433,7 @@ public class ModernBetaBiomeFeatures {
         
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_DANDELION_2);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
-        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INDEV_WOODS_BEES);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INDEV_WOODS);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.MUSHROOM_HELL);
     }
