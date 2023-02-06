@@ -20,8 +20,10 @@ public class ModernBetaConfiguredCarvers {
     public static final RegistryKey<ConfiguredCarver<?>> BETA_CAVE = of("beta_cave");
     public static final RegistryKey<ConfiguredCarver<?>> BETA_CAVE_DEEP = of("beta_cave_deep");
     
-    public static void bootstrap(Registerable<ConfiguredCarver<?>> carverRegisterable) {
-        RegistryEntryLookup<Block> lv = carverRegisterable.getRegistryLookup(RegistryKeys.BLOCK);
+    @SuppressWarnings("unchecked")
+    public static void bootstrap(Registerable<?> registerable) {
+        Registerable<ConfiguredCarver<?>> carverRegisterable = (Registerable<ConfiguredCarver<?>>)registerable;
+        RegistryEntryLookup<Block> registryBlock = carverRegisterable.getRegistryLookup(RegistryKeys.BLOCK);
         
         CaveCarverConfig configCave = new CaveCarverConfig(
             0.14285715f, // Probability
@@ -29,7 +31,7 @@ public class ModernBetaConfiguredCarvers {
             ConstantFloatProvider.create(0.5f), // Y scale, for large cave case(?)
             YOffset.aboveBottom(10), // Lava Level
             CarverDebugConfig.create(false, Blocks.CRIMSON_BUTTON.getDefaultState()),
-            lv.getOrThrow(BlockTags.OVERWORLD_CARVER_REPLACEABLES),
+            registryBlock.getOrThrow(BlockTags.OVERWORLD_CARVER_REPLACEABLES),
             ConstantFloatProvider.create(1.0f), // Tunnel horizontal scale
             ConstantFloatProvider.create(1.0f), // Tunnel vertical scale
             ConstantFloatProvider.create(-0.69999999999999996f) // Y Floor Level
@@ -41,7 +43,7 @@ public class ModernBetaConfiguredCarvers {
             ConstantFloatProvider.create(0.5f), // Y scale, for large cave case(?)
             YOffset.aboveBottom(10), // Lava Level
             CarverDebugConfig.create(false, Blocks.CRIMSON_BUTTON.getDefaultState()),
-            lv.getOrThrow(BlockTags.OVERWORLD_CARVER_REPLACEABLES),
+            registryBlock.getOrThrow(BlockTags.OVERWORLD_CARVER_REPLACEABLES),
             ConstantFloatProvider.create(1.0f), // Tunnel horizontal scale
             ConstantFloatProvider.create(1.0f), // Tunnel vertical scale
             ConstantFloatProvider.create(-0.69999999999999996f) // Y Floor Level

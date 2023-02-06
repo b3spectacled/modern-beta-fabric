@@ -11,7 +11,10 @@ import net.minecraft.world.gen.feature.FeatureConfig;
 public class ModernBetaTreeConfiguredFeatures {
     public static final RegistryKey<ConfiguredFeature<?, ?>> FANCY_OAK = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.FANCY_OAK);
     
-    public static void bootstrap(Registerable<ConfiguredFeature<?, ?>> featureRegisterable) {
+    @SuppressWarnings("unchecked")
+    public static void bootstrap(Registerable<?> registerable) {
+        Registerable<ConfiguredFeature<?, ?>> featureRegisterable = (Registerable<ConfiguredFeature<?, ?>>)registerable;
+        
         ConfiguredFeatures.register(featureRegisterable, FANCY_OAK, ModernBetaFeatures.OLD_FANCY_OAK, FeatureConfig.DEFAULT);
     }
 }   

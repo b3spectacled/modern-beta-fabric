@@ -31,6 +31,9 @@
     ],
     "modmenu": [
       "mod.bespectacled.modernbeta.config.ModernBetaModMenu"
+    ],
+    "fabric-datagen": [
+      "mod.bespectacled.modernbeta.data.ModernBetaDataGeneratorEntrypoint"
     ]
   },
   "mixins": [

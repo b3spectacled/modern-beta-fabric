@@ -7,7 +7,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 
 public class ModernBetaConfiguredFeatures {
-    public static void bootstrap(Registerable<ConfiguredFeature<?, ?>> featureRegisterable) {
+    public static void bootstrap(Registerable<?> featureRegisterable) {
         ModernBetaMiscConfiguredFeatures.bootstrap(featureRegisterable);
         ModernBetaOreConfiguredFeatures.bootstrap(featureRegisterable);
         ModernBetaTreeConfiguredFeatures.bootstrap(featureRegisterable);

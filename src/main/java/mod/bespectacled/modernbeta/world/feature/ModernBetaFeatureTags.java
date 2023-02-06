@@ -48,16 +48,16 @@ public class ModernBetaFeatureTags {
     public static final String TREES_BETA_SEASONAL_FOREST_BEES = "trees_beta_seasonal_forest_bees";
     public static final String TREES_BETA_SPARSE_BEES = "trees_beta_sparse_bees";
     
-    public static final String TREES_PE_FOREST = "trees_beta_forest";
-    public static final String TREES_PE_RAINFOREST = "trees_beta_rainforest";
-    public static final String TREES_PE_SEASONAL_FOREST = "trees_beta_seasonal_forest";
-    public static final String TREES_PE_SPARSE = "trees_beta_sparse";
-    public static final String TREES_PE_TAIGA = "trees_beta_taiga";
+    public static final String TREES_PE_FOREST = "trees_pe_forest";
+    public static final String TREES_PE_RAINFOREST = "trees_pe_rainforest";
+    public static final String TREES_PE_SEASONAL_FOREST = "trees_pe_seasonal_forest";
+    public static final String TREES_PE_SPARSE = "trees_pe_sparse";
+    public static final String TREES_PE_TAIGA = "trees_pe_taiga";
 
-    public static final String TREES_PE_FOREST_BEES = "trees_beta_forest_bees";
-    public static final String TREES_PE_RAINFOREST_BEES = "trees_beta_rainforest_bees";
-    public static final String TREES_PE_SEASONAL_FOREST_BEES = "trees_beta_seasonal_forest_bees";
-    public static final String TREES_PE_SPARSE_BEES = "trees_beta_sparse_bees";
+    public static final String TREES_PE_FOREST_BEES = "trees_pe_forest_bees";
+    public static final String TREES_PE_RAINFOREST_BEES = "trees_pe_rainforest_bees";
+    public static final String TREES_PE_SEASONAL_FOREST_BEES = "trees_pe_seasonal_forest_bees";
+    public static final String TREES_PE_SPARSE_BEES = "trees_pe_sparse_bees";
     
     public static final String TREES_INDEV = "trees_indev";
     public static final String TREES_INDEV_WOODS = "trees_indev_woods";

@@ -95,7 +95,6 @@ public class ModernBeta implements ModInitializer {
         
         if (DEV_ENV) {
             DebugProviderSettingsCommand.register();
-            //ModernBetaDataGenerator.generateData();
         }
         
         // Capture world gen seed, very jank.

@@ -19,7 +19,10 @@ public class ModernBetaOreConfiguredFeatures {
     public static final RegistryKey<ConfiguredFeature<?, ?>> ORE_CLAY = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.ORE_CLAY);
     public static final RegistryKey<ConfiguredFeature<?, ?>> ORE_EMERALD_Y95 = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.ORE_EMERALD_Y95);
     
-    public static void bootstrap(Registerable<ConfiguredFeature<?, ?>> featureRegisterable) {
+    @SuppressWarnings("unchecked")
+    public static void bootstrap(Registerable<?> registerable) {
+        Registerable<ConfiguredFeature<?, ?>> featureRegisterable = (Registerable<ConfiguredFeature<?, ?>>)registerable;
+        
         TagMatchRuleTest ruleStone = new TagMatchRuleTest(BlockTags.STONE_ORE_REPLACEABLES);
         TagMatchRuleTest ruleDeepslate = new TagMatchRuleTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
         

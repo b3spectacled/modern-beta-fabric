@@ -187,8 +187,6 @@ public class ModernBetaVegetationPlacedFeatures {
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesIndevBees = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_INDEV_BEES);
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesIndevWoodsBees = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_INDEV_WOODS_BEES);
         
-        //PlacedFeatures.register(featureRegisterable, MUSHROOM_HELL, mushroomHell, null);
-        
         PlacedFeatures.register(featureRegisterable, PATCH_CACTUS_ALPHA, patchCactus, CountPlacementModifier.of(2), SquarePlacementModifier.of(), HEIGHTMAP_SPREAD_DOUBLE, BiomePlacementModifier.of());
         PlacedFeatures.register(featureRegisterable, PATCH_CACTUS_PE, patchCactus, CountPlacementModifier.of(5), SquarePlacementModifier.of(), HEIGHTMAP_SPREAD_DOUBLE, BiomePlacementModifier.of());
         PlacedFeatures.register(featureRegisterable, MUSHROOM_HELL, mushroomHell, CountPlacementModifier.of(1), SquarePlacementModifier.of(), MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of());
