@@ -17,6 +17,7 @@ import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaRainforest;
 import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaSavanna;
 import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaSeasonalForest;
 import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaShrubland;
+import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaSky;
 import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaSwampland;
 import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaTaiga;
 import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaTundra;
@@ -73,6 +74,8 @@ public class ModernBetaBiomes {
     public static final Identifier BETA_COLD_OCEAN_ID = ModernBeta.createId("beta_cold_ocean");
     public static final Identifier BETA_FROZEN_OCEAN_ID = ModernBeta.createId("beta_frozen_ocean");
     
+    public static final Identifier BETA_SKY_ID = ModernBeta.createId("beta_sky");
+    
     public static final Identifier PE_FOREST_ID = ModernBeta.createId("pe_forest");
     public static final Identifier PE_SHRUBLAND_ID = ModernBeta.createId("pe_shrubland");
     public static final Identifier PE_DESERT_ID = ModernBeta.createId("pe_desert");
@@ -122,6 +125,8 @@ public class ModernBetaBiomes {
         register(biomeRegisterable, BETA_WARM_OCEAN_ID, BiomeBetaWarmOcean::create);
         register(biomeRegisterable, BETA_COLD_OCEAN_ID, BiomeBetaColdOcean::create);
         register(biomeRegisterable, BETA_FROZEN_OCEAN_ID, BiomeBetaFrozenOcean::create);
+        
+        register(biomeRegisterable, BETA_SKY_ID, BiomeBetaSky::create);
 
         register(biomeRegisterable, PE_FOREST_ID, BiomePEForest::create);
         register(biomeRegisterable, PE_SHRUBLAND_ID, BiomePEShrubland::create);
