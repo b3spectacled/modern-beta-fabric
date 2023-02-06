@@ -7,7 +7,7 @@ import net.minecraft.world.gen.carver.Carver;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 
 public class ModernBetaCarvers {
-    public static final Carver<CaveCarverConfig> BETA_CAVE_CARVER = register(
+    public static final Carver<CaveCarverConfig> BETA_CAVE = register(
         "beta_cave", 
         new BetaCaveCarver(CaveCarverConfig.CAVE_CODEC)
     );

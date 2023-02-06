@@ -1,12 +1,11 @@
 package mod.bespectacled.modernbeta.world.carver;
 
-import java.util.Set;
 import java.util.function.Function;
 
-import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
@@ -24,8 +23,6 @@ import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 
 public class BetaCaveCarver extends CaveCarver {
-    private static final Set<Block> ALWAYS_CARVABLE_BLOCKS;
-
     public BetaCaveCarver(Codec<CaveCarverConfig> codec) {
         super(codec);
     }
@@ -316,15 +313,15 @@ public class BetaCaveCarver extends CaveCarver {
 
                     if (skipPredicate.shouldSkip(context, scaledRelX, scaledRelY, scaledRelZ, localY))
                         continue;
-                        
-                    Block block = chunk.getBlockState(blockPos.set(localX, localY, localZ)).getBlock();
 
-                    if (block == Blocks.GRASS_BLOCK) {
+                    BlockState blockState = chunk.getBlockState(blockPos.set(localX, localY, localZ));
+
+                    if (blockState.isOf(Blocks.GRASS_BLOCK)) {
                         isGrassBlock = true;
                     }
 
                     // Don't use canCarveBlock for accuracy, for now.
-                    if (ALWAYS_CARVABLE_BLOCKS.contains(block)) { 
+                    if (blockState.isIn(config.replaceable)) { 
                         if (localY < config.lavaLevel.getY(context)) {
                             chunk.setBlockState(blockPos.set(localX, localY, localZ), Blocks.LAVA.getDefaultState(), false);
                         } else {
@@ -442,26 +439,5 @@ public class BetaCaveCarver extends CaveCarver {
     protected float getTunnelSystemWidth(Random random) {
         float width = random.nextFloat() * 2.0f + random.nextFloat();
         return width;
-    }
-
-    static {
-        ALWAYS_CARVABLE_BLOCKS = ImmutableSet.<Block>of(
-            Blocks.STONE,
-            Blocks.COBBLESTONE,
-            Blocks.DIRT,
-            Blocks.GRASS_BLOCK,
-            Blocks.DEEPSLATE, 
-            Blocks.TUFF, 
-            Blocks.GRANITE, 
-            Blocks.IRON_ORE, 
-            Blocks.DEEPSLATE_IRON_ORE,
-            Blocks.RAW_IRON_BLOCK,
-            Blocks.COPPER_ORE,
-            Blocks.DEEPSLATE_COPPER_ORE,
-            Blocks.RAW_COPPER_BLOCK,
-            Blocks.COAL_ORE,
-            Blocks.DEEPSLATE_COAL_ORE,
-            Blocks.COAL_BLOCK
-        );
     }
 }
