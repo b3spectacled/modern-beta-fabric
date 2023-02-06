@@ -9,15 +9,15 @@ import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 public class ModernBetaFeatures {
     public static final BetaFreezeTopLayerFeature FREEZE_TOP_LAYER = (BetaFreezeTopLayerFeature) register(
-        "freeze_top_layer", new BetaFreezeTopLayerFeature(DefaultFeatureConfig.CODEC)
+        ModernBetaFeatureTags.FREEZE_TOP_LAYER, new BetaFreezeTopLayerFeature(DefaultFeatureConfig.CODEC)
     );
     
     public static final BetaFancyOakFeature OLD_FANCY_OAK = (BetaFancyOakFeature) register(
-        "fancy_oak", new BetaFancyOakFeature(DefaultFeatureConfig.CODEC)
+        ModernBetaFeatureTags.FANCY_OAK, new BetaFancyOakFeature(DefaultFeatureConfig.CODEC)
     );
     
     public static final BetaOreClayFeature ORE_CLAY = (BetaOreClayFeature) register(
-        "ore_clay", new BetaOreClayFeature(OreFeatureConfig.CODEC)
+        ModernBetaFeatureTags.ORE_CLAY, new BetaOreClayFeature(OreFeatureConfig.CODEC)
     );
     
     private static Feature<?> register(String id, Feature<?> feature) {

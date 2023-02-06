@@ -1,5 +1,6 @@
 package mod.bespectacled.modernbeta.world.feature.placed;
 
+import mod.bespectacled.modernbeta.world.feature.ModernBetaFeatureTags;
 import mod.bespectacled.modernbeta.world.feature.configured.ModernBetaTreeConfiguredFeatures;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.Registerable;
@@ -12,7 +13,7 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.PlacedFeatures;
 
 public class ModernBetaTreePlacedFeatures {
-    public static final RegistryKey<PlacedFeature> FANCY_OAK = ModernBetaPlacedFeatures.of("fancy_oak");
+    public static final RegistryKey<PlacedFeature> FANCY_OAK = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.FANCY_OAK);
 
     public static void bootstrap(Registerable<PlacedFeature> featureRegisterable) {
         RegistryEntryLookup<ConfiguredFeature<?, ?>> registryConfigured = featureRegisterable.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE);

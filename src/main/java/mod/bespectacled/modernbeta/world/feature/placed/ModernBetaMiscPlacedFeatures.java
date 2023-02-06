@@ -1,5 +1,6 @@
 package mod.bespectacled.modernbeta.world.feature.placed;
 
+import mod.bespectacled.modernbeta.world.feature.ModernBetaFeatureTags;
 import mod.bespectacled.modernbeta.world.feature.configured.ModernBetaMiscConfiguredFeatures;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryEntryLookup;
@@ -12,7 +13,7 @@ import net.minecraft.world.gen.feature.PlacedFeatures;
 import net.minecraft.world.gen.placementmodifier.BiomePlacementModifier;
 
 public class ModernBetaMiscPlacedFeatures {
-    public static final RegistryKey<PlacedFeature> FREEZE_TOP_LAYER = ModernBetaPlacedFeatures.of("freeze_top_layer");
+    public static final RegistryKey<PlacedFeature> FREEZE_TOP_LAYER = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.FREEZE_TOP_LAYER);
     
     public static void bootstrap(Registerable<PlacedFeature> featureRegisterable) {
         RegistryEntryLookup<ConfiguredFeature<?, ?>> registryConfigured = featureRegisterable.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE);

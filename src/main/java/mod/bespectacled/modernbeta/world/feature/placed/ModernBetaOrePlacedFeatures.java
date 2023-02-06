@@ -2,6 +2,7 @@ package mod.bespectacled.modernbeta.world.feature.placed;
 
 import java.util.List;
 
+import mod.bespectacled.modernbeta.world.feature.ModernBetaFeatureTags;
 import mod.bespectacled.modernbeta.world.feature.configured.ModernBetaOreConfiguredFeatures;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryEntryLookup;
@@ -19,8 +20,8 @@ import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier;
 
 public class ModernBetaOrePlacedFeatures {
-    public static final RegistryKey<PlacedFeature> ORE_CLAY = ModernBetaPlacedFeatures.of("ore_clay");
-    public static final RegistryKey<PlacedFeature> ORE_EMERALD_Y95 = ModernBetaPlacedFeatures.of("ore_emerald_y95");
+    public static final RegistryKey<PlacedFeature> ORE_CLAY = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.ORE_CLAY);
+    public static final RegistryKey<PlacedFeature> ORE_EMERALD_Y95 = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.ORE_EMERALD_Y95);
     
     public static void bootstrap(Registerable<PlacedFeature> featureRegisterable) {
         RegistryEntryLookup<ConfiguredFeature<?, ?>> registryConfigured = featureRegisterable.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE);
