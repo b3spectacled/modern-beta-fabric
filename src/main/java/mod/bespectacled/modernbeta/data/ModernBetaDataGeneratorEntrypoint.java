@@ -19,6 +19,7 @@ public class ModernBetaDataGeneratorEntrypoint implements net.fabricmc.fabric.ap
         pack.addProvider(ModernBetaWorldGenProvider::new);
         pack.addProvider(ModernBetaBiomeTagProvider::new);
         pack.addProvider(ModernBetaStructureTagProvider::new);
+        pack.addProvider(ModernBetaBlockTagProvider::new);
         //pack.addProvider(ModernBetaWorldPresetTagProvider::new);
     }
     
