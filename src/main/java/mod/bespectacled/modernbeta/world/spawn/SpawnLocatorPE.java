@@ -8,6 +8,7 @@ import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
+import mod.bespectacled.modernbeta.data.ModernBetaBiomeTagProvider;
 import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.util.mersenne.MTRandom;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
@@ -88,7 +89,7 @@ public class SpawnLocatorPE implements SpawnLocator {
             this.chunkProvider.getBiome(x >> 2, y >> 2, z >> 2, null);
         
         return 
-            (biome.isIn(TagKey.of(RegistryKeys.BIOME, new Identifier("is_desert"))) && y >= seaLevel) || 
+            (biome.isIn(ModernBetaBiomeTagProvider.IS_DESERT) && y >= seaLevel) || 
             (this.beachOctaveNoise.sample(x * eighth, z * eighth, 0.0) > 0.0 && y >= seaLevel && y <= seaLevel + 2);
     }
 }
