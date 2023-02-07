@@ -104,21 +104,23 @@ public class ModernBeta implements ModInitializer {
         // Initializes chunk and biome providers at server start-up.
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             Registry<DimensionOptions> registryDimensionOptions = server.getCombinedDynamicRegistries().getCombinedRegistryManager().get(RegistryKeys.DIMENSION);
-            DimensionOptions dimensionOptions = registryDimensionOptions.get(DimensionOptions.OVERWORLD);
-            
-            ChunkGenerator chunkGenerator = dimensionOptions.chunkGenerator();
-            BiomeSource biomeSource = chunkGenerator.getBiomeSource();
-            
             long seed = server.getSaveProperties().getGeneratorOptions().getSeed();
             
-            if (chunkGenerator instanceof ModernBetaChunkGenerator modernBetaChunkGenerator) {
-                modernBetaChunkGenerator.getChunkProvider().initProvider(seed);
-            }
-            
-            if (biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
-                modernBetaBiomeSource.getBiomeProvider().initProvider(seed);
-                modernBetaBiomeSource.getCaveBiomeProvider().initProvider(seed);
-            }
+            registryDimensionOptions.getEntrySet().forEach(entry -> {
+                DimensionOptions dimensionOptions = entry.getValue();
+                
+                ChunkGenerator chunkGenerator = dimensionOptions.chunkGenerator();
+                BiomeSource biomeSource = chunkGenerator.getBiomeSource();
+                
+                if (chunkGenerator instanceof ModernBetaChunkGenerator modernBetaChunkGenerator) {
+                    modernBetaChunkGenerator.getChunkProvider().initProvider(seed);
+                }
+                
+                if (biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
+                    modernBetaBiomeSource.getBiomeProvider().initProvider(seed);
+                    modernBetaBiomeSource.getCaveBiomeProvider().initProvider(seed);
+                }
+            });
         });
     }
 }
