@@ -90,6 +90,9 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         
         this.spawnLocator = new SpawnLocatorIndev(this);
     }
+    
+    @Override
+    public void initProvider(long seed) {} 
 
     @Override
     public CompletableFuture<Chunk> provideChunk(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk, NoiseConfig noiseConfig) {

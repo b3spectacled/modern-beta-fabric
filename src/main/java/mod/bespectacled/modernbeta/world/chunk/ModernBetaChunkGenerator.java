@@ -66,8 +66,6 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
 
     private final BiomeInjector biomeInjector;
     
-    private boolean initializedChunkProvider;
-    
     public ModernBetaChunkGenerator(
         BiomeSource biomeSource,
         RegistryEntry<ChunkGeneratorSettings> settings,
@@ -87,8 +85,6 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         if (this.biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
             modernBetaBiomeSource.setChunkGenerator(this);
         }
-        
-        this.initializedChunkProvider = false;
     }
     
     @Override
@@ -99,22 +95,16 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         Chunk chunk,
         StructureTemplateManager structureTemplateManager
     ) {
-        this.initProvider();
-        
         super.setStructureStarts(registryManager, placementCalculator, structureAccessor, chunk, structureTemplateManager);
     }
     
     @Override
     public void addStructureReferences(StructureWorldAccess world, StructureAccessor structureAccessor, Chunk chunk) {
-        this.initProvider();
-        
         super.addStructureReferences(world, structureAccessor, chunk);
     }
 
     @Override
     public CompletableFuture<Chunk> populateBiomes(Executor executor, NoiseConfig noiseConfig, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
-        this.initProvider();
-        
         return CompletableFuture.<Chunk>supplyAsync(Util.debugSupplier("init_biomes", () -> {
             ChunkNoiseSampler noiseSampler = chunk.getOrCreateChunkNoiseSampler(c -> this.createChunkNoiseSampler(c, structureAccessor, blender, noiseConfig));
             chunk.populateBiomes(this.biomeSource, noiseSampler.createMultiNoiseSampler(noiseConfig.getNoiseRouter(), this.settings.value().spawnTarget()));
@@ -126,8 +116,6 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public CompletableFuture<Chunk> populateNoise(Executor executor, Blender blender, NoiseConfig noiseConfig, StructureAccessor structureAccessor, Chunk chunk) {
-        this.initProvider();
-        
         CompletableFuture<Chunk> completedChunk = this.chunkProvider.provideChunk(executor, Blender.getNoBlending(), structureAccessor, chunk, noiseConfig);
         
         return completedChunk;
@@ -262,10 +250,6 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         return this.chunkProvider.getSeaLevel();
     }
     
-    public long getWorldSeed() {
-        return ModernBeta.getWorldSeed();
-    }
-    
     public RegistryEntry<ChunkGeneratorSettings> getGeneratorSettings() {
         return this.settings;
     }
@@ -328,11 +312,5 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
             this.chunkProvider.getFluidLevelSampler(),
             blender
         );
-    }
-    
-    private synchronized void initProvider() {
-        if (!this.initializedChunkProvider) {
-            this.initializedChunkProvider = this.chunkProvider.initProvider(this.getWorldSeed());
-        }
     }
 }

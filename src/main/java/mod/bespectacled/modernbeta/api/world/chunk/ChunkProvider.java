@@ -64,17 +64,17 @@ public abstract class ChunkProvider {
         
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
         this.chunkSettings = new ModernBetaSettingsChunk.Builder(chunkGenerator.getChunkSettings()).build();
-        this.random = new Random(chunkGenerator.getWorldSeed());
+        this.random = new Random(0L);
 
         this.emptyFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
         this.randomProvider = chunkGenerator.getGeneratorSettings().value().getRandomProvider();
-        this.randomSplitter = this.randomProvider.create(chunkGenerator.getWorldSeed()).nextSplitter();
+        this.randomSplitter = this.randomProvider.create(0L).nextSplitter();
         this.blockSourceDeepslate = new BlockSourceDeepslate(this.chunkSettings, this.randomSplitter);
         
         this.spawnLocator = SpawnLocator.DEFAULT;
     }
     
-    public abstract boolean initProvider(long seed);
+    public abstract void initProvider(long seed);
     
     /**
      * Generates base terrain for given chunk and returns it.

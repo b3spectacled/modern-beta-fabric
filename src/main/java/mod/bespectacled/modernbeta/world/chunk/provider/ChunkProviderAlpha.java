@@ -38,7 +38,7 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
     }
     
     @Override
-    public boolean initProvider(long seed) {
+    public void initProvider(long seed) {
         this.random.setSeed(seed);
         
         this.minLimitOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
@@ -54,8 +54,6 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
         this.setForestOctaveNoise(this.forestOctaveNoise);
         
         this.spawnLocator = new SpawnLocatorBeta(this, this.beachOctaveNoise);
-        
-        return true;
     }
 
     @Override

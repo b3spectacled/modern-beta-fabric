@@ -30,7 +30,7 @@ public class ChunkProviderSkylands extends ChunkProviderNoise {
         super(chunkGenerator);
     }
     
-    public boolean initProvider(long seed) {
+    public void initProvider(long seed) {
         this.random.setSeed(seed);
         
         this.minLimitOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
@@ -44,8 +44,6 @@ public class ChunkProviderSkylands extends ChunkProviderNoise {
         this.islandNoise = new SimplexNoise(this.random);
 
         this.setForestOctaveNoise(this.forestOctaveNoise);
-        
-        return true;
     }
 
     @Override

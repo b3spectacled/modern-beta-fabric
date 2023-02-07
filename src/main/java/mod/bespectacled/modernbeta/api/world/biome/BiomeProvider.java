@@ -25,6 +25,13 @@ public abstract class BiomeProvider {
     }
     
     /**
+     * Inits biome provider fields.
+     * 
+     * @param seed
+     */
+    public abstract void initProvider(long seed);
+    
+    /**
      * Gets a biome for biome source at given biome coordinates.
      * Note that a single biome coordinate unit equals 4 blocks.
      * 
@@ -43,9 +50,5 @@ public abstract class BiomeProvider {
      */
     public List<RegistryEntry<Biome>> getBiomesForRegistry() {
         return List.of();
-    }
-    
-    public boolean initProvider(long seed) {
-        return true;
     }
 }

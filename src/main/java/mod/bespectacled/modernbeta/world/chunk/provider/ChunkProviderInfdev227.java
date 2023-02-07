@@ -73,7 +73,7 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
     }
     
     @Override
-    public boolean initProvider(long seed) {
+    public void initProvider(long seed) {
         this.random.setSeed(seed);
         
         // Noise Generators
@@ -89,8 +89,6 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
         this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
         
         setForestOctaveNoise(this.forestOctaveNoise);
-        
-        return true;
     }
 
     @Override

@@ -31,7 +31,7 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
     }
     
     @Override
-    public boolean initProvider(long seed) {
+    public void initProvider(long seed) {
         this.climateMap = new ClimateMap(this.settings);
         this.climateSampler = new PEClimateSampler(
             seed,
@@ -39,8 +39,6 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
             this.settings.climateRainNoiseScale,
             this.settings.climateDetailNoiseScale
         );
-        
-        return true;
     }
 
     @Override

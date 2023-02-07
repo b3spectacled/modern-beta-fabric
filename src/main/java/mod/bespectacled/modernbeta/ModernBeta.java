@@ -26,7 +26,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.dimension.DimensionOptions;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
@@ -49,7 +54,6 @@ public class ModernBeta implements ModInitializer {
     public static final ModernBetaConfigRendering RENDER_CONFIG = CONFIG.renderingConfig;
 
     private static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-    private static long worldSeed;
     
     public static Identifier createId(String name) {
         return new Identifier(MOD_ID, name);
@@ -97,13 +101,24 @@ public class ModernBeta implements ModInitializer {
             DebugProviderSettingsCommand.register();
         }
         
-        // Capture world gen seed, very jank.
-        ServerLifecycleEvents.SERVER_STARTING.register((server) -> {
-            worldSeed = server.getSaveProperties().getGeneratorOptions().getSeed();
+        // Initializes chunk and biome providers at server start-up.
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            Registry<DimensionOptions> registryDimensionOptions = server.getCombinedDynamicRegistries().getCombinedRegistryManager().get(RegistryKeys.DIMENSION);
+            DimensionOptions dimensionOptions = registryDimensionOptions.get(DimensionOptions.OVERWORLD);
+            
+            ChunkGenerator chunkGenerator = dimensionOptions.chunkGenerator();
+            BiomeSource biomeSource = chunkGenerator.getBiomeSource();
+            
+            long seed = server.getSaveProperties().getGeneratorOptions().getSeed();
+            
+            if (chunkGenerator instanceof ModernBetaChunkGenerator modernBetaChunkGenerator) {
+                modernBetaChunkGenerator.getChunkProvider().initProvider(seed);
+            }
+            
+            if (biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
+                modernBetaBiomeSource.getBiomeProvider().initProvider(seed);
+                modernBetaBiomeSource.getCaveBiomeProvider().initProvider(seed);
+            }
         });
-    }
-    
-    public static long getWorldSeed() {
-        return worldSeed;
     }
 }

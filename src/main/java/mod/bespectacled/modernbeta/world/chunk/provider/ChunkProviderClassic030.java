@@ -38,11 +38,6 @@ public class ChunkProviderClassic030 extends ChunkProviderFinite {
 
         this.waterLevel = this.levelHeight / 2;
     }
-    
-    @Override
-    public boolean initProvider(long seed) {
-        return true;
-    }
 
     @Override
     protected void pregenerateTerrain() {

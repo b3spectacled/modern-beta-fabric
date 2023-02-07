@@ -23,7 +23,7 @@ public record SurfaceConfig(BlockState topBlock, BlockState fillerBlock) {
         SurfaceConfig config = DEFAULT;
         Optional<String> optionalKey = ModernBetaRegistries.SURFACE_CONFIG.getKeySet()
             .stream()
-            .filter(key -> biome.isIn(tag(key)))
+            .filter(id -> biome.isIn(keyOf(id)))
             .findFirst();
         
         if (optionalKey.isPresent()) {
@@ -33,7 +33,7 @@ public record SurfaceConfig(BlockState topBlock, BlockState fillerBlock) {
         return config;
     }
     
-    private static TagKey<Biome> tag(String id) {
+    private static TagKey<Biome> keyOf(String id) {
         return TagKey.of(RegistryKeys.BIOME, new Identifier(id));
     }
 }

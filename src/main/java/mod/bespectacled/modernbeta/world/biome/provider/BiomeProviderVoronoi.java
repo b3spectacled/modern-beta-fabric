@@ -33,7 +33,7 @@ public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolver
     }
     
     @Override
-    public boolean initProvider(long seed) {
+    public void initProvider(long seed) {
         this.climateSampler = new VoronoiClimateSampler(
             seed,
             this.settings.climateTempNoiseScale,
@@ -41,8 +41,6 @@ public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolver
             this.settings.climateDetailNoiseScale
         );
         this.rules = buildRules(this.settings.voronoiPoints);
-
-        return true;
     }
 
     @Override

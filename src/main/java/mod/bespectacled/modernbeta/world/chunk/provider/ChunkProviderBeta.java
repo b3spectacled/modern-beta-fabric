@@ -2,6 +2,9 @@ package mod.bespectacled.modernbeta.world.chunk.provider;
 
 import java.util.Random;
 
+import org.apache.logging.log4j.Level;
+
+import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
@@ -45,7 +48,9 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
     }
     
     @Override
-    public boolean initProvider(long seed) {
+    public void initProvider(long seed) {
+        ModernBeta.log(Level.INFO, "INIT PROVIDER");
+        
         this.random.setSeed(seed);
         
         this.minLimitOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
@@ -65,12 +70,8 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
             biomeSource.getBiomeProvider() instanceof BiomeProviderBeta betaBiomeProvider
         ) ? betaBiomeProvider : new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null);
         
-        biomeProvider.initProvider(this.chunkGenerator.getWorldSeed());
-        
         this.climateSampler = biomeProvider;
         this.spawnLocator = new SpawnLocatorBeta(this, this.beachOctaveNoise);
-        
-        return true;
     }
     
     @Override

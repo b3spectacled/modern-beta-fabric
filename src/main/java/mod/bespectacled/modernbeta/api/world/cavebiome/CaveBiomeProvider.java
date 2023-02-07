@@ -25,6 +25,13 @@ public abstract class CaveBiomeProvider {
     }
     
     /**
+     * Inits biome provider fields.
+     * 
+     * @param seed
+     */
+    public abstract void initProvider(long seed);
+    
+    /**
      * Gets a cave biome to overwrite the original biome at given biome coordinates.
      * 
      * @param biomeX x-coordinate in biome coordinates.
@@ -42,9 +49,5 @@ public abstract class CaveBiomeProvider {
      */
     public List<RegistryEntry<Biome>> getBiomesForRegistry() {
         return List.of();
-    }
-    
-    public boolean initProvider(long seed) {
-        return true;
     }
 }

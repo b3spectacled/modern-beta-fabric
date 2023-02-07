@@ -33,7 +33,7 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
     }
     
     @Override
-    public boolean initProvider(long seed) {
+    public void initProvider(long seed) {
         this.climateMap = new ClimateMap(this.settings);
         this.climateSampler = new BetaClimateSampler(
             seed,
@@ -45,8 +45,6 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
             seed,
             this.settings.climateTempNoiseScale
         );
-        
-        return true;
     }
 
     @Override

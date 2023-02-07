@@ -213,7 +213,7 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
      */
     @Override
     public AquiferSampler getAquiferSampler(Chunk chunk, NoiseConfig noiseConfig) {
-        RandomSplitter randomDeriver = this.randomProvider.create(this.chunkGenerator.getWorldSeed()).nextSplitter();
+        RandomSplitter randomDeriver = this.randomProvider.create(0L).nextSplitter();
         ModernBetaChunkNoiseSampler noiseSampler = ModernBetaChunkNoiseSampler.create(
             chunk,
             noiseConfig,

@@ -28,7 +28,7 @@ public class CaveBiomeProviderVoronoi extends CaveBiomeProvider implements CaveC
     }
     
     @Override
-    public boolean initProvider(long seed) {
+    public void initProvider(long seed) {
         this.climateSampler = new VoronoiCaveClimateSampler(
             seed,
             this.settings.voronoiVerticalNoiseScale,
@@ -37,8 +37,6 @@ public class CaveBiomeProviderVoronoi extends CaveBiomeProvider implements CaveC
             this.settings.voronoiDepthMaxY
         );
         this.rules = buildRules(this.settings.voronoiPoints);
-        
-        return true;
     }
 
     @Override

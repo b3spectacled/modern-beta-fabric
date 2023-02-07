@@ -14,6 +14,9 @@ public class CaveBiomeProviderNone extends CaveBiomeProvider {
     }
 
     @Override
+    public void initProvider(long seed) {}
+
+    @Override
     public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ) {
         return null;
     }

@@ -45,9 +45,9 @@ public class ChunkProviderPE extends ChunkProviderNoise {
     }
     
     @Override
-    public boolean initProvider(long seed) {
+    public void initProvider(long seed) {
         // Use Mersenne Twister random instead of Java random
-        MTRandom mtRand = new MTRandom(chunkGenerator.getWorldSeed());
+        MTRandom mtRand = new MTRandom(seed);
         
         // Noise Generators
         this.minLimitOctaveNoise = new PerlinOctaveNoise(mtRand, 16, true);
@@ -67,12 +67,10 @@ public class ChunkProviderPE extends ChunkProviderNoise {
                 biomeSource.getBiomeProvider() instanceof BiomeProviderPE peBiomeProvider
             ) ? peBiomeProvider : new BiomeProviderPE(new ModernBetaSettingsBiome().toCompound(), null);
         
-        biomeProvider.initProvider(this.chunkGenerator.getWorldSeed());
+        biomeProvider.initProvider(seed);
         
         this.climateSampler = biomeProvider;
         this.spawnLocator = new SpawnLocatorPE(this, this.beachOctaveNoise);
-        
-        return true;
     }
     
     @Override

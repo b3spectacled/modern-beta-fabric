@@ -61,11 +61,6 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
     }
     
     @Override
-    public boolean initProvider(long seed) {
-        return true;
-    }
-    
-    @Override
     public int getSeaLevel() {
         return this.waterLevel;
     }

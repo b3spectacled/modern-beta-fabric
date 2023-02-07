@@ -55,9 +55,6 @@ public class ModernBetaBiomeSource extends BiomeSource {
     
     private ModernBetaChunkGenerator chunkGenerator;
     
-    private boolean initializedBiomeProvider;
-    private boolean initializedCaveBiomeProvider;
-    
     private static List<RegistryEntry<Biome>> getBiomesForRegistry(
         RegistryEntryLookup<Biome> biomeRegistry,
         NbtCompound biomeSettings,
@@ -106,15 +103,10 @@ public class ModernBetaBiomeSource extends BiomeSource {
             .apply(caveBiomeSettings, biomeRegistry);
         
         this.chunkGenerator = null;
-        
-        this.initializedBiomeProvider = false;
-        this.initializedCaveBiomeProvider = false;
     }
     
     @Override
     public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noiseSampler) {
-        this.initializeBiomeProvider();
-
         return this.biomeProvider.getBiome(biomeX, biomeY, biomeZ);
     }
     
@@ -203,7 +195,7 @@ public class ModernBetaBiomeSource extends BiomeSource {
     }
     
     public RegistryEntry<Biome> getCaveBiome(int biomeX, int biomeY, int biomeZ) {
-        this.initializeCaveBiomeProvider();
+        //this.initializeCaveBiomeProvider();
         
         return this.caveBiomeProvider.getBiome(biomeX, biomeY, biomeZ);
     }
@@ -242,11 +234,6 @@ public class ModernBetaBiomeSource extends BiomeSource {
     public NbtCompound getCaveBiomeSettings() {
         return this.caveBiomeSettings;
     }
-    
-    public long getWorldSeed() {
-        return ModernBeta.getWorldSeed();
-    }
-
     public static void register() {
         Registry.register(net.minecraft.registry.Registries.BIOME_SOURCE, ModernBeta.createId(ModernBeta.MOD_ID), CODEC);
     }
@@ -254,15 +241,5 @@ public class ModernBetaBiomeSource extends BiomeSource {
     @Override
     protected Codec<? extends BiomeSource> getCodec() {
         return ModernBetaBiomeSource.CODEC;
-    }
-    
-    private void initializeBiomeProvider() {
-        if (!this.initializedBiomeProvider)
-            this.initializedBiomeProvider = this.biomeProvider.initProvider(this.getWorldSeed());
-    }
-    
-    private void initializeCaveBiomeProvider() {
-        if (!this.initializedCaveBiomeProvider)
-            this.initializedCaveBiomeProvider = this.caveBiomeProvider.initProvider(this.getWorldSeed());
     }
 }
