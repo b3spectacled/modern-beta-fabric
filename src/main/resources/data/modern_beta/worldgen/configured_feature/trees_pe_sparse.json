@@ -1,7 +1,7 @@
 {
+  "type": "minecraft:random_selector",
   "config": {
-    "features": [],
-    "default": "minecraft:oak_checked"
-  },
-  "type": "minecraft:random_selector"
+    "default": "minecraft:oak_checked",
+    "features": []
+  }
 }

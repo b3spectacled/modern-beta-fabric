@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "modern_beta:beta_tundra",
-    
-    "modern_beta:pe_tundra"
+    "#modern_beta:is_tundra"
   ]
 }

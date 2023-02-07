@@ -6,13 +6,11 @@ import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 
 public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
@@ -45,127 +43,127 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
         /* Modern Beta Biome Tags */
         
         getOrCreateTagBuilder(IS_BETA).add(
-            ModernBetaBiomes.BETA_FOREST_ID,
-            ModernBetaBiomes.BETA_SHRUBLAND_ID,
-            ModernBetaBiomes.BETA_DESERT_ID,
-            ModernBetaBiomes.BETA_SAVANNA_ID,
-            ModernBetaBiomes.BETA_PLAINS_ID,
-            ModernBetaBiomes.BETA_SEASONAL_FOREST_ID,
-            ModernBetaBiomes.BETA_RAINFOREST_ID,
-            ModernBetaBiomes.BETA_SWAMPLAND_ID,
-            ModernBetaBiomes.BETA_TAIGA_ID,
-            ModernBetaBiomes.BETA_TUNDRA_ID,
-            ModernBetaBiomes.BETA_ICE_DESERT_ID,
-            ModernBetaBiomes.BETA_OCEAN_ID,
-            ModernBetaBiomes.BETA_LUKEWARM_OCEAN_ID,
-            ModernBetaBiomes.BETA_WARM_OCEAN_ID,
-            ModernBetaBiomes.BETA_COLD_OCEAN_ID,
-            ModernBetaBiomes.BETA_FROZEN_OCEAN_ID,
-            ModernBetaBiomes.BETA_SKY_ID
+            ModernBetaBiomes.BETA_FOREST,
+            ModernBetaBiomes.BETA_SHRUBLAND,
+            ModernBetaBiomes.BETA_DESERT,
+            ModernBetaBiomes.BETA_SAVANNA,
+            ModernBetaBiomes.BETA_PLAINS,
+            ModernBetaBiomes.BETA_SEASONAL_FOREST,
+            ModernBetaBiomes.BETA_RAINFOREST,
+            ModernBetaBiomes.BETA_SWAMPLAND,
+            ModernBetaBiomes.BETA_TAIGA,
+            ModernBetaBiomes.BETA_TUNDRA,
+            ModernBetaBiomes.BETA_ICE_DESERT,
+            ModernBetaBiomes.BETA_OCEAN,
+            ModernBetaBiomes.BETA_LUKEWARM_OCEAN,
+            ModernBetaBiomes.BETA_WARM_OCEAN,
+            ModernBetaBiomes.BETA_COLD_OCEAN,
+            ModernBetaBiomes.BETA_FROZEN_OCEAN,
+            ModernBetaBiomes.BETA_SKY
         );
         
         getOrCreateTagBuilder(IS_PE).add(
-            ModernBetaBiomes.PE_FOREST_ID,
-            ModernBetaBiomes.PE_SHRUBLAND_ID,
-            ModernBetaBiomes.PE_DESERT_ID,
-            ModernBetaBiomes.PE_SAVANNA_ID,
-            ModernBetaBiomes.PE_PLAINS_ID,
-            ModernBetaBiomes.PE_SEASONAL_FOREST_ID,
-            ModernBetaBiomes.PE_RAINFOREST_ID,
-            ModernBetaBiomes.PE_SWAMPLAND_ID,
-            ModernBetaBiomes.PE_TAIGA_ID,
-            ModernBetaBiomes.PE_TUNDRA_ID,
-            ModernBetaBiomes.PE_ICE_DESERT_ID,
-            ModernBetaBiomes.PE_OCEAN_ID,
-            ModernBetaBiomes.PE_LUKEWARM_OCEAN_ID,
-            ModernBetaBiomes.PE_WARM_OCEAN_ID,
-            ModernBetaBiomes.PE_COLD_OCEAN_ID,
-            ModernBetaBiomes.PE_FROZEN_OCEAN_ID
+            ModernBetaBiomes.PE_FOREST,
+            ModernBetaBiomes.PE_SHRUBLAND,
+            ModernBetaBiomes.PE_DESERT,
+            ModernBetaBiomes.PE_SAVANNA,
+            ModernBetaBiomes.PE_PLAINS,
+            ModernBetaBiomes.PE_SEASONAL_FOREST,
+            ModernBetaBiomes.PE_RAINFOREST,
+            ModernBetaBiomes.PE_SWAMPLAND,
+            ModernBetaBiomes.PE_TAIGA,
+            ModernBetaBiomes.PE_TUNDRA,
+            ModernBetaBiomes.PE_ICE_DESERT,
+            ModernBetaBiomes.PE_OCEAN,
+            ModernBetaBiomes.PE_LUKEWARM_OCEAN,
+            ModernBetaBiomes.PE_WARM_OCEAN,
+            ModernBetaBiomes.PE_COLD_OCEAN,
+            ModernBetaBiomes.PE_FROZEN_OCEAN
         );
 
         getOrCreateTagBuilder(IS_ALPHA).add(
-            ModernBetaBiomes.ALPHA_ID,
-            ModernBetaBiomes.ALPHA_WINTER_ID
+            ModernBetaBiomes.ALPHA,
+            ModernBetaBiomes.ALPHA_WINTER
         );
 
         getOrCreateTagBuilder(IS_INFDEV).add(
-            ModernBetaBiomes.INFDEV_611_ID,
-            ModernBetaBiomes.INFDEV_420_ID,
-            ModernBetaBiomes.INFDEV_415_ID,
-            ModernBetaBiomes.INFDEV_227_ID
+            ModernBetaBiomes.INFDEV_611,
+            ModernBetaBiomes.INFDEV_420,
+            ModernBetaBiomes.INFDEV_415,
+            ModernBetaBiomes.INFDEV_227
         );
 
         getOrCreateTagBuilder(IS_INDEV).add(
-            ModernBetaBiomes.INDEV_NORMAL_ID,
-            ModernBetaBiomes.INDEV_HELL_ID,
-            ModernBetaBiomes.INDEV_PARADISE_ID,
-            ModernBetaBiomes.INDEV_WOODS_ID
+            ModernBetaBiomes.INDEV_NORMAL,
+            ModernBetaBiomes.INDEV_HELL,
+            ModernBetaBiomes.INDEV_PARADISE,
+            ModernBetaBiomes.INDEV_WOODS
         );
         
         getOrCreateTagBuilder(IS_FOREST).add(
-            keyOf(ModernBetaBiomes.BETA_FOREST_ID),
-            keyOf(ModernBetaBiomes.PE_FOREST_ID)
+            ModernBetaBiomes.BETA_FOREST,
+            ModernBetaBiomes.PE_FOREST
         );
         
         getOrCreateTagBuilder(IS_SEASONAL_FOREST).add(
-            keyOf(ModernBetaBiomes.BETA_SEASONAL_FOREST_ID),
-            keyOf(ModernBetaBiomes.PE_SEASONAL_FOREST_ID)
+            ModernBetaBiomes.BETA_SEASONAL_FOREST,
+            ModernBetaBiomes.PE_SEASONAL_FOREST
         );
         
         getOrCreateTagBuilder(IS_RAINFOREST).add(
-            keyOf(ModernBetaBiomes.BETA_RAINFOREST_ID),
-            keyOf(ModernBetaBiomes.PE_RAINFOREST_ID)
+            ModernBetaBiomes.BETA_RAINFOREST,
+            ModernBetaBiomes.PE_RAINFOREST
         );
 
         getOrCreateTagBuilder(IS_DESERT).add(
-            keyOf(ModernBetaBiomes.BETA_DESERT_ID),
-            keyOf(ModernBetaBiomes.PE_DESERT_ID)
+            ModernBetaBiomes.BETA_DESERT,
+            ModernBetaBiomes.PE_DESERT
         );
         
         getOrCreateTagBuilder(IS_PLAINS).add(
-            keyOf(ModernBetaBiomes.BETA_PLAINS_ID),
-            keyOf(ModernBetaBiomes.PE_PLAINS_ID)
+            ModernBetaBiomes.BETA_PLAINS,
+            ModernBetaBiomes.PE_PLAINS
         );
         
         getOrCreateTagBuilder(IS_SHRUBLAND).add(
-            keyOf(ModernBetaBiomes.BETA_SHRUBLAND_ID),
-            keyOf(ModernBetaBiomes.PE_SHRUBLAND_ID)
+            ModernBetaBiomes.BETA_SHRUBLAND,
+            ModernBetaBiomes.PE_SHRUBLAND
         );
         
         getOrCreateTagBuilder(IS_SAVANNA).add(
-            keyOf(ModernBetaBiomes.BETA_SAVANNA_ID),
-            keyOf(ModernBetaBiomes.PE_SAVANNA_ID)
+            ModernBetaBiomes.BETA_SAVANNA,
+            ModernBetaBiomes.PE_SAVANNA
         );
         
         getOrCreateTagBuilder(IS_SWAMP).add(
-            keyOf(ModernBetaBiomes.BETA_SWAMPLAND_ID),
-            keyOf(ModernBetaBiomes.PE_SWAMPLAND_ID)
+            ModernBetaBiomes.BETA_SWAMPLAND,
+            ModernBetaBiomes.PE_SWAMPLAND
         );
         
         getOrCreateTagBuilder(IS_TAIGA).add(
-            keyOf(ModernBetaBiomes.BETA_TAIGA_ID),
-            keyOf(ModernBetaBiomes.PE_TAIGA_ID)
+            ModernBetaBiomes.BETA_TAIGA,
+            ModernBetaBiomes.PE_TAIGA
         );
         
         getOrCreateTagBuilder(IS_TUNDRA).add(
-            keyOf(ModernBetaBiomes.BETA_TUNDRA_ID),
-            keyOf(ModernBetaBiomes.PE_TUNDRA_ID),
-            keyOf(ModernBetaBiomes.BETA_ICE_DESERT_ID),
-            keyOf(ModernBetaBiomes.PE_ICE_DESERT_ID)
+            ModernBetaBiomes.BETA_TUNDRA,
+            ModernBetaBiomes.PE_TUNDRA,
+            ModernBetaBiomes.BETA_ICE_DESERT,
+            ModernBetaBiomes.PE_ICE_DESERT
         );
         
         getOrCreateTagBuilder(IS_OCEAN).add(
-            keyOf(ModernBetaBiomes.BETA_OCEAN_ID),
-            keyOf(ModernBetaBiomes.BETA_LUKEWARM_OCEAN_ID),
-            keyOf(ModernBetaBiomes.BETA_WARM_OCEAN_ID),
-            keyOf(ModernBetaBiomes.BETA_COLD_OCEAN_ID),
-            keyOf(ModernBetaBiomes.BETA_FROZEN_OCEAN_ID),
+            ModernBetaBiomes.BETA_OCEAN,
+            ModernBetaBiomes.BETA_LUKEWARM_OCEAN,
+            ModernBetaBiomes.BETA_WARM_OCEAN,
+            ModernBetaBiomes.BETA_COLD_OCEAN,
+            ModernBetaBiomes.BETA_FROZEN_OCEAN,
 
-            keyOf(ModernBetaBiomes.PE_OCEAN_ID),
-            keyOf(ModernBetaBiomes.PE_LUKEWARM_OCEAN_ID),
-            keyOf(ModernBetaBiomes.PE_WARM_OCEAN_ID),
-            keyOf(ModernBetaBiomes.PE_COLD_OCEAN_ID),
-            keyOf(ModernBetaBiomes.PE_FROZEN_OCEAN_ID)
+            ModernBetaBiomes.PE_OCEAN,
+            ModernBetaBiomes.PE_LUKEWARM_OCEAN,
+            ModernBetaBiomes.PE_WARM_OCEAN,
+            ModernBetaBiomes.PE_COLD_OCEAN,
+            ModernBetaBiomes.PE_FROZEN_OCEAN
         );
         
         /* Vanilla Biome Tags */
@@ -216,21 +214,21 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
             .addTag(IS_INDEV);
 
         getOrCreateTagBuilder(BiomeTags.OCEAN_RUIN_COLD_HAS_STRUCTURE).add(
-            keyOf(ModernBetaBiomes.BETA_OCEAN_ID),
-            keyOf(ModernBetaBiomes.BETA_COLD_OCEAN_ID),
-            keyOf(ModernBetaBiomes.BETA_FROZEN_OCEAN_ID),
+            ModernBetaBiomes.BETA_OCEAN,
+            ModernBetaBiomes.BETA_COLD_OCEAN,
+            ModernBetaBiomes.BETA_FROZEN_OCEAN,
 
-            keyOf(ModernBetaBiomes.PE_OCEAN_ID),
-            keyOf(ModernBetaBiomes.PE_COLD_OCEAN_ID),
-            keyOf(ModernBetaBiomes.PE_FROZEN_OCEAN_ID)
+            ModernBetaBiomes.PE_OCEAN,
+            ModernBetaBiomes.PE_COLD_OCEAN,
+            ModernBetaBiomes.PE_FROZEN_OCEAN
         );
         
         getOrCreateTagBuilder(BiomeTags.OCEAN_RUIN_WARM_HAS_STRUCTURE).add(
-            keyOf(ModernBetaBiomes.BETA_LUKEWARM_OCEAN_ID),
-            keyOf(ModernBetaBiomes.BETA_WARM_OCEAN_ID),
+            ModernBetaBiomes.BETA_LUKEWARM_OCEAN,
+            ModernBetaBiomes.BETA_WARM_OCEAN,
 
-            keyOf(ModernBetaBiomes.PE_LUKEWARM_OCEAN_ID),
-            keyOf(ModernBetaBiomes.PE_WARM_OCEAN_ID)
+            ModernBetaBiomes.PE_LUKEWARM_OCEAN,
+            ModernBetaBiomes.PE_WARM_OCEAN
         );
         
         getOrCreateTagBuilder(BiomeTags.PILLAGER_OUTPOST_HAS_STRUCTURE)
@@ -239,7 +237,7 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
             .addTag(IS_SAVANNA)
             .addTag(IS_SWAMP)
             .addTag(IS_TUNDRA)
-            .add(ModernBetaBiomes.BETA_SKY_ID);
+            .add(ModernBetaBiomes.BETA_SKY);
         
         getOrCreateTagBuilder(BiomeTags.RUINED_PORTAL_DESERT_HAS_STRUCTURE)
             .addTag(IS_DESERT);
@@ -248,7 +246,7 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
             .addTag(IS_PLAINS)
             .addTag(IS_SAVANNA)
             .addTag(IS_TUNDRA)
-            .add(ModernBetaBiomes.BETA_SKY_ID);
+            .add(ModernBetaBiomes.BETA_SKY);
         
         getOrCreateTagBuilder(BiomeTags.RUINED_PORTAL_SWAMP_HAS_STRUCTURE)
             .addTag(IS_SWAMP);
@@ -281,9 +279,20 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
         
         getOrCreateTagBuilder(BiomeTags.WOODLAND_MANSION_HAS_STRUCTURE)
             .addTag(IS_SEASONAL_FOREST);
-    }
-    
-    private static RegistryKey<Biome> keyOf(Identifier id) {
-        return RegistryKey.of(RegistryKeys.BIOME, id);
+        
+        /* Misc. Tags */
+        
+        getOrCreateTagBuilder(BiomeTags.PRODUCES_CORALS_FROM_BONEMEAL).add(
+            ModernBetaBiomes.BETA_WARM_OCEAN,
+            ModernBetaBiomes.PE_WARM_OCEAN
+        );
+        
+        getOrCreateTagBuilder(BiomeTags.POLAR_BEARS_SPAWN_ON_ALTERNATE_BLOCKS).add(
+            ModernBetaBiomes.BETA_FROZEN_OCEAN,
+            ModernBetaBiomes.PE_FROZEN_OCEAN
+        );
+        
+        getOrCreateTagBuilder(BiomeTags.ALLOWS_SURFACE_SLIME_SPAWNS)
+            .addTag(IS_SWAMP);
     }
 }

@@ -56,115 +56,115 @@ import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
 public class ModernBetaBiomes {
-    public static final Identifier BETA_FOREST_ID = ModernBeta.createId("beta_forest");
-    public static final Identifier BETA_SHRUBLAND_ID = ModernBeta.createId("beta_shrubland");
-    public static final Identifier BETA_DESERT_ID = ModernBeta.createId("beta_desert");
-    public static final Identifier BETA_SAVANNA_ID = ModernBeta.createId("beta_savanna");
-    public static final Identifier BETA_PLAINS_ID = ModernBeta.createId("beta_plains");
-    public static final Identifier BETA_SEASONAL_FOREST_ID = ModernBeta.createId("beta_seasonal_forest");
-    public static final Identifier BETA_RAINFOREST_ID = ModernBeta.createId("beta_rainforest");
-    public static final Identifier BETA_SWAMPLAND_ID = ModernBeta.createId("beta_swampland");
-    public static final Identifier BETA_TAIGA_ID = ModernBeta.createId("beta_taiga");
-    public static final Identifier BETA_TUNDRA_ID = ModernBeta.createId("beta_tundra");
-    public static final Identifier BETA_ICE_DESERT_ID = ModernBeta.createId("beta_ice_desert");
+    public static final RegistryKey<Biome> BETA_FOREST = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_FOREST));
+    public static final RegistryKey<Biome> BETA_SHRUBLAND = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_SHRUBLAND));
+    public static final RegistryKey<Biome> BETA_DESERT = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_DESERT));
+    public static final RegistryKey<Biome> BETA_SAVANNA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_SAVANNA));
+    public static final RegistryKey<Biome> BETA_PLAINS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_PLAINS));
+    public static final RegistryKey<Biome> BETA_SEASONAL_FOREST = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_SEASONAL_FOREST));
+    public static final RegistryKey<Biome> BETA_RAINFOREST = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_RAINFOREST));
+    public static final RegistryKey<Biome> BETA_SWAMPLAND = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_SWAMPLAND));
+    public static final RegistryKey<Biome> BETA_TAIGA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_TAIGA));
+    public static final RegistryKey<Biome> BETA_TUNDRA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_TUNDRA));
+    public static final RegistryKey<Biome> BETA_ICE_DESERT = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_ICE_DESERT));
 
-    public static final Identifier BETA_OCEAN_ID = ModernBeta.createId("beta_ocean");
-    public static final Identifier BETA_LUKEWARM_OCEAN_ID = ModernBeta.createId("beta_lukewarm_ocean");
-    public static final Identifier BETA_WARM_OCEAN_ID = ModernBeta.createId("beta_warm_ocean");
-    public static final Identifier BETA_COLD_OCEAN_ID = ModernBeta.createId("beta_cold_ocean");
-    public static final Identifier BETA_FROZEN_OCEAN_ID = ModernBeta.createId("beta_frozen_ocean");
+    public static final RegistryKey<Biome> BETA_OCEAN = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_OCEAN));
+    public static final RegistryKey<Biome> BETA_LUKEWARM_OCEAN = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_LUKEWARM_OCEAN));
+    public static final RegistryKey<Biome> BETA_WARM_OCEAN = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_WARM_OCEAN));
+    public static final RegistryKey<Biome> BETA_COLD_OCEAN = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_COLD_OCEAN));
+    public static final RegistryKey<Biome> BETA_FROZEN_OCEAN = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_FROZEN_OCEAN));
     
-    public static final Identifier BETA_SKY_ID = ModernBeta.createId("beta_sky");
+    public static final RegistryKey<Biome> BETA_SKY = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_SKY));
     
-    public static final Identifier PE_FOREST_ID = ModernBeta.createId("pe_forest");
-    public static final Identifier PE_SHRUBLAND_ID = ModernBeta.createId("pe_shrubland");
-    public static final Identifier PE_DESERT_ID = ModernBeta.createId("pe_desert");
-    public static final Identifier PE_SAVANNA_ID = ModernBeta.createId("pe_savanna");
-    public static final Identifier PE_PLAINS_ID = ModernBeta.createId("pe_plains");
-    public static final Identifier PE_SEASONAL_FOREST_ID = ModernBeta.createId("pe_seasonal_forest");
-    public static final Identifier PE_RAINFOREST_ID = ModernBeta.createId("pe_rainforest");
-    public static final Identifier PE_SWAMPLAND_ID = ModernBeta.createId("pe_swampland");
-    public static final Identifier PE_TAIGA_ID = ModernBeta.createId("pe_taiga");
-    public static final Identifier PE_TUNDRA_ID = ModernBeta.createId("pe_tundra");
-    public static final Identifier PE_ICE_DESERT_ID = ModernBeta.createId("pe_ice_desert");
+    public static final RegistryKey<Biome> PE_FOREST = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_FOREST));
+    public static final RegistryKey<Biome> PE_SHRUBLAND = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_SHRUBLAND));
+    public static final RegistryKey<Biome> PE_DESERT = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_DESERT));
+    public static final RegistryKey<Biome> PE_SAVANNA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_SAVANNA));
+    public static final RegistryKey<Biome> PE_PLAINS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_PLAINS));
+    public static final RegistryKey<Biome> PE_SEASONAL_FOREST = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_SEASONAL_FOREST));
+    public static final RegistryKey<Biome> PE_RAINFOREST = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_RAINFOREST));
+    public static final RegistryKey<Biome> PE_SWAMPLAND = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_SWAMPLAND));
+    public static final RegistryKey<Biome> PE_TAIGA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_TAIGA));
+    public static final RegistryKey<Biome> PE_TUNDRA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_TUNDRA));
+    public static final RegistryKey<Biome> PE_ICE_DESERT = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_ICE_DESERT));
     
-    public static final Identifier PE_OCEAN_ID = ModernBeta.createId("pe_ocean");
-    public static final Identifier PE_LUKEWARM_OCEAN_ID = ModernBeta.createId("pe_lukewarm_ocean");
-    public static final Identifier PE_WARM_OCEAN_ID = ModernBeta.createId("pe_warm_ocean");
-    public static final Identifier PE_COLD_OCEAN_ID = ModernBeta.createId("pe_cold_ocean");
-    public static final Identifier PE_FROZEN_OCEAN_ID = ModernBeta.createId("pe_frozen_ocean");
+    public static final RegistryKey<Biome> PE_OCEAN = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_OCEAN));
+    public static final RegistryKey<Biome> PE_LUKEWARM_OCEAN = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_LUKEWARM_OCEAN));
+    public static final RegistryKey<Biome> PE_WARM_OCEAN = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_WARM_OCEAN));
+    public static final RegistryKey<Biome> PE_COLD_OCEAN = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_COLD_OCEAN));
+    public static final RegistryKey<Biome> PE_FROZEN_OCEAN = keyOf(ModernBeta.createId(ModernBetaBiomeTags.PE_FROZEN_OCEAN));
     
-    public static final Identifier ALPHA_ID = ModernBeta.createId("alpha");
-    public static final Identifier ALPHA_WINTER_ID = ModernBeta.createId("alpha_winter");
+    public static final RegistryKey<Biome> ALPHA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.ALPHA));
+    public static final RegistryKey<Biome> ALPHA_WINTER = keyOf(ModernBeta.createId(ModernBetaBiomeTags.ALPHA_WINTER));
     
-    public static final Identifier INFDEV_611_ID = ModernBeta.createId("infdev_611");
-    public static final Identifier INFDEV_420_ID = ModernBeta.createId("infdev_420");
-    public static final Identifier INFDEV_415_ID = ModernBeta.createId("infdev_415");
-    public static final Identifier INFDEV_227_ID = ModernBeta.createId("infdev_227");
+    public static final RegistryKey<Biome> INFDEV_611 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_611));
+    public static final RegistryKey<Biome> INFDEV_420 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_420));
+    public static final RegistryKey<Biome> INFDEV_415 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_415));
+    public static final RegistryKey<Biome> INFDEV_227 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_227));
     
-    public static final Identifier INDEV_NORMAL_ID = ModernBeta.createId("indev_normal");
-    public static final Identifier INDEV_HELL_ID = ModernBeta.createId("indev_hell");
-    public static final Identifier INDEV_PARADISE_ID = ModernBeta.createId("indev_paradise");
-    public static final Identifier INDEV_WOODS_ID = ModernBeta.createId("indev_woods");
+    public static final RegistryKey<Biome> INDEV_NORMAL = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INDEV_NORMAL));
+    public static final RegistryKey<Biome> INDEV_HELL = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INDEV_HELL));
+    public static final RegistryKey<Biome> INDEV_PARADISE = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INDEV_PARADISE));
+    public static final RegistryKey<Biome> INDEV_WOODS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INDEV_WOODS));
     
     public static void bootstrap(Registerable<Biome> biomeRegisterable) {
-        register(biomeRegisterable, BETA_FOREST_ID, BiomeBetaForest::create);
-        register(biomeRegisterable, BETA_SHRUBLAND_ID, BiomeBetaShrubland::create);
-        register(biomeRegisterable, BETA_DESERT_ID, BiomeBetaDesert::create);
-        register(biomeRegisterable, BETA_SAVANNA_ID, BiomeBetaSavanna::create);
-        register(biomeRegisterable, BETA_PLAINS_ID, BiomeBetaPlains::create);
-        register(biomeRegisterable, BETA_SEASONAL_FOREST_ID, BiomeBetaSeasonalForest::create);
-        register(biomeRegisterable, BETA_RAINFOREST_ID, BiomeBetaRainforest::create);
-        register(biomeRegisterable, BETA_SWAMPLAND_ID, BiomeBetaSwampland::create);
-        register(biomeRegisterable, BETA_TAIGA_ID, BiomeBetaTaiga::create);
-        register(biomeRegisterable, BETA_TUNDRA_ID, BiomeBetaTundra::create);
-        register(biomeRegisterable, BETA_ICE_DESERT_ID, BiomeBetaIceDesert::create);
+        register(biomeRegisterable, BETA_FOREST, BiomeBetaForest::create);
+        register(biomeRegisterable, BETA_SHRUBLAND, BiomeBetaShrubland::create);
+        register(biomeRegisterable, BETA_DESERT, BiomeBetaDesert::create);
+        register(biomeRegisterable, BETA_SAVANNA, BiomeBetaSavanna::create);
+        register(biomeRegisterable, BETA_PLAINS, BiomeBetaPlains::create);
+        register(biomeRegisterable, BETA_SEASONAL_FOREST, BiomeBetaSeasonalForest::create);
+        register(biomeRegisterable, BETA_RAINFOREST, BiomeBetaRainforest::create);
+        register(biomeRegisterable, BETA_SWAMPLAND, BiomeBetaSwampland::create);
+        register(biomeRegisterable, BETA_TAIGA, BiomeBetaTaiga::create);
+        register(biomeRegisterable, BETA_TUNDRA, BiomeBetaTundra::create);
+        register(biomeRegisterable, BETA_ICE_DESERT, BiomeBetaIceDesert::create);
 
-        register(biomeRegisterable, BETA_OCEAN_ID, BiomeBetaOcean::create);
-        register(biomeRegisterable, BETA_LUKEWARM_OCEAN_ID, BiomeBetaLukewarmOcean::create);
-        register(biomeRegisterable, BETA_WARM_OCEAN_ID, BiomeBetaWarmOcean::create);
-        register(biomeRegisterable, BETA_COLD_OCEAN_ID, BiomeBetaColdOcean::create);
-        register(biomeRegisterable, BETA_FROZEN_OCEAN_ID, BiomeBetaFrozenOcean::create);
+        register(biomeRegisterable, BETA_OCEAN, BiomeBetaOcean::create);
+        register(biomeRegisterable, BETA_LUKEWARM_OCEAN, BiomeBetaLukewarmOcean::create);
+        register(biomeRegisterable, BETA_WARM_OCEAN, BiomeBetaWarmOcean::create);
+        register(biomeRegisterable, BETA_COLD_OCEAN, BiomeBetaColdOcean::create);
+        register(biomeRegisterable, BETA_FROZEN_OCEAN, BiomeBetaFrozenOcean::create);
         
-        register(biomeRegisterable, BETA_SKY_ID, BiomeBetaSky::create);
+        register(biomeRegisterable, BETA_SKY, BiomeBetaSky::create);
 
-        register(biomeRegisterable, PE_FOREST_ID, BiomePEForest::create);
-        register(biomeRegisterable, PE_SHRUBLAND_ID, BiomePEShrubland::create);
-        register(biomeRegisterable, PE_DESERT_ID, BiomePEDesert::create);
-        register(biomeRegisterable, PE_SAVANNA_ID, BiomePESavanna::create);
-        register(biomeRegisterable, PE_PLAINS_ID, BiomePEPlains::create);
-        register(biomeRegisterable, PE_SEASONAL_FOREST_ID, BiomePESeasonalForest::create);
-        register(biomeRegisterable, PE_RAINFOREST_ID, BiomePERainforest::create);
-        register(biomeRegisterable, PE_SWAMPLAND_ID, BiomePESwampland::create);
-        register(biomeRegisterable, PE_TAIGA_ID, BiomePETaiga::create);
-        register(biomeRegisterable, PE_TUNDRA_ID, BiomePETundra::create);
-        register(biomeRegisterable, PE_ICE_DESERT_ID, BiomePEIceDesert::create);
+        register(biomeRegisterable, PE_FOREST, BiomePEForest::create);
+        register(biomeRegisterable, PE_SHRUBLAND, BiomePEShrubland::create);
+        register(biomeRegisterable, PE_DESERT, BiomePEDesert::create);
+        register(biomeRegisterable, PE_SAVANNA, BiomePESavanna::create);
+        register(biomeRegisterable, PE_PLAINS, BiomePEPlains::create);
+        register(biomeRegisterable, PE_SEASONAL_FOREST, BiomePESeasonalForest::create);
+        register(biomeRegisterable, PE_RAINFOREST, BiomePERainforest::create);
+        register(biomeRegisterable, PE_SWAMPLAND, BiomePESwampland::create);
+        register(biomeRegisterable, PE_TAIGA, BiomePETaiga::create);
+        register(biomeRegisterable, PE_TUNDRA, BiomePETundra::create);
+        register(biomeRegisterable, PE_ICE_DESERT, BiomePEIceDesert::create);
 
-        register(biomeRegisterable, PE_OCEAN_ID, BiomePEOcean::create);
-        register(biomeRegisterable, PE_LUKEWARM_OCEAN_ID, BiomePELukewarmOcean::create);
-        register(biomeRegisterable, PE_WARM_OCEAN_ID, BiomePEWarmOcean::create);
-        register(biomeRegisterable, PE_COLD_OCEAN_ID, BiomePEColdOcean::create);
-        register(biomeRegisterable, PE_FROZEN_OCEAN_ID, BiomePEFrozenOcean::create);
+        register(biomeRegisterable, PE_OCEAN, BiomePEOcean::create);
+        register(biomeRegisterable, PE_LUKEWARM_OCEAN, BiomePELukewarmOcean::create);
+        register(biomeRegisterable, PE_WARM_OCEAN, BiomePEWarmOcean::create);
+        register(biomeRegisterable, PE_COLD_OCEAN, BiomePEColdOcean::create);
+        register(biomeRegisterable, PE_FROZEN_OCEAN, BiomePEFrozenOcean::create);
 
-        register(biomeRegisterable, ALPHA_ID, BiomeAlpha::create);
-        register(biomeRegisterable, ALPHA_WINTER_ID, BiomeAlphaWinter::create);
+        register(biomeRegisterable, ALPHA, BiomeAlpha::create);
+        register(biomeRegisterable, ALPHA_WINTER, BiomeAlphaWinter::create);
 
-        register(biomeRegisterable, INFDEV_611_ID, BiomeInfdev611::create);
-        register(biomeRegisterable, INFDEV_420_ID, BiomeInfdev420::create);
-        register(biomeRegisterable, INFDEV_415_ID, BiomeInfdev415::create);
-        register(biomeRegisterable, INFDEV_227_ID, BiomeInfdev227::create);
+        register(biomeRegisterable, INFDEV_611, BiomeInfdev611::create);
+        register(biomeRegisterable, INFDEV_420, BiomeInfdev420::create);
+        register(biomeRegisterable, INFDEV_415, BiomeInfdev415::create);
+        register(biomeRegisterable, INFDEV_227, BiomeInfdev227::create);
 
-        register(biomeRegisterable, INDEV_NORMAL_ID, BiomeIndevNormal::create);
-        register(biomeRegisterable, INDEV_HELL_ID, BiomeIndevHell::create);
-        register(biomeRegisterable, INDEV_PARADISE_ID, BiomeIndevParadise::create);
-        register(biomeRegisterable, INDEV_WOODS_ID, BiomeIndevWoods::create);
+        register(biomeRegisterable, INDEV_NORMAL, BiomeIndevNormal::create);
+        register(biomeRegisterable, INDEV_HELL, BiomeIndevHell::create);
+        register(biomeRegisterable, INDEV_PARADISE, BiomeIndevParadise::create);
+        register(biomeRegisterable, INDEV_WOODS, BiomeIndevWoods::create);
     }
     
-    private static void register(Registerable<Biome> biomeRegisterable, Identifier id, BiFunction<RegistryEntryLookup<PlacedFeature>, RegistryEntryLookup<ConfiguredCarver<?>>, Biome> biomeCreator) {
+    private static void register(Registerable<Biome> biomeRegisterable, RegistryKey<Biome> biome, BiFunction<RegistryEntryLookup<PlacedFeature>, RegistryEntryLookup<ConfiguredCarver<?>>, Biome> biomeCreator) {
         RegistryEntryLookup<PlacedFeature> registryFeature = biomeRegisterable.getRegistryLookup(RegistryKeys.PLACED_FEATURE);
         RegistryEntryLookup<ConfiguredCarver<?>> registryCarver = biomeRegisterable.getRegistryLookup(RegistryKeys.CONFIGURED_CARVER);
         
-        biomeRegisterable.register(keyOf(id), biomeCreator.apply(registryFeature, registryCarver));
+        biomeRegisterable.register(biome, biomeCreator.apply(registryFeature, registryCarver));
     }
     
     private static RegistryKey<Biome> keyOf(Identifier id) {

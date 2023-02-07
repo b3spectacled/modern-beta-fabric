@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "modern_beta:beta_swampland",
-    
-    "modern_beta:pe_swampland"
+    "#modern_beta:is_swamp"
   ]
 }

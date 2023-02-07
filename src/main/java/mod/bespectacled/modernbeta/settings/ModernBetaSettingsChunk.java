@@ -121,7 +121,7 @@ public class ModernBetaSettingsChunk {
         compound.putInt(NbtTags.DEEPSLATE_MAX_Y, this.deepslateMaxY);
         compound.putString(NbtTags.DEEPSLATE_BLOCK, this.deepslateBlock);
         
-        compound.putString(NbtTags.NOISE_POST_PROCESSOR, this.noisePostProcessor);
+        //compound.putString(NbtTags.NOISE_POST_PROCESSOR, this.noisePostProcessor);
         compound.putFloat(NbtTags.NOISE_COORDINATE_SCALE, this.noiseCoordinateScale);
         compound.putFloat(NbtTags.NOISE_HEIGHT_SCALE, this.noiseHeightScale);
         compound.putFloat(NbtTags.NOISE_UPPER_LIMIT_SCALE, this.noiseUpperLimitScale);

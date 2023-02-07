@@ -2,25 +2,25 @@
   "feature": "modern_beta:patch_dandelion_infdev_227",
   "placement": [
     {
+      "type": "minecraft:count",
       "count": {
         "type": "minecraft:uniform",
         "value": {
-          "min_inclusive": 0,
-          "max_inclusive": 10
+          "max_inclusive": 10,
+          "min_inclusive": 0
         }
-      },
-      "type": "minecraft:count"
+      }
     },
     {
       "type": "minecraft:in_square"
     },
     {
-      "max_water_depth": 0,
-      "type": "minecraft:surface_water_depth_filter"
+      "type": "minecraft:surface_water_depth_filter",
+      "max_water_depth": 0
     },
     {
-      "heightmap": "OCEAN_FLOOR",
-      "type": "minecraft:heightmap"
+      "type": "minecraft:heightmap",
+      "heightmap": "OCEAN_FLOOR"
     },
     {
       "type": "minecraft:biome"

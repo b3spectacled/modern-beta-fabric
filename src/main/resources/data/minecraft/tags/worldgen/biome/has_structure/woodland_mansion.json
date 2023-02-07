@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "modern_beta:beta_seasonal_forest",
-    
-    "modern_beta:pe_seasonal_forest"
+    "#modern_beta:is_seasonal_forest"
   ]
 }

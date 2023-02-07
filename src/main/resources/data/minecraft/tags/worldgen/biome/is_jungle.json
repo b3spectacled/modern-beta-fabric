@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "modern_beta:beta_rainforest",
-    "modern_beta:pe_rainforest"
+    "#modern_beta:is_rainforest"
   ]
 }

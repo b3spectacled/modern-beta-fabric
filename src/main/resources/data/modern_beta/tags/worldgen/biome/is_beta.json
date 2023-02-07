@@ -1,0 +1,22 @@
+{
+  "replace": false,
+  "values": [
+    "modern_beta:beta_forest",
+    "modern_beta:beta_shrubland",
+    "modern_beta:beta_desert",
+    "modern_beta:beta_savanna",
+    "modern_beta:beta_plains",
+    "modern_beta:beta_seasonal_forest",
+    "modern_beta:beta_rainforest",
+    "modern_beta:beta_swampland",
+    "modern_beta:beta_taiga",
+    "modern_beta:beta_tundra",
+    "modern_beta:beta_ice_desert",
+    "modern_beta:beta_ocean",
+    "modern_beta:beta_lukewarm_ocean",
+    "modern_beta:beta_warm_ocean",
+    "modern_beta:beta_cold_ocean",
+    "modern_beta:beta_frozen_ocean",
+    "modern_beta:beta_sky"
+  ]
+}

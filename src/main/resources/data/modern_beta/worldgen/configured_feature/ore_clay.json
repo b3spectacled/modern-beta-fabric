@@ -1,18 +1,18 @@
 {
+  "type": "modern_beta:ore_clay",
   "config": {
+    "discard_chance_on_air_exposure": 0.0,
+    "size": 33,
     "targets": [
       {
+        "state": {
+          "Name": "minecraft:clay"
+        },
         "target": {
           "block": "minecraft:sand",
           "predicate_type": "minecraft:block_match"
-        },
-        "state": {
-          "Name": "minecraft:clay"
         }
       }
-    ],
-    "size": 33,
-    "discard_chance_on_air_exposure": 0.0
-  },
-  "type": "modern_beta:ore_clay"
+    ]
+  }
 }

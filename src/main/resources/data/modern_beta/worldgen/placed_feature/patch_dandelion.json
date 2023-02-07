@@ -2,7 +2,9 @@
   "feature": "modern_beta:patch_dandelion",
   "placement": [
     {
+      "type": "minecraft:count",
       "count": {
+        "type": "minecraft:weighted_list",
         "distribution": [
           {
             "data": 0,
@@ -12,25 +14,23 @@
             "data": 1,
             "weight": 1
           }
-        ],
-        "type": "minecraft:weighted_list"
-      },
-      "type": "minecraft:count"
+        ]
+      }
     },
     {
       "type": "minecraft:in_square"
     },
     {
+      "type": "minecraft:height_range",
       "height": {
-        "min_inclusive": {
-          "absolute": 0
-        },
+        "type": "minecraft:uniform",
         "max_inclusive": {
           "absolute": 127
         },
-        "type": "minecraft:uniform"
-      },
-      "type": "minecraft:height_range"
+        "min_inclusive": {
+          "absolute": 0
+        }
+      }
     },
     {
       "type": "minecraft:biome"

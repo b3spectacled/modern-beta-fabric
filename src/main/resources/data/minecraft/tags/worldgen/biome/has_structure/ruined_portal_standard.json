@@ -1,21 +1,9 @@
 {
   "replace": false,
   "values": [
-    "#minecraft:is_beach",
-    "#minecraft:is_river",
-    "#minecraft:is_taiga",
-    "#minecraft:is_forest",
-    
-    "modern_beta:beta_sky",
-    
-    "modern_beta:beta_plains",
-    "modern_beta:beta_savanna",
-    "modern_beta:beta_shrubland",
-    "modern_beta:beta_tundra",
-    
-    "modern_beta:pe_plains",
-    "modern_beta:pe_savanna",
-    "modern_beta:pe_shrubland",
-    "modern_beta:pe_tundra"
+    "#modern_beta:is_plains",
+    "#modern_beta:is_savanna",
+    "#modern_beta:is_tundra",
+    "modern_beta:beta_sky"
   ]
 }

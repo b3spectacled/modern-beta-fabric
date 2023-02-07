@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "modern_beta:beta_desert",
-    
-    "modern_beta:pe_desert"
+    "#modern_beta:is_desert"
   ]
 }

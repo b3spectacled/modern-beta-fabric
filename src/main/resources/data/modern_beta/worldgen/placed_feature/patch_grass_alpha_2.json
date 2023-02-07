@@ -2,7 +2,9 @@
   "feature": "modern_beta:patch_grass",
   "placement": [
     {
+      "type": "minecraft:count",
       "count": {
+        "type": "minecraft:weighted_list",
         "distribution": [
           {
             "data": 0,
@@ -12,17 +14,15 @@
             "data": 1,
             "weight": 1
           }
-        ],
-        "type": "minecraft:weighted_list"
-      },
-      "type": "minecraft:count"
+        ]
+      }
     },
     {
       "type": "minecraft:in_square"
     },
     {
-      "heightmap": "WORLD_SURFACE_WG",
-      "type": "minecraft:heightmap"
+      "type": "minecraft:heightmap",
+      "heightmap": "WORLD_SURFACE_WG"
     },
     {
       "type": "minecraft:biome"

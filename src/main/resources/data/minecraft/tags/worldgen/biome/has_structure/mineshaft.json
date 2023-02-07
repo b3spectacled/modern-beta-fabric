@@ -1,31 +1,10 @@
 {
   "replace": false,
   "values": [
-    "#minecraft:is_ocean",
-    "#minecraft:is_river",
-    "#minecraft:is_beach",
-    "#minecraft:is_mountain",
-    "#minecraft:is_hill",
-    "#minecraft:is_taiga",
-    "#minecraft:is_jungle",
-    "#minecraft:is_forest",
-    
-    "modern_beta:beta_sky",
-    
-    "modern_beta:beta_desert",
-    "modern_beta:beta_ice_desert",
-    "modern_beta:beta_plains",
-    "modern_beta:beta_savanna",
-    "modern_beta:beta_shrubland",
-    "modern_beta:beta_swampland",
-    "modern_beta:beta_tundra",
-    
-    "modern_beta:pe_desert",
-    "modern_beta:pe_ice_desert",
-    "modern_beta:pe_plains",
-    "modern_beta:pe_savanna",
-    "modern_beta:pe_shrubland",
-    "modern_beta:pe_swampland",
-    "modern_beta:pe_tundra"
+    "#modern_beta:is_beta",
+    "#modern_beta:is_pe",
+    "#modern_beta:is_alpha",
+    "#modern_beta:is_infdev",
+    "#modern_beta:is_indev"
   ]
 }
