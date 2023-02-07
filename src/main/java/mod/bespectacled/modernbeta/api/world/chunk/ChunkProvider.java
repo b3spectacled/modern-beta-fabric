@@ -43,6 +43,7 @@ public abstract class ChunkProvider {
     private final FluidLevelSampler emptyFluidLevelSampler;
     
     protected final ModernBetaChunkGenerator chunkGenerator;
+    protected final long seed;
     
     protected final RegistryEntry<ChunkGeneratorSettings> generatorSettings;
     protected final ModernBetaSettingsChunk chunkSettings;
@@ -59,22 +60,21 @@ public abstract class ChunkProvider {
      * 
      * @param chunkGenerator Parent ModernBetaChunkGenerator object used to initialize fields.
      */
-    public ChunkProvider(ModernBetaChunkGenerator chunkGenerator) {
+    public ChunkProvider(ModernBetaChunkGenerator chunkGenerator, long seed) {
         this.chunkGenerator = chunkGenerator;
+        this.seed = seed;
         
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
         this.chunkSettings = new ModernBetaSettingsChunk.Builder(chunkGenerator.getChunkSettings()).build();
-        this.random = new Random(0L);
+        this.random = new Random(this.seed);
 
         this.emptyFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
         this.randomProvider = chunkGenerator.getGeneratorSettings().value().getRandomProvider();
-        this.randomSplitter = this.randomProvider.create(0L).nextSplitter();
+        this.randomSplitter = this.randomProvider.create(this.seed).nextSplitter();
         this.blockSourceDeepslate = new BlockSourceDeepslate(this.chunkSettings, this.randomSplitter);
         
         this.spawnLocator = SpawnLocator.DEFAULT;
     }
-    
-    public abstract void initProvider(long seed);
     
     /**
      * Generates base terrain for given chunk and returns it.

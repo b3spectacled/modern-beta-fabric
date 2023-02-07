@@ -113,12 +113,11 @@ public class ModernBeta implements ModInitializer {
                 BiomeSource biomeSource = chunkGenerator.getBiomeSource();
                 
                 if (chunkGenerator instanceof ModernBetaChunkGenerator modernBetaChunkGenerator) {
-                    modernBetaChunkGenerator.getChunkProvider().initProvider(seed);
+                    modernBetaChunkGenerator.initProvider(seed);
                 }
                 
                 if (biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
-                    modernBetaBiomeSource.getBiomeProvider().initProvider(seed);
-                    modernBetaBiomeSource.getCaveBiomeProvider().initProvider(seed);
+                    modernBetaBiomeSource.initProvider(seed);
                 }
             });
         });

@@ -16,10 +16,8 @@ import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.Biom
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.structure.StructureTemplateManager;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.random.LocalRandom;
@@ -49,22 +47,20 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
 import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
-import net.minecraft.world.gen.chunk.placement.StructurePlacementCalculator;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
     public static final Codec<ModernBetaChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BiomeSource.CODEC.fieldOf("biome_source").forGetter(generator -> generator.biomeSource),
             ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter(generator -> generator.settings),
-            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkProviderSettings)
+            NbtCompound.CODEC.fieldOf("provider_settings").forGetter(generator -> generator.chunkSettings)
         ).apply(instance, instance.stable(ModernBetaChunkGenerator::new)));
 
     private final RegistryEntry<ChunkGeneratorSettings> settings;
-    private final NbtCompound chunkProviderSettings;
-    private final ChunkProvider chunkProvider;
-    private final String chunkProviderType;
-
-    private final BiomeInjector biomeInjector;
+    private final NbtCompound chunkSettings;
+    
+    private ChunkProvider chunkProvider;
+    private BiomeInjector biomeInjector;
     
     public ModernBetaChunkGenerator(
         BiomeSource biomeSource,
@@ -74,10 +70,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         super(biomeSource, settings);
         
         this.settings = settings;
-        this.chunkProviderSettings = chunkProviderSettings;
-        this.chunkProviderType = new ModernBetaSettingsChunk.Builder(chunkProviderSettings).build().chunkProvider;
-        this.chunkProvider = ModernBetaRegistries.CHUNK.get(this.chunkProviderType).apply(this);
-    
+        this.chunkSettings = chunkProviderSettings;
         this.biomeInjector = this.biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource ?
             new BiomeInjector(this, modernBetaBiomeSource) : 
             null;
@@ -86,21 +79,13 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
             modernBetaBiomeSource.setChunkGenerator(this);
         }
     }
-    
-    @Override
-    public void setStructureStarts(
-        DynamicRegistryManager registryManager,
-        StructurePlacementCalculator placementCalculator,
-        StructureAccessor structureAccessor,
-        Chunk chunk,
-        StructureTemplateManager structureTemplateManager
-    ) {
-        super.setStructureStarts(registryManager, placementCalculator, structureAccessor, chunk, structureTemplateManager);
-    }
-    
-    @Override
-    public void addStructureReferences(StructureWorldAccess world, StructureAccessor structureAccessor, Chunk chunk) {
-        super.addStructureReferences(world, structureAccessor, chunk);
+
+    public void initProvider(long seed) {
+        ModernBetaSettingsChunk chunkSettings = new ModernBetaSettingsChunk.Builder(this.chunkSettings).build();
+        
+        this.chunkProvider = ModernBetaRegistries.CHUNK
+            .get(chunkSettings.chunkProvider)
+            .apply(this, seed);
     }
 
     @Override
@@ -259,15 +244,11 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
     }
     
     public NbtCompound getChunkSettings() {
-        return this.chunkProviderSettings;
+        return this.chunkSettings;
     }
     
     public BiomeInjector getBiomeInjector() {
         return this.biomeInjector;
-    }
-    
-    public String getChunkProviderType() {
-        return this.chunkProviderType;
     }
     
     public RegistryEntry<Biome> getInjectedBiomeAtBlock(int x, int y, int z, MultiNoiseSampler noiseSampler) {

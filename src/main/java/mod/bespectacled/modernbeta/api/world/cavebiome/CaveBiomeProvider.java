@@ -10,7 +10,8 @@ import net.minecraft.world.biome.Biome;
 
 public abstract class CaveBiomeProvider {
     protected final ModernBetaSettingsCaveBiome settings;
-    protected RegistryEntryLookup<Biome> biomeRegistry;
+    protected final RegistryEntryLookup<Biome> biomeRegistry;
+    protected final long seed;
     
     /**
      * Constructs a Modern Beta cave biome provider initialized with seed.
@@ -19,17 +20,11 @@ public abstract class CaveBiomeProvider {
      * @param seed World seed.
      * @param settings Biome settings.
      */
-    public CaveBiomeProvider(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
+    public CaveBiomeProvider(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry, long seed) {
         this.settings = new ModernBetaSettingsCaveBiome.Builder(settings).build();
         this.biomeRegistry = biomeRegistry;
+        this.seed = seed;
     }
-    
-    /**
-     * Inits biome provider fields.
-     * 
-     * @param seed
-     */
-    public abstract void initProvider(long seed);
     
     /**
      * Gets a cave biome to overwrite the original biome at given biome coordinates.

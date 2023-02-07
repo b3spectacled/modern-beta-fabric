@@ -47,11 +47,12 @@ public class ModernBetaBiomeSource extends BiomeSource {
             NbtCompound.CODEC.fieldOf("cave_provider_settings").forGetter(biomeSource -> biomeSource.caveBiomeSettings)
         ).apply(instance, (instance).stable(ModernBetaBiomeSource::new)));
     
+    private final RegistryEntryLookup<Biome> biomeRegistry;
     private final NbtCompound biomeSettings;
     private final NbtCompound caveBiomeSettings;
     
-    private final BiomeProvider biomeProvider;
-    private final CaveBiomeProvider caveBiomeProvider;
+    private BiomeProvider biomeProvider;
+    private CaveBiomeProvider caveBiomeProvider;
     
     private ModernBetaChunkGenerator chunkGenerator;
     
@@ -65,15 +66,12 @@ public class ModernBetaBiomeSource extends BiomeSource {
         
         BiomeProvider biomeProvider  = ModernBetaRegistries.BIOME
             .get(modernBetaBiomeSettings.biomeProvider)
-            .apply(biomeSettings, biomeRegistry);
+            .apply(biomeSettings, biomeRegistry, 0L);
         
         CaveBiomeProvider caveBiomeProvider = ModernBetaRegistries.CAVE_BIOME
             .get(modernBetaCaveBiomeSettings.biomeProvider)
-            .apply(caveBiomeSettings, biomeRegistry);
-        
-        biomeProvider.initProvider(0L);
-        caveBiomeProvider.initProvider(0L);
-        
+            .apply(caveBiomeSettings, biomeRegistry, 0L);
+
         List<RegistryEntry<Biome>> biomes = new ArrayList<>();
         biomes.addAll(biomeProvider.getBiomesForRegistry());
         biomes.addAll(caveBiomeProvider.getBiomesForRegistry());
@@ -88,21 +86,24 @@ public class ModernBetaBiomeSource extends BiomeSource {
     ) {
         super(getBiomesForRegistry(biomeRegistry, biomeSettings, caveBiomeSettings));
         
+        this.biomeRegistry = biomeRegistry;
         this.biomeSettings = biomeSettings;
         this.caveBiomeSettings = caveBiomeSettings;
         
-        ModernBetaSettingsBiome modernBetaBiomeSettings = new ModernBetaSettingsBiome.Builder(this.biomeSettings).build();
-        ModernBetaSettingsCaveBiome modernBetaCaveBiomeSettings = new ModernBetaSettingsCaveBiome.Builder(this.caveBiomeSettings).build();
+        this.chunkGenerator = null;
+    }
+    
+    public void initProvider(long seed) {
+        ModernBetaSettingsBiome biomeSettings = new ModernBetaSettingsBiome.Builder(this.biomeSettings).build();
+        ModernBetaSettingsCaveBiome caveBiomeSettings = new ModernBetaSettingsCaveBiome.Builder(this.caveBiomeSettings).build();
         
         this.biomeProvider = ModernBetaRegistries.BIOME
-            .get(modernBetaBiomeSettings.biomeProvider)
-            .apply(biomeSettings, biomeRegistry);
+            .get(biomeSettings.biomeProvider)
+            .apply(this.biomeSettings, this.biomeRegistry, seed);
         
         this.caveBiomeProvider = ModernBetaRegistries.CAVE_BIOME
-            .get(modernBetaCaveBiomeSettings.biomeProvider)
-            .apply(caveBiomeSettings, biomeRegistry);
-        
-        this.chunkGenerator = null;
+            .get(caveBiomeSettings.biomeProvider)
+            .apply(this.caveBiomeSettings, this.biomeRegistry, seed);
     }
     
     @Override

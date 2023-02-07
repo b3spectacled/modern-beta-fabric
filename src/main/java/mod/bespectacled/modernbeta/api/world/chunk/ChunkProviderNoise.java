@@ -70,15 +70,15 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
     
     protected SimplexNoise islandNoise;
     
-    public ChunkProviderNoise(ModernBetaChunkGenerator chunkGenerator) {
-        super(chunkGenerator);
+    public ChunkProviderNoise(ModernBetaChunkGenerator chunkGenerator, long seed) {
+        super(chunkGenerator, seed);
         
         ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
         GenerationShapeConfig shapeConfig = generatorSettings.generationShapeConfig();
 
         this.worldMinY = shapeConfig.minimumY();
         this.worldHeight = shapeConfig.height();
-        this.worldTopY = worldHeight + worldMinY;
+        this.worldTopY = this.worldHeight + this.worldMinY;
         this.seaLevel = generatorSettings.seaLevel();
         
         this.bedrockFloor = 0;
@@ -213,7 +213,7 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
      */
     @Override
     public AquiferSampler getAquiferSampler(Chunk chunk, NoiseConfig noiseConfig) {
-        RandomSplitter randomDeriver = this.randomProvider.create(0L).nextSplitter();
+        RandomSplitter randomDeriver = this.randomProvider.create(this.seed).nextSplitter();
         ModernBetaChunkNoiseSampler noiseSampler = ModernBetaChunkNoiseSampler.create(
             chunk,
             noiseConfig,

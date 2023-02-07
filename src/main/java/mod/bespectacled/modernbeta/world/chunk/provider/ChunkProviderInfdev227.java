@@ -45,16 +45,16 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
     private final boolean infdevUsePyramid;
     private final boolean infdevUseWall;
 
-    private PerlinOctaveNoise octaveNoiseA;
-    private PerlinOctaveNoise octaveNoiseB;
-    private PerlinOctaveNoise octaveNoiseC;
-    private PerlinOctaveNoise octaveNoiseD;
-    private PerlinOctaveNoise octaveNoiseE;
-    private PerlinOctaveNoise octaveNoiseF;
-    private PerlinOctaveNoise forestOctaveNoise;
+    private final PerlinOctaveNoise octaveNoiseA;
+    private final PerlinOctaveNoise octaveNoiseB;
+    private final PerlinOctaveNoise octaveNoiseC;
+    private final PerlinOctaveNoise octaveNoiseD;
+    private final PerlinOctaveNoise octaveNoiseE;
+    private final PerlinOctaveNoise octaveNoiseF;
+    private final PerlinOctaveNoise forestOctaveNoise;
 
-    public ChunkProviderInfdev227(ModernBetaChunkGenerator chunkGenerator) {
-        super(chunkGenerator);
+    public ChunkProviderInfdev227(ModernBetaChunkGenerator chunkGenerator, long seed) {
+        super(chunkGenerator, seed);
         
         ChunkGeneratorSettings generatorSettings = this.chunkGenerator.getGeneratorSettings().value();
         GenerationShapeConfig shapeConfig = generatorSettings.generationShapeConfig();
@@ -70,13 +70,7 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
 
         this.infdevUsePyramid = this.chunkSettings.infdevUsePyramid;
         this.infdevUseWall = this.chunkSettings.infdevUseWall;
-    }
-    
-    @Override
-    public void initProvider(long seed) {
-        this.random.setSeed(seed);
         
-        // Noise Generators
         this.octaveNoiseA = new PerlinOctaveNoise(this.random, 16, true); 
         this.octaveNoiseB = new PerlinOctaveNoise(this.random, 16, true);
         this.octaveNoiseC = new PerlinOctaveNoise(this.random, 8, true);

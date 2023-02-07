@@ -46,7 +46,7 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
     
     @Unique private Vec3d capturedPos;
     @Unique private Optional<ClimateSampler> climateSampler;
-    @Unique private Optional<ClimateSamplerSky> skyClimateSampler;
+    @Unique private Optional<ClimateSamplerSky> climateSamplerSky;
     @Unique private boolean isModernBetaWorld;
     
     @Override
@@ -73,11 +73,11 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         
         // Init with default values
         this.climateSampler = Optional.ofNullable(useFixedSeed ? 
-            new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null) : 
+            new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null, worldSeed) : 
             null
         );
-        this.skyClimateSampler = Optional.ofNullable(useFixedSeed ? 
-            new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null) : 
+        this.climateSamplerSky = Optional.ofNullable(useFixedSeed ? 
+            new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null, worldSeed) : 
             null
         );
         
@@ -97,7 +97,7 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
                     this.climateSampler = Optional.ofNullable(climateSampler);
                 
                 if (biomeProvider instanceof ClimateSamplerSky skyClimateSampler)
-                    this.skyClimateSampler = Optional.ofNullable(skyClimateSampler);
+                    this.climateSamplerSky = Optional.ofNullable(skyClimateSampler);
             }
             
             this.isModernBetaWorld = chunkGenerator instanceof ModernBetaChunkGenerator || biomeSource instanceof ModernBetaBiomeSource;
@@ -121,11 +121,11 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         index = 6  
     )
     private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
-        if (this.skyClimateSampler.isPresent() && this.skyClimateSampler.get().sampleSkyColor()) {
+        if (this.climateSamplerSky.isPresent() && this.climateSamplerSky.get().sampleSkyColor()) {
             int x = (int)capturedPos.getX();
             int z = (int)capturedPos.getZ();
             
-            float temp = (float)this.skyClimateSampler.get().sampleSkyTemp(x, z);
+            float temp = (float)this.climateSamplerSky.get().sampleSkyTemp(x, z);
             temp /= 3F;
             temp = MathHelper.clamp(temp, -1F, 1F);
             

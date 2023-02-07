@@ -20,15 +20,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
 public class CaveBiomeProviderVoronoi extends CaveBiomeProvider implements CaveClimateSampler {
-    private VoronoiCaveClimateSampler climateSampler;
-    private VoronoiPointRules<RegistryKey<Biome>, CaveClime> rules;
+    private final VoronoiCaveClimateSampler climateSampler;
+    private final VoronoiPointRules<RegistryKey<Biome>, CaveClime> rules;
 
-    public CaveBiomeProviderVoronoi(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
-        super(settings, biomeRegistry);
-    }
-    
-    @Override
-    public void initProvider(long seed) {
+    public CaveBiomeProviderVoronoi(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry, long seed) {
+        super(settings, biomeRegistry, seed);
+
         this.climateSampler = new VoronoiCaveClimateSampler(
             seed,
             this.settings.voronoiVerticalNoiseScale,

@@ -35,14 +35,12 @@ public class BiomeInjector {
     
     private final ModernBetaChunkGenerator modernBetaChunkGenerator;
     private final ModernBetaBiomeSource modernBetaBiomeSource;
-    private final ChunkProvider chunkProvider;
     
     private final BiomeInjectionRules rules;
     
     public BiomeInjector(ModernBetaChunkGenerator modernBetaChunkGenerator, ModernBetaBiomeSource modernBetaBiomeSource) {
         this.modernBetaChunkGenerator = modernBetaChunkGenerator;
         this.modernBetaBiomeSource = modernBetaBiomeSource;
-        this.chunkProvider = modernBetaChunkGenerator.getChunkProvider();
         
         boolean replaceOceanBiomes = new ModernBetaSettingsBiome.Builder(this.modernBetaBiomeSource.getBiomeSettings()).build().useOceanBiomes;
         
@@ -74,6 +72,8 @@ public class BiomeInjector {
         int startBiomeX = chunkPos.getStartX() >> 2;
         int startBiomeZ = chunkPos.getStartZ() >> 2;
         
+        ChunkProvider chunkProvider = this.modernBetaChunkGenerator.getChunkProvider();
+        
         /*
          * Collect the following for an x/z coordinate:
          * -> Height at local biome coordinate.
@@ -96,8 +96,8 @@ public class BiomeInjector {
                     int x = (biomeX << 2) + 2;
                     int z = (biomeZ << 2) + 2;
                     
-                    int worldMinY = this.chunkProvider.getWorldMinY();
-                    int topHeight = this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+                    int worldMinY = chunkProvider.getWorldMinY();
+                    int topHeight = chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
                     int minHeight = this.sampleMinHeightAround(biomeX, biomeZ);
                     
                     BlockState topState = chunk.getBlockState(pos.set(x, topHeight, z));
@@ -140,9 +140,11 @@ public class BiomeInjector {
         int x = (biomeX << 2) + 2;
         int z = (biomeZ << 2) + 2;
         
-        return this.chunkProvider instanceof ChunkProviderNoise noiseChunkProvider ?
-            noiseChunkProvider.getHeight(x, z, ChunkHeightmap.Type.SURFACE_FLOOR) :
-            this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        ChunkProvider chunkProvider = this.modernBetaChunkGenerator.getChunkProvider();
+        
+        return chunkProvider instanceof ChunkProviderNoise chunkProviderNoise ?
+            chunkProviderNoise.getHeight(x, z, ChunkHeightmap.Type.SURFACE_FLOOR) :
+            chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
     }
     
     public int sampleMinHeightAround(int centerBiomeX, int centerBiomeZ) {

@@ -33,8 +33,8 @@ public class ChunkProviderClassic030 extends ChunkProviderFinite {
     
     private final int waterLevel;
 
-    public ChunkProviderClassic030(ModernBetaChunkGenerator chunkGenerator) {
-        super(chunkGenerator);
+    public ChunkProviderClassic030(ModernBetaChunkGenerator chunkGenerator, long seed) {
+        super(chunkGenerator, seed);
 
         this.waterLevel = this.levelHeight / 2;
     }

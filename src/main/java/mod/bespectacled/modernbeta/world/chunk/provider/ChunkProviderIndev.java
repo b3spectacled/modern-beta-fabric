@@ -47,8 +47,8 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
     private int layers;
     private int waterLevel;
 
-    public ChunkProviderIndev(ModernBetaChunkGenerator chunkGenerator) {
-        super(chunkGenerator);
+    public ChunkProviderIndev(ModernBetaChunkGenerator chunkGenerator, long seed) {
+        super(chunkGenerator, seed);
         
         this.levelTheme = IndevTheme.fromName(this.chunkSettings.indevLevelTheme);
         this.levelType = IndevType.fromName(this.chunkSettings.indevLevelType);

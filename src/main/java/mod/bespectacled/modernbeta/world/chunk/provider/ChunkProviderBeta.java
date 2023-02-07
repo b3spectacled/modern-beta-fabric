@@ -2,9 +2,6 @@ package mod.bespectacled.modernbeta.world.chunk.provider;
 
 import java.util.Random;
 
-import org.apache.logging.log4j.Level;
-
-import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
@@ -32,26 +29,19 @@ import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 public class ChunkProviderBeta extends ChunkProviderNoise {
-    private PerlinOctaveNoise minLimitOctaveNoise;
-    private PerlinOctaveNoise maxLimitOctaveNoise;
-    private PerlinOctaveNoise mainOctaveNoise;
-    private PerlinOctaveNoise beachOctaveNoise;
-    private PerlinOctaveNoise surfaceOctaveNoise;
-    private PerlinOctaveNoise scaleOctaveNoise;
-    private PerlinOctaveNoise depthOctaveNoise;
-    private PerlinOctaveNoise forestOctaveNoise;
+    private final PerlinOctaveNoise minLimitOctaveNoise;
+    private final PerlinOctaveNoise maxLimitOctaveNoise;
+    private final PerlinOctaveNoise mainOctaveNoise;
+    private final PerlinOctaveNoise beachOctaveNoise;
+    private final PerlinOctaveNoise surfaceOctaveNoise;
+    private final PerlinOctaveNoise scaleOctaveNoise;
+    private final PerlinOctaveNoise depthOctaveNoise;
+    private final PerlinOctaveNoise forestOctaveNoise;
     
-    private ClimateSampler climateSampler;
+    private final ClimateSampler climateSampler;
     
-    public ChunkProviderBeta(ModernBetaChunkGenerator chunkGenerator) {
-        super(chunkGenerator);
-    }
-    
-    @Override
-    public void initProvider(long seed) {
-        ModernBeta.log(Level.INFO, "INIT PROVIDER");
-        
-        this.random.setSeed(seed);
+    public ChunkProviderBeta(ModernBetaChunkGenerator chunkGenerator, long seed) {
+        super(chunkGenerator, seed);
         
         this.minLimitOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
         this.maxLimitOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
@@ -68,7 +58,7 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
         BiomeProviderBeta biomeProvider = (
             this.chunkGenerator.getBiomeSource() instanceof ModernBetaBiomeSource biomeSource &&
             biomeSource.getBiomeProvider() instanceof BiomeProviderBeta betaBiomeProvider
-        ) ? betaBiomeProvider : new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null);
+        ) ? betaBiomeProvider : new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null, seed);
         
         this.climateSampler = biomeProvider;
         this.spawnLocator = new SpawnLocatorBeta(this, this.beachOctaveNoise);

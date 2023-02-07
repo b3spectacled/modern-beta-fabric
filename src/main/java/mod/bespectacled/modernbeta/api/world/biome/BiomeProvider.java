@@ -10,7 +10,8 @@ import net.minecraft.world.biome.Biome;
 
 public abstract class BiomeProvider {
     protected final ModernBetaSettingsBiome settings;
-    protected RegistryEntryLookup<Biome> biomeRegistry;
+    protected final RegistryEntryLookup<Biome> biomeRegistry;
+    protected final long seed;
     
     /**
      * Constructs a Modern Beta biome provider initialized with seed.
@@ -19,17 +20,11 @@ public abstract class BiomeProvider {
      * @param settings Biome settings.
      * @param biomeRegistry Minecraft biome registry.
      */
-    public BiomeProvider(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
+    public BiomeProvider(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry, long seed) {
         this.settings = new ModernBetaSettingsBiome.Builder(settings).build();
         this.biomeRegistry = biomeRegistry;
+        this.seed = seed;
     }
-    
-    /**
-     * Inits biome provider fields.
-     * 
-     * @param seed
-     */
-    public abstract void initProvider(long seed);
     
     /**
      * Gets a biome for biome source at given biome coordinates.

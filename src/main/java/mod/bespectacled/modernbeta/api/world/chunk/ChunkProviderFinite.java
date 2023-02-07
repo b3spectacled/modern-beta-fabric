@@ -60,8 +60,8 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
     
     private boolean pregenerated;
     
-    public ChunkProviderFinite(ModernBetaChunkGenerator chunkGenerator) {
-        super(chunkGenerator);
+    public ChunkProviderFinite(ModernBetaChunkGenerator chunkGenerator, long seed) {
+        super(chunkGenerator, seed);
 
         ChunkGeneratorSettings generatorSettings = chunkGenerator.getGeneratorSettings().value();
         GenerationShapeConfig shapeConfig = generatorSettings.generationShapeConfig();
@@ -90,9 +90,6 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         
         this.spawnLocator = new SpawnLocatorIndev(this);
     }
-    
-    @Override
-    public void initProvider(long seed) {} 
 
     @Override
     public CompletableFuture<Chunk> provideChunk(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk, NoiseConfig noiseConfig) {

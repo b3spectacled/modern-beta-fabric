@@ -24,22 +24,17 @@ import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 public class ChunkProviderAlpha extends ChunkProviderNoise {
-    private PerlinOctaveNoise minLimitOctaveNoise;
-    private PerlinOctaveNoise maxLimitOctaveNoise;
-    private PerlinOctaveNoise mainOctaveNoise;
-    private PerlinOctaveNoise beachOctaveNoise;
-    private PerlinOctaveNoise surfaceOctaveNoise;
-    private PerlinOctaveNoise scaleOctaveNoise;
-    private PerlinOctaveNoise depthOctaveNoise;
-    private PerlinOctaveNoise forestOctaveNoise;
+    private final PerlinOctaveNoise minLimitOctaveNoise;
+    private final PerlinOctaveNoise maxLimitOctaveNoise;
+    private final PerlinOctaveNoise mainOctaveNoise;
+    private final PerlinOctaveNoise beachOctaveNoise;
+    private final PerlinOctaveNoise surfaceOctaveNoise;
+    private final PerlinOctaveNoise scaleOctaveNoise;
+    private final PerlinOctaveNoise depthOctaveNoise;
+    private final PerlinOctaveNoise forestOctaveNoise;
     
-    public ChunkProviderAlpha(ModernBetaChunkGenerator chunkGenerator) {
-        super(chunkGenerator);
-    }
-    
-    @Override
-    public void initProvider(long seed) {
-        this.random.setSeed(seed);
+    public ChunkProviderAlpha(ModernBetaChunkGenerator chunkGenerator, long seed) {
+        super(chunkGenerator, seed);
         
         this.minLimitOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
         this.maxLimitOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);

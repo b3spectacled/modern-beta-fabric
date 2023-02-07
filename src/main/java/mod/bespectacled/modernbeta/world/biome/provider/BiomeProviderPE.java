@@ -23,24 +23,21 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
 public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, ClimateSamplerSky, BiomeResolverBlock, BiomeResolverOcean {
-    private ClimateMap climateMap;
-    private PEClimateSampler climateSampler;
+    private final ClimateMap climateMap;
+    private final PEClimateSampler climateSampler;
     
-    public BiomeProviderPE(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
-        super(settings, biomeRegistry);
-    }
-    
-    @Override
-    public void initProvider(long seed) {
+    public BiomeProviderPE(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry, long seed) {
+        super(settings, biomeRegistry, seed);
+        
         this.climateMap = new ClimateMap(this.settings);
         this.climateSampler = new PEClimateSampler(
-            seed,
+            this.seed,
             this.settings.climateTempNoiseScale,
             this.settings.climateRainNoiseScale,
             this.settings.climateDetailNoiseScale
         );
     }
-
+    
     @Override
     public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ) {
         int x = biomeX << 2;

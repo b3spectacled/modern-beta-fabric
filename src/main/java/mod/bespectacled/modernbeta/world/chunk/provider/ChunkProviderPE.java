@@ -29,27 +29,23 @@ import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 public class ChunkProviderPE extends ChunkProviderNoise {
-    private PerlinOctaveNoise minLimitOctaveNoise;
-    private PerlinOctaveNoise maxLimitOctaveNoise;
-    private PerlinOctaveNoise mainOctaveNoise;
-    private PerlinOctaveNoise beachOctaveNoise;
-    private PerlinOctaveNoise surfaceOctaveNoise;
-    private PerlinOctaveNoise scaleOctaveNoise;
-    private PerlinOctaveNoise depthOctaveNoise;
-    private PerlinOctaveNoise forestOctaveNoise;
+    private final PerlinOctaveNoise minLimitOctaveNoise;
+    private final PerlinOctaveNoise maxLimitOctaveNoise;
+    private final PerlinOctaveNoise mainOctaveNoise;
+    private final PerlinOctaveNoise beachOctaveNoise;
+    private final PerlinOctaveNoise surfaceOctaveNoise;
+    private final PerlinOctaveNoise scaleOctaveNoise;
+    private final PerlinOctaveNoise depthOctaveNoise;
+    private final PerlinOctaveNoise forestOctaveNoise;
     
-    private ClimateSampler climateSampler;
+    private final ClimateSampler climateSampler;
     
-    public ChunkProviderPE(ModernBetaChunkGenerator chunkGenerator) {
-        super(chunkGenerator);
-    }
-    
-    @Override
-    public void initProvider(long seed) {
+    public ChunkProviderPE(ModernBetaChunkGenerator chunkGenerator, long seed) {
+        super(chunkGenerator, seed);
+        
         // Use Mersenne Twister random instead of Java random
         MTRandom mtRand = new MTRandom(seed);
         
-        // Noise Generators
         this.minLimitOctaveNoise = new PerlinOctaveNoise(mtRand, 16, true);
         this.maxLimitOctaveNoise = new PerlinOctaveNoise(mtRand, 16, true);
         this.mainOctaveNoise = new PerlinOctaveNoise(mtRand, 8, true);
@@ -63,16 +59,14 @@ public class ChunkProviderPE extends ChunkProviderNoise {
         this.setForestOctaveNoise(this.forestOctaveNoise);
         
         BiomeProviderPE biomeProvider = (
-                this.chunkGenerator.getBiomeSource() instanceof ModernBetaBiomeSource biomeSource &&
-                biomeSource.getBiomeProvider() instanceof BiomeProviderPE peBiomeProvider
-            ) ? peBiomeProvider : new BiomeProviderPE(new ModernBetaSettingsBiome().toCompound(), null);
-        
-        biomeProvider.initProvider(seed);
+            this.chunkGenerator.getBiomeSource() instanceof ModernBetaBiomeSource biomeSource &&
+            biomeSource.getBiomeProvider() instanceof BiomeProviderPE peBiomeProvider
+        ) ? peBiomeProvider : new BiomeProviderPE(new ModernBetaSettingsBiome().toCompound(), null, seed);
         
         this.climateSampler = biomeProvider;
         this.spawnLocator = new SpawnLocatorPE(this, this.beachOctaveNoise);
     }
-    
+
     @Override
     public void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
         double scale = 0.03125D;

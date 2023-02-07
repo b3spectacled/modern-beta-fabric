@@ -25,15 +25,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
 public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolverBlock, BiomeResolverOcean {
-    private VoronoiClimateSampler climateSampler;
-    private VoronoiPointRules<ClimateMapping, Clime> rules;
+    private final VoronoiClimateSampler climateSampler;
+    private final VoronoiPointRules<ClimateMapping, Clime> rules;
     
-    public BiomeProviderVoronoi(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry) {
-        super(settings, biomeRegistry);
-    }
-    
-    @Override
-    public void initProvider(long seed) {
+    public BiomeProviderVoronoi(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry, long seed) {
+        super(settings, biomeRegistry, seed);
+        
         this.climateSampler = new VoronoiClimateSampler(
             seed,
             this.settings.climateTempNoiseScale,
