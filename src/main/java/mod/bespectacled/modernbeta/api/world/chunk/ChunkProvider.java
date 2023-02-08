@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.mixin.MixinChunkGenerator;
 import mod.bespectacled.modernbeta.mixin.MixinPlacedFeatureAccessor;
@@ -14,6 +15,7 @@ import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
+import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSourceDeepslate;
 import mod.bespectacled.modernbeta.world.feature.placement.NoiseBasedCountPlacementModifier;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -53,6 +55,8 @@ public abstract class ChunkProvider {
     protected final RandomSplitter randomSplitter;
     protected final BlockSourceDeepslate blockSourceDeepslate;
     
+    protected final List<BlockSource> blockSources;
+    
     protected SpawnLocator spawnLocator;
     
     /**
@@ -72,6 +76,12 @@ public abstract class ChunkProvider {
         this.randomProvider = chunkGenerator.getGeneratorSettings().value().getRandomProvider();
         this.randomSplitter = this.randomProvider.create(this.seed).nextSplitter();
         this.blockSourceDeepslate = new BlockSourceDeepslate(this.chunkSettings, this.randomSplitter);
+        
+        this.blockSources = ModernBetaRegistries.BLOCKSOURCE
+            .getEntries()
+            .stream()
+            .map(func -> func.apply(this.chunkSettings, this.randomSplitter))
+            .toList();
         
         this.spawnLocator = SpawnLocator.DEFAULT;
     }

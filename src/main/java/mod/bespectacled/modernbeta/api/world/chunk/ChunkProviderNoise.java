@@ -363,11 +363,11 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
         );
         
         // Create and populate block sources
-        BlockSourceRules blockSources = new BlockSourceRules.Builder()
-            .add(baseBlockSource)
-            .add(this.blockSourceDeepslate)
-            .build(this.defaultBlock);
-
+        BlockSourceRules.Builder builder = new BlockSourceRules.Builder().add(baseBlockSource);
+        this.blockSources.forEach(blockSource -> builder.add(blockSource));
+        
+        BlockSourceRules blockSources = builder.build(this.defaultBlock);
+        
         // Sample initial noise.
         // Base noise should be added after this,
         // since base noise is sampled when fetched from cache.

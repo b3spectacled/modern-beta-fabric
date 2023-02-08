@@ -30,6 +30,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldView;
@@ -89,8 +90,6 @@ public class ModernBetaBiomeSource extends BiomeSource {
         this.biomeRegistry = biomeRegistry;
         this.biomeSettings = biomeSettings;
         this.caveBiomeSettings = caveBiomeSettings;
-        
-        this.chunkGenerator = null;
     }
     
     public void initProvider(long seed) {
@@ -196,8 +195,6 @@ public class ModernBetaBiomeSource extends BiomeSource {
     }
     
     public RegistryEntry<Biome> getCaveBiome(int biomeX, int biomeY, int biomeZ) {
-        //this.initializeCaveBiomeProvider();
-        
         return this.caveBiomeProvider.getBiome(biomeX, biomeY, biomeZ);
     }
     
@@ -235,6 +232,7 @@ public class ModernBetaBiomeSource extends BiomeSource {
     public NbtCompound getCaveBiomeSettings() {
         return this.caveBiomeSettings;
     }
+    
     public static void register() {
         Registry.register(net.minecraft.registry.Registries.BIOME_SOURCE, ModernBeta.createId(ModernBeta.MOD_ID), CODEC);
     }

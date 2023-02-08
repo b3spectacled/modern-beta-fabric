@@ -11,7 +11,6 @@ import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -44,13 +43,8 @@ public class BiomeInjector {
         
         boolean replaceOceanBiomes = new ModernBetaSettingsBiome.Builder(this.modernBetaBiomeSource.getBiomeSettings()).build().useOceanBiomes;
         
-        Predicate<BiomeInjectionContext> oceanPredicate = context -> 
-            this.atOceanDepth(context.topHeight, OCEAN_MIN_DEPTH) && 
-            context.topState.isOf(Blocks.WATER);
-        
-        Predicate<BiomeInjectionContext> deepOceanPredicate = context ->
-            this.atOceanDepth(context.topHeight, DEEP_OCEAN_MIN_DEPTH) && 
-            context.topState.isOf(Blocks.WATER);
+        Predicate<BiomeInjectionContext> oceanPredicate = context -> this.atOceanDepth(context.topHeight, OCEAN_MIN_DEPTH);
+        Predicate<BiomeInjectionContext> deepOceanPredicate = context -> this.atOceanDepth(context.topHeight, DEEP_OCEAN_MIN_DEPTH);
             
         BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder();
         

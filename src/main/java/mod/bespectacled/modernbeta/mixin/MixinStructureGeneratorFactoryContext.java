@@ -1,25 +1,11 @@
 package mod.bespectacled.modernbeta.mixin;
 
-import java.util.function.Predicate;
-
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.structure.StructureGeneratorFactory;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.HeightLimitView;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.noise.NoiseConfig;
 
 @Mixin(StructureGeneratorFactory.Context.class)
 public class MixinStructureGeneratorFactoryContext {
+    /*
     @Shadow private ChunkGenerator comp_306;
     @Shadow private ChunkPos comp_309;
     @Shadow private HeightLimitView comp_311;
@@ -38,4 +24,5 @@ public class MixinStructureGeneratorFactoryContext {
             info.setReturnValue(this.comp_312.test(biome));
         }
     }
+    */
 }

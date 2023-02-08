@@ -16,7 +16,7 @@ import net.minecraft.world.biome.BiomeKeys;
 
 @Config(name = "config_biome")
 public class ModernBetaConfigBiome implements ConfigData {
-    public String biomeProvider = ModernBetaBuiltInTypes.Biome.BETA.name;
+    public String biomeProvider = ModernBetaBuiltInTypes.Biome.BETA.id;
     public String singleBiome = ModernBetaBiomes.ALPHA.getValue().toString();
     public boolean useOceanBiomes = true;
     

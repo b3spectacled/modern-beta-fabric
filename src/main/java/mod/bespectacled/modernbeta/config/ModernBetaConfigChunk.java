@@ -8,7 +8,7 @@ import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevType;
 
 @Config(name = "config_chunk")
 public class ModernBetaConfigChunk implements ConfigData {
-    public String chunkProvider = ModernBetaBuiltInTypes.Chunk.BETA.name;
+    public String chunkProvider = ModernBetaBuiltInTypes.Chunk.BETA.id;
     
     public boolean useDeepslate = true;
     public int deepslateMinY = 0;

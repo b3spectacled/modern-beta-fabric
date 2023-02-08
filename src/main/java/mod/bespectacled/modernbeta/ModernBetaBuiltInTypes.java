@@ -19,9 +19,9 @@ public final class ModernBetaBuiltInTypes {
         PE("pe")
         ;
         
-        public final String name;
+        public final String id;
         
-        private Chunk(String name) { this.name = name; }
+        private Chunk(String id) { this.id = id; }
     }
     
     public enum Biome {
@@ -31,9 +31,9 @@ public final class ModernBetaBuiltInTypes {
         VORONOI("voronoi")
         ;
         
-        public final String name;
+        public final String id;
         
-        private Biome(String name) { this.name = name; }
+        private Biome(String id) { this.id = id; }
     }
     
     public enum CaveBiome {
@@ -43,9 +43,9 @@ public final class ModernBetaBuiltInTypes {
         SINGLE("single")
         ;
         
-        public final String name;
+        public final String id;
         
-        private CaveBiome(String name) { this.name = name; }
+        private CaveBiome(String id) { this.id = id; }
     }
     
     public enum SurfaceConfig {
@@ -57,15 +57,24 @@ public final class ModernBetaBuiltInTypes {
         
         public final String id;
         
-        private SurfaceConfig(String name) { this.id = name; }
+        private SurfaceConfig(String id) { this.id = id; }
     }
     
     public enum NoisePostProcessor {
         NONE("none")
         ;
         
-        public final String name;
+        public final String id;
         
-        private NoisePostProcessor(String name) { this.name = name; }
+        private NoisePostProcessor(String id) { this.id = id; }
+    }
+    
+    public enum BlockSource {
+        DEEPSLATE("deepslate")
+        ;
+        
+        public final String id;
+        
+        private BlockSource(String id) { this.id = id; }
     }
 }

@@ -12,7 +12,7 @@ import net.minecraft.world.biome.BiomeKeys;
 
 @Config(name = "config_cave_biome")
 public class ModernBetaConfigCaveBiome implements ConfigData {
-    public String biomeProvider = ModernBetaBuiltInTypes.CaveBiome.VORONOI.name;
+    public String biomeProvider = ModernBetaBuiltInTypes.CaveBiome.VORONOI.id;
     public String singleBiome = BiomeKeys.LUSH_CAVES.getValue().toString();
     
     public float voronoiHorizontalNoiseScale = 32.0f;

@@ -6,7 +6,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.Structure.Context;
 import net.minecraft.world.gen.structure.Structure.StructurePosition;
@@ -18,7 +20,15 @@ public class MixinStructure {
         BlockPos blockPos = result.position();
         
         if (context.chunkGenerator() instanceof ModernBetaChunkGenerator chunkGenerator) {
-            info.setReturnValue(context.biomePredicate().test(chunkGenerator.getInjectedBiomeAtBlock(blockPos.getX(), blockPos.getY(), blockPos.getZ(), context.noiseConfig().getMultiNoiseSampler())));
+            RegistryEntry<Biome> biome = chunkGenerator.getInjectedBiomeAtBlock(
+                blockPos.getX(),
+                blockPos.getY(),
+                blockPos.getZ(),
+                context.noiseConfig().getMultiNoiseSampler()
+            );
+            boolean isBiomeValid = context.biomePredicate().test(biome);
+            
+            info.setReturnValue(isBiomeValid);
         }
     }
 }

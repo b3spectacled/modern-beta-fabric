@@ -25,10 +25,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.DebugHud;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap.Type;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
@@ -58,8 +60,8 @@ public class MixinDebugHud {
             ChunkGenerator chunkGenerator = serverWorld.getChunkManager().getChunkGenerator();
             BiomeSource biomeSource = chunkGenerator.getBiomeSource();
             
-            if (biomeSource instanceof ModernBetaBiomeSource oldBiomeSource) {
-                if (oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler) {
+            if (biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
+                if (modernBetaBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler) {
                     Clime clime = climateSampler.sample(x, z);
                     double temp = clime.temp();
                     double rain = clime.rain();
@@ -73,7 +75,7 @@ public class MixinDebugHud {
                     );
                 }
                 
-                if (oldBiomeSource.getCaveBiomeProvider() instanceof CaveClimateSampler climateSampler) {
+                if (modernBetaBiomeSource.getCaveBiomeProvider() instanceof CaveClimateSampler climateSampler) {
                     CaveClime clime = climateSampler.sample(x >> 2, y >> 2, z >> 2);
                     double temp = clime.temp();
                     double rain = clime.rain();
@@ -86,10 +88,11 @@ public class MixinDebugHud {
                         )
                     );
                 }
+                
             }
             
-            if (chunkGenerator instanceof ModernBetaChunkGenerator oldChunkGenerator) {
-                ChunkProvider chunkProvider = oldChunkGenerator.getChunkProvider();
+            if (chunkGenerator instanceof ModernBetaChunkGenerator modernBetaChunkGenerator) {
+                ChunkProvider chunkProvider = modernBetaChunkGenerator.getChunkProvider();
                 
                 info.getReturnValue().add(
                     String.format(
@@ -109,8 +112,8 @@ public class MixinDebugHud {
                     );
                 }
 
-                int worldMinY = oldChunkGenerator.getMinimumY();
-                int minHeight = oldChunkGenerator.getBiomeInjector().sampleMinHeightAround(biomeX, biomeZ);
+                int worldMinY = modernBetaChunkGenerator.getMinimumY();
+                int minHeight = modernBetaChunkGenerator.getBiomeInjector().sampleMinHeightAround(biomeX, biomeZ);
                 BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, -1, minHeight, BlockStates.AIR, BlockStates.AIR).setY(y);
                 
                 boolean canPlaceCave = BiomeInjector.CAVE_PREDICATE.test(context);
@@ -121,6 +124,14 @@ public class MixinDebugHud {
                         canPlaceCave
                     )
                 );
+
+                RegistryEntry<Biome> biome = modernBetaChunkGenerator.getInjectedBiomeAtBlock(x, y, z, null);
+                info.getReturnValue().add(
+                    String.format(
+                        "[Modern Beta] Injected biome: %s",
+                        biome.getKey().get().getValue().toString()
+                    )
+               );
             }
         }
     }

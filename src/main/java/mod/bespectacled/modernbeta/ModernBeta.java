@@ -1,7 +1,5 @@
 package mod.bespectacled.modernbeta;
 
-import java.util.Optional;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,13 +34,10 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
     public static final String MOD_NAME = "Modern Beta";
-    public static final int MOD_VERSION = 5;
     
     public static final boolean CLIENT_ENV = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     public static final boolean DEV_ENV = FabricLoader.getInstance().isDevelopmentEnvironment();
-    
-    private static boolean invalidVersion = false;
-    
+
     public static final ModernBetaConfig CONFIG = AutoConfig.register(
         ModernBetaConfig.class, 
         PartitioningSerializer.wrap(GsonConfigSerializer::new)
@@ -61,13 +56,6 @@ public class ModernBeta implements ModInitializer {
     
     public static void log(Level level, String message) {
         LOGGER.log(level, "[" + MOD_NAME + "] {}", message);
-    }
-    
-    public static void validateVersion(Optional<Integer> version) {
-        if (!invalidVersion && (version.isEmpty() || version.get() != MOD_VERSION)) {
-            log(Level.ERROR, "Opening a world made with a different version of Modern Beta, settings may not properly load!");
-            invalidVersion = true;
-        }
     }
     
     @Override
@@ -91,6 +79,7 @@ public class ModernBeta implements ModInitializer {
         ModernBetaBuiltInProviders.registerCaveBiomeProviders();
         ModernBetaBuiltInProviders.registerSurfaceConfigs();
         ModernBetaBuiltInProviders.registerNoisePostProcessors();
+        ModernBetaBuiltInProviders.registerBlockSources();
 
         if (CLIENT_ENV) {
             // Override default biome grass/foliage colors
