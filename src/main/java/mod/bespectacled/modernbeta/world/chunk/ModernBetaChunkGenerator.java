@@ -265,11 +265,8 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         int worldMinY = this.chunkProvider.getWorldMinY();
         int topHeight = this.biomeInjector.getCenteredHeight(biomeX, biomeZ);
         int minHeight = this.biomeInjector.sampleMinHeightAround(biomeX, biomeZ);
-        BlockState state = y < this.getSeaLevel() ? 
-            this.settings.value().defaultFluid() :
-            BlockStates.AIR;
         
-        BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, topHeight, minHeight, state, state).setY(y);
+        BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, topHeight, minHeight).setY(y);
         RegistryEntry<Biome> biome = this.biomeInjector.sample(context, biomeX, biomeY, biomeZ);
         
         return biome != null ? biome : this.getBiomeSource().getBiome(biomeX, biomeY, biomeZ, noiseSampler);

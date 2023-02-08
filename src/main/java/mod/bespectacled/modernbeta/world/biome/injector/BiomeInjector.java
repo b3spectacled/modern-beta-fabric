@@ -10,9 +10,7 @@ import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import net.minecraft.block.BlockState;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
@@ -61,7 +59,6 @@ public class BiomeInjector {
     
     public void injectBiomes(Chunk chunk) {
         ChunkPos chunkPos = chunk.getPos();
-        BlockPos.Mutable pos = new BlockPos.Mutable();
         
         int startBiomeX = chunkPos.getStartX() >> 2;
         int startBiomeZ = chunkPos.getStartZ() >> 2;
@@ -94,15 +91,10 @@ public class BiomeInjector {
                     int topHeight = chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
                     int minHeight = this.sampleMinHeightAround(biomeX, biomeZ);
                     
-                    BlockState topState = chunk.getBlockState(pos.set(x, topHeight, z));
-                    BlockState minState = chunk.getBlockState(pos.set(x, minHeight, z));
-                    
                     BiomeInjectionContext context = new BiomeInjectionContext(
                         worldMinY,
                         topHeight,
-                        minHeight,
-                        topState,
-                        minState
+                        minHeight
                     );
                     
                     for (int localBiomeY = 0; localBiomeY < 4; ++localBiomeY) {

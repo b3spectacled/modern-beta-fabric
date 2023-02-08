@@ -1,6 +1,7 @@
 package mod.bespectacled.modernbeta.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
+
 import net.minecraft.structure.StructureGeneratorFactory;
 
 @Mixin(StructureGeneratorFactory.Context.class)

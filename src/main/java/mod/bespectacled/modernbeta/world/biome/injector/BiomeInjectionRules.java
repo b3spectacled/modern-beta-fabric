@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
@@ -65,17 +64,13 @@ public class BiomeInjectionRules {
         protected final int worldMinY;
         protected final int topHeight;
         protected final int minHeight;
-        protected final BlockState topState;
-        protected final BlockState minState;
         
         private int y;
         
-        public BiomeInjectionContext(int worldMinY, int topHeight, int minHeight, BlockState topState, BlockState minState) {
+        public BiomeInjectionContext(int worldMinY, int topHeight, int minHeight) {
             this.worldMinY = worldMinY;
             this.topHeight = topHeight;
             this.minHeight = minHeight;
-            this.topState = topState;
-            this.minState = minState;
             this.y = topHeight;
         }
         
