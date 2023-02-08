@@ -4,12 +4,12 @@
       "type": "minecraft:overworld",
       "generator": {
         "type": "modern_beta:modern_beta",
-        "provider_settings": {},
         "biome_source": {
           "type": "modern_beta:modern_beta",
-          "provider_settings": {},
-          "cave_provider_settings": {}
+          "cave_provider_settings": {},
+          "provider_settings": {}
         },
+        "provider_settings": {},
         "settings": "modern_beta:modern_beta"
       }
     },

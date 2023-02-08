@@ -10,6 +10,7 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.structure.StructureSet;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.WorldPreset;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -30,7 +31,7 @@ public class ModernBetaWorldGenProvider extends FabricDynamicRegistryProvider {
         RegistryWrapper.Impl<ChunkGeneratorSettings> registrySettings = registries.getWrapperOrThrow(RegistryKeys.CHUNK_GENERATOR_SETTINGS);
         RegistryWrapper.Impl<Structure> registryStructure = registries.getWrapperOrThrow(RegistryKeys.STRUCTURE);
         RegistryWrapper.Impl<StructureSet> registryStructureSet = registries.getWrapperOrThrow(RegistryKeys.STRUCTURE_SET);
-        //RegistryWrapper.Impl<WorldPreset> registryWorldPreset = registries.getWrapperOrThrow(RegistryKeys.WORLD_PRESET);
+        RegistryWrapper.Impl<WorldPreset> registryWorldPreset = registries.getWrapperOrThrow(RegistryKeys.WORLD_PRESET);
 
         entries.addAll(registryBiome);
         entries.addAll(registryConfiguredFeature);
@@ -39,7 +40,7 @@ public class ModernBetaWorldGenProvider extends FabricDynamicRegistryProvider {
         entries.addAll(registrySettings);
         entries.addAll(registryStructure);
         entries.addAll(registryStructureSet);
-        //entries.addAll(registryWorldPreset);
+        entries.addAll(registryWorldPreset);
     }
     
     @Override

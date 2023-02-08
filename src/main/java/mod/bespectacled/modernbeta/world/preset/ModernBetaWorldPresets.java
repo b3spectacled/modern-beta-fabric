@@ -3,12 +3,10 @@ package mod.bespectacled.modernbeta.world.preset;
 import java.util.Map;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
-import mod.bespectacled.modernbeta.settings.ModernBetaSettingsCaveBiome;
-import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGeneratorSettings;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
@@ -49,11 +47,11 @@ public class ModernBetaWorldPresets {
             new ModernBetaChunkGenerator(
                 new ModernBetaBiomeSource(
                     biomeLookup,
-                    new ModernBetaSettingsBiome().toCompound(),
-                    new ModernBetaSettingsCaveBiome().toCompound()
+                    new NbtCompound(),
+                    new NbtCompound()
                 ),
                 settingsOverworld,
-                new ModernBetaSettingsChunk().toCompound()
+                new NbtCompound()
             )
         );
         

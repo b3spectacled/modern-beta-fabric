@@ -28,7 +28,7 @@ sourceSets {
 	main {
 		resources {
 			srcDirs += [
-					'src/main/generated'
+				'src/main/generated'
 			]
 		}
 	}
@@ -94,11 +94,9 @@ java {
 }
 
 jar {
-	from file('src/main/generated')
 	from("LICENSE") {
 		rename { "${it}_${project.archivesBaseName}"}
 	}
-	dependsOn 'runDatagen'
 }
 
 // configure the maven publication

@@ -5,6 +5,7 @@ import mod.bespectacled.modernbeta.world.carver.configured.ModernBetaConfiguredC
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGeneratorSettings;
 import mod.bespectacled.modernbeta.world.feature.configured.ModernBetaConfiguredFeatures;
 import mod.bespectacled.modernbeta.world.feature.placed.ModernBetaPlacedFeatures;
+import mod.bespectacled.modernbeta.world.preset.ModernBetaWorldPresets;
 import mod.bespectacled.modernbeta.world.structure.ModernBetaStructureSets;
 import mod.bespectacled.modernbeta.world.structure.ModernBetaStructures;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -20,7 +21,7 @@ public class ModernBetaDataGeneratorEntrypoint implements net.fabricmc.fabric.ap
         pack.addProvider(ModernBetaBiomeTagProvider::new);
         pack.addProvider(ModernBetaStructureTagProvider::new);
         pack.addProvider(ModernBetaBlockTagProvider::new);
-        //pack.addProvider(ModernBetaWorldPresetTagProvider::new);
+        pack.addProvider(ModernBetaWorldPresetTagProvider::new);
     }
     
     @Override
@@ -32,6 +33,6 @@ public class ModernBetaDataGeneratorEntrypoint implements net.fabricmc.fabric.ap
         registryBuilder.addRegistry(RegistryKeys.CHUNK_GENERATOR_SETTINGS, ModernBetaChunkGeneratorSettings::bootstrap);
         registryBuilder.addRegistry(RegistryKeys.STRUCTURE, ModernBetaStructures::bootstrap);
         registryBuilder.addRegistry(RegistryKeys.STRUCTURE_SET, ModernBetaStructureSets::bootstrap);
-        //registryBuilder.addRegistry(RegistryKeys.WORLD_PRESET, ModernBetaWorldPresets::bootstrap);
+        registryBuilder.addRegistry(RegistryKeys.WORLD_PRESET, ModernBetaWorldPresets::bootstrap);
     }
 }
