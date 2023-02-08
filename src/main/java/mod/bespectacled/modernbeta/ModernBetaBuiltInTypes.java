@@ -1,7 +1,6 @@
 package mod.bespectacled.modernbeta;
 
 import mod.bespectacled.modernbeta.data.ModernBetaBiomeTagProvider;
-import net.minecraft.registry.tag.BiomeTags;
 
 public final class ModernBetaBuiltInTypes {
     public static final String DEFAULT_ID = "default";
@@ -49,10 +48,10 @@ public final class ModernBetaBuiltInTypes {
     }
     
     public enum SurfaceConfig {
-        DESERT(ModernBetaBiomeTagProvider.IS_DESERT.id().toString()),
-        BADLANDS(BiomeTags.IS_BADLANDS.id().toString()),
-        NETHER(BiomeTags.IS_NETHER.id().toString()),
-        THEEND(BiomeTags.IS_END.id().toString())
+        DESERT(ModernBetaBiomeTagProvider.SURFACE_CONFIG_IS_DESERT.id().toString()),
+        BADLANDS(ModernBetaBiomeTagProvider.SURFACE_CONFIG_IS_BADLANDS.id().toString()),
+        NETHER(ModernBetaBiomeTagProvider.SURFACE_CONFIG_IS_NETHER.id().toString()),
+        THEEND(ModernBetaBiomeTagProvider.SURFACE_CONFIG_IS_END.id().toString())
         ;
         
         public final String id;

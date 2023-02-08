@@ -11,10 +11,9 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
 
 public class ModernBetaBlockTagProvider extends FabricTagProvider<Block> {
-    public static final TagKey<Block> OVERWORLD_CARVER_REPLACEABLES = keyOf(ModernBeta.createId("overworld_carver_replaceables"));
+    public static final TagKey<Block> OVERWORLD_CARVER_REPLACEABLES = keyOf("overworld_carver_replaceables");
     
     public ModernBetaBlockTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, RegistryKeys.BLOCK, registriesFuture);
@@ -42,7 +41,7 @@ public class ModernBetaBlockTagProvider extends FabricTagProvider<Block> {
         );
     }
     
-    private static TagKey<Block> keyOf(Identifier id) {
-        return TagKey.of(RegistryKeys.BLOCK, id);
+    private static TagKey<Block> keyOf(String id) {
+        return TagKey.of(RegistryKeys.BLOCK, ModernBeta.createId(id));
     }
 }

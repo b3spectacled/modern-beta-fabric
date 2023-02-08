@@ -12,27 +12,33 @@ import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 
 public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
-    public static final TagKey<Biome> IS_BETA = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_beta"));
-    public static final TagKey<Biome> IS_PE = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_pe"));
-    public static final TagKey<Biome> IS_ALPHA = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_alpha"));
-    public static final TagKey<Biome> IS_INFDEV = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_infdev"));
-    public static final TagKey<Biome> IS_INDEV = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_indev"));
+    public static final TagKey<Biome> IS_BETA = keyOf("is_beta");
+    public static final TagKey<Biome> IS_PE = keyOf("is_pe");
+    public static final TagKey<Biome> IS_ALPHA = keyOf("is_alpha");
+    public static final TagKey<Biome> IS_INFDEV = keyOf("is_infdev");
+    public static final TagKey<Biome> IS_INDEV = keyOf("is_indev");
     
-    public static final TagKey<Biome> IS_FOREST = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_forest"));
-    public static final TagKey<Biome> IS_SEASONAL_FOREST = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_seasonal_forest"));
-    public static final TagKey<Biome> IS_RAINFOREST = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_rainforest"));
-    public static final TagKey<Biome> IS_DESERT = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_desert"));
-    public static final TagKey<Biome> IS_PLAINS = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_plains"));
-    public static final TagKey<Biome> IS_SHRUBLAND = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_shrubland"));
-    public static final TagKey<Biome> IS_SAVANNA = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_savanna"));
-    public static final TagKey<Biome> IS_SWAMP = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_swamp"));
-    public static final TagKey<Biome> IS_TAIGA = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_taiga"));
-    public static final TagKey<Biome> IS_TUNDRA = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_tundra"));
-    public static final TagKey<Biome> IS_OCEAN = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("is_ocean"));
+    public static final TagKey<Biome> IS_FOREST = keyOf("is_forest");
+    public static final TagKey<Biome> IS_SEASONAL_FOREST = keyOf("is_seasonal_forest");
+    public static final TagKey<Biome> IS_RAINFOREST = keyOf("is_rainforest");
+    public static final TagKey<Biome> IS_DESERT = keyOf("is_desert");
+    public static final TagKey<Biome> IS_PLAINS = keyOf("is_plains");
+    public static final TagKey<Biome> IS_SHRUBLAND = keyOf("is_shrubland");
+    public static final TagKey<Biome> IS_SAVANNA = keyOf("is_savanna");
+    public static final TagKey<Biome> IS_SWAMP = keyOf("is_swamp");
+    public static final TagKey<Biome> IS_TAIGA = keyOf("is_taiga");
+    public static final TagKey<Biome> IS_TUNDRA = keyOf("is_tundra");
+    public static final TagKey<Biome> IS_OCEAN = keyOf("is_ocean");
     
-    public static final TagKey<Biome> INDEV_STRONGHOLD_HAS_STRUCTURE = TagKey.of(RegistryKeys.BIOME, ModernBeta.createId("has_structure/indev_stronghold"));
+    public static final TagKey<Biome> INDEV_STRONGHOLD_HAS_STRUCTURE = keyOf("has_structure/indev_stronghold");
+    
+    public static final TagKey<Biome> SURFACE_CONFIG_IS_DESERT = keyOf("surface_config/is_desert");
+    public static final TagKey<Biome> SURFACE_CONFIG_IS_BADLANDS = keyOf("surface_config/is_badlands");
+    public static final TagKey<Biome> SURFACE_CONFIG_IS_NETHER = keyOf("surface_config/is_nether");
+    public static final TagKey<Biome> SURFACE_CONFIG_IS_END = keyOf("surface_config/is_end");
     
     public ModernBetaBiomeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, RegistryKeys.BIOME, registriesFuture);
@@ -118,6 +124,7 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
         getOrCreateTagBuilder(IS_DESERT).add(
             ModernBetaBiomes.BETA_DESERT,
             ModernBetaBiomes.PE_DESERT
+            
         );
         
         getOrCreateTagBuilder(IS_PLAINS).add(
@@ -294,5 +301,39 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
         
         getOrCreateTagBuilder(BiomeTags.ALLOWS_SURFACE_SLIME_SPAWNS)
             .addTag(IS_SWAMP);
+        
+        /* Surface Config Tags */
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_IS_DESERT).add(
+            ModernBetaBiomes.BETA_DESERT,
+            ModernBetaBiomes.PE_DESERT,
+            BiomeKeys.DESERT
+        );
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_IS_BADLANDS).add(
+            BiomeKeys.BADLANDS,
+            BiomeKeys.ERODED_BADLANDS,
+            BiomeKeys.WOODED_BADLANDS
+        );
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_IS_NETHER).add(
+            BiomeKeys.NETHER_WASTES,
+            BiomeKeys.SOUL_SAND_VALLEY,
+            BiomeKeys.CRIMSON_FOREST,
+            BiomeKeys.WARPED_FOREST,
+            BiomeKeys.BASALT_DELTAS
+        );
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_IS_END).add(
+            BiomeKeys.THE_END,
+            BiomeKeys.END_BARRENS,
+            BiomeKeys.END_HIGHLANDS,
+            BiomeKeys.END_MIDLANDS,
+            BiomeKeys.SMALL_END_ISLANDS
+        );
+    }
+    
+    private static TagKey<Biome> keyOf(String id) {
+        return TagKey.of(RegistryKeys.BIOME, ModernBeta.createId(id));
     }
 }
