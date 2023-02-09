@@ -15,6 +15,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
 public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
+    public static final TagKey<Biome> IS_MODERN_BETA = keyOf("is_modern_beta");
     public static final TagKey<Biome> IS_BETA = keyOf("is_beta");
     public static final TagKey<Biome> IS_PE = keyOf("is_pe");
     public static final TagKey<Biome> IS_ALPHA = keyOf("is_alpha");
@@ -47,6 +48,56 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
     @Override
     protected void configure(WrapperLookup arg) {
         /* Modern Beta Biome Tags */
+        
+        getOrCreateTagBuilder(IS_MODERN_BETA).add(
+            ModernBetaBiomes.BETA_FOREST,
+            ModernBetaBiomes.BETA_SHRUBLAND,
+            ModernBetaBiomes.BETA_DESERT,
+            ModernBetaBiomes.BETA_SAVANNA,
+            ModernBetaBiomes.BETA_PLAINS,
+            ModernBetaBiomes.BETA_SEASONAL_FOREST,
+            ModernBetaBiomes.BETA_RAINFOREST,
+            ModernBetaBiomes.BETA_SWAMPLAND,
+            ModernBetaBiomes.BETA_TAIGA,
+            ModernBetaBiomes.BETA_TUNDRA,
+            ModernBetaBiomes.BETA_ICE_DESERT,
+            ModernBetaBiomes.BETA_OCEAN,
+            ModernBetaBiomes.BETA_LUKEWARM_OCEAN,
+            ModernBetaBiomes.BETA_WARM_OCEAN,
+            ModernBetaBiomes.BETA_COLD_OCEAN,
+            ModernBetaBiomes.BETA_FROZEN_OCEAN,
+            ModernBetaBiomes.BETA_SKY,
+                
+            ModernBetaBiomes.PE_FOREST,
+            ModernBetaBiomes.PE_SHRUBLAND,
+            ModernBetaBiomes.PE_DESERT,
+            ModernBetaBiomes.PE_SAVANNA,
+            ModernBetaBiomes.PE_PLAINS,
+            ModernBetaBiomes.PE_SEASONAL_FOREST,
+            ModernBetaBiomes.PE_RAINFOREST,
+            ModernBetaBiomes.PE_SWAMPLAND,
+            ModernBetaBiomes.PE_TAIGA,
+            ModernBetaBiomes.PE_TUNDRA,
+            ModernBetaBiomes.PE_ICE_DESERT,
+            ModernBetaBiomes.PE_OCEAN,
+            ModernBetaBiomes.PE_LUKEWARM_OCEAN,
+            ModernBetaBiomes.PE_WARM_OCEAN,
+            ModernBetaBiomes.PE_COLD_OCEAN,
+            ModernBetaBiomes.PE_FROZEN_OCEAN,
+            
+            ModernBetaBiomes.ALPHA,
+            ModernBetaBiomes.ALPHA_WINTER,
+            
+            ModernBetaBiomes.INFDEV_611,
+            ModernBetaBiomes.INFDEV_420,
+            ModernBetaBiomes.INFDEV_415,
+            ModernBetaBiomes.INFDEV_227,
+            
+            ModernBetaBiomes.INDEV_NORMAL,
+            ModernBetaBiomes.INDEV_HELL,
+            ModernBetaBiomes.INDEV_PARADISE,
+            ModernBetaBiomes.INDEV_WOODS
+        );
         
         getOrCreateTagBuilder(IS_BETA).add(
             ModernBetaBiomes.BETA_FOREST,
@@ -174,6 +225,9 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
         );
         
         /* Vanilla Biome Tags */
+        
+        getOrCreateTagBuilder(BiomeTags.IS_OVERWORLD)
+            .addTag(IS_MODERN_BETA);
         
         getOrCreateTagBuilder(BiomeTags.IS_DEEP_OCEAN)
             .addTag(IS_OCEAN);
