@@ -26,9 +26,6 @@ public class BiomeInjector {
     
     public static final Predicate<BiomeInjectionContext> CAVE_PREDICATE = context ->
         context.getY() >= context.worldMinY && context.getY() + CAVE_START_OFFSET < context.minHeight;
-        
-    public static final Predicate<BiomeInjectionContext> DEEP_CAVE_PREDICATE = context ->
-        context.getY() >= context.worldMinY && context.getY() < context.minHeight / 2;
     
     private final ModernBetaChunkGenerator modernBetaChunkGenerator;
     private final ModernBetaBiomeSource modernBetaBiomeSource;
@@ -47,7 +44,6 @@ public class BiomeInjector {
         BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder();
         
         builder.add(CAVE_PREDICATE, this.modernBetaBiomeSource::getCaveBiome);
-        builder.add(DEEP_CAVE_PREDICATE, this.modernBetaBiomeSource::getCaveBiome);
         
         if (replaceOceanBiomes) {
             builder.add(deepOceanPredicate, this.modernBetaBiomeSource::getDeepOceanBiome);

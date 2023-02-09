@@ -16,7 +16,7 @@ import mod.bespectacled.modernbeta.util.chunk.ChunkClimate;
 import mod.bespectacled.modernbeta.util.chunk.ChunkClimateSky;
 import mod.bespectacled.modernbeta.util.noise.SimplexOctaveNoise;
 import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMap;
-import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
+import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.entry.RegistryEntry;

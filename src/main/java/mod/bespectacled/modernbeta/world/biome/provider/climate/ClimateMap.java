@@ -5,28 +5,27 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import mod.bespectacled.modernbeta.ModernBeta;
+import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome.ConfigClimateMapping;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
-import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class ClimateMap {
-    private final Map<String, ClimateMapping> climateMap;
-    private final ClimateMapping[] climateTable;
+    private final Map<String, ConfigClimateMapping> climateMap;
+    private final ConfigClimateMapping[] climateTable;
     
     public ClimateMap(ModernBetaSettingsBiome settings) {
         this.climateMap = new LinkedHashMap<>();
-        this.climateTable = new ClimateMapping[4096];
+        this.climateTable = new ConfigClimateMapping[4096];
         
-        for (String key : ModernBeta.BIOME_CONFIG.climateMappings.keySet()) {
-            this.climateMap.put(key, ClimateMapping.fromCompound(settings.climateMappings.get(key).toCompound()));
+        for (String key : settings.climateMappings.keySet()) {
+            this.climateMap.put(key, settings.climateMappings.get(key));
         }
         
         this.generateBiomeLookup();
     }
     
-    public Map<String, ClimateMapping> getMap() {
+    public Map<String, ConfigClimateMapping> getMap() {
         return new LinkedHashMap<>(this.climateMap);
     }
     
@@ -39,9 +38,12 @@ public class ClimateMap {
     
     public List<RegistryKey<Biome>> getBiomeKeys() {
         List<RegistryKey<Biome>> biomeKeys = new ArrayList<>();
-        biomeKeys.addAll(this.climateMap.values().stream().map(p -> p.biome()).toList());
-        biomeKeys.addAll(this.climateMap.values().stream().map(p -> p.oceanBiome()).toList());
-        biomeKeys.addAll(this.climateMap.values().stream().map(p -> p.deepOceanBiome()).toList());
+        
+        this.climateMap.values().forEach(mapping -> {
+            biomeKeys.add(mapping.biome());
+            biomeKeys.add(mapping.oceanBiome());
+            biomeKeys.add(mapping.deepOceanBiome());
+        });
         
         return biomeKeys;
     }
@@ -54,7 +56,7 @@ public class ClimateMap {
         }
     }
     
-    private ClimateMapping getBiome(float temp, float rain) {
+    private ConfigClimateMapping getBiome(float temp, float rain) {
         rain *= temp;
 
         if (temp < 0.1F) {

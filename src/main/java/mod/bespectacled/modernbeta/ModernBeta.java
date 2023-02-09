@@ -15,6 +15,7 @@ import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigChunk;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigRendering;
+import mod.bespectacled.modernbeta.world.ModernBetaWorldInitializer;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.carver.ModernBetaCarvers;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
@@ -24,12 +25,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 public class ModernBeta implements ModInitializer {
     public static final String MOD_ID = "modern_beta";
@@ -91,24 +87,6 @@ public class ModernBeta implements ModInitializer {
         }
         
         // Initializes chunk and biome providers at server start-up.
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            Registry<DimensionOptions> registryDimensionOptions = server.getCombinedDynamicRegistries().getCombinedRegistryManager().get(RegistryKeys.DIMENSION);
-            long seed = server.getSaveProperties().getGeneratorOptions().getSeed();
-            
-            registryDimensionOptions.getEntrySet().forEach(entry -> {
-                DimensionOptions dimensionOptions = entry.getValue();
-                
-                ChunkGenerator chunkGenerator = dimensionOptions.chunkGenerator();
-                BiomeSource biomeSource = chunkGenerator.getBiomeSource();
-                
-                if (chunkGenerator instanceof ModernBetaChunkGenerator modernBetaChunkGenerator) {
-                    modernBetaChunkGenerator.initProvider(seed);
-                }
-                
-                if (biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
-                    modernBetaBiomeSource.initProvider(seed);
-                }
-            });
-        });
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> ModernBetaWorldInitializer.init(server));
     }
 }

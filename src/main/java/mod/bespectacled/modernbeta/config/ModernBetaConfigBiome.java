@@ -10,8 +10,12 @@ import mod.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
-import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping.ClimateType;
+import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateType;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
 @Config(name = "config_biome")
@@ -160,20 +164,24 @@ public class ModernBetaConfigBiome implements ConfigData {
             this.deepOceanBiome = deepOceanBiome;
         }
         
-        public String biomeByClimateType(ClimateType type) {
+        public RegistryKey<Biome> biomeByClimateType(ClimateType type) {
             return switch(type) {
-                case LAND -> this.biome;
-                case OCEAN -> this.oceanBiome;
-                case DEEP_OCEAN -> this.deepOceanBiome;
+                case LAND -> keyOf(this.biome);
+                case OCEAN -> keyOf(this.oceanBiome);
+                case DEEP_OCEAN -> keyOf(this.deepOceanBiome);
             };
         }
         
-        public void setBiomeByClimateType(String biome, ClimateType type) {
-            switch(type) {
-                case LAND -> this.biome = biome;
-                case OCEAN -> this.oceanBiome = biome;
-                case DEEP_OCEAN -> this.deepOceanBiome = biome;
-            }
+        public RegistryKey<Biome> biome() {
+            return keyOf(this.biome);
+        }
+        
+        public RegistryKey<Biome> oceanBiome() {
+            return keyOf(this.oceanBiome);
+        }
+        
+        public RegistryKey<Biome> deepOceanBiome() {
+            return keyOf(this.deepOceanBiome);
         }
         
         public NbtCompound toCompound() {
@@ -190,6 +198,10 @@ public class ModernBetaConfigBiome implements ConfigData {
                 NbtUtil.readStringOrThrow(NbtTags.OCEAN_BIOME, compound),
                 NbtUtil.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME, compound)
             );
+        }
+        
+        private static RegistryKey<Biome> keyOf(String id) {
+            return RegistryKey.of(RegistryKeys.BIOME, new Identifier(id));
         }
     }
     
