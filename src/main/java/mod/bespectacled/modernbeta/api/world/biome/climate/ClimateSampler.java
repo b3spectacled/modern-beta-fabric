@@ -21,7 +21,7 @@ public interface ClimateSampler {
      * 
      * @return Whether to use climate values for biome tinting.
      */
-    default boolean sampleBiomeColor() {
+    default boolean useBiomeColor() {
         return false;
     }
     
@@ -30,7 +30,7 @@ public interface ClimateSampler {
      * 
      * @return Whether to use climate values for water tinting.
      */
-    default boolean sampleWaterColor() {
+    default boolean useWaterColor() {
         return false;
     }
     
@@ -39,7 +39,7 @@ public interface ClimateSampler {
      * 
      * @return Whether to use climate values for feature generation.
      */
-    default boolean sampleBiomeFeature() {
+    default boolean useBiomeFeature() {
         return true;
     }
 }

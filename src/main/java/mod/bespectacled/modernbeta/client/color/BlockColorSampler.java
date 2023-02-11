@@ -11,29 +11,29 @@ import net.minecraft.client.color.world.GrassColors;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
-public final class BlockColorsBeta {
-    public static final BlockColorsBeta INSTANCE = new BlockColorsBeta();
+public final class BlockColorSampler {
+    public static final BlockColorSampler INSTANCE = new BlockColorSampler();
+
+    public final BlockColorMap colorMapGrass;
+    public final BlockColorMap colorMapFoliage;
+    public final BlockColorMap colorMapWater;
     
     private Optional<ClimateSampler> climateSampler;
     
-    private BlockColorsBeta() {
+    private BlockColorSampler() {
+        this.colorMapGrass = new BlockColorMap();
+        this.colorMapFoliage = new BlockColorMap();
+        this.colorMapWater = new BlockColorMap();
+        
         this.climateSampler = Optional.empty();
     }
     
-    public void setSeed(long seed, Optional<ClimateSampler> climateSampler) {
+    public Optional<ClimateSampler> getClimateSampler() {
+        return this.climateSampler;
+    }
+    
+    public void setClimateSampler(Optional<ClimateSampler> climateSampler) {
         this.climateSampler = climateSampler;
-    }
-    
-    public boolean sampleBiomeColor() {
-        return this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor();
-    }
-    
-    public boolean sampleWaterColor() {
-        return this.climateSampler.isPresent() && this.climateSampler.get().sampleWaterColor();
-    }
-    
-    public Clime sampleClime(int x, int z) {
-        return this.climateSampler.get().sample(x, z);
     }
     
     public int getGrassColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
@@ -109,9 +109,17 @@ public final class BlockColorsBeta {
             
             Clime clime = this.climateSampler.get().sample(x, z);
             
-            return Colormap.getColor(clime.temp(), clime.rain());
+            return this.colorMapWater.getColor(clime.temp(), clime.rain());
         }
         
         return BiomeColors.getWaterColor(view, pos);
+    }
+    
+    public boolean sampleBiomeColor() {
+        return this.climateSampler.isPresent() && this.climateSampler.get().useBiomeColor();
+    }
+    
+    public boolean sampleWaterColor() {
+        return this.climateSampler.isPresent() && this.climateSampler.get().useWaterColor();
     }
 }

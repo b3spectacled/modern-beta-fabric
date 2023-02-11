@@ -10,7 +10,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import mod.bespectacled.modernbeta.client.color.BlockColors;
-import mod.bespectacled.modernbeta.client.color.Colormap;
+import mod.bespectacled.modernbeta.client.color.BlockColorSampler;
 import mod.bespectacled.modernbeta.client.resource.ModernBetaColormapResource;
 import mod.bespectacled.modernbeta.command.DebugProviderSettingsCommand;
 import mod.bespectacled.modernbeta.compat.Compat;
@@ -89,7 +89,7 @@ public class ModernBeta implements ModInitializer {
 
 			// Load water colormap
             ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(
-                new ModernBetaColormapResource("colormap/water.png", Colormap::setColorMap)
+                new ModernBetaColormapResource("colormap/water.png", BlockColorSampler.INSTANCE.colorMapWater::setColorMap)
             );
         }
         

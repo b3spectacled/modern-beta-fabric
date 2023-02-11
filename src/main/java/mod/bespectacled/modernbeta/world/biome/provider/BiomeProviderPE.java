@@ -89,7 +89,7 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
     }
 
     @Override
-    public double sampleSkyTemp(int x, int z) {
+    public double sampleSky(int x, int z) {
         return this.climateSampler.sampleSkyTemp(x, z);
     }
 
@@ -99,17 +99,17 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
     }
     
     @Override
-    public boolean sampleBiomeColor() {
+    public boolean useBiomeColor() {
         return ModernBeta.RENDER_CONFIG.configBiomeColor.usePEBetaBiomeColor;
     }
     
     @Override
-    public boolean sampleSkyColor() {
+    public boolean useSkyColor() {
         return ModernBeta.RENDER_CONFIG.configBiomeColor.usePEBetaSkyColor;
     }
     
     @Override
-    public boolean sampleWaterColor() {
+    public boolean useWaterColor() {
         return ModernBeta.RENDER_CONFIG.configBiomeColor.usePEBetaWaterBiomeColor;
     }
     

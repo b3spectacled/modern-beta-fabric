@@ -16,7 +16,7 @@ import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSamplerSky;
-import mod.bespectacled.modernbeta.client.color.BlockColorsBeta;
+import mod.bespectacled.modernbeta.client.color.BlockColorSampler;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
 import mod.bespectacled.modernbeta.util.ModernBetaClientWorld;
 import mod.bespectacled.modernbeta.util.SeedUtil;
@@ -103,8 +103,8 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
             this.isModernBetaWorld = chunkGenerator instanceof ModernBetaChunkGenerator || biomeSource instanceof ModernBetaBiomeSource;
         }
         
-        // Set Beta block colors seed.
-        BlockColorsBeta.INSTANCE.setSeed(worldSeed, this.climateSampler);
+        // Set climate sampler
+        BlockColorSampler.INSTANCE.setClimateSampler(this.climateSampler);
     }
     
     @Inject(method = "getSkyColor", at = @At("HEAD"))
@@ -121,11 +121,11 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         index = 6  
     )
     private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
-        if (this.climateSamplerSky.isPresent() && this.climateSamplerSky.get().sampleSkyColor()) {
+        if (this.climateSamplerSky.isPresent() && this.climateSamplerSky.get().useSkyColor()) {
             int x = (int)capturedPos.getX();
             int z = (int)capturedPos.getZ();
             
-            float temp = (float)this.climateSamplerSky.get().sampleSkyTemp(x, z);
+            float temp = (float)this.climateSamplerSky.get().sampleSky(x, z);
             temp /= 3F;
             temp = MathHelper.clamp(temp, -1F, 1F);
             
