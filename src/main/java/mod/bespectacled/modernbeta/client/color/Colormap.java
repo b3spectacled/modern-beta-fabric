@@ -1,6 +1,6 @@
 package mod.bespectacled.modernbeta.client.color;
 
-public class WaterColorsBeta {
+public class Colormap {
     private static int[] colorMap = new int[65536];
 
     public static void setColorMap(int[] map) {
@@ -8,7 +8,6 @@ public class WaterColorsBeta {
     }
 
     public static int getColor(double temp, double rain) {
-        /*
         int rainNdx = (int)((1.0 - (rain *= temp)) * 255.0);
         int tempNdx = (int)((1.0 - temp) * 255.0);
         int ndx = rainNdx << 8 | tempNdx;
@@ -17,8 +16,6 @@ public class WaterColorsBeta {
             return -65281;
         }
         
-        return colorMap[ndx];*/
-        
-        return 0xFFFFFF;
+        return colorMap[ndx];
     }
 }

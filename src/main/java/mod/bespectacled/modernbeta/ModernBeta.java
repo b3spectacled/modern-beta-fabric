@@ -1,4 +1,6 @@
-package mod.bespectacled.modernbeta;
+
+
+			package mod.bespectacled.modernbeta;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -8,6 +10,8 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import mod.bespectacled.modernbeta.client.color.BlockColors;
+import mod.bespectacled.modernbeta.client.color.Colormap;
+import mod.bespectacled.modernbeta.client.resource.ModernBetaColormapResource;
 import mod.bespectacled.modernbeta.command.DebugProviderSettingsCommand;
 import mod.bespectacled.modernbeta.compat.Compat;
 import mod.bespectacled.modernbeta.config.ModernBetaConfig;
@@ -24,7 +28,9 @@ import mod.bespectacled.modernbeta.world.feature.placement.ModernBetaPlacementTy
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
 public class ModernBeta implements ModInitializer {
@@ -80,6 +86,11 @@ public class ModernBeta implements ModInitializer {
         if (CLIENT_ENV) {
             // Override default biome grass/foliage colors
             BlockColors.register();
+
+			// Load water colormap
+            ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(
+                new ModernBetaColormapResource("textures/colormap/water.png", Colormap::setColorMap)
+            );
         }
         
         if (DEV_ENV) {

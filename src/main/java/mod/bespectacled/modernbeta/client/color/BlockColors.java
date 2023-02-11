@@ -38,13 +38,11 @@ public final class BlockColors {
         );
         
         // Water blocks
-        /*
         ColorProviderRegistry.BLOCK.register(
             (state, view, pos, tintNdx) -> BlockColorsBeta.INSTANCE.getWaterColor(state, view, pos, tintNdx), 
             Blocks.WATER,
             Blocks.BUBBLE_COLUMN,
             Blocks.WATER_CAULDRON
         );
-        */
     }   
 }

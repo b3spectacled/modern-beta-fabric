@@ -31,11 +31,17 @@ public class ModernBetaConfigRendering implements ConfigData {
         @ConfigEntry.Gui.Tooltip(count = 3)
         public boolean useBetaBiomeColor = true;
         
+        @ConfigEntry.Gui.Tooltip(count = 3)
+        public boolean useBetaWaterColor = false;
+        
         @ConfigEntry.Gui.Tooltip(count = 2)
         public boolean usePEBetaSkyColor = false;
 
         @ConfigEntry.Gui.Tooltip(count = 3)
         public boolean usePEBetaBiomeColor = false;
+        
+        @ConfigEntry.Gui.Tooltip(count = 3)
+        public boolean usePEBetaWaterBiomeColor = false;
         
         @ConfigEntry.Gui.Tooltip(count = 2)
         public boolean useOldFogColor = true;

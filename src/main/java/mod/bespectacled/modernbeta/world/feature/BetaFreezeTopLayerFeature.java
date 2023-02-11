@@ -49,7 +49,7 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 
                 if (generator.getBiomeSource() instanceof ModernBetaBiomeSource oldBiomeSource && 
                     oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
-                    climateSampler.sampleForFeatureGeneration()
+                    climateSampler.sampleBiomeFeature()
                 ) {
                     temp = climateSampler.sample(x, z).temp();
                     coldThreshold = 0.5;

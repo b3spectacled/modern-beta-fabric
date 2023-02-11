@@ -99,13 +99,18 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
     }
     
     @Override
-    public boolean sampleForBiomeColor() {
+    public boolean sampleBiomeColor() {
         return ModernBeta.RENDER_CONFIG.configBiomeColor.usePEBetaBiomeColor;
     }
     
     @Override
     public boolean sampleSkyColor() {
         return ModernBeta.RENDER_CONFIG.configBiomeColor.usePEBetaSkyColor;
+    }
+    
+    @Override
+    public boolean sampleWaterColor() {
+        return ModernBeta.RENDER_CONFIG.configBiomeColor.usePEBetaWaterBiomeColor;
     }
     
     private static class PEClimateSampler {

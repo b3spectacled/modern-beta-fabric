@@ -27,6 +27,11 @@
     "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.useBetaBiomeColor.@Tooltip[1]": "noise-based Beta biome colors.",
     "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.useBetaBiomeColor.@Tooltip[2]": "(Requires world or texture reload, F3 + T)",
     
+    "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.useBetaWaterColor": "Render Beta Biome Colors",
+    "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.useBetaWaterColor.@Tooltip[0]": "Render client-side temperature/humidity",
+    "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.useBetaWaterColor.@Tooltip[1]": "noise-based Beta water colors.",
+    "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.useBetaWaterColor.@Tooltip[2]": "(Requires world or texture reload, F3 + T)",
+    
     "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.usePEBetaSkyColor": "Render Beta Sky Colors for PE",
     "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.usePEBetaSkyColor.@Tooltip[0]": "Render client-side temperature",
     "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.usePEBetaSkyColor.@Tooltip[1]": "noise-based Beta sky colors for PE worlds.",
@@ -35,6 +40,11 @@
     "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.usePEBetaBiomeColor.@Tooltip[0]": "Render client-side temperature/humidity",
     "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.usePEBetaBiomeColor.@Tooltip[1]": "noise-based Beta biome colors for PE worlds.",
     "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.usePEBetaBiomeColor.@Tooltip[2]": "(Requires world or texture reload, F3 + T)",
+    
+    "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.usePEBetaWaterColor": "Render Beta Biome Colors for PE",
+    "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.usePEBetaWaterColor.@Tooltip[0]": "Render client-side temperature/humidity",
+    "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.usePEBetaWaterColor.@Tooltip[1]": "noise-based Beta water colors for PE worlds.",
+    "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.usePEBetaWaterColor.@Tooltip[2]": "(Requires world or texture reload, F3 + T)",
     
     "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.useOldFogColor": "Render Old Fog Color",
     "text.autoconfig.modern_beta.option.renderingConfig.configBiomeColor.useOldFogColor.@Tooltip[0]": "Render client-side fog color using old weighting formula,",

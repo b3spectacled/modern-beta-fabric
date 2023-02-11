@@ -25,7 +25,11 @@ public final class BlockColorsBeta {
     }
     
     public boolean sampleBiomeColor() {
-        return this.climateSampler.isPresent() && this.climateSampler.get().sampleForBiomeColor();
+        return this.climateSampler.isPresent() && this.climateSampler.get().sampleBiomeColor();
+    }
+    
+    public boolean sampleWaterColor() {
+        return this.climateSampler.isPresent() && this.climateSampler.get().sampleWaterColor();
     }
     
     public Clime sampleClime(int x, int z) {
@@ -99,13 +103,13 @@ public final class BlockColorsBeta {
     }
     
     public int getWaterColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
-        if (this.sampleBiomeColor()) {
+        if (this.sampleWaterColor()) {
             int x = pos.getX();
             int z = pos.getZ();
             
             Clime clime = this.climateSampler.get().sample(x, z);
             
-            return WaterColorsBeta.getColor(clime.temp(), clime.rain());
+            return Colormap.getColor(clime.temp(), clime.rain());
         }
         
         return BiomeColors.getWaterColor(view, pos);
