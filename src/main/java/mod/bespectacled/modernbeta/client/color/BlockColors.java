@@ -31,10 +31,20 @@ public final class BlockColors {
             Blocks.VINE
         );
         
-        // Reeds
+        // Sugar cane
         ColorProviderRegistry.BLOCK.register(
-            (state, view, pos, tintNdx) -> BlockColorsBeta.INSTANCE.getReedColor(state, view, pos, tintNdx), 
+            (state, view, pos, tintNdx) -> BlockColorsBeta.INSTANCE.getSugarCaneColor(state, view, pos, tintNdx), 
             Blocks.SUGAR_CANE
         );
+        
+        // Water blocks
+        /*
+        ColorProviderRegistry.BLOCK.register(
+            (state, view, pos, tintNdx) -> BlockColorsBeta.INSTANCE.getWaterColor(state, view, pos, tintNdx), 
+            Blocks.WATER,
+            Blocks.BUBBLE_COLUMN,
+            Blocks.WATER_CAULDRON
+        );
+        */
     }   
 }

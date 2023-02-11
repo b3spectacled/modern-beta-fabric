@@ -88,14 +88,14 @@ public class ModernBetaVegetationConfiguredFeatures {
         
         ConfiguredFeatures.register(featureRegisterable, TREES_ALPHA, Feature.RANDOM_SELECTOR, createDefaultRandomTreeConfig(registryPlaced, false));
         ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_611, Feature.RANDOM_SELECTOR, createOakTreeConfig(registryPlaced, false));
-        ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_420, Feature.RANDOM_SELECTOR, createDefaultRandomTreeConfig(registryPlaced, false));
-        ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_415, Feature.RANDOM_SELECTOR, createDefaultRandomTreeConfig(registryPlaced, false));
+        ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_420, Feature.RANDOM_SELECTOR, createInfdevRandomTreeConfig(registryPlaced, false));
+        ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_415, Feature.RANDOM_SELECTOR, createInfdevRandomTreeConfig(registryPlaced, false));
         ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_227, Feature.RANDOM_SELECTOR, createOakTreeConfig(registryPlaced, false));
         
         ConfiguredFeatures.register(featureRegisterable, TREES_ALPHA_BEES, Feature.RANDOM_SELECTOR, createDefaultRandomTreeConfig(registryPlaced, true));
         ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_611_BEES, Feature.RANDOM_SELECTOR, createOakTreeConfig(registryPlaced, true));
-        ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_420_BEES, Feature.RANDOM_SELECTOR, createDefaultRandomTreeConfig(registryPlaced, true));
-        ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_415_BEES, Feature.RANDOM_SELECTOR, createDefaultRandomTreeConfig(registryPlaced, true));
+        ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_420_BEES, Feature.RANDOM_SELECTOR, createInfdevRandomTreeConfig(registryPlaced, true));
+        ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_415_BEES, Feature.RANDOM_SELECTOR, createInfdevRandomTreeConfig(registryPlaced, true));
         ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_227_BEES, Feature.RANDOM_SELECTOR, createOakTreeConfig(registryPlaced, true));
 
         ConfiguredFeatures.register(featureRegisterable, TREES_BETA_FOREST, Feature.RANDOM_SELECTOR, createForestRandomTreeConfig(registryPlaced, false));
@@ -140,6 +140,14 @@ public class ModernBetaVegetationConfiguredFeatures {
         RegistryEntry.Reference<PlacedFeature> oakBees = registryPlaced.getOrThrow(TreePlacedFeatures.OAK_BEES_0002);
         
         return new RandomFeatureConfig(List.of(withChance(fancyOak, 0.1f)), bees ? oakBees : oak);
+    }
+    
+    private static RandomFeatureConfig createInfdevRandomTreeConfig(RegistryEntryLookup<PlacedFeature> registryPlaced, boolean bees) {
+        RegistryEntry.Reference<PlacedFeature> fancyOak = registryPlaced.getOrThrow(ModernBetaTreePlacedFeatures.FANCY_OAK);
+        RegistryEntry.Reference<PlacedFeature> oak = registryPlaced.getOrThrow(TreePlacedFeatures.OAK_CHECKED);
+        RegistryEntry.Reference<PlacedFeature> oakBees = registryPlaced.getOrThrow(TreePlacedFeatures.OAK_BEES_0002);
+        
+        return new RandomFeatureConfig(List.of(withChance(bees ? oakBees : oak, 0.1f)), fancyOak);
     }
     
     private static RandomFeatureConfig createForestRandomTreeConfig(RegistryEntryLookup<PlacedFeature> registryPlaced, boolean bees) {

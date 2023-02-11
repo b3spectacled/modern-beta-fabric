@@ -22,6 +22,7 @@ public class ModernBetaWorldInitializer {
             
             if (chunkGenerator instanceof ModernBetaChunkGenerator modernBetaChunkGenerator) {
                 modernBetaChunkGenerator.initProvider(seed);
+                modernBetaChunkGenerator.getChunkProvider().initForestOctaveNoise();
             }
             
             if (biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {

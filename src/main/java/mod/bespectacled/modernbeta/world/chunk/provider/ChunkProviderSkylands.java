@@ -38,8 +38,6 @@ public class ChunkProviderSkylands extends ChunkProviderNoise {
         new PerlinOctaveNoise(this.random, 16, true);
         this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
         this.islandNoise = new SimplexNoise(this.random);
-
-        this.setForestOctaveNoise(this.forestOctaveNoise);
     }
 
     @Override
@@ -208,6 +206,11 @@ public class ChunkProviderSkylands extends ChunkProviderNoise {
             primaryBuffer[y] = density;
             heightmapBuffer[y] = heightmapDensity;
         }
+    }
+    
+    @Override
+    protected PerlinOctaveNoise getForestOctaveNoise() {
+        return this.forestOctaveNoise;
     }
     
     private double getOffset() {

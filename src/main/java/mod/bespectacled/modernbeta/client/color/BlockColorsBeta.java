@@ -24,12 +24,20 @@ public final class BlockColorsBeta {
         this.climateSampler = climateSampler;
     }
     
+    public boolean sampleBiomeColor() {
+        return this.climateSampler.isPresent() && this.climateSampler.get().sampleForBiomeColor();
+    }
+    
+    public Clime sampleClime(int x, int z) {
+        return this.climateSampler.get().sample(x, z);
+    }
+    
     public int getGrassColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
         if (view == null || pos == null) { // Appears to enter here when loading color for inventory block
             return 8174955; // Default tint, from wiki
         }
         
-        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleForBiomeColor()) {
+        if (this.sampleBiomeColor()) {
             int x = pos.getX();
             int z = pos.getZ();
 
@@ -46,7 +54,7 @@ public final class BlockColorsBeta {
             return 8174955; // Default tint, from wiki
         }
         
-        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleForBiomeColor()) {
+        if (this.sampleBiomeColor()) {
             int x = pos.getX();
             int y = pos.getY();
             int z = pos.getZ();
@@ -70,7 +78,7 @@ public final class BlockColorsBeta {
             return 4764952; // Default tint, from wiki
         }
         
-        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleForBiomeColor()) {
+        if (this.sampleBiomeColor()) {
             int x = pos.getX();
             int z = pos.getZ();
             
@@ -82,11 +90,24 @@ public final class BlockColorsBeta {
         return BiomeColors.getFoliageColor(view, pos);
     }
     
-    public int getReedColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
-        if (this.climateSampler.isPresent() && this.climateSampler.get().sampleForBiomeColor()) {
+    public int getSugarCaneColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
+        if (this.sampleBiomeColor()) {
             return 0xFFFFFF;
         }
         
         return BiomeColors.getGrassColor(view, pos);
+    }
+    
+    public int getWaterColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
+        if (this.sampleBiomeColor()) {
+            int x = pos.getX();
+            int z = pos.getZ();
+            
+            Clime clime = this.climateSampler.get().sample(x, z);
+            
+            return WaterColorsBeta.getColor(clime.temp(), clime.rain());
+        }
+        
+        return BiomeColors.getWaterColor(view, pos);
     }
 }

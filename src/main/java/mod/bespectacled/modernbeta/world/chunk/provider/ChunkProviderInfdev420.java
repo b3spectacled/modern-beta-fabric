@@ -4,6 +4,7 @@ import java.util.Random;
 
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
+import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
@@ -42,10 +43,11 @@ public class ChunkProviderInfdev420 extends ChunkProviderNoise {
         new PerlinOctaveNoise(this.random, 5, true); // Unused in original source
         this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 5, true);
         this.islandNoise = new SimplexNoise(this.random);
-
-        this.setForestOctaveNoise(this.forestOctaveNoise);
-        
-        this.spawnLocator = new SpawnLocatorBeta(this, this.beachOctaveNoise);
+    }
+    
+    @Override
+    public SpawnLocator getSpawnLocator() {
+        return new SpawnLocatorBeta(this, this.beachOctaveNoise);
     }
 
     @Override
@@ -256,6 +258,11 @@ public class ChunkProviderInfdev420 extends ChunkProviderNoise {
             primaryBuffer[y] = density;
             heightmapBuffer[y] = heightmapDensity;
         }
+    }
+    
+    @Override
+    protected PerlinOctaveNoise getForestOctaveNoise() {
+        return this.forestOctaveNoise;
     }
     
     private double getOffset(int noiseY, double baseSize, double heightStretch) {

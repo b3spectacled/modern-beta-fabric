@@ -33,7 +33,7 @@ public class MixinMinecraftServer {
         
         if (chunkGenerator instanceof ModernBetaChunkGenerator oldChunkGenerator) {
             world.getGameRules().get(GameRules.SPAWN_RADIUS).set(0, world.getServer()); // Ensure a centered spawn
-            spawnPos = oldChunkGenerator.getChunkProvider().locateSpawn().orElse(spawnPos);
+            spawnPos = oldChunkGenerator.getChunkProvider().getSpawnLocator().locateSpawn().orElse(spawnPos);
             
             if (spawnPos != null && ModernBeta.DEV_ENV) {
                 ModernBeta.log(Level.INFO, String.format("Spawning at %d/%d/%d", spawnPos.getX(), spawnPos.getY(), spawnPos.getZ()));

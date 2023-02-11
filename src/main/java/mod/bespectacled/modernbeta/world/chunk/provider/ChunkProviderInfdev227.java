@@ -81,8 +81,6 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
         new PerlinOctaveNoise(this.random, 3, true);
         new PerlinOctaveNoise(this.random, 3, true);
         this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
-        
-        setForestOctaveNoise(this.forestOctaveNoise);
     }
 
     @Override
@@ -256,6 +254,11 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
                 }
             }
         }
+    }
+    
+    @Override
+    protected PerlinOctaveNoise getForestOctaveNoise() {
+        return this.forestOctaveNoise;
     }
     
     private int sampleHeightmap(int x, int z) {

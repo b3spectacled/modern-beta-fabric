@@ -6,6 +6,7 @@ import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
+import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
@@ -56,15 +57,15 @@ public class ChunkProviderPE extends ChunkProviderNoise {
         this.forestOctaveNoise = new PerlinOctaveNoise(mtRand, 8, true);
         this.islandNoise = new SimplexNoise(this.random);
         
-        this.setForestOctaveNoise(this.forestOctaveNoise);
-        
-        BiomeProviderPE biomeProvider = (
+        this.climateSampler = (
             this.chunkGenerator.getBiomeSource() instanceof ModernBetaBiomeSource biomeSource &&
-            biomeSource.getBiomeProvider() instanceof BiomeProviderPE peBiomeProvider
-        ) ? peBiomeProvider : new BiomeProviderPE(new ModernBetaSettingsBiome().toCompound(), null, seed);
-        
-        this.climateSampler = biomeProvider;
-        this.spawnLocator = new SpawnLocatorPE(this, this.beachOctaveNoise);
+            biomeSource.getBiomeProvider() instanceof BiomeProviderPE biomeProviderPE
+        ) ? biomeProviderPE : new BiomeProviderPE(new ModernBetaSettingsBiome().toCompound(), null, seed);
+    }
+    
+    @Override
+    public SpawnLocator getSpawnLocator() {
+        return new SpawnLocatorPE(this, this.beachOctaveNoise);
     }
 
     @Override
@@ -364,6 +365,11 @@ public class ChunkProviderPE extends ChunkProviderNoise {
         long seed = (long)chunkX * 0x14609048 + (long)chunkZ * 0x7ebe2d5;
         
         return new MTRandom(seed);
+    }
+    
+    @Override
+    protected PerlinOctaveNoise getForestOctaveNoise() {
+        return this.forestOctaveNoise;
     }
     
     private double getOffset(int noiseY, double heightStretch, double depth, double scale) {

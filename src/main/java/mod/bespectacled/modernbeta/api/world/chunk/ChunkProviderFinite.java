@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
@@ -87,8 +88,11 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         this.fillBlockArr(Blocks.AIR);
         
         this.pregenerated = false;
-        
-        this.spawnLocator = new SpawnLocatorIndev(this);
+    }
+    
+    @Override
+    public SpawnLocator getSpawnLocator() {
+        return new SpawnLocatorIndev(this);
     }
 
     @Override

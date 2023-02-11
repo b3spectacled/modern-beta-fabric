@@ -1,7 +1,6 @@
 package mod.bespectacled.modernbeta.api.world.chunk;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -19,7 +18,6 @@ import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSourceDeepslate;
 import mod.bespectacled.modernbeta.world.feature.placement.NoiseBasedCountPlacementModifier;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.ChunkRandom;
 import net.minecraft.util.math.random.RandomSplitter;
 import net.minecraft.world.ChunkRegion;
@@ -57,8 +55,6 @@ public abstract class ChunkProvider {
     
     protected final List<BlockSource> blockSources;
     
-    protected SpawnLocator spawnLocator;
-    
     /**
      * Construct a Modern Beta chunk provider with seed and settings.
      * 
@@ -82,8 +78,6 @@ public abstract class ChunkProvider {
             .stream()
             .map(func -> func.apply(this.chunkSettings, this.randomSplitter))
             .toList();
-        
-        this.spawnLocator = SpawnLocator.DEFAULT;
     }
     
     /**
@@ -176,27 +170,43 @@ public abstract class ChunkProvider {
     }
     
     /**
-     * Locate initial spawn position for players.
-     * If optional left empty, then vanilla spawn position is used.
-     * 
-     * @return Optional BlockPos player spawn position.
+     * @return Parent ModernBetaChunkGenerator.
      */
-    public Optional<BlockPos> locateSpawn() {
-        return this.spawnLocator.locateSpawn();
+    public ModernBetaChunkGenerator getChunkGenerator() {
+        return this.chunkGenerator;
     }
     
     /**
      * @return Chunk provider's spawn locator.
      */
     public SpawnLocator getSpawnLocator() {
-        return this.spawnLocator;
+        return SpawnLocator.DEFAULT;
     }
-    
+
     /**
-     * @return Parent ModernBetaChunkGenerator.
+     * Sets forest density using PerlinOctaveNoise sampler created with world seed.
+     * Checks every placed feature in the biome source feature list,
+     * and if it uses ModernBetaNoiseBasedCountPlacementModifier, replaces the noise sampler.
+     * 
+     * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
      */
-    public ModernBetaChunkGenerator getChunkGenerator() {
-        return this.chunkGenerator;
+    public void initForestOctaveNoise() {
+        List<IndexedFeatures> generationSteps = ((MixinChunkGenerator)this.chunkGenerator).getIndexedFeaturesListSupplier().get();
+        
+        for (IndexedFeatures step : generationSteps) {
+            List<PlacedFeature> featureList = step.features();
+            
+            for (PlacedFeature placedFeature : featureList) {
+                MixinPlacedFeatureAccessor accessor = (MixinPlacedFeatureAccessor)(Object)placedFeature;
+                List<PlacementModifier> modifiers = accessor.getPlacementModifiers();
+                
+                for (PlacementModifier modifier : modifiers) {
+                    if (modifier instanceof NoiseBasedCountPlacementModifier noiseModifier) {
+                        noiseModifier.setOctaves(this.getForestOctaveNoise());
+                    }
+                }
+            }
+        }
     }
     
     /**
@@ -241,30 +251,13 @@ public abstract class ChunkProvider {
         
         return new Random(seed);
     }
-
+    
     /**
-     * Sets forest density using PerlinOctaveNoise sampler created with world seed.
-     * Checks every placed feature in the biome source feature list,
-     * and if it uses ModernBetaNoiseBasedCountPlacementModifier, replaces the noise sampler.
+     * Get Perlin octave noise sampler for tree placement.
      * 
-     * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
+     * @return Perlin octave noise sampler.
      */
-    protected void setForestOctaveNoise(PerlinOctaveNoise forestOctaves) {
-        List<IndexedFeatures> generationSteps = ((MixinChunkGenerator)this.chunkGenerator).getIndexedFeaturesListSupplier().get();
-        
-        for (IndexedFeatures step : generationSteps) {
-            List<PlacedFeature> featureList = step.features();
-            
-            for (PlacedFeature placedFeature : featureList) {
-                MixinPlacedFeatureAccessor accessor = (MixinPlacedFeatureAccessor)(Object)placedFeature;
-                List<PlacementModifier> modifiers = accessor.getPlacementModifiers();
-                
-                for (PlacementModifier modifier : modifiers) {
-                    if (modifier instanceof NoiseBasedCountPlacementModifier noiseModifier) {
-                        noiseModifier.setOctaves(forestOctaves);
-                    }
-                }
-            }
-        }
+    protected PerlinOctaveNoise getForestOctaveNoise() {
+        return new PerlinOctaveNoise(new Random(this.seed), 8, true);
     }
 }

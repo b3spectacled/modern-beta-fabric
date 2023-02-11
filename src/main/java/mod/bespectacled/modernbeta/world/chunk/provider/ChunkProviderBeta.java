@@ -6,6 +6,7 @@ import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
+import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
@@ -52,16 +53,16 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
         this.depthOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
         this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
         this.islandNoise = new SimplexNoise(this.random);
-
-        this.setForestOctaveNoise(this.forestOctaveNoise);
         
-        BiomeProviderBeta biomeProvider = (
+        this.climateSampler = (
             this.chunkGenerator.getBiomeSource() instanceof ModernBetaBiomeSource biomeSource &&
-            biomeSource.getBiomeProvider() instanceof BiomeProviderBeta betaBiomeProvider
-        ) ? betaBiomeProvider : new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null, seed);
-        
-        this.climateSampler = biomeProvider;
-        this.spawnLocator = new SpawnLocatorBeta(this, this.beachOctaveNoise);
+            biomeSource.getBiomeProvider() instanceof BiomeProviderBeta biomeProviderBeta
+        ) ? biomeProviderBeta : new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null, seed);
+    }
+    
+    @Override
+    public SpawnLocator getSpawnLocator() {
+        return new SpawnLocatorBeta(this, this.beachOctaveNoise);
     }
     
     @Override
@@ -352,6 +353,11 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
             primaryBuffer[y] = density;
             heightmapBuffer[y] = heightmapDensity;
         }
+    }
+    
+    @Override
+    protected PerlinOctaveNoise getForestOctaveNoise() {
+        return this.forestOctaveNoise;
     }
     
     private double getOffset(int noiseY, double heightStretch, double depth, double scale) {
