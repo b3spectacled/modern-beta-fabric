@@ -89,7 +89,7 @@ public class ModernBeta implements ModInitializer {
 
 			// Load water colormap
             ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(
-                new ModernBetaColormapResource("textures/colormap/water.png", Colormap::setColorMap)
+                new ModernBetaColormapResource("colormap/water.png", Colormap::setColorMap)
             );
         }
         

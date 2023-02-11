@@ -3,8 +3,6 @@ package mod.bespectacled.modernbeta.client.resource;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-import org.apache.logging.log4j.Level;
-
 import mod.bespectacled.modernbeta.ModernBeta;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.util.RawTextureDataLoader;
@@ -34,14 +32,8 @@ public class ModernBetaColormapResource implements SimpleSynchronousResourceRelo
         
         try {
             map = RawTextureDataLoader.loadRawTextureData(resourceManager, this.optifineId);
-        } catch (IOException exception0) {
-            ModernBeta.log(Level.INFO, "Failed to load optifine colormap texture, loading default.");
-            try {
-                map = RawTextureDataLoader.loadRawTextureData(resourceManager, this.id);
-            } catch (IOException exception1) {
-                throw new IllegalStateException("Failed to load colormap texture!", exception1);
-            }
-            
+        } catch (IOException exception) {
+            throw new IllegalStateException("Failed to load colormap texture!", exception);
         }
         
         this.consumer.accept(map);
