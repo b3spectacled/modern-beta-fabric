@@ -1,10 +1,4 @@
 {
   "replace": false,
-  "values": [
-    "minecraft:the_end",
-    "minecraft:end_barrens",
-    "minecraft:end_highlands",
-    "minecraft:end_midlands",
-    "minecraft:small_end_islands"
-  ]
+  "values": []
 }

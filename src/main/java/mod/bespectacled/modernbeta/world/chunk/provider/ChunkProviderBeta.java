@@ -203,6 +203,11 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
                         runDepth = rand.nextInt(4);
                         fillerBlock = BlockStates.SANDSTONE;
                     }
+                    
+                    if (runDepth == 0 && fillerBlock.isOf(Blocks.RED_SAND)) {
+                        runDepth = rand.nextInt(4);
+                        fillerBlock = BlockStates.RED_SANDSTONE;
+                    }
                 }
             }
         }

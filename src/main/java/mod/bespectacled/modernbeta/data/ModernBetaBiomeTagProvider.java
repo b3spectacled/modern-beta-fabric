@@ -36,10 +36,19 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
     
     public static final TagKey<Biome> INDEV_STRONGHOLD_HAS_STRUCTURE = keyOf("has_structure/indev_stronghold");
     
+    /*
+     * TODO: Deprecated, remove 1.20
+     */
     public static final TagKey<Biome> SURFACE_CONFIG_IS_DESERT = keyOf("surface_config/is_desert");
     public static final TagKey<Biome> SURFACE_CONFIG_IS_BADLANDS = keyOf("surface_config/is_badlands");
     public static final TagKey<Biome> SURFACE_CONFIG_IS_NETHER = keyOf("surface_config/is_nether");
     public static final TagKey<Biome> SURFACE_CONFIG_IS_END = keyOf("surface_config/is_end");
+    
+    public static final TagKey<Biome> SURFACE_CONFIG_SAND = keyOf("surface_config/sand");
+    public static final TagKey<Biome> SURFACE_CONFIG_RED_SAND = keyOf("surface_config/red_sand");
+    public static final TagKey<Biome> SURFACE_CONFIG_BADLANDS = keyOf("surface_config/badlands");
+    public static final TagKey<Biome> SURFACE_CONFIG_NETHER = keyOf("surface_config/nether");
+    public static final TagKey<Biome> SURFACE_CONFIG_END = keyOf("surface_config/end");
     
     public ModernBetaBiomeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, RegistryKeys.BIOME, registriesFuture);
@@ -356,35 +365,54 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
         getOrCreateTagBuilder(BiomeTags.ALLOWS_SURFACE_SLIME_SPAWNS)
             .addTag(IS_SWAMP);
         
+        /* Surface Config Tags DEPRECATED, remove 1.20 */
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_IS_DESERT);
+        getOrCreateTagBuilder(SURFACE_CONFIG_IS_BADLANDS);
+        getOrCreateTagBuilder(SURFACE_CONFIG_IS_NETHER);
+        getOrCreateTagBuilder(SURFACE_CONFIG_IS_END);
+        
         /* Surface Config Tags */
         
-        getOrCreateTagBuilder(SURFACE_CONFIG_IS_DESERT).add(
-            ModernBetaBiomes.BETA_DESERT,
-            ModernBetaBiomes.PE_DESERT,
-            BiomeKeys.DESERT
-        );
+        getOrCreateTagBuilder(SURFACE_CONFIG_SAND)
+            .addTag(SURFACE_CONFIG_IS_DESERT)
+            .add(
+                ModernBetaBiomes.BETA_DESERT,
+                ModernBetaBiomes.PE_DESERT,
+                BiomeKeys.DESERT,
+                BiomeKeys.BEACH,
+                BiomeKeys.SNOWY_BEACH
+            );
+            
+        getOrCreateTagBuilder(SURFACE_CONFIG_RED_SAND);
         
-        getOrCreateTagBuilder(SURFACE_CONFIG_IS_BADLANDS).add(
-            BiomeKeys.BADLANDS,
-            BiomeKeys.ERODED_BADLANDS,
-            BiomeKeys.WOODED_BADLANDS
-        );
+        getOrCreateTagBuilder(SURFACE_CONFIG_BADLANDS)
+            .addTag(SURFACE_CONFIG_IS_BADLANDS)
+            .add(
+                BiomeKeys.BADLANDS,
+                BiomeKeys.ERODED_BADLANDS,
+                BiomeKeys.WOODED_BADLANDS
+            );
         
-        getOrCreateTagBuilder(SURFACE_CONFIG_IS_NETHER).add(
-            BiomeKeys.NETHER_WASTES,
-            BiomeKeys.SOUL_SAND_VALLEY,
-            BiomeKeys.CRIMSON_FOREST,
-            BiomeKeys.WARPED_FOREST,
-            BiomeKeys.BASALT_DELTAS
-        );
+        getOrCreateTagBuilder(SURFACE_CONFIG_NETHER)
+            .addTag(SURFACE_CONFIG_IS_NETHER)
+            .add(
+                BiomeKeys.NETHER_WASTES,
+                BiomeKeys.SOUL_SAND_VALLEY,
+                BiomeKeys.CRIMSON_FOREST,
+                BiomeKeys.WARPED_FOREST,
+                BiomeKeys.BASALT_DELTAS
+            );
         
-        getOrCreateTagBuilder(SURFACE_CONFIG_IS_END).add(
-            BiomeKeys.THE_END,
-            BiomeKeys.END_BARRENS,
-            BiomeKeys.END_HIGHLANDS,
-            BiomeKeys.END_MIDLANDS,
-            BiomeKeys.SMALL_END_ISLANDS
-        );
+        getOrCreateTagBuilder(SURFACE_CONFIG_END)
+            .addTag(SURFACE_CONFIG_IS_END)
+            .add(
+                BiomeKeys.THE_END,
+                BiomeKeys.END_BARRENS,
+                BiomeKeys.END_HIGHLANDS,
+                BiomeKeys.END_MIDLANDS,
+                BiomeKeys.SMALL_END_ISLANDS
+            );
     }
     
     private static TagKey<Biome> keyOf(String id) {

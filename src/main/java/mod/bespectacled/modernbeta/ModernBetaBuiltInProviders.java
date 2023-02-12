@@ -1,17 +1,17 @@
 package mod.bespectacled.modernbeta;
 
 import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
+import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
 import mod.bespectacled.modernbeta.api.world.chunk.noise.NoisePostProcessor;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderBeta;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderPE;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderSingle;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderVoronoi;
+import mod.bespectacled.modernbeta.world.blocksource.BlockSourceDeepslate;
 import mod.bespectacled.modernbeta.world.cavebiome.provider.CaveBiomeProviderNone;
 import mod.bespectacled.modernbeta.world.cavebiome.provider.CaveBiomeProviderSingle;
 import mod.bespectacled.modernbeta.world.cavebiome.provider.CaveBiomeProviderVoronoi;
-import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSource;
-import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSourceDeepslate;
 import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderAlpha;
 import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderBeta;
 import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderClassic030;
@@ -67,7 +67,8 @@ public class ModernBetaBuiltInProviders {
     
     public static void registerSurfaceConfigs() {
         ModernBetaRegistries.SURFACE_CONFIG.register(ModernBetaBuiltInTypes.DEFAULT_ID, SurfaceConfig.DEFAULT);
-        ModernBetaRegistries.SURFACE_CONFIG.register(ModernBetaBuiltInTypes.SurfaceConfig.DESERT.id, SurfaceConfig.DESERT);
+        ModernBetaRegistries.SURFACE_CONFIG.register(ModernBetaBuiltInTypes.SurfaceConfig.SAND.id, SurfaceConfig.SAND);
+        ModernBetaRegistries.SURFACE_CONFIG.register(ModernBetaBuiltInTypes.SurfaceConfig.RED_SAND.id, SurfaceConfig.RED_SAND);
         ModernBetaRegistries.SURFACE_CONFIG.register(ModernBetaBuiltInTypes.SurfaceConfig.BADLANDS.id, SurfaceConfig.BADLANDS);
         ModernBetaRegistries.SURFACE_CONFIG.register(ModernBetaBuiltInTypes.SurfaceConfig.NETHER.id, SurfaceConfig.NETHER);
         ModernBetaRegistries.SURFACE_CONFIG.register(ModernBetaBuiltInTypes.SurfaceConfig.THEEND.id, SurfaceConfig.THEEND);

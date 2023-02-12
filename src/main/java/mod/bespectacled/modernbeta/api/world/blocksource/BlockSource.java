@@ -1,4 +1,4 @@
-package mod.bespectacled.modernbeta.world.chunk.blocksource;
+package mod.bespectacled.modernbeta.api.world.blocksource;
 
 import net.minecraft.block.BlockState;
 

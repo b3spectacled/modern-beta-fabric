@@ -8,11 +8,11 @@ import org.apache.logging.log4j.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
+import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.world.spawn.SpawnLocatorIndev;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

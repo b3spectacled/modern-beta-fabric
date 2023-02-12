@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
+import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.mixin.MixinChunkGenerator;
 import mod.bespectacled.modernbeta.mixin.MixinPlacedFeatureAccessor;
@@ -13,9 +14,8 @@ import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
+import mod.bespectacled.modernbeta.world.blocksource.BlockSourceDeepslate;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSource;
-import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSourceDeepslate;
 import mod.bespectacled.modernbeta.world.feature.placement.NoiseBasedCountPlacementModifier;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.random.ChunkRandom;

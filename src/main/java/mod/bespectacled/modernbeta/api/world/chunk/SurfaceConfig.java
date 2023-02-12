@@ -14,7 +14,8 @@ import net.minecraft.world.biome.Biome;
 
 public record SurfaceConfig(BlockState topBlock, BlockState fillerBlock) {
     public static final SurfaceConfig DEFAULT = new SurfaceConfig(BlockStates.GRASS_BLOCK, BlockStates.DIRT);
-    public static final SurfaceConfig DESERT = new SurfaceConfig(BlockStates.SAND, BlockStates.SAND);
+    public static final SurfaceConfig SAND = new SurfaceConfig(BlockStates.SAND, BlockStates.SAND);
+    public static final SurfaceConfig RED_SAND = new SurfaceConfig(BlockStates.RED_SAND, BlockStates.RED_SAND);
     public static final SurfaceConfig BADLANDS = new SurfaceConfig(Blocks.RED_SAND.getDefaultState(), Blocks.WHITE_TERRACOTTA.getDefaultState());
     public static final SurfaceConfig NETHER = new SurfaceConfig(Blocks.NETHERRACK.getDefaultState(), Blocks.NETHERRACK.getDefaultState());
     public static final SurfaceConfig THEEND = new SurfaceConfig(Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState());

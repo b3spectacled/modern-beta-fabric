@@ -1,8 +1,8 @@
 package mod.bespectacled.modernbeta.api.world.chunk;
 
+import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
-import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSource;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

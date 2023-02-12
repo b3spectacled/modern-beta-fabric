@@ -1,5 +1,6 @@
-package mod.bespectacled.modernbeta.world.chunk.blocksource;
+package mod.bespectacled.modernbeta.world.blocksource;
 
+import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import net.minecraft.block.BlockState;
 import net.minecraft.registry.Registries;

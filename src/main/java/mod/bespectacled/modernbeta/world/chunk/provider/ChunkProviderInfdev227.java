@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoiseImitable;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
@@ -11,7 +12,6 @@ import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSource;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

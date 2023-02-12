@@ -10,6 +10,7 @@ import mod.bespectacled.modernbeta.util.noise.SimplexNoise;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -117,9 +118,14 @@ public class ChunkProviderSkylands extends ChunkProviderNoise {
                     chunk.setBlockState(pos, fillerBlock, false);
 
                     // Generates layer of sandstone starting at lowest block of sand, of height 1 to 4.
-                    if (runDepth == 0 && fillerBlock.isOf(BlockStates.SAND.getBlock())) {
+                    if (runDepth == 0 && fillerBlock.isOf(Blocks.SAND)) {
                         runDepth = rand.nextInt(4);
                         fillerBlock = BlockStates.SANDSTONE;
+                    }
+                    
+                    if (runDepth == 0 && fillerBlock.isOf(Blocks.RED_SAND)) {
+                        runDepth = rand.nextInt(4);
+                        fillerBlock = BlockStates.RED_SANDSTONE;
                     }
                 }
             }

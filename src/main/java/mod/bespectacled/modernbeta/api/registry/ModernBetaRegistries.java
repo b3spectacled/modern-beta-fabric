@@ -3,6 +3,7 @@ package mod.bespectacled.modernbeta.api.registry;
 import java.util.function.BiFunction;
 
 import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
+import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
@@ -10,7 +11,6 @@ import mod.bespectacled.modernbeta.api.world.chunk.noise.NoisePostProcessor;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import mod.bespectacled.modernbeta.util.function.TriFunction;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
-import mod.bespectacled.modernbeta.world.chunk.blocksource.BlockSource;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.util.math.random.RandomSplitter;

@@ -48,10 +48,11 @@ public final class ModernBetaBuiltInTypes {
     }
     
     public enum SurfaceConfig {
-        DESERT(ModernBetaBiomeTagProvider.SURFACE_CONFIG_IS_DESERT.id().toString()),
-        BADLANDS(ModernBetaBiomeTagProvider.SURFACE_CONFIG_IS_BADLANDS.id().toString()),
-        NETHER(ModernBetaBiomeTagProvider.SURFACE_CONFIG_IS_NETHER.id().toString()),
-        THEEND(ModernBetaBiomeTagProvider.SURFACE_CONFIG_IS_END.id().toString())
+        SAND(ModernBetaBiomeTagProvider.SURFACE_CONFIG_SAND.id().toString()),
+        RED_SAND(ModernBetaBiomeTagProvider.SURFACE_CONFIG_RED_SAND.id().toString()),
+        BADLANDS(ModernBetaBiomeTagProvider.SURFACE_CONFIG_BADLANDS.id().toString()),
+        NETHER(ModernBetaBiomeTagProvider.SURFACE_CONFIG_NETHER.id().toString()),
+        THEEND(ModernBetaBiomeTagProvider.SURFACE_CONFIG_END.id().toString())
         ;
         
         public final String id;

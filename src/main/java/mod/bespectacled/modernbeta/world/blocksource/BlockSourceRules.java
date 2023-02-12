@@ -1,8 +1,9 @@
-package mod.bespectacled.modernbeta.world.chunk.blocksource;
+package mod.bespectacled.modernbeta.world.blocksource;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import net.minecraft.block.BlockState;
 
