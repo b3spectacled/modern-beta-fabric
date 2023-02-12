@@ -79,7 +79,7 @@ public class SpawnLocatorBeta implements SpawnLocator {
             this.chunkProvider.getBiome(x >> 2, y >> 2, z >> 2, null);
         
         return
-            (biome.isIn(ModernBetaBiomeTagProvider.IS_DESERT) && y >= seaLevel) || 
+            (biome.isIn(ModernBetaBiomeTagProvider.SURFACE_CONFIG_SAND) && y >= seaLevel) || 
             (this.beachOctaveNoise.sample(x * eighth, z * eighth, 0.0) > 0.0 && y >= seaLevel && y <= seaLevel + 2);
     }
 
