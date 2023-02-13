@@ -2,11 +2,8 @@ package mod.bespectacled.modernbeta.world.biome.injector;
 
 import java.util.function.Predicate;
 
-import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
-import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
 import mod.bespectacled.modernbeta.mixin.MixinChunkSection;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
-import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
@@ -60,8 +57,6 @@ public class BiomeInjector {
         int startBiomeX = chunkPos.getStartX() >> 2;
         int startBiomeZ = chunkPos.getStartZ() >> 2;
         
-        ChunkProvider chunkProvider = this.modernBetaChunkGenerator.getChunkProvider();
-        
         /*
          * Collect the following for an x/z coordinate:
          * -> Height at local biome coordinate.
@@ -81,26 +76,11 @@ public class BiomeInjector {
                     int biomeX = localBiomeX + startBiomeX;
                     int biomeZ = localBiomeZ + startBiomeZ;
                     
-                    int x = (biomeX << 2) + 2;
-                    int z = (biomeZ << 2) + 2;
-                    
-                    int worldMinY = chunkProvider.getWorldMinY();
-                    int topHeight = chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
-                    int minHeight = this.sampleMinHeightAround(biomeX, biomeZ);
-                    
-                    BiomeInjectionContext context = new BiomeInjectionContext(
-                        worldMinY,
-                        topHeight,
-                        minHeight
-                    );
-                    
                     for (int localBiomeY = 0; localBiomeY < 4; ++localBiomeY) {
                         int biomeY = localBiomeY + yOffset;
-                        int y = (localBiomeY + yOffset) << 2;
+                        RegistryEntry<Biome> biome = this.sampleBiome(biomeX, biomeY, biomeZ, null);
                         
-                        context.setY(y);
-                        
-                        container.set(localBiomeX, localBiomeY, localBiomeZ, this.sample(context, biomeX, biomeY, biomeZ, null));
+                        container.set(localBiomeX, localBiomeY, localBiomeZ, biome);
                     }   
                 }
             }
@@ -109,27 +89,27 @@ public class BiomeInjector {
         }
     }
     
-    public RegistryEntry<Biome> getInjectedBiomeAtBlock(int x, int y, int z, MultiNoiseSampler noiseSampler) {
+    public RegistryEntry<Biome> sampleBiomeAtBlock(int x, int y, int z, MultiNoiseSampler noiseSampler) {
         int biomeX = x >> 2;
         int biomeY = y >> 2;
         int biomeZ = z >> 2;
         
-        return this.getInjectedBiome(biomeX, biomeY, biomeZ, noiseSampler);
+        return this.sampleBiome(biomeX, biomeY, biomeZ, noiseSampler);
     }
     
-    public RegistryEntry<Biome> getInjectedBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler) {
+    public RegistryEntry<Biome> sampleBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler) {
         int y = biomeY << 2;
         
-        int worldMinY = this.modernBetaChunkGenerator.getChunkProvider().getWorldMinY();
-        int topHeight = this.sampleCenteredHeight(biomeX, biomeZ);
-        int minHeight = this.sampleMinHeightAround(biomeX, biomeZ);
+        int worldMinY = this.modernBetaChunkGenerator.getMinimumY();
+        int topHeight = this.sampleTopHeight(biomeX, biomeZ);
+        int minHeight = this.sampleMinHeight(biomeX, biomeZ);
         
         BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, topHeight, minHeight).setY(y);
 
-        return this.sample(context, biomeX, biomeY, biomeZ, noiseSampler);
+        return this.sampleBiome(context, biomeX, biomeY, biomeZ, noiseSampler);
     }
     
-    private RegistryEntry<Biome> sample(BiomeInjectionContext context, int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler) {
+    private RegistryEntry<Biome> sampleBiome(BiomeInjectionContext context, int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler) {
         RegistryEntry<Biome> biome = this.rules.test(context, biomeX, biomeY, biomeZ);
         
         if (biome == null) {
@@ -139,27 +119,22 @@ public class BiomeInjector {
         return biome;
     }
     
-    private int sampleCenteredHeight(int biomeX, int biomeZ) {
-        // Offset by 2 to get center of biome coordinate section in block coordinates
+    private int sampleTopHeight(int biomeX, int biomeZ) {
         int x = (biomeX << 2) + 2;
         int z = (biomeZ << 2) + 2;
         
-        ChunkProvider chunkProvider = this.modernBetaChunkGenerator.getChunkProvider();
-        
-        return chunkProvider instanceof ChunkProviderNoise chunkProviderNoise ?
-            chunkProviderNoise.getHeight(x, z, ChunkHeightmap.Type.SURFACE_FLOOR) :
-            chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+        return this.modernBetaChunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
     }
     
-    private int sampleMinHeightAround(int centerBiomeX, int centerBiomeZ) {
+    private int sampleMinHeight(int centerBiomeX, int centerBiomeZ) {
         int minHeight = Integer.MAX_VALUE;
         
-        for (int areaBiomeX = -1; areaBiomeX <= 1; ++areaBiomeX) {
-            for (int areaBiomeZ = -1; areaBiomeZ <= 1; ++areaBiomeZ) {
-                int biomeX = centerBiomeX + areaBiomeX;
-                int biomeZ = centerBiomeZ + areaBiomeZ;
+        for (int localBiomeX = -1; localBiomeX <= 1; ++localBiomeX) {
+            for (int localBiomeZ = -1; localBiomeZ <= 1; ++localBiomeZ) {
+                int biomeX = centerBiomeX + localBiomeX;
+                int biomeZ = centerBiomeZ + localBiomeZ;
                 
-                minHeight = Math.min(minHeight, this.sampleCenteredHeight(biomeX, biomeZ));
+                minHeight = Math.min(minHeight, this.sampleTopHeight(biomeX, biomeZ));
             }
         }
         

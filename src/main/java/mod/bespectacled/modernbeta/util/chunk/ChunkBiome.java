@@ -3,8 +3,7 @@ package mod.bespectacled.modernbeta.util.chunk;
 import java.util.ArrayList;
 import java.util.List;
 
-import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
-import net.minecraft.data.client.BlockStateVariantMap.QuadFunction;
+import mod.bespectacled.modernbeta.util.function.TriFunction;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
@@ -12,7 +11,7 @@ public class ChunkBiome {
     private final BiomeSection biomeSections[];
     private final int worldMinY;
     
-    public ChunkBiome(int chunkX, int chunkZ, int worldMinY, int sections, QuadFunction<BiomeInjectionContext, Integer, Integer, Integer, RegistryEntry<Biome>> chunkFunc) {
+    public ChunkBiome(int chunkX, int chunkZ, int worldMinY, int sections, TriFunction<Integer, Integer, Integer, RegistryEntry<Biome>> chunkFunc) {
         this.biomeSections = new BiomeSection[sections];
         this.worldMinY = worldMinY;
         
@@ -22,14 +21,21 @@ public class ChunkBiome {
         int startBiomeX = startX >> 2;
         int startBiomeZ = startZ >> 2;
         
+        int minBiomeY = worldMinY >> 2;
+        
         for (int section = 0; section < sections; ++section) {
             BiomeSection biomeSection = new BiomeSection();
-
+            int biomeYOffset = section << 2;
+            
             int ndx = 0;
-            for (int biomeX = startBiomeX; biomeX < startBiomeX + 4; ++biomeX) {
-                for (int biomeZ = startBiomeZ; biomeZ < startBiomeZ + 4; ++biomeZ) {
-                    for (int biomeY = 0; biomeY < 4; ++biomeY) {
-                        biomeSection.setBiome(ndx++, chunkFunc.apply(null, biomeX, biomeY, biomeZ));
+            for (int localBiomeX = 0; localBiomeX <  4; ++localBiomeX) {
+                for (int localBiomeZ = 0; localBiomeZ < 4; ++localBiomeZ) {
+                    for (int localBiomeY = 0; localBiomeY < 4; ++localBiomeY) {
+                        int biomeX = startBiomeX + localBiomeX;
+                        int biomeZ = startBiomeZ + localBiomeZ;
+                        int biomeY = (minBiomeY + biomeYOffset) + localBiomeY;
+                        
+                        biomeSection.setBiome(ndx++, chunkFunc.apply(biomeX, biomeY, biomeZ));
                     }
                 }
             }
@@ -53,7 +59,7 @@ public class ChunkBiome {
         private final List<RegistryEntry<Biome>> biomes = new ArrayList<>(64);
         
         public void setBiome(int ndx, RegistryEntry<Biome> biome) {
-            this.biomes.set(ndx, biome);
+            this.biomes.add(ndx, biome);
         }
         
         public RegistryEntry<Biome> getBiome(int ndx) {
