@@ -12,7 +12,6 @@ import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
@@ -25,12 +24,10 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.biome.source.util.MultiNoiseUtil.MultiNoiseSampler;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.ProtoChunk;
@@ -58,9 +55,9 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
 
     private final RegistryEntry<ChunkGeneratorSettings> settings;
     private final NbtCompound chunkSettings;
+    private final BiomeInjector biomeInjector;
     
     private ChunkProvider chunkProvider;
-    private BiomeInjector biomeInjector;
     
     public ModernBetaChunkGenerator(
         BiomeSource biomeSource,
@@ -249,27 +246,6 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
     
     public BiomeInjector getBiomeInjector() {
         return this.biomeInjector;
-    }
-    
-    public RegistryEntry<Biome> getInjectedBiomeAtBlock(int x, int y, int z, MultiNoiseSampler noiseSampler) {
-        int biomeX = x >> 2;
-        int biomeY = y >> 2;
-        int biomeZ = z >> 2;
-        
-        return this.getInjectedBiome(biomeX, biomeY, biomeZ, noiseSampler);
-    }
-    
-    public RegistryEntry<Biome> getInjectedBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler) {
-        int y = biomeY << 2;
-        
-        int worldMinY = this.chunkProvider.getWorldMinY();
-        int topHeight = this.biomeInjector.getCenteredHeight(biomeX, biomeZ);
-        int minHeight = this.biomeInjector.sampleMinHeightAround(biomeX, biomeZ);
-        
-        BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, topHeight, minHeight).setY(y);
-        RegistryEntry<Biome> biome = this.biomeInjector.sample(context, biomeX, biomeY, biomeZ);
-        
-        return biome != null ? biome : this.getBiomeSource().getBiome(biomeX, biomeY, biomeZ, noiseSampler);
     }
 
     public static void register() {

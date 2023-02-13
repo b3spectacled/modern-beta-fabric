@@ -17,8 +17,6 @@ import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
 import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
-import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
-import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -44,9 +42,6 @@ public class MixinDebugHud {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        
-        int biomeX = x >> 2;
-        int biomeZ = z >> 2;
         
         IntegratedServer integratedServer = this.client.getServer();
         ServerWorld serverWorld = null;
@@ -111,6 +106,7 @@ public class MixinDebugHud {
                     );
                 }
 
+                /*
                 int worldMinY = modernBetaChunkGenerator.getMinimumY();
                 int minHeight = modernBetaChunkGenerator.getBiomeInjector().sampleMinHeightAround(biomeX, biomeZ);
                 BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, -1, minHeight).setY(y);
@@ -123,14 +119,17 @@ public class MixinDebugHud {
                         canPlaceCave
                     )
                 );
+                */
 
-                RegistryEntry<Biome> biome = modernBetaChunkGenerator.getInjectedBiomeAtBlock(x, y, z, null);
-                info.getReturnValue().add(
-                    String.format(
-                        "[Modern Beta] Injected biome: %s",
-                        biome.getKey().get().getValue().toString()
-                    )
-               );
+                if (modernBetaChunkGenerator.getBiomeInjector() != null) {
+                    RegistryEntry<Biome> biome = modernBetaChunkGenerator.getBiomeInjector().getInjectedBiomeAtBlock(x, y, z, null);
+                    info.getReturnValue().add(
+                        String.format(
+                            "[Modern Beta] Injected biome: %s",
+                            biome.getKey().get().getValue().toString()
+                        )
+                   );
+                }
             }
         }
     }

@@ -20,15 +20,17 @@ public class MixinStructure {
         BlockPos blockPos = result.position();
         
         if (context.chunkGenerator() instanceof ModernBetaChunkGenerator chunkGenerator) {
-            RegistryEntry<Biome> biome = chunkGenerator.getInjectedBiomeAtBlock(
-                blockPos.getX(),
-                blockPos.getY(),
-                blockPos.getZ(),
-                context.noiseConfig().getMultiNoiseSampler()
-            );
-            boolean isBiomeValid = context.biomePredicate().test(biome);
-            
-            info.setReturnValue(isBiomeValid);
+            if (chunkGenerator.getBiomeInjector() != null) {
+                RegistryEntry<Biome> biome = chunkGenerator.getBiomeInjector().getInjectedBiomeAtBlock(
+                    blockPos.getX(),
+                    blockPos.getY(),
+                    blockPos.getZ(),
+                    context.noiseConfig().getMultiNoiseSampler()
+                );
+                boolean isBiomeValid = context.biomePredicate().test(biome);
+                
+                info.setReturnValue(isBiomeValid);
+            }
         }
     }
 }

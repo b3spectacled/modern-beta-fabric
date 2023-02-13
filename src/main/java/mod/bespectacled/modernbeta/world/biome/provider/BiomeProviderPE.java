@@ -131,7 +131,7 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
             
             this.chunkCacheClimate = new ChunkCache<>(
                 "climate", 
-                1536,
+                ChunkCache.DEFAULT_SIZE,
                 true,
                 (chunkX, chunkZ) -> new ChunkClimate(chunkX, chunkZ, this::sampleClimateNoise)
             );

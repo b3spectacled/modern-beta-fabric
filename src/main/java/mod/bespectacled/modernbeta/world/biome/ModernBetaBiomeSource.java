@@ -133,7 +133,7 @@ public class ModernBetaBiomeSource extends BiomeSource {
                 int z = biomeZ << 2;
                 int y = this.chunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
                 
-                set.add(this.chunkGenerator.getInjectedBiomeAtBlock(x, y, z, noiseSampler));
+                set.add(this.chunkGenerator.getBiomeInjector().getInjectedBiomeAtBlock(x, y, z, noiseSampler));
             }
         }
         
@@ -169,7 +169,7 @@ public class ModernBetaBiomeSource extends BiomeSource {
             int biomeZ = BiomeCoords.fromBlock(z);
             
             for (int y : sections) {
-                RegistryEntry<Biome> biome = this.chunkGenerator.getInjectedBiome(biomeX, BiomeCoords.fromBlock(y), biomeZ, noiseSampler);
+                RegistryEntry<Biome> biome = this.chunkGenerator.getBiomeInjector().getInjectedBiome(biomeX, BiomeCoords.fromBlock(y), biomeZ, noiseSampler);
                 
                 if (!set.contains(biome)) continue;
                 

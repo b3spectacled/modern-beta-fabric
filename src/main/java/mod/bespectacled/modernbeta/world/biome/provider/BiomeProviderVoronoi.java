@@ -120,7 +120,7 @@ public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolver
             
             this.chunkCacheClimate = new ChunkCache<>(
                 "climate", 
-                1536, 
+                ChunkCache.DEFAULT_SIZE, 
                 true, 
                 (chunkX, chunkZ) -> new ChunkClimate(chunkX, chunkZ, this::sampleClimateNoise)
             );

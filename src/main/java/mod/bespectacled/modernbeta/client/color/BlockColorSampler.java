@@ -94,14 +94,6 @@ public final class BlockColorSampler {
         return BiomeColors.getFoliageColor(view, pos);
     }
     
-    public int getSugarCaneColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
-        if (this.sampleBiomeColor()) {
-            return 0xFFFFFF;
-        }
-        
-        return BiomeColors.getGrassColor(view, pos);
-    }
-    
     public int getWaterColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
         if (this.sampleWaterColor()) {
             int x = pos.getX();
@@ -113,6 +105,14 @@ public final class BlockColorSampler {
         }
         
         return BiomeColors.getWaterColor(view, pos);
+    }
+    
+    public int getSugarCaneColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
+        if (this.sampleBiomeColor()) {
+            return 0xFFFFFF;
+        }
+        
+        return BiomeColors.getGrassColor(view, pos);
     }
     
     public boolean sampleBiomeColor() {

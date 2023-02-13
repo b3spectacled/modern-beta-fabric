@@ -11,6 +11,8 @@ import net.minecraft.util.math.ChunkPos;
  * 
  */
 public class ChunkCache<T> {
+    public static final int DEFAULT_SIZE = 512;
+    
     @SuppressWarnings("unused")
     private final String name;
     private final int capacity;

@@ -137,7 +137,7 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
             
             this.chunkCacheClimate = new ChunkCache<>(
                 "climate", 
-                1536, 
+                ChunkCache.DEFAULT_SIZE, 
                 true, 
                 (chunkX, chunkZ) -> new ChunkClimate(chunkX, chunkZ, this::sampleClimateNoise)
             );
@@ -182,7 +182,7 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
             
             this.chunkCacheClimateSky = new ChunkCache<>(
                 "sky", 
-                256, 
+                ChunkCache.DEFAULT_SIZE, 
                 true, 
                 (chunkX, chunkZ) -> new ChunkClimateSky(chunkX, chunkZ, this::sampleSkyTempNoise)
             );
