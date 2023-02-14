@@ -115,7 +115,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         
         // Inject cave, ocean, etc. biomes
         if (this.biomeInjector != null) {
-            this.biomeInjector.injectBiomes(chunk);
+            this.biomeInjector.injectBiomes(chunk, noiseConfig.getMultiNoiseSampler());
         }
     }
     
@@ -232,6 +232,17 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         return this.chunkProvider.getSeaLevel();
     }
     
+    public ChunkNoiseSampler createChunkNoiseSampler(Chunk chunk, StructureAccessor world, Blender blender, NoiseConfig noiseConfig) {
+        return ChunkNoiseSampler.create(
+            chunk,
+            noiseConfig,
+            StructureWeightSampler.createStructureWeightSampler(world, chunk.getPos()),
+            this.settings.value(),
+            this.chunkProvider.getFluidLevelSampler(),
+            blender
+        );
+    }
+
     public RegistryEntry<ChunkGeneratorSettings> getGeneratorSettings() {
         return this.settings;
     }
@@ -248,23 +259,12 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         return this.biomeInjector;
     }
 
-    public static void register() {
-        Registry.register(net.minecraft.registry.Registries.CHUNK_GENERATOR, ModernBeta.createId(ModernBeta.MOD_ID), CODEC);
-    }
-
     @Override
     protected Codec<? extends ChunkGenerator> getCodec() {
         return ModernBetaChunkGenerator.CODEC;
     }
-    
-    public ChunkNoiseSampler createChunkNoiseSampler(Chunk chunk, StructureAccessor world, Blender blender, NoiseConfig noiseConfig) {
-        return ChunkNoiseSampler.create(
-            chunk,
-            noiseConfig,
-            StructureWeightSampler.createStructureWeightSampler(world, chunk.getPos()),
-            this.settings.value(),
-            this.chunkProvider.getFluidLevelSampler(),
-            blender
-        );
+
+    public static void register() {
+        Registry.register(net.minecraft.registry.Registries.CHUNK_GENERATOR, ModernBeta.createId(ModernBeta.MOD_ID), CODEC);
     }
 }

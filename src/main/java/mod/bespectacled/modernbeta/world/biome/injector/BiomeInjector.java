@@ -2,8 +2,11 @@ package mod.bespectacled.modernbeta.world.biome.injector;
 
 import java.util.function.Predicate;
 
+import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
+import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
 import mod.bespectacled.modernbeta.mixin.MixinChunkSection;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
+import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
@@ -22,9 +25,6 @@ public class BiomeInjector {
     
     public static final int CAVE_START_OFFSET = 8;
     
-    public static final Predicate<BiomeInjectionContext> CAVE_PREDICATE = context ->
-        context.getY() >= context.worldMinY && context.getY() + CAVE_START_OFFSET < context.minHeight;
-    
     private final ModernBetaChunkGenerator modernBetaChunkGenerator;
     private final ModernBetaBiomeSource modernBetaBiomeSource;
     
@@ -34,16 +34,17 @@ public class BiomeInjector {
         this.modernBetaChunkGenerator = modernBetaChunkGenerator;
         this.modernBetaBiomeSource = modernBetaBiomeSource;
         
-        boolean replaceOceanBiomes = new ModernBetaSettingsBiome.Builder(this.modernBetaBiomeSource.getBiomeSettings()).build().useOceanBiomes;
+        boolean useOceanBiomes = new ModernBetaSettingsBiome.Builder(this.modernBetaBiomeSource.getBiomeSettings()).build().useOceanBiomes;
         
+        Predicate<BiomeInjectionContext> cavePredicate = context -> context.getY() >= context.worldMinY && context.getY() + CAVE_START_OFFSET < context.minHeight;
         Predicate<BiomeInjectionContext> oceanPredicate = context -> this.atOceanDepth(context.topHeight, OCEAN_MIN_DEPTH);
         Predicate<BiomeInjectionContext> deepOceanPredicate = context -> this.atOceanDepth(context.topHeight, DEEP_OCEAN_MIN_DEPTH);
             
         BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder();
         
-        builder.add(CAVE_PREDICATE, this.modernBetaBiomeSource::getCaveBiome);
+        builder.add(cavePredicate, this.modernBetaBiomeSource::getCaveBiome);
         
-        if (replaceOceanBiomes) {
+        if (useOceanBiomes) {
             builder.add(deepOceanPredicate, this.modernBetaBiomeSource::getDeepOceanBiome);
             builder.add(oceanPredicate, this.modernBetaBiomeSource::getOceanBiome);
         }
@@ -51,7 +52,7 @@ public class BiomeInjector {
         this.rules = builder.build();
     }
     
-    public void injectBiomes(Chunk chunk) {
+    public void injectBiomes(Chunk chunk, MultiNoiseSampler noiseSampler) {
         ChunkPos chunkPos = chunk.getPos();
         
         int startBiomeX = chunkPos.getStartX() >> 2;
@@ -78,7 +79,7 @@ public class BiomeInjector {
                     
                     for (int localBiomeY = 0; localBiomeY < 4; ++localBiomeY) {
                         int biomeY = localBiomeY + yOffset;
-                        RegistryEntry<Biome> biome = this.sampleBiome(biomeX, biomeY, biomeZ, null);
+                        RegistryEntry<Biome> biome = this.sampleBiome(biomeX, biomeY, biomeZ, noiseSampler);
                         
                         container.set(localBiomeX, localBiomeY, localBiomeZ, biome);
                     }   
@@ -126,6 +127,17 @@ public class BiomeInjector {
         return this.modernBetaChunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
     }
     
+    private int sampleFloorHeight(int biomeX, int biomeZ) {
+        int x = (biomeX << 2) + 2;
+        int z = (biomeZ << 2) + 2;
+        
+        ChunkProvider chunkProvider = this.modernBetaChunkGenerator.getChunkProvider();
+        
+        return chunkProvider instanceof ChunkProviderNoise chunkProviderNoise ?
+            chunkProviderNoise.getHeight(x, z, ChunkHeightmap.Type.SURFACE_FLOOR) :
+            chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
+    }
+    
     private int sampleMinHeight(int centerBiomeX, int centerBiomeZ) {
         int minHeight = Integer.MAX_VALUE;
         
@@ -134,7 +146,7 @@ public class BiomeInjector {
                 int biomeX = centerBiomeX + localBiomeX;
                 int biomeZ = centerBiomeZ + localBiomeZ;
                 
-                minHeight = Math.min(minHeight, this.sampleTopHeight(biomeX, biomeZ));
+                minHeight = Math.min(minHeight, this.sampleFloorHeight(biomeX, biomeZ));
             }
         }
         

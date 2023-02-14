@@ -41,7 +41,7 @@ public class ModernBetaConfigRendering implements ConfigData {
         public boolean usePEBetaBiomeColor = false;
         
         @ConfigEntry.Gui.Tooltip(count = 3)
-        public boolean usePEBetaWaterBiomeColor = false;
+        public boolean usePEBetaWaterColor = false;
         
         @ConfigEntry.Gui.Tooltip(count = 2)
         public boolean useOldFogColor = true;
