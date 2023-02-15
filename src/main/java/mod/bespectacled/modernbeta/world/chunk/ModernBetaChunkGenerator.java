@@ -15,6 +15,7 @@ import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Util;
@@ -83,6 +84,8 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         this.chunkProvider = ModernBetaRegistries.CHUNK
             .get(chunkSettings.chunkProvider)
             .apply(this, seed);
+        
+        this.chunkProvider.initForestOctaveNoise();
     }
 
     @Override
@@ -265,6 +268,6 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
     }
 
     public static void register() {
-        Registry.register(net.minecraft.registry.Registries.CHUNK_GENERATOR, ModernBeta.createId(ModernBeta.MOD_ID), CODEC);
+        Registry.register(Registries.CHUNK_GENERATOR, ModernBeta.createId(ModernBeta.MOD_ID), CODEC);
     }
 }

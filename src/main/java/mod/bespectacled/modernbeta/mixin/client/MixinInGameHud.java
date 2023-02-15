@@ -17,10 +17,10 @@ import net.minecraft.client.util.math.MatrixStack;
 
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
-public class MixinInGameHud {
+public abstract class MixinInGameHud {
     @Shadow private MinecraftClient client;
     
-    @Unique private static final String VERSION;
+    @Unique private static final String MODERN_BETA_VERSION;
     
     @Inject(method = "render", at = @At("TAIL"))
     private void injectDebugVersion(MatrixStack matrices, float tickDelta, CallbackInfo info) {
@@ -31,10 +31,10 @@ public class MixinInGameHud {
     
     @Unique
     private void renderDebugVersion(MatrixStack matrices) {
-        this.client.textRenderer.drawWithShadow(matrices, VERSION, 2f, 2f, 0xFFFFFF);
+        this.client.textRenderer.drawWithShadow(matrices, MODERN_BETA_VERSION, 2f, 2f, 0xFFFFFF);
     }
     
     static {
-        VERSION = (Math.random() > 0.0001 ? "Minecraft " : "Minceraft ") + SharedConstants.getGameVersion().getName();
+        MODERN_BETA_VERSION = (Math.random() > 0.0001 ? "Minecraft " : "Minceraft ") + SharedConstants.getGameVersion().getName();
     }
 }

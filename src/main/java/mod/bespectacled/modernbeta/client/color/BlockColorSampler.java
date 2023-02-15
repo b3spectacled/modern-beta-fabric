@@ -17,6 +17,7 @@ public final class BlockColorSampler {
     public final BlockColorMap colorMapGrass;
     public final BlockColorMap colorMapFoliage;
     public final BlockColorMap colorMapWater;
+    public final BlockColorMap colorMapUnderwater;
     
     private Optional<ClimateSampler> climateSampler;
     
@@ -24,6 +25,7 @@ public final class BlockColorSampler {
         this.colorMapGrass = new BlockColorMap();
         this.colorMapFoliage = new BlockColorMap();
         this.colorMapWater = new BlockColorMap();
+        this.colorMapUnderwater = new BlockColorMap();
         
         this.climateSampler = Optional.empty();
     }
@@ -32,8 +34,8 @@ public final class BlockColorSampler {
         return this.climateSampler;
     }
     
-    public void setClimateSampler(Optional<ClimateSampler> climateSampler) {
-        this.climateSampler = climateSampler;
+    public void setClimateSampler(ClimateSampler climateSampler) {
+        this.climateSampler = Optional.ofNullable(climateSampler);
     }
     
     public int getGrassColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {

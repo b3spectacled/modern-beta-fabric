@@ -12,15 +12,15 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.registry.tag.TagKey;
 
-public class ModernBetaBlockTagProvider extends FabricTagProvider<Block> {
+public class ModernBetaTagProviderBlock extends FabricTagProvider<Block> {
     public static final TagKey<Block> OVERWORLD_CARVER_REPLACEABLES = keyOf("overworld_carver_replaceables");
     
-    public ModernBetaBlockTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public ModernBetaTagProviderBlock(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, RegistryKeys.BLOCK, registriesFuture);
     }
 
     @Override
-    protected void configure(WrapperLookup arg) {
+    protected void configure(WrapperLookup lookup) {
         getOrCreateTagBuilder(OVERWORLD_CARVER_REPLACEABLES).add(
             Blocks.STONE,
             Blocks.COBBLESTONE,

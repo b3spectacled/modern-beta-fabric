@@ -15,7 +15,7 @@ import net.minecraft.world.BlockRenderView;
 
 @Environment(EnvType.CLIENT)
 @Mixin(BiomeColors.class)
-public class MixinBiomeColors {
+public abstract class MixinBiomeColors {
     @Inject(method = "getWaterColor", at = @At("HEAD"), cancellable = true)
     private static void injectGetWaterColor(BlockRenderView world, BlockPos pos, CallbackInfoReturnable<Integer> info) {
         if (BlockColorSampler.INSTANCE.sampleWaterColor()) {

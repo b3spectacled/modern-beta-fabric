@@ -12,15 +12,15 @@ import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.registry.tag.WorldPresetTags;
 import net.minecraft.world.gen.WorldPreset;
 
-public class ModernBetaWorldPresetTagProvider extends FabricTagProvider<WorldPreset> {
+public class ModernBetaTagProviderWorldPreset extends FabricTagProvider<WorldPreset> {
     public static final RegistryKey<WorldPreset> MODERN_BETA = keyOf(ModernBeta.MOD_ID);
     
-    public ModernBetaWorldPresetTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public ModernBetaTagProviderWorldPreset(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, RegistryKeys.WORLD_PRESET, registriesFuture);
     }
 
     @Override
-    protected void configure(WrapperLookup arg) {
+    protected void configure(WrapperLookup lookup) {
         getOrCreateTagBuilder(WorldPresetTags.NORMAL)
             .add(MODERN_BETA);
     }

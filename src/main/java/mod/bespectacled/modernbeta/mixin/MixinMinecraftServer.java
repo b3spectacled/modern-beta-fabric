@@ -19,7 +19,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Mixin(MinecraftServer.class)
-public class MixinMinecraftServer {
+public abstract class MixinMinecraftServer {
     @Redirect(
         method = "setupSpawn", 
         at = @At(

@@ -28,4 +28,4 @@ bin/
 
 run/
 remappedSrc/
-src/main/generated
+src/main/generated/.cache/

@@ -79,7 +79,7 @@ public class BiomeInjector {
                     
                     for (int localBiomeY = 0; localBiomeY < 4; ++localBiomeY) {
                         int biomeY = localBiomeY + yOffset;
-                        RegistryEntry<Biome> biome = this.sampleBiome(biomeX, biomeY, biomeZ, noiseSampler);
+                        RegistryEntry<Biome> biome = this.getBiome(biomeX, biomeY, biomeZ, noiseSampler);
                         
                         container.set(localBiomeX, localBiomeY, localBiomeZ, biome);
                     }   
@@ -90,15 +90,15 @@ public class BiomeInjector {
         }
     }
     
-    public RegistryEntry<Biome> sampleBiomeAtBlock(int x, int y, int z, MultiNoiseSampler noiseSampler) {
+    public RegistryEntry<Biome> getBiomeAtBlock(int x, int y, int z, MultiNoiseSampler noiseSampler) {
         int biomeX = x >> 2;
         int biomeY = y >> 2;
         int biomeZ = z >> 2;
         
-        return this.sampleBiome(biomeX, biomeY, biomeZ, noiseSampler);
+        return this.getBiome(biomeX, biomeY, biomeZ, noiseSampler);
     }
     
-    public RegistryEntry<Biome> sampleBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler) {
+    public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler) {
         int y = biomeY << 2;
         
         int worldMinY = this.modernBetaChunkGenerator.getMinimumY();
@@ -107,10 +107,10 @@ public class BiomeInjector {
         
         BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, topHeight, minHeight).setY(y);
 
-        return this.sampleBiome(context, biomeX, biomeY, biomeZ, noiseSampler);
+        return this.getBiome(context, biomeX, biomeY, biomeZ, noiseSampler);
     }
     
-    private RegistryEntry<Biome> sampleBiome(BiomeInjectionContext context, int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler) {
+    private RegistryEntry<Biome> getBiome(BiomeInjectionContext context, int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler) {
         RegistryEntry<Biome> biome = this.rules.test(context, biomeX, biomeY, biomeZ);
         
         if (biome == null) {

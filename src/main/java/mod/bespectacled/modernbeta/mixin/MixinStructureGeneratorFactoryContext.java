@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.structure.StructureGeneratorFactory;
 
 @Mixin(StructureGeneratorFactory.Context.class)
-public class MixinStructureGeneratorFactoryContext {
+public abstract class MixinStructureGeneratorFactoryContext {
     /*
     @Shadow private ChunkGenerator comp_306;
     @Shadow private ChunkPos comp_309;

@@ -1,8 +1,5 @@
 package mod.bespectacled.modernbeta.util.chunk;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import mod.bespectacled.modernbeta.util.function.TriFunction;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
@@ -56,14 +53,15 @@ public class ChunkBiome {
     }
     
     private class BiomeSection {
-        private final List<RegistryEntry<Biome>> biomes = new ArrayList<>(64);
+        private final Object biomes[] = new Object[64];
         
         public void setBiome(int ndx, RegistryEntry<Biome> biome) {
-            this.biomes.add(ndx, biome);
+            this.biomes[ndx] = biome;
         }
         
+        @SuppressWarnings("unchecked")
         public RegistryEntry<Biome> getBiome(int ndx) {
-            return this.biomes.get(ndx);
+            return (RegistryEntry<Biome>)this.biomes[ndx];
         }
     }
 }

@@ -11,7 +11,7 @@ import net.minecraft.client.render.WorldRenderer;
 
 @Environment(EnvType.CLIENT)
 @Mixin(value = WorldRenderer.class, priority = 1)
-public class MixinWorldRenderer {
+public abstract class MixinWorldRenderer {
 	@ModifyVariable(
         method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V",
         at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/DimensionEffects;getFogColorOverride(FF)[F")

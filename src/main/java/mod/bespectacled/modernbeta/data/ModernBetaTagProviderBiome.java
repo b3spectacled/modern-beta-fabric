@@ -14,7 +14,7 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
-public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
+public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
     public static final TagKey<Biome> IS_MODERN_BETA = keyOf("is_modern_beta");
     public static final TagKey<Biome> IS_BETA = keyOf("is_beta");
     public static final TagKey<Biome> IS_PE = keyOf("is_pe");
@@ -50,12 +50,18 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
     public static final TagKey<Biome> SURFACE_CONFIG_NETHER = keyOf("surface_config/nether");
     public static final TagKey<Biome> SURFACE_CONFIG_END = keyOf("surface_config/end");
     
-    public ModernBetaBiomeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+    public ModernBetaTagProviderBiome(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, RegistryKeys.BIOME, registriesFuture);
     }
 
     @Override
-    protected void configure(WrapperLookup arg) {
+    protected void configure(WrapperLookup lookup) {
+        this.configureModernBeta(lookup);
+        this.configureVanilla(lookup);
+        this.configureConvention(lookup);
+    }
+    
+    private void configureModernBeta(WrapperLookup lookup) {
         /* Modern Beta Biome Tags */
         
         getOrCreateTagBuilder(IS_MODERN_BETA).add(
@@ -233,6 +239,55 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
             ModernBetaBiomes.PE_FROZEN_OCEAN
         );
         
+        /* Modern Beta Biome Structure Tags */
+        
+        getOrCreateTagBuilder(INDEV_STRONGHOLD_HAS_STRUCTURE)
+            .addTag(IS_INDEV);
+        
+        /* Modern Beta Surface Config Tags */
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_SAND)
+            .addOptionalTag(SURFACE_CONFIG_IS_DESERT)
+            .add(
+                ModernBetaBiomes.BETA_DESERT,
+                ModernBetaBiomes.PE_DESERT,
+                BiomeKeys.DESERT,
+                BiomeKeys.BEACH,
+                BiomeKeys.SNOWY_BEACH
+            );
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_RED_SAND);
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_BADLANDS)
+            .addOptionalTag(SURFACE_CONFIG_IS_BADLANDS)
+            .add(
+                BiomeKeys.BADLANDS,
+                BiomeKeys.ERODED_BADLANDS,
+                BiomeKeys.WOODED_BADLANDS
+            );
+    
+        getOrCreateTagBuilder(SURFACE_CONFIG_NETHER)
+            .addOptionalTag(SURFACE_CONFIG_IS_NETHER)
+            .add(
+                BiomeKeys.NETHER_WASTES,
+                BiomeKeys.SOUL_SAND_VALLEY,
+                BiomeKeys.CRIMSON_FOREST,
+                BiomeKeys.WARPED_FOREST,
+                BiomeKeys.BASALT_DELTAS
+            );
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_END)
+            .addOptionalTag(SURFACE_CONFIG_IS_END)
+            .add(
+                BiomeKeys.THE_END,
+                BiomeKeys.END_BARRENS,
+                BiomeKeys.END_HIGHLANDS,
+                BiomeKeys.END_MIDLANDS,
+                BiomeKeys.SMALL_END_ISLANDS
+            );
+    }
+    
+    private void configureVanilla(WrapperLookup lookup) {
         /* Vanilla Biome Tags */
         
         getOrCreateTagBuilder(BiomeTags.IS_OVERWORLD)
@@ -256,11 +311,6 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
         
         getOrCreateTagBuilder(BiomeTags.IS_TAIGA)
             .addTag(IS_TAIGA);
-        
-        /* Modern Beta Biome Structure Tags */
-        
-        getOrCreateTagBuilder(INDEV_STRONGHOLD_HAS_STRUCTURE)
-            .addTag(IS_INDEV);
         
         /* Vanilla Biome Structure Tags */
         
@@ -364,55 +414,9 @@ public class ModernBetaBiomeTagProvider extends FabricTagProvider<Biome> {
         
         getOrCreateTagBuilder(BiomeTags.ALLOWS_SURFACE_SLIME_SPAWNS)
             .addTag(IS_SWAMP);
-        
-        /* Surface Config Tags DEPRECATED, remove 1.20 */
-        
-        getOrCreateTagBuilder(SURFACE_CONFIG_IS_DESERT);
-        getOrCreateTagBuilder(SURFACE_CONFIG_IS_BADLANDS);
-        getOrCreateTagBuilder(SURFACE_CONFIG_IS_NETHER);
-        getOrCreateTagBuilder(SURFACE_CONFIG_IS_END);
-        
-        /* Surface Config Tags */
-        
-        getOrCreateTagBuilder(SURFACE_CONFIG_SAND)
-            .addTag(SURFACE_CONFIG_IS_DESERT)
-            .add(
-                ModernBetaBiomes.BETA_DESERT,
-                ModernBetaBiomes.PE_DESERT,
-                BiomeKeys.DESERT,
-                BiomeKeys.BEACH,
-                BiomeKeys.SNOWY_BEACH
-            );
-            
-        getOrCreateTagBuilder(SURFACE_CONFIG_RED_SAND);
-        
-        getOrCreateTagBuilder(SURFACE_CONFIG_BADLANDS)
-            .addTag(SURFACE_CONFIG_IS_BADLANDS)
-            .add(
-                BiomeKeys.BADLANDS,
-                BiomeKeys.ERODED_BADLANDS,
-                BiomeKeys.WOODED_BADLANDS
-            );
-        
-        getOrCreateTagBuilder(SURFACE_CONFIG_NETHER)
-            .addTag(SURFACE_CONFIG_IS_NETHER)
-            .add(
-                BiomeKeys.NETHER_WASTES,
-                BiomeKeys.SOUL_SAND_VALLEY,
-                BiomeKeys.CRIMSON_FOREST,
-                BiomeKeys.WARPED_FOREST,
-                BiomeKeys.BASALT_DELTAS
-            );
-        
-        getOrCreateTagBuilder(SURFACE_CONFIG_END)
-            .addTag(SURFACE_CONFIG_IS_END)
-            .add(
-                BiomeKeys.THE_END,
-                BiomeKeys.END_BARRENS,
-                BiomeKeys.END_HIGHLANDS,
-                BiomeKeys.END_MIDLANDS,
-                BiomeKeys.SMALL_END_ISLANDS
-            );
+    }
+    
+    private void configureConvention(WrapperLookup lookup) {
     }
     
     private static TagKey<Biome> keyOf(String id) {

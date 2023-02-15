@@ -85,10 +85,12 @@ public class ModernBeta implements ModInitializer {
             // Override default biome grass/foliage colors
             BlockColors.register();
 
-			// Load water colormap
-            ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(
-                new ModernBetaColormapResource("colormap/water.png", BlockColorSampler.INSTANCE.colorMapWater::setColorMap)
-            );
+			// Load colormaps
+            BlockColorSampler colorSampler = BlockColorSampler.INSTANCE;
+            ResourceManagerHelper resourceManager = ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES);
+            
+            resourceManager.registerReloadListener(new ModernBetaColormapResource("colormap/water.png", colorSampler.colorMapWater::setColorMap));
+            resourceManager.registerReloadListener(new ModernBetaColormapResource("colormap/underwater.png", colorSampler.colorMapUnderwater::setColorMap));
         }
         
         if (DEV_ENV) {

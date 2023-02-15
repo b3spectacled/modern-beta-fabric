@@ -11,13 +11,13 @@ import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.registry.tag.StructureTags;
 import net.minecraft.world.gen.structure.Structure;
 
-public class ModernBetaStructureTagProvider extends FabricTagProvider<Structure> {
-    public ModernBetaStructureTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+public class ModernBetaTagProviderStructure extends FabricTagProvider<Structure> {
+    public ModernBetaTagProviderStructure(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, RegistryKeys.STRUCTURE, registriesFuture);
     }
 
     @Override
-    protected void configure(WrapperLookup arg) {
+    protected void configure(WrapperLookup lookup) {
         getOrCreateTagBuilder(StructureTags.EYE_OF_ENDER_LOCATED)
             .add(ModernBetaStructures.INDEV_STRONGHOLD);
     }

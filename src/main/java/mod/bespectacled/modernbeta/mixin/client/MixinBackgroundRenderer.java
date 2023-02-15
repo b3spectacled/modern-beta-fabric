@@ -19,12 +19,32 @@ import net.minecraft.util.math.Vec3d;
 
 @Environment(EnvType.CLIENT)
 @Mixin(BackgroundRenderer.class)
-public class MixinBackgroundRenderer {
+public abstract class MixinBackgroundRenderer {
     @Unique private static final Vec3d OLD_FOG_COLOR = new Vec3d(0.753F, 0.847F, 1.0F);
     
-    @Unique private static int capturedRenderDistance = 16;
-    @Unique private static float oldFogWeight = calculateFogWeight(16);
-    @Unique private static boolean isOldWorld = false;
+    @Unique private static int modernBeta_renderDistance = 16;
+    @Unique private static float modernBeta_fogWeight = calculateFogWeight(16);
+    @Unique private static boolean modernBeta_isModernBetaWorld = false;
+    
+    /*
+    @Redirect(
+        method = "render",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/biome/Biome;getWaterFogColor()I"
+        )
+    )
+    private static int proxyWaterFogColor(Biome biome, Camera camera, float tickDelta, ClientWorld world, int viewDistance, float skyDarkness) {
+        if (BlockColorSampler.INSTANCE.sampleWaterColor()) {
+            Vec3d pos = camera.getPos();
+            Clime clime = BlockColorSampler.INSTANCE.getClimateSampler().get().sample((int)pos.getX(), (int)pos.getZ());
+            
+            return BlockColorSampler.INSTANCE.colorMapUnderwater.getColor(clime.temp(), clime.rain());
+        }
+        
+        return biome.getWaterFogColor();
+    }
+    */
     
     @ModifyVariable(
         method = "render",
@@ -36,14 +56,14 @@ public class MixinBackgroundRenderer {
     
     @Inject(method = "render", at = @At("HEAD"))
     private static void captureVars(Camera camera, float tickDelta, ClientWorld world, int renderDistance, float skyDarkness, CallbackInfo info) {
-        if (capturedRenderDistance != renderDistance) {
-            capturedRenderDistance = renderDistance;
-            oldFogWeight = calculateFogWeight(renderDistance);
+        if (modernBeta_renderDistance != renderDistance) {
+            modernBeta_renderDistance = renderDistance;
+            modernBeta_fogWeight = calculateFogWeight(renderDistance);
         }
         
         // Track whether current client world is Modern Beta world,
         // old fog weighting won't be used if not.
-        isOldWorld = world instanceof ModernBetaClientWorld clientWorld ? clientWorld.isModernBetaWorld() : false;
+        modernBeta_isModernBetaWorld = ((ModernBetaClientWorld)world).isModernBetaWorld();
     }
     
     @ModifyVariable(
@@ -55,7 +75,7 @@ public class MixinBackgroundRenderer {
         index = 7
     )
     private static float modifyFogWeighting(float weight) {
-        return isOldWorld && ModernBeta.RENDER_CONFIG.configBiomeColor.useOldFogColor ? oldFogWeight : weight;
+        return modernBeta_isModernBetaWorld && ModernBeta.RENDER_CONFIG.configBiomeColor.useOldFogColor ? modernBeta_fogWeight : weight;
     }
     
     @Unique

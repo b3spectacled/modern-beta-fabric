@@ -1,7 +1,7 @@
 package mod.bespectacled.modernbeta.world.carver.configured;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.data.ModernBetaBlockTagProvider;
+import mod.bespectacled.modernbeta.data.ModernBetaTagProviderBlock;
 import mod.bespectacled.modernbeta.world.carver.ModernBetaCarvers;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -31,7 +31,7 @@ public class ModernBetaConfiguredCarvers {
             ConstantFloatProvider.create(0.5f), // Y scale, for large cave case(?)
             YOffset.aboveBottom(10), // Lava Level
             CarverDebugConfig.create(false, Blocks.CRIMSON_BUTTON.getDefaultState()),
-            registryBlock.getOrThrow(ModernBetaBlockTagProvider.OVERWORLD_CARVER_REPLACEABLES),
+            registryBlock.getOrThrow(ModernBetaTagProviderBlock.OVERWORLD_CARVER_REPLACEABLES),
             ConstantFloatProvider.create(1.0f), // Tunnel horizontal scale
             ConstantFloatProvider.create(1.0f), // Tunnel vertical scale
             ConstantFloatProvider.create(-0.69999999999999996f) // Y Floor Level
@@ -43,7 +43,7 @@ public class ModernBetaConfiguredCarvers {
             ConstantFloatProvider.create(0.5f), // Y scale, for large cave case(?)
             YOffset.aboveBottom(10), // Lava Level
             CarverDebugConfig.create(false, Blocks.CRIMSON_BUTTON.getDefaultState()),
-            registryBlock.getOrThrow(ModernBetaBlockTagProvider.OVERWORLD_CARVER_REPLACEABLES),
+            registryBlock.getOrThrow(ModernBetaTagProviderBlock.OVERWORLD_CARVER_REPLACEABLES),
             ConstantFloatProvider.create(1.0f), // Tunnel horizontal scale
             ConstantFloatProvider.create(1.0f), // Tunnel vertical scale
             ConstantFloatProvider.create(-0.69999999999999996f) // Y Floor Level

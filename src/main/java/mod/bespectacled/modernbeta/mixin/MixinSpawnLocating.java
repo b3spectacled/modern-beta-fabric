@@ -13,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Mixin(SpawnLocating.class)
-public class MixinSpawnLocating {
+public abstract class MixinSpawnLocating {
     /*
      * Override vanilla behavior of moving player to highest solid block, 
      * even after finding initial spawn point.

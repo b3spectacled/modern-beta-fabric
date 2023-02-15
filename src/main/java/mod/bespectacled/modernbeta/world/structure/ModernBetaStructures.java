@@ -3,7 +3,7 @@ package mod.bespectacled.modernbeta.world.structure;
 import java.util.Map;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.data.ModernBetaBiomeTagProvider;
+import mod.bespectacled.modernbeta.data.ModernBetaTagProviderBiome;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryEntryLookup;
@@ -25,7 +25,7 @@ public class ModernBetaStructures {
         
         structureRegisterable.register(
             INDEV_STRONGHOLD,
-            new StrongholdStructure(createConfig(registryBiome.getOrThrow(ModernBetaBiomeTagProvider.INDEV_STRONGHOLD_HAS_STRUCTURE), StructureTerrainAdaptation.BURY))
+            new StrongholdStructure(createConfig(registryBiome.getOrThrow(ModernBetaTagProviderBiome.INDEV_STRONGHOLD_HAS_STRUCTURE), StructureTerrainAdaptation.BURY))
         );
     }
     

@@ -33,7 +33,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Environment(EnvType.CLIENT)
 @Mixin(DebugHud.class)
-public class MixinDebugHud {
+public abstract class MixinDebugHud {
     @Shadow private MinecraftClient client;
     
     @Inject(method = "getLeftText", at = @At("TAIL"))
@@ -122,7 +122,7 @@ public class MixinDebugHud {
                 */
 
                 if (modernBetaChunkGenerator.getBiomeInjector() != null) {
-                    RegistryEntry<Biome> biome = modernBetaChunkGenerator.getBiomeInjector().sampleBiomeAtBlock(x, y, z, null);
+                    RegistryEntry<Biome> biome = modernBetaChunkGenerator.getBiomeInjector().getBiomeAtBlock(x, y, z, null);
                     info.getReturnValue().add(
                         String.format(
                             "[Modern Beta] Injected biome: %s",

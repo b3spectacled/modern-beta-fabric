@@ -22,6 +22,7 @@ import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsCaveBiome;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKeys;
@@ -133,7 +134,7 @@ public class ModernBetaBiomeSource extends BiomeSource {
                 int z = biomeZ << 2;
                 int y = this.chunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
                 
-                set.add(this.chunkGenerator.getBiomeInjector().sampleBiomeAtBlock(x, y, z, noiseSampler));
+                set.add(this.chunkGenerator.getBiomeInjector().getBiomeAtBlock(x, y, z, noiseSampler));
             }
         }
         
@@ -169,7 +170,7 @@ public class ModernBetaBiomeSource extends BiomeSource {
             int biomeZ = BiomeCoords.fromBlock(z);
             
             for (int y : sections) {
-                RegistryEntry<Biome> biome = this.chunkGenerator.getBiomeInjector().sampleBiome(biomeX, BiomeCoords.fromBlock(y), biomeZ, noiseSampler);
+                RegistryEntry<Biome> biome = this.chunkGenerator.getBiomeInjector().getBiome(biomeX, BiomeCoords.fromBlock(y), biomeZ, noiseSampler);
                 
                 if (!set.contains(biome)) continue;
                 
@@ -233,7 +234,7 @@ public class ModernBetaBiomeSource extends BiomeSource {
     }
     
     public static void register() {
-        Registry.register(net.minecraft.registry.Registries.BIOME_SOURCE, ModernBeta.createId(ModernBeta.MOD_ID), CODEC);
+        Registry.register(Registries.BIOME_SOURCE, ModernBeta.createId(ModernBeta.MOD_ID), CODEC);
     }
 
     @Override

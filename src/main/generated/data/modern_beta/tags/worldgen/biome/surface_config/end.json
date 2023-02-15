@@ -1,7 +1,10 @@
 {
   "replace": false,
   "values": [
-    "#modern_beta:surface_config/is_end",
+    {
+      "id": "#modern_beta:surface_config/is_end",
+      "required": false
+    },
     "minecraft:the_end",
     "minecraft:end_barrens",
     "minecraft:end_highlands",

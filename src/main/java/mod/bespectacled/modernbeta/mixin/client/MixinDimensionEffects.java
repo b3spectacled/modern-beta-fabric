@@ -12,7 +12,7 @@ import net.minecraft.client.render.DimensionEffects;
 
 @Environment(EnvType.CLIENT)
 @Mixin(DimensionEffects.class)
-public class MixinDimensionEffects {
+public abstract class MixinDimensionEffects {
     @Inject(method = "getCloudsHeight", at = @At("HEAD"), cancellable = true)
     public void injectCloudsHeight(CallbackInfoReturnable<Float> info) {
         DimensionEffects dimensionEffects = (DimensionEffects)(Object)this;

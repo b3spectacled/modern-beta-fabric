@@ -14,14 +14,14 @@ import net.minecraft.world.gen.structure.Structure.Context;
 import net.minecraft.world.gen.structure.Structure.StructurePosition;
 
 @Mixin(Structure.class)
-public class MixinStructure {
+public abstract class MixinStructure {
     @Inject(method = "isBiomeValid", at = @At("HEAD"), cancellable = true)
     private static void injectIsBiomeValid(StructurePosition result, Context context, CallbackInfoReturnable<Boolean> info) {
         BlockPos blockPos = result.position();
         
         if (context.chunkGenerator() instanceof ModernBetaChunkGenerator chunkGenerator) {
             if (chunkGenerator.getBiomeInjector() != null) {
-                RegistryEntry<Biome> biome = chunkGenerator.getBiomeInjector().sampleBiomeAtBlock(
+                RegistryEntry<Biome> biome = chunkGenerator.getBiomeInjector().getBiomeAtBlock(
                     blockPos.getX(),
                     blockPos.getY(),
                     blockPos.getZ(),

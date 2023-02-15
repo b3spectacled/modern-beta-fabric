@@ -1,6 +1,5 @@
 package mod.bespectacled.modernbeta.mixin.client;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,6 +30,7 @@ import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
@@ -44,22 +44,22 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 public abstract class MixinClientWorld implements ModernBetaClientWorld {
     @Shadow private MinecraftClient client;
     
-    @Unique private Vec3d capturedPos;
-    @Unique private Optional<ClimateSampler> climateSampler;
-    @Unique private Optional<ClimateSamplerSky> climateSamplerSky;
-    @Unique private boolean isModernBetaWorld;
+    @Unique private Vec3d modernBeta_pos;
+    @Unique private ClimateSampler modernBeta_climateSampler;
+    @Unique private ClimateSamplerSky modernBeta_climateSamplerSky;
+    @Unique private boolean modernBeta_isModernBetaWorld;
     
     @Override
     public boolean isModernBetaWorld() {
-        return this.isModernBetaWorld;
+        return this.modernBeta_isModernBetaWorld;
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(
-        ClientPlayNetworkHandler netHandler,
+        ClientPlayNetworkHandler networkHandler,
         ClientWorld.Properties properties,
-        RegistryKey<World> registryRef,
-        RegistryEntry<DimensionType> dimensionType,
+        RegistryKey<World> registryKeyWorld,
+        RegistryEntry<DimensionType> registryEntryDimensionType,
         int loadDistance,
         int simulationDistance,
         Supplier<Profiler> profiler,
@@ -72,44 +72,40 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         boolean useFixedSeed = ModernBeta.RENDER_CONFIG.configFixedSeed.useFixedSeed;
         
         // Init with default values
-        this.climateSampler = Optional.ofNullable(useFixedSeed ? 
-            new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null, worldSeed) : 
-            null
-        );
-        this.climateSamplerSky = Optional.ofNullable(useFixedSeed ? 
-            new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null, worldSeed) : 
-            null
-        );
-        
-        this.isModernBetaWorld = false;
+        BiomeProviderBeta biomeProviderBeta = new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null, worldSeed);
+        this.modernBeta_climateSampler = useFixedSeed ?  biomeProviderBeta : null;
+        this.modernBeta_climateSamplerSky = useFixedSeed ? biomeProviderBeta : null;
+        this.modernBeta_isModernBetaWorld = false;
         
         // Server check
-        if (this.client.getServer() != null && registryRef != null) {
-            ChunkGenerator chunkGenerator = this.client.getServer().getWorld(registryRef).getChunkManager().getChunkGenerator();
+        if (this.client.getServer() != null && registryKeyWorld != null) {
+            ServerWorld serverWorld = this.client.getServer().getWorld(registryKeyWorld);
+            
+            ChunkGenerator chunkGenerator = serverWorld.getChunkManager().getChunkGenerator();
             BiomeSource biomeSource = chunkGenerator.getBiomeSource();
             
-            worldSeed = this.client.getServer().getWorld(registryRef).getSeed();
+            worldSeed = serverWorld.getSeed();
             
-            if (biomeSource instanceof ModernBetaBiomeSource oldBiomeSource) {
-                BiomeProvider biomeProvider = oldBiomeSource.getBiomeProvider();
+            if (biomeSource instanceof ModernBetaBiomeSource modernBetaSource) {
+                BiomeProvider biomeProvider = modernBetaSource.getBiomeProvider();
                 
                 if (biomeProvider instanceof ClimateSampler climateSampler)
-                    this.climateSampler = Optional.ofNullable(climateSampler);
+                    this.modernBeta_climateSampler = climateSampler;
                 
                 if (biomeProvider instanceof ClimateSamplerSky skyClimateSampler)
-                    this.climateSamplerSky = Optional.ofNullable(skyClimateSampler);
+                    this.modernBeta_climateSamplerSky = skyClimateSampler;
             }
             
-            this.isModernBetaWorld = chunkGenerator instanceof ModernBetaChunkGenerator || biomeSource instanceof ModernBetaBiomeSource;
+            this.modernBeta_isModernBetaWorld = chunkGenerator instanceof ModernBetaChunkGenerator || biomeSource instanceof ModernBetaBiomeSource;
         }
         
         // Set climate sampler
-        BlockColorSampler.INSTANCE.setClimateSampler(this.climateSampler);
+        BlockColorSampler.INSTANCE.setClimateSampler(this.modernBeta_climateSampler);
     }
     
     @Inject(method = "getSkyColor", at = @At("HEAD"))
     private void capturePos(Vec3d cameraPos, float tickDelta, CallbackInfoReturnable<Vec3d> info) {
-        this.capturedPos = cameraPos;
+        this.modernBeta_pos = cameraPos;
     }
     
     @ModifyVariable(
@@ -121,11 +117,11 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         index = 6  
     )
     private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
-        if (this.climateSamplerSky.isPresent() && this.climateSamplerSky.get().useSkyColor()) {
-            int x = (int)capturedPos.getX();
-            int z = (int)capturedPos.getZ();
+        if (this.modernBeta_climateSamplerSky != null && this.modernBeta_climateSamplerSky.useSkyColor()) {
+            int x = (int)modernBeta_pos.getX();
+            int z = (int)modernBeta_pos.getZ();
             
-            float temp = (float)this.climateSamplerSky.get().sampleSky(x, z);
+            float temp = (float)this.modernBeta_climateSamplerSky.sampleSky(x, z);
             temp /= 3F;
             temp = MathHelper.clamp(temp, -1F, 1F);
             

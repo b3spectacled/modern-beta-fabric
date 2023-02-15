@@ -1,6 +1,6 @@
 package mod.bespectacled.modernbeta;
 
-import mod.bespectacled.modernbeta.data.ModernBetaBiomeTagProvider;
+import mod.bespectacled.modernbeta.data.ModernBetaTagProviderBiome;
 
 public final class ModernBetaBuiltInTypes {
     public static final String DEFAULT_ID = "default";
@@ -48,11 +48,11 @@ public final class ModernBetaBuiltInTypes {
     }
     
     public enum SurfaceConfig {
-        SAND(ModernBetaBiomeTagProvider.SURFACE_CONFIG_SAND.id().toString()),
-        RED_SAND(ModernBetaBiomeTagProvider.SURFACE_CONFIG_RED_SAND.id().toString()),
-        BADLANDS(ModernBetaBiomeTagProvider.SURFACE_CONFIG_BADLANDS.id().toString()),
-        NETHER(ModernBetaBiomeTagProvider.SURFACE_CONFIG_NETHER.id().toString()),
-        THEEND(ModernBetaBiomeTagProvider.SURFACE_CONFIG_END.id().toString())
+        SAND(ModernBetaTagProviderBiome.SURFACE_CONFIG_SAND.id().toString()),
+        RED_SAND(ModernBetaTagProviderBiome.SURFACE_CONFIG_RED_SAND.id().toString()),
+        BADLANDS(ModernBetaTagProviderBiome.SURFACE_CONFIG_BADLANDS.id().toString()),
+        NETHER(ModernBetaTagProviderBiome.SURFACE_CONFIG_NETHER.id().toString()),
+        THEEND(ModernBetaTagProviderBiome.SURFACE_CONFIG_END.id().toString())
         ;
         
         public final String id;
