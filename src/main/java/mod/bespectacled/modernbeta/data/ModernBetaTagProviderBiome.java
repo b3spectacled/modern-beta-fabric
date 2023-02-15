@@ -59,7 +59,7 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
     protected void configure(WrapperLookup lookup) {
         this.configureModernBeta(lookup);
         this.configureVanilla(lookup);
-        this.configureConvention(lookup);
+        this.configureConventional(lookup);
     }
     
     private void configureModernBeta(WrapperLookup lookup) {
@@ -418,7 +418,7 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
      * https://www.minecraftforum.net/forums/archive/alpha/alpha-survival-single-player/820956-biome-geography-algorithm-analysis-updated-11-4
      * 
      */
-    private void configureConvention(WrapperLookup lookup) {
+    private void configureConventional(WrapperLookup lookup) {
         getOrCreateTagBuilder(ConventionalBiomeTags.AQUATIC)
             .addTag(IS_OCEAN);
         

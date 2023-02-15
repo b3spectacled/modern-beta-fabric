@@ -8,6 +8,9 @@ import net.fabricmc.loader.api.FabricLoader;
 public class Compat {
     public static void setupCompat() {
         try {
+            if (isLoaded("colormatic")) {
+                ModernBeta.log(Level.WARN, "Colormatic found. Colormatic is currently not supported.");
+            }
             
         } catch (Exception e) {
             ModernBeta.log(Level.ERROR, "Something went wrong when attempting to add mod compatibility!");

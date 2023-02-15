@@ -8,6 +8,8 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mod.bespectacled.modernbeta.ModernBeta;
+import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
+import mod.bespectacled.modernbeta.client.color.BlockColorSampler;
 import mod.bespectacled.modernbeta.util.ModernBetaClientWorld;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,31 +22,36 @@ import net.minecraft.util.math.Vec3d;
 @Environment(EnvType.CLIENT)
 @Mixin(BackgroundRenderer.class)
 public abstract class MixinBackgroundRenderer {
-    @Unique private static final Vec3d OLD_FOG_COLOR = new Vec3d(0.753F, 0.847F, 1.0F);
-    
+    @Unique private static Vec3d modernBeta_pos;
     @Unique private static int modernBeta_renderDistance = 16;
     @Unique private static float modernBeta_fogWeight = calculateFogWeight(16);
     @Unique private static boolean modernBeta_isModernBetaWorld = false;
     
-    /*
-    @Redirect(
+    @Inject(method = "render", at = @At("HEAD"))
+    private static void capturePos(Camera camera, float tickDelta, ClientWorld world, int viewDistance, float skyDarkness, CallbackInfo info) {
+        modernBeta_pos = camera.getPos();
+    }
+    
+    @ModifyVariable(
         method = "render",
         at = @At(
-            value = "INVOKE",
+            value = "INVOKE_ASSIGN",  
             target = "Lnet/minecraft/world/biome/Biome;getWaterFogColor()I"
-        )
+        ),
+        ordinal = 1
     )
-    private static int proxyWaterFogColor(Biome biome, Camera camera, float tickDelta, ClientWorld world, int viewDistance, float skyDarkness) {
+    private static int modifyWaterFogColor(int waterFogColor) {
         if (BlockColorSampler.INSTANCE.sampleWaterColor()) {
-            Vec3d pos = camera.getPos();
-            Clime clime = BlockColorSampler.INSTANCE.getClimateSampler().get().sample((int)pos.getX(), (int)pos.getZ());
+            int x = (int)modernBeta_pos.getX();
+            int z = (int)modernBeta_pos.getZ();
+            
+            Clime clime = BlockColorSampler.INSTANCE.getClimateSampler().get().sample(x, z);
             
             return BlockColorSampler.INSTANCE.colorMapUnderwater.getColor(clime.temp(), clime.rain());
         }
         
-        return biome.getWaterFogColor();
+        return waterFogColor;
     }
-    */
     
     @ModifyVariable(
         method = "render",
