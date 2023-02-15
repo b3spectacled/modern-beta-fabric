@@ -6,6 +6,7 @@ import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
@@ -190,7 +191,6 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
         getOrCreateTagBuilder(IS_DESERT).add(
             ModernBetaBiomes.BETA_DESERT,
             ModernBetaBiomes.PE_DESERT
-            
         );
         
         getOrCreateTagBuilder(IS_PLAINS).add(
@@ -238,7 +238,7 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             ModernBetaBiomes.PE_COLD_OCEAN,
             ModernBetaBiomes.PE_FROZEN_OCEAN
         );
-        
+
         /* Modern Beta Biome Structure Tags */
         
         getOrCreateTagBuilder(INDEV_STRONGHOLD_HAS_STRUCTURE)
@@ -298,10 +298,7 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
         
         getOrCreateTagBuilder(BiomeTags.IS_FOREST)
             .addTag(IS_FOREST)
-            .addTag(IS_SEASONAL_FOREST)
-            .addTag(IS_ALPHA)
-            .addTag(IS_INFDEV)
-            .addTag(IS_INDEV);
+            .addTag(IS_SEASONAL_FOREST);
         
         getOrCreateTagBuilder(BiomeTags.IS_JUNGLE)
             .addTag(IS_RAINFOREST);
@@ -416,7 +413,109 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             .addTag(IS_SWAMP);
     }
     
+    /*
+     * For determining climate tags, see:
+     * https://www.minecraftforum.net/forums/archive/alpha/alpha-survival-single-player/820956-biome-geography-algorithm-analysis-updated-11-4
+     * 
+     */
     private void configureConvention(WrapperLookup lookup) {
+        getOrCreateTagBuilder(ConventionalBiomeTags.AQUATIC)
+            .addTag(IS_OCEAN);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.AQUATIC_ICY).add(
+            ModernBetaBiomes.BETA_FROZEN_OCEAN,
+            ModernBetaBiomes.PE_FROZEN_OCEAN
+        );
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.CLIMATE_COLD)
+            .addTag(IS_TAIGA)
+            .addTag(IS_TUNDRA);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.CLIMATE_DRY)
+            .addTag(IS_DESERT)
+            .addTag(IS_PLAINS)
+            .addTag(IS_SAVANNA)
+            .addTag(IS_SHRUBLAND)
+            .addTag(IS_TUNDRA);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.CLIMATE_HOT)
+            .addTag(IS_DESERT)
+            .addTag(IS_PLAINS)
+            .addTag(IS_SEASONAL_FOREST)
+            .addTag(IS_RAINFOREST);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.CLIMATE_TEMPERATE)
+            .addTag(IS_SAVANNA)
+            .addTag(IS_SHRUBLAND)
+            .addTag(IS_FOREST)
+            .addTag(IS_SWAMP);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.CLIMATE_WET)
+            .addTag(IS_OCEAN)
+            .addTag(IS_SWAMP)
+            .addTag(IS_RAINFOREST);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.DESERT)
+            .addTag(IS_DESERT);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.FOREST)
+            .addTag(IS_FOREST)
+            .addTag(IS_SEASONAL_FOREST);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.IN_OVERWORLD)
+            .addTag(IS_MODERN_BETA);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.JUNGLE)
+            .addTag(IS_RAINFOREST);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.DEEP_OCEAN)
+            .addTag(IS_OCEAN);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.PLAINS)
+            .addTag(IS_PLAINS)
+            .addTag(IS_SHRUBLAND);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.SAVANNA)
+            .addTag(IS_SAVANNA);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.SHALLOW_OCEAN)
+            .addTag(IS_OCEAN);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.SNOWY)
+            .addTag(IS_TAIGA)
+            .addTag(IS_TUNDRA);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.SNOWY_PLAINS)
+            .addTag(IS_TUNDRA);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.SWAMP)
+            .addTag(IS_SWAMP);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.TAIGA)
+            .addTag(IS_TAIGA);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.TREE_CONIFEROUS)
+            .addTag(IS_TAIGA);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.TREE_DECIDUOUS)
+            .addTag(IS_FOREST)
+            .addTag(IS_SEASONAL_FOREST);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.TREE_JUNGLE)
+            .addTag(IS_RAINFOREST);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.TREE_SAVANNA)
+            .addTag(IS_SAVANNA);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.VEGETATION_DENSE)
+            .addTag(IS_RAINFOREST)
+            .addTag(IS_PLAINS);
+        
+        getOrCreateTagBuilder(ConventionalBiomeTags.VEGETATION_SPARSE)
+            .addTag(IS_DESERT)
+            .addTag(IS_SAVANNA)
+            .addTag(IS_SHRUBLAND)
+            .addTag(IS_TUNDRA);
     }
     
     private static TagKey<Biome> keyOf(String id) {
