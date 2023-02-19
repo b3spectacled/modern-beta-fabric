@@ -84,10 +84,8 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
             ChunkGenerator chunkGenerator = serverWorld.getChunkManager().getChunkGenerator();
             BiomeSource biomeSource = chunkGenerator.getBiomeSource();
             
-            worldSeed = serverWorld.getSeed();
-            
-            if (biomeSource instanceof ModernBetaBiomeSource modernBetaSource) {
-                BiomeProvider biomeProvider = modernBetaSource.getBiomeProvider();
+            if (biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
+                BiomeProvider biomeProvider = modernBetaBiomeSource.getBiomeProvider();
                 
                 if (biomeProvider instanceof ClimateSampler climateSampler)
                     this.modernBeta_climateSampler = climateSampler;

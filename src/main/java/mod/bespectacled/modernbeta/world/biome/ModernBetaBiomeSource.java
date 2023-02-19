@@ -74,8 +74,8 @@ public class ModernBetaBiomeSource extends BiomeSource {
             .apply(caveBiomeSettings, biomeRegistry, 0L);
 
         List<RegistryEntry<Biome>> biomes = new ArrayList<>();
-        biomes.addAll(biomeProvider.getBiomesForRegistry());
-        biomes.addAll(caveBiomeProvider.getBiomesForRegistry());
+        biomes.addAll(biomeProvider.getBiomes());
+        biomes.addAll(caveBiomeProvider.getBiomes());
         
         return biomes;
     }
@@ -198,7 +198,7 @@ public class ModernBetaBiomeSource extends BiomeSource {
         return this.caveBiomeProvider.getBiome(biomeX, biomeY, biomeZ);
     }
     
-    public RegistryEntry<Biome> getBiomeForSurfaceGen(int x, int y, int z) {
+    public RegistryEntry<Biome> getBiomeForSpawn(int x, int y, int z) {
         if (this.biomeProvider instanceof BiomeResolverBlock biomeResolver) {
             return biomeResolver.getBiomeBlock(x, y, z);
         }

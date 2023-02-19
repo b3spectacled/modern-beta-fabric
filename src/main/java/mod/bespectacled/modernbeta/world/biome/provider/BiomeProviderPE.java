@@ -43,7 +43,7 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
         int x = biomeX << 2;
         int z = biomeZ << 2;
         
-        Clime clime = this.climateSampler.sampleClime(x, z);
+        Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();
         double rain = clime.rain();
         
@@ -55,7 +55,7 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
         int x = biomeX << 2;
         int z = biomeZ << 2;
         
-        Clime clime = this.climateSampler.sampleClime(x, z);
+        Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();
         double rain = clime.rain();
         
@@ -67,7 +67,7 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
         int x = biomeX << 2;
         int z = biomeZ << 2;
         
-        Clime clime = this.climateSampler.sampleClime(x, z);
+        Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();
         double rain = clime.rain();
         
@@ -76,7 +76,7 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
     
     @Override
     public RegistryEntry<Biome> getBiomeBlock(int x, int y, int z) {
-        Clime clime = this.climateSampler.sampleClime(x, z);
+        Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();
         double rain = clime.rain();
         
@@ -84,18 +84,18 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
     }
 
     @Override
-    public List<RegistryEntry<Biome>> getBiomesForRegistry() {
+    public List<RegistryEntry<Biome>> getBiomes() {
         return this.climateMap.getBiomeKeys().stream().map(i -> this.biomeRegistry.getOrThrow(i)).collect(Collectors.toList());
     }
 
     @Override
     public double sampleSky(int x, int z) {
-        return this.climateSampler.sampleSkyTemp(x, z);
+        return this.climateSampler.sampleSky(x, z);
     }
 
     @Override
     public Clime sample(int x, int z) {
-        return this.climateSampler.sampleClime(x, z);
+        return this.climateSampler.sample(x, z);
     }
     
     @Override
@@ -129,33 +129,28 @@ public class BiomeProviderPE extends BiomeProvider implements ClimateSampler, Cl
             this.rainOctaveNoise = new PerlinOctaveNoise(new MTRandom(seed * 39811L), 4, true);
             this.detailOctaveNoise = new PerlinOctaveNoise(new MTRandom(seed * 543321L), 2, true);
             
-            this.chunkCacheClimate = new ChunkCache<>(
-                "climate", 
-                ChunkCache.DEFAULT_SIZE,
-                true,
-                (chunkX, chunkZ) -> new ChunkClimate(chunkX, chunkZ, this::sampleClimateNoise)
-            );
+            this.chunkCacheClimate = new ChunkCache<>("climate", (chunkX, chunkZ) -> new ChunkClimate(chunkX, chunkZ, this::sampleNoise));
             
             this.tempNoiseScale = tempNoiseScale;
             this.rainNoiseScale = rainNoiseScale;
             this.detailNoiseScale = detailNoiseScale;
         }
         
-        public Clime sampleClime(int x, int z) {
+        public Clime sample(int x, int z) {
             int chunkX = x >> 4;
             int chunkZ = z >> 4;
             
             return this.chunkCacheClimate.get(chunkX, chunkZ).sampleClime(x, z);
         }
         
-        public double sampleSkyTemp(int x, int z) {
+        public double sampleSky(int x, int z) {
             int chunkX = x >> 4;
             int chunkZ = z >> 4;
             
             return this.chunkCacheClimate.get(chunkX, chunkZ).sampleClime(x, z).temp();
         }
         
-        private Clime sampleClimateNoise(int x, int z) {
+        private Clime sampleNoise(int x, int z) {
             double temp = this.tempOctaveNoise.sampleXZ(x, z, this.tempNoiseScale, this.tempNoiseScale);
             double rain = this.rainOctaveNoise.sampleXZ(x, z, this.rainNoiseScale, this.rainNoiseScale);
             double detail = this.detailOctaveNoise.sampleXZ(x, z, this.detailNoiseScale, this.detailNoiseScale);

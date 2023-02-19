@@ -3,7 +3,7 @@
   "config": {
     "debug_settings": {
       "air_state": {
-        "Name": "minecraft:crimson_button",
+        "Name": "minecraft:warped_button",
         "Properties": {
           "face": "wall",
           "facing": "north",
@@ -30,7 +30,7 @@
     "lava_level": {
       "above_bottom": 10
     },
-    "probability": 0.14285715,
+    "probability": 0.0,
     "replaceable": "#modern_beta:overworld_carver_replaceables",
     "vertical_radius_multiplier": 1.0,
     "y": {

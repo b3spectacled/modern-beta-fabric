@@ -27,11 +27,6 @@ public abstract class MixinBackgroundRenderer {
     @Unique private static float modernBeta_fogWeight = calculateFogWeight(16);
     @Unique private static boolean modernBeta_isModernBetaWorld = false;
     
-    @Inject(method = "render", at = @At("HEAD"))
-    private static void capturePos(Camera camera, float tickDelta, ClientWorld world, int viewDistance, float skyDarkness, CallbackInfo info) {
-        modernBeta_pos = camera.getPos();
-    }
-    
     @ModifyVariable(
         method = "render",
         at = @At(
@@ -63,6 +58,8 @@ public abstract class MixinBackgroundRenderer {
     
     @Inject(method = "render", at = @At("HEAD"))
     private static void captureVars(Camera camera, float tickDelta, ClientWorld world, int renderDistance, float skyDarkness, CallbackInfo info) {
+        modernBeta_pos = camera.getPos();
+        
         if (modernBeta_renderDistance != renderDistance) {
             modernBeta_renderDistance = renderDistance;
             modernBeta_fogWeight = calculateFogWeight(renderDistance);

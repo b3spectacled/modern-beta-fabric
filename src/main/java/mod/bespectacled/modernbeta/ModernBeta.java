@@ -85,7 +85,7 @@ public class ModernBeta implements ModInitializer {
             // Override default biome grass/foliage colors
             BlockColors.register();
 
-			// Load colormaps
+            // Load colormaps
             BlockColorSampler colorSampler = BlockColorSampler.INSTANCE;
             ResourceManagerHelper resourceManager = ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES);
             

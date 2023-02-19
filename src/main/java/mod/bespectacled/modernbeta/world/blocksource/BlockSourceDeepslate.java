@@ -24,7 +24,6 @@ public class BlockSourceDeepslate implements BlockSource {
         this.randomSplitter = randomSplitter;
     }
     
-    
     @Override
     public BlockState apply(int x, int y, int z) {
         if (!this.useDeepslate || y >= maxY)

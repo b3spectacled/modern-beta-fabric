@@ -43,7 +43,7 @@ public abstract class BiomeProvider {
      * 
      * @return A list of biomes.
      */
-    public List<RegistryEntry<Biome>> getBiomesForRegistry() {
+    public List<RegistryEntry<Biome>> getBiomes() {
         return List.of();
     }
 }

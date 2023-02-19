@@ -75,7 +75,7 @@ public class SpawnLocatorBeta implements SpawnLocator {
             this.chunkProvider.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
 
         RegistryEntry<Biome> biome = (this.chunkProvider.getChunkGenerator().getBiomeSource() instanceof ModernBetaBiomeSource oldBiomeSource) ? 
-            oldBiomeSource.getBiomeForSurfaceGen(x, y, z) :
+            oldBiomeSource.getBiomeForSpawn(x, y, z) :
             this.chunkProvider.getBiome(x >> 2, y >> 2, z >> 2, null);
         
         return

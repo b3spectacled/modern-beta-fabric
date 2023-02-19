@@ -26,7 +26,7 @@ public class CaveBiomeProviderSingle extends CaveBiomeProvider {
     }
     
     @Override
-    public List<RegistryEntry<Biome>> getBiomesForRegistry() {
+    public List<RegistryEntry<Biome>> getBiomes() {
         return List.of(this.biomeRegistry.getOrThrow(this.biome));
     }
 }

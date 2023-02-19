@@ -49,7 +49,7 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
         int x = biomeX << 2;
         int z = biomeZ << 2;
         
-        Clime clime = this.climateSampler.sampleClime(x, z);
+        Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();
         double rain = clime.rain();
         
@@ -61,7 +61,7 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
         int x = biomeX << 2;
         int z = biomeZ << 2;
         
-        Clime clime = this.climateSampler.sampleClime(x, z);
+        Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();
         double rain = clime.rain();
         
@@ -73,7 +73,7 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
         int x = biomeX << 2;
         int z = biomeZ << 2;
         
-        Clime clime = this.climateSampler.sampleClime(x, z);
+        Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();
         double rain = clime.rain();
         
@@ -82,7 +82,7 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
     
     @Override
     public RegistryEntry<Biome> getBiomeBlock(int x, int y, int z) {
-        Clime clime = this.climateSampler.sampleClime(x, z);
+        Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();
         double rain = clime.rain();
         
@@ -90,18 +90,18 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
     }
 
     @Override
-    public List<RegistryEntry<Biome>> getBiomesForRegistry() {
+    public List<RegistryEntry<Biome>> getBiomes() {
         return this.climateMap.getBiomeKeys().stream().map(key -> this.biomeRegistry.getOrThrow(key)).collect(Collectors.toList());
     }
 
     @Override
     public double sampleSky(int x, int z) {
-        return this.climateSamplerSky.sampleSkyTemp(x, z);
+        return this.climateSamplerSky.sample(x, z);
     }
 
     @Override
     public Clime sample(int x, int z) {
-        return this.climateSampler.sampleClime(x, z);
+        return this.climateSampler.sample(x, z);
     }
     
     @Override
@@ -135,26 +135,21 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
             this.rainOctaveNoise = new SimplexOctaveNoise(new Random(seed * 39811L), 4);
             this.detailOctaveNoise = new SimplexOctaveNoise(new Random(seed * 543321L), 2);
             
-            this.chunkCacheClimate = new ChunkCache<>(
-                "climate", 
-                ChunkCache.DEFAULT_SIZE, 
-                true, 
-                (chunkX, chunkZ) -> new ChunkClimate(chunkX, chunkZ, this::sampleClimateNoise)
-            );
+            this.chunkCacheClimate = new ChunkCache<>("climate", (chunkX, chunkZ) -> new ChunkClimate(chunkX, chunkZ, this::sampleNoise));
             
             this.tempNoiseScale = tempNoiseScale;
             this.rainNoiseScale = rainNoiseScale;
             this.detailNoiseScale = detailNoiseScale;
         }
 
-        public Clime sampleClime(int x, int z) {
+        public Clime sample(int x, int z) {
             int chunkX = x >> 4;
             int chunkZ = z >> 4;
             
             return this.chunkCacheClimate.get(chunkX, chunkZ).sampleClime(x, z);
         }
         
-        public Clime sampleClimateNoise(int x, int z) {
+        public Clime sampleNoise(int x, int z) {
             double temp = this.tempOctaveNoise.sample(x, z, this.tempNoiseScale, this.tempNoiseScale, 0.25D);
             double rain = this.rainOctaveNoise.sample(x, z, this.rainNoiseScale, this.rainNoiseScale, 0.33333333333333331D);
             double detail = this.detailOctaveNoise.sample(x, z, this.detailNoiseScale, this.detailNoiseScale, 0.58823529411764708D);
@@ -180,24 +175,19 @@ public class BiomeProviderBeta extends BiomeProvider implements ClimateSampler, 
         public BetaClimateSamplerSky(long seed, double tempNoiseScale) {
             this.tempOctaveNoise = new SimplexOctaveNoise(new Random(seed * 9871L), 4);
             
-            this.chunkCacheClimateSky = new ChunkCache<>(
-                "sky", 
-                ChunkCache.DEFAULT_SIZE, 
-                true, 
-                (chunkX, chunkZ) -> new ChunkClimateSky(chunkX, chunkZ, this::sampleSkyTempNoise)
-            );
+            this.chunkCacheClimateSky = new ChunkCache<>("sky", (chunkX, chunkZ) -> new ChunkClimateSky(chunkX, chunkZ, this::sampleNoise));
             
             this.tempNoiseScale = tempNoiseScale;
         }
         
-        public double sampleSkyTemp(int x, int z) {
+        public double sample(int x, int z) {
             int chunkX = x >> 4;
             int chunkZ = z >> 4;
             
             return this.chunkCacheClimateSky.get(chunkX, chunkZ).sampleTemp(x, z);
         }
         
-        private double sampleSkyTempNoise(int x, int z) {
+        private double sampleNoise(int x, int z) {
             return this.tempOctaveNoise.sample(x, z, this.tempNoiseScale, this.tempNoiseScale, 0.5D);
         }
     }

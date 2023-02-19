@@ -12,6 +12,7 @@ import net.minecraft.util.math.ChunkPos;
  */
 public class ChunkCache<T> {
     public static final int DEFAULT_SIZE = 512;
+    public static final boolean DEFAULT_EVICT = true;
     
     @SuppressWarnings("unused")
     private final String name;
@@ -35,7 +36,11 @@ public class ChunkCache<T> {
     }
     
     public ChunkCache(String name, int capacity, BiFunction<Integer, Integer, T> chunkFunc) {
-        this(name, capacity, true, chunkFunc);
+        this(name, capacity, DEFAULT_EVICT, chunkFunc);
+    }
+    
+    public ChunkCache(String name, BiFunction<Integer, Integer, T> chunkFunc) {
+        this(name, DEFAULT_SIZE, DEFAULT_EVICT, chunkFunc);
     }
     
     public void clear() {
