@@ -98,6 +98,6 @@ public class ModernBeta implements ModInitializer {
         }
         
         // Initializes chunk and biome providers at server start-up.
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> ModernBetaWorldInitializer.init(server));
+        ServerLifecycleEvents.SERVER_STARTING.register(ModernBetaWorldInitializer::init);
     }
 }
