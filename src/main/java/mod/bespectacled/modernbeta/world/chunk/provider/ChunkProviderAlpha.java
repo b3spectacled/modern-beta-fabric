@@ -109,8 +109,8 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
                 RegistryEntry<Biome> biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
                 
                 SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
-                BlockState topBlock = surfaceConfig.topBlock();
-                BlockState fillerBlock = surfaceConfig.fillerBlock();
+                BlockState topBlock = surfaceConfig.normal().topBlock();
+                BlockState fillerBlock = surfaceConfig.normal().fillerBlock();
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
@@ -155,17 +155,17 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
                             fillerBlock = this.defaultBlock;
                             
                         } else if (y >= this.seaLevel - 4 && y <= this.seaLevel + 1) { // Generate beaches at this y range
-                            topBlock = surfaceConfig.topBlock();
-                            fillerBlock = surfaceConfig.fillerBlock();
+                            topBlock = surfaceConfig.normal().topBlock();
+                            fillerBlock = surfaceConfig.normal().fillerBlock();
 
                             if (genGravelBeach) {
-                                topBlock = BlockStates.AIR; // This reduces gravel beach height by 1
-                                fillerBlock = BlockStates.GRAVEL;
+                                topBlock = surfaceConfig.beachGravel().topBlock();
+                                fillerBlock = surfaceConfig.beachGravel().fillerBlock();
                             }
 
                             if (genSandBeach) {
-                                topBlock = BlockStates.SAND;
-                                fillerBlock = BlockStates.SAND;
+                                topBlock = surfaceConfig.beachSand().topBlock();
+                                fillerBlock = surfaceConfig.beachSand().fillerBlock();
                             }
                         }
 

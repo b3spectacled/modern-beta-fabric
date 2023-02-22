@@ -222,8 +222,8 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
     @Override
     protected BlockState postProcessSurfaceState(BlockState blockState, RegistryEntry<Biome> biome, BlockPos pos, boolean isCold) {
         SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
-        BlockState topBlock = surfaceConfig.topBlock();
-        BlockState fillerBlock = surfaceConfig.fillerBlock();
+        BlockState topBlock = surfaceConfig.normal().topBlock();
+        BlockState fillerBlock = surfaceConfig.normal().fillerBlock();
         
         int x = pos.getX();
         int y = pos.getY();

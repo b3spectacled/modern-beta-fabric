@@ -102,8 +102,8 @@ public class ChunkProviderInfdev420 extends ChunkProviderNoise {
                 RegistryEntry<Biome> biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
                 
                 SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
-                BlockState topBlock = surfaceConfig.topBlock();
-                BlockState fillerBlock = surfaceConfig.fillerBlock();
+                BlockState topBlock = surfaceConfig.normal().topBlock();
+                BlockState fillerBlock = surfaceConfig.normal().fillerBlock();
                 
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; --y) {
                     BlockState blockState;
@@ -132,17 +132,17 @@ public class ChunkProviderInfdev420 extends ChunkProviderNoise {
                                 fillerBlock = this.defaultBlock;
                                 
                             } else if (y >= this.seaLevel - 4 && y <= this.seaLevel + 1) {
-                                topBlock = surfaceConfig.topBlock();
-                                fillerBlock = surfaceConfig.fillerBlock();
+                                topBlock = surfaceConfig.normal().topBlock();
+                                fillerBlock = surfaceConfig.normal().fillerBlock();
                                 
                                 if (genGravelBeach) {
-                                    topBlock = BlockStates.AIR;
-                                    fillerBlock = BlockStates.GRAVEL;
+                                    topBlock = surfaceConfig.beachGravel().topBlock();
+                                    fillerBlock = surfaceConfig.beachGravel().fillerBlock();
                                 }
                                 
                                 if (genSandBeach) {
-                                    topBlock = BlockStates.SAND;
-                                    fillerBlock = BlockStates.SAND;
+                                    topBlock = surfaceConfig.beachSand().topBlock();
+                                    fillerBlock = surfaceConfig.beachSand().fillerBlock();
                                 }
                             }
                             

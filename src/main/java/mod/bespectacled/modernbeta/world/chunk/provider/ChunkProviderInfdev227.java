@@ -115,8 +115,8 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
                 RegistryEntry<Biome> biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
                 
                 SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
-                BlockState topBlock = surfaceConfig.topBlock();
-                BlockState fillerBlock = surfaceConfig.fillerBlock();
+                BlockState topBlock = surfaceConfig.normal().topBlock();
+                BlockState fillerBlock = surfaceConfig.normal().fillerBlock();
 
                 int runDepth = 0;
 

@@ -52,7 +52,8 @@ public final class ModernBetaBuiltInTypes {
         RED_SAND(ModernBetaTagProviderBiome.SURFACE_CONFIG_RED_SAND.id().toString()),
         BADLANDS(ModernBetaTagProviderBiome.SURFACE_CONFIG_BADLANDS.id().toString()),
         NETHER(ModernBetaTagProviderBiome.SURFACE_CONFIG_NETHER.id().toString()),
-        THEEND(ModernBetaTagProviderBiome.SURFACE_CONFIG_END.id().toString())
+        THEEND(ModernBetaTagProviderBiome.SURFACE_CONFIG_END.id().toString()),
+        SWAMP(ModernBetaTagProviderBiome.SURFACE_CONFIG_SWAMP.id().toString())
         ;
         
         public final String id;

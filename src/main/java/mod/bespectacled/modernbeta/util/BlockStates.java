@@ -30,4 +30,9 @@ public class BlockStates {
     
     public static final BlockState OAK_LEAVES = Blocks.OAK_LEAVES.getDefaultState();
     public static final BlockState OAK_LOG = Blocks.OAK_LOG.getDefaultState();
+    
+    public static final BlockState NETHERRACK = Blocks.NETHERRACK.getDefaultState();
+    public static final BlockState END_STONE = Blocks.END_STONE.getDefaultState();
+    public static final BlockState WHITE_TERRACOTTA = Blocks.WHITE_TERRACOTTA.getDefaultState();
+    public static final BlockState SOUL_SAND = Blocks.SOUL_SAND.getDefaultState();
 }

@@ -50,6 +50,7 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
     public static final TagKey<Biome> SURFACE_CONFIG_BADLANDS = keyOf("surface_config/badlands");
     public static final TagKey<Biome> SURFACE_CONFIG_NETHER = keyOf("surface_config/nether");
     public static final TagKey<Biome> SURFACE_CONFIG_END = keyOf("surface_config/end");
+    public static final TagKey<Biome> SURFACE_CONFIG_SWAMP = keyOf("surface_config/swamp");
     
     public ModernBetaTagProviderBiome(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, RegistryKeys.BIOME, registriesFuture);
@@ -284,6 +285,12 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
                 BiomeKeys.END_HIGHLANDS,
                 BiomeKeys.END_MIDLANDS,
                 BiomeKeys.SMALL_END_ISLANDS
+            );
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_SWAMP)
+            .add(
+                BiomeKeys.SWAMP,
+                BiomeKeys.MANGROVE_SWAMP
             );
     }
     

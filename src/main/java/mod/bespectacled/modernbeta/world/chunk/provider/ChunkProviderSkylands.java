@@ -74,8 +74,8 @@ public class ChunkProviderSkylands extends ChunkProviderNoise {
                 RegistryEntry<Biome> biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
                 
                 SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
-                BlockState topBlock = surfaceConfig.topBlock();
-                BlockState fillerBlock = surfaceConfig.fillerBlock();
+                BlockState topBlock = surfaceConfig.normal().topBlock();
+                BlockState fillerBlock = surfaceConfig.normal().fillerBlock();
                 
                 // Generate from top to bottom of world
                 for (int y = this.worldTopY - 1; y >= this.worldMinY; y--) {
