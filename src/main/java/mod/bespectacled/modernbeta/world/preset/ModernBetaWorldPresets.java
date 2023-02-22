@@ -6,6 +6,8 @@ import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGeneratorSettings;
+import net.minecraft.class_8197;
+import net.minecraft.class_8198;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryEntryLookup;
@@ -31,10 +33,12 @@ public class ModernBetaWorldPresets {
         
         RegistryEntryLookup<ChunkGeneratorSettings> settingsLookup = presetRegisterable.getRegistryLookup(RegistryKeys.CHUNK_GENERATOR_SETTINGS);
         RegistryEntryLookup<Biome> biomeLookup = presetRegisterable.getRegistryLookup(RegistryKeys.BIOME);
+        RegistryEntryLookup<class_8197> parameterLookup = presetRegisterable.getRegistryLookup(RegistryKeys.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST_WORLDGEN);
         
         RegistryEntry.Reference<DimensionType> dimensionNether = registryDimensionType.getOrThrow(DimensionTypes.THE_NETHER);
         RegistryEntry.Reference<ChunkGeneratorSettings> settingsNether = settingsLookup.getOrThrow(ChunkGeneratorSettings.NETHER);
-        DimensionOptions nether = new DimensionOptions(dimensionNether, new NoiseChunkGenerator(MultiNoiseBiomeSource.Preset.NETHER.getBiomeSource(biomeLookup), settingsNether));
+        RegistryEntry.Reference<class_8197> parameterNether = parameterLookup.getOrThrow(class_8198.NETHER);
+        DimensionOptions nether = new DimensionOptions(dimensionNether, new NoiseChunkGenerator(MultiNoiseBiomeSource.method_49503(parameterNether), settingsNether));
         
         RegistryEntry.Reference<DimensionType> dimensionEnd = registryDimensionType.getOrThrow(DimensionTypes.THE_END);
         RegistryEntry.Reference<ChunkGeneratorSettings> settingsEnd = settingsLookup.getOrThrow(ChunkGeneratorSettings.END);

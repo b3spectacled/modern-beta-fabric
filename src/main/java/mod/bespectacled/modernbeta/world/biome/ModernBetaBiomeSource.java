@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
@@ -57,35 +58,12 @@ public class ModernBetaBiomeSource extends BiomeSource {
     
     private ModernBetaChunkGenerator chunkGenerator;
     
-    private static List<RegistryEntry<Biome>> getBiomesForRegistry(
-        RegistryEntryLookup<Biome> biomeRegistry,
-        NbtCompound biomeSettings,
-        NbtCompound caveBiomeSettings
-    ) {
-        ModernBetaSettingsBiome modernBetaBiomeSettings = new ModernBetaSettingsBiome.Builder(biomeSettings).build();
-        ModernBetaSettingsCaveBiome modernBetaCaveBiomeSettings = new ModernBetaSettingsCaveBiome.Builder(caveBiomeSettings).build();
-        
-        BiomeProvider biomeProvider  = ModernBetaRegistries.BIOME
-            .get(modernBetaBiomeSettings.biomeProvider)
-            .apply(biomeSettings, biomeRegistry, 0L);
-        
-        CaveBiomeProvider caveBiomeProvider = ModernBetaRegistries.CAVE_BIOME
-            .get(modernBetaCaveBiomeSettings.biomeProvider)
-            .apply(caveBiomeSettings, biomeRegistry, 0L);
-
-        List<RegistryEntry<Biome>> biomes = new ArrayList<>();
-        biomes.addAll(biomeProvider.getBiomes());
-        biomes.addAll(caveBiomeProvider.getBiomes());
-        
-        return biomes;
-    }
-    
     public ModernBetaBiomeSource(
         RegistryEntryLookup<Biome> biomeRegistry,
         NbtCompound biomeSettings,
         NbtCompound caveBiomeSettings
     ) {
-        super(getBiomesForRegistry(biomeRegistry, biomeSettings, caveBiomeSettings));
+        super();
         
         this.biomeRegistry = biomeRegistry;
         this.biomeSettings = biomeSettings;
@@ -240,5 +218,25 @@ public class ModernBetaBiomeSource extends BiomeSource {
     @Override
     protected Codec<? extends BiomeSource> getCodec() {
         return ModernBetaBiomeSource.CODEC;
+    }
+
+    @Override
+    protected Stream<RegistryEntry<Biome>> method_49494() {
+        ModernBetaSettingsBiome modernBetaBiomeSettings = new ModernBetaSettingsBiome.Builder(this.biomeSettings).build();
+        ModernBetaSettingsCaveBiome modernBetaCaveBiomeSettings = new ModernBetaSettingsCaveBiome.Builder(this.caveBiomeSettings).build();
+        
+        BiomeProvider biomeProvider  = ModernBetaRegistries.BIOME
+            .get(modernBetaBiomeSettings.biomeProvider)
+            .apply(biomeSettings, biomeRegistry, 0L);
+        
+        CaveBiomeProvider caveBiomeProvider = ModernBetaRegistries.CAVE_BIOME
+            .get(modernBetaCaveBiomeSettings.biomeProvider)
+            .apply(caveBiomeSettings, biomeRegistry, 0L);
+
+        List<RegistryEntry<Biome>> biomes = new ArrayList<>();
+        biomes.addAll(biomeProvider.getBiomes());
+        biomes.addAll(caveBiomeProvider.getBiomes());
+        
+        return biomes.stream();
     }
 }

@@ -23,7 +23,7 @@ public class BiomeBetaRainforest {
         ModernBetaBiomeFeatures.addRainforestFeatures(genSettings, false);
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.RAIN)
+            .precipitation(true)
             .temperature(1.0F)
             .downfall(1.0F)
             .effects((new BiomeEffects.Builder())

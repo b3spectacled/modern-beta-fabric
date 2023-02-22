@@ -68,7 +68,7 @@
       "modern_beta:freeze_top_layer"
     ]
   ],
-  "precipitation": "snow",
+  "has_precipitation": true,
   "spawn_costs": {},
   "spawners": {
     "ambient": [

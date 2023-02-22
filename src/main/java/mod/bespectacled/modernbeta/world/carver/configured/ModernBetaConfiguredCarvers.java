@@ -11,7 +11,6 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 import net.minecraft.world.gen.YOffset;
-import net.minecraft.world.gen.carver.Carver;
 import net.minecraft.world.gen.carver.CarverDebugConfig;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.carver.ConfiguredCarver;

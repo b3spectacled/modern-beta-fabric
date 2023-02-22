@@ -22,7 +22,7 @@ public class BiomeBetaShrubland {
         ModernBetaBiomeFeatures.addShrublandFeatures(genSettings, false);
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.RAIN)
+            .precipitation(true)
             .temperature(0.7F)
             .downfall(0.4F)
             .effects((new BiomeEffects.Builder())

@@ -22,7 +22,7 @@ public class BiomeInfdev611 {
         ModernBetaBiomeFeatures.addInfdev611Features(genSettings);
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.RAIN)
+            .precipitation(true)
             .temperature(0.6F)
             .downfall(0.6F)
             .effects((new BiomeEffects.Builder())

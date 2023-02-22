@@ -22,7 +22,7 @@ public class BiomeAlphaWinter {
         ModernBetaBiomeFeatures.addAlphaFeatures(genSettings);
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.SNOW)
+            .precipitation(true)
             .temperature(0.0F)
             .downfall(0.0F)
             .effects((new BiomeEffects.Builder())
