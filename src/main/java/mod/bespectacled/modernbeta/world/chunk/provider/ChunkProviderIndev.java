@@ -369,10 +369,10 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
                     if (this.levelType == IndevType.FLOATING && y < roundedHeight)
                         block = Blocks.AIR;
 
-                    Block existingBlock = this.blockArr[x][y][z];
+                    Block existingBlock = this.getLevelBlock(x, y, z);
                      
                     if (existingBlock.equals(Blocks.AIR)) {
-                        this.blockArr[x][y][z] = block;
+                        this.setLevelBlock(x, y, z, block);
                     }
                 }
             }
@@ -403,12 +403,12 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
                 }
                 
                 int heightResult = heightmap[x + z * this.levelWidth];
-                Block block = this.blockArr[x][heightResult][z];
-                Block blockUp = this.blockArr[x][heightResult + 1][z];
+                Block block = this.getLevelBlock(x, heightResult, z);
+                Block blockUp = this.getLevelBlock(x, heightResult + 1, z);
                 
                 // TODO: this.getSeaLevel() - 1 might be wrong, might be surfaceLevel instead
                 if ((blockUp == this.fluidBlock.getBlock() || blockUp == Blocks.AIR) && heightResult <= this.getSeaLevel() - 1 && genGravel) {
-                    this.blockArr[x][heightResult][z] = Blocks.GRAVEL;
+                    this.setLevelBlock(x, heightResult, z, Blocks.GRAVEL);
                 }
      
                 if (blockUp == Blocks.AIR) {
@@ -419,7 +419,7 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
                     }
                     
                     if (block != Blocks.AIR && surfaceBlock != null) {
-                        this.blockArr[x][heightResult][z] = surfaceBlock;
+                        this.setLevelBlock(x, heightResult, z, surfaceBlock);
                     }
                 }
             }
@@ -530,11 +530,11 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
         for (int x = 0; x < this.levelWidth; ++x) {
             for (int z = 0; z < this.levelLength; ++z) {
                 for (int y = 0; y < this.levelHeight - 2; ++y) {
-                    Block block = this.blockArr[x][y][z];
-                    Block blockAbove = this.blockArr[x][y + 1][z];
+                    Block block = this.getLevelBlock(x, y, z);
+                    Block blockUp = this.getLevelBlock(x, y + 1, z);
                     
-                    if (block.equals(Blocks.DIRT) && blockAbove.equals(Blocks.AIR)) {
-                        this.blockArr[x][y][z] = blockToPlant;
+                    if (block.equals(Blocks.DIRT) && blockUp.equals(Blocks.AIR)) {
+                        this.setLevelBlock(x, y, z, blockToPlant);
                     }
                 }
             }

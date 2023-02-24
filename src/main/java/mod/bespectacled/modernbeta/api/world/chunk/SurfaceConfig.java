@@ -3,6 +3,7 @@ package mod.bespectacled.modernbeta.api.world.chunk;
 import java.util.Optional;
 
 import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
+import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig.SurfaceBlocks;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import net.minecraft.block.BlockState;
 import net.minecraft.registry.RegistryKeys;

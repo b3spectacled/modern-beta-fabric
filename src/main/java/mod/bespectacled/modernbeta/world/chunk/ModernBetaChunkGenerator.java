@@ -179,6 +179,16 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
     }
     
     @Override
+    public void populateEntities(ChunkRegion region) {
+        ChunkPos pos = region.getCenterPos();
+        
+        if (this.chunkProvider.skipChunk(pos.x, pos.z, ChunkStatus.SPAWN))
+            return;
+        
+        super.populateEntities(region);
+    }
+    
+    @Override
     public int getHeight(int x, int z, Heightmap.Type type, HeightLimitView world, NoiseConfig noiseConfig) {
         return this.chunkProvider.getHeight(x, z, type);
     }

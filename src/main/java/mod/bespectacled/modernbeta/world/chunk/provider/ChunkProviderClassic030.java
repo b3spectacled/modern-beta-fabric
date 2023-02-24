@@ -236,7 +236,7 @@ public class ChunkProviderClassic030 extends ChunkProviderFinite {
                     if (y == 1) 
                         block = Blocks.LAVA;
                     
-                    this.blockArr[x][y][z] = block;
+                    this.setLevelBlock(x, y, z, block);
                 }
             }
         }
@@ -342,10 +342,10 @@ public class ChunkProviderClassic030 extends ChunkProviderFinite {
                 boolean genGravel = gravelOctaveNoise.sampleXY(x, z) > 12.0;
                 
                 int heightResult = heightmap[x + z * this.levelWidth];
-                Block blockUp = this.blockArr[x][heightResult + 1][z];
+                Block blockUp = this.getLevelBlock(x, heightResult + 1, z);
                 
                 if (blockUp == this.defaultFluid.getBlock() && heightResult <= this.waterLevel - 1 && genGravel) {
-                    this.blockArr[x][heightResult][z] = Blocks.GRAVEL;
+                    this.setLevelBlock(x, heightResult, z, Blocks.GRAVEL);
                 }
                 
                 if (blockUp == Blocks.AIR) {
@@ -355,7 +355,7 @@ public class ChunkProviderClassic030 extends ChunkProviderFinite {
                         surfaceBlock = Blocks.SAND;
                     }
                     
-                    this.blockArr[x][heightResult][z] = surfaceBlock;  
+                    this.setLevelBlock(x, heightResult, z, surfaceBlock);
                 }
             }
         }

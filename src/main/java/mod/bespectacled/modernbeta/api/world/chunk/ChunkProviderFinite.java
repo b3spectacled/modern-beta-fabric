@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import org.apache.logging.log4j.Level;
+import org.slf4j.event.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
@@ -57,7 +57,9 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
     protected final float caveRadius;
     
     protected final int[] heightmap;
-    protected final Block[][][] blockArr;
+    
+    @Deprecated
+    private final Block[][][] blockArr;
     
     private boolean pregenerated;
     
@@ -181,6 +183,8 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
             return true;
         } else if (chunkStatus == ChunkStatus.SURFACE) { 
             return false;
+        } else if (chunkStatus == ChunkStatus.SPAWN) {
+            return !inWorldBounds;
         }
         
         return false;
@@ -208,6 +212,14 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         z = MathHelper.clamp(z, 0, this.levelLength - 1);
         
         return this.blockArr[x][y][z];
+    }
+    
+    public void setLevelBlock(int x, int y, int z, Block block) {
+        x = MathHelper.clamp(x, 0, this.levelWidth - 1);
+        y = MathHelper.clamp(y, 0, this.levelHeight - 1);
+        z = MathHelper.clamp(z, 0, this.levelLength - 1);
+        
+        this.blockArr[x][y][z] = block;
     }
     
     public int getLevelHighestBlock(int x, int z) {
@@ -266,7 +278,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
                 for (int y = this.levelHeight - 1; y >= 0; --y) {
                     pos.set(x, y, z);
                     
-                    Block block = this.blockArr[offsetX + localX][y][offsetZ + localZ];
+                    Block block = this.getLevelBlock(offsetX + localX, y, offsetZ + localZ);
                     BlockState blockState = this.postProcessTerrainState(block, blockSource, structureWeightSampler, terrainState, pos);
                     
                     chunk.setBlockState(pos.set(localX, y, localZ), blockState, false);
@@ -313,10 +325,10 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
                     float dz = z - centerZ;
                     
                     if ((dx * dx + dy * dy * 2.0f + dz * dz) < radius * radius && inLevelBounds(x, y, z)) {
-                        Block block = this.blockArr[x][y][z];
+                        Block block = this.getLevelBlock(x, y, z);
                         
                         if (block == this.defaultBlock.getBlock()) {
-                            this.blockArr[x][y][z] = fillBlock;
+                            this.setLevelBlock(x, y, z, fillBlock);
                         }
                     }
                 }
@@ -335,17 +347,25 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
             y = (int)curPos.y;
             z = (int)curPos.z;
             
-            Block block = this.blockArr[x][y][z];
+            Block block = this.getLevelBlock(x, y, z);
     
             if (block == Blocks.AIR) {
-                this.blockArr[x][y][z] = fillBlock;
+                this.setLevelBlock(x, y, z, fillBlock);
                 
-                if (y - 1 >= 0)               positions.add(new Vec3d(x, y - 1, z));
-                if (x - 1 >= 0)               positions.add(new Vec3d(x - 1, y, z));
-                if (x + 1 < this.levelWidth)  positions.add(new Vec3d(x + 1, y, z));
-                if (z - 1 >= 0)               positions.add(new Vec3d(x, y, z - 1));
-                if (z + 1 < this.levelLength) positions.add(new Vec3d(x, y, z + 1));
+                if (y - 1 >= 0)               this.tryFlood(x, y - 1, z, positions);
+                if (x - 1 >= 0)               this.tryFlood(x - 1, y, z, positions);
+                if (x + 1 < this.levelWidth)  this.tryFlood(x + 1, y, z, positions);
+                if (z - 1 >= 0)               this.tryFlood(x, y, z - 1, positions);
+                if (z + 1 < this.levelLength) this.tryFlood(x, y, z + 1, positions);
             }
+        }
+    }
+    
+    private void tryFlood(int x, int y, int z, ArrayDeque<Vec3d> positions) {
+        Block block = this.getLevelBlock(x, y, z);
+        
+        if (block == Blocks.AIR) {
+            positions.add(new Vec3d(x, y, z));
         }
     }
 
@@ -360,7 +380,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         for (int x = 0; x < this.levelWidth; ++x) {
             for (int z = 0; z < this.levelLength; ++z) {
                 for (int y = 0; y < this.levelHeight; ++y) {
-                    this.blockArr[x][y][z] = block;
+                    this.setLevelBlock(x, y, z, block);
                 }
             }
         }

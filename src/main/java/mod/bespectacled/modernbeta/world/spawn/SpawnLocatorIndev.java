@@ -3,7 +3,7 @@ package mod.bespectacled.modernbeta.world.spawn;
 import java.util.Optional;
 import java.util.Random;
 
-import org.apache.logging.log4j.Level;
+import org.slf4j.event.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderFinite;

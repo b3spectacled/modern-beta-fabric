@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.Level;
+import org.slf4j.event.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
