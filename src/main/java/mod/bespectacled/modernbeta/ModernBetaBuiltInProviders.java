@@ -21,7 +21,7 @@ import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderInfdev415;
 import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderInfdev420;
 import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderInfdev611;
 import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderPE;
-import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderSkylands;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderSky;
 
 /*
  * Registration of built-in providers for various things.
@@ -33,7 +33,7 @@ public class ModernBetaBuiltInProviders {
     public static void registerChunkProviders() {
         ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.DEFAULT_ID, ChunkProviderBeta::new);
         ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.BETA.id, ChunkProviderBeta::new);
-        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.SKYLANDS.id, ChunkProviderSkylands::new);
+        ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.SKYLANDS.id, ChunkProviderSky::new);
         ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.ALPHA.id, ChunkProviderAlpha::new);
         ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.INFDEV_611.id, ChunkProviderInfdev611::new);
         ModernBetaRegistries.CHUNK.register(ModernBetaBuiltInTypes.Chunk.INFDEV_420.id, ChunkProviderInfdev420::new);

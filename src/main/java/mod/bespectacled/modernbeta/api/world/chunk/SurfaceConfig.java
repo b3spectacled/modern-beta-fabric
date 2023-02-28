@@ -3,9 +3,6 @@ package mod.bespectacled.modernbeta.api.world.chunk;
 import java.util.Optional;
 
 import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
-import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig.SurfaceBlocks;
-import mod.bespectacled.modernbeta.util.BlockStates;
-import net.minecraft.block.BlockState;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
@@ -37,18 +34,5 @@ public record SurfaceConfig(SurfaceBlocks normal, SurfaceBlocks beachSand, Surfa
     
     private static TagKey<Biome> keyOf(String id) {
         return TagKey.of(RegistryKeys.BIOME, new Identifier(id));
-    }
-    
-    public record SurfaceBlocks(BlockState topBlock, BlockState fillerBlock) {
-        public static final SurfaceBlocks DEFAULT = new SurfaceBlocks(BlockStates.GRASS_BLOCK, BlockStates.DIRT);
-        public static final SurfaceBlocks SAND = new SurfaceBlocks(BlockStates.SAND, BlockStates.SAND);
-        public static final SurfaceBlocks RED_SAND = new SurfaceBlocks(BlockStates.RED_SAND, BlockStates.RED_SAND);
-        public static final SurfaceBlocks BADLANDS = new SurfaceBlocks(BlockStates.RED_SAND, BlockStates.WHITE_TERRACOTTA);
-        public static final SurfaceBlocks NETHER = new SurfaceBlocks(BlockStates.NETHERRACK, BlockStates.NETHERRACK);
-        public static final SurfaceBlocks THEEND = new SurfaceBlocks(BlockStates.END_STONE, BlockStates.END_STONE);
-        
-        public static final SurfaceBlocks GRAVEL = new SurfaceBlocks(BlockStates.AIR, BlockStates.GRAVEL);
-        public static final SurfaceBlocks NETHER_SOUL_SAND = new SurfaceBlocks(BlockStates.SOUL_SAND, BlockStates.SOUL_SAND);
-        public static final SurfaceBlocks NETHER_GRAVEL = new SurfaceBlocks(BlockStates.GRAVEL, BlockStates.NETHERRACK);
     }
 }

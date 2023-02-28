@@ -20,14 +20,14 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
-public class ChunkProviderSkylands extends ChunkProviderNoise {
+public class ChunkProviderSky extends ChunkProviderNoise {
     private final PerlinOctaveNoise minLimitOctaveNoise;
     private final PerlinOctaveNoise maxLimitOctaveNoise;
     private final PerlinOctaveNoise mainOctaveNoise;
     private final PerlinOctaveNoise surfaceOctaveNoise;
     private final PerlinOctaveNoise forestOctaveNoise;
     
-    public ChunkProviderSkylands(ModernBetaChunkGenerator chunkGenerator, long seed) {
+    public ChunkProviderSky(ModernBetaChunkGenerator chunkGenerator, long seed) {
         super(chunkGenerator, seed);
         
         this.minLimitOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);

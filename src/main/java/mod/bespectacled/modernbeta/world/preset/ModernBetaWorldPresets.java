@@ -30,27 +30,33 @@ public class ModernBetaWorldPresets {
             
     public static void bootstrap(Registerable<WorldPreset> presetRegisterable) {
         RegistryEntryLookup<DimensionType> registryDimensionType = presetRegisterable.getRegistryLookup(RegistryKeys.DIMENSION_TYPE);
+        RegistryEntryLookup<ChunkGeneratorSettings> registrySettings = presetRegisterable.getRegistryLookup(RegistryKeys.CHUNK_GENERATOR_SETTINGS);
+        RegistryEntryLookup<Biome> registryBiome = presetRegisterable.getRegistryLookup(RegistryKeys.BIOME);
+        RegistryEntryLookup<class_8197> registryParameters = presetRegisterable.getRegistryLookup(RegistryKeys.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST_WORLDGEN);
+
+        DimensionOptions overworld = createOverworldOptions(registryDimensionType, registrySettings, registryBiome);
+        DimensionOptions nether = createNetherOptions(registryDimensionType, registrySettings, registryParameters);
+        DimensionOptions end = createEndOptions(registryDimensionType, registrySettings, registryBiome);
         
-        RegistryEntryLookup<ChunkGeneratorSettings> settingsLookup = presetRegisterable.getRegistryLookup(RegistryKeys.CHUNK_GENERATOR_SETTINGS);
-        RegistryEntryLookup<Biome> biomeLookup = presetRegisterable.getRegistryLookup(RegistryKeys.BIOME);
-        RegistryEntryLookup<class_8197> parameterLookup = presetRegisterable.getRegistryLookup(RegistryKeys.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST_WORLDGEN);
-        
-        RegistryEntry.Reference<DimensionType> dimensionNether = registryDimensionType.getOrThrow(DimensionTypes.THE_NETHER);
-        RegistryEntry.Reference<ChunkGeneratorSettings> settingsNether = settingsLookup.getOrThrow(ChunkGeneratorSettings.NETHER);
-        RegistryEntry.Reference<class_8197> parameterNether = parameterLookup.getOrThrow(class_8198.NETHER);
-        DimensionOptions nether = new DimensionOptions(dimensionNether, new NoiseChunkGenerator(MultiNoiseBiomeSource.method_49503(parameterNether), settingsNether));
-        
-        RegistryEntry.Reference<DimensionType> dimensionEnd = registryDimensionType.getOrThrow(DimensionTypes.THE_END);
-        RegistryEntry.Reference<ChunkGeneratorSettings> settingsEnd = settingsLookup.getOrThrow(ChunkGeneratorSettings.END);
-        DimensionOptions end = new DimensionOptions(dimensionEnd, new NoiseChunkGenerator(TheEndBiomeSource.createVanilla(biomeLookup), settingsEnd));
-        
+        presetRegisterable.register(
+            MODERN_BETA,
+            new WorldPreset(Map.of(DimensionOptions.OVERWORLD, overworld, DimensionOptions.NETHER, nether, DimensionOptions.END, end))
+        );
+    }
+    
+    private static DimensionOptions createOverworldOptions(
+        RegistryEntryLookup<DimensionType> registryDimensionType,
+        RegistryEntryLookup<ChunkGeneratorSettings> registrySettings,
+        RegistryEntryLookup<Biome> registryBiome
+    ) {
         RegistryEntry.Reference<DimensionType> dimensionOverworld = registryDimensionType.getOrThrow(DimensionTypes.OVERWORLD);
-        RegistryEntry.Reference<ChunkGeneratorSettings> settingsOverworld = settingsLookup.getOrThrow(ModernBetaChunkGeneratorSettings.MODERN_BETA);
-        DimensionOptions overworld = new DimensionOptions(
+        RegistryEntry.Reference<ChunkGeneratorSettings> settingsOverworld = registrySettings.getOrThrow(ModernBetaChunkGeneratorSettings.BETA);
+        
+        return new DimensionOptions(
             dimensionOverworld,
             new ModernBetaChunkGenerator(
                 new ModernBetaBiomeSource(
-                    biomeLookup,
+                    registryBiome,
                     new NbtCompound(),
                     new NbtCompound()
                 ),
@@ -58,12 +64,29 @@ public class ModernBetaWorldPresets {
                 new NbtCompound()
             )
         );
+    }
+    
+    private static DimensionOptions createNetherOptions(
+        RegistryEntryLookup<DimensionType> registryDimensionType,
+        RegistryEntryLookup<ChunkGeneratorSettings> registrySettings,
+        RegistryEntryLookup<class_8197> registryParameters
+    ) {
+        RegistryEntry.Reference<DimensionType> dimensionType = registryDimensionType.getOrThrow(DimensionTypes.THE_NETHER);
+        RegistryEntry.Reference<ChunkGeneratorSettings> settings = registrySettings.getOrThrow(ChunkGeneratorSettings.NETHER);
+        RegistryEntry.Reference<class_8197> parameters = registryParameters.getOrThrow(class_8198.NETHER);
         
-        presetRegisterable.register(
-            MODERN_BETA,
-            new WorldPreset(Map.of(DimensionOptions.OVERWORLD, overworld, DimensionOptions.NETHER, nether, DimensionOptions.END, end))
-        );
-        
+        return new DimensionOptions(dimensionType, new NoiseChunkGenerator(MultiNoiseBiomeSource.method_49503(parameters), settings));
+    }
+    
+    private static DimensionOptions createEndOptions(
+        RegistryEntryLookup<DimensionType> registryDimensionType,
+        RegistryEntryLookup<ChunkGeneratorSettings> registrySettings,
+        RegistryEntryLookup<Biome> registryBiome
+    ) {
+        RegistryEntry.Reference<DimensionType> dimensionType = registryDimensionType.getOrThrow(DimensionTypes.THE_END);
+        RegistryEntry.Reference<ChunkGeneratorSettings> settings = registrySettings.getOrThrow(ChunkGeneratorSettings.END);
+
+        return new DimensionOptions(dimensionType, new NoiseChunkGenerator(TheEndBiomeSource.createVanilla(registryBiome), settings));
     }
     
     private static RegistryKey<WorldPreset> keyOf(Identifier id) {

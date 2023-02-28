@@ -55,14 +55,7 @@ public class ModernBeta implements ModInitializer {
     }
     
     public static void log(Level level, String message) {
-        message = String.format("[%s] %s", MOD_NAME, message);
-        
-        switch(level) {
-            case DEBUG: LOGGER.debug(message);
-            case ERROR: LOGGER.error(message);
-            case WARN: LOGGER.warn(message);
-            default: LOGGER.info(message);
-        }
+        LOGGER.atLevel(level).log("[" + MOD_NAME + "] {}", message);
     }
     
     @Override
