@@ -9,6 +9,7 @@ import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
 import mod.bespectacled.modernbeta.api.world.chunk.noise.NoisePostProcessor;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPreset;
 import mod.bespectacled.modernbeta.util.function.TriFunction;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.nbt.NbtCompound;
@@ -23,6 +24,7 @@ public final class ModernBetaRegistries {
     public static final ModernBetaRegistry<NoisePostProcessor> NOISE_POST_PROCESSOR;
     public static final ModernBetaRegistry<SurfaceConfig> SURFACE_CONFIG;
     public static final ModernBetaRegistry<BiFunction<ModernBetaSettingsChunk, RandomSplitter, BlockSource>> BLOCKSOURCE;
+    public static final ModernBetaRegistry<ModernBetaSettingsPreset> SETTINGS_PRESET;
     
     static {
         CHUNK = new ModernBetaRegistry<>("CHUNK");
@@ -31,5 +33,6 @@ public final class ModernBetaRegistries {
         NOISE_POST_PROCESSOR = new ModernBetaRegistry<>("NOISE_POST_PROCESSOR");
         SURFACE_CONFIG = new ModernBetaRegistry<>("SURFACE_CONFIG");
         BLOCKSOURCE = new ModernBetaRegistry<>("BLOCKSOURCE");
+        SETTINGS_PRESET = new ModernBetaRegistry<>("SETTINGS_PRESET");
     }
 }

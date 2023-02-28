@@ -3,12 +3,14 @@ package mod.bespectacled.modernbeta.world.preset;
 import java.util.Map;
 
 import mod.bespectacled.modernbeta.ModernBeta;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsCaveBiome;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGeneratorSettings;
 import net.minecraft.class_8197;
 import net.minecraft.class_8198;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
@@ -49,19 +51,19 @@ public class ModernBetaWorldPresets {
         RegistryEntryLookup<ChunkGeneratorSettings> registrySettings,
         RegistryEntryLookup<Biome> registryBiome
     ) {
-        RegistryEntry.Reference<DimensionType> dimensionOverworld = registryDimensionType.getOrThrow(DimensionTypes.OVERWORLD);
-        RegistryEntry.Reference<ChunkGeneratorSettings> settingsOverworld = registrySettings.getOrThrow(ModernBetaChunkGeneratorSettings.BETA);
+        RegistryEntry.Reference<DimensionType> dimensionType = registryDimensionType.getOrThrow(DimensionTypes.OVERWORLD);
+        RegistryEntry.Reference<ChunkGeneratorSettings> settings = registrySettings.getOrThrow(ModernBetaChunkGeneratorSettings.BETA);
         
         return new DimensionOptions(
-            dimensionOverworld,
+            dimensionType,
             new ModernBetaChunkGenerator(
                 new ModernBetaBiomeSource(
                     registryBiome,
-                    new NbtCompound(),
-                    new NbtCompound()
+                    new ModernBetaSettingsBiome().toCompound(),
+                    new ModernBetaSettingsCaveBiome().toCompound()
                 ),
-                settingsOverworld,
-                new NbtCompound()
+                settings,
+                new ModernBetaSettingsChunk().toCompound()
             )
         );
     }

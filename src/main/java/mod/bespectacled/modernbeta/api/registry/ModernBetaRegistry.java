@@ -59,6 +59,14 @@ public final class ModernBetaRegistry<T> {
         return this.map.get(key);
     }
     
+    public T getOrElse(String key, String alternate) {
+        if (!this.contains(key)) {
+            return this.get(alternate);
+        }
+        
+        return this.map.get(key);
+    }
+    
     public boolean contains(String key) {
         return this.map.containsKey(key);
     }

@@ -121,7 +121,7 @@ public class ModernBetaConfigBiome implements ConfigData {
         )
     );
     
-    private static Map<String, ConfigClimateMapping> createClimateMapping(
+    public static Map<String, ConfigClimateMapping> createClimateMapping(
         ConfigClimateMapping desert,
         ConfigClimateMapping forest,
         ConfigClimateMapping iceDesert,

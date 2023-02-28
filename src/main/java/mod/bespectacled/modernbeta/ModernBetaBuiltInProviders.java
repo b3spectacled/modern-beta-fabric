@@ -4,6 +4,8 @@ import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
 import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
 import mod.bespectacled.modernbeta.api.world.chunk.noise.NoisePostProcessor;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPreset;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPresets;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderBeta;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderPE;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderSingle;
@@ -78,5 +80,19 @@ public class ModernBetaBuiltInProviders {
     public static void registerBlockSources() {
         ModernBetaRegistries.BLOCKSOURCE.register(ModernBetaBuiltInTypes.DEFAULT_ID, (settings, deriver) -> BlockSource.DEFAULT);
         ModernBetaRegistries.BLOCKSOURCE.register(ModernBetaBuiltInTypes.BlockSource.DEEPSLATE.id, BlockSourceDeepslate::new);
+    }
+    
+    public static void registerSettingsPresets() {
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.DEFAULT_ID, ModernBetaSettingsPreset.DEFAULT);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.BETA.id, ModernBetaSettingsPresets.presetBeta());
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.ALPHA.id, ModernBetaSettingsPresets.presetAlpha());
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.SKYLANDS.id, ModernBetaSettingsPresets.presetSkylands());
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_415.id, ModernBetaSettingsPresets.presetInfdev415());
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_420.id, ModernBetaSettingsPresets.presetInfdev420());
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_611.id, ModernBetaSettingsPresets.presetInfdev611());
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_227.id, ModernBetaSettingsPresets.presetInfdev227());
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INDEV.id, ModernBetaSettingsPresets.presetIndev());
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.id, ModernBetaSettingsPresets.presetClassic());
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.PE.id, ModernBetaSettingsPresets.presetPE());
     }
 }

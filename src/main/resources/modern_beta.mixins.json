@@ -19,6 +19,7 @@
     "client.MixinDebugHud",
     "client.MixinDimensionEffects",
     "client.MixinInGameHud",
+    "client.MixinWorldCreator",
     "client.MixinWorldRenderer"
   ],
   "injectors": {

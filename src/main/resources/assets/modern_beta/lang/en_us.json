@@ -1,6 +1,21 @@
 {
     "generator.modern_beta.modern_beta": "Modern Beta",
     
+    "createWorld.customize.modern_beta.title": "Modern Beta World Presets",
+    
+    "createWorld.customize.modern_beta.preset": "World Preset",
+    "createWorld.customize.modern_beta.preset.modern_beta": "Modern Beta",
+    "createWorld.customize.modern_beta.preset.beta": "Beta",
+    "createWorld.customize.modern_beta.preset.alpha": "Alpha",
+    "createWorld.customize.modern_beta.preset.skylands": "Skylands",
+    "createWorld.customize.modern_beta.preset.infdev_611": "Infdev 611",
+    "createWorld.customize.modern_beta.preset.infdev_420": "Infdev 420",
+    "createWorld.customize.modern_beta.preset.infdev_415": "Infdev 415",
+    "createWorld.customize.modern_beta.preset.infdev_227": "Infdev 227",
+    "createWorld.customize.modern_beta.preset.indev": "Indev",
+    "createWorld.customize.modern_beta.preset.classic_0_30": "Classic 0.30",
+    "createWorld.customize.modern_beta.preset.pe": "Pocket Edition",
+    
     "text.autoconfig.modern_beta.title": "Modern Beta Configuration",
 
     "text.autoconfig.modern_beta.option.renderingConfig.configFixedSeed": "Fixed Seed Options",
