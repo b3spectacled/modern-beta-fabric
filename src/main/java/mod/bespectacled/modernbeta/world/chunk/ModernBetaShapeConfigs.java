@@ -3,6 +3,7 @@ package mod.bespectacled.modernbeta.world.chunk;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 
 public class ModernBetaShapeConfigs {
+    @Deprecated
     public static final GenerationShapeConfig MODERN_BETA;
     public static final GenerationShapeConfig BETA;
     public static final GenerationShapeConfig ALPHA;

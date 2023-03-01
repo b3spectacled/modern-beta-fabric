@@ -2,8 +2,11 @@ package mod.bespectacled.modernbeta.world.blocksource;
 
 import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
@@ -20,7 +23,7 @@ public class BlockSourceDeepslate implements BlockSource {
         this.minY = chunkSettings.deepslateMinY;
         this.maxY = chunkSettings.deepslateMaxY;
         this.useDeepslate = chunkSettings.useDeepslate;
-        this.deepslateBlock = Registries.BLOCK.get(new Identifier(chunkSettings.deepslateBlock)).getDefaultState();
+        this.deepslateBlock = Registries.BLOCK.getOrThrow(keyOf(chunkSettings.deepslateBlock)).getDefaultState();
         this.randomSplitter = randomSplitter;
     }
     
@@ -38,4 +41,7 @@ public class BlockSourceDeepslate implements BlockSource {
         return (double)random.nextFloat() < yThreshold ? this.deepslateBlock : null;
     }
 
+    private static RegistryKey<Block> keyOf(String block) {
+        return RegistryKey.of(RegistryKeys.BLOCK, new Identifier(block));
+    }
 }

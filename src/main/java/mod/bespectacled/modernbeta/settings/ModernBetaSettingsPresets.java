@@ -11,18 +11,18 @@ import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevTheme;
 import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevType;
 
 public class ModernBetaSettingsPresets {
-    public static final String TEXT_BETA = "createWorld.customize.modern_beta.preset.beta";
-    public static final String TEXT_ALPHA = "createWorld.customize.modern_beta.preset.alpha";
-    public static final String TEXT_SKYLANDS = "createWorld.customize.modern_beta.preset.skylands";
-    public static final String TEXT_INFDEV_611 = "createWorld.customize.modern_beta.preset.infdev_611";
-    public static final String TEXT_INFDEV_420 = "createWorld.customize.modern_beta.preset.infdev_420";
-    public static final String TEXT_INFDEV_415 = "createWorld.customize.modern_beta.preset.infdev_415";
-    public static final String TEXT_INFDEV_227 = "createWorld.customize.modern_beta.preset.infdev_227";
-    public static final String TEXT_INDEV = "createWorld.customize.modern_beta.preset.indev";
-    public static final String TEXT_CLASSIC_0_30 = "createWorld.customize.modern_beta.preset.classic_0_30";
-    public static final String TEXT_PE = "createWorld.customize.modern_beta.preset.pe";
+    public static final ModernBetaSettingsPreset PRESET_BETA = presetBeta();
+    public static final ModernBetaSettingsPreset PRESET_ALPHA = presetAlpha();
+    public static final ModernBetaSettingsPreset PRESET_SKYLANDS = presetSkylands();
+    public static final ModernBetaSettingsPreset PRESET_INFDEV_415 = presetInfdev415();
+    public static final ModernBetaSettingsPreset PRESET_INFDEV_420 = presetInfdev420();
+    public static final ModernBetaSettingsPreset PRESET_INFDEV_611 = presetInfdev611();
+    public static final ModernBetaSettingsPreset PRESET_INFDEV_227 = presetInfdev227();
+    public static final ModernBetaSettingsPreset PRESET_INDEV = presetIndev();
+    public static final ModernBetaSettingsPreset PRESET_CLASSIC = presetClassic();
+    public static final ModernBetaSettingsPreset PRESET_PE = presetPE();
     
-    public static ModernBetaSettingsPreset presetBeta() {
+    private static ModernBetaSettingsPreset presetBeta() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
@@ -123,14 +123,13 @@ public class ModernBetaSettingsPresets {
         );
         
         return new ModernBetaSettingsPreset(
-            TEXT_BETA,
             settingsChunk.build(),
             settingsBiome.build(),
             settingsCaveBiome.build()
         );
     }
     
-    public static ModernBetaSettingsPreset presetAlpha() {
+    private static ModernBetaSettingsPreset presetAlpha() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
@@ -161,14 +160,13 @@ public class ModernBetaSettingsPresets {
         settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
         
         return new ModernBetaSettingsPreset(
-            TEXT_ALPHA,
             settingsChunk.build(),
             settingsBiome.build(),
             settingsCaveBiome.build()
         );
     }
     
-    public static ModernBetaSettingsPreset presetSkylands() {
+    private static ModernBetaSettingsPreset presetSkylands() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
@@ -199,14 +197,13 @@ public class ModernBetaSettingsPresets {
         settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
         
         return new ModernBetaSettingsPreset(
-            TEXT_SKYLANDS,
             settingsChunk.build(),
             settingsBiome.build(),
             settingsCaveBiome.build()
          );
     }
     
-    public static ModernBetaSettingsPreset presetInfdev415() {
+    private static ModernBetaSettingsPreset presetInfdev415() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
@@ -233,14 +230,13 @@ public class ModernBetaSettingsPresets {
         settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
         
         return new ModernBetaSettingsPreset(
-            TEXT_INFDEV_415,
             settingsChunk.build(),
             settingsBiome.build(),
             settingsCaveBiome.build()
          );
     }
     
-    public static ModernBetaSettingsPreset presetInfdev420() {
+    private static ModernBetaSettingsPreset presetInfdev420() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
@@ -269,14 +265,13 @@ public class ModernBetaSettingsPresets {
         settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
         
         return new ModernBetaSettingsPreset(
-            TEXT_INFDEV_420,
             settingsChunk.build(),
             settingsBiome.build(),
             settingsCaveBiome.build()
          );
     }
     
-    public static ModernBetaSettingsPreset presetInfdev611() {
+    private static ModernBetaSettingsPreset presetInfdev611() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
@@ -307,14 +302,13 @@ public class ModernBetaSettingsPresets {
         settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
         
         return new ModernBetaSettingsPreset(
-            TEXT_INFDEV_611,
             settingsChunk.build(),
             settingsBiome.build(),
             settingsCaveBiome.build()
         );
     }
     
-    public static ModernBetaSettingsPreset presetInfdev227() {
+    private static ModernBetaSettingsPreset presetInfdev227() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
@@ -330,22 +324,21 @@ public class ModernBetaSettingsPresets {
         settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
         
         return new ModernBetaSettingsPreset(
-            TEXT_INFDEV_227,
             settingsChunk.build(),
             settingsBiome.build(),
             settingsCaveBiome.build()
         );
     }
     
-    public static ModernBetaSettingsPreset presetIndev() {
+    private static ModernBetaSettingsPreset presetIndev() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
         
         settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.INDEV.id;
         settingsChunk.useDeepslate = false;
-        settingsChunk.indevLevelTheme = IndevType.ISLAND.getName();
-        settingsChunk.indevLevelType = IndevTheme.NORMAL.getName();
+        settingsChunk.indevLevelTheme = IndevTheme.NORMAL.getName();
+        settingsChunk.indevLevelType = IndevType.ISLAND.getName();
         settingsChunk.indevLevelWidth = 256;
         settingsChunk.indevLevelLength = 256;
         settingsChunk.indevLevelHeight = 128;
@@ -357,14 +350,13 @@ public class ModernBetaSettingsPresets {
         settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
         
         return new ModernBetaSettingsPreset(
-            TEXT_INDEV,
             settingsChunk.build(),
             settingsBiome.build(),
             settingsCaveBiome.build()
         );
     }
     
-    public static ModernBetaSettingsPreset presetClassic() {
+    private static ModernBetaSettingsPreset presetClassic() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
@@ -382,14 +374,13 @@ public class ModernBetaSettingsPresets {
         settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
         
         return new ModernBetaSettingsPreset(
-            TEXT_CLASSIC_0_30,
             settingsChunk.build(),
             settingsBiome.build(),
             settingsCaveBiome.build()
         );
     }
     
-    public static ModernBetaSettingsPreset presetPE() {
+    private static ModernBetaSettingsPreset presetPE() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
@@ -468,7 +459,6 @@ public class ModernBetaSettingsPresets {
         settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
         
         return new ModernBetaSettingsPreset(
-            TEXT_PE,
             settingsChunk.build(),
             settingsBiome.build(),
             settingsCaveBiome.build()

@@ -3,6 +3,8 @@ package mod.bespectacled.modernbeta.settings;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
+
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome.ConfigVoronoiPoint;
@@ -11,7 +13,7 @@ import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
 import net.minecraft.nbt.NbtCompound;
 
-public class ModernBetaSettingsCaveBiome {
+public class ModernBetaSettingsCaveBiome implements ModernBetaSettings {
     private static final ModernBetaConfigCaveBiome CONFIG = ModernBeta.CAVE_BIOME_CONFIG;
     
     public final String biomeProvider;
@@ -36,6 +38,16 @@ public class ModernBetaSettingsCaveBiome {
         this.voronoiDepthMinY = builder.voronoiDepthMinY;
         this.voronoiDepthMaxY = builder.voronoiDepthMaxY;
         this.voronoiPoints = builder.voronoiPoints;
+    }
+    
+    public static ModernBetaSettingsCaveBiome fromString(String string) {
+        Gson gson = new Gson();
+        
+        return gson.fromJson(string, ModernBetaSettingsCaveBiome.class);
+    }
+    
+    public static ModernBetaSettingsCaveBiome fromCompound(NbtCompound compound) {
+        return new Builder(compound).build();
     }
     
     public NbtCompound toCompound() {

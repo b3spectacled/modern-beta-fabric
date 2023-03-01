@@ -19,6 +19,7 @@ import net.minecraft.world.gen.noise.NoiseRouter;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules.SequenceMaterialRule;
 
 public class ModernBetaChunkGeneratorSettings {
+    @Deprecated
     public static final RegistryKey<ChunkGeneratorSettings> MODERN_BETA;
     public static final RegistryKey<ChunkGeneratorSettings> BETA;
     public static final RegistryKey<ChunkGeneratorSettings> ALPHA;
@@ -31,6 +32,7 @@ public class ModernBetaChunkGeneratorSettings {
     public static final RegistryKey<ChunkGeneratorSettings> CLASSIC_0_30;
     public static final RegistryKey<ChunkGeneratorSettings> PE;
     
+    @SuppressWarnings("deprecation")
     public static void bootstrap(Registerable<ChunkGeneratorSettings> settingsRegisterable) {
         settingsRegisterable.register(MODERN_BETA, createGeneratorSettings(settingsRegisterable, ModernBetaShapeConfigs.MODERN_BETA, 64, true));
         settingsRegisterable.register(BETA, createGeneratorSettings(settingsRegisterable, ModernBetaShapeConfigs.BETA, 64, true));

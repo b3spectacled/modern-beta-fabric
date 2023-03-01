@@ -1,12 +1,14 @@
 package mod.bespectacled.modernbeta.settings;
 
+import com.google.gson.Gson;
+
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigChunk;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
 import net.minecraft.nbt.NbtCompound;
 
-public class ModernBetaSettingsChunk {
+public class ModernBetaSettingsChunk implements ModernBetaSettings {
     private static final ModernBetaConfigChunk CONFIG = ModernBeta.CHUNK_CONFIG;
     
     public final String chunkProvider;
@@ -109,6 +111,16 @@ public class ModernBetaSettingsChunk {
         this.islesCenterOceanRadius = builder.islesCenterOceanRadius;
         this.islesOuterIslandNoiseScale = builder.islesOuterIslandNoiseScale;
         this.islesOuterIslandNoiseOffset = builder.islesOuterIslandNoiseOffset;
+    }
+    
+    public static ModernBetaSettingsChunk fromString(String string) {
+        Gson gson = new Gson();
+        
+        return gson.fromJson(string, ModernBetaSettingsChunk.class);
+    }
+    
+    public static ModernBetaSettingsChunk fromCompound(NbtCompound compound) {
+        return new Builder(compound).build();
     }
     
     public NbtCompound toCompound() {

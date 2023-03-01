@@ -1,7 +1,5 @@
 package mod.bespectacled.modernbeta.api.registry;
 
-import java.util.function.BiFunction;
-
 import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
@@ -10,7 +8,6 @@ import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
 import mod.bespectacled.modernbeta.api.world.chunk.noise.NoisePostProcessor;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPreset;
-import mod.bespectacled.modernbeta.util.function.TriFunction;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryEntryLookup;
@@ -18,12 +15,12 @@ import net.minecraft.util.math.random.RandomSplitter;
 import net.minecraft.world.biome.Biome;
 
 public final class ModernBetaRegistries {
-    public static final ModernBetaRegistry<BiFunction<ModernBetaChunkGenerator, Long, ChunkProvider>> CHUNK;
-    public static final ModernBetaRegistry<TriFunction<NbtCompound, RegistryEntryLookup<Biome>, Long, BiomeProvider>> BIOME;
-    public static final ModernBetaRegistry<TriFunction<NbtCompound, RegistryEntryLookup<Biome>, Long, CaveBiomeProvider>> CAVE_BIOME;
+    public static final ModernBetaRegistry<ChunkProviderCreator> CHUNK;
+    public static final ModernBetaRegistry<BiomeProviderCreator> BIOME;
+    public static final ModernBetaRegistry<CaveBiomeProviderCreator> CAVE_BIOME;
     public static final ModernBetaRegistry<NoisePostProcessor> NOISE_POST_PROCESSOR;
     public static final ModernBetaRegistry<SurfaceConfig> SURFACE_CONFIG;
-    public static final ModernBetaRegistry<BiFunction<ModernBetaSettingsChunk, RandomSplitter, BlockSource>> BLOCKSOURCE;
+    public static final ModernBetaRegistry<BlockSourceCreator> BLOCKSOURCE;
     public static final ModernBetaRegistry<ModernBetaSettingsPreset> SETTINGS_PRESET;
     
     static {
@@ -34,5 +31,25 @@ public final class ModernBetaRegistries {
         SURFACE_CONFIG = new ModernBetaRegistry<>("SURFACE_CONFIG");
         BLOCKSOURCE = new ModernBetaRegistry<>("BLOCKSOURCE");
         SETTINGS_PRESET = new ModernBetaRegistry<>("SETTINGS_PRESET");
+    }
+    
+    @FunctionalInterface
+    public static interface ChunkProviderCreator {
+        ChunkProvider apply(ModernBetaChunkGenerator chunkGenerator, long seed);
+    }
+    
+    @FunctionalInterface
+    public static interface BiomeProviderCreator {
+        BiomeProvider apply(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry, long seed);
+    }
+    
+    @FunctionalInterface
+    public static interface CaveBiomeProviderCreator {
+        CaveBiomeProvider apply(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry, long seed);
+    }
+    
+    @FunctionalInterface
+    public static interface BlockSourceCreator {
+        BlockSource apply(ModernBetaSettingsChunk settingsChunk, RandomSplitter randomSplitter);
     }
 }

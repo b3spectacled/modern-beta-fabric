@@ -14,6 +14,7 @@ import org.slf4j.event.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
+import net.minecraft.text.Text;
 
 public final class ModernBetaRegistry<T> {
     private final String name;
@@ -91,6 +92,19 @@ public final class ModernBetaRegistry<T> {
             .stream()
             .filter(e -> !e.getKey().equals(ModernBetaBuiltInTypes.DEFAULT_ID))
             .collect(Collectors.toSet());
+    }
+    
+    public String getKey(T entry) {
+        return this.map.entrySet()
+            .stream()
+            .filter(e -> e.getValue().equals(entry))
+            .findFirst()
+            .get()
+            .getKey();
+    }
+    
+    public Text getTranslatableText(T entry) {
+        return Text.translatable(this.getKey(entry));
     }
 }
   

@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.Gson;
+
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome;
 import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome.ConfigClimateMapping;
@@ -15,7 +17,7 @@ import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
 import net.minecraft.nbt.NbtCompound;
 
-public class ModernBetaSettingsBiome {
+public class ModernBetaSettingsBiome implements ModernBetaSettings {
     private static final ModernBetaConfigBiome CONFIG = ModernBeta.BIOME_CONFIG;
     
     public final String biomeProvider;
@@ -44,6 +46,16 @@ public class ModernBetaSettingsBiome {
         
         this.climateMappings = builder.climateMappings;
         this.voronoiPoints = builder.voronoiPoints;
+    }
+    
+    public static ModernBetaSettingsBiome fromString(String string) {
+        Gson gson = new Gson();
+        
+        return gson.fromJson(string, ModernBetaSettingsBiome.class);
+    }
+    
+    public static ModernBetaSettingsBiome fromCompound(NbtCompound compound) {
+        return new Builder(compound).build();
     }
     
     public NbtCompound toCompound() {
