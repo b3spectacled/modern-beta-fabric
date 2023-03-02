@@ -3,9 +3,9 @@ package mod.bespectacled.modernbeta.world.preset;
 import java.util.Map;
 
 import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
-import mod.bespectacled.modernbeta.settings.ModernBetaSettingsCaveBiome;
-import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
+import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
+import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPreset;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGeneratorSettings;
@@ -54,16 +54,18 @@ public class ModernBetaWorldPresets {
         RegistryEntry.Reference<DimensionType> dimensionType = registryDimensionType.getOrThrow(DimensionTypes.OVERWORLD);
         RegistryEntry.Reference<ChunkGeneratorSettings> settings = registrySettings.getOrThrow(ModernBetaChunkGeneratorSettings.BETA);
         
+        ModernBetaSettingsPreset defaultPreset = ModernBetaRegistries.SETTINGS_PRESET.get(ModernBetaBuiltInTypes.Chunk.BETA.id);
+        
         return new DimensionOptions(
             dimensionType,
             new ModernBetaChunkGenerator(
                 new ModernBetaBiomeSource(
                     registryBiome,
-                    new ModernBetaSettingsBiome().toCompound(),
-                    new ModernBetaSettingsCaveBiome().toCompound()
+                    defaultPreset.getNbtBiome(),
+                    defaultPreset.getNbtCaveBiome()
                 ),
                 settings,
-                new ModernBetaSettingsChunk().toCompound()
+                defaultPreset.getNbtChunk()
             )
         );
     }

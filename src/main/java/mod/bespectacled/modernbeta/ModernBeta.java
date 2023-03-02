@@ -80,11 +80,9 @@ public class ModernBeta implements ModInitializer {
         ModernBetaBuiltInProviders.registerSurfaceConfigs();
         ModernBetaBuiltInProviders.registerNoisePostProcessors();
         ModernBetaBuiltInProviders.registerBlockSources();
+        ModernBetaBuiltInProviders.registerSettingsPresets();
 
         if (CLIENT_ENV) {
-            // Register default providers
-            ModernBetaBuiltInProviders.registerSettingsPresets();
-            
             // Override default biome grass/foliage colors
             BlockColors.register();
 

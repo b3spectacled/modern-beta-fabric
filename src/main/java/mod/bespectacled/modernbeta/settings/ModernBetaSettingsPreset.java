@@ -1,5 +1,8 @@
 package mod.bespectacled.modernbeta.settings;
 
+import org.slf4j.event.Level;
+
+import mod.bespectacled.modernbeta.ModernBeta;
 import net.minecraft.nbt.NbtCompound;
 
 public class ModernBetaSettingsPreset {
@@ -44,17 +47,30 @@ public class ModernBetaSettingsPreset {
     }
     
     public ModernBetaSettingsPreset set(String stringChunk, String stringBiome, String stringCaveBiome) {
-        ModernBetaSettingsChunk settingsChunk = stringChunk != null && !stringChunk.isBlank() ?
-            ModernBetaSettingsChunk.fromString(stringChunk) :
-            this.settingsChunk;
+        ModernBetaSettingsChunk settingsChunk;
+        ModernBetaSettingsBiome settingsBiome;
+        ModernBetaSettingsCaveBiome settingsCaveBiome;
         
-        ModernBetaSettingsBiome settingsBiome = stringBiome != null && !stringBiome.isBlank() ?
-            ModernBetaSettingsBiome.fromString(stringBiome) :
-            this.settingsBiome;
-        
-        ModernBetaSettingsCaveBiome settingsCaveBiome = stringCaveBiome != null && !stringCaveBiome.isBlank() ?
-            ModernBetaSettingsCaveBiome.fromString(stringCaveBiome) :
-            this.settingsCaveBiome;
+        try {
+            settingsChunk = stringChunk != null && !stringChunk.isBlank() ?
+                ModernBetaSettingsChunk.fromString(stringChunk) :
+                this.settingsChunk;
+            
+            settingsBiome = stringBiome != null && !stringBiome.isBlank() ?
+                ModernBetaSettingsBiome.fromString(stringBiome) :
+                this.settingsBiome;
+            
+            settingsCaveBiome = stringCaveBiome != null && !stringCaveBiome.isBlank() ?
+                ModernBetaSettingsCaveBiome.fromString(stringCaveBiome) :
+                this.settingsCaveBiome;
+            
+        } catch (Exception e) {
+            ModernBeta.log(Level.ERROR, "Unable to read settings JSON!");
+            
+            settingsChunk = this.settingsChunk;
+            settingsBiome = this.settingsBiome;
+            settingsCaveBiome = this.settingsCaveBiome;
+        }
         
         return new ModernBetaSettingsPreset(settingsChunk, settingsBiome, settingsCaveBiome);
     }

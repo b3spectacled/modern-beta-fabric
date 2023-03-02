@@ -72,6 +72,10 @@ public final class ModernBetaRegistry<T> {
         return this.map.containsKey(key);
     }
     
+    public boolean contains(T value) {
+        return this.map.containsValue(value);
+    }
+    
     public Set<String> getKeySet() {
         return this.map.keySet()
             .stream()
@@ -97,6 +101,7 @@ public final class ModernBetaRegistry<T> {
     public String getKey(T entry) {
         return this.map.entrySet()
             .stream()
+            .filter(e -> !e.getKey().equals(ModernBetaBuiltInTypes.DEFAULT_ID))
             .filter(e -> e.getValue().equals(entry))
             .findFirst()
             .get()

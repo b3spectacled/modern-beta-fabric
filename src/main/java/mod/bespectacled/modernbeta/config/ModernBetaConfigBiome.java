@@ -191,7 +191,7 @@ public class ModernBetaConfigBiome implements ConfigData {
                 .putString(NbtTags.DEEP_OCEAN_BIOME, this.deepOceanBiome)
                 .build();
         }
-        
+
         public static ConfigClimateMapping fromCompound(NbtCompound compound) {
             return new ConfigClimateMapping(
                 NbtUtil.readStringOrThrow(NbtTags.BIOME, compound),

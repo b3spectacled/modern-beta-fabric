@@ -152,65 +152,65 @@
             "useOceanBiomes": 1,
             "voronoiPoints": [
               {
-                "biome": "modern_beta:beta_tundra",
-                "deepOceanBiome": "modern_beta:beta_frozen_ocean",
-                "oceanBiome": "modern_beta:beta_frozen_ocean",
+                "biome": "minecraft:snowy_plains",
+                "deepOceanBiome": "minecraft:frozen_ocean",
+                "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.0,
                 "temp": 0.0
               },
               {
-                "biome": "modern_beta:beta_taiga",
-                "deepOceanBiome": "modern_beta:beta_frozen_ocean",
-                "oceanBiome": "modern_beta:beta_frozen_ocean",
+                "biome": "minecraft:snowy_taiga",
+                "deepOceanBiome": "minecraft:frozen_ocean",
+                "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.5,
                 "temp": 0.0
               },
               {
-                "biome": "modern_beta:beta_swampland",
-                "deepOceanBiome": "modern_beta:beta_cold_ocean",
-                "oceanBiome": "modern_beta:beta_cold_ocean",
+                "biome": "minecraft:swamp",
+                "deepOceanBiome": "minecraft:cold_ocean",
+                "oceanBiome": "minecraft:cold_ocean",
                 "rain": 1.0,
                 "temp": 0.0
               },
               {
-                "biome": "modern_beta:beta_savanna",
-                "deepOceanBiome": "modern_beta:beta_ocean",
-                "oceanBiome": "modern_beta:beta_ocean",
+                "biome": "minecraft:savanna",
+                "deepOceanBiome": "minecraft:ocean",
+                "oceanBiome": "minecraft:ocean",
                 "rain": 0.0,
                 "temp": 0.5
               },
               {
-                "biome": "modern_beta:beta_forest",
-                "deepOceanBiome": "modern_beta:beta_ocean",
-                "oceanBiome": "modern_beta:beta_ocean",
+                "biome": "minecraft:forest",
+                "deepOceanBiome": "minecraft:ocean",
+                "oceanBiome": "minecraft:ocean",
                 "rain": 0.5,
                 "temp": 0.5
               },
               {
-                "biome": "modern_beta:beta_shrubland",
-                "deepOceanBiome": "modern_beta:beta_ocean",
-                "oceanBiome": "modern_beta:beta_ocean",
+                "biome": "minecraft:plains",
+                "deepOceanBiome": "minecraft:ocean",
+                "oceanBiome": "minecraft:ocean",
                 "rain": 1.0,
                 "temp": 0.5
               },
               {
-                "biome": "modern_beta:beta_desert",
-                "deepOceanBiome": "modern_beta:beta_ocean",
-                "oceanBiome": "modern_beta:beta_ocean",
+                "biome": "minecraft:desert",
+                "deepOceanBiome": "minecraft:lukewarm_ocean",
+                "oceanBiome": "minecraft:lukewarm_ocean",
                 "rain": 0.0,
                 "temp": 1.0
               },
               {
-                "biome": "modern_beta:beta_plains",
-                "deepOceanBiome": "modern_beta:beta_ocean",
-                "oceanBiome": "modern_beta:beta_ocean",
+                "biome": "minecraft:dark_forest",
+                "deepOceanBiome": "minecraft:lukewarm_ocean",
+                "oceanBiome": "minecraft:lukewarm_ocean",
                 "rain": 0.5,
                 "temp": 1.0
               },
               {
-                "biome": "modern_beta:beta_rainforest",
-                "deepOceanBiome": "modern_beta:beta_warm_ocean",
-                "oceanBiome": "modern_beta:beta_warm_ocean",
+                "biome": "minecraft:jungle",
+                "deepOceanBiome": "minecraft:warm_ocean",
+                "oceanBiome": "minecraft:warm_ocean",
                 "rain": 1.0,
                 "temp": 1.0
               }

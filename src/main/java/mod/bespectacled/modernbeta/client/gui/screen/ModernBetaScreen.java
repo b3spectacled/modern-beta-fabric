@@ -62,7 +62,7 @@ public abstract class ModernBetaScreen extends Screen {
         adder.add(buttonWidget);
     }
     
-    private void renderBackgroundOverlay(MatrixStack matrices) {
+    protected void renderBackgroundOverlay(MatrixStack matrices) {
         RenderSystem.setShaderTexture(0, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE);
         RenderSystem.setShaderColor(0.125f, 0.125f, 0.125f, 1.0f);
         DrawableHelper.drawTexture(matrices, this.overlayLeft, this.overlayTop, this.overlayRight, this.overlayBottom, this.overlayRight - this.overlayLeft, this.overlayBottom - this.overlayTop, 32, 32);
@@ -70,7 +70,7 @@ public abstract class ModernBetaScreen extends Screen {
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
     
-    private void renderBackgroundGradient(MatrixStack matrices) {
+    protected void renderBackgroundGradient(MatrixStack matrices) {
         RenderSystem.setShaderTexture(0, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE);
         RenderSystem.setShaderColor(0.25f, 0.25f, 0.25f, 1.0f);
         DrawableHelper.drawTexture(matrices, this.overlayLeft, 0, -100, 0.0f, 0.0f, this.width, this.overlayTop, 32, 32);
