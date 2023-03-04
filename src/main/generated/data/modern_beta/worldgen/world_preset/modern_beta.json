@@ -6,10 +6,258 @@
         "type": "modern_beta:modern_beta",
         "biome_source": {
           "type": "modern_beta:modern_beta",
-          "cave_provider_settings": {},
-          "provider_settings": {}
+          "cave_provider_settings": {
+            "biomeProvider": "voronoi",
+            "singleBiome": "minecraft:lush_caves",
+            "voronoiHorizontalNoiseScale": 32.0,
+            "voronoiPoints": [
+              {
+                "biome": "",
+                "depth": 0.75,
+                "rain": 0.5,
+                "temp": 0.0
+              },
+              {
+                "biome": "minecraft:lush_caves",
+                "depth": 0.75,
+                "rain": 0.5,
+                "temp": 0.1
+              },
+              {
+                "biome": "",
+                "depth": 0.75,
+                "rain": 0.5,
+                "temp": 0.5
+              },
+              {
+                "biome": "minecraft:dripstone_caves",
+                "depth": 0.75,
+                "rain": 0.5,
+                "temp": 0.9
+              },
+              {
+                "biome": "",
+                "depth": 0.75,
+                "rain": 0.5,
+                "temp": 1.0
+              },
+              {
+                "biome": "",
+                "depth": 0.25,
+                "rain": 0.5,
+                "temp": 0.0
+              },
+              {
+                "biome": "minecraft:lush_caves",
+                "depth": 0.25,
+                "rain": 0.5,
+                "temp": 0.2
+              },
+              {
+                "biome": "",
+                "depth": 0.25,
+                "rain": 0.5,
+                "temp": 0.4
+              },
+              {
+                "biome": "minecraft:deep_dark",
+                "depth": 0.25,
+                "rain": 0.5,
+                "temp": 0.5
+              },
+              {
+                "biome": "",
+                "depth": 0.25,
+                "rain": 0.5,
+                "temp": 0.6
+              },
+              {
+                "biome": "minecraft:dripstone_caves",
+                "depth": 0.25,
+                "rain": 0.5,
+                "temp": 0.8
+              },
+              {
+                "biome": "",
+                "depth": 0.25,
+                "rain": 0.5,
+                "temp": 1.0
+              }
+            ],
+            "voronoiVerticalNoiseScale": 16.0
+          },
+          "provider_settings": {
+            "biomeProvider": "beta",
+            "climateDetailNoiseScale": 0.25,
+            "climateMappings": {
+              "desert": {
+                "biome": "modern_beta:beta_desert",
+                "deepOceanBiome": "modern_beta:beta_ocean",
+                "oceanBiome": "modern_beta:beta_ocean"
+              },
+              "forest": {
+                "biome": "modern_beta:beta_forest",
+                "deepOceanBiome": "modern_beta:beta_ocean",
+                "oceanBiome": "modern_beta:beta_ocean"
+              },
+              "ice_desert": {
+                "biome": "modern_beta:beta_tundra",
+                "deepOceanBiome": "modern_beta:beta_frozen_ocean",
+                "oceanBiome": "modern_beta:beta_frozen_ocean"
+              },
+              "plains": {
+                "biome": "modern_beta:beta_plains",
+                "deepOceanBiome": "modern_beta:beta_ocean",
+                "oceanBiome": "modern_beta:beta_ocean"
+              },
+              "rainforest": {
+                "biome": "modern_beta:beta_rainforest",
+                "deepOceanBiome": "modern_beta:beta_warm_ocean",
+                "oceanBiome": "modern_beta:beta_warm_ocean"
+              },
+              "savanna": {
+                "biome": "modern_beta:beta_savanna",
+                "deepOceanBiome": "modern_beta:beta_ocean",
+                "oceanBiome": "modern_beta:beta_ocean"
+              },
+              "seasonal_forest": {
+                "biome": "modern_beta:beta_seasonal_forest",
+                "deepOceanBiome": "modern_beta:beta_lukewarm_ocean",
+                "oceanBiome": "modern_beta:beta_lukewarm_ocean"
+              },
+              "shrubland": {
+                "biome": "modern_beta:beta_shrubland",
+                "deepOceanBiome": "modern_beta:beta_ocean",
+                "oceanBiome": "modern_beta:beta_ocean"
+              },
+              "swampland": {
+                "biome": "modern_beta:beta_swampland",
+                "deepOceanBiome": "modern_beta:beta_cold_ocean",
+                "oceanBiome": "modern_beta:beta_cold_ocean"
+              },
+              "taiga": {
+                "biome": "modern_beta:beta_taiga",
+                "deepOceanBiome": "modern_beta:beta_frozen_ocean",
+                "oceanBiome": "modern_beta:beta_frozen_ocean"
+              },
+              "tundra": {
+                "biome": "modern_beta:beta_tundra",
+                "deepOceanBiome": "modern_beta:beta_frozen_ocean",
+                "oceanBiome": "modern_beta:beta_frozen_ocean"
+              }
+            },
+            "climateRainNoiseScale": 0.05,
+            "climateTempNoiseScale": 0.025,
+            "singleBiome": "modern_beta:alpha",
+            "useOceanBiomes": 1,
+            "voronoiPoints": [
+              {
+                "biome": "minecraft:snowy_plains",
+                "deepOceanBiome": "minecraft:frozen_ocean",
+                "oceanBiome": "minecraft:frozen_ocean",
+                "rain": 0.0,
+                "temp": 0.0
+              },
+              {
+                "biome": "minecraft:snowy_taiga",
+                "deepOceanBiome": "minecraft:frozen_ocean",
+                "oceanBiome": "minecraft:frozen_ocean",
+                "rain": 0.5,
+                "temp": 0.0
+              },
+              {
+                "biome": "minecraft:swamp",
+                "deepOceanBiome": "minecraft:cold_ocean",
+                "oceanBiome": "minecraft:cold_ocean",
+                "rain": 1.0,
+                "temp": 0.0
+              },
+              {
+                "biome": "minecraft:savanna",
+                "deepOceanBiome": "minecraft:ocean",
+                "oceanBiome": "minecraft:ocean",
+                "rain": 0.0,
+                "temp": 0.5
+              },
+              {
+                "biome": "minecraft:forest",
+                "deepOceanBiome": "minecraft:ocean",
+                "oceanBiome": "minecraft:ocean",
+                "rain": 0.5,
+                "temp": 0.5
+              },
+              {
+                "biome": "minecraft:plains",
+                "deepOceanBiome": "minecraft:ocean",
+                "oceanBiome": "minecraft:ocean",
+                "rain": 1.0,
+                "temp": 0.5
+              },
+              {
+                "biome": "minecraft:desert",
+                "deepOceanBiome": "minecraft:lukewarm_ocean",
+                "oceanBiome": "minecraft:lukewarm_ocean",
+                "rain": 0.0,
+                "temp": 1.0
+              },
+              {
+                "biome": "minecraft:dark_forest",
+                "deepOceanBiome": "minecraft:lukewarm_ocean",
+                "oceanBiome": "minecraft:lukewarm_ocean",
+                "rain": 0.5,
+                "temp": 1.0
+              },
+              {
+                "biome": "minecraft:jungle",
+                "deepOceanBiome": "minecraft:warm_ocean",
+                "oceanBiome": "minecraft:warm_ocean",
+                "rain": 1.0,
+                "temp": 1.0
+              }
+            ]
+          }
         },
-        "provider_settings": {},
+        "provider_settings": {
+          "chunkProvider": "beta",
+          "deepslateBlock": "minecraft:deepslate",
+          "deepslateMaxY": 8,
+          "deepslateMinY": 0,
+          "indevCaveRadius": 1.0,
+          "indevLevelHeight": 128,
+          "indevLevelLength": 256,
+          "indevLevelTheme": "normal",
+          "indevLevelType": "island",
+          "indevLevelWidth": 256,
+          "infdevUsePyramid": 1,
+          "infdevUseWall": 1,
+          "islesCenterIslandFalloff": 4.0,
+          "islesCenterIslandRadius": 16,
+          "islesCenterOceanFalloffDistance": 16,
+          "islesCenterOceanRadius": 64,
+          "islesMaxOceanDepth": 200.0,
+          "islesOuterIslandNoiseOffset": 0.25,
+          "islesOuterIslandNoiseScale": 300.0,
+          "islesUseIslands": 0,
+          "islesUseOuterIslands": 1,
+          "noiseBaseSize": 8.5,
+          "noiseBottomSlideOffset": 0,
+          "noiseBottomSlideSize": 3,
+          "noiseBottomSlideTarget": 15,
+          "noiseCoordinateScale": 684.412,
+          "noiseDepthNoiseScaleX": 200.0,
+          "noiseDepthNoiseScaleZ": 200.0,
+          "noiseHeightScale": 684.412,
+          "noiseLowerLimitScale": 512.0,
+          "noiseMainNoiseScaleX": 80.0,
+          "noiseMainNoiseScaleY": 160.0,
+          "noiseMainNoiseScaleZ": 80.0,
+          "noiseStretchY": 12.0,
+          "noiseTopSlideOffset": 0,
+          "noiseTopSlideSize": 3,
+          "noiseTopSlideTarget": -10,
+          "noiseUpperLimitScale": 512.0,
+          "useDeepslate": 1
+        },
         "settings": "modern_beta:modern_beta"
       }
     },
