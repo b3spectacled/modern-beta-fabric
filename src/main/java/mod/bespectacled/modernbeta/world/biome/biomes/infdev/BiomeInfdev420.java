@@ -16,7 +16,6 @@ public class BiomeInfdev420 {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         ModernBetaBiomeMobs.addCommonMobs(spawnSettings);
         ModernBetaBiomeMobs.addSquid(spawnSettings);
-        ModernBetaBiomeMobs.addWolves(spawnSettings);
         
         GenerationSettings.LookupBackedBuilder genSettings = new GenerationSettings.LookupBackedBuilder(featureLookup, carverLookup);
         ModernBetaBiomeFeatures.addInfdev420Features(genSettings);

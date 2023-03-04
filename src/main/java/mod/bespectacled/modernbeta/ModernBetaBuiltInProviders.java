@@ -4,7 +4,6 @@ import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
 import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
 import mod.bespectacled.modernbeta.api.world.chunk.noise.NoisePostProcessor;
-import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPreset;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPresets;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderBeta;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderPE;
@@ -83,7 +82,7 @@ public class ModernBetaBuiltInProviders {
     }
     
     public static void registerSettingsPresets() {
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.DEFAULT_ID, ModernBetaSettingsPreset.DEFAULT);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.DEFAULT_ID, ModernBetaSettingsPresets.PRESET_BETA);
         ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.BETA.id, ModernBetaSettingsPresets.PRESET_BETA);
         ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.ALPHA.id, ModernBetaSettingsPresets.PRESET_ALPHA);
         ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.SKYLANDS.id, ModernBetaSettingsPresets.PRESET_SKYLANDS);

@@ -6,6 +6,7 @@ import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPreset;
+import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPreset.SettingsType;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGeneratorSettings;
@@ -61,11 +62,11 @@ public class ModernBetaWorldPresets {
             new ModernBetaChunkGenerator(
                 new ModernBetaBiomeSource(
                     registryBiome,
-                    defaultPreset.getNbtBiome(),
-                    defaultPreset.getNbtCaveBiome()
+                    defaultPreset.getCompound(SettingsType.BIOME),
+                    defaultPreset.getCompound(SettingsType.CAVE_BIOME)
                 ),
                 settings,
-                defaultPreset.getNbtChunk()
+                defaultPreset.getCompound(SettingsType.CHUNK)
             )
         );
     }

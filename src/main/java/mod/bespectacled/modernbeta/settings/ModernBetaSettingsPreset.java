@@ -4,9 +4,14 @@ import org.slf4j.event.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Pair;
 
 public class ModernBetaSettingsPreset {
-    public static final ModernBetaSettingsPreset DEFAULT;
+    public enum SettingsType {
+        CHUNK,
+        BIOME,
+        CAVE_BIOME
+    }
     
     private final ModernBetaSettingsChunk settingsChunk;
     private final ModernBetaSettingsBiome settingsBiome;
@@ -34,22 +39,22 @@ public class ModernBetaSettingsPreset {
         this.settingsCaveBiome = settingsCaveBiome;
     }
     
-    public NbtCompound getNbtChunk() {
-        return this.settingsChunk.toCompound();
+    public NbtCompound getCompound(SettingsType settingsType) {
+        ModernBetaSettings settings = switch(settingsType) {
+            case CHUNK -> this.settingsChunk;
+            case BIOME -> this.settingsBiome;
+            case CAVE_BIOME -> this.settingsCaveBiome;
+        };
+        
+        return settings.toCompound();
     }
     
-    public NbtCompound getNbtBiome() {
-        return this.settingsBiome.toCompound();
-    }
-    
-    public NbtCompound getNbtCaveBiome() {
-        return this.settingsCaveBiome.toCompound();
-    }
-    
-    public ModernBetaSettingsPreset set(String stringChunk, String stringBiome, String stringCaveBiome) {
+    public Pair<ModernBetaSettingsPreset, Boolean> set(String stringChunk, String stringBiome, String stringCaveBiome) {
         ModernBetaSettingsChunk settingsChunk;
         ModernBetaSettingsBiome settingsBiome;
         ModernBetaSettingsCaveBiome settingsCaveBiome;
+        
+        boolean successful = true;
         
         try {
             settingsChunk = stringChunk != null && !stringChunk.isBlank() ?
@@ -65,14 +70,15 @@ public class ModernBetaSettingsPreset {
                 this.settingsCaveBiome;
             
         } catch (Exception e) {
-            ModernBeta.log(Level.ERROR, "Unable to read settings JSON!");
+            ModernBeta.log(Level.ERROR, "Unable to read settings JSON! Reverting to previous settings..");
+            successful = false;
             
             settingsChunk = this.settingsChunk;
             settingsBiome = this.settingsBiome;
             settingsCaveBiome = this.settingsCaveBiome;
         }
         
-        return new ModernBetaSettingsPreset(settingsChunk, settingsBiome, settingsCaveBiome);
+        return new Pair<>(new ModernBetaSettingsPreset(settingsChunk, settingsBiome, settingsCaveBiome), successful);
     }
 
     @Override
@@ -86,16 +92,8 @@ public class ModernBetaSettingsPreset {
         ModernBetaSettingsPreset other = (ModernBetaSettingsPreset)obj;
         
         return 
-            this.getNbtChunk().equals(other.getNbtChunk()) &&
-            this.getNbtBiome().equals(other.getNbtBiome()) &&
-            this.getNbtCaveBiome().equals(other.getNbtCaveBiome());
-    }
-    
-    static {
-        DEFAULT = new ModernBetaSettingsPreset(
-            new ModernBetaSettingsChunk(),
-            new ModernBetaSettingsBiome(),
-            new ModernBetaSettingsCaveBiome()
-        );
+            this.settingsChunk.toCompound().equals(other.settingsChunk.toCompound()) &&
+            this.settingsBiome.toCompound().equals(other.settingsBiome.toCompound()) &&
+            this.settingsCaveBiome.toCompound().equals(other.settingsCaveBiome.toCompound());
     }
 }

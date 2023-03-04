@@ -14,6 +14,9 @@ public abstract class ModernBetaScreen extends Screen {
     public static final int BUTTON_HEIGHT = 20;
     public static final int BUTTON_LENGTH = 150;
     
+    public static final int TEXTURE_HEIGHT = 50;
+    public static final int TEXTURE_LENGTH = 150;
+    
     protected final Screen parent;
     protected int overlayLeft;
     protected int overlayRight;

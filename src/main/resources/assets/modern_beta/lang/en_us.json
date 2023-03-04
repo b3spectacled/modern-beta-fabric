@@ -10,7 +10,8 @@
     "createWorld.customize.modern_beta.biome": "Biome Provider",
     "createWorld.customize.modern_beta.cave_biome": "Cave Biome Provider",
     "createWorld.customize.modern_beta.settings": "Settings",
-    "createWorld.customize.modern_beta.invalid": "Settings JSON is invalid!",
+    "createWorld.customize.modern_beta.invalid_json": "Settings JSON is invalid.",
+    "createWorld.customize.modern_beta.invalid_settings": "Couldn't read new settings, reset to previous settings.",
     
     "createWorld.customize.modern_beta.reset": "Reset settings",
     "createWorld.customize.modern_beta.reset.message": "Reset world settings to default?",

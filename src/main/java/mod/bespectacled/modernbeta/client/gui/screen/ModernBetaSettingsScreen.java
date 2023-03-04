@@ -20,7 +20,7 @@ import net.minecraft.text.Text;
 
 public class ModernBetaSettingsScreen extends ModernBetaScreen {
     private static final String TEXT_SETTINGS = "createWorld.customize.modern_beta.settings";
-    private static final String TEXT_INVALID = "createWorld.customize.modern_beta.invalid";
+    private static final String TEXT_INVALID_JSON = "createWorld.customize.modern_beta.invalid_json";
     
     private final Consumer<String> onDone;
     private final Gson gson;
@@ -62,7 +62,7 @@ public class ModernBetaSettingsScreen extends ModernBetaScreen {
             this.onChange();
         });
         
-        Text textInvalid = Text.translatable(TEXT_INVALID).fillStyle(Style.EMPTY.withColor(16711680));
+        Text textInvalid = Text.translatable(TEXT_INVALID_JSON).fillStyle(Style.EMPTY.withColor(16737380));
         this.widgetInvalid = new TextWidget(textInvalid, this.textRenderer);
         
         GridWidget gridWidget = this.createGridWidget();
