@@ -23,9 +23,9 @@ public class ModernBetaSettingsPreset {
         NbtCompound newSettingsCaveBiome
     ) {
         this(
-            new ModernBetaSettingsChunk.Builder(newSettingsChunk).build(),
-            new ModernBetaSettingsBiome.Builder(newSettingsBiome).build(),
-            new ModernBetaSettingsCaveBiome.Builder(newSettingsCaveBiome).build()
+            ModernBetaSettingsChunk.fromCompound(newSettingsChunk),
+            ModernBetaSettingsBiome.fromCompound(newSettingsBiome),
+            ModernBetaSettingsCaveBiome.fromCompound(newSettingsCaveBiome)
        );
     }
     

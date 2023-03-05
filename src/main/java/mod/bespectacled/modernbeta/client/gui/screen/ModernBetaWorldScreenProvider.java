@@ -22,7 +22,7 @@ public class ModernBetaWorldScreenProvider {
         NbtCompound caveBiomeSettings
     ) {
         return (dynamicRegistryManager, dimensionsRegistryHolder) -> {
-            ModernBetaSettingsChunk modernBetaSettingsChunk = new ModernBetaSettingsChunk.Builder(chunkSettings).build(); 
+            ModernBetaSettingsChunk modernBetaSettingsChunk = ModernBetaSettingsChunk.fromCompound(chunkSettings); 
             
             Registry<ChunkGeneratorSettings> registrySettings = dynamicRegistryManager.get(RegistryKeys.CHUNK_GENERATOR_SETTINGS);
             RegistryEntry.Reference<ChunkGeneratorSettings> settings = registrySettings.entryOf(keyOfSettings(ModernBeta.createId(modernBetaSettingsChunk.chunkProvider)));

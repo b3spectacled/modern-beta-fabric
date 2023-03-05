@@ -65,7 +65,7 @@ public abstract class ChunkProvider {
         this.seed = seed;
         
         this.generatorSettings = chunkGenerator.getGeneratorSettings();
-        this.chunkSettings = new ModernBetaSettingsChunk.Builder(chunkGenerator.getChunkSettings()).build();
+        this.chunkSettings = ModernBetaSettingsChunk.fromCompound(chunkGenerator.getChunkSettings());
         this.random = new Random(this.seed);
 
         this.emptyFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);

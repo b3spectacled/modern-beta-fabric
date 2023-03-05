@@ -79,7 +79,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
     }
 
     public void initProvider(long seed) {
-        ModernBetaSettingsChunk chunkSettings = new ModernBetaSettingsChunk.Builder(this.chunkSettings).build();
+        ModernBetaSettingsChunk chunkSettings = ModernBetaSettingsChunk.fromCompound(this.chunkSettings);
         
         this.chunkProvider = ModernBetaRegistries.CHUNK
             .get(chunkSettings.chunkProvider)

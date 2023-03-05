@@ -21,7 +21,7 @@ public abstract class CaveBiomeProvider {
      * @param settings Biome settings.
      */
     public CaveBiomeProvider(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry, long seed) {
-        this.settings = new ModernBetaSettingsCaveBiome.Builder(settings).build();
+        this.settings = ModernBetaSettingsCaveBiome.fromCompound(settings);
         this.biomeRegistry = biomeRegistry;
         this.seed = seed;
     }

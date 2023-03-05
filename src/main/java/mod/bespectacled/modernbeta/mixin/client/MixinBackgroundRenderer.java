@@ -53,7 +53,7 @@ public abstract class MixinBackgroundRenderer {
         at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/DimensionEffects;getFogColorOverride(FF)[F")
     )
     private static float[] modifyFogSunsetCols(float[] skyCols) {
-        return ModernBeta.RENDER_CONFIG.configOther.useAlphaSunset ? null : skyCols;
+        return ModernBeta.CONFIG.useAlphaSunset ? null : skyCols;
     }
     
     @Inject(method = "render", at = @At("HEAD"))
@@ -79,7 +79,7 @@ public abstract class MixinBackgroundRenderer {
         index = 7
     )
     private static float modifyFogWeighting(float weight) {
-        return modernBeta_isModernBetaWorld && ModernBeta.RENDER_CONFIG.configBiomeColor.useOldFogColor ? modernBeta_fogWeight : weight;
+        return modernBeta_isModernBetaWorld && ModernBeta.CONFIG.useOldFogColor ? modernBeta_fogWeight : weight;
     }
     
     @Unique

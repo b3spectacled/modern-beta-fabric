@@ -5,18 +5,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome.ConfigClimateMapping;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class ClimateMap {
-    private final Map<String, ConfigClimateMapping> climateMap;
-    private final ConfigClimateMapping[] climateTable;
+    private final Map<String, ClimateMapping> climateMap;
+    private final ClimateMapping[] climateTable;
     
     public ClimateMap(ModernBetaSettingsBiome settings) {
         this.climateMap = new LinkedHashMap<>();
-        this.climateTable = new ConfigClimateMapping[4096];
+        this.climateTable = new ClimateMapping[4096];
         
         for (String key : settings.climateMappings.keySet()) {
             this.climateMap.put(key, settings.climateMappings.get(key));
@@ -25,7 +24,7 @@ public class ClimateMap {
         this.generateBiomeLookup();
     }
     
-    public Map<String, ConfigClimateMapping> getMap() {
+    public Map<String, ClimateMapping> getMap() {
         return new LinkedHashMap<>(this.climateMap);
     }
     
@@ -56,7 +55,7 @@ public class ClimateMap {
         }
     }
     
-    private ConfigClimateMapping getBiome(float temp, float rain) {
+    private ClimateMapping getBiome(float temp, float rain) {
         rain *= temp;
 
         if (temp < 0.1F) {

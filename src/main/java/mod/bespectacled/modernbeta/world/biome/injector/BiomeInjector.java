@@ -34,7 +34,7 @@ public class BiomeInjector {
         this.modernBetaChunkGenerator = modernBetaChunkGenerator;
         this.modernBetaBiomeSource = modernBetaBiomeSource;
         
-        boolean useOceanBiomes = new ModernBetaSettingsBiome.Builder(this.modernBetaBiomeSource.getBiomeSettings()).build().useOceanBiomes;
+        boolean useOceanBiomes = ModernBetaSettingsBiome.fromCompound(this.modernBetaBiomeSource.getBiomeSettings()).useOceanBiomes;
         
         Predicate<BiomeInjectionContext> cavePredicate = context -> context.getY() >= context.worldMinY && context.getY() + CAVE_START_OFFSET < context.minHeight;
         Predicate<BiomeInjectionContext> oceanPredicate = context -> this.atOceanDepth(context.topHeight, OCEAN_MIN_DEPTH);

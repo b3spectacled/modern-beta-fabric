@@ -71,8 +71,8 @@ public class ModernBetaBiomeSource extends BiomeSource {
     }
     
     public void initProvider(long seed) {
-        ModernBetaSettingsBiome biomeSettings = new ModernBetaSettingsBiome.Builder(this.biomeSettings).build();
-        ModernBetaSettingsCaveBiome caveBiomeSettings = new ModernBetaSettingsCaveBiome.Builder(this.caveBiomeSettings).build();
+        ModernBetaSettingsBiome biomeSettings = ModernBetaSettingsBiome.fromCompound(this.biomeSettings);
+        ModernBetaSettingsCaveBiome caveBiomeSettings = ModernBetaSettingsCaveBiome.fromCompound(this.caveBiomeSettings);
         
         this.biomeProvider = ModernBetaRegistries.BIOME
             .get(biomeSettings.biomeProvider)
@@ -222,8 +222,8 @@ public class ModernBetaBiomeSource extends BiomeSource {
 
     @Override
     protected Stream<RegistryEntry<Biome>> method_49494() {
-        ModernBetaSettingsBiome modernBetaBiomeSettings = new ModernBetaSettingsBiome.Builder(this.biomeSettings).build();
-        ModernBetaSettingsCaveBiome modernBetaCaveBiomeSettings = new ModernBetaSettingsCaveBiome.Builder(this.caveBiomeSettings).build();
+        ModernBetaSettingsBiome modernBetaBiomeSettings = ModernBetaSettingsBiome.fromCompound(this.biomeSettings);
+        ModernBetaSettingsCaveBiome modernBetaCaveBiomeSettings = ModernBetaSettingsCaveBiome.fromCompound(this.caveBiomeSettings);
         
         BiomeProvider biomeProvider  = ModernBetaRegistries.BIOME
             .get(modernBetaBiomeSettings.biomeProvider)

@@ -1,25 +1,20 @@
 package mod.bespectacled.modernbeta.settings;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
 
-import mod.bespectacled.modernbeta.ModernBeta;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome.ConfigClimateMapping;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome.ConfigVoronoiPoint;
-import mod.bespectacled.modernbeta.util.NbtCompoundBuilder;
-import mod.bespectacled.modernbeta.util.NbtListBuilder;
+import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
+import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
+import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping;
+import mod.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointBiome;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.biome.BiomeKeys;
 
 public class ModernBetaSettingsBiome implements ModernBetaSettings {
-    private static final ModernBetaConfigBiome CONFIG = ModernBeta.BIOME_CONFIG;
-    
     public final String biomeProvider;
     public final String singleBiome;
     public final boolean useOceanBiomes;
@@ -27,9 +22,9 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
     public final float climateTempNoiseScale;
     public final float climateRainNoiseScale;
     public final float climateDetailNoiseScale;
-    public final Map<String, ConfigClimateMapping> climateMappings;
+    public final Map<String, ClimateMapping> climateMappings;
     
-    public final List<ConfigVoronoiPoint> voronoiPoints;
+    public final List<VoronoiPointBiome> voronoiPoints;
     
     public ModernBetaSettingsBiome() {
         this(new Builder());
@@ -55,7 +50,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
     }
     
     public static ModernBetaSettingsBiome fromCompound(NbtCompound compound) {
-        return new Builder(compound).build();
+        return new Builder().fromCompound(compound).build();
     }
     
     public NbtCompound toCompound() {
@@ -69,15 +64,8 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
         compound.putFloat(NbtTags.CLIMATE_RAIN_NOISE_SCALE, this.climateRainNoiseScale);
         compound.putFloat(NbtTags.CLIMATE_DETAIL_NOISE_SCALE, this.climateDetailNoiseScale);
         
-        NbtCompoundBuilder builder0 = new NbtCompoundBuilder();
-        CONFIG.climateMappings.keySet().forEach(key -> {
-            builder0.putCompound(key, this.climateMappings.get(key).toCompound());
-        });
-        compound.put(NbtTags.CLIMATE_MAPPINGS, builder0.build());
-        
-        NbtListBuilder builder1 = new NbtListBuilder();
-        this.voronoiPoints.forEach(p -> builder1.add(p.toCompound()));
-        compound.put(NbtTags.VORONOI_POINTS, builder1.build());
+        compound.put(NbtTags.CLIMATE_MAPPINGS, ClimateMapping.mapToCompound(this.climateMappings));
+        compound.put(NbtTags.VORONOI_POINTS, VoronoiPointBiome.listToNbt(this.voronoiPoints));
         
         return compound;
     }
@@ -90,53 +78,128 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
         public float climateTempNoiseScale;
         public float climateRainNoiseScale;
         public float climateDetailNoiseScale;
-        public Map<String, ConfigClimateMapping> climateMappings;
+        public Map<String, ClimateMapping> climateMappings;
         
-        public List<ConfigVoronoiPoint> voronoiPoints;
+        public List<VoronoiPointBiome> voronoiPoints;
         
         public Builder() {
-            this(new NbtCompound());
+            this.biomeProvider = ModernBetaBuiltInTypes.Biome.BETA.id;
+            this.singleBiome = ModernBetaBiomes.ALPHA.getValue().toString();
+            this.useOceanBiomes = true;
+            
+            this.climateTempNoiseScale = 0.025f;
+            this.climateRainNoiseScale = 0.05f;
+            this.climateDetailNoiseScale = 0.25f;
+            this.climateMappings = createClimateMapping(
+                new ClimateMapping(
+                    ModernBetaBiomes.BETA_DESERT.getValue().toString(),
+                    ModernBetaBiomes.BETA_OCEAN.getValue().toString()
+                ),
+                new ClimateMapping(
+                    ModernBetaBiomes.BETA_FOREST.getValue().toString(),
+                    ModernBetaBiomes.BETA_OCEAN.getValue().toString()
+                ),
+                new ClimateMapping(
+                    ModernBetaBiomes.BETA_TUNDRA.getValue().toString(),
+                    ModernBetaBiomes.BETA_FROZEN_OCEAN.getValue().toString()
+                ),
+                new ClimateMapping(
+                    ModernBetaBiomes.BETA_PLAINS.getValue().toString(),
+                    ModernBetaBiomes.BETA_OCEAN.getValue().toString()
+                ),
+                new ClimateMapping(
+                    ModernBetaBiomes.BETA_RAINFOREST.getValue().toString(),
+                    ModernBetaBiomes.BETA_WARM_OCEAN.getValue().toString()
+                ),
+                new ClimateMapping(
+                    ModernBetaBiomes.BETA_SAVANNA.getValue().toString(),
+                    ModernBetaBiomes.BETA_OCEAN.getValue().toString()
+                ),
+                new ClimateMapping(
+                    ModernBetaBiomes.BETA_SHRUBLAND.getValue().toString(),
+                    ModernBetaBiomes.BETA_OCEAN.getValue().toString()
+                ),
+                new ClimateMapping(
+                    ModernBetaBiomes.BETA_SEASONAL_FOREST.getValue().toString(),
+                    ModernBetaBiomes.BETA_LUKEWARM_OCEAN.getValue().toString()
+                ),
+                new ClimateMapping(
+                    ModernBetaBiomes.BETA_SWAMPLAND.getValue().toString(),
+                    ModernBetaBiomes.BETA_COLD_OCEAN.getValue().toString()
+                ),
+                new ClimateMapping(
+                    ModernBetaBiomes.BETA_TAIGA.getValue().toString(),
+                    ModernBetaBiomes.BETA_FROZEN_OCEAN.getValue().toString()
+                ),
+                new ClimateMapping(
+                    ModernBetaBiomes.BETA_TUNDRA.getValue().toString(),
+                    ModernBetaBiomes.BETA_FROZEN_OCEAN.getValue().toString()
+                )
+            );
+            this.voronoiPoints = List.of(
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_PLAINS.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    0.0, 0.0
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_TAIGA.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    0.0, 0.5
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SWAMP.getValue().toString(),
+                    BiomeKeys.COLD_OCEAN.getValue().toString(),
+                    0.0, 1.0
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SAVANNA.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    0.5, 0.0
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.FOREST.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    0.5, 0.5
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.PLAINS.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    0.5, 1.0
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.DESERT.getValue().toString(),
+                    BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
+                    1.0, 0.0
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.DARK_FOREST.getValue().toString(),
+                    BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
+                    1.0, 0.5
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.JUNGLE.getValue().toString(),
+                    BiomeKeys.WARM_OCEAN.getValue().toString(),
+                    1.0, 1.0
+                )
+            );
         }
         
-        public Builder(NbtCompound compound) {
-            this.biomeProvider = NbtUtil.readString(NbtTags.BIOME_PROVIDER, compound, CONFIG.biomeProvider);
-            this.singleBiome = NbtUtil.readString(NbtTags.SINGLE_BIOME, compound, CONFIG.singleBiome);
-            this.useOceanBiomes = NbtUtil.readBoolean(NbtTags.USE_OCEAN_BIOMES, compound, CONFIG.useOceanBiomes);
+        public Builder fromCompound(NbtCompound compound) {
+            this.biomeProvider = NbtUtil.readString(NbtTags.BIOME_PROVIDER, compound, this.biomeProvider);
+            this.singleBiome = NbtUtil.readString(NbtTags.SINGLE_BIOME, compound, this.singleBiome);
+            this.useOceanBiomes = NbtUtil.readBoolean(NbtTags.USE_OCEAN_BIOMES, compound, this.useOceanBiomes);
             
-            this.climateTempNoiseScale = NbtUtil.readFloat(NbtTags.CLIMATE_TEMP_NOISE_SCALE, compound, CONFIG.climateTempNoiseScale);
-            this.climateRainNoiseScale = NbtUtil.readFloat(NbtTags.CLIMATE_RAIN_NOISE_SCALE, compound, CONFIG.climateRainNoiseScale);
-            this.climateDetailNoiseScale = NbtUtil.readFloat(NbtTags.CLIMATE_DETAIL_NOISE_SCALE, compound, CONFIG.climateDetailNoiseScale);
+            this.climateTempNoiseScale = NbtUtil.readFloat(NbtTags.CLIMATE_TEMP_NOISE_SCALE, compound, this.climateTempNoiseScale);
+            this.climateRainNoiseScale = NbtUtil.readFloat(NbtTags.CLIMATE_RAIN_NOISE_SCALE, compound, this.climateRainNoiseScale);
+            this.climateDetailNoiseScale = NbtUtil.readFloat(NbtTags.CLIMATE_DETAIL_NOISE_SCALE, compound, this.climateDetailNoiseScale);
             
-            this.climateMappings = new LinkedHashMap<>();
-            if (compound.contains(NbtTags.CLIMATE_MAPPINGS)) {
-                NbtCompound biomes = NbtUtil.readCompoundOrThrow(NbtTags.CLIMATE_MAPPINGS, compound);
-                
-                biomes.getKeys().forEach(key -> {
-                    this.climateMappings.put(key, ConfigClimateMapping.fromCompound(NbtUtil.readCompoundOrThrow(key, biomes)));
-                });
-                
-            } else {
-                this.climateMappings.putAll(CONFIG.climateMappings);
-            }
-            
-            this.voronoiPoints = new ArrayList<>();
-            if (compound.contains(NbtTags.VORONOI_POINTS)) {
-                NbtUtil.toListOrThrow(compound.get(NbtTags.VORONOI_POINTS)).stream().forEach(e -> {
-                    NbtCompound point = NbtUtil.toCompoundOrThrow(e);
-                    
-                    String biome = NbtUtil.readStringOrThrow(NbtTags.BIOME, point);
-                    String oceanBiome = NbtUtil.readStringOrThrow(NbtTags.OCEAN_BIOME, point);
-                    String deepOceanBiome = NbtUtil.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME, point);
-                    double temp = NbtUtil.readDoubleOrThrow(NbtTags.TEMP, point);
-                    double rain = NbtUtil.readDoubleOrThrow(NbtTags.RAIN, point);
-                    
-                    this.voronoiPoints.add(new ConfigVoronoiPoint(biome, oceanBiome, deepOceanBiome, temp, rain));
-                });
-            } else {
-                this.voronoiPoints.addAll(CONFIG.voronoiPoints);
-            }
+            this.climateMappings = ClimateMapping.mapFromCompound(compound, this.climateMappings);
+            this.voronoiPoints = VoronoiPointBiome.listFromCompound(compound, this.voronoiPoints);
             
             this.loadDeprecated(compound);
+            
+            return this;
         }
         
         public ModernBetaSettingsBiome build() {
@@ -144,5 +207,33 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
         }
         
         private void loadDeprecated(NbtCompound compound) {}
+        
+        public static Map<String, ClimateMapping> createClimateMapping(
+            ClimateMapping desert,
+            ClimateMapping forest,
+            ClimateMapping iceDesert,
+            ClimateMapping plains,
+            ClimateMapping rainforest,
+            ClimateMapping savanna,
+            ClimateMapping shrubland,
+            ClimateMapping seasonal_forest,
+            ClimateMapping swampland,
+            ClimateMapping taiga,
+            ClimateMapping tundra
+        ) {
+            return Map.ofEntries(
+                Map.entry("desert", desert),
+                Map.entry("forest", forest),
+                Map.entry("ice_desert", iceDesert),
+                Map.entry("plains", plains),
+                Map.entry("rainforest", rainforest),
+                Map.entry("savanna", savanna),
+                Map.entry("shrubland", shrubland),
+                Map.entry("seasonal_forest", seasonal_forest),
+                Map.entry("swampland", swampland),
+                Map.entry("taiga", taiga),
+                Map.entry("tundra", tundra)
+            );
+        }
     }
 }

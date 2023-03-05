@@ -72,7 +72,7 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
         this.widgetPreset = CyclingButtonWidget
             .builder(presetText)
             .values(ModernBetaRegistries.SETTINGS_PRESET.getKeySet())
-            .initially(new ModernBetaSettingsChunk.Builder(this.preset.getCompound(SettingsType.CHUNK)).chunkProvider)
+            .initially(ModernBetaSettingsChunk.fromCompound(this.preset.getCompound(SettingsType.CHUNK)).chunkProvider)
             .build(0, 0, 150, 20, Text.translatable(TEXT_PRESET), (button, key) -> {
                 this.preset = ModernBetaRegistries.SETTINGS_PRESET.get(key);
         });
