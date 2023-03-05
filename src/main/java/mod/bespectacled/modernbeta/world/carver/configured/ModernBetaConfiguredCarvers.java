@@ -10,7 +10,9 @@ import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
+import net.minecraft.util.math.floatprovider.UniformFloatProvider;
 import net.minecraft.world.gen.YOffset;
+import net.minecraft.world.gen.carver.Carver;
 import net.minecraft.world.gen.carver.CarverDebugConfig;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
@@ -37,7 +39,6 @@ public class ModernBetaConfiguredCarvers {
             ConstantFloatProvider.create(-0.7f)                                                 // Y Floor Level
         );
         
-        /* TODO: Change to this in 1.20
         CaveCarverConfig configCaveDeep = new CaveCarverConfig(
             0.15f,                                                                              // Probability, unused here
             BiasedToBottomHeightProvider.create(YOffset.aboveBottom(0), YOffset.fixed(0), 8),   // Y Level
@@ -49,23 +50,9 @@ public class ModernBetaConfiguredCarvers {
             UniformFloatProvider.create(0.8f, 1.3f),                                            // Tunnel vertical scale
             UniformFloatProvider.create(-1.0f, -0.4f)                                           // Y Floor Level
         );
-        */
-        
-        CaveCarverConfig configCaveDeep = new CaveCarverConfig(
-            0.0f,                                                                               // Probability, unused here
-            BiasedToBottomHeightProvider.create(YOffset.aboveBottom(0), YOffset.fixed(0), 8),   // Y Level
-            ConstantFloatProvider.create(0.5f),                                                 // Y scale, for large cave case(?)
-            YOffset.aboveBottom(10),                                                            // Lava Level
-            CarverDebugConfig.create(false, Blocks.CRIMSON_BUTTON.getDefaultState()),
-            registryBlock.getOrThrow(ModernBetaTagProviderBlock.OVERWORLD_CARVER_REPLACEABLES),
-            ConstantFloatProvider.create(1.0f),                                                 // Tunnel horizontal scale
-            ConstantFloatProvider.create(1.0f),                                                 // Tunnel vertical scale
-            ConstantFloatProvider.create(-0.7f)                                                 // Y Floor Level
-        );
     
         carverRegisterable.register(BETA_CAVE, ModernBetaCarvers.BETA_CAVE.configure(configCave));
-        carverRegisterable.register(BETA_CAVE_DEEP, ModernBetaCarvers.BETA_CAVE.configure(configCaveDeep));
-        //carverRegisterable.register(BETA_CAVE_DEEP, Carver.CAVE.configure(configCaveDeep));
+        carverRegisterable.register(BETA_CAVE_DEEP, Carver.CAVE.configure(configCaveDeep));
     }
     
     public static RegistryKey<ConfiguredCarver<?>> of(String id) {
