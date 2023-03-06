@@ -12,39 +12,17 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 
-public class ClimateMapping {
-    public String biome;
-    public String oceanBiome;
-    public String deepOceanBiome;
-    
+public record ClimateMapping(String biome, String oceanBiome, String deepOceanBiome) {
     public ClimateMapping(String biome, String oceanBiome) {
         this(biome, oceanBiome, oceanBiome);
     }
     
-    public ClimateMapping(String biome, String oceanBiome, String deepOceanBiome) {
-        this.biome = biome;
-        this.oceanBiome = oceanBiome;
-        this.deepOceanBiome = deepOceanBiome;
-    }
-    
-    public RegistryKey<Biome> biomeByClimateType(ClimateType type) {
+    public RegistryKey<Biome> getBiome(ClimateType type) {
         return switch(type) {
             case LAND -> keyOf(this.biome);
             case OCEAN -> keyOf(this.oceanBiome);
             case DEEP_OCEAN -> keyOf(this.deepOceanBiome);
         };
-    }
-    
-    public RegistryKey<Biome> biome() {
-        return keyOf(this.biome);
-    }
-    
-    public RegistryKey<Biome> oceanBiome() {
-        return keyOf(this.oceanBiome);
-    }
-    
-    public RegistryKey<Biome> deepOceanBiome() {
-        return keyOf(this.deepOceanBiome);
     }
     
     public NbtCompound toCompound() {
@@ -75,7 +53,7 @@ public class ClimateMapping {
         return Map.copyOf(alternate);
     }
     
-    public static NbtCompound mapToCompound(Map<String, ClimateMapping> mappings) {
+    public static NbtCompound mapToNbt(Map<String, ClimateMapping> mappings) {
         NbtCompoundBuilder builder = new NbtCompoundBuilder();
         mappings.keySet().forEach(key -> builder.putCompound(key, mappings.get(key).toCompound()));
         
@@ -85,5 +63,4 @@ public class ClimateMapping {
     private static RegistryKey<Biome> keyOf(String id) {
         return RegistryKey.of(RegistryKeys.BIOME, new Identifier(id));
     }
-
 }

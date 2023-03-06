@@ -3,14 +3,16 @@ package mod.bespectacled.modernbeta.world.chunk.provider;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 
-import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoiseImitable;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
+import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
+import mod.bespectacled.modernbeta.world.blocksource.BlockSourceRules;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -172,12 +174,21 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
 
         StructureWeightSampler structureWeightSampler = StructureWeightSampler.createStructureWeightSampler(structureAccessor, chunk.getPos());
         BlockPos.Mutable mutable = new BlockPos.Mutable();
+        SimpleNoisePos noisePos = new SimpleNoisePos();
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
         
+        final BlockHolder blockHolder = new BlockHolder();
+        Supplier<BlockHolder> blockHolderSupplier = () -> blockHolder;
         Block defaultBlock = this.defaultBlock.getBlock();
         Block defaultFluid = this.defaultFluid.getBlock();
+        
+        BlockSourceRules.Builder builder = new BlockSourceRules.Builder().add(this.getBaseBlockSource(structureWeightSampler, noisePos, blockHolderSupplier, defaultBlock, defaultFluid));
+        this.blockSources.forEach(blockSource -> builder.add(blockSource));
+        builder.add(this.getActualBlockSource(blockHolderSupplier));
+        
+        BlockSourceRules blockSources = builder.build(this.defaultBlock);
 
         for (int localX = 0; localX < 16; ++localX) {
             int x = startX + localX;
@@ -238,14 +249,8 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
                             block = Blocks.BRICKS;     
                     }
                     
-                    BlockState blockState = this.getBlockState(
-                        structureWeightSampler,
-                        BlockSource.DEFAULT,
-                        x, y, z, 
-                        block, 
-                        this.defaultBlock.getBlock(), 
-                        this.defaultFluid.getBlock()
-                    );
+                    blockHolder.setBlock(block);
+                    BlockState blockState = blockSources.apply(x, y, z);
                     
                     chunk.setBlockState(mutable.set(localX, y, localZ), blockState, false);
                     

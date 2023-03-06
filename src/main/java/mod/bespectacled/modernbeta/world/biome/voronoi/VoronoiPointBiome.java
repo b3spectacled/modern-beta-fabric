@@ -9,25 +9,11 @@ import mod.bespectacled.modernbeta.util.NbtUtil;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 
-public class VoronoiPointBiome {
+public record VoronoiPointBiome(String biome, String oceanBiome, String deepOceanBiome, double temp, double rain) {
     public static final VoronoiPointBiome DEFAULT = new VoronoiPointBiome("modern_beta:beta_forest", "modern_beta:beta_ocean", 0.5, 0.5);
-    
-    public String biome;
-    public String oceanBiome;
-    public String deepOceanBiome;
-    public double temp;
-    public double rain;
     
     public VoronoiPointBiome(String biome, String oceanBiome, double temp, double rain) {
         this(biome, oceanBiome, oceanBiome, temp, rain);
-    }
-    
-    public VoronoiPointBiome(String biome, String oceanBiome, String deepOceanBiome,  double temp, double rain) {
-        this.biome = biome;
-        this.oceanBiome = oceanBiome;
-        this.deepOceanBiome = deepOceanBiome;
-        this.temp = temp;
-        this.rain = rain;
     }
     
     public static List<VoronoiPointBiome> listFromCompound(NbtCompound compound, List<VoronoiPointBiome> alternate) {

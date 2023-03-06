@@ -3,6 +3,7 @@ package mod.bespectacled.modernbeta.api.world.chunk;
 import java.util.ArrayDeque;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 
 import org.slf4j.event.Level;
 
@@ -11,7 +12,9 @@ import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.util.BlockStates;
+import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
+import mod.bespectacled.modernbeta.world.blocksource.BlockSourceRules;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.spawn.SpawnLocatorIndev;
 import net.minecraft.block.Block;
@@ -71,7 +74,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         
         this.worldMinY = shapeConfig.minimumY();
         this.worldHeight = shapeConfig.height();
-        this.worldTopY = worldHeight + worldMinY;
+        this.worldTopY = this.worldHeight + this.worldMinY;
         this.seaLevel = generatorSettings.seaLevel();
         this.bedrockFloor = 0;
         this.bedrockCeiling = Integer.MIN_VALUE;
@@ -82,7 +85,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         
         this.levelWidth = this.chunkSettings.indevLevelWidth;
         this.levelLength = this.chunkSettings.indevLevelLength;
-        this.levelHeight = this.chunkSettings.indevLevelHeight;
+        this.levelHeight = Math.min(this.worldTopY, this.chunkSettings.indevLevelHeight);
         this.caveRadius = this.chunkSettings.indevCaveRadius;
         
         this.heightmap = new int[this.levelWidth * this.levelLength];
@@ -243,10 +246,10 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
     
     protected abstract BlockState postProcessTerrainState(
         Block block, 
-        BlockSource blockSource, 
-        StructureWeightSampler weightSampler,
+        BlockSourceRules blockSources,
         TerrainState terrainState,
-        BlockPos pos
+        BlockPos pos,
+        int topY
     );
     
     protected abstract void generateBedrock(Chunk chunk, Block block, BlockPos pos);
@@ -263,15 +266,25 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         Heightmap heightmapOcean = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSurface = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
-        BlockSource blockSource = (x, y, z) -> null;
         StructureWeightSampler structureWeightSampler = StructureWeightSampler.createStructureWeightSampler(structureAccessor, chunk.getPos());
         BlockPos.Mutable pos = new BlockPos.Mutable();
+        SimpleNoisePos noisePos = new SimpleNoisePos();
+        
+        final BlockHolder blockHolder = new BlockHolder();
+        Supplier<BlockHolder> blockHolderSupplier = () -> blockHolder;
+        
+        BlockSource baseBlockSource = this.getBaseBlockSource(structureWeightSampler, noisePos, blockHolderSupplier, this.defaultBlock.getBlock(), this.getLevelFluidBlock());
+        BlockSourceRules blockSources = new BlockSourceRules.Builder()
+            .add(baseBlockSource)
+            .add(this.getActualBlockSource(blockHolderSupplier))
+            .build(this.defaultBlock);
         
         for (int localX = 0; localX < 16; ++localX) {
             for (int localZ = 0; localZ < 16; ++localZ) {
                 
                 int x = localX + (chunkX << 4);
                 int z = localZ + (chunkZ << 4);
+                int topY = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
                 
                 TerrainState terrainState = new TerrainState();
                 
@@ -279,7 +292,9 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
                     pos.set(x, y, z);
                     
                     Block block = this.getLevelBlock(offsetX + localX, y, offsetZ + localZ);
-                    BlockState blockState = this.postProcessTerrainState(block, blockSource, structureWeightSampler, terrainState, pos);
+                    blockHolder.setBlock(block);
+                    
+                    BlockState blockState = this.postProcessTerrainState(block, blockSources, terrainState, pos, topY);
                     
                     chunk.setBlockState(pos.set(localX, y, localZ), blockState, false);
                      
@@ -292,14 +307,6 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         }
     }
 
-    protected boolean inLevelBounds(int x, int y, int z) {
-        if (x < 0 || x >= this.levelWidth || y < 0 || y >= this.levelHeight || z < 0 || z >= this.levelLength) {
-            return false;
-        }
-            
-        return true;
-    }
-
     protected boolean inWorldBounds(int x, int z) {
         int halfWidth = this.levelWidth / 2;
         int halfLength = this.levelLength / 2;
@@ -309,6 +316,14 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         }
         
         return false;
+    }
+
+    protected boolean inLevelBounds(int x, int y, int z) {
+        if (x < 0 || x >= this.levelWidth || y < 0 || y >= this.levelHeight || z < 0 || z >= this.levelLength) {
+            return false;
+        }
+            
+        return true;
     }
 
     protected void setPhase(String phase) {

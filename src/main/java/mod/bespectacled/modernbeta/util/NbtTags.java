@@ -10,6 +10,10 @@ public class NbtTags {
     public static final String DEEPSLATE_MAX_Y = "deepslateMaxY";
     public static final String DEEPSLATE_BLOCK = "deepslateBlock";
     
+    public static final String USE_WORLD_BORDER = "useWorldBorder";
+    public static final String WORLD_BORDER_WIDTH = "worldBorderWidth";
+    public static final String WORLD_BORDER_LENGTH = "worldBorderLength";
+    
     // Noise
     public static final String NOISE_POST_PROCESSOR = "noisePostProcessor";
     public static final String NOISE_COORDINATE_SCALE = "noiseCoordinateScale";

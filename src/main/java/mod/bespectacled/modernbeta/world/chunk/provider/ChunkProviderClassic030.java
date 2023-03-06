@@ -1,11 +1,11 @@
 package mod.bespectacled.modernbeta.world.chunk.provider;
 
-import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderFinite;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoiseCombined;
+import mod.bespectacled.modernbeta.world.blocksource.BlockSourceRules;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -16,7 +16,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.StructureWeightSampler;
 
 public class ChunkProviderClassic030 extends ChunkProviderFinite {
     private PerlinOctaveNoiseCombined minHeightOctaveNoise;
@@ -71,22 +70,15 @@ public class ChunkProviderClassic030 extends ChunkProviderFinite {
     }
 
     @Override
-    protected BlockState postProcessTerrainState(Block block, BlockSource blockSource, StructureWeightSampler weightSampler, TerrainState terrainState, BlockPos pos) {
+    protected BlockState postProcessTerrainState(Block block, BlockSourceRules blockSources, TerrainState terrainState, BlockPos pos, int topY) {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
         
         BlockState blockState = block.getDefaultState();
-        BlockState modifiedBlockState = this.getBlockState(
-            weightSampler,
-            BlockSource.DEFAULT,
-            x, y, z,
-            block,
-            this.defaultBlock.getBlock(),
-            this.defaultFluid.getBlock()
-        );
+        BlockState modifiedBlockState = blockSources.apply(x, y, z);
         
-        boolean inFluid = modifiedBlockState.isAir() || modifiedBlockState.isOf(this.defaultFluid.getBlock());
+        boolean inFluid = modifiedBlockState.isAir() || modifiedBlockState.isOf(this.getLevelFluidBlock());
         int runDepth = terrainState.getRunDepth();
         
         // Check to see if structure weight sampler modifies terrain.

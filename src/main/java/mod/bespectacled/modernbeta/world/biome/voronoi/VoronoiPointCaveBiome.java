@@ -9,20 +9,8 @@ import mod.bespectacled.modernbeta.util.NbtUtil;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 
-public class VoronoiPointCaveBiome {
+public record VoronoiPointCaveBiome(String biome, double temp, double rain, double depth) {
     public static final VoronoiPointCaveBiome DEFAULT = new VoronoiPointCaveBiome("minecraft:lush_caves", 0.5, 0.5, 0.0);
-    
-    public String biome;
-    public double temp;
-    public double rain;
-    public double depth;
-    
-    public VoronoiPointCaveBiome(String biome, double temp, double rain, double depth) {
-        this.biome = biome;
-        this.temp = temp;
-        this.rain = rain;
-        this.depth = depth;
-    }
     
     public static List<VoronoiPointCaveBiome> listFromCompound(NbtCompound compound, List<VoronoiPointCaveBiome> alternate) {
         if (compound.contains(NbtTags.VORONOI_POINTS)) {

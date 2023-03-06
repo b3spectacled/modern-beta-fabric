@@ -32,16 +32,16 @@ public class ClimateMap {
         int t = (int) (temp * 63D);
         int r = (int) (rain * 63D);
 
-        return this.climateTable[t + r * 64].biomeByClimateType(type);
+        return this.climateTable[t + r * 64].getBiome(type);
     }
     
     public List<RegistryKey<Biome>> getBiomeKeys() {
         List<RegistryKey<Biome>> biomeKeys = new ArrayList<>();
         
         this.climateMap.values().forEach(mapping -> {
-            biomeKeys.add(mapping.biome());
-            biomeKeys.add(mapping.oceanBiome());
-            biomeKeys.add(mapping.deepOceanBiome());
+            biomeKeys.add(mapping.getBiome(ClimateType.LAND));
+            biomeKeys.add(mapping.getBiome(ClimateType.OCEAN));
+            biomeKeys.add(mapping.getBiome(ClimateType.DEEP_OCEAN));
         });
         
         return biomeKeys;

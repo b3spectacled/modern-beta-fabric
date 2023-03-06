@@ -227,6 +227,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         
         public Builder() {
             this.chunkProvider = ModernBetaBuiltInTypes.Chunk.BETA.id;
+            
             this.useDeepslate = true;
             this.deepslateMinY = 0;
             this.deepslateMaxY = 8;

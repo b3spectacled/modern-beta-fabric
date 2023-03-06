@@ -64,7 +64,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
         compound.putFloat(NbtTags.CLIMATE_RAIN_NOISE_SCALE, this.climateRainNoiseScale);
         compound.putFloat(NbtTags.CLIMATE_DETAIL_NOISE_SCALE, this.climateDetailNoiseScale);
         
-        compound.put(NbtTags.CLIMATE_MAPPINGS, ClimateMapping.mapToCompound(this.climateMappings));
+        compound.put(NbtTags.CLIMATE_MAPPINGS, ClimateMapping.mapToNbt(this.climateMappings));
         compound.put(NbtTags.VORONOI_POINTS, VoronoiPointBiome.listToNbt(this.voronoiPoints));
         
         return compound;

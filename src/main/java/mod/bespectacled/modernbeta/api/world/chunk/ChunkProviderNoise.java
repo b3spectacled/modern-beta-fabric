@@ -30,7 +30,6 @@ import net.minecraft.util.math.random.RandomSplitter;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
-import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
@@ -589,23 +588,6 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
             
             return aquiferSampler.apply(noisePos, clampedDensity);
         };
-    }
-    
-    /**
-     * Debug method for testing generation steps.
-     * 
-     * @param chunkX
-     * @param chunkZ
-     * @param chunkStatus
-     * 
-     * @return True if current chunk generation step should be skipped.
-     */
-    @Override
-    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
-        if (chunkStatus == ChunkStatus.CARVERS)
-            return false;
-        
-        return false;
     }
 }
 
