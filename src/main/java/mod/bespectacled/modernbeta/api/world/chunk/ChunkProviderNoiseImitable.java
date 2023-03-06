@@ -1,7 +1,5 @@
 package mod.bespectacled.modernbeta.api.world.chunk;
 
-import java.util.function.Supplier;
-
 import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
@@ -28,12 +26,12 @@ public interface ChunkProviderNoiseImitable {
     default BlockSource getBaseBlockSource(
         StructureWeightSampler weightSampler,
         SimpleNoisePos noisePos,
-        Supplier<BlockHolder> blockHolder,
+        BlockHolder blockHolder,
         Block defaultBlock,
         Block defaultFluid
     ) {
         return (x, y, z) -> {
-            Block originalBlock = blockHolder.get().getBlock();
+            Block originalBlock = blockHolder.getBlock();
             
             boolean isFluid = originalBlock == defaultFluid;
             boolean isAir = originalBlock == Blocks.AIR;
@@ -68,8 +66,8 @@ public interface ChunkProviderNoiseImitable {
         };
     }
     
-    default BlockSource getActualBlockSource(Supplier<BlockHolder> blockHolder) {
-        return (x, y, z) -> blockHolder.get().getBlock().getDefaultState();
+    default BlockSource getActualBlockSource(BlockHolder blockHolder) {
+        return (x, y, z) -> blockHolder.getBlock().getDefaultState();
     }
     
     public static class BlockHolder {

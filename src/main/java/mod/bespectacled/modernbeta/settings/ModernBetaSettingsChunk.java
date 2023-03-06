@@ -17,6 +17,8 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
     public final int deepslateMaxY;
     public final String deepslateBlock;
     
+    public final boolean useCaves;
+    
     public final String noisePostProcessor;
     public final float noiseCoordinateScale;
     public final float noiseHeightScale;
@@ -47,6 +49,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
     public final int indevLevelLength;
     public final int indevLevelHeight;
     public final float indevCaveRadius;
+    public final boolean indevUseCaves;
 
     public final boolean islesUseIslands;
     public final boolean islesUseOuterIslands;
@@ -69,6 +72,8 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         this.deepslateMinY = builder.deepslateMinY;
         this.deepslateMaxY = builder.deepslateMaxY;
         this.deepslateBlock = builder.deepslateBlock;
+        
+        this.useCaves = builder.useCaves;
         
         this.noisePostProcessor = builder.noisePostProcessor;
         this.noiseCoordinateScale = builder.noiseCoordinateScale;
@@ -100,6 +105,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         this.indevLevelLength = builder.indevLevelLength;
         this.indevLevelHeight = builder.indevLevelHeight;
         this.indevCaveRadius = builder.indevCaveRadius;
+        this.indevUseCaves = builder.indevUseCaves;
 
         this.islesUseIslands = builder.islesUseIslands;
         this.islesUseOuterIslands = builder.islesUseOuterIslands;
@@ -132,6 +138,8 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         compound.putInt(NbtTags.DEEPSLATE_MAX_Y, this.deepslateMaxY);
         compound.putString(NbtTags.DEEPSLATE_BLOCK, this.deepslateBlock);
         
+        compound.putBoolean(NbtTags.USE_CAVES, this.useCaves);
+        
         //compound.putString(NbtTags.NOISE_POST_PROCESSOR, this.noisePostProcessor);
         compound.putFloat(NbtTags.NOISE_COORDINATE_SCALE, this.noiseCoordinateScale);
         compound.putFloat(NbtTags.NOISE_HEIGHT_SCALE, this.noiseHeightScale);
@@ -162,6 +170,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         compound.putInt(NbtTags.INDEV_LEVEL_LENGTH, this.indevLevelLength);
         compound.putInt(NbtTags.INDEV_LEVEL_HEIGHT, this.indevLevelHeight);
         compound.putFloat(NbtTags.INDEV_CAVE_RADIUS, this.indevCaveRadius);
+        compound.putBoolean(NbtTags.INDEV_USE_CAVES, this.indevUseCaves);
 
         compound.putBoolean(NbtTags.ISLES_USE_ISLANDS, this.islesUseIslands);
         compound.putBoolean(NbtTags.ISLES_USE_OUTER_ISLANDS, this.islesUseOuterIslands);
@@ -183,6 +192,8 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         public int deepslateMinY;
         public int deepslateMaxY;
         public String deepslateBlock;
+        
+        public boolean useCaves;
         
         public String noisePostProcessor;
         public float noiseCoordinateScale;
@@ -214,6 +225,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         public int indevLevelLength;
         public int indevLevelHeight;
         public float indevCaveRadius;
+        public boolean indevUseCaves;
 
         public boolean islesUseIslands;
         public boolean islesUseOuterIslands;
@@ -232,6 +244,8 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.deepslateMinY = 0;
             this.deepslateMaxY = 8;
             this.deepslateBlock = "minecraft:deepslate";
+            
+            this.useCaves = true;
             
             this.noiseCoordinateScale = 684.412f;
             this.noiseHeightScale = 684.412f;
@@ -262,6 +276,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.indevLevelLength = 256;
             this.indevLevelHeight = 128;
             this.indevCaveRadius = 1.0f;
+            this.indevUseCaves = true;
             
             this.islesUseIslands = false;
             this.islesUseOuterIslands = true;
@@ -281,6 +296,8 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.deepslateMinY = NbtUtil.readInt(NbtTags.DEEPSLATE_MIN_Y, compound, this.deepslateMinY);
             this.deepslateMaxY = NbtUtil.readInt(NbtTags.DEEPSLATE_MAX_Y, compound, this.deepslateMaxY);
             this.deepslateBlock = NbtUtil.readString(NbtTags.DEEPSLATE_BLOCK, compound, this.deepslateBlock);
+            
+            this.useCaves = NbtUtil.readBoolean(NbtTags.USE_CAVES, compound, this.useCaves);
         
             //this.noisePostProcessor = NbtUtil.readString(NbtTags.NOISE_POST_PROCESSOR, compound, this.noisePostProcessor);
             this.noiseCoordinateScale = NbtUtil.readFloat(NbtTags.NOISE_COORDINATE_SCALE, compound, this.noiseCoordinateScale);
@@ -312,6 +329,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.indevLevelLength = NbtUtil.readInt(NbtTags.INDEV_LEVEL_LENGTH, compound, this.indevLevelLength);
             this.indevLevelHeight = NbtUtil.readInt(NbtTags.INDEV_LEVEL_HEIGHT, compound, this.indevLevelHeight);
             this.indevCaveRadius = NbtUtil.readFloat(NbtTags.INDEV_CAVE_RADIUS, compound, this.indevCaveRadius);
+            this.indevUseCaves = NbtUtil.readBoolean(NbtTags.INDEV_USE_CAVES, compound, this.indevUseCaves);
 
             this.islesUseIslands = NbtUtil.readBoolean(NbtTags.ISLES_USE_ISLANDS, compound, this.islesUseIslands);
             this.islesUseOuterIslands = NbtUtil.readBoolean(NbtTags.ISLES_USE_OUTER_ISLANDS, compound, this.islesUseOuterIslands);

@@ -17,6 +17,7 @@ import net.minecraft.world.gen.carver.CarverDebugConfig;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.heightprovider.BiasedToBottomHeightProvider;
+import net.minecraft.world.gen.heightprovider.UniformHeightProvider;
 
 public class ModernBetaConfiguredCarvers {
     public static final RegistryKey<ConfiguredCarver<?>> BETA_CAVE = of("beta_cave");
@@ -41,7 +42,7 @@ public class ModernBetaConfiguredCarvers {
         
         CaveCarverConfig configCaveDeep = new CaveCarverConfig(
             0.15f,                                                                              // Probability, unused here
-            BiasedToBottomHeightProvider.create(YOffset.aboveBottom(0), YOffset.fixed(0), 8),   // Y Level
+            UniformHeightProvider.create(YOffset.aboveBottom(0), YOffset.fixed(0)),             // Y Level
             UniformFloatProvider.create(0.1f, 0.9f),                                            // Y scale, for large cave case(?)
             YOffset.aboveBottom(10),                                                            // Lava Level
             CarverDebugConfig.create(false, Blocks.CRIMSON_BUTTON.getDefaultState()),

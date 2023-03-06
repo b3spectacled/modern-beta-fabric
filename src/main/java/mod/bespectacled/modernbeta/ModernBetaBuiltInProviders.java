@@ -84,11 +84,11 @@ public class ModernBetaBuiltInProviders {
     public static void registerSettingsPresets() {
         ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.DEFAULT_ID, ModernBetaSettingsPresets.PRESET_BETA);
         ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.BETA.id, ModernBetaSettingsPresets.PRESET_BETA);
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.ALPHA.id, ModernBetaSettingsPresets.PRESET_ALPHA);
         ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.SKYLANDS.id, ModernBetaSettingsPresets.PRESET_SKYLANDS);
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_415.id, ModernBetaSettingsPresets.PRESET_INFDEV_415);
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_420.id, ModernBetaSettingsPresets.PRESET_INFDEV_420);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.ALPHA.id, ModernBetaSettingsPresets.PRESET_ALPHA);
         ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_611.id, ModernBetaSettingsPresets.PRESET_INFDEV_611);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_420.id, ModernBetaSettingsPresets.PRESET_INFDEV_420);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_415.id, ModernBetaSettingsPresets.PRESET_INFDEV_415);
         ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_227.id, ModernBetaSettingsPresets.PRESET_INFDEV_227);
         ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INDEV.id, ModernBetaSettingsPresets.PRESET_INDEV);
         ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.id, ModernBetaSettingsPresets.PRESET_CLASSIC);

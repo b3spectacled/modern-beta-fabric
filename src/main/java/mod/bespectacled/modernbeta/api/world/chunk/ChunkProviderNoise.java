@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -66,8 +67,7 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
     private final ChunkCache<ChunkHeightmap> chunkCacheHeightmap;
     
     private final NoisePostProcessor noisePostProcessor;
-    
-    protected SimplexNoise islandNoise;
+    private final SimplexNoise islandNoise;
     
     public ChunkProviderNoise(ModernBetaChunkGenerator chunkGenerator, long seed) {
         super(chunkGenerator, seed);
@@ -115,6 +115,7 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
         this.chunkCacheHeightmap = new ChunkCache<>("heightmap", this::sampleHeightmap);
         
         this.noisePostProcessor = NoisePostProcessor.DEFAULT;
+        this.islandNoise = new SimplexNoise(new Random(this.seed));
     }
 
     /**

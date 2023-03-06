@@ -16,6 +16,7 @@ import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.blocksource.BlockSourceDeepslate;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
+import mod.bespectacled.modernbeta.world.chunk.ModernBetaGenerationStep;
 import mod.bespectacled.modernbeta.world.feature.placement.NoiseBasedCountPlacementModifier;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.random.ChunkRandom;
@@ -25,7 +26,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler;
@@ -123,7 +123,11 @@ public abstract class ChunkProvider {
      * 
      * @return Whether to skip the chunk.
      */
-    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
+    public boolean skipChunk(int chunkX, int chunkZ, ModernBetaGenerationStep step) {
+        if (step == ModernBetaGenerationStep.CARVERS) {
+            return !this.chunkSettings.useCaves;
+        }
+        
         return false;
     }
     

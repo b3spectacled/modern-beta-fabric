@@ -209,6 +209,7 @@ public class ModernBetaSettingsPresets {
         
         settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.INFDEV_415.id;
         settingsChunk.useDeepslate = false;
+        settingsChunk.useCaves = false;
         settingsChunk.noiseCoordinateScale = 684.412f;
         settingsChunk.noiseHeightScale = 984.412f;
         settingsChunk.noiseUpperLimitScale = 512f;
@@ -314,6 +315,7 @@ public class ModernBetaSettingsPresets {
         
         settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.INFDEV_227.id;
         settingsChunk.useDeepslate = false;
+        settingsChunk.useCaves = false;
         settingsChunk.infdevUsePyramid = true;
         settingsChunk.infdevUseWall = true;
         
@@ -336,12 +338,14 @@ public class ModernBetaSettingsPresets {
         
         settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.INDEV.id;
         settingsChunk.useDeepslate = false;
+        settingsChunk.useCaves = false;
         settingsChunk.indevLevelTheme = IndevTheme.NORMAL.getName();
         settingsChunk.indevLevelType = IndevType.ISLAND.getName();
         settingsChunk.indevLevelWidth = 256;
         settingsChunk.indevLevelLength = 256;
         settingsChunk.indevLevelHeight = 128;
         settingsChunk.indevCaveRadius = 1.0f;
+        settingsChunk.indevUseCaves = true;
         
         settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.SINGLE.id;
         settingsBiome.singleBiome = ModernBetaBiomes.INDEV_NORMAL.getValue().toString();
@@ -362,10 +366,12 @@ public class ModernBetaSettingsPresets {
         
         settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.id;
         settingsChunk.useDeepslate = false;
+        settingsChunk.useCaves = false;
         settingsChunk.indevLevelWidth = 256;
         settingsChunk.indevLevelLength = 256;
         settingsChunk.indevLevelHeight = 128;
         settingsChunk.indevCaveRadius = 1.0f;
+        settingsChunk.indevUseCaves = true;
         
         settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.SINGLE.id;
         settingsBiome.singleBiome = ModernBetaBiomes.INDEV_NORMAL.getValue().toString();
@@ -386,6 +392,7 @@ public class ModernBetaSettingsPresets {
         
         settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.PE.id;
         settingsChunk.useDeepslate = false;
+        settingsChunk.useCaves = false;
         settingsChunk.noiseCoordinateScale = 684.412f;
         settingsChunk.noiseHeightScale = 684.412f;
         settingsChunk.noiseUpperLimitScale = 512f;

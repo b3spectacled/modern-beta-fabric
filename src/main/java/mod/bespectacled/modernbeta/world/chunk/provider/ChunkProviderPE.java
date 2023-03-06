@@ -13,7 +13,6 @@ import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.util.mersenne.MTRandom;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
-import mod.bespectacled.modernbeta.util.noise.SimplexNoise;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderPE;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
@@ -56,7 +55,6 @@ public class ChunkProviderPE extends ChunkProviderNoise {
         this.scaleOctaveNoise = new PerlinOctaveNoise(mtRand, 10, true);
         this.depthOctaveNoise = new PerlinOctaveNoise(mtRand, 16, true);
         this.forestOctaveNoise = new PerlinOctaveNoise(mtRand, 8, true);
-        this.islandNoise = new SimplexNoise(this.random);
         
         this.climateSampler = (
             this.chunkGenerator.getBiomeSource() instanceof ModernBetaBiomeSource biomeSource &&

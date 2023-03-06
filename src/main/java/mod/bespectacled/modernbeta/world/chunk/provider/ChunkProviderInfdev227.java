@@ -3,7 +3,6 @@ package mod.bespectacled.modernbeta.world.chunk.provider;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.function.Supplier;
 
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoiseImitable;
@@ -179,14 +178,13 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
         
-        final BlockHolder blockHolder = new BlockHolder();
-        Supplier<BlockHolder> blockHolderSupplier = () -> blockHolder;
+        BlockHolder blockHolder = new BlockHolder();
         Block defaultBlock = this.defaultBlock.getBlock();
         Block defaultFluid = this.defaultFluid.getBlock();
         
-        BlockSourceRules.Builder builder = new BlockSourceRules.Builder().add(this.getBaseBlockSource(structureWeightSampler, noisePos, blockHolderSupplier, defaultBlock, defaultFluid));
+        BlockSourceRules.Builder builder = new BlockSourceRules.Builder().add(this.getBaseBlockSource(structureWeightSampler, noisePos, blockHolder, defaultBlock, defaultFluid));
         this.blockSources.forEach(blockSource -> builder.add(blockSource));
-        builder.add(this.getActualBlockSource(blockHolderSupplier));
+        builder.add(this.getActualBlockSource(blockHolder));
         
         BlockSourceRules blockSources = builder.build(this.defaultBlock);
 

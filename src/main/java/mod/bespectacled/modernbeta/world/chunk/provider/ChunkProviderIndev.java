@@ -140,7 +140,7 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
             this.growSurface();
         }
         
-        this.carveTerrain();
+        if (this.chunkSettings.indevUseCaves) this.carveTerrain();
         this.floodFluid();   
         this.floodLava();
         this.plantSurface();

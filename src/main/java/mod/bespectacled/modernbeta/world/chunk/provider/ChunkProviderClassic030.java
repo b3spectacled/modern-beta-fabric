@@ -43,7 +43,7 @@ public class ChunkProviderClassic030 extends ChunkProviderFinite {
         this.generateHeightmap();
         this.erodeTerrain();
         this.soilTerrain();
-        this.carveTerrain();
+        if (this.chunkSettings.indevUseCaves) this.carveTerrain();
         // Ore population step here, but not included
         this.floodFluid();
         this.floodLava();

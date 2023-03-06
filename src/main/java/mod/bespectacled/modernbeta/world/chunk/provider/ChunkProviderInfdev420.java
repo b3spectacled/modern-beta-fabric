@@ -9,7 +9,6 @@ import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
-import mod.bespectacled.modernbeta.util.noise.SimplexNoise;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.spawn.SpawnLocatorBeta;
@@ -42,7 +41,6 @@ public class ChunkProviderInfdev420 extends ChunkProviderNoise {
         this.surfaceOctaveNoise = new PerlinOctaveNoise(this.random, 4, true);
         new PerlinOctaveNoise(this.random, 5, true); // Unused in original source
         this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 5, true);
-        this.islandNoise = new SimplexNoise(this.random);
     }
     
     @Override

@@ -3,7 +3,6 @@ package mod.bespectacled.modernbeta.api.world.chunk;
 import java.util.ArrayDeque;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.function.Supplier;
 
 import org.slf4j.event.Level;
 
@@ -16,6 +15,7 @@ import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.blocksource.BlockSourceRules;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
+import mod.bespectacled.modernbeta.world.chunk.ModernBetaGenerationStep;
 import mod.bespectacled.modernbeta.world.spawn.SpawnLocatorIndev;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -32,7 +32,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.Blender;
@@ -175,19 +174,19 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
     }
     
     @Override
-    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
-        boolean inWorldBounds = this.inWorldBounds(chunkX << 4, chunkZ << 4);
+    public boolean skipChunk(int chunkX, int chunkZ, ModernBetaGenerationStep step) {
+        boolean outOfBounds = !this.inWorldBounds(chunkX << 4, chunkZ << 4);
         
-        if (chunkStatus == ChunkStatus.FEATURES) {
-            return !inWorldBounds;
-        } else if (chunkStatus == ChunkStatus.STRUCTURE_STARTS) {
-            return !inWorldBounds;
-        }  else if (chunkStatus == ChunkStatus.CARVERS || chunkStatus == ChunkStatus.LIQUID_CARVERS) {
-            return true;
-        } else if (chunkStatus == ChunkStatus.SURFACE) { 
+        if (step == ModernBetaGenerationStep.FEATURES) {
+            return outOfBounds;
+        } else if (step == ModernBetaGenerationStep.STRUCTURE_STARTS) {
+            return outOfBounds;
+        }  else if (step == ModernBetaGenerationStep.CARVERS) {
+            return outOfBounds|| !this.chunkSettings.useCaves;
+        } else if (step == ModernBetaGenerationStep.SURFACE) { 
             return false;
-        } else if (chunkStatus == ChunkStatus.SPAWN) {
-            return !inWorldBounds;
+        } else if (step == ModernBetaGenerationStep.ENTITY_SPAWN) {
+            return outOfBounds;
         }
         
         return false;
@@ -270,13 +269,11 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         BlockPos.Mutable pos = new BlockPos.Mutable();
         SimpleNoisePos noisePos = new SimpleNoisePos();
         
-        final BlockHolder blockHolder = new BlockHolder();
-        Supplier<BlockHolder> blockHolderSupplier = () -> blockHolder;
-        
-        BlockSource baseBlockSource = this.getBaseBlockSource(structureWeightSampler, noisePos, blockHolderSupplier, this.defaultBlock.getBlock(), this.getLevelFluidBlock());
+        BlockHolder blockHolder = new BlockHolder();
+        BlockSource baseBlockSource = this.getBaseBlockSource(structureWeightSampler, noisePos, blockHolder, this.defaultBlock.getBlock(), this.getLevelFluidBlock());
         BlockSourceRules blockSources = new BlockSourceRules.Builder()
             .add(baseBlockSource)
-            .add(this.getActualBlockSource(blockHolderSupplier))
+            .add(this.getActualBlockSource(blockHolder))
             .build(this.defaultBlock);
         
         for (int localX = 0; localX < 16; ++localX) {

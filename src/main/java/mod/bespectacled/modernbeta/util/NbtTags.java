@@ -14,6 +14,8 @@ public class NbtTags {
     public static final String WORLD_BORDER_WIDTH = "worldBorderWidth";
     public static final String WORLD_BORDER_LENGTH = "worldBorderLength";
     
+    public static final String USE_CAVES ="useCaves";
+    
     // Noise
     public static final String NOISE_POST_PROCESSOR = "noisePostProcessor";
     public static final String NOISE_COORDINATE_SCALE = "noiseCoordinateScale";
@@ -47,6 +49,7 @@ public class NbtTags {
     public static final String INDEV_LEVEL_LENGTH = "indevLevelLength";
     public static final String INDEV_LEVEL_HEIGHT = "indevLevelHeight";
     public static final String INDEV_CAVE_RADIUS = "indevCaveRadius";
+    public static final String INDEV_USE_CAVES = "indevUseCaves";
     
     // Islands
     public static final String ISLES_USE_ISLANDS = "islesUseIslands";
