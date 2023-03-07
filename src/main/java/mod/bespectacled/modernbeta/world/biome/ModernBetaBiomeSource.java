@@ -221,7 +221,7 @@ public class ModernBetaBiomeSource extends BiomeSource {
     }
 
     @Override
-    protected Stream<RegistryEntry<Biome>> method_49494() {
+    protected Stream<RegistryEntry<Biome>> biomeStream() {
         ModernBetaSettingsBiome modernBetaBiomeSettings = ModernBetaSettingsBiome.fromCompound(this.biomeSettings);
         ModernBetaSettingsCaveBiome modernBetaCaveBiomeSettings = ModernBetaSettingsCaveBiome.fromCompound(this.caveBiomeSettings);
         

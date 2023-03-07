@@ -40,7 +40,7 @@ import net.minecraft.world.gen.noise.NoiseConfig;
 import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 
 public abstract class ChunkProvider {    
-    private final FluidLevelSampler emptyFluidLevelSampler;
+    private final FluidLevelSampler defaultFluidLevelSampler;
     
     protected final ModernBetaChunkGenerator chunkGenerator;
     protected final long seed;
@@ -68,7 +68,7 @@ public abstract class ChunkProvider {
         this.chunkSettings = ModernBetaSettingsChunk.fromCompound(chunkGenerator.getChunkSettings());
         this.random = new Random(this.seed);
 
-        this.emptyFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
+        this.defaultFluidLevelSampler = (x, y, z) -> new FluidLevel(this.getSeaLevel(), BlockStates.AIR);
         this.randomProvider = chunkGenerator.getGeneratorSettings().value().getRandomProvider();
         this.randomSplitter = this.randomProvider.create(this.seed).nextSplitter();
         this.blockSourceDeepslate = new BlockSourceDeepslate(this.chunkSettings, this.randomSplitter);
@@ -161,7 +161,7 @@ public abstract class ChunkProvider {
      * @return An aquifer sampler.
      */
     public AquiferSampler getAquiferSampler(Chunk chunk, NoiseConfig noiseConfig) {
-        return AquiferSampler.seaLevel(this.emptyFluidLevelSampler);
+        return AquiferSampler.seaLevel(this.defaultFluidLevelSampler);
     }
     
     /**
@@ -170,7 +170,7 @@ public abstract class ChunkProvider {
      * @return Empty FluidLevelSampler.
      */
     public FluidLevelSampler getFluidLevelSampler() {
-        return this.emptyFluidLevelSampler;
+        return this.defaultFluidLevelSampler;
     }
     
     /**

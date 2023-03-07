@@ -22,8 +22,8 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
     public final float climateTempNoiseScale;
     public final float climateRainNoiseScale;
     public final float climateDetailNoiseScale;
-    public final Map<String, ClimateMapping> climateMappings;
     
+    public final Map<String, ClimateMapping> climateMappings;
     public final List<VoronoiPointBiome> voronoiPoints;
     
     public ModernBetaSettingsBiome() {
@@ -90,6 +90,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
             this.climateTempNoiseScale = 0.025f;
             this.climateRainNoiseScale = 0.05f;
             this.climateDetailNoiseScale = 0.25f;
+            
             this.climateMappings = createClimateMapping(
                 new ClimateMapping(
                     ModernBetaBiomes.BETA_DESERT.getValue().toString(),
@@ -197,7 +198,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
             this.climateMappings = ClimateMapping.mapFromCompound(compound, this.climateMappings);
             this.voronoiPoints = VoronoiPointBiome.listFromCompound(compound, this.voronoiPoints);
             
-            this.loadDeprecated(compound);
+            this.loadDatafix(compound);
             
             return this;
         }
@@ -206,7 +207,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
             return new ModernBetaSettingsBiome(this);
         }
         
-        private void loadDeprecated(NbtCompound compound) {}
+        private void loadDatafix(NbtCompound compound) {}
         
         public static Map<String, ClimateMapping> createClimateMapping(
             ClimateMapping desert,

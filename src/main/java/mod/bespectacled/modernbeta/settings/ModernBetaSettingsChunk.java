@@ -341,7 +341,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.islesOuterIslandNoiseScale = NbtUtil.readFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_SCALE, compound, this.islesOuterIslandNoiseScale);
             this.islesOuterIslandNoiseOffset = NbtUtil.readFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_OFFSET, compound, this.islesOuterIslandNoiseOffset);
             
-            this.loadDeprecated(compound);
+            this.loadDatafix(compound);
             
             return this;
         }
@@ -350,6 +350,6 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             return new ModernBetaSettingsChunk(this);
         }
         
-        private void loadDeprecated(NbtCompound compound) {}
+        private void loadDatafix(NbtCompound compound) {}
     }
 }

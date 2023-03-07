@@ -33,6 +33,7 @@ public class ModernBetaSettingsCaveBiome implements ModernBetaSettings {
         this.voronoiVerticalNoiseScale = builder.voronoiVerticalNoiseScale;
         this.voronoiDepthMinY = builder.voronoiDepthMinY;
         this.voronoiDepthMaxY = builder.voronoiDepthMaxY;
+        
         this.voronoiPoints = builder.voronoiPoints;
     }
     
@@ -54,6 +55,8 @@ public class ModernBetaSettingsCaveBiome implements ModernBetaSettings {
         
         compound.putFloat(NbtTags.VORONOI_HORIZONTAL_NOISE_SCALE, this.voronoiHorizontalNoiseScale);
         compound.putFloat(NbtTags.VORONOI_VERTICAL_NOISE_SCALE, this.voronoiVerticalNoiseScale);
+        compound.putInt(NbtTags.VORONOI_DEPTH_MIN_Y, this.voronoiDepthMinY);
+        compound.putInt(NbtTags.VORONOI_DEPTH_MAX_Y, this.voronoiDepthMaxY);
 
         compound.put(NbtTags.VORONOI_POINTS, VoronoiPointCaveBiome.listToNbt(this.voronoiPoints));
         
@@ -99,14 +102,14 @@ public class ModernBetaSettingsCaveBiome implements ModernBetaSettings {
             this.biomeProvider = NbtUtil.readString(NbtTags.BIOME_PROVIDER, compound, this.biomeProvider);
             this.singleBiome = NbtUtil.readString(NbtTags.SINGLE_BIOME, compound, this.singleBiome);
             
-            this.voronoiDepthMinY = NbtUtil.readInt(NbtTags.VORONOI_DEPTH_MIN_Y, compound, this.voronoiDepthMinY);
-            this.voronoiDepthMaxY = NbtUtil.readInt(NbtTags.VORONOI_DEPTH_MAX_Y, compound, this.voronoiDepthMaxY);
             this.voronoiHorizontalNoiseScale = NbtUtil.readFloat(NbtTags.VORONOI_HORIZONTAL_NOISE_SCALE, compound, this.voronoiHorizontalNoiseScale);
             this.voronoiVerticalNoiseScale = NbtUtil.readFloat(NbtTags.VORONOI_VERTICAL_NOISE_SCALE, compound, this.voronoiVerticalNoiseScale);
+            this.voronoiDepthMinY = NbtUtil.readInt(NbtTags.VORONOI_DEPTH_MIN_Y, compound, this.voronoiDepthMinY);
+            this.voronoiDepthMaxY = NbtUtil.readInt(NbtTags.VORONOI_DEPTH_MAX_Y, compound, this.voronoiDepthMaxY);
             
             this.voronoiPoints = VoronoiPointCaveBiome.listFromCompound(compound, this.voronoiPoints);
             
-            this.loadDeprecated(compound);
+            this.loadDatafix(compound);
             
             return this;
         }
@@ -115,6 +118,6 @@ public class ModernBetaSettingsCaveBiome implements ModernBetaSettings {
             return new ModernBetaSettingsCaveBiome(this);
         }
         
-        private void loadDeprecated(NbtCompound compound) {}
+        private void loadDatafix(NbtCompound compound) {}
     }
 }

@@ -11,7 +11,6 @@ import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
@@ -22,10 +21,11 @@ public class ModernBetaWorldScreenProvider {
         NbtCompound caveBiomeSettings
     ) {
         return (dynamicRegistryManager, dimensionsRegistryHolder) -> {
-            ModernBetaSettingsChunk modernBetaSettingsChunk = ModernBetaSettingsChunk.fromCompound(chunkSettings); 
+            ModernBetaSettingsChunk modernBetaSettingsChunk = ModernBetaSettingsChunk.fromCompound(chunkSettings);
+            RegistryKey<ChunkGeneratorSettings> modernBetaSettings = keyOfSettings(modernBetaSettingsChunk.chunkProvider);
             
             Registry<ChunkGeneratorSettings> registrySettings = dynamicRegistryManager.get(RegistryKeys.CHUNK_GENERATOR_SETTINGS);
-            RegistryEntry.Reference<ChunkGeneratorSettings> settings = registrySettings.entryOf(keyOfSettings(ModernBeta.createId(modernBetaSettingsChunk.chunkProvider)));
+            RegistryEntry.Reference<ChunkGeneratorSettings> settings = registrySettings.entryOf(modernBetaSettings);
             RegistryEntryLookup<Biome> registryBiome = dynamicRegistryManager.getWrapperOrThrow(RegistryKeys.BIOME);
             
             ModernBetaChunkGenerator chunkGenerator = new ModernBetaChunkGenerator(
@@ -42,7 +42,7 @@ public class ModernBetaWorldScreenProvider {
         };
     }
     
-    private static RegistryKey<ChunkGeneratorSettings> keyOfSettings(Identifier id) {
-        return RegistryKey.of(RegistryKeys.CHUNK_GENERATOR_SETTINGS, id);
+    private static RegistryKey<ChunkGeneratorSettings> keyOfSettings(String id) {
+        return RegistryKey.of(RegistryKeys.CHUNK_GENERATOR_SETTINGS, ModernBeta.createId(id));
     }
 }

@@ -3,6 +3,7 @@ package mod.bespectacled.modernbeta.api.world.chunk;
 import java.util.ArrayDeque;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.Predicate;
 
 import org.slf4j.event.Level;
 
@@ -34,6 +35,9 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
+import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
+import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
@@ -165,10 +169,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
             return seaLevel;
         
         this.pregenerateTerrainOrWait();
-        int height = this.getLevelHighestBlock(x, z);
-        
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && height < seaLevel) 
-            height = seaLevel;
+        int height = this.getLevelHighestBlock(x, z, type);
          
         return height;
     }
@@ -190,6 +191,15 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         }
         
         return false;
+    }
+    
+    @Override
+    public AquiferSampler getAquiferSampler(Chunk chunk, NoiseConfig noiseConfig) {
+        FluidLevelSampler fluidLevelSampler = (x, y, z) -> new FluidLevel(
+            this.getSeaLevel(), this.getLevelFluidBlock().getDefaultState()
+        );
+        
+        return AquiferSampler.seaLevel(fluidLevelSampler);
     }
     
     public int getLevelWidth() {
@@ -224,13 +234,19 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         this.blockArr[x][y][z] = block;
     }
     
-    public int getLevelHighestBlock(int x, int z) {
+    public int getLevelHighestBlock(int x, int z, Heightmap.Type type) {
         x = MathHelper.clamp(x, 0, this.levelWidth - 1);
         z = MathHelper.clamp(z, 0, this.levelLength - 1);
         
+        Predicate<Block> checkBlock = switch(type) {
+            case OCEAN_FLOOR_WG -> block -> block == Blocks.AIR || block == this.getLevelFluidBlock();
+            case WORLD_SURFACE_WG -> block -> block == Blocks.AIR;
+            default -> block -> block == Blocks.AIR;
+        };
+        
         int y;
         
-        for (y = this.levelHeight; this.getLevelBlock(x, y - 1, z) == Blocks.AIR && y > 0; --y);
+        for (y = this.levelHeight; checkBlock.test(this.getLevelBlock(x, y - 1, z)) && y > 0; --y);
         
         return y;
     }

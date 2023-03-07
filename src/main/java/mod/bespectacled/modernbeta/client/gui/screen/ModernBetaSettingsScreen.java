@@ -19,6 +19,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
 public class ModernBetaSettingsScreen extends ModernBetaScreen {
+    private static final String TEXT_NAVIGATION = "createWorld.customize.modern_beta.navigation";
     private static final String TEXT_SETTINGS = "createWorld.customize.modern_beta.settings";
     private static final String TEXT_INVALID_JSON = "createWorld.customize.modern_beta.invalid_json";
     
@@ -53,7 +54,7 @@ public class ModernBetaSettingsScreen extends ModernBetaScreen {
         ).dimensions(this.width / 2 + 5, this.height - 28, BUTTON_LENGTH, BUTTON_HEIGHT).build());
         
         int editBoxWidth = (int)(this.width * 0.8);
-        int editBoxHeight = (int)(this.height * 0.6);
+        int editBoxHeight = (int)(this.height * 0.575);
         
         this.widgetSettings = new EditBoxWidget(this.textRenderer, 0, 0, editBoxWidth, editBoxHeight, Text.of(""), Text.translatable(TEXT_SETTINGS));
         this.widgetSettings.setText(this.settingsString);
@@ -65,9 +66,13 @@ public class ModernBetaSettingsScreen extends ModernBetaScreen {
         Text textInvalid = Text.translatable(TEXT_INVALID_JSON).fillStyle(Style.EMPTY.withColor(16737380));
         this.widgetInvalid = new TextWidget(textInvalid, this.textRenderer);
         
+        Text textNavigation = Text.translatable(TEXT_NAVIGATION);
+        TextWidget widgetNavigation = new TextWidget(textNavigation, this.textRenderer);
+        
         GridWidget gridWidget = this.createGridWidget();
         
         GridWidget.Adder gridWidgetAdder = gridWidget.createAdder(1);
+        gridWidgetAdder.add(widgetNavigation);
         gridWidgetAdder.add(this.widgetSettings);
         gridWidgetAdder.add(this.widgetInvalid);
         
