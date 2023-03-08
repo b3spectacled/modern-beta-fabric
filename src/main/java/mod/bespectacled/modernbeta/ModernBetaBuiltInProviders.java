@@ -83,15 +83,24 @@ public class ModernBetaBuiltInProviders {
     
     public static void registerSettingsPresets() {
         ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.DEFAULT_ID, ModernBetaSettingsPresets.PRESET_BETA);
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.BETA.id, ModernBetaSettingsPresets.PRESET_BETA);
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.SKYLANDS.id, ModernBetaSettingsPresets.PRESET_SKYLANDS);
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.ALPHA.id, ModernBetaSettingsPresets.PRESET_ALPHA);
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_611.id, ModernBetaSettingsPresets.PRESET_INFDEV_611);
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_420.id, ModernBetaSettingsPresets.PRESET_INFDEV_420);
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_415.id, ModernBetaSettingsPresets.PRESET_INFDEV_415);
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INFDEV_227.id, ModernBetaSettingsPresets.PRESET_INFDEV_227);
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.INDEV.id, ModernBetaSettingsPresets.PRESET_INDEV);
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.id, ModernBetaSettingsPresets.PRESET_CLASSIC);
-        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Chunk.PE.id, ModernBetaSettingsPresets.PRESET_PE);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Preset.BETA.id, ModernBetaSettingsPresets.PRESET_BETA);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Preset.SKYLANDS.id, ModernBetaSettingsPresets.PRESET_SKYLANDS);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Preset.ALPHA.id, ModernBetaSettingsPresets.PRESET_ALPHA);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Preset.INFDEV_611.id, ModernBetaSettingsPresets.PRESET_INFDEV_611);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Preset.INFDEV_420.id, ModernBetaSettingsPresets.PRESET_INFDEV_420);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Preset.INFDEV_415.id, ModernBetaSettingsPresets.PRESET_INFDEV_415);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Preset.INFDEV_227.id, ModernBetaSettingsPresets.PRESET_INFDEV_227);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Preset.INDEV.id, ModernBetaSettingsPresets.PRESET_INDEV);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Preset.CLASSIC_0_30.id, ModernBetaSettingsPresets.PRESET_CLASSIC);
+        ModernBetaRegistries.SETTINGS_PRESET.register(ModernBetaBuiltInTypes.Preset.PE.id, ModernBetaSettingsPresets.PRESET_PE);
+    }
+    
+    public static void registerSettingsPresetAlts() {
+        ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_SKYLANDS.id, ModernBetaSettingsPresets.PRESET_BETA_SKYLANDS);
+        ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_ISLES.id, ModernBetaSettingsPresets.PRESET_BETA_ISLES);
+        ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_ISLE_LAND.id, ModernBetaSettingsPresets.PRESET_BETA_ISLE_LAND);
+        ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_CAVE_DELIGHT.id, ModernBetaSettingsPresets.PRESET_BETA_CAVE_DELIGHT);
+        ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_CAVE_CHAOS.id, ModernBetaSettingsPresets.PRESET_BETA_CAVE_CHAOS);
+        ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_REALISTIC.id, ModernBetaSettingsPresets.PRESET_BETA_REALISTIC);
     }
 }

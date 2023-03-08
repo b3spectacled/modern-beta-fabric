@@ -60,7 +60,11 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
         super.init();
         
         this.addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, button -> {
-            this.onDone.accept(this.preset.getCompound(SettingsType.CHUNK), this.preset.getCompound(SettingsType.BIOME), this.preset.getCompound(SettingsType.CAVE_BIOME));
+            this.onDone.accept(
+                this.preset.getCompound(SettingsType.CHUNK),
+                this.preset.getCompound(SettingsType.BIOME),
+                this.preset.getCompound(SettingsType.CAVE_BIOME)
+            );
             this.client.setScreen(this.parent);
         }).dimensions(this.width / 2 - 155, this.height - 28, BUTTON_LENGTH, BUTTON_HEIGHT).build());
         
@@ -71,10 +75,15 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
         Function<String, Text> presetText = key -> Text.translatable(TEXT_PRESET + "." + key);
         this.widgetPreset = CyclingButtonWidget
             .builder(presetText)
-            .values(ModernBetaRegistries.SETTINGS_PRESET.getKeySet())
+            .values(
+                ModernBetaRegistries.SETTINGS_PRESET.getKeySet().stream().toList(),
+                ModernBetaRegistries.SETTINGS_PRESET_ALT.getKeySet().stream().toList()
+            )
             .initially(ModernBetaSettingsChunk.fromCompound(this.preset.getCompound(SettingsType.CHUNK)).chunkProvider)
-            .build(0, 0, 150, 20, Text.translatable(TEXT_PRESET), (button, key) -> {
-                this.preset = ModernBetaRegistries.SETTINGS_PRESET.get(key);
+            .build(0, 0, BUTTON_LONG_LENGTH, BUTTON_HEIGHT, Text.translatable(TEXT_PRESET), (button, key) -> {
+                this.preset = ModernBetaRegistries.SETTINGS_PRESET.contains(key) ?
+                    ModernBetaRegistries.SETTINGS_PRESET.get(key) :
+                    ModernBetaRegistries.SETTINGS_PRESET_ALT.get(key);
         });
         
         ButtonWidget buttonChunk = ButtonWidget.builder(
@@ -144,17 +153,26 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
     }
     
     private void onPresetChange() {
-        if (!ModernBetaRegistries.SETTINGS_PRESET.contains(this.preset)) {
-            this.widgetPreset.setMessage(Text.translatable(TEXT_PRESET).append(": ").append(Text.translatable(TEXT_CUSTOM)));
+        boolean isPresent = ModernBetaRegistries.SETTINGS_PRESET.contains(this.preset) ||
+            ModernBetaRegistries.SETTINGS_PRESET_ALT.contains(this.preset);
+        
+        if (!isPresent) {
+            Text textPreset = Text.translatable(TEXT_PRESET).append(": ").append(Text.translatable(TEXT_CUSTOM));
+            
+            this.widgetPreset.setMessage(textPreset);
             this.widgetPreset.active = false;
         } else {
-            this.widgetPreset.setValue(ModernBetaRegistries.SETTINGS_PRESET.getKey(this.preset));
+            String key = ModernBetaRegistries.SETTINGS_PRESET.contains(this.preset) ?
+                ModernBetaRegistries.SETTINGS_PRESET.getKey(this.preset) :
+                ModernBetaRegistries.SETTINGS_PRESET_ALT.getKey(this.preset);
+            
+            this.widgetPreset.setValue(key);
             this.widgetPreset.active = true;
         }
     }
     
     private void resetPreset() {
-        this.preset = ModernBetaRegistries.SETTINGS_PRESET.get(ModernBetaBuiltInTypes.Chunk.BETA.id);
+        this.preset = ModernBetaRegistries.SETTINGS_PRESET.get(ModernBetaBuiltInTypes.Preset.BETA.id);
         this.onPresetChange();
     }
 }

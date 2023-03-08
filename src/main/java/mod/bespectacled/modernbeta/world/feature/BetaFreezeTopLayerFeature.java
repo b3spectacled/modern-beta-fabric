@@ -16,6 +16,7 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.LightType;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.WorldView;
+import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
@@ -27,11 +28,18 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
     }
 
     @Override
-    public boolean generate(FeatureContext<DefaultFeatureConfig> featureContext) {
-        StructureWorldAccess world = featureContext.getWorld();
-        BlockPos pos = featureContext.getOrigin();
-        ChunkGenerator generator = featureContext.getGenerator();
+    public boolean generate(FeatureContext<DefaultFeatureConfig> context) {
+        StructureWorldAccess world = context.getWorld();
+        BlockPos pos = context.getOrigin();
         
+        ChunkGenerator chunkGenerator = context.getGenerator();
+        BiomeSource biomeSource = chunkGenerator.getBiomeSource();
+        
+        setFreezeTopLayer(world, pos, biomeSource);
+        return true;
+    }
+    
+    public static void setFreezeTopLayer(StructureWorldAccess world, BlockPos pos, BiomeSource biomeSource) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         BlockPos.Mutable mutableDown = new BlockPos.Mutable();
         
@@ -47,8 +55,8 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 double temp;
                 double coldThreshold;
                 
-                if (generator.getBiomeSource() instanceof ModernBetaBiomeSource oldBiomeSource && 
-                    oldBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
+                if (biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource && 
+                    modernBetaBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
                     climateSampler.useBiomeFeature()
                 ) {
                     temp = climateSampler.sample(x, z).temp();
@@ -73,15 +81,23 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 }
             }
         }
-        return true;
     }
 
-    private boolean canSetIce(WorldView worldView, BlockPos blockPos, boolean doWaterCheck, double temp, double coldThreshold) {
+    private static boolean canSetIce(
+        WorldView worldView,
+        BlockPos blockPos,
+        boolean doWaterCheck,
+        double temp,
+        double coldThreshold
+    ) {
         if (temp >= coldThreshold) {
             return false;
         }
         
-        if (blockPos.getY() >= worldView.getBottomY() && blockPos.getY() < worldView.getTopY() && worldView.getLightLevel(LightType.BLOCK, blockPos) < 10) {
+        if (blockPos.getY() >= worldView.getBottomY() &&
+            blockPos.getY() < worldView.getTopY() &&
+            worldView.getLightLevel(LightType.BLOCK, blockPos) < 10
+        ) {
             BlockState blockState = worldView.getBlockState(blockPos);
             FluidState fluidState = worldView.getFluidState(blockPos);
 
@@ -105,8 +121,8 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
         return false;
     }
 
-    private boolean canSetSnow(WorldView worldView, BlockPos blockPos, double temp, double coldThreshold) {
-        double heightTemp = temp - ((double) (blockPos.getY() - 64) / 64D) * 0.3D;
+    private static boolean canSetSnow(WorldView worldView, BlockPos blockPos, double temp, double coldThreshold) {
+        double heightTemp = temp - ((double) (blockPos.getY() - 64) / 64.0) * 0.3;
 
         if (heightTemp >= coldThreshold) {
             return false;
@@ -122,5 +138,4 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
         
         return false;
     }
-
 }

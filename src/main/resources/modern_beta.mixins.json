@@ -6,6 +6,7 @@
   "mixins": [
     "MixinChunkGenerator",
     "MixinChunkSection",
+    "MixinFreezeTopLayerFeature",
     "MixinMinecraftServer",
     "MixinPlacedFeatureAccessor",
     "MixinSpawnLocating",

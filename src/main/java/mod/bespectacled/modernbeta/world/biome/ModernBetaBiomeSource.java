@@ -129,16 +129,31 @@ public class ModernBetaBiomeSource extends BiomeSource {
         MultiNoiseUtil.MultiNoiseSampler noiseSampler,
         WorldView world
     ) {
-        if (this.chunkGenerator == null)
-            return super.locateBiome(origin, radius, horizontalBlockCheckInterval, verticalBlockCheckInterval, predicate, noiseSampler, world);
+        if (this.chunkGenerator == null) {
+            return super.locateBiome(
+                origin,
+                radius,
+                horizontalBlockCheckInterval,
+                verticalBlockCheckInterval,
+                predicate,
+                noiseSampler,
+                world
+            );
+        }
         
-        Set<RegistryEntry<Biome>> set = this.getBiomes().stream().filter(predicate).collect(Collectors.toUnmodifiableSet());
-        if (set.isEmpty()) {
+        Set<RegistryEntry<Biome>> biomeSet = this.getBiomes()
+            .stream()
+            .filter(predicate)
+            .collect(Collectors.toUnmodifiableSet());
+        
+        if (biomeSet.isEmpty()) {
             return null;
         }
         
         int searchRadius = Math.floorDiv(radius, horizontalBlockCheckInterval);
-        int[] sections = MathHelper.stream(origin.getY(), world.getBottomY() + 1, world.getTopY(), verticalBlockCheckInterval).toArray();
+        int[] sections = MathHelper
+            .stream(origin.getY(), world.getBottomY() + 1, world.getTopY(), verticalBlockCheckInterval)
+            .toArray();
         
         for (BlockPos.Mutable mutable : BlockPos.iterateInSquare(BlockPos.ORIGIN, searchRadius, Direction.EAST, Direction.SOUTH)) {
             int x = origin.getX() + mutable.getX() * horizontalBlockCheckInterval;
@@ -148,13 +163,16 @@ public class ModernBetaBiomeSource extends BiomeSource {
             int biomeZ = BiomeCoords.fromBlock(z);
             
             for (int y : sections) {
-                RegistryEntry<Biome> biome = this.chunkGenerator.getBiomeInjector().getBiome(biomeX, BiomeCoords.fromBlock(y), biomeZ, noiseSampler);
+                RegistryEntry<Biome> biome = this.chunkGenerator
+                    .getBiomeInjector()
+                    .getBiome(biomeX, BiomeCoords.fromBlock(y), biomeZ, noiseSampler);
                 
-                if (!set.contains(biome)) continue;
+                if (!biomeSet.contains(biome)) continue;
                 
                 return Pair.of(new BlockPos(x, y, z), biome);
             }
         }
+        
         return null;
     }
 

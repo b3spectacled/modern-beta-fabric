@@ -22,6 +22,7 @@ public final class ModernBetaRegistries {
     public static final ModernBetaRegistry<SurfaceConfig> SURFACE_CONFIG;
     public static final ModernBetaRegistry<BlockSourceCreator> BLOCKSOURCE;
     public static final ModernBetaRegistry<ModernBetaSettingsPreset> SETTINGS_PRESET;
+    public static final ModernBetaRegistry<ModernBetaSettingsPreset> SETTINGS_PRESET_ALT;
     
     static {
         CHUNK = new ModernBetaRegistry<>("CHUNK");
@@ -31,6 +32,7 @@ public final class ModernBetaRegistries {
         SURFACE_CONFIG = new ModernBetaRegistry<>("SURFACE_CONFIG");
         BLOCKSOURCE = new ModernBetaRegistry<>("BLOCKSOURCE");
         SETTINGS_PRESET = new ModernBetaRegistry<>("SETTINGS_PRESET");
+        SETTINGS_PRESET_ALT = new ModernBetaRegistry<>("SETTINGS_PRESET_ALT");
     }
     
     @FunctionalInterface
