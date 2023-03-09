@@ -55,10 +55,11 @@ public class NbtTags {
     public static final String ISLES_USE_ISLANDS = "islesUseIslands";
     public static final String ISLES_USE_OUTER_ISLANDS = "islesUseOuterIslands";
     public static final String ISLES_MAX_OCEAN_DEPTH = "islesMaxOceanDepth";
-    public static final String ISLES_CENTER_ISLAND_FALLOFF = "islesCenterIslandFalloff";
+    public static final String ISLES_CENTER_ISLAND_SHAPE = "islesCenterIslandShape";
     public static final String ISLES_CENTER_ISLAND_RADIUS = "islesCenterIslandRadius";
-    public static final String ISLES_CENTER_OCEAN_FALLOFF_DIST = "islesCenterOceanFalloffDistance";
+    public static final String ISLES_CENTER_ISLAND_FALLOFF_DIST = "islesCenterIslandFalloffDistance";
     public static final String ISLES_CENTER_OCEAN_RADIUS = "islesCenterOceanRadius";
+    public static final String ISLES_CENTER_OCEAN_FALLOFF_DIST = "islesCenterOceanFalloffDistance";
     public static final String ISLES_OUTER_ISLAND_NOISE_SCALE = "islesOuterIslandNoiseScale";
     public static final String ISLES_OUTER_ISLAND_NOISE_OFFSET = "islesOuterIslandNoiseOffset";
     

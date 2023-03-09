@@ -9,6 +9,8 @@
           "cave_provider_settings": {
             "biomeProvider": "voronoi",
             "singleBiome": "minecraft:lush_caves",
+            "voronoiDepthMaxY": 64,
+            "voronoiDepthMinY": -64,
             "voronoiHorizontalNoiseScale": 32.0,
             "voronoiPoints": [
               {
@@ -153,56 +155,56 @@
             "voronoiPoints": [
               {
                 "biome": "minecraft:snowy_plains",
-                "deepOceanBiome": "minecraft:frozen_ocean",
+                "deepOceanBiome": "minecraft:deep_frozen_ocean",
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.0,
                 "temp": 0.0
               },
               {
                 "biome": "minecraft:snowy_taiga",
-                "deepOceanBiome": "minecraft:frozen_ocean",
+                "deepOceanBiome": "minecraft:deep_frozen_ocean",
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.5,
                 "temp": 0.0
               },
               {
                 "biome": "minecraft:swamp",
-                "deepOceanBiome": "minecraft:cold_ocean",
+                "deepOceanBiome": "minecraft:deep_cold_ocean",
                 "oceanBiome": "minecraft:cold_ocean",
                 "rain": 1.0,
                 "temp": 0.0
               },
               {
                 "biome": "minecraft:savanna",
-                "deepOceanBiome": "minecraft:ocean",
+                "deepOceanBiome": "minecraft:deep_ocean",
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.0,
                 "temp": 0.5
               },
               {
                 "biome": "minecraft:forest",
-                "deepOceanBiome": "minecraft:ocean",
+                "deepOceanBiome": "minecraft:deep_ocean",
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.5,
                 "temp": 0.5
               },
               {
                 "biome": "minecraft:plains",
-                "deepOceanBiome": "minecraft:ocean",
+                "deepOceanBiome": "minecraft:deep_ocean",
                 "oceanBiome": "minecraft:ocean",
                 "rain": 1.0,
                 "temp": 0.5
               },
               {
                 "biome": "minecraft:desert",
-                "deepOceanBiome": "minecraft:lukewarm_ocean",
+                "deepOceanBiome": "minecraft:deep_lukewarm_ocean",
                 "oceanBiome": "minecraft:lukewarm_ocean",
                 "rain": 0.0,
                 "temp": 1.0
               },
               {
                 "biome": "minecraft:dark_forest",
-                "deepOceanBiome": "minecraft:lukewarm_ocean",
+                "deepOceanBiome": "minecraft:deep_lukewarm_ocean",
                 "oceanBiome": "minecraft:lukewarm_ocean",
                 "rain": 0.5,
                 "temp": 1.0
@@ -231,8 +233,9 @@
           "indevUseCaves": 1,
           "infdevUsePyramid": 1,
           "infdevUseWall": 1,
-          "islesCenterIslandFalloff": 4.0,
+          "islesCenterIslandFalloffDistance": 8,
           "islesCenterIslandRadius": 16,
+          "islesCenterIslandShape": "round",
           "islesCenterOceanFalloffDistance": 16,
           "islesCenterOceanRadius": 64,
           "islesMaxOceanDepth": 200.0,

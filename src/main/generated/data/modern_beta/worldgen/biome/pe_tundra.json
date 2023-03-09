@@ -97,7 +97,7 @@
         "type": "minecraft:goat",
         "maxCount": 6,
         "minCount": 4,
-        "weight": 10
+        "weight": 5
       }
     ],
     "misc": [],

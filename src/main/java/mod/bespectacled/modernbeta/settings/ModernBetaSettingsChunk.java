@@ -7,6 +7,7 @@ import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
 import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevTheme;
 import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevType;
+import mod.bespectacled.modernbeta.world.chunk.provider.island.IslandShape;
 import net.minecraft.nbt.NbtCompound;
 
 public class ModernBetaSettingsChunk implements ModernBetaSettings {
@@ -54,10 +55,11 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
     public final boolean islesUseIslands;
     public final boolean islesUseOuterIslands;
     public final float islesMaxOceanDepth;
-    public final float islesCenterIslandFalloff;
+    public final String islesCenterIslandShape;
     public final int islesCenterIslandRadius;
-    public final int islesCenterOceanFalloffDistance;
+    public final int islesCenterIslandFalloffDistance;
     public final int islesCenterOceanRadius;
+    public final int islesCenterOceanFalloffDistance;
     public final float islesOuterIslandNoiseScale;
     public final float islesOuterIslandNoiseOffset;
     
@@ -110,10 +112,11 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         this.islesUseIslands = builder.islesUseIslands;
         this.islesUseOuterIslands = builder.islesUseOuterIslands;
         this.islesMaxOceanDepth = builder.islesMaxOceanDepth;
-        this.islesCenterIslandFalloff = builder.islesCenterIslandFalloff;
+        this.islesCenterIslandShape = builder.islesCenterIslandShape;
         this.islesCenterIslandRadius = builder.islesCenterIslandRadius;
-        this.islesCenterOceanFalloffDistance = builder.islesCenterOceanFalloffDistance;
+        this.islesCenterIslandFalloffDistance = builder.islesCenterIslandFalloffDistance;
         this.islesCenterOceanRadius = builder.islesCenterOceanRadius;
+        this.islesCenterOceanFalloffDistance = builder.islesCenterOceanFalloffDistance;
         this.islesOuterIslandNoiseScale = builder.islesOuterIslandNoiseScale;
         this.islesOuterIslandNoiseOffset = builder.islesOuterIslandNoiseOffset;
     }
@@ -175,10 +178,11 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         compound.putBoolean(NbtTags.ISLES_USE_ISLANDS, this.islesUseIslands);
         compound.putBoolean(NbtTags.ISLES_USE_OUTER_ISLANDS, this.islesUseOuterIslands);
         compound.putFloat(NbtTags.ISLES_MAX_OCEAN_DEPTH, this.islesMaxOceanDepth);
-        compound.putFloat(NbtTags.ISLES_CENTER_ISLAND_FALLOFF, this.islesCenterIslandFalloff);
+        compound.putString(NbtTags.ISLES_CENTER_ISLAND_SHAPE, this.islesCenterIslandShape);
         compound.putInt(NbtTags.ISLES_CENTER_ISLAND_RADIUS, this.islesCenterIslandRadius);
-        compound.putInt(NbtTags.ISLES_CENTER_OCEAN_FALLOFF_DIST, this.islesCenterOceanFalloffDistance);
+        compound.putInt(NbtTags.ISLES_CENTER_ISLAND_FALLOFF_DIST, this.islesCenterIslandFalloffDistance);
         compound.putInt(NbtTags.ISLES_CENTER_OCEAN_RADIUS, this.islesCenterOceanRadius);
+        compound.putInt(NbtTags.ISLES_CENTER_OCEAN_FALLOFF_DIST, this.islesCenterOceanFalloffDistance);
         compound.putFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_SCALE, this.islesOuterIslandNoiseScale);
         compound.putFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_OFFSET, this.islesOuterIslandNoiseOffset);
         
@@ -230,10 +234,11 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         public boolean islesUseIslands;
         public boolean islesUseOuterIslands;
         public float islesMaxOceanDepth;
-        public float islesCenterIslandFalloff;
+        public String islesCenterIslandShape;
         public int islesCenterIslandRadius;
-        public int islesCenterOceanFalloffDistance;
+        public int islesCenterIslandFalloffDistance;
         public int islesCenterOceanRadius;
+        public int islesCenterOceanFalloffDistance;
         public float islesOuterIslandNoiseScale;
         public float islesOuterIslandNoiseOffset;
         
@@ -270,8 +275,8 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.infdevUsePyramid = true;
             this.infdevUseWall = true;
             
-            this.indevLevelType = IndevType.ISLAND.getName();
-            this.indevLevelTheme = IndevTheme.NORMAL.getName();
+            this.indevLevelType = IndevType.ISLAND.getId();
+            this.indevLevelTheme = IndevTheme.NORMAL.getId();
             this.indevLevelWidth = 256;
             this.indevLevelLength = 256;
             this.indevLevelHeight = 128;
@@ -281,10 +286,11 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.islesUseIslands = false;
             this.islesUseOuterIslands = true;
             this.islesMaxOceanDepth = 200.0F;
-            this.islesCenterIslandFalloff = 4.0F;
+            this.islesCenterIslandShape = IslandShape.ROUND.getId();
             this.islesCenterIslandRadius = 16;
-            this.islesCenterOceanFalloffDistance = 16;
+            this.islesCenterIslandFalloffDistance = 8;
             this.islesCenterOceanRadius = 64;
+            this.islesCenterOceanFalloffDistance = 16;
             this.islesOuterIslandNoiseScale = 300F;
             this.islesOuterIslandNoiseOffset = 0.25F;
         }
@@ -299,7 +305,6 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             
             this.useCaves = NbtUtil.readBoolean(NbtTags.USE_CAVES, compound, this.useCaves);
         
-            //this.noisePostProcessor = NbtUtil.readString(NbtTags.NOISE_POST_PROCESSOR, compound, this.noisePostProcessor);
             this.noiseCoordinateScale = NbtUtil.readFloat(NbtTags.NOISE_COORDINATE_SCALE, compound, this.noiseCoordinateScale);
             this.noiseHeightScale = NbtUtil.readFloat(NbtTags.NOISE_HEIGHT_SCALE, compound, this.noiseHeightScale);
             this.noiseUpperLimitScale = NbtUtil.readFloat(NbtTags.NOISE_UPPER_LIMIT_SCALE, compound, this.noiseUpperLimitScale);
@@ -334,10 +339,11 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.islesUseIslands = NbtUtil.readBoolean(NbtTags.ISLES_USE_ISLANDS, compound, this.islesUseIslands);
             this.islesUseOuterIslands = NbtUtil.readBoolean(NbtTags.ISLES_USE_OUTER_ISLANDS, compound, this.islesUseOuterIslands);
             this.islesMaxOceanDepth = NbtUtil.readFloat(NbtTags.ISLES_MAX_OCEAN_DEPTH, compound, this.islesMaxOceanDepth);
-            this.islesCenterIslandFalloff = NbtUtil.readFloat(NbtTags.ISLES_CENTER_ISLAND_FALLOFF, compound, this.islesCenterIslandFalloff);
+            this.islesCenterIslandShape = NbtUtil.readString(NbtTags.ISLES_CENTER_ISLAND_SHAPE, compound, this.islesCenterIslandShape);
             this.islesCenterIslandRadius = NbtUtil.readInt(NbtTags.ISLES_CENTER_ISLAND_RADIUS, compound, this.islesCenterIslandRadius);
-            this.islesCenterOceanFalloffDistance = NbtUtil.readInt(NbtTags.ISLES_CENTER_OCEAN_FALLOFF_DIST, compound, this.islesCenterOceanFalloffDistance);
+            this.islesCenterIslandFalloffDistance = NbtUtil.readInt(NbtTags.ISLES_CENTER_ISLAND_FALLOFF_DIST, compound, this.islesCenterIslandFalloffDistance);
             this.islesCenterOceanRadius = NbtUtil.readInt(NbtTags.ISLES_CENTER_OCEAN_RADIUS, compound, this.islesCenterOceanRadius);
+            this.islesCenterOceanFalloffDistance = NbtUtil.readInt(NbtTags.ISLES_CENTER_OCEAN_FALLOFF_DIST, compound, this.islesCenterOceanFalloffDistance);
             this.islesOuterIslandNoiseScale = NbtUtil.readFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_SCALE, compound, this.islesOuterIslandNoiseScale);
             this.islesOuterIslandNoiseOffset = NbtUtil.readFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_OFFSET, compound, this.islesOuterIslandNoiseOffset);
             

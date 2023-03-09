@@ -32,6 +32,6 @@ public class ModernBetaOreConfiguredFeatures {
         );
         
         ConfiguredFeatures.register(featureRegisterable, ORE_CLAY, ModernBetaFeatures.ORE_CLAY, new OreFeatureConfig(new BlockMatchRuleTest(Blocks.SAND), Blocks.CLAY.getDefaultState(), 33));
-        ConfiguredFeatures.register(featureRegisterable, ORE_EMERALD_Y95, Feature.ORE, new OreFeatureConfig(targets, 8));
+        ConfiguredFeatures.register(featureRegisterable, ORE_EMERALD_Y95, Feature.ORE, new OreFeatureConfig(targets, 8, 0.9f));
     }
 }

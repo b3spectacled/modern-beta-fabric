@@ -189,7 +189,7 @@ public class ChunkProviderInfdev415 extends ChunkProviderNoise {
         double lowerLimitScale = this.chunkSettings.noiseLowerLimitScale;
         double upperLimitScale = this.chunkSettings.noiseUpperLimitScale;
         
-        double islandOffset = this.getIslandOffset(startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
+        double islandOffset = this.getIslandOffset(noiseX, noiseZ);
         
         for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;

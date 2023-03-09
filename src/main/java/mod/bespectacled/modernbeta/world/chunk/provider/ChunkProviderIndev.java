@@ -49,8 +49,8 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
     public ChunkProviderIndev(ModernBetaChunkGenerator chunkGenerator, long seed) {
         super(chunkGenerator, seed);
         
-        this.levelTheme = IndevTheme.fromName(this.chunkSettings.indevLevelTheme);
-        this.levelType = IndevType.fromName(this.chunkSettings.indevLevelType);
+        this.levelTheme = IndevTheme.fromId(this.chunkSettings.indevLevelTheme);
+        this.levelType = IndevType.fromId(this.chunkSettings.indevLevelType);
         
         this.fluidBlock = this.isFloating() ? BlockStates.AIR : (this.isHell() ? BlockStates.LAVA : this.defaultFluid);
         this.topsoilBlock = this.isHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;

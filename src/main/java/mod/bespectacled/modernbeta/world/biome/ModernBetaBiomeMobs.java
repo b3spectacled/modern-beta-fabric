@@ -25,17 +25,18 @@ public class ModernBetaBiomeMobs {
     }
     
     public static void addColdOceanMobs(SpawnSettings.Builder spawnSettings) {
-        DefaultBiomeFeatures.addOceanMobs(spawnSettings, 10, 4, 10);
+        DefaultBiomeFeatures.addOceanMobs(spawnSettings, 3, 4, 15);
         
         spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, new SpawnEntry(EntityType.SALMON, 15, 1, 5));
-        spawnSettings.spawn(SpawnGroup.WATER_CREATURE, new SpawnEntry(EntityType.DOLPHIN, 1, 1, 2));
     }
     
     public static void addFrozenOceanMobs(SpawnSettings.Builder spawnSettings) {
-        DefaultBiomeFeatures.addOceanMobs(spawnSettings, 10, 4, 10);
-        
+        spawnSettings.spawn(SpawnGroup.WATER_CREATURE, new SpawnEntry(EntityType.SQUID, 1, 1, 4));
         spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, new SpawnEntry(EntityType.SALMON, 15, 1, 5));
-        spawnSettings.spawn(SpawnGroup.WATER_CREATURE, new SpawnEntry(EntityType.DOLPHIN, 1, 1, 2));
+        spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.POLAR_BEAR, 1, 1, 2));
+
+        DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
+        spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(EntityType.DROWNED, 5, 1, 1));
     }
     
     public static void addOceanMobs(SpawnSettings.Builder spawnSettings) {
@@ -51,7 +52,7 @@ public class ModernBetaBiomeMobs {
     }
     
     public static void addLukewarmOceanMobs(SpawnSettings.Builder spawnSettings) {
-        DefaultBiomeFeatures.addOceanMobs(spawnSettings, 10, 4, 10);
+        DefaultBiomeFeatures.addOceanMobs(spawnSettings, 10, 2, 15);
         
         spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, new SpawnEntry(EntityType.PUFFERFISH, 5, 1, 3));
         spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, new SpawnEntry(EntityType.TROPICAL_FISH, 25, 8, 8));
@@ -88,7 +89,7 @@ public class ModernBetaBiomeMobs {
         DefaultBiomeFeatures.addSnowyMobs(spawnSettings);
         
         // TODO: Move maybe later
-        spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnEntry(EntityType.GOAT, 10, 4, 6));
+        spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnEntry(EntityType.GOAT, 5, 4, 6));
     }
     
     public static void addSkyMobs(SpawnSettings.Builder spawnSettings) {

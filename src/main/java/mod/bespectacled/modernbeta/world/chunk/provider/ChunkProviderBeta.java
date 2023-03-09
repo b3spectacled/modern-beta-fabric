@@ -235,7 +235,7 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
         double baseSize = this.chunkSettings.noiseBaseSize;
         double heightStretch = this.chunkSettings.noiseStretchY;
         
-        double islandOffset = this.getIslandOffset(startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
+        double islandOffset = this.getIslandOffset(noiseX, noiseZ);
 
         Clime clime = this.climateSampler.sample(x, z);
         double temp = clime.temp();

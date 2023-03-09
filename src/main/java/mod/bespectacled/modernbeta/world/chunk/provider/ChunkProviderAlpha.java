@@ -217,7 +217,7 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
         double baseSize = this.chunkSettings.noiseBaseSize;
         double heightStretch = this.chunkSettings.noiseStretchY;
         
-        double islandOffset = this.getIslandOffset(startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
+        double islandOffset = this.getIslandOffset(noiseX, noiseZ);
 
         double scale = this.scaleOctaveNoise.sample(noiseX, 0, noiseZ, 1.0, 0.0, 1.0);
         scale = (scale + 256D) / 512D;

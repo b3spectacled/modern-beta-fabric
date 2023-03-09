@@ -1,56 +1,28 @@
 package mod.bespectacled.modernbeta.world.chunk.provider.indev;
 
 public enum IndevTheme {
-    NORMAL(0, "normal"),
-    HELL(1, "hell"),
-    PARADISE(2, "paradise"),
-    WOODS(3, "woods");
+    NORMAL("normal"),
+    HELL("hell"),
+    PARADISE("paradise"),
+    WOODS("woods");
     
-    private final int id;
-    private final String name;
+    private final String id;
     
-    private IndevTheme(int id, String name) {
+    private IndevTheme(String id) {
         this.id = id;
-        this.name = name;
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public String getName() {
-        return this.name;
-    }
-    
-    public static IndevTheme fromId(int id) {
-        for (IndevTheme t : IndevTheme.values()) {
-            if (t.id == id) {
-                return t;
+    public static IndevTheme fromId(String id) {
+        for (IndevTheme theme : IndevTheme.values()) {
+            if (theme.id.equalsIgnoreCase(id)) {
+                return theme;
             }
         }
         
         throw new IllegalArgumentException("No Indev Theme matching id: " + id);
-    }
-    
-    public static IndevTheme fromName(String name) {
-        for (IndevTheme t : IndevTheme.values()) {
-            if (t.name.equalsIgnoreCase(name)) {
-                return t;
-            }
-        }
-        
-        throw new IllegalArgumentException("No Indev Theme matching name: " + name);
-    }
-    
-    public static IndevTheme fromString(String str) {
-        IndevTheme theme;
-        
-        if (str.matches("-?\\d+")) {
-            theme = fromId(Integer.parseInt(str));
-        } else {
-            theme = fromName(str);
-        }
-        
-        return theme;
     }
 }

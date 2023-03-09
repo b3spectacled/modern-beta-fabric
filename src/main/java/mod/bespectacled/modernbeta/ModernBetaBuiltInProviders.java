@@ -101,6 +101,7 @@ public class ModernBetaBuiltInProviders {
         ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_ISLE_LAND.id, ModernBetaSettingsPresets.PRESET_BETA_ISLE_LAND);
         ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_CAVE_DELIGHT.id, ModernBetaSettingsPresets.PRESET_BETA_CAVE_DELIGHT);
         ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_CAVE_CHAOS.id, ModernBetaSettingsPresets.PRESET_BETA_CAVE_CHAOS);
-        ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_REALISTIC.id, ModernBetaSettingsPresets.PRESET_BETA_REALISTIC);
+        ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_LARGE_BIOMES.id, ModernBetaSettingsPresets.PRESET_BETA_LARGE_BIOMES);
+        ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_XBOX_LEGACY.id, ModernBetaSettingsPresets.PRESET_BETA_XBOX_LEGACY);
     }
 }

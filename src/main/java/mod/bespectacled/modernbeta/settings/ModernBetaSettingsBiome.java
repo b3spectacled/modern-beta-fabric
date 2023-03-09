@@ -141,45 +141,54 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
                 new VoronoiPointBiome(
                     BiomeKeys.SNOWY_PLAINS.getValue().toString(),
                     BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
                     0.0, 0.0
                 ),
                 new VoronoiPointBiome(
                     BiomeKeys.SNOWY_TAIGA.getValue().toString(),
                     BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
                     0.0, 0.5
                 ),
                 new VoronoiPointBiome(
                     BiomeKeys.SWAMP.getValue().toString(),
                     BiomeKeys.COLD_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_COLD_OCEAN.getValue().toString(),
                     0.0, 1.0
                 ),
                 new VoronoiPointBiome(
                     BiomeKeys.SAVANNA.getValue().toString(),
                     BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
                     0.5, 0.0
                 ),
                 new VoronoiPointBiome(
                     BiomeKeys.FOREST.getValue().toString(),
                     BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
                     0.5, 0.5
                 ),
                 new VoronoiPointBiome(
                     BiomeKeys.PLAINS.getValue().toString(),
                     BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
                     0.5, 1.0
                 ),
                 new VoronoiPointBiome(
                     BiomeKeys.DESERT.getValue().toString(),
                     BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_LUKEWARM_OCEAN.getValue().toString(),
                     1.0, 0.0
                 ),
                 new VoronoiPointBiome(
                     BiomeKeys.DARK_FOREST.getValue().toString(),
                     BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_LUKEWARM_OCEAN.getValue().toString(),
                     1.0, 0.5
                 ),
                 new VoronoiPointBiome(
                     BiomeKeys.JUNGLE.getValue().toString(),
+                    BiomeKeys.WARM_OCEAN.getValue().toString(),
                     BiomeKeys.WARM_OCEAN.getValue().toString(),
                     1.0, 1.0
                 )
