@@ -286,7 +286,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.islesUseIslands = false;
             this.islesUseOuterIslands = true;
             this.islesOceanSlideTarget = -200.0F;
-            this.islesCenterIslandShape = IslandShape.ROUND.getId();
+            this.islesCenterIslandShape = IslandShape.CIRCLE.getId();
             this.islesCenterIslandRadius = 16;
             this.islesCenterIslandFalloffDistance = 8;
             this.islesCenterOceanRadius = 64;

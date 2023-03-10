@@ -235,7 +235,7 @@
           "infdevUseWall": 1,
           "islesCenterIslandFalloffDistance": 8,
           "islesCenterIslandRadius": 16,
-          "islesCenterIslandShape": "round",
+          "islesCenterIslandShape": "circle",
           "islesCenterOceanFalloffDistance": 16,
           "islesCenterOceanRadius": 64,
           "islesOceanSlideTarget": -200.0,

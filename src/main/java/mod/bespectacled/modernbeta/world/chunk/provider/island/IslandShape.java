@@ -3,8 +3,9 @@ package mod.bespectacled.modernbeta.world.chunk.provider.island;
 import net.minecraft.util.math.MathHelper;
 
 public enum IslandShape {
-    ROUND("round", (noiseX, noiseZ) -> MathHelper.sqrt(noiseX * noiseX + noiseZ * noiseZ)),
-    SQUARE("square", (noiseX, noiseZ) -> Math.max(Math.abs(noiseX), Math.abs(noiseZ)));
+    CIRCLE("circle", (noiseX, noiseZ) -> MathHelper.sqrt(noiseX * noiseX + noiseZ * noiseZ)),
+    SQUARE("square", (noiseX, noiseZ) -> Math.max(Math.abs(noiseX), Math.abs(noiseZ))),
+    DIAMOND("diamond", (noiseX, noiseZ) -> Math.abs(noiseX) + Math.abs(noiseZ));
     
     private final String id;
     private final DistanceProvider provider;
