@@ -54,7 +54,7 @@ public class NbtTags {
     // Islands
     public static final String ISLES_USE_ISLANDS = "islesUseIslands";
     public static final String ISLES_USE_OUTER_ISLANDS = "islesUseOuterIslands";
-    public static final String ISLES_MAX_OCEAN_DEPTH = "islesMaxOceanDepth";
+    public static final String ISLES_OCEAN_SLIDE_TARGET = "islesOceanSlideTarget";
     public static final String ISLES_CENTER_ISLAND_SHAPE = "islesCenterIslandShape";
     public static final String ISLES_CENTER_ISLAND_RADIUS = "islesCenterIslandRadius";
     public static final String ISLES_CENTER_ISLAND_FALLOFF_DIST = "islesCenterIslandFalloffDistance";

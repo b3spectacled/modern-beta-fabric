@@ -78,8 +78,6 @@ public class ChunkProviderPE extends ChunkProviderNoise {
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
         
-        int bedrockFloor = this.worldMinY + this.bedrockFloor;
-        
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
 
@@ -133,7 +131,7 @@ public class ChunkProviderPE extends ChunkProviderNoise {
                     blockState = chunk.getBlockState(pos);
                     
                     // Place bedrock
-                    if (y <= bedrockFloor + rand.nextInt(5)) {
+                    if (y <= this.bedrockFloor + rand.nextInt(5)) {
                         chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
                     }
@@ -222,6 +220,8 @@ public class ChunkProviderPE extends ChunkProviderNoise {
         
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
+
+        double islandOffset = this.getIslandOffset(noiseX, noiseZ);
         
         double depthNoiseScaleX = this.chunkSettings.noiseDepthNoiseScaleX;
         double depthNoiseScaleZ = this.chunkSettings.noiseDepthNoiseScaleZ;
@@ -239,9 +239,11 @@ public class ChunkProviderPE extends ChunkProviderNoise {
         double baseSize = this.chunkSettings.noiseBaseSize;
         double heightStretch = this.chunkSettings.noiseStretchY;
 
-        double islandOffset = this.getIslandOffset(noiseX, noiseZ);
+        double scale = this.scaleOctaveNoise.sampleXZ(noiseX, noiseZ, 1.121D, 1.121D);
+        double depth = this.depthOctaveNoise.sampleXZ(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
         
         Clime clime = this.climateSampler.sample(x, z);
+        
         double temp = clime.temp();
         double rain = clime.rain() * temp;
         
@@ -249,8 +251,7 @@ public class ChunkProviderPE extends ChunkProviderNoise {
         rain *= rain;
         rain *= rain;
         rain = 1.0D - rain;
-
-        double scale = this.scaleOctaveNoise.sampleXZ(noiseX, noiseZ, 1.121D, 1.121D);
+        
         scale = (scale + 256D) / 512D;
         scale *= rain;
         
@@ -258,7 +259,6 @@ public class ChunkProviderPE extends ChunkProviderNoise {
             scale = 1.0D;
         }
         
-        double depth = this.depthOctaveNoise.sampleXZ(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
         depth /= 8000D;
 
         if (depth < 0.0D) {

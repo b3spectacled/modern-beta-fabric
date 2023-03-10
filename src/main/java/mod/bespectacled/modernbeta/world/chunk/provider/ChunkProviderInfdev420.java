@@ -59,8 +59,6 @@ public class ChunkProviderInfdev420 extends ChunkProviderNoise {
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
         
-        int bedrockFloor = this.worldMinY + this.bedrockFloor;
-        
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
@@ -110,7 +108,7 @@ public class ChunkProviderInfdev420 extends ChunkProviderNoise {
                     blockState = chunk.getBlockState(pos);
 
                     // Place bedrock
-                    if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
+                    if (y <= this.bedrockFloor + bedrockRand.nextInt(5)) {
                         chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
                     }
@@ -176,6 +174,8 @@ public class ChunkProviderInfdev420 extends ChunkProviderNoise {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
         
+        double islandOffset = this.getIslandOffset(noiseX, noiseZ);
+        
         double coordinateScale = this.chunkSettings.noiseCoordinateScale;
         double heightScale = this.chunkSettings.noiseHeightScale;
         
@@ -188,8 +188,6 @@ public class ChunkProviderInfdev420 extends ChunkProviderNoise {
         
         double baseSize = this.chunkSettings.noiseBaseSize;
         double heightStretch = this.chunkSettings.noiseStretchY;
-        
-        double islandOffset = this.getIslandOffset(noiseX, noiseZ);
         
         for (int y = 0; y < primaryBuffer.length; ++y) {
             int noiseY = y + this.noiseMinY;

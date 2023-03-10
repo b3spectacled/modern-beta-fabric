@@ -54,7 +54,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
 
     public final boolean islesUseIslands;
     public final boolean islesUseOuterIslands;
-    public final float islesMaxOceanDepth;
+    public final float islesOceanSlideTarget;
     public final String islesCenterIslandShape;
     public final int islesCenterIslandRadius;
     public final int islesCenterIslandFalloffDistance;
@@ -111,7 +111,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
 
         this.islesUseIslands = builder.islesUseIslands;
         this.islesUseOuterIslands = builder.islesUseOuterIslands;
-        this.islesMaxOceanDepth = builder.islesMaxOceanDepth;
+        this.islesOceanSlideTarget = builder.islesOceanSlideTarget;
         this.islesCenterIslandShape = builder.islesCenterIslandShape;
         this.islesCenterIslandRadius = builder.islesCenterIslandRadius;
         this.islesCenterIslandFalloffDistance = builder.islesCenterIslandFalloffDistance;
@@ -177,7 +177,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
 
         compound.putBoolean(NbtTags.ISLES_USE_ISLANDS, this.islesUseIslands);
         compound.putBoolean(NbtTags.ISLES_USE_OUTER_ISLANDS, this.islesUseOuterIslands);
-        compound.putFloat(NbtTags.ISLES_MAX_OCEAN_DEPTH, this.islesMaxOceanDepth);
+        compound.putFloat(NbtTags.ISLES_OCEAN_SLIDE_TARGET, this.islesOceanSlideTarget);
         compound.putString(NbtTags.ISLES_CENTER_ISLAND_SHAPE, this.islesCenterIslandShape);
         compound.putInt(NbtTags.ISLES_CENTER_ISLAND_RADIUS, this.islesCenterIslandRadius);
         compound.putInt(NbtTags.ISLES_CENTER_ISLAND_FALLOFF_DIST, this.islesCenterIslandFalloffDistance);
@@ -233,7 +233,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
 
         public boolean islesUseIslands;
         public boolean islesUseOuterIslands;
-        public float islesMaxOceanDepth;
+        public float islesOceanSlideTarget;
         public String islesCenterIslandShape;
         public int islesCenterIslandRadius;
         public int islesCenterIslandFalloffDistance;
@@ -285,7 +285,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             
             this.islesUseIslands = false;
             this.islesUseOuterIslands = true;
-            this.islesMaxOceanDepth = 200.0F;
+            this.islesOceanSlideTarget = -200.0F;
             this.islesCenterIslandShape = IslandShape.ROUND.getId();
             this.islesCenterIslandRadius = 16;
             this.islesCenterIslandFalloffDistance = 8;
@@ -338,7 +338,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
 
             this.islesUseIslands = NbtUtil.readBoolean(NbtTags.ISLES_USE_ISLANDS, compound, this.islesUseIslands);
             this.islesUseOuterIslands = NbtUtil.readBoolean(NbtTags.ISLES_USE_OUTER_ISLANDS, compound, this.islesUseOuterIslands);
-            this.islesMaxOceanDepth = NbtUtil.readFloat(NbtTags.ISLES_MAX_OCEAN_DEPTH, compound, this.islesMaxOceanDepth);
+            this.islesOceanSlideTarget = NbtUtil.readFloat(NbtTags.ISLES_OCEAN_SLIDE_TARGET, compound, this.islesOceanSlideTarget);
             this.islesCenterIslandShape = NbtUtil.readString(NbtTags.ISLES_CENTER_ISLAND_SHAPE, compound, this.islesCenterIslandShape);
             this.islesCenterIslandRadius = NbtUtil.readInt(NbtTags.ISLES_CENTER_ISLAND_RADIUS, compound, this.islesCenterIslandRadius);
             this.islesCenterIslandFalloffDistance = NbtUtil.readInt(NbtTags.ISLES_CENTER_ISLAND_FALLOFF_DIST, compound, this.islesCenterIslandFalloffDistance);
@@ -356,6 +356,11 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             return new ModernBetaSettingsChunk(this);
         }
         
-        private void loadDatafix(NbtCompound compound) {}
+        private void loadDatafix(NbtCompound compound) {
+            String tag0 = "islesMaxOceanDepth";
+            Runnable fix0 = () -> this.islesOceanSlideTarget = -NbtUtil.readFloatOrThrow(tag0, compound);
+            
+            ModernBetaSettings.datafix(tag0, compound, fix0);
+        }
     }
 }

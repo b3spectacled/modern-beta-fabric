@@ -30,7 +30,7 @@ public class ModernBetaOrePlacedFeatures {
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> oreEmeraldY95 = registryConfigured.getOrThrow(ModernBetaOreConfiguredFeatures.ORE_EMERALD_Y95);
         
         PlacedFeatures.register(featureRegisterable, ORE_CLAY, oreClay, modifiersWithCount(33, HeightRangePlacementModifier.uniform(YOffset.fixed(0), YOffset.fixed(127))));
-        PlacedFeatures.register(featureRegisterable, ORE_EMERALD_Y95, oreEmeraldY95, modifiersWithCount(11, HeightRangePlacementModifier.uniform(YOffset.fixed(95), YOffset.fixed(256))));
+        PlacedFeatures.register(featureRegisterable, ORE_EMERALD_Y95, oreEmeraldY95, modifiersWithCount(11, HeightRangePlacementModifier.uniform(YOffset.fixed(95), YOffset.getTop())));
     }
 
     private static List<PlacementModifier> modifiers(PlacementModifier first, PlacementModifier second) {

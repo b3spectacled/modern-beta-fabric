@@ -21,7 +21,10 @@ import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.client.world.GeneratorOptionsHolder;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenTexts;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
 
 public class ModernBetaWorldScreen extends ModernBetaScreen {
@@ -72,7 +75,14 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
             this.client.setScreen(this.parent)
         ).dimensions(this.width / 2 + 5, this.height - 28, BUTTON_LENGTH, BUTTON_HEIGHT).build());
         
-        Function<String, Text> presetText = key -> Text.translatable(TEXT_PRESET + "." + key);
+        Function<String, Text> presetText = key -> {
+            TextColor color = ModernBetaRegistries.SETTINGS_PRESET.contains(key) ?
+                TextColor.fromFormatting(Formatting.YELLOW) : 
+                TextColor.fromFormatting(Formatting.AQUA);
+            
+            return Text.translatable(TEXT_PRESET + "." + key).fillStyle(Style.EMPTY.withBold(false).withColor(color));
+        };
+        
         this.widgetPreset = CyclingButtonWidget
             .builder(presetText)
             .values(
@@ -80,6 +90,7 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
                 ModernBetaRegistries.SETTINGS_PRESET_ALT.getKeySet().stream().toList()
             )
             .initially(ModernBetaSettingsChunk.fromCompound(this.preset.getCompound(SettingsType.CHUNK)).chunkProvider)
+            //.tooltip(string -> Tooltip.of(Text.translatable("createWorld.customize.modern_beta.desc." + string)))
             .build(0, 0, BUTTON_LONG_LENGTH, BUTTON_HEIGHT, Text.translatable(TEXT_PRESET), (button, key) -> {
                 this.preset = ModernBetaRegistries.SETTINGS_PRESET.contains(key) ?
                     ModernBetaRegistries.SETTINGS_PRESET.get(key) :

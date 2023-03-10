@@ -59,8 +59,6 @@ public class ChunkProviderInfdev611 extends ChunkProviderNoise {
         int chunkX = chunkPos.x;
         int chunkZ = chunkPos.z;
         
-        int bedrockFloor = this.worldMinY + this.bedrockFloor;
-        
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         Random bedrockRand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
@@ -113,7 +111,7 @@ public class ChunkProviderInfdev611 extends ChunkProviderNoise {
                     blockState = chunk.getBlockState(pos);
                     
                     // Place bedrock
-                    if (y <= bedrockFloor + bedrockRand.nextInt(5)) {
+                    if (y <= this.bedrockFloor + bedrockRand.nextInt(5)) {
                         chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
                     }
@@ -178,6 +176,8 @@ public class ChunkProviderInfdev611 extends ChunkProviderNoise {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
 
+        double islandOffset = this.getIslandOffset(noiseX, noiseZ);
+
         double depthNoiseScaleX = this.chunkSettings.noiseDepthNoiseScaleX;
         double depthNoiseScaleZ = this.chunkSettings.noiseDepthNoiseScaleZ;
         
@@ -193,17 +193,16 @@ public class ChunkProviderInfdev611 extends ChunkProviderNoise {
         
         double baseSize = this.chunkSettings.noiseBaseSize;
         double heightStretch = this.chunkSettings.noiseStretchY;
-
-        double islandOffset = this.getIslandOffset(noiseX, noiseZ);
         
         double scale = this.scaleOctaveNoise.sample(noiseX, 0, noiseZ, 1.0D, 0.0, 1.0);
+        double depth = this.depthOctaveNoise.sample(noiseX, 0, noiseZ, depthNoiseScaleX, 0.0, depthNoiseScaleZ);
+        
         scale = (scale + 256D) / 512D;
         
         if (scale > 1.0D) {
             scale = 1.0D; 
         }
 
-        double depth = this.depthOctaveNoise.sample(noiseX, 0, noiseZ, depthNoiseScaleX, 0.0, depthNoiseScaleZ);
         depth /= 8000D;
         
         if (depth < 0.0D) {

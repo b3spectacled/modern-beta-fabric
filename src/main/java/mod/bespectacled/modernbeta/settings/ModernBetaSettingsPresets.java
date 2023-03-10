@@ -203,6 +203,7 @@ public class ModernBetaSettingsPresets {
         
         settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.SINGLE.id;
         settingsBiome.singleBiome = ModernBetaBiomes.BETA_SKY.getValue().toString();
+        settingsBiome.useOceanBiomes = false;
         
         settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
         
@@ -494,6 +495,8 @@ public class ModernBetaSettingsPresets {
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder().fromCompound(compoundCaveBiome);
         
         settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.BETA.id;
+        settingsBiome.useOceanBiomes = false;
+        
         settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.VORONOI.id;
         
         return new ModernBetaSettingsPreset(
@@ -625,11 +628,16 @@ public class ModernBetaSettingsPresets {
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder().fromCompound(compoundBiome);
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder().fromCompound(compoundCaveBiome);
         
+        settingsChunk.useDeepslate = false;
         settingsChunk.islesUseIslands = true;
         settingsChunk.islesUseOuterIslands = false;
         settingsChunk.islesCenterIslandShape = IslandShape.SQUARE.getId();
         settingsChunk.islesCenterIslandRadius = 25;
         settingsChunk.islesCenterIslandFalloffDistance = 2;
+        
+        settingsBiome.useOceanBiomes = false;
+        
+        settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
         
         return new ModernBetaSettingsPreset(
             settingsChunk.build(),

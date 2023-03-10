@@ -238,7 +238,7 @@
           "islesCenterIslandShape": "round",
           "islesCenterOceanFalloffDistance": 16,
           "islesCenterOceanRadius": 64,
-          "islesMaxOceanDepth": 200.0,
+          "islesOceanSlideTarget": -200.0,
           "islesOuterIslandNoiseOffset": 0.25,
           "islesOuterIslandNoiseScale": 300.0,
           "islesUseIslands": 0,

@@ -82,8 +82,8 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
         this.worldTopY = this.worldHeight + this.worldMinY;
         this.seaLevel = generatorSettings.seaLevel();
         
-        this.bedrockFloor = 0;
-        this.bedrockCeiling = Integer.MIN_VALUE;
+        this.bedrockFloor = this.worldMinY;
+        this.bedrockCeiling = this.worldTopY;
         
         this.useDeepslate = this.chunkSettings.useDeepslate;
 
@@ -293,7 +293,7 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
         IslandShape islandShape = IslandShape.fromId(this.chunkSettings.islesCenterIslandShape);
         
         double distance = islandShape.getDistance(noiseX, noiseZ);
-        double oceanDepth = this.chunkSettings.islesMaxOceanDepth;
+        double oceanSlideTarget = this.chunkSettings.islesOceanSlideTarget;
 
         int centerIslandRadius = toNoiseCoord.apply(this.chunkSettings.islesCenterIslandRadius);
         int centerIslandFalloffDistance = toNoiseCoord.apply(this.chunkSettings.islesCenterIslandFalloffDistance);
@@ -305,7 +305,7 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
         double outerIslandNoiseOffset = this.chunkSettings.islesOuterIslandNoiseOffset;
         
         double islandDelta = (distance - centerIslandRadius) / centerIslandFalloffDistance;
-        double islandOffset = MathHelper.clampedLerp(0.0, -oceanDepth, islandDelta);
+        double islandOffset = MathHelper.clampedLerp(0.0, oceanSlideTarget, islandDelta);
             
         if (this.chunkSettings.islesUseOuterIslands && distance > centerOceanRadius) {
             double islandAddition = (float)this.islandNoise.sample(
@@ -323,8 +323,8 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
             double oceanDelta = (distance - centerOceanRadius) / centerOceanFalloffDistance;
             islandAddition = (double)MathHelper.clampedLerp(0.0F, islandAddition, oceanDelta);
             
-            islandOffset += islandAddition * oceanDepth;
-            islandOffset = MathHelper.clamp(islandOffset, -oceanDepth, 0.0F);
+            islandOffset += islandAddition * -oceanSlideTarget;
+            islandOffset = MathHelper.clamp(islandOffset, oceanSlideTarget, 0.0F);
         }
         
         return islandOffset;
