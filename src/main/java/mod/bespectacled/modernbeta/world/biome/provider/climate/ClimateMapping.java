@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import mod.bespectacled.modernbeta.util.NbtCompoundBuilder;
+import mod.bespectacled.modernbeta.util.NbtReader;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
 import net.minecraft.nbt.NbtCompound;
@@ -41,11 +42,14 @@ public record ClimateMapping(String biome, String oceanBiome, String deepOceanBi
         );
     }
     
-    public static Map<String, ClimateMapping> mapFromCompound(NbtCompound compound, Map<String, ClimateMapping> alternate) {
-        if (compound.contains(NbtTags.CLIMATE_MAPPINGS)) {
+    public static Map<String, ClimateMapping> mapFromReader(NbtReader reader, Map<String, ClimateMapping> alternate) {
+        if (reader.contains(NbtTags.CLIMATE_MAPPINGS)) {
             Map<String, ClimateMapping> map = new LinkedHashMap<>();
-            NbtCompound biomes = NbtUtil.readCompoundOrThrow(NbtTags.CLIMATE_MAPPINGS, compound);
-            biomes.getKeys().forEach(key -> map.put(key, ClimateMapping.fromCompound(NbtUtil.readCompoundOrThrow(key, biomes))));
+            
+            NbtCompound biomes = reader.readCompoundOrThrow(NbtTags.CLIMATE_MAPPINGS);
+            NbtReader biomeReader = new NbtReader(biomes);
+            
+            biomes.getKeys().forEach(key -> map.put(key, ClimateMapping.fromCompound(biomeReader.readCompoundOrThrow(key))));
             
             return map;
         }

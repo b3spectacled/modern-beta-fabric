@@ -4,6 +4,7 @@ import java.util.List;
 
 import mod.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import mod.bespectacled.modernbeta.util.NbtListBuilder;
+import mod.bespectacled.modernbeta.util.NbtReader;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
 import net.minecraft.nbt.NbtCompound;
@@ -16,19 +17,20 @@ public record VoronoiPointBiome(String biome, String oceanBiome, String deepOcea
         this(biome, oceanBiome, oceanBiome, temp, rain);
     }
     
-    public static List<VoronoiPointBiome> listFromCompound(NbtCompound compound, List<VoronoiPointBiome> alternate) {
-        if (compound.contains(NbtTags.VORONOI_POINTS)) {
-            return NbtUtil.toListOrThrow(compound.get(NbtTags.VORONOI_POINTS))
+    public static List<VoronoiPointBiome> listFromReader(NbtReader reader, List<VoronoiPointBiome> alternate) {
+        if (reader.contains(NbtTags.VORONOI_POINTS)) {
+            return reader.readListOrThrow(NbtTags.VORONOI_POINTS)
                 .stream()
                 .map(e -> {
                     NbtCompound point = NbtUtil.toCompoundOrThrow(e);
+                    NbtReader pointReader = new NbtReader(point);
                     
                     return new VoronoiPointBiome(
-                        NbtUtil.readStringOrThrow(NbtTags.BIOME, point),
-                        NbtUtil.readStringOrThrow(NbtTags.OCEAN_BIOME, point),
-                        NbtUtil.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME, point),
-                        NbtUtil.readDoubleOrThrow(NbtTags.TEMP, point),
-                        NbtUtil.readDoubleOrThrow(NbtTags.RAIN, point)
+                        pointReader.readStringOrThrow(NbtTags.BIOME),
+                        pointReader.readStringOrThrow(NbtTags.OCEAN_BIOME),
+                        pointReader.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME),
+                        pointReader.readDoubleOrThrow(NbtTags.TEMP),
+                        pointReader.readDoubleOrThrow(NbtTags.RAIN)
                     );
                 })
                 .toList();

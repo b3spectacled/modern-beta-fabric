@@ -3,8 +3,9 @@ package mod.bespectacled.modernbeta.settings;
 import com.google.gson.Gson;
 
 import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
+import mod.bespectacled.modernbeta.util.NbtCompoundBuilder;
+import mod.bespectacled.modernbeta.util.NbtReader;
 import mod.bespectacled.modernbeta.util.NbtTags;
-import mod.bespectacled.modernbeta.util.NbtUtil;
 import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevTheme;
 import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevType;
 import mod.bespectacled.modernbeta.world.chunk.provider.island.IslandShape;
@@ -132,61 +133,58 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
     }
     
     public NbtCompound toCompound() {
-        NbtCompound compound = new NbtCompound();
+        return new NbtCompoundBuilder()
+            .putString(NbtTags.CHUNK_PROVIDER, this.chunkProvider)
+            .putBoolean(NbtTags.USE_DEEPSLATE, this.useDeepslate)
+            .putInt(NbtTags.DEEPSLATE_MIN_Y, this.deepslateMinY)
+            .putInt(NbtTags.DEEPSLATE_MAX_Y, this.deepslateMaxY)
+            .putString(NbtTags.DEEPSLATE_BLOCK, this.deepslateBlock)
+            
+            .putBoolean(NbtTags.USE_CAVES, this.useCaves)
+            
+            .putFloat(NbtTags.NOISE_COORDINATE_SCALE, this.noiseCoordinateScale)
+            .putFloat(NbtTags.NOISE_HEIGHT_SCALE, this.noiseHeightScale)
+            .putFloat(NbtTags.NOISE_UPPER_LIMIT_SCALE, this.noiseUpperLimitScale)
+            .putFloat(NbtTags.NOISE_LOWER_LIMIT_SCALE, this.noiseLowerLimitScale)
+            .putFloat(NbtTags.NOISE_DEPTH_NOISE_SCALE_X, this.noiseDepthNoiseScaleX)
+            .putFloat(NbtTags.NOISE_DEPTH_NOISE_SCALE_Z, this.noiseDepthNoiseScaleZ)
+            .putFloat(NbtTags.NOISE_MAIN_NOISE_SCALE_X, this.noiseMainNoiseScaleX)
+            .putFloat(NbtTags.NOISE_MAIN_NOISE_SCALE_Y, this.noiseMainNoiseScaleY)
+            .putFloat(NbtTags.NOISE_MAIN_NOISE_SCALE_Z, this.noiseMainNoiseScaleZ)
+            .putFloat(NbtTags.NOISE_BASE_SIZE, this.noiseBaseSize)
+            .putFloat(NbtTags.NOISE_STRETCH_Y, this.noiseStretchY)
+            
+            .putInt(NbtTags.NOISE_TOP_SLIDE_TARGET, this.noiseTopSlideTarget)
+            .putInt(NbtTags.NOISE_TOP_SLIDE_SIZE, this.noiseTopSlideSize)
+            .putInt(NbtTags.NOISE_TOP_SLIDE_OFFSET, this.noiseTopSlideOffset)
+            
+            .putInt(NbtTags.NOISE_BOTTOM_SLIDE_TARGET, this.noiseBottomSlideTarget)
+            .putInt(NbtTags.NOISE_BOTTOM_SLIDE_SIZE, this.noiseBottomSlideSize)
+            .putInt(NbtTags.NOISE_BOTTOM_SLIDE_OFFSET, this.noiseBottomSlideOffset)
+           
+            .putBoolean(NbtTags.INFDEV_USE_PYRAMID, this.infdevUsePyramid)
+            .putBoolean(NbtTags.INFDEV_USE_WALL, this.infdevUseWall)
+            
+            .putString(NbtTags.INDEV_LEVEL_THEME, this.indevLevelTheme)
+            .putString(NbtTags.INDEV_LEVEL_TYPE, this.indevLevelType)
+            .putInt(NbtTags.INDEV_LEVEL_WIDTH, this.indevLevelWidth)
+            .putInt(NbtTags.INDEV_LEVEL_LENGTH, this.indevLevelLength)
+            .putInt(NbtTags.INDEV_LEVEL_HEIGHT, this.indevLevelHeight)
+            .putFloat(NbtTags.INDEV_CAVE_RADIUS, this.indevCaveRadius)
+            .putBoolean(NbtTags.INDEV_USE_CAVES, this.indevUseCaves)
         
-        compound.putString(NbtTags.CHUNK_PROVIDER, this.chunkProvider);
-        
-        compound.putBoolean(NbtTags.USE_DEEPSLATE, this.useDeepslate);
-        compound.putInt(NbtTags.DEEPSLATE_MIN_Y, this.deepslateMinY);
-        compound.putInt(NbtTags.DEEPSLATE_MAX_Y, this.deepslateMaxY);
-        compound.putString(NbtTags.DEEPSLATE_BLOCK, this.deepslateBlock);
-        
-        compound.putBoolean(NbtTags.USE_CAVES, this.useCaves);
-        
-        //compound.putString(NbtTags.NOISE_POST_PROCESSOR, this.noisePostProcessor);
-        compound.putFloat(NbtTags.NOISE_COORDINATE_SCALE, this.noiseCoordinateScale);
-        compound.putFloat(NbtTags.NOISE_HEIGHT_SCALE, this.noiseHeightScale);
-        compound.putFloat(NbtTags.NOISE_UPPER_LIMIT_SCALE, this.noiseUpperLimitScale);
-        compound.putFloat(NbtTags.NOISE_LOWER_LIMIT_SCALE, this.noiseLowerLimitScale);
-        compound.putFloat(NbtTags.NOISE_DEPTH_NOISE_SCALE_X, this.noiseDepthNoiseScaleX);
-        compound.putFloat(NbtTags.NOISE_DEPTH_NOISE_SCALE_Z, this.noiseDepthNoiseScaleZ);
-        compound.putFloat(NbtTags.NOISE_MAIN_NOISE_SCALE_X, this.noiseMainNoiseScaleX);
-        compound.putFloat(NbtTags.NOISE_MAIN_NOISE_SCALE_Y, this.noiseMainNoiseScaleY);
-        compound.putFloat(NbtTags.NOISE_MAIN_NOISE_SCALE_Z, this.noiseMainNoiseScaleZ);
-        compound.putFloat(NbtTags.NOISE_BASE_SIZE, this.noiseBaseSize);
-        compound.putFloat(NbtTags.NOISE_STRETCH_Y, this.noiseStretchY);
-        
-        compound.putInt(NbtTags.NOISE_TOP_SLIDE_TARGET, this.noiseTopSlideTarget);
-        compound.putInt(NbtTags.NOISE_TOP_SLIDE_SIZE, this.noiseTopSlideSize);
-        compound.putInt(NbtTags.NOISE_TOP_SLIDE_OFFSET, this.noiseTopSlideOffset);
-        
-        compound.putInt(NbtTags.NOISE_BOTTOM_SLIDE_TARGET, this.noiseBottomSlideTarget);
-        compound.putInt(NbtTags.NOISE_BOTTOM_SLIDE_SIZE, this.noiseBottomSlideSize);
-        compound.putInt(NbtTags.NOISE_BOTTOM_SLIDE_OFFSET, this.noiseBottomSlideOffset);
-        
-        compound.putBoolean(NbtTags.INFDEV_USE_PYRAMID, this.infdevUsePyramid);
-        compound.putBoolean(NbtTags.INFDEV_USE_WALL, this.infdevUseWall);
-        
-        compound.putString(NbtTags.INDEV_LEVEL_THEME, this.indevLevelTheme);
-        compound.putString(NbtTags.INDEV_LEVEL_TYPE, this.indevLevelType);
-        compound.putInt(NbtTags.INDEV_LEVEL_WIDTH, this.indevLevelWidth);
-        compound.putInt(NbtTags.INDEV_LEVEL_LENGTH, this.indevLevelLength);
-        compound.putInt(NbtTags.INDEV_LEVEL_HEIGHT, this.indevLevelHeight);
-        compound.putFloat(NbtTags.INDEV_CAVE_RADIUS, this.indevCaveRadius);
-        compound.putBoolean(NbtTags.INDEV_USE_CAVES, this.indevUseCaves);
-
-        compound.putBoolean(NbtTags.ISLES_USE_ISLANDS, this.islesUseIslands);
-        compound.putBoolean(NbtTags.ISLES_USE_OUTER_ISLANDS, this.islesUseOuterIslands);
-        compound.putFloat(NbtTags.ISLES_OCEAN_SLIDE_TARGET, this.islesOceanSlideTarget);
-        compound.putString(NbtTags.ISLES_CENTER_ISLAND_SHAPE, this.islesCenterIslandShape);
-        compound.putInt(NbtTags.ISLES_CENTER_ISLAND_RADIUS, this.islesCenterIslandRadius);
-        compound.putInt(NbtTags.ISLES_CENTER_ISLAND_FALLOFF_DIST, this.islesCenterIslandFalloffDistance);
-        compound.putInt(NbtTags.ISLES_CENTER_OCEAN_RADIUS, this.islesCenterOceanRadius);
-        compound.putInt(NbtTags.ISLES_CENTER_OCEAN_FALLOFF_DIST, this.islesCenterOceanFalloffDistance);
-        compound.putFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_SCALE, this.islesOuterIslandNoiseScale);
-        compound.putFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_OFFSET, this.islesOuterIslandNoiseOffset);
-        
-        return compound;
+            .putBoolean(NbtTags.ISLES_USE_ISLANDS, this.islesUseIslands)
+            .putBoolean(NbtTags.ISLES_USE_OUTER_ISLANDS, this.islesUseOuterIslands)
+            .putFloat(NbtTags.ISLES_OCEAN_SLIDE_TARGET, this.islesOceanSlideTarget)
+            .putString(NbtTags.ISLES_CENTER_ISLAND_SHAPE, this.islesCenterIslandShape)
+            .putInt(NbtTags.ISLES_CENTER_ISLAND_RADIUS, this.islesCenterIslandRadius)
+            .putInt(NbtTags.ISLES_CENTER_ISLAND_FALLOFF_DIST, this.islesCenterIslandFalloffDistance)
+            .putInt(NbtTags.ISLES_CENTER_OCEAN_RADIUS, this.islesCenterOceanRadius)
+            .putInt(NbtTags.ISLES_CENTER_OCEAN_FALLOFF_DIST, this.islesCenterOceanFalloffDistance)
+            .putFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_SCALE, this.islesOuterIslandNoiseScale)
+            .putFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_OFFSET, this.islesOuterIslandNoiseOffset)
+            
+            .build();
     }
 
     public static class Builder {
@@ -296,58 +294,60 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         }
         
         public Builder fromCompound(NbtCompound compound) {
-            this.chunkProvider = NbtUtil.readString(NbtTags.CHUNK_PROVIDER, compound, this.chunkProvider);
+            NbtReader reader = new NbtReader(compound);
             
-            this.useDeepslate = NbtUtil.readBoolean(NbtTags.USE_DEEPSLATE, compound, this.useDeepslate);
-            this.deepslateMinY = NbtUtil.readInt(NbtTags.DEEPSLATE_MIN_Y, compound, this.deepslateMinY);
-            this.deepslateMaxY = NbtUtil.readInt(NbtTags.DEEPSLATE_MAX_Y, compound, this.deepslateMaxY);
-            this.deepslateBlock = NbtUtil.readString(NbtTags.DEEPSLATE_BLOCK, compound, this.deepslateBlock);
+            this.chunkProvider = reader.readString(NbtTags.CHUNK_PROVIDER, this.chunkProvider);
             
-            this.useCaves = NbtUtil.readBoolean(NbtTags.USE_CAVES, compound, this.useCaves);
+            this.useDeepslate = reader.readBoolean(NbtTags.USE_DEEPSLATE, this.useDeepslate);
+            this.deepslateMinY = reader.readInt(NbtTags.DEEPSLATE_MIN_Y, this.deepslateMinY);
+            this.deepslateMaxY = reader.readInt(NbtTags.DEEPSLATE_MAX_Y, this.deepslateMaxY);
+            this.deepslateBlock = reader.readString(NbtTags.DEEPSLATE_BLOCK, this.deepslateBlock);
+            
+            this.useCaves = reader.readBoolean(NbtTags.USE_CAVES, this.useCaves);
         
-            this.noiseCoordinateScale = NbtUtil.readFloat(NbtTags.NOISE_COORDINATE_SCALE, compound, this.noiseCoordinateScale);
-            this.noiseHeightScale = NbtUtil.readFloat(NbtTags.NOISE_HEIGHT_SCALE, compound, this.noiseHeightScale);
-            this.noiseUpperLimitScale = NbtUtil.readFloat(NbtTags.NOISE_UPPER_LIMIT_SCALE, compound, this.noiseUpperLimitScale);
-            this.noiseLowerLimitScale = NbtUtil.readFloat(NbtTags.NOISE_LOWER_LIMIT_SCALE, compound, this.noiseLowerLimitScale);
-            this.noiseDepthNoiseScaleX = NbtUtil.readFloat(NbtTags.NOISE_DEPTH_NOISE_SCALE_X, compound, this.noiseDepthNoiseScaleX);
-            this.noiseDepthNoiseScaleZ = NbtUtil.readFloat(NbtTags.NOISE_DEPTH_NOISE_SCALE_Z, compound, this.noiseDepthNoiseScaleZ);
-            this.noiseMainNoiseScaleX = NbtUtil.readFloat(NbtTags.NOISE_MAIN_NOISE_SCALE_X, compound, this.noiseMainNoiseScaleX);
-            this.noiseMainNoiseScaleY = NbtUtil.readFloat(NbtTags.NOISE_MAIN_NOISE_SCALE_Y, compound, this.noiseMainNoiseScaleY);
-            this.noiseMainNoiseScaleZ = NbtUtil.readFloat(NbtTags.NOISE_MAIN_NOISE_SCALE_Z, compound, this.noiseMainNoiseScaleZ);
-            this.noiseBaseSize = NbtUtil.readFloat(NbtTags.NOISE_BASE_SIZE, compound, this.noiseBaseSize);
-            this.noiseStretchY = NbtUtil.readFloat(NbtTags.NOISE_STRETCH_Y, compound, this.noiseStretchY);
+            this.noiseCoordinateScale = reader.readFloat(NbtTags.NOISE_COORDINATE_SCALE, this.noiseCoordinateScale);
+            this.noiseHeightScale = reader.readFloat(NbtTags.NOISE_HEIGHT_SCALE, this.noiseHeightScale);
+            this.noiseUpperLimitScale = reader.readFloat(NbtTags.NOISE_UPPER_LIMIT_SCALE, this.noiseUpperLimitScale);
+            this.noiseLowerLimitScale = reader.readFloat(NbtTags.NOISE_LOWER_LIMIT_SCALE, this.noiseLowerLimitScale);
+            this.noiseDepthNoiseScaleX = reader.readFloat(NbtTags.NOISE_DEPTH_NOISE_SCALE_X, this.noiseDepthNoiseScaleX);
+            this.noiseDepthNoiseScaleZ = reader.readFloat(NbtTags.NOISE_DEPTH_NOISE_SCALE_Z, this.noiseDepthNoiseScaleZ);
+            this.noiseMainNoiseScaleX = reader.readFloat(NbtTags.NOISE_MAIN_NOISE_SCALE_X, this.noiseMainNoiseScaleX);
+            this.noiseMainNoiseScaleY = reader.readFloat(NbtTags.NOISE_MAIN_NOISE_SCALE_Y, this.noiseMainNoiseScaleY);
+            this.noiseMainNoiseScaleZ = reader.readFloat(NbtTags.NOISE_MAIN_NOISE_SCALE_Z, this.noiseMainNoiseScaleZ);
+            this.noiseBaseSize = reader.readFloat(NbtTags.NOISE_BASE_SIZE, this.noiseBaseSize);
+            this.noiseStretchY = reader.readFloat(NbtTags.NOISE_STRETCH_Y, this.noiseStretchY);
             
-            this.noiseTopSlideTarget = NbtUtil.readInt(NbtTags.NOISE_TOP_SLIDE_TARGET, compound, this.noiseTopSlideTarget);
-            this.noiseTopSlideSize = NbtUtil.readInt(NbtTags.NOISE_TOP_SLIDE_SIZE, compound, this.noiseTopSlideSize);
-            this.noiseTopSlideOffset = NbtUtil.readInt(NbtTags.NOISE_TOP_SLIDE_OFFSET, compound, this.noiseTopSlideOffset);
+            this.noiseTopSlideTarget = reader.readInt(NbtTags.NOISE_TOP_SLIDE_TARGET, this.noiseTopSlideTarget);
+            this.noiseTopSlideSize = reader.readInt(NbtTags.NOISE_TOP_SLIDE_SIZE, this.noiseTopSlideSize);
+            this.noiseTopSlideOffset = reader.readInt(NbtTags.NOISE_TOP_SLIDE_OFFSET, this.noiseTopSlideOffset);
             
-            this.noiseBottomSlideTarget = NbtUtil.readInt(NbtTags.NOISE_BOTTOM_SLIDE_TARGET, compound, this.noiseBottomSlideTarget);
-            this.noiseBottomSlideSize = NbtUtil.readInt(NbtTags.NOISE_BOTTOM_SLIDE_SIZE, compound, this.noiseBottomSlideSize);
-            this.noiseBottomSlideOffset = NbtUtil.readInt(NbtTags.NOISE_BOTTOM_SLIDE_OFFSET, compound, this.noiseBottomSlideOffset);
+            this.noiseBottomSlideTarget = reader.readInt(NbtTags.NOISE_BOTTOM_SLIDE_TARGET, this.noiseBottomSlideTarget);
+            this.noiseBottomSlideSize = reader.readInt(NbtTags.NOISE_BOTTOM_SLIDE_SIZE, this.noiseBottomSlideSize);
+            this.noiseBottomSlideOffset = reader.readInt(NbtTags.NOISE_BOTTOM_SLIDE_OFFSET, this.noiseBottomSlideOffset);
             
-            this.infdevUsePyramid = NbtUtil.readBoolean(NbtTags.INFDEV_USE_PYRAMID, compound, this.infdevUsePyramid);
-            this.infdevUseWall = NbtUtil.readBoolean(NbtTags.INFDEV_USE_WALL, compound, this.infdevUseWall);
+            this.infdevUsePyramid = reader.readBoolean(NbtTags.INFDEV_USE_PYRAMID, this.infdevUsePyramid);
+            this.infdevUseWall = reader.readBoolean(NbtTags.INFDEV_USE_WALL, this.infdevUseWall);
             
-            this.indevLevelType = NbtUtil.readString(NbtTags.INDEV_LEVEL_TYPE, compound, this.indevLevelType);
-            this.indevLevelTheme = NbtUtil.readString(NbtTags.INDEV_LEVEL_THEME, compound, this.indevLevelTheme);
-            this.indevLevelWidth = NbtUtil.readInt(NbtTags.INDEV_LEVEL_WIDTH, compound, this.indevLevelWidth);
-            this.indevLevelLength = NbtUtil.readInt(NbtTags.INDEV_LEVEL_LENGTH, compound, this.indevLevelLength);
-            this.indevLevelHeight = NbtUtil.readInt(NbtTags.INDEV_LEVEL_HEIGHT, compound, this.indevLevelHeight);
-            this.indevCaveRadius = NbtUtil.readFloat(NbtTags.INDEV_CAVE_RADIUS, compound, this.indevCaveRadius);
-            this.indevUseCaves = NbtUtil.readBoolean(NbtTags.INDEV_USE_CAVES, compound, this.indevUseCaves);
+            this.indevLevelType = reader.readString(NbtTags.INDEV_LEVEL_TYPE, this.indevLevelType);
+            this.indevLevelTheme = reader.readString(NbtTags.INDEV_LEVEL_THEME, this.indevLevelTheme);
+            this.indevLevelWidth = reader.readInt(NbtTags.INDEV_LEVEL_WIDTH, this.indevLevelWidth);
+            this.indevLevelLength = reader.readInt(NbtTags.INDEV_LEVEL_LENGTH, this.indevLevelLength);
+            this.indevLevelHeight = reader.readInt(NbtTags.INDEV_LEVEL_HEIGHT, this.indevLevelHeight);
+            this.indevCaveRadius = reader.readFloat(NbtTags.INDEV_CAVE_RADIUS, this.indevCaveRadius);
+            this.indevUseCaves = reader.readBoolean(NbtTags.INDEV_USE_CAVES, this.indevUseCaves);
 
-            this.islesUseIslands = NbtUtil.readBoolean(NbtTags.ISLES_USE_ISLANDS, compound, this.islesUseIslands);
-            this.islesUseOuterIslands = NbtUtil.readBoolean(NbtTags.ISLES_USE_OUTER_ISLANDS, compound, this.islesUseOuterIslands);
-            this.islesOceanSlideTarget = NbtUtil.readFloat(NbtTags.ISLES_OCEAN_SLIDE_TARGET, compound, this.islesOceanSlideTarget);
-            this.islesCenterIslandShape = NbtUtil.readString(NbtTags.ISLES_CENTER_ISLAND_SHAPE, compound, this.islesCenterIslandShape);
-            this.islesCenterIslandRadius = NbtUtil.readInt(NbtTags.ISLES_CENTER_ISLAND_RADIUS, compound, this.islesCenterIslandRadius);
-            this.islesCenterIslandFalloffDistance = NbtUtil.readInt(NbtTags.ISLES_CENTER_ISLAND_FALLOFF_DIST, compound, this.islesCenterIslandFalloffDistance);
-            this.islesCenterOceanRadius = NbtUtil.readInt(NbtTags.ISLES_CENTER_OCEAN_RADIUS, compound, this.islesCenterOceanRadius);
-            this.islesCenterOceanFalloffDistance = NbtUtil.readInt(NbtTags.ISLES_CENTER_OCEAN_FALLOFF_DIST, compound, this.islesCenterOceanFalloffDistance);
-            this.islesOuterIslandNoiseScale = NbtUtil.readFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_SCALE, compound, this.islesOuterIslandNoiseScale);
-            this.islesOuterIslandNoiseOffset = NbtUtil.readFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_OFFSET, compound, this.islesOuterIslandNoiseOffset);
+            this.islesUseIslands = reader.readBoolean(NbtTags.ISLES_USE_ISLANDS, this.islesUseIslands);
+            this.islesUseOuterIslands = reader.readBoolean(NbtTags.ISLES_USE_OUTER_ISLANDS, this.islesUseOuterIslands);
+            this.islesOceanSlideTarget = reader.readFloat(NbtTags.ISLES_OCEAN_SLIDE_TARGET, this.islesOceanSlideTarget);
+            this.islesCenterIslandShape = reader.readString(NbtTags.ISLES_CENTER_ISLAND_SHAPE, this.islesCenterIslandShape);
+            this.islesCenterIslandRadius = reader.readInt(NbtTags.ISLES_CENTER_ISLAND_RADIUS, this.islesCenterIslandRadius);
+            this.islesCenterIslandFalloffDistance = reader.readInt(NbtTags.ISLES_CENTER_ISLAND_FALLOFF_DIST, this.islesCenterIslandFalloffDistance);
+            this.islesCenterOceanRadius = reader.readInt(NbtTags.ISLES_CENTER_OCEAN_RADIUS, this.islesCenterOceanRadius);
+            this.islesCenterOceanFalloffDistance = reader.readInt(NbtTags.ISLES_CENTER_OCEAN_FALLOFF_DIST, this.islesCenterOceanFalloffDistance);
+            this.islesOuterIslandNoiseScale = reader.readFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_SCALE, this.islesOuterIslandNoiseScale);
+            this.islesOuterIslandNoiseOffset = reader.readFloat(NbtTags.ISLES_OUTER_ISLAND_NOISE_OFFSET, this.islesOuterIslandNoiseOffset);
             
-            this.loadDatafix(compound);
+            this.loadDatafix(reader);
             
             return this;
         }
@@ -356,11 +356,10 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             return new ModernBetaSettingsChunk(this);
         }
         
-        private void loadDatafix(NbtCompound compound) {
+        private void loadDatafix(NbtReader reader) {
             String tag0 = "islesMaxOceanDepth";
-            Runnable fix0 = () -> this.islesOceanSlideTarget = -NbtUtil.readFloatOrThrow(tag0, compound);
             
-            ModernBetaSettings.datafix(tag0, compound, fix0);
+            ModernBetaSettings.datafix(tag0, reader, () -> this.islesOceanSlideTarget = -reader.readFloatOrThrow(tag0));
         }
     }
 }

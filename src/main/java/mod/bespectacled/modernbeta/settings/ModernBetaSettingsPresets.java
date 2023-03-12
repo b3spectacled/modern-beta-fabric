@@ -610,6 +610,8 @@ public class ModernBetaSettingsPresets {
         settingsBiome.climateRainNoiseScale = 0.05f / 4.0f;
         settingsBiome.climateDetailNoiseScale = 0.25f / 2.0f;
         
+        settingsCaveBiome.voronoiHorizontalNoiseScale = 32.0f * 4.0f;
+        
         return new ModernBetaSettingsPreset(
             settingsChunk.build(),
             settingsBiome.build(),

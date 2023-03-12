@@ -6,8 +6,9 @@ import java.util.Map;
 import com.google.gson.Gson;
 
 import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
+import mod.bespectacled.modernbeta.util.NbtCompoundBuilder;
+import mod.bespectacled.modernbeta.util.NbtReader;
 import mod.bespectacled.modernbeta.util.NbtTags;
-import mod.bespectacled.modernbeta.util.NbtUtil;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
 import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping;
 import mod.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointBiome;
@@ -54,20 +55,16 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
     }
     
     public NbtCompound toCompound() {
-        NbtCompound compound = new NbtCompound();
-        
-        compound.putString(NbtTags.BIOME_PROVIDER, this.biomeProvider);
-        compound.putString(NbtTags.SINGLE_BIOME, this.singleBiome);
-        compound.putBoolean(NbtTags.USE_OCEAN_BIOMES, this.useOceanBiomes);
-        
-        compound.putFloat(NbtTags.CLIMATE_TEMP_NOISE_SCALE, this.climateTempNoiseScale);
-        compound.putFloat(NbtTags.CLIMATE_RAIN_NOISE_SCALE, this.climateRainNoiseScale);
-        compound.putFloat(NbtTags.CLIMATE_DETAIL_NOISE_SCALE, this.climateDetailNoiseScale);
-        
-        compound.put(NbtTags.CLIMATE_MAPPINGS, ClimateMapping.mapToNbt(this.climateMappings));
-        compound.put(NbtTags.VORONOI_POINTS, VoronoiPointBiome.listToNbt(this.voronoiPoints));
-        
-        return compound;
+        return new NbtCompoundBuilder()
+            .putString(NbtTags.BIOME_PROVIDER, this.biomeProvider)
+            .putString(NbtTags.SINGLE_BIOME, this.singleBiome)
+            .putBoolean(NbtTags.USE_OCEAN_BIOMES, this.useOceanBiomes)
+            .putFloat(NbtTags.CLIMATE_TEMP_NOISE_SCALE, this.climateTempNoiseScale)
+            .putFloat(NbtTags.CLIMATE_RAIN_NOISE_SCALE, this.climateRainNoiseScale)
+            .putFloat(NbtTags.CLIMATE_DETAIL_NOISE_SCALE, this.climateDetailNoiseScale)
+            .putCompound(NbtTags.CLIMATE_MAPPINGS, ClimateMapping.mapToNbt(this.climateMappings))
+            .putList(NbtTags.VORONOI_POINTS, VoronoiPointBiome.listToNbt(this.voronoiPoints))
+            .build();
     }
     
     public static class Builder {
@@ -90,7 +87,6 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
             this.climateTempNoiseScale = 0.025f;
             this.climateRainNoiseScale = 0.05f;
             this.climateDetailNoiseScale = 0.25f;
-            
             this.climateMappings = createClimateMapping(
                 new ClimateMapping(
                     ModernBetaBiomes.BETA_DESERT.getValue().toString(),
@@ -196,18 +192,19 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
         }
         
         public Builder fromCompound(NbtCompound compound) {
-            this.biomeProvider = NbtUtil.readString(NbtTags.BIOME_PROVIDER, compound, this.biomeProvider);
-            this.singleBiome = NbtUtil.readString(NbtTags.SINGLE_BIOME, compound, this.singleBiome);
-            this.useOceanBiomes = NbtUtil.readBoolean(NbtTags.USE_OCEAN_BIOMES, compound, this.useOceanBiomes);
+            NbtReader reader = new NbtReader(compound);
             
-            this.climateTempNoiseScale = NbtUtil.readFloat(NbtTags.CLIMATE_TEMP_NOISE_SCALE, compound, this.climateTempNoiseScale);
-            this.climateRainNoiseScale = NbtUtil.readFloat(NbtTags.CLIMATE_RAIN_NOISE_SCALE, compound, this.climateRainNoiseScale);
-            this.climateDetailNoiseScale = NbtUtil.readFloat(NbtTags.CLIMATE_DETAIL_NOISE_SCALE, compound, this.climateDetailNoiseScale);
+            this.biomeProvider = reader.readString(NbtTags.BIOME_PROVIDER, this.biomeProvider);
+            this.singleBiome = reader.readString(NbtTags.SINGLE_BIOME, this.singleBiome);
+            this.useOceanBiomes = reader.readBoolean(NbtTags.USE_OCEAN_BIOMES, this.useOceanBiomes);
             
-            this.climateMappings = ClimateMapping.mapFromCompound(compound, this.climateMappings);
-            this.voronoiPoints = VoronoiPointBiome.listFromCompound(compound, this.voronoiPoints);
+            this.climateTempNoiseScale = reader.readFloat(NbtTags.CLIMATE_TEMP_NOISE_SCALE, this.climateTempNoiseScale);
+            this.climateRainNoiseScale = reader.readFloat(NbtTags.CLIMATE_RAIN_NOISE_SCALE, this.climateRainNoiseScale);
+            this.climateDetailNoiseScale = reader.readFloat(NbtTags.CLIMATE_DETAIL_NOISE_SCALE, this.climateDetailNoiseScale);
+            this.climateMappings = ClimateMapping.mapFromReader(reader, this.climateMappings);
+            this.voronoiPoints = VoronoiPointBiome.listFromReader(reader, this.voronoiPoints);
             
-            this.loadDatafix(compound);
+            this.loadDatafix(reader);
             
             return this;
         }
@@ -216,7 +213,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
             return new ModernBetaSettingsBiome(this);
         }
         
-        private void loadDatafix(NbtCompound compound) {}
+        private void loadDatafix(NbtReader reader) {}
         
         public static Map<String, ClimateMapping> createClimateMapping(
             ClimateMapping desert,

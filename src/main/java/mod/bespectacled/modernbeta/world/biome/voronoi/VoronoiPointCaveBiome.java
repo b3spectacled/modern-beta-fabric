@@ -4,6 +4,7 @@ import java.util.List;
 
 import mod.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import mod.bespectacled.modernbeta.util.NbtListBuilder;
+import mod.bespectacled.modernbeta.util.NbtReader;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.util.NbtUtil;
 import net.minecraft.nbt.NbtCompound;
@@ -12,18 +13,19 @@ import net.minecraft.nbt.NbtList;
 public record VoronoiPointCaveBiome(String biome, double temp, double rain, double depth) {
     public static final VoronoiPointCaveBiome DEFAULT = new VoronoiPointCaveBiome("minecraft:lush_caves", 0.5, 0.5, 0.0);
     
-    public static List<VoronoiPointCaveBiome> listFromCompound(NbtCompound compound, List<VoronoiPointCaveBiome> alternate) {
-        if (compound.contains(NbtTags.VORONOI_POINTS)) {
-            return NbtUtil.toListOrThrow(compound.get(NbtTags.VORONOI_POINTS))
+    public static List<VoronoiPointCaveBiome> listFromReader(NbtReader reader, List<VoronoiPointCaveBiome> alternate) {
+        if (reader.contains(NbtTags.VORONOI_POINTS)) {
+            return reader.readListOrThrow(NbtTags.VORONOI_POINTS)
                 .stream()
                 .map(e -> {
                     NbtCompound point = NbtUtil.toCompoundOrThrow(e);
+                    NbtReader pointReader = new NbtReader(point);
                     
                     return new VoronoiPointCaveBiome(
-                        NbtUtil.readStringOrThrow(NbtTags.BIOME, point),
-                        NbtUtil.readDoubleOrThrow(NbtTags.TEMP, point),
-                        NbtUtil.readDoubleOrThrow(NbtTags.RAIN, point),
-                        NbtUtil.readDoubleOrThrow(NbtTags.DEPTH, point)
+                        pointReader.readStringOrThrow(NbtTags.BIOME),
+                        pointReader.readDoubleOrThrow(NbtTags.TEMP),
+                        pointReader.readDoubleOrThrow(NbtTags.RAIN),
+                        pointReader.readDoubleOrThrow(NbtTags.DEPTH)
                     );
                 })
                 .toList();
