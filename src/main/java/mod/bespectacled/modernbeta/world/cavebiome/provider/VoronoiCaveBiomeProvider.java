@@ -19,6 +19,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 
 public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveClimateSampler {
     private final VoronoiCaveClimateSampler climateSampler;
@@ -46,12 +47,19 @@ public class VoronoiCaveBiomeProvider extends CaveBiomeProvider implements CaveC
         Clime clime = this.sample(biomeX, biomeY, biomeZ);
         RegistryKey<Biome> biomeKey = this.rules.calculateClosestTo(clime);
         
-        return biomeKey == null ? null : this.biomeRegistry.getOrCreateEntry(biomeKey);
+        return biomeKey == null || biomeKey.equals(BiomeKeys.THE_VOID) ? 
+            null : 
+            this.biomeRegistry.getOrCreateEntry(biomeKey);
     }
     
     @Override
     public List<RegistryEntry<Biome>> getBiomesForRegistry() {
-        return this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrCreateEntry(key)).toList();
+        return this.rules
+            .getItems()
+            .stream()
+            .distinct()
+            .filter(key -> !key.getValue().getPath().isBlank())
+            .map(key -> this.biomeRegistry.getOrCreateEntry(key)).toList();
     }
 
     @Override

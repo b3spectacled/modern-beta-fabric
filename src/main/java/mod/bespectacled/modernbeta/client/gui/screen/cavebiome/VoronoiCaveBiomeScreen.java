@@ -111,6 +111,10 @@ public class VoronoiCaveBiomeScreen extends SettingsScreen {
             NbtUtil.readBooleanOrThrow(NbtTags.NULL_BIOME, compound)
         );
 
+        if (point.biome.isBlank()) {
+            point.biome = BiomeKeys.THE_VOID.getValue().toString();
+        }
+        
         DoubleOptionWrapper<Double> tempOption = new DoubleOptionWrapper<>(
             TEMP_DISPLAY_STRING,
             0.0, 1.0, 0.01f,
