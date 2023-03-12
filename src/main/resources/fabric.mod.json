@@ -27,10 +27,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.bespectacled.modernbeta.ModernBeta"
+      "mod.bespectacled.modernbeta.ModernBeta"
     ],
     "modmenu": [
-      "com.bespectacled.modernbeta.config.ModernBetaModMenu"
+      "mod.bespectacled.modernbeta.config.ModernBetaModMenu"
     ]
   },
   "mixins": [

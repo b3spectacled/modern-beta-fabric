@@ -29,3 +29,4 @@ bin/
 run/
 remappedSrc/
 src/main/resources/data/generated
+src/main/generated
