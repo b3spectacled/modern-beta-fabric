@@ -15,8 +15,8 @@ import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 public class ModernBetaSettingsScreen extends ModernBetaScreen {
     private static final String TEXT_NAVIGATION = "createWorld.customize.modern_beta.navigation";
@@ -63,7 +63,7 @@ public class ModernBetaSettingsScreen extends ModernBetaScreen {
             this.onChange();
         });
         
-        Text textInvalid = Text.translatable(TEXT_INVALID_JSON).fillStyle(Style.EMPTY.withColor(16737380));
+        Text textInvalid = Text.translatable(TEXT_INVALID_JSON).formatted(Formatting.RED);
         this.widgetInvalid = new TextWidget(textInvalid, this.textRenderer);
         
         Text textNavigation = Text.translatable(TEXT_NAVIGATION);

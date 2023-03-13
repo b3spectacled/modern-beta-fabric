@@ -1,5 +1,6 @@
 package mod.bespectacled.modernbeta.client.gui.screen;
 
+import java.util.Random;
 import java.util.function.Function;
 
 import org.apache.logging.log4j.util.TriConsumer;
@@ -18,14 +19,14 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
+import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.client.world.GeneratorOptionsHolder;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 public class ModernBetaWorldScreen extends ModernBetaScreen {
     private static final String TEXT_TITLE = "createWorld.customize.modern_beta.title"; 
@@ -42,20 +43,33 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
     private static final String TEXT_RESET = "createWorld.customize.modern_beta.reset";
     //private static final String TEXT_INVALID_SETTINGS = "createWorld.customize.modern_beta.invalid_settings";
     
-    private final TriConsumer<NbtCompound, NbtCompound, NbtCompound> onDone;
-    private ModernBetaSettingsPreset preset;
+    private static final String[] TEXT_HINTS = new String[] {
+        "createWorld.customize.modern_beta.hint.alt",
+        "createWorld.customize.modern_beta.hint.settings"
+    };
     
+    private final TriConsumer<NbtCompound, NbtCompound, NbtCompound> onDone;
+    private final String hintString;
+    
+    private ModernBetaSettingsPreset preset;
     private CyclingButtonWidget<String> widgetPreset;
     
     public ModernBetaWorldScreen(Screen parent, GeneratorOptionsHolder generatorOptionsHolder, TriConsumer<NbtCompound, NbtCompound, NbtCompound> onDone) {
         super(Text.translatable(TEXT_TITLE), parent);
         
         this.onDone = onDone;
+        this.hintString = TEXT_HINTS[new Random().nextInt(TEXT_HINTS.length)];
+
+        ChunkGenerator chunkGenerator = generatorOptionsHolder.selectedDimensions().getChunkGenerator();
         
-        ModernBetaChunkGenerator chunkGenerator = (ModernBetaChunkGenerator)generatorOptionsHolder.selectedDimensions().getChunkGenerator();
-        ModernBetaBiomeSource biomeSource = (ModernBetaBiomeSource)chunkGenerator.getBiomeSource();
+        ModernBetaChunkGenerator modernBetaChunkGenerator = (ModernBetaChunkGenerator)chunkGenerator;
+        ModernBetaBiomeSource modernBetaBiomeSource = (ModernBetaBiomeSource)modernBetaChunkGenerator.getBiomeSource();
         
-        this.preset = new ModernBetaSettingsPreset(chunkGenerator.getChunkSettings(), biomeSource.getBiomeSettings(), biomeSource.getCaveBiomeSettings());
+        this.preset = new ModernBetaSettingsPreset(
+            modernBetaChunkGenerator.getChunkSettings(),
+            modernBetaBiomeSource.getBiomeSettings(),
+            modernBetaBiomeSource.getCaveBiomeSettings()
+        );
     }
     
     @Override
@@ -75,12 +89,25 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
             this.client.setScreen(this.parent)
         ).dimensions(this.width / 2 + 5, this.height - 28, BUTTON_LENGTH, BUTTON_HEIGHT).build());
         
+        Text hintText = Text.translatable(this.hintString).formatted(Formatting.GRAY);
+        int hintTextWidth = this.textRenderer.getWidth(hintText.asOrderedText());
+        int hintTextHeight = this.textRenderer.fontHeight;
+        
+        this.addDrawableChild(new TextWidget(
+            this.width / 2 - hintTextWidth / 2,
+            this.height - 46,
+            hintTextWidth,
+            hintTextHeight,
+            hintText,
+            this.textRenderer
+        ));
+        
         Function<String, Text> presetText = key -> {
-            TextColor color = ModernBetaRegistries.SETTINGS_PRESET.contains(key) ?
-                TextColor.fromFormatting(Formatting.YELLOW) : 
-                TextColor.fromFormatting(Formatting.AQUA);
+            Formatting color = ModernBetaRegistries.SETTINGS_PRESET.contains(key) ?
+                Formatting.YELLOW :
+                Formatting.AQUA;
             
-            return Text.translatable(TEXT_PRESET + "." + key).fillStyle(Style.EMPTY.withBold(false).withColor(color));
+            return Text.translatable(TEXT_PRESET + "." + key).formatted(color);
         };
         
         this.widgetPreset = CyclingButtonWidget

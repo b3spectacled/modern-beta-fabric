@@ -31,6 +31,7 @@ public class ModernBetaSettingsPresets {
     public static final ModernBetaSettingsPreset PRESET_BETA_CAVE_CHAOS = presetBetaCaveChaos();
     public static final ModernBetaSettingsPreset PRESET_BETA_LARGE_BIOMES = presetBetaLargeBiomes();
     public static final ModernBetaSettingsPreset PRESET_BETA_XBOX_LEGACY = presetBetaXboxLegacy();
+    public static final ModernBetaSettingsPreset PRESET_BETA_SURVIVAL_ISLAND = presetBetaSurvivalIsland();
     
     private static ModernBetaSettingsPreset presetBeta() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
@@ -630,16 +631,33 @@ public class ModernBetaSettingsPresets {
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder().fromCompound(compoundBiome);
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder().fromCompound(compoundCaveBiome);
         
-        settingsChunk.useDeepslate = false;
         settingsChunk.islesUseIslands = true;
         settingsChunk.islesUseOuterIslands = false;
         settingsChunk.islesCenterIslandShape = IslandShape.SQUARE.getId();
         settingsChunk.islesCenterIslandRadius = 25;
         settingsChunk.islesCenterIslandFalloffDistance = 2;
         
-        settingsBiome.useOceanBiomes = false;
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
+    
+    private static ModernBetaSettingsPreset presetBetaSurvivalIsland() {
+        ModernBetaSettingsPreset initial = presetBeta();
         
-        settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
+        NbtCompound compoundChunk = initial.getCompound(SettingsType.CHUNK);
+        NbtCompound compoundBiome = initial.getCompound(SettingsType.BIOME);
+        NbtCompound compoundCaveBiome = initial.getCompound(SettingsType.CAVE_BIOME);
+        
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder().fromCompound(compoundChunk);
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder().fromCompound(compoundBiome);
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder().fromCompound(compoundCaveBiome);
+        
+        settingsChunk.islesUseIslands = true;
+        settingsChunk.islesUseOuterIslands = false;
+        settingsChunk.islesCenterIslandRadius = 1;
         
         return new ModernBetaSettingsPreset(
             settingsChunk.build(),

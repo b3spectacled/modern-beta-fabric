@@ -14,6 +14,9 @@
     "createWorld.customize.modern_beta.invalid_settings": "Couldn't read new settings, reset to previous settings.",
     "createWorld.customize.modern_beta.navigation": "Use navigation keys to move text cursor for editing.",
     
+    "createWorld.customize.modern_beta.hint.alt": "Hint: Hold down the Alt key while cycling presets for additional options.",
+    "createWorld.customize.modern_beta.hint.settings": "Hint: Settings can be copied and pasted into text editors for easier editing.",
+    
     "createWorld.customize.modern_beta.reset": "Reset settings",
     "createWorld.customize.modern_beta.reset.message": "Reset world settings to default?",
     
@@ -37,6 +40,7 @@
     "createWorld.customize.modern_beta.preset.beta_cave_chaos": "Beta Caves of Chaos",
     "createWorld.customize.modern_beta.preset.beta_large_biomes": "Beta Large Biomes",
     "createWorld.customize.modern_beta.preset.beta_xbox_legacy": "Beta Xbox Legacy",
+    "createWorld.customize.modern_beta.preset.beta_survival_island": "Beta Survival Island",
     
     "text.autoconfig.modern_beta.title": "Modern Beta Configuration",
 
