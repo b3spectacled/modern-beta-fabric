@@ -42,7 +42,7 @@ public class NbtReader {
         return NbtUtil.readDoubleOrThrow(key, this.compound);
     }
     
-    public double readDouble(String key, float alternate) {
+    public double readDouble(String key, double alternate) {
         return NbtUtil.readDouble(key, this.compound, alternate);
     }
     

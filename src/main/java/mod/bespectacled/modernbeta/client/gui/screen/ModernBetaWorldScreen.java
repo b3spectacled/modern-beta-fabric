@@ -7,14 +7,11 @@ import org.apache.logging.log4j.util.TriConsumer;
 
 import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
-import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
-import mod.bespectacled.modernbeta.settings.ModernBetaSettingsCaveBiome;
-import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPreset;
-import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPreset.SettingsType;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
@@ -57,13 +54,12 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
     public ModernBetaWorldScreen(Screen parent, GeneratorOptionsHolder generatorOptionsHolder, TriConsumer<NbtCompound, NbtCompound, NbtCompound> onDone) {
         super(Text.translatable(TEXT_TITLE), parent);
         
-        this.onDone = onDone;
-        this.hintString = TEXT_HINTS[new Random().nextInt(TEXT_HINTS.length)];
-
         ChunkGenerator chunkGenerator = generatorOptionsHolder.selectedDimensions().getChunkGenerator();
-        
         ModernBetaChunkGenerator modernBetaChunkGenerator = (ModernBetaChunkGenerator)chunkGenerator;
         ModernBetaBiomeSource modernBetaBiomeSource = (ModernBetaBiomeSource)modernBetaChunkGenerator.getBiomeSource();
+        
+        this.onDone = onDone;
+        this.hintString = TEXT_HINTS[new Random().nextInt(TEXT_HINTS.length)];
         
         this.preset = new ModernBetaSettingsPreset(
             modernBetaChunkGenerator.getChunkSettings(),
@@ -78,9 +74,9 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
         
         this.addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, button -> {
             this.onDone.accept(
-                this.preset.getCompound(SettingsType.CHUNK),
-                this.preset.getCompound(SettingsType.BIOME),
-                this.preset.getCompound(SettingsType.CAVE_BIOME)
+                this.preset.settingsChunk().toCompound(),
+                this.preset.settingsBiome().toCompound(),
+                this.preset.settingsCaveBiome().toCompound()
             );
             this.client.setScreen(this.parent);
         }).dimensions(this.width / 2 - 155, this.height - 28, BUTTON_LENGTH, BUTTON_HEIGHT).build());
@@ -116,8 +112,8 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
                 ModernBetaRegistries.SETTINGS_PRESET.getKeySet().stream().toList(),
                 ModernBetaRegistries.SETTINGS_PRESET_ALT.getKeySet().stream().toList()
             )
-            .initially(ModernBetaSettingsChunk.fromCompound(this.preset.getCompound(SettingsType.CHUNK)).chunkProvider)
-            //.tooltip(string -> Tooltip.of(Text.translatable("createWorld.customize.modern_beta.desc." + string)))
+            .initially(this.preset.settingsChunk().chunkProvider)
+            .tooltip(string -> Tooltip.of(Text.translatable("createWorld.customize.modern_beta.desc." + string)))
             .build(0, 0, BUTTON_LONG_LENGTH, BUTTON_HEIGHT, Text.translatable(TEXT_PRESET), (button, key) -> {
                 this.preset = ModernBetaRegistries.SETTINGS_PRESET.contains(key) ?
                     ModernBetaRegistries.SETTINGS_PRESET.get(key) :
@@ -129,7 +125,8 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
             button -> this.client.setScreen(new ModernBetaSettingsScreen(
                 TEXT_TITLE_CHUNK,
                 this,
-                ModernBetaSettingsChunk.fromCompound(this.preset.getCompound(SettingsType.CHUNK)), string -> {
+                this.preset.settingsChunk(),
+                string -> {
                     Pair<ModernBetaSettingsPreset, Boolean> updatedPreset = this.preset.set(string, "", "");
 
                     this.preset = updatedPreset.getLeft();
@@ -142,7 +139,8 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
             button -> this.client.setScreen(new ModernBetaSettingsScreen(
                 TEXT_TITLE_BIOME,
                 this,
-                ModernBetaSettingsBiome.fromCompound(this.preset.getCompound(SettingsType.BIOME)), string -> {
+                this.preset.settingsBiome(),
+                string -> {
                     Pair<ModernBetaSettingsPreset, Boolean> updatedPreset = this.preset.set("", string, "");
 
                     this.preset = updatedPreset.getLeft();
@@ -155,7 +153,8 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
             button -> this.client.setScreen(new ModernBetaSettingsScreen(
                 TEXT_TITLE_CAVE_BIOME,
                 this,
-                ModernBetaSettingsCaveBiome.fromCompound(this.preset.getCompound(SettingsType.CAVE_BIOME)), string -> {
+                this.preset.settingsCaveBiome(),
+                string -> {
                     Pair<ModernBetaSettingsPreset, Boolean> updatedPreset = this.preset.set("", "", string);
                     
                     this.preset = updatedPreset.getLeft();

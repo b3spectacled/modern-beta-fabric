@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 import mod.bespectacled.modernbeta.settings.ModernBetaSettings;
+import net.minecraft.client.gui.EditBox;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.EditBoxWidget;
@@ -79,6 +80,11 @@ public class ModernBetaSettingsScreen extends ModernBetaScreen {
         gridWidget.refreshPositions();
         SimplePositioningWidget.setPos(gridWidget, 0, this.overlayTop + 8, this.width, this.height, 0.5f, 0.0f);
         gridWidget.forEachChild(this::addDrawableChild);
+        
+        // Set cursor to beginning of edit box
+        EditBox editBox = this.widgetSettings.editBox;
+        editBox.cursor = editBox.selectionEnd = 0;
+        editBox.onChange();
         
         this.onChange();
     }

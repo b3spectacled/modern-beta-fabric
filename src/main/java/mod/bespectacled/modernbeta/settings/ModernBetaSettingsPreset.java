@@ -6,16 +6,7 @@ import mod.bespectacled.modernbeta.ModernBeta;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Pair;
 
-public class ModernBetaSettingsPreset {
-    public enum SettingsType {
-        CHUNK,
-        BIOME,
-        CAVE_BIOME
-    }
-    
-    private final ModernBetaSettingsChunk settingsChunk;
-    private final ModernBetaSettingsBiome settingsBiome;
-    private final ModernBetaSettingsCaveBiome settingsCaveBiome;
+public record ModernBetaSettingsPreset(ModernBetaSettingsChunk settingsChunk, ModernBetaSettingsBiome settingsBiome, ModernBetaSettingsCaveBiome settingsCaveBiome) {
     
     public ModernBetaSettingsPreset(
         NbtCompound newSettingsChunk,
@@ -27,26 +18,6 @@ public class ModernBetaSettingsPreset {
             ModernBetaSettingsBiome.fromCompound(newSettingsBiome),
             ModernBetaSettingsCaveBiome.fromCompound(newSettingsCaveBiome)
        );
-    }
-    
-    public ModernBetaSettingsPreset(
-        ModernBetaSettingsChunk settingsChunk,
-        ModernBetaSettingsBiome settingsBiome,
-        ModernBetaSettingsCaveBiome settingsCaveBiome
-    ) {
-        this.settingsChunk = settingsChunk;
-        this.settingsBiome = settingsBiome;
-        this.settingsCaveBiome = settingsCaveBiome;
-    }
-    
-    public NbtCompound getCompound(SettingsType settingsType) {
-        ModernBetaSettings settings = switch(settingsType) {
-            case CHUNK -> this.settingsChunk;
-            case BIOME -> this.settingsBiome;
-            case CAVE_BIOME -> this.settingsCaveBiome;
-        };
-        
-        return settings.toCompound();
     }
     
     public Pair<ModernBetaSettingsPreset, Boolean> set(String stringChunk, String stringBiome, String stringCaveBiome) {
@@ -71,6 +42,7 @@ public class ModernBetaSettingsPreset {
             
         } catch (Exception e) {
             ModernBeta.log(Level.ERROR, "Unable to read settings JSON! Reverting to previous settings..");
+            ModernBeta.log(Level.ERROR, String.format("Reason: %s", e.getMessage()));
             successful = false;
             
             settingsChunk = this.settingsChunk;

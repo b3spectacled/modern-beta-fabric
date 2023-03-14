@@ -78,6 +78,7 @@ public class NbtTags {
     public static final String TEMP = "temp";
     public static final String RAIN = "rain";
     public static final String DEPTH = "depth";
+    public static final String WEIRD = "weird";
     
     public static final String CLIMATE_TEMP_NOISE_SCALE = "climateTempNoiseScale";
     public static final String CLIMATE_RAIN_NOISE_SCALE = "climateRainNoiseScale";

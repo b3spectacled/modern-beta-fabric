@@ -117,7 +117,8 @@ public final class ModernBetaBuiltInTypes {
         BETA_CAVE_CHAOS("beta_cave_chaos"),
         BETA_LARGE_BIOMES("beta_large_biomes"),
         BETA_XBOX_LEGACY("beta_xbox_legacy"),
-        BETA_SURVIVAL_ISLAND("beta_survival_island")
+        BETA_SURVIVAL_ISLAND("beta_survival_island"),
+        ALPHA_WINTER("alpha_winter")
         ;
         
         public final String id;

@@ -15,7 +15,7 @@
     "createWorld.customize.modern_beta.navigation": "Use navigation keys to move text cursor for editing.",
     
     "createWorld.customize.modern_beta.hint.alt": "Hint: Hold down the Alt key while cycling presets for additional options.",
-    "createWorld.customize.modern_beta.hint.settings": "Hint: Settings can be copied and pasted into text editors for easier editing.",
+    "createWorld.customize.modern_beta.hint.settings": "Hint: Settings can be copied and pasted into a text editor for easier editing.",
     
     "createWorld.customize.modern_beta.reset": "Reset settings",
     "createWorld.customize.modern_beta.reset.message": "Reset world settings to default?",
@@ -41,6 +41,29 @@
     "createWorld.customize.modern_beta.preset.beta_large_biomes": "Beta Large Biomes",
     "createWorld.customize.modern_beta.preset.beta_xbox_legacy": "Beta Xbox Legacy",
     "createWorld.customize.modern_beta.preset.beta_survival_island": "Beta Survival Island",
+    "createWorld.customize.modern_beta.preset.alpha_winter": "Alpha Winter",
+    
+    "createWorld.customize.modern_beta.desc.custom": "Explore a world with custom terrain generation settings.",
+    "createWorld.customize.modern_beta.desc.beta": "Explore a world with the terrain generation of Minecraft Beta 1.7.3.",
+    "createWorld.customize.modern_beta.desc.alpha": "Explore a world with the terrain generation of Minecraft Alpha 1.1.2_01.",
+    "createWorld.customize.modern_beta.desc.skylands": "Explore a world with the terrain generation of the removed Sky Dimension.",
+    "createWorld.customize.modern_beta.desc.infdev_611": "Explore a world with the terrain generation of Minecraft Infdev 20100611.",
+    "createWorld.customize.modern_beta.desc.infdev_420": "Explore a world with the terrain generation of Minecraft Infdev 20100420.",
+    "createWorld.customize.modern_beta.desc.infdev_415": "Explore a world with the terrain generation of Minecraft Infdev 20100415.",
+    "createWorld.customize.modern_beta.desc.infdev_227": "Explore a world with the terrain generation of Minecraft Infdev 20100227.",
+    "createWorld.customize.modern_beta.desc.indev": "Explore a world with the terrain generation of Minecraft Indev 20100223",
+    "createWorld.customize.modern_beta.desc.classic_0_30": "Explore a world with the terrain generation of Minecraft Classic 0.30.",
+    "createWorld.customize.modern_beta.desc.pe": "Explore a world with the terrain generation of Minecraft Pocket Edition v0.6.0 Alpha.",
+    
+    "createWorld.customize.modern_beta.desc.beta_skylands": "Explore a world with the terrain generation of the removed Sky Dimension and Beta biomes.",
+    "createWorld.customize.modern_beta.desc.beta_isles": "Explore a world where you start on an archipelago surrounded by a large ocean and outer islands.",
+    "createWorld.customize.modern_beta.desc.beta_isle_land": "Explore a world where floating islands are scattered throughout the skies. Inspired by the Minecraft 1.12.2 Customized preset.",
+    "createWorld.customize.modern_beta.desc.beta_cave_delight": "Explore a world filled with hilly and mountainous terrain. Inspired by the Minecraft 1.12.2 Customized preset.",
+    "createWorld.customize.modern_beta.desc.beta_cave_chaos": "Explore a world with great heights and expansive caves. Inspired by the Minecraft 1.12.2 Customized preset.",
+    "createWorld.customize.modern_beta.desc.beta_large_biomes": "Explore a world with the terrain generation of Minecraft Beta 1.7.3 and much larger Beta biomes.",
+    "createWorld.customize.modern_beta.desc.beta_xbox_legacy": "Explore a world where you start on a square-shaped archipelago surrounded by an endless ocean. Inspired by early versions of Minecraft Xbox 360 Edition.",
+    "createWorld.customize.modern_beta.desc.beta_survival_island": "Survive on a small island surrounded by an endless ocean.",
+    "createWorld.customize.modern_beta.desc.alpha_winter": "Explore a world with the terrain generation of Minecraft Alpha 1.1.2_01 and a Winter Mode-inspired Alpha biome.",
     
     "text.autoconfig.modern_beta.title": "Modern Beta Configuration",
 

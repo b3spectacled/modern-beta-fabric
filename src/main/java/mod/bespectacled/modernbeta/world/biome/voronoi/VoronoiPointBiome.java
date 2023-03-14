@@ -16,7 +16,8 @@ public record VoronoiPointBiome(String biome, String oceanBiome, String deepOcea
     public VoronoiPointBiome(String biome, String oceanBiome, double temp, double rain) {
         this(biome, oceanBiome, oceanBiome, temp, rain);
     }
-    
+
+
     public static List<VoronoiPointBiome> listFromReader(NbtReader reader, List<VoronoiPointBiome> alternate) {
         if (reader.contains(NbtTags.VORONOI_POINTS)) {
             return reader.readListOrThrow(NbtTags.VORONOI_POINTS)
