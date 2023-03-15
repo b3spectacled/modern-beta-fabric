@@ -17,11 +17,7 @@
     "client.MixinBackgroundRenderer",
     "client.MixinBiomeColors",
     "client.MixinClientWorld",
-    "client.MixinDebugHud",
-    "client.MixinDimensionEffects",
-    "client.MixinInGameHud",
-    "client.MixinMoreOptionsDialog",
-    "client.MixinWorldRenderer"
+    "client.MixinDebugHud"
   ],
   "injectors": {
     "defaultRequire": 1

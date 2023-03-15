@@ -4,7 +4,6 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import mod.bespectacled.modernbeta.ModernBeta;
-import net.minecraft.client.render.DimensionEffects;
 
 @Config(name = ModernBeta.MOD_ID)
 public class ModernBetaConfig implements ConfigData {
@@ -43,17 +42,4 @@ public class ModernBetaConfig implements ConfigData {
     @ConfigEntry.Category(value = "other")
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean useOldFogColor = true;
-    
-    @ConfigEntry.Category(value = "other")
-    @ConfigEntry.Gui.Tooltip(count = 1)
-    public boolean useAlphaSunset = false;
-
-    @ConfigEntry.Category(value = "other")
-    @ConfigEntry.Gui.Tooltip(count = 1)
-    public boolean useGameVersion = false;
-    
-    @ConfigEntry.Category(value = "other")
-    @ConfigEntry.Gui.Tooltip(count = 1)
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 320)
-    public int cloudHeight = DimensionEffects.Overworld.CLOUDS_HEIGHT;
 }
