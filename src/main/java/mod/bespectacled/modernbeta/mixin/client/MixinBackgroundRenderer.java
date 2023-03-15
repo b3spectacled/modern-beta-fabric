@@ -3,13 +3,19 @@ package mod.bespectacled.modernbeta.mixin.client;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import mod.bespectacled.modernbeta.client.color.BlockColorSampler;
+import mod.bespectacled.modernbeta.util.ModernBetaClientWorld;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.BackgroundRenderer;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -40,6 +46,20 @@ public abstract class MixinBackgroundRenderer {
         }
         
         return waterFogColor;
+    }
+    
+    @Inject(method = "render", at = @At("HEAD"))
+    private static void captureVars(Camera camera, float tickDelta, ClientWorld world, int renderDistance, float skyDarkness, CallbackInfo info) {
+        modernBeta_pos = camera.getPos();
+
+        if (modernBeta_renderDistance != renderDistance) {
+            modernBeta_renderDistance = renderDistance;
+            modernBeta_fogWeight = calculateFogWeight(renderDistance);
+        }
+
+        // Track whether current client world is Modern Beta world,
+        // old fog weighting won't be used if not.
+        modernBeta_isModernBetaWorld = ((ModernBetaClientWorld)world).isModernBetaWorld();
     }
     
     @ModifyVariable(
