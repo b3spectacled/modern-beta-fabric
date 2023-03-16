@@ -10,6 +10,12 @@ public class NbtTags {
     public static final String DEEPSLATE_MAX_Y = "deepslateMaxY";
     public static final String DEEPSLATE_BLOCK = "deepslateBlock";
     
+    public static final String USE_WORLD_BORDER = "useWorldBorder";
+    public static final String WORLD_BORDER_WIDTH = "worldBorderWidth";
+    public static final String WORLD_BORDER_LENGTH = "worldBorderLength";
+    
+    public static final String USE_CAVES ="useCaves";
+    
     // Noise
     public static final String NOISE_POST_PROCESSOR = "noisePostProcessor";
     public static final String NOISE_COORDINATE_SCALE = "noiseCoordinateScale";
@@ -43,15 +49,17 @@ public class NbtTags {
     public static final String INDEV_LEVEL_LENGTH = "indevLevelLength";
     public static final String INDEV_LEVEL_HEIGHT = "indevLevelHeight";
     public static final String INDEV_CAVE_RADIUS = "indevCaveRadius";
+    public static final String INDEV_USE_CAVES = "indevUseCaves";
     
     // Islands
     public static final String ISLES_USE_ISLANDS = "islesUseIslands";
     public static final String ISLES_USE_OUTER_ISLANDS = "islesUseOuterIslands";
-    public static final String ISLES_MAX_OCEAN_DEPTH = "islesMaxOceanDepth";
-    public static final String ISLES_CENTER_ISLAND_FALLOFF = "islesCenterIslandFalloff";
+    public static final String ISLES_OCEAN_SLIDE_TARGET = "islesOceanSlideTarget";
+    public static final String ISLES_CENTER_ISLAND_SHAPE = "islesCenterIslandShape";
     public static final String ISLES_CENTER_ISLAND_RADIUS = "islesCenterIslandRadius";
-    public static final String ISLES_CENTER_OCEAN_FALLOFF_DIST = "islesCenterOceanFalloffDistance";
+    public static final String ISLES_CENTER_ISLAND_FALLOFF_DIST = "islesCenterIslandFalloffDistance";
     public static final String ISLES_CENTER_OCEAN_RADIUS = "islesCenterOceanRadius";
+    public static final String ISLES_CENTER_OCEAN_FALLOFF_DIST = "islesCenterOceanFalloffDistance";
     public static final String ISLES_OUTER_ISLAND_NOISE_SCALE = "islesOuterIslandNoiseScale";
     public static final String ISLES_OUTER_ISLAND_NOISE_OFFSET = "islesOuterIslandNoiseOffset";
     
@@ -70,6 +78,7 @@ public class NbtTags {
     public static final String TEMP = "temp";
     public static final String RAIN = "rain";
     public static final String DEPTH = "depth";
+    public static final String WEIRD = "weird";
     
     public static final String CLIMATE_TEMP_NOISE_SCALE = "climateTempNoiseScale";
     public static final String CLIMATE_RAIN_NOISE_SCALE = "climateRainNoiseScale";

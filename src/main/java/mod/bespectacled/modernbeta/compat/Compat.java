@@ -1,6 +1,6 @@
 package mod.bespectacled.modernbeta.compat;
 
-import org.apache.logging.log4j.Level;
+import org.slf4j.event.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import net.fabricmc.loader.api.FabricLoader;

@@ -20,7 +20,7 @@ public class BiomePEColdOcean {
         ModernBetaBiomeFeatures.addColdOceanFeatures(genSettings, true);
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.SNOW)
+            .precipitation(true)
             .temperature(0.5F)
             .downfall(1.0F)
             .effects((new BiomeEffects.Builder())

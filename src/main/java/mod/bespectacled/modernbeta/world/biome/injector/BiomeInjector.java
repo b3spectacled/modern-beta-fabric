@@ -20,10 +20,10 @@ import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.PalettedContainer;
 
 public class BiomeInjector {
-    public static final int OCEAN_MIN_DEPTH = 4;
-    public static final int DEEP_OCEAN_MIN_DEPTH = 16;
+    public static final int OCEAN_START_DEPTH = 4;
+    public static final int OCEAN_DEEP_START_DEPTH = 16;
     
-    public static final int CAVE_START_OFFSET = 8;
+    public static final int CAVE_START_DEPTH = 8;
     
     private final ModernBetaChunkGenerator modernBetaChunkGenerator;
     private final ModernBetaBiomeSource modernBetaBiomeSource;
@@ -33,17 +33,21 @@ public class BiomeInjector {
     public BiomeInjector(ModernBetaChunkGenerator modernBetaChunkGenerator, ModernBetaBiomeSource modernBetaBiomeSource) {
         this.modernBetaChunkGenerator = modernBetaChunkGenerator;
         this.modernBetaBiomeSource = modernBetaBiomeSource;
+
+        boolean useOceanBiomes = ModernBetaSettingsBiome.fromCompound(this.modernBetaBiomeSource.getBiomeSettings()).useOceanBiomes;
         
-        boolean useOceanBiomes = new ModernBetaSettingsBiome.Builder(this.modernBetaBiomeSource.getBiomeSettings()).build().useOceanBiomes;
-        
-        Predicate<BiomeInjectionContext> cavePredicate = context -> context.getY() >= context.worldMinY && context.getY() + CAVE_START_OFFSET < context.minHeight;
-        Predicate<BiomeInjectionContext> oceanPredicate = context -> this.atOceanDepth(context.topHeight, OCEAN_MIN_DEPTH);
-        Predicate<BiomeInjectionContext> deepOceanPredicate = context -> this.atOceanDepth(context.topHeight, DEEP_OCEAN_MIN_DEPTH);
+        Predicate<BiomeInjectionContext> cavePredicate = context -> 
+            context.getY() >= context.worldMinY && context.getY() + CAVE_START_DEPTH < context.minHeight;
+
+        Predicate<BiomeInjectionContext> oceanPredicate = context -> 
+            this.atOceanDepth(context.topHeight, OCEAN_START_DEPTH);
+
+        Predicate<BiomeInjectionContext> deepOceanPredicate = context -> 
+            this.atOceanDepth(context.topHeight, OCEAN_DEEP_START_DEPTH);
             
         BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder();
         
         builder.add(cavePredicate, this.modernBetaBiomeSource::getCaveBiome);
-        
         if (useOceanBiomes) {
             builder.add(deepOceanPredicate, this.modernBetaBiomeSource::getDeepOceanBiome);
             builder.add(oceanPredicate, this.modernBetaBiomeSource::getOceanBiome);

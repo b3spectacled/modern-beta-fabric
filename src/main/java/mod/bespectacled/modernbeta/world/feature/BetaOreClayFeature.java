@@ -22,11 +22,11 @@ public class BetaOreClayFeature extends Feature<OreFeatureConfig> {
     }
 
     @Override
-    public boolean generate(FeatureContext<OreFeatureConfig> featureContext) {
-        StructureWorldAccess world = featureContext.getWorld();
-        BlockPos pos = featureContext.getOrigin();
-        OreFeatureConfig config = featureContext.getConfig();
-        Random random = featureContext.getRandom();
+    public boolean generate(FeatureContext<OreFeatureConfig> context) {
+        StructureWorldAccess world = context.getWorld();
+        BlockPos pos = context.getOrigin();
+        OreFeatureConfig config = context.getConfig();
+        Random random = context.getRandom();
         
         int baseX = pos.getX();
         int baseY = pos.getY();

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.Function;
 
 import com.google.common.collect.Sets;
 
@@ -21,6 +23,7 @@ import mod.bespectacled.modernbeta.util.noise.SimplexNoise;
 import mod.bespectacled.modernbeta.world.blocksource.BlockSourceRules;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkNoiseSampler;
+import mod.bespectacled.modernbeta.world.chunk.provider.island.IslandShape;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +33,6 @@ import net.minecraft.util.math.random.RandomSplitter;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
-import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
@@ -67,8 +69,7 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
     private final ChunkCache<ChunkHeightmap> chunkCacheHeightmap;
     
     private final NoisePostProcessor noisePostProcessor;
-    
-    protected SimplexNoise islandNoise;
+    private final SimplexNoise islandNoise;
     
     public ChunkProviderNoise(ModernBetaChunkGenerator chunkGenerator, long seed) {
         super(chunkGenerator, seed);
@@ -81,8 +82,8 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
         this.worldTopY = this.worldHeight + this.worldMinY;
         this.seaLevel = generatorSettings.seaLevel();
         
-        this.bedrockFloor = 0;
-        this.bedrockCeiling = Integer.MIN_VALUE;
+        this.bedrockFloor = this.worldMinY;
+        this.bedrockCeiling = this.worldTopY;
         
         this.useDeepslate = this.chunkSettings.useDeepslate;
 
@@ -116,6 +117,7 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
         this.chunkCacheHeightmap = new ChunkCache<>("heightmap", this::sampleHeightmap);
         
         this.noisePostProcessor = NoisePostProcessor.DEFAULT;
+        this.islandNoise = new SimplexNoise(new Random(this.seed));
     }
 
     /**
@@ -277,47 +279,52 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
     /**
      * Calculate a noise offset for generating islands.
      * 
-     * @param startNoiseX
-     * @param startNoiseZ
-     * @param localNoiseX
-     * @param localNoiseZ
+     * @param noiseX
+     * @param noiseZ
      * 
      * @return A noise addition.
      */
-    protected double getIslandOffset(int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
-        if (!this.chunkSettings.islesUseIslands)
-            return 0;
+    protected double getIslandOffset(int noiseX, int noiseZ) {
+        if (!this.chunkSettings.islesUseIslands) {
+            return 0.0;
+        }
         
-        float noiseX = localNoiseX + startNoiseX;
-        float noiseZ = localNoiseZ + startNoiseZ;
+        Function<Integer, Integer> toNoiseCoord = chunkCoord -> chunkCoord * this.noiseSizeX;
+        IslandShape islandShape = IslandShape.fromId(this.chunkSettings.islesCenterIslandShape);
         
-        float oceanDepth = this.chunkSettings.islesMaxOceanDepth;
+        double distance = islandShape.getDistance(noiseX, noiseZ);
+        double oceanSlideTarget = this.chunkSettings.islesOceanSlideTarget;
+
+        int centerIslandRadius = toNoiseCoord.apply(this.chunkSettings.islesCenterIslandRadius);
+        int centerIslandFalloffDistance = toNoiseCoord.apply(this.chunkSettings.islesCenterIslandFalloffDistance);
+
+        int centerOceanRadius = toNoiseCoord.apply(this.chunkSettings.islesCenterOceanRadius);
+        int centerOceanFalloffDistance = toNoiseCoord.apply(this.chunkSettings.islesCenterOceanFalloffDistance);
         
-        int centerOceanFalloffDistance = this.chunkSettings.islesCenterOceanFalloffDistance * this.noiseSizeX;
-        int centerOceanRadius = this.chunkSettings.islesCenterOceanRadius * this.noiseSizeX;
+        double outerIslandNoiseScale = this.chunkSettings.islesOuterIslandNoiseScale;
+        double outerIslandNoiseOffset = this.chunkSettings.islesOuterIslandNoiseOffset;
         
-        float centerIslandRadius = this.chunkSettings.islesCenterIslandRadius * this.noiseSizeX;
-        
-        float outerIslandNoiseScale = this.chunkSettings.islesOuterIslandNoiseScale;
-        float outerIslandNoiseOffset = this.chunkSettings.islesOuterIslandNoiseOffset;
-        
-        float distance = MathHelper.sqrt(noiseX * noiseX + noiseZ * noiseZ);
-        
-        float islandOffset = centerIslandRadius - distance; 
-        islandOffset = MathHelper.clamp(islandOffset * this.chunkSettings.islesCenterIslandFalloff, -oceanDepth, 0.0F);
+        double islandDelta = (distance - centerIslandRadius) / centerIslandFalloffDistance;
+        double islandOffset = MathHelper.clampedLerp(0.0, oceanSlideTarget, islandDelta);
             
         if (this.chunkSettings.islesUseOuterIslands && distance > centerOceanRadius) {
-            float islandAddition = (float)this.islandNoise.sample(noiseX / outerIslandNoiseScale, noiseZ / outerIslandNoiseScale, 1.0, 1.0) + outerIslandNoiseOffset;
+            double islandAddition = (float)this.islandNoise.sample(
+                noiseX / outerIslandNoiseScale,
+                noiseZ / outerIslandNoiseScale,
+                1.0,
+                1.0
+            ) + outerIslandNoiseOffset;
             
             // 0.885539 = Simplex upper range, but scale a little higher to ensure island centers have untouched terrain.
             islandAddition /= 0.8F;
             islandAddition = MathHelper.clamp(islandAddition, 0.0F, 1.0F);
             
             // Interpolate noise addition so there isn't a sharp cutoff at start of ocean ring edge.
-            islandAddition = (float)MathHelper.clampedLerp(0.0F, islandAddition, (distance - centerOceanRadius) / centerOceanFalloffDistance);
+            double oceanDelta = (distance - centerOceanRadius) / centerOceanFalloffDistance;
+            islandAddition = (double)MathHelper.clampedLerp(0.0F, islandAddition, oceanDelta);
             
-            islandOffset += islandAddition * oceanDepth;
-            islandOffset = MathHelper.clamp(islandOffset, -oceanDepth, 0.0F);
+            islandOffset += islandAddition * -oceanSlideTarget;
+            islandOffset = MathHelper.clamp(islandOffset, oceanSlideTarget, 0.0F);
         }
         
         return islandOffset;
@@ -589,23 +596,6 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
             
             return aquiferSampler.apply(noisePos, clampedDensity);
         };
-    }
-    
-    /**
-     * Debug method for testing generation steps.
-     * 
-     * @param chunkX
-     * @param chunkZ
-     * @param chunkStatus
-     * 
-     * @return True if current chunk generation step should be skipped.
-     */
-    @Override
-    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
-        if (chunkStatus == ChunkStatus.CARVERS)
-            return false;
-        
-        return false;
     }
 }
 

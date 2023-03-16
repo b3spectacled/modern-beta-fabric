@@ -16,13 +16,12 @@ public class BiomeInfdev415 {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         ModernBetaBiomeMobs.addCommonMobs(spawnSettings);
         ModernBetaBiomeMobs.addSquid(spawnSettings);
-        ModernBetaBiomeMobs.addWolves(spawnSettings);
         
         GenerationSettings.LookupBackedBuilder genSettings = new GenerationSettings.LookupBackedBuilder(featureLookup, carverLookup);
         ModernBetaBiomeFeatures.addInfdev415Features(genSettings);
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.RAIN)
+            .precipitation(true)
             .temperature(0.6F)
             .downfall(0.6F)
             .effects((new BiomeEffects.Builder())

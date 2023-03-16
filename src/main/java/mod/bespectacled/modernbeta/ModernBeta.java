@@ -1,22 +1,17 @@
 package mod.bespectacled.modernbeta;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import mod.bespectacled.modernbeta.client.color.BlockColorSampler;
 import mod.bespectacled.modernbeta.client.color.BlockColors;
 import mod.bespectacled.modernbeta.client.resource.ModernBetaColormapResource;
 import mod.bespectacled.modernbeta.command.DebugProviderSettingsCommand;
 import mod.bespectacled.modernbeta.compat.Compat;
 import mod.bespectacled.modernbeta.config.ModernBetaConfig;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigChunk;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigRendering;
 import mod.bespectacled.modernbeta.world.ModernBetaWorldInitializer;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.carver.ModernBetaCarvers;
@@ -38,24 +33,16 @@ public class ModernBeta implements ModInitializer {
     public static final boolean CLIENT_ENV = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     public static final boolean DEV_ENV = FabricLoader.getInstance().isDevelopmentEnvironment();
 
-    public static final ModernBetaConfig CONFIG = AutoConfig.register(
-        ModernBetaConfig.class, 
-        PartitioningSerializer.wrap(GsonConfigSerializer::new)
-    ).getConfig();
-    
-    public static final ModernBetaConfigChunk CHUNK_CONFIG = CONFIG.chunkConfig;
-    public static final ModernBetaConfigBiome BIOME_CONFIG = CONFIG.biomeConfig;
-    public static final ModernBetaConfigCaveBiome CAVE_BIOME_CONFIG = CONFIG.caveBiomeConfig;
-    public static final ModernBetaConfigRendering RENDER_CONFIG = CONFIG.renderingConfig;
+    public static final ModernBetaConfig CONFIG = AutoConfig.register(ModernBetaConfig.class, GsonConfigSerializer::new).getConfig();
 
-    private static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     
     public static Identifier createId(String name) {
         return new Identifier(MOD_ID, name);
     }
     
     public static void log(Level level, String message) {
-        LOGGER.log(level, "[" + MOD_NAME + "] {}", message);
+        LOGGER.atLevel(level).log("[" + MOD_NAME + "] {}", message);
     }
     
     @Override
@@ -80,6 +67,8 @@ public class ModernBeta implements ModInitializer {
         ModernBetaBuiltInProviders.registerSurfaceConfigs();
         ModernBetaBuiltInProviders.registerNoisePostProcessors();
         ModernBetaBuiltInProviders.registerBlockSources();
+        ModernBetaBuiltInProviders.registerSettingsPresets();
+        ModernBetaBuiltInProviders.registerSettingsPresetAlts();
 
         if (CLIENT_ENV) {
             // Override default biome grass/foliage colors

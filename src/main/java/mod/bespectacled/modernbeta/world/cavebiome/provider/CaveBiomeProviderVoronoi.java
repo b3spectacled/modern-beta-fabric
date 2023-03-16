@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import mod.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import mod.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClimateSampler;
 import mod.bespectacled.modernbeta.api.world.cavebiome.climate.CaveClime;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigCaveBiome.ConfigVoronoiPoint;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
+import mod.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointCaveBiome;
 import mod.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointRules;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryEntryLookup;
@@ -54,13 +54,13 @@ public class CaveBiomeProviderVoronoi extends CaveBiomeProvider implements CaveC
         return this.climateSampler.sample(x, y, z);
     }
     
-    private static VoronoiPointRules<RegistryKey<Biome>, CaveClime> buildRules(List<ConfigVoronoiPoint> points) {
+    private static VoronoiPointRules<RegistryKey<Biome>, CaveClime> buildRules(List<VoronoiPointCaveBiome> points) {
         VoronoiPointRules.Builder<RegistryKey<Biome>, CaveClime> builder = new VoronoiPointRules.Builder<>();
         
-        for (ConfigVoronoiPoint point : points) {
-            RegistryKey<Biome> biomeKey = point.biome.isBlank() ? null : RegistryKey.of(RegistryKeys.BIOME, new Identifier(point.biome));
+        for (VoronoiPointCaveBiome point : points) {
+            RegistryKey<Biome> biomeKey = point.biome().isBlank() ? null : RegistryKey.of(RegistryKeys.BIOME, new Identifier(point.biome()));
             
-            builder.add(biomeKey, new CaveClime(point.temp, point.rain, point.depth));
+            builder.add(biomeKey, new CaveClime(point.temp(), point.rain(), point.depth()));
         }
         
         return builder.build();

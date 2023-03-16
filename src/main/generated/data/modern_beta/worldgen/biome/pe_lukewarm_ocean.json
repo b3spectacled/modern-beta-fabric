@@ -68,7 +68,7 @@
       "modern_beta:freeze_top_layer"
     ]
   ],
-  "precipitation": "rain",
+  "has_precipitation": true,
   "spawn_costs": {},
   "spawners": {
     "ambient": [
@@ -151,7 +151,7 @@
         "type": "minecraft:cod",
         "maxCount": 6,
         "minCount": 3,
-        "weight": 10
+        "weight": 15
       },
       {
         "type": "minecraft:pufferfish",
@@ -169,7 +169,7 @@
     "water_creature": [
       {
         "type": "minecraft:squid",
-        "maxCount": 4,
+        "maxCount": 2,
         "minCount": 1,
         "weight": 10
       },

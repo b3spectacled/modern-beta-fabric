@@ -16,13 +16,12 @@ public class BiomeAlphaWinter {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         ModernBetaBiomeMobs.addCommonMobs(spawnSettings);
         ModernBetaBiomeMobs.addSquid(spawnSettings);
-        ModernBetaBiomeMobs.addWolves(spawnSettings);
         
         GenerationSettings.LookupBackedBuilder genSettings = new GenerationSettings.LookupBackedBuilder(featureLookup, carverLookup);
         ModernBetaBiomeFeatures.addAlphaFeatures(genSettings);
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.SNOW)
+            .precipitation(true)
             .temperature(0.0F)
             .downfall(0.0F)
             .effects((new BiomeEffects.Builder())

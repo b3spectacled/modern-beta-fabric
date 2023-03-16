@@ -35,10 +35,10 @@ public class BetaFancyOakFeature extends Feature<DefaultFeatureConfig> {
     }
     
     @Override
-    public final boolean generate(FeatureContext<DefaultFeatureConfig> featureContext) {
-        StructureWorldAccess world = featureContext.getWorld();
-        BlockPos pos = featureContext.getOrigin();
-        Random random = featureContext.getRandom();
+    public final boolean generate(FeatureContext<DefaultFeatureConfig> context) {
+        StructureWorldAccess world = context.getWorld();
+        BlockPos pos = context.getOrigin();
+        Random random = context.getRandom();
         Random treeRandom = new LocalRandom(random.nextLong());
         
         TreeInfo treeInfo = new TreeInfo();

@@ -28,7 +28,7 @@ public class DebugProviderSettingsCommand {
             validWorld = true;
             
             StringBuilder builder = new StringBuilder();
-            NbtCompound chunkSettings = new ModernBetaSettingsChunk.Builder(modernBetaChunkGenerator.getChunkSettings()).build().toCompound();
+            NbtCompound chunkSettings = ModernBetaSettingsChunk.fromCompound(modernBetaChunkGenerator.getChunkSettings()).toCompound();
             
             chunkSettings.getKeys().forEach(key -> {
                 builder.append(String.format("* %s: %s\n", key, chunkSettings.get(key).toString()));
@@ -42,7 +42,7 @@ public class DebugProviderSettingsCommand {
             validWorld = true;
             
             StringBuilder builder0 = new StringBuilder();
-            NbtCompound biomeSettings = new ModernBetaSettingsBiome.Builder(modernBetaBiomeSource.getBiomeSettings()).build().toCompound();
+            NbtCompound biomeSettings = ModernBetaSettingsBiome.fromCompound(modernBetaBiomeSource.getBiomeSettings()).toCompound();
             
             biomeSettings.getKeys().forEach(key -> {
                 builder0.append(String.format("* %s: %s\n", key, biomeSettings.get(key).toString()));
@@ -52,7 +52,7 @@ public class DebugProviderSettingsCommand {
             source.sendFeedback(Text.literal(builder0.toString()), false);
             
             StringBuilder builder1 = new StringBuilder();
-            NbtCompound caveBiomeSettings = new ModernBetaSettingsCaveBiome.Builder(modernBetaBiomeSource.getCaveBiomeSettings()).build().toCompound();
+            NbtCompound caveBiomeSettings = ModernBetaSettingsCaveBiome.fromCompound(modernBetaBiomeSource.getCaveBiomeSettings()).toCompound();
             
             caveBiomeSettings.getKeys().forEach(key -> {
                 builder1.append(String.format("* %s: %s\n", key, caveBiomeSettings.get(key).toString()));

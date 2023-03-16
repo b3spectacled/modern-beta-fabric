@@ -9,11 +9,12 @@ import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverBlock;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverOcean;
 import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome.ConfigClimateMapping;
-import mod.bespectacled.modernbeta.config.ModernBetaConfigBiome.ConfigVoronoiPoint;
 import mod.bespectacled.modernbeta.util.chunk.ChunkCache;
 import mod.bespectacled.modernbeta.util.chunk.ChunkClimate;
 import mod.bespectacled.modernbeta.util.noise.SimplexOctaveNoise;
+import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping;
+import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateType;
+import mod.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointBiome;
 import mod.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointRules;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryEntryLookup;
@@ -23,7 +24,7 @@ import net.minecraft.world.biome.Biome;
 
 public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolverBlock, BiomeResolverOcean {
     private final VoronoiClimateSampler climateSampler;
-    private final VoronoiPointRules<ConfigClimateMapping, Clime> rules;
+    private final VoronoiPointRules<ClimateMapping, Clime> rules;
     
     public BiomeProviderVoronoi(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry, long seed) {
         super(settings, biomeRegistry, seed);
@@ -43,9 +44,9 @@ public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolver
         int z = biomeZ << 2;
         
         Clime clime = this.climateSampler.sample(x, z);
-        ConfigClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
+        ClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
         
-        return this.biomeRegistry.getOrThrow(climateMapping.biome());
+        return this.biomeRegistry.getOrThrow(climateMapping.getBiome(ClimateType.LAND));
     }
  
     @Override
@@ -54,9 +55,9 @@ public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolver
         int z = biomeZ << 2;
         
         Clime clime = this.climateSampler.sample(x, z);
-        ConfigClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
+        ClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
         
-        return this.biomeRegistry.getOrThrow(climateMapping.oceanBiome());
+        return this.biomeRegistry.getOrThrow(climateMapping.getBiome(ClimateType.OCEAN));
     }
     
     @Override
@@ -65,38 +66,38 @@ public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolver
         int z = biomeZ << 2;
         
         Clime clime = this.climateSampler.sample(x, z);
-        ConfigClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
+        ClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
         
-        return this.biomeRegistry.getOrThrow(climateMapping.deepOceanBiome());
+        return this.biomeRegistry.getOrThrow(climateMapping.getBiome(ClimateType.DEEP_OCEAN));
     }
     
     @Override
     public RegistryEntry<Biome> getBiomeBlock(int x, int y, int z) {
         Clime clime = this.climateSampler.sample(x, z);
-        ConfigClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
+        ClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
         
-        return this.biomeRegistry.getOrThrow(climateMapping.biome());
+        return this.biomeRegistry.getOrThrow(climateMapping.getBiome(ClimateType.LAND));
     }
 
     @Override
     public List<RegistryEntry<Biome>> getBiomes() {
         List<RegistryEntry<Biome>> biomes = new ArrayList<>();
-        biomes.addAll(this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrThrow(key.biome())).collect(Collectors.toList()));
-        biomes.addAll(this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrThrow(key.oceanBiome())).collect(Collectors.toList()));
-        biomes.addAll(this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrThrow(key.deepOceanBiome())).collect(Collectors.toList()));
+        biomes.addAll(this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrThrow(key.getBiome(ClimateType.LAND))).collect(Collectors.toList()));
+        biomes.addAll(this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrThrow(key.getBiome(ClimateType.OCEAN))).collect(Collectors.toList()));
+        biomes.addAll(this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrThrow(key.getBiome(ClimateType.DEEP_OCEAN))).collect(Collectors.toList()));
         
         return biomes;
     }
     
-    private static VoronoiPointRules<ConfigClimateMapping, Clime> buildRules(List<ConfigVoronoiPoint> points) {
-        VoronoiPointRules.Builder<ConfigClimateMapping, Clime> builder = new VoronoiPointRules.Builder<>();
+    private static VoronoiPointRules<ClimateMapping, Clime> buildRules(List<VoronoiPointBiome> points) {
+        VoronoiPointRules.Builder<ClimateMapping, Clime> builder = new VoronoiPointRules.Builder<>();
         
-        for (ConfigVoronoiPoint point : points) {
-            String biome = point.biome.isBlank() ? null : point.biome;
-            String oceanBiome = point.oceanBiome.isBlank() ? null : point.oceanBiome;
-            String deepOceanBiome = point.deepOceanBiome.isBlank() ? null : point.deepOceanBiome;
+        for (VoronoiPointBiome point : points) {
+            String biome = point.biome().isBlank() ? null : point.biome();
+            String oceanBiome = point.oceanBiome().isBlank() ? null : point.oceanBiome();
+            String deepOceanBiome = point.deepOceanBiome().isBlank() ? null : point.deepOceanBiome();
             
-            builder.add(new ConfigClimateMapping(biome, oceanBiome, deepOceanBiome), new Clime(point.temp, point.rain));
+            builder.add(new ClimateMapping(biome, oceanBiome, deepOceanBiome), new Clime(point.temp(), point.rain()));
         }
         
         return builder.build();

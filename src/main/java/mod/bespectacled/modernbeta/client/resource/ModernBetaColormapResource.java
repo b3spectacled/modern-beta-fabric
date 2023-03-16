@@ -33,7 +33,7 @@ public class ModernBetaColormapResource implements SimpleSynchronousResourceRelo
         try {
             map = RawTextureDataLoader.loadRawTextureData(resourceManager, this.optifineId);
         } catch (IOException exception) {
-            throw new IllegalStateException("Failed to load colormap texture!", exception);
+            throw new IllegalStateException("[Modern Beta] Failed to load colormap texture!", exception);
         }
         
         this.consumer.accept(map);

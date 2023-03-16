@@ -9,6 +9,11 @@
           "cave_provider_settings": {
             "biomeProvider": "voronoi",
             "singleBiome": "minecraft:lush_caves",
+<<<<<<< HEAD
+=======
+            "voronoiDepthMaxY": 64,
+            "voronoiDepthMinY": -64,
+>>>>>>> 3fb6980
             "voronoiHorizontalNoiseScale": 32.0,
             "voronoiPoints": [
               {
@@ -153,56 +158,88 @@
             "voronoiPoints": [
               {
                 "biome": "minecraft:snowy_plains",
+<<<<<<< HEAD
                 "deepOceanBiome": "minecraft:frozen_ocean",
+=======
+                "deepOceanBiome": "minecraft:deep_frozen_ocean",
+>>>>>>> 3fb6980
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.0,
                 "temp": 0.0
               },
               {
                 "biome": "minecraft:snowy_taiga",
+<<<<<<< HEAD
                 "deepOceanBiome": "minecraft:frozen_ocean",
+=======
+                "deepOceanBiome": "minecraft:deep_frozen_ocean",
+>>>>>>> 3fb6980
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.5,
                 "temp": 0.0
               },
               {
                 "biome": "minecraft:swamp",
+<<<<<<< HEAD
                 "deepOceanBiome": "minecraft:cold_ocean",
+=======
+                "deepOceanBiome": "minecraft:deep_cold_ocean",
+>>>>>>> 3fb6980
                 "oceanBiome": "minecraft:cold_ocean",
                 "rain": 1.0,
                 "temp": 0.0
               },
               {
                 "biome": "minecraft:savanna",
+<<<<<<< HEAD
                 "deepOceanBiome": "minecraft:ocean",
+=======
+                "deepOceanBiome": "minecraft:deep_ocean",
+>>>>>>> 3fb6980
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.0,
                 "temp": 0.5
               },
               {
                 "biome": "minecraft:forest",
+<<<<<<< HEAD
                 "deepOceanBiome": "minecraft:ocean",
+=======
+                "deepOceanBiome": "minecraft:deep_ocean",
+>>>>>>> 3fb6980
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.5,
                 "temp": 0.5
               },
               {
                 "biome": "minecraft:plains",
+<<<<<<< HEAD
                 "deepOceanBiome": "minecraft:ocean",
+=======
+                "deepOceanBiome": "minecraft:deep_ocean",
+>>>>>>> 3fb6980
                 "oceanBiome": "minecraft:ocean",
                 "rain": 1.0,
                 "temp": 0.5
               },
               {
                 "biome": "minecraft:desert",
+<<<<<<< HEAD
                 "deepOceanBiome": "minecraft:lukewarm_ocean",
+=======
+                "deepOceanBiome": "minecraft:deep_lukewarm_ocean",
+>>>>>>> 3fb6980
                 "oceanBiome": "minecraft:lukewarm_ocean",
                 "rain": 0.0,
                 "temp": 1.0
               },
               {
                 "biome": "minecraft:dark_forest",
+<<<<<<< HEAD
                 "deepOceanBiome": "minecraft:lukewarm_ocean",
+=======
+                "deepOceanBiome": "minecraft:deep_lukewarm_ocean",
+>>>>>>> 3fb6980
                 "oceanBiome": "minecraft:lukewarm_ocean",
                 "rain": 0.5,
                 "temp": 1.0
@@ -216,6 +253,7 @@
               }
             ]
           }
+<<<<<<< HEAD
         },
         "provider_settings": {
           "chunkProvider": "beta",
@@ -259,6 +297,54 @@
           "useDeepslate": 1
         },
         "settings": "modern_beta:modern_beta"
+=======
+        },
+        "provider_settings": {
+          "chunkProvider": "beta",
+          "deepslateBlock": "minecraft:deepslate",
+          "deepslateMaxY": 8,
+          "deepslateMinY": 0,
+          "indevCaveRadius": 1.0,
+          "indevLevelHeight": 128,
+          "indevLevelLength": 256,
+          "indevLevelTheme": "normal",
+          "indevLevelType": "island",
+          "indevLevelWidth": 256,
+          "indevUseCaves": 1,
+          "infdevUsePyramid": 1,
+          "infdevUseWall": 1,
+          "islesCenterIslandFalloffDistance": 8,
+          "islesCenterIslandRadius": 16,
+          "islesCenterIslandShape": "circle",
+          "islesCenterOceanFalloffDistance": 16,
+          "islesCenterOceanRadius": 64,
+          "islesOceanSlideTarget": -200.0,
+          "islesOuterIslandNoiseOffset": 0.25,
+          "islesOuterIslandNoiseScale": 300.0,
+          "islesUseIslands": 0,
+          "islesUseOuterIslands": 1,
+          "noiseBaseSize": 8.5,
+          "noiseBottomSlideOffset": 0,
+          "noiseBottomSlideSize": 3,
+          "noiseBottomSlideTarget": 15,
+          "noiseCoordinateScale": 684.412,
+          "noiseDepthNoiseScaleX": 200.0,
+          "noiseDepthNoiseScaleZ": 200.0,
+          "noiseHeightScale": 684.412,
+          "noiseLowerLimitScale": 512.0,
+          "noiseMainNoiseScaleX": 80.0,
+          "noiseMainNoiseScaleY": 160.0,
+          "noiseMainNoiseScaleZ": 80.0,
+          "noiseStretchY": 12.0,
+          "noiseTopSlideOffset": 0,
+          "noiseTopSlideSize": 3,
+          "noiseTopSlideTarget": -10,
+          "noiseUpperLimitScale": 512.0,
+          "useCaves": 1,
+          "useDeepslate": 1
+        },
+        "settings": "modern_beta:beta"
+>>>>>>> 3fb6980
       }
     },
     "minecraft:the_end": {

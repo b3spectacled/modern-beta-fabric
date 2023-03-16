@@ -3,16 +3,20 @@ package mod.bespectacled.modernbeta.api.world.chunk;
 import java.util.ArrayDeque;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.Predicate;
 
-import org.apache.logging.log4j.Level;
+import org.slf4j.event.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.util.BlockStates;
+import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
+import mod.bespectacled.modernbeta.world.blocksource.BlockSourceRules;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
+import mod.bespectacled.modernbeta.world.chunk.ModernBetaGenerationStep;
 import mod.bespectacled.modernbeta.world.spawn.SpawnLocatorIndev;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -29,9 +33,11 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
+import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevel;
+import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
@@ -57,7 +63,9 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
     protected final float caveRadius;
     
     protected final int[] heightmap;
-    protected final Block[][][] blockArr;
+    
+    @Deprecated
+    private final Block[][][] blockArr;
     
     private boolean pregenerated;
     
@@ -69,7 +77,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         
         this.worldMinY = shapeConfig.minimumY();
         this.worldHeight = shapeConfig.height();
-        this.worldTopY = worldHeight + worldMinY;
+        this.worldTopY = this.worldHeight + this.worldMinY;
         this.seaLevel = generatorSettings.seaLevel();
         this.bedrockFloor = 0;
         this.bedrockCeiling = Integer.MIN_VALUE;
@@ -80,7 +88,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         
         this.levelWidth = this.chunkSettings.indevLevelWidth;
         this.levelLength = this.chunkSettings.indevLevelLength;
-        this.levelHeight = this.chunkSettings.indevLevelHeight;
+        this.levelHeight = Math.min(this.worldTopY, this.chunkSettings.indevLevelHeight);
         this.caveRadius = this.chunkSettings.indevCaveRadius;
         
         this.heightmap = new int[this.levelWidth * this.levelLength];
@@ -161,29 +169,37 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
             return seaLevel;
         
         this.pregenerateTerrainOrWait();
-        int height = this.getLevelHighestBlock(x, z);
-        
-        if (type == Heightmap.Type.WORLD_SURFACE_WG && height < seaLevel) 
-            height = seaLevel;
+        int height = this.getLevelHighestBlock(x, z, type);
          
         return height;
     }
     
     @Override
-    public boolean skipChunk(int chunkX, int chunkZ, ChunkStatus chunkStatus) {
-        boolean inWorldBounds = this.inWorldBounds(chunkX << 4, chunkZ << 4);
+    public boolean skipChunk(int chunkX, int chunkZ, ModernBetaGenerationStep step) {
+        boolean outOfBounds = !this.inWorldBounds(chunkX << 4, chunkZ << 4);
         
-        if (chunkStatus == ChunkStatus.FEATURES) {
-            return !inWorldBounds;
-        } else if (chunkStatus == ChunkStatus.STRUCTURE_STARTS) {
-            return !inWorldBounds;
-        }  else if (chunkStatus == ChunkStatus.CARVERS || chunkStatus == ChunkStatus.LIQUID_CARVERS) {
-            return true;
-        } else if (chunkStatus == ChunkStatus.SURFACE) { 
+        if (step == ModernBetaGenerationStep.FEATURES) {
+            return outOfBounds;
+        } else if (step == ModernBetaGenerationStep.STRUCTURE_STARTS) {
+            return outOfBounds;
+        }  else if (step == ModernBetaGenerationStep.CARVERS) {
+            return outOfBounds|| !this.chunkSettings.useCaves;
+        } else if (step == ModernBetaGenerationStep.SURFACE) { 
             return false;
+        } else if (step == ModernBetaGenerationStep.ENTITY_SPAWN) {
+            return outOfBounds;
         }
         
         return false;
+    }
+    
+    @Override
+    public AquiferSampler getAquiferSampler(Chunk chunk, NoiseConfig noiseConfig) {
+        FluidLevelSampler fluidLevelSampler = (x, y, z) -> new FluidLevel(
+            this.getSeaLevel(), this.getLevelFluidBlock().getDefaultState()
+        );
+        
+        return AquiferSampler.seaLevel(fluidLevelSampler);
     }
     
     public int getLevelWidth() {
@@ -210,13 +226,27 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         return this.blockArr[x][y][z];
     }
     
-    public int getLevelHighestBlock(int x, int z) {
+    public void setLevelBlock(int x, int y, int z, Block block) {
+        x = MathHelper.clamp(x, 0, this.levelWidth - 1);
+        y = MathHelper.clamp(y, 0, this.levelHeight - 1);
+        z = MathHelper.clamp(z, 0, this.levelLength - 1);
+        
+        this.blockArr[x][y][z] = block;
+    }
+    
+    public int getLevelHighestBlock(int x, int z, Heightmap.Type type) {
         x = MathHelper.clamp(x, 0, this.levelWidth - 1);
         z = MathHelper.clamp(z, 0, this.levelLength - 1);
         
+        Predicate<Block> checkBlock = switch(type) {
+            case OCEAN_FLOOR_WG -> block -> block == Blocks.AIR || block == this.getLevelFluidBlock();
+            case WORLD_SURFACE_WG -> block -> block == Blocks.AIR;
+            default -> block -> block == Blocks.AIR;
+        };
+        
         int y;
         
-        for (y = this.levelHeight; this.getLevelBlock(x, y - 1, z) == Blocks.AIR && y > 0; --y);
+        for (y = this.levelHeight; checkBlock.test(this.getLevelBlock(x, y - 1, z)) && y > 0; --y);
         
         return y;
     }
@@ -231,10 +261,10 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
     
     protected abstract BlockState postProcessTerrainState(
         Block block, 
-        BlockSource blockSource, 
-        StructureWeightSampler weightSampler,
+        BlockSourceRules blockSources,
         TerrainState terrainState,
-        BlockPos pos
+        BlockPos pos,
+        int topY
     );
     
     protected abstract void generateBedrock(Chunk chunk, Block block, BlockPos pos);
@@ -251,23 +281,33 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         Heightmap heightmapOcean = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmapSurface = chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         
-        BlockSource blockSource = (x, y, z) -> null;
         StructureWeightSampler structureWeightSampler = StructureWeightSampler.createStructureWeightSampler(structureAccessor, chunk.getPos());
         BlockPos.Mutable pos = new BlockPos.Mutable();
+        SimpleNoisePos noisePos = new SimpleNoisePos();
+        
+        BlockHolder blockHolder = new BlockHolder();
+        BlockSource baseBlockSource = this.getBaseBlockSource(structureWeightSampler, noisePos, blockHolder, this.defaultBlock.getBlock(), this.getLevelFluidBlock());
+        BlockSourceRules blockSources = new BlockSourceRules.Builder()
+            .add(baseBlockSource)
+            .add(this.getActualBlockSource(blockHolder))
+            .build(this.defaultBlock);
         
         for (int localX = 0; localX < 16; ++localX) {
             for (int localZ = 0; localZ < 16; ++localZ) {
                 
                 int x = localX + (chunkX << 4);
                 int z = localZ + (chunkZ << 4);
+                int topY = this.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
                 
                 TerrainState terrainState = new TerrainState();
                 
                 for (int y = this.levelHeight - 1; y >= 0; --y) {
                     pos.set(x, y, z);
                     
-                    Block block = this.blockArr[offsetX + localX][y][offsetZ + localZ];
-                    BlockState blockState = this.postProcessTerrainState(block, blockSource, structureWeightSampler, terrainState, pos);
+                    Block block = this.getLevelBlock(offsetX + localX, y, offsetZ + localZ);
+                    blockHolder.setBlock(block);
+                    
+                    BlockState blockState = this.postProcessTerrainState(block, blockSources, terrainState, pos, topY);
                     
                     chunk.setBlockState(pos.set(localX, y, localZ), blockState, false);
                      
@@ -280,14 +320,6 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         }
     }
 
-    protected boolean inLevelBounds(int x, int y, int z) {
-        if (x < 0 || x >= this.levelWidth || y < 0 || y >= this.levelHeight || z < 0 || z >= this.levelLength) {
-            return false;
-        }
-            
-        return true;
-    }
-
     protected boolean inWorldBounds(int x, int z) {
         int halfWidth = this.levelWidth / 2;
         int halfLength = this.levelLength / 2;
@@ -297,6 +329,14 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         }
         
         return false;
+    }
+
+    protected boolean inLevelBounds(int x, int y, int z) {
+        if (x < 0 || x >= this.levelWidth || y < 0 || y >= this.levelHeight || z < 0 || z >= this.levelLength) {
+            return false;
+        }
+            
+        return true;
     }
 
     protected void setPhase(String phase) {
@@ -313,10 +353,10 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
                     float dz = z - centerZ;
                     
                     if ((dx * dx + dy * dy * 2.0f + dz * dz) < radius * radius && inLevelBounds(x, y, z)) {
-                        Block block = this.blockArr[x][y][z];
+                        Block block = this.getLevelBlock(x, y, z);
                         
                         if (block == this.defaultBlock.getBlock()) {
-                            this.blockArr[x][y][z] = fillBlock;
+                            this.setLevelBlock(x, y, z, fillBlock);
                         }
                     }
                 }
@@ -335,17 +375,25 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
             y = (int)curPos.y;
             z = (int)curPos.z;
             
-            Block block = this.blockArr[x][y][z];
+            Block block = this.getLevelBlock(x, y, z);
     
             if (block == Blocks.AIR) {
-                this.blockArr[x][y][z] = fillBlock;
+                this.setLevelBlock(x, y, z, fillBlock);
                 
-                if (y - 1 >= 0)               positions.add(new Vec3d(x, y - 1, z));
-                if (x - 1 >= 0)               positions.add(new Vec3d(x - 1, y, z));
-                if (x + 1 < this.levelWidth)  positions.add(new Vec3d(x + 1, y, z));
-                if (z - 1 >= 0)               positions.add(new Vec3d(x, y, z - 1));
-                if (z + 1 < this.levelLength) positions.add(new Vec3d(x, y, z + 1));
+                if (y - 1 >= 0)               this.tryFlood(x, y - 1, z, positions);
+                if (x - 1 >= 0)               this.tryFlood(x - 1, y, z, positions);
+                if (x + 1 < this.levelWidth)  this.tryFlood(x + 1, y, z, positions);
+                if (z - 1 >= 0)               this.tryFlood(x, y, z - 1, positions);
+                if (z + 1 < this.levelLength) this.tryFlood(x, y, z + 1, positions);
             }
+        }
+    }
+    
+    private void tryFlood(int x, int y, int z, ArrayDeque<Vec3d> positions) {
+        Block block = this.getLevelBlock(x, y, z);
+        
+        if (block == Blocks.AIR) {
+            positions.add(new Vec3d(x, y, z));
         }
     }
 
@@ -360,7 +408,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         for (int x = 0; x < this.levelWidth; ++x) {
             for (int z = 0; z < this.levelLength; ++z) {
                 for (int y = 0; y < this.levelHeight; ++y) {
-                    this.blockArr[x][y][z] = block;
+                    this.setLevelBlock(x, y, z, block);
                 }
             }
         }

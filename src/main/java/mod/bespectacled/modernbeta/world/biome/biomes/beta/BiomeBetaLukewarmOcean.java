@@ -20,7 +20,7 @@ public class BiomeBetaLukewarmOcean {
         ModernBetaBiomeFeatures.addLukewarmOceanFeatures(genSettings, false);
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.RAIN)
+            .precipitation(true)
             .temperature(1.0F)
             .downfall(0.7F)
             .effects((new BiomeEffects.Builder())

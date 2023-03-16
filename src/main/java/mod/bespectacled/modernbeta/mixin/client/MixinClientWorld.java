@@ -68,8 +68,8 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         long seed,
         CallbackInfo info
     ) {
-        long worldSeed = SeedUtil.parseSeed(ModernBeta.RENDER_CONFIG.configFixedSeed.fixedSeed);
-        boolean useFixedSeed = ModernBeta.RENDER_CONFIG.configFixedSeed.useFixedSeed;
+        long worldSeed = SeedUtil.parseSeed(ModernBeta.CONFIG.fixedSeed);
+        boolean useFixedSeed = ModernBeta.CONFIG.useFixedSeed;
         
         // Init with default values
         BiomeProviderBeta biomeProviderBeta = new BiomeProviderBeta(new ModernBetaSettingsBiome().toCompound(), null, worldSeed);

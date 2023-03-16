@@ -18,7 +18,7 @@ public abstract class MixinDimensionEffects {
         DimensionEffects dimensionEffects = (DimensionEffects)(Object)this;
         
         if (dimensionEffects instanceof DimensionEffects.Overworld) {
-            info.setReturnValue((float)ModernBeta.RENDER_CONFIG.configOther.cloudHeight);
+            info.setReturnValue((float)ModernBeta.CONFIG.cloudHeight);
         }
     }
 }

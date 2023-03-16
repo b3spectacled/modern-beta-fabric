@@ -21,7 +21,7 @@ public abstract class BiomeProvider {
      * @param biomeRegistry Minecraft biome registry.
      */
     public BiomeProvider(NbtCompound settings, RegistryEntryLookup<Biome> biomeRegistry, long seed) {
-        this.settings = new ModernBetaSettingsBiome.Builder(settings).build();
+        this.settings = ModernBetaSettingsBiome.fromCompound(settings);
         this.biomeRegistry = biomeRegistry;
         this.seed = seed;
     }

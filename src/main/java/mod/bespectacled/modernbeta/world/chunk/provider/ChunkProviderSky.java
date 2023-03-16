@@ -6,7 +6,6 @@ import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
-import mod.bespectacled.modernbeta.util.noise.SimplexNoise;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.block.BlockState;
@@ -20,14 +19,14 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
-public class ChunkProviderSkylands extends ChunkProviderNoise {
+public class ChunkProviderSky extends ChunkProviderNoise {
     private final PerlinOctaveNoise minLimitOctaveNoise;
     private final PerlinOctaveNoise maxLimitOctaveNoise;
     private final PerlinOctaveNoise mainOctaveNoise;
     private final PerlinOctaveNoise surfaceOctaveNoise;
     private final PerlinOctaveNoise forestOctaveNoise;
     
-    public ChunkProviderSkylands(ModernBetaChunkGenerator chunkGenerator, long seed) {
+    public ChunkProviderSky(ModernBetaChunkGenerator chunkGenerator, long seed) {
         super(chunkGenerator, seed);
         
         this.minLimitOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
@@ -38,7 +37,6 @@ public class ChunkProviderSkylands extends ChunkProviderNoise {
         new PerlinOctaveNoise(this.random, 10, true);
         new PerlinOctaveNoise(this.random, 16, true);
         this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
-        this.islandNoise = new SimplexNoise(this.random);
     }
 
     @Override

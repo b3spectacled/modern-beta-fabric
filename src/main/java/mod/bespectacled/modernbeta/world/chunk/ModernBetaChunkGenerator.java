@@ -30,7 +30,6 @@ import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
@@ -79,7 +78,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
     }
 
     public void initProvider(long seed) {
-        ModernBetaSettingsChunk chunkSettings = new ModernBetaSettingsChunk.Builder(this.chunkSettings).build();
+        ModernBetaSettingsChunk chunkSettings = ModernBetaSettingsChunk.fromCompound(this.chunkSettings);
         
         this.chunkProvider = ModernBetaRegistries.CHUNK
             .get(chunkSettings.chunkProvider)
@@ -108,7 +107,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         
     @Override
     public void buildSurface(ChunkRegion chunkRegion, StructureAccessor structureAccessor, NoiseConfig noiseConfig, Chunk chunk) {
-        if (!this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.SURFACE)) {
+        if (!this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ModernBetaGenerationStep.SURFACE)) {
             if (this.biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
                 this.chunkProvider.provideSurface(chunkRegion, chunk, modernBetaBiomeSource, noiseConfig);
             } else {
@@ -124,8 +123,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
     
     @Override
     public void carve(ChunkRegion chunkRegion, long seed, NoiseConfig noiseConfig, BiomeAccess biomeAccess, StructureAccessor structureAccessor, Chunk chunk, GenerationStep.Carver carverStep) {
-        if (this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.CARVERS) || 
-            this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ChunkStatus.LIQUID_CARVERS)) return;
+        if (this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ModernBetaGenerationStep.CARVERS)) return;
 
         BiomeAccess biomeAccessWithSource = biomeAccess.withSource((biomeX, biomeY, biomeZ) -> this.biomeSource.getBiome(biomeX, biomeY, biomeZ, noiseConfig.getMultiNoiseSampler()));
         ChunkPos chunkPos = chunk.getPos();
@@ -172,10 +170,20 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
     public void generateFeatures(StructureWorldAccess world, Chunk chunk, StructureAccessor structureAccessor) {
         ChunkPos pos = chunk.getPos();
         
-        if (this.chunkProvider.skipChunk(pos.x, pos.z, ChunkStatus.FEATURES)) 
+        if (this.chunkProvider.skipChunk(pos.x, pos.z, ModernBetaGenerationStep.FEATURES)) 
             return;
 
         super.generateFeatures(world, chunk, structureAccessor);
+    }
+    
+    @Override
+    public void populateEntities(ChunkRegion region) {
+        ChunkPos pos = region.getCenterPos();
+        
+        if (this.chunkProvider.skipChunk(pos.x, pos.z, ModernBetaGenerationStep.ENTITY_SPAWN))
+            return;
+        
+        super.populateEntities(region);
     }
     
     @Override

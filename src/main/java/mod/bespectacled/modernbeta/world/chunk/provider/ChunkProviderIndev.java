@@ -1,11 +1,11 @@
 package mod.bespectacled.modernbeta.world.chunk.provider;
 
-import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderFinite;
 import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoiseCombined;
+import mod.bespectacled.modernbeta.world.blocksource.BlockSourceRules;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevTheme;
 import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevType;
@@ -20,7 +20,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.StructureWeightSampler;
 
 public class ChunkProviderIndev extends ChunkProviderFinite {
     private PerlinOctaveNoiseCombined minHeightOctaveNoise;
@@ -50,8 +49,8 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
     public ChunkProviderIndev(ModernBetaChunkGenerator chunkGenerator, long seed) {
         super(chunkGenerator, seed);
         
-        this.levelTheme = IndevTheme.fromName(this.chunkSettings.indevLevelTheme);
-        this.levelType = IndevType.fromName(this.chunkSettings.indevLevelType);
+        this.levelTheme = IndevTheme.fromId(this.chunkSettings.indevLevelTheme);
+        this.levelType = IndevType.fromId(this.chunkSettings.indevLevelType);
         
         this.fluidBlock = this.isFloating() ? BlockStates.AIR : (this.isHell() ? BlockStates.LAVA : this.defaultFluid);
         this.topsoilBlock = this.isHell() ? BlockStates.PODZOL : BlockStates.GRASS_BLOCK;
@@ -141,7 +140,7 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
             this.growSurface();
         }
         
-        this.carveTerrain();
+        if (this.chunkSettings.indevUseCaves) this.carveTerrain();
         this.floodFluid();   
         this.floodLava();
         this.plantSurface();
@@ -158,28 +157,15 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
     }
     
     @Override
-    protected BlockState postProcessTerrainState(
-        Block block, 
-        BlockSource blockSource, 
-        StructureWeightSampler weightSampler,
-        TerrainState terrainState,
-        BlockPos pos
-    ) {
+    protected BlockState postProcessTerrainState(Block block, BlockSourceRules blockSources, TerrainState terrainState, BlockPos pos, int topY) {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
         
         BlockState blockState = block.getDefaultState();
-        BlockState modifiedBlockState = this.getBlockState(
-            weightSampler,
-            BlockSource.DEFAULT,
-            x, y, z, 
-            block, 
-            this.defaultBlock.getBlock(), 
-            this.fluidBlock.getBlock()
-        );
+        BlockState modifiedBlockState = blockSources.apply(x, y, z);
         
-        boolean inFluid = modifiedBlockState.isAir() || modifiedBlockState.isOf(this.fluidBlock.getBlock());
+        boolean inFluid = modifiedBlockState.isAir() || modifiedBlockState.isOf(this.getLevelFluidBlock());
         int runDepth = terrainState.getRunDepth();
         
         // Check to see if structure weight sampler modifies terrain.
@@ -369,10 +355,10 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
                     if (this.levelType == IndevType.FLOATING && y < roundedHeight)
                         block = Blocks.AIR;
 
-                    Block existingBlock = this.blockArr[x][y][z];
+                    Block existingBlock = this.getLevelBlock(x, y, z);
                      
                     if (existingBlock.equals(Blocks.AIR)) {
-                        this.blockArr[x][y][z] = block;
+                        this.setLevelBlock(x, y, z, block);
                     }
                 }
             }
@@ -403,12 +389,12 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
                 }
                 
                 int heightResult = heightmap[x + z * this.levelWidth];
-                Block block = this.blockArr[x][heightResult][z];
-                Block blockUp = this.blockArr[x][heightResult + 1][z];
+                Block block = this.getLevelBlock(x, heightResult, z);
+                Block blockUp = this.getLevelBlock(x, heightResult + 1, z);
                 
                 // TODO: this.getSeaLevel() - 1 might be wrong, might be surfaceLevel instead
                 if ((blockUp == this.fluidBlock.getBlock() || blockUp == Blocks.AIR) && heightResult <= this.getSeaLevel() - 1 && genGravel) {
-                    this.blockArr[x][heightResult][z] = Blocks.GRAVEL;
+                    this.setLevelBlock(x, heightResult, z, Blocks.GRAVEL);
                 }
      
                 if (blockUp == Blocks.AIR) {
@@ -419,7 +405,7 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
                     }
                     
                     if (block != Blocks.AIR && surfaceBlock != null) {
-                        this.blockArr[x][heightResult][z] = surfaceBlock;
+                        this.setLevelBlock(x, heightResult, z, surfaceBlock);
                     }
                 }
             }
@@ -530,11 +516,11 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
         for (int x = 0; x < this.levelWidth; ++x) {
             for (int z = 0; z < this.levelLength; ++z) {
                 for (int y = 0; y < this.levelHeight - 2; ++y) {
-                    Block block = this.blockArr[x][y][z];
-                    Block blockAbove = this.blockArr[x][y + 1][z];
+                    Block block = this.getLevelBlock(x, y, z);
+                    Block blockUp = this.getLevelBlock(x, y + 1, z);
                     
-                    if (block.equals(Blocks.DIRT) && blockAbove.equals(Blocks.AIR)) {
-                        this.blockArr[x][y][z] = blockToPlant;
+                    if (block.equals(Blocks.DIRT) && blockUp.equals(Blocks.AIR)) {
+                        this.setLevelBlock(x, y, z, blockToPlant);
                     }
                 }
             }

@@ -9,7 +9,6 @@ import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
-import mod.bespectacled.modernbeta.util.noise.SimplexNoise;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.spawn.SpawnLocatorBeta;
@@ -45,7 +44,6 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
         this.scaleOctaveNoise = new PerlinOctaveNoise(this.random, 10, true);
         this.depthOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
         this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
-        this.islandNoise = new SimplexNoise(this.random);
     }
     
     @Override
@@ -63,8 +61,6 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
-        
-        int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
@@ -120,7 +116,7 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
                     blockState = chunk.getBlockState(pos);
                     
                     // Place bedrock
-                    if (y <= bedrockFloor + rand.nextInt(6) - 1) {
+                    if (y <= this.bedrockFloor + rand.nextInt(6) - 1) {
                         chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
                     }
@@ -202,6 +198,8 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
     protected void sampleNoiseColumn(double[] primaryBuffer, double[] heightmapBuffer, int startNoiseX, int startNoiseZ, int localNoiseX, int localNoiseZ) {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
+        
+        double islandOffset = this.getIslandOffset(noiseX, noiseZ);
 
         double depthNoiseScaleX = this.chunkSettings.noiseDepthNoiseScaleX;
         double depthNoiseScaleZ = this.chunkSettings.noiseDepthNoiseScaleZ;
@@ -218,17 +216,16 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
         
         double baseSize = this.chunkSettings.noiseBaseSize;
         double heightStretch = this.chunkSettings.noiseStretchY;
-        
-        double islandOffset = this.getIslandOffset(startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
 
         double scale = this.scaleOctaveNoise.sample(noiseX, 0, noiseZ, 1.0, 0.0, 1.0);
+        double depth = this.depthOctaveNoise.sample(noiseX, 0, noiseZ, depthNoiseScaleX, 0.0, depthNoiseScaleZ);
+        
         scale = (scale + 256D) / 512D;
         
         if (scale > 1.0D) {
             scale = 1.0D; 
         }
 
-        double depth = this.depthOctaveNoise.sample(noiseX, 0, noiseZ, depthNoiseScaleX, 0.0, depthNoiseScaleZ);
         depth /= 8000D;
         
         if (depth < 0.0D) {

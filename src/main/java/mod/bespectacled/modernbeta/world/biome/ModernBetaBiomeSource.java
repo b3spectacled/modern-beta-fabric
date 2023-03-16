@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
@@ -57,35 +58,12 @@ public class ModernBetaBiomeSource extends BiomeSource {
     
     private ModernBetaChunkGenerator chunkGenerator;
     
-    private static List<RegistryEntry<Biome>> getBiomesForRegistry(
-        RegistryEntryLookup<Biome> biomeRegistry,
-        NbtCompound biomeSettings,
-        NbtCompound caveBiomeSettings
-    ) {
-        ModernBetaSettingsBiome modernBetaBiomeSettings = new ModernBetaSettingsBiome.Builder(biomeSettings).build();
-        ModernBetaSettingsCaveBiome modernBetaCaveBiomeSettings = new ModernBetaSettingsCaveBiome.Builder(caveBiomeSettings).build();
-        
-        BiomeProvider biomeProvider  = ModernBetaRegistries.BIOME
-            .get(modernBetaBiomeSettings.biomeProvider)
-            .apply(biomeSettings, biomeRegistry, 0L);
-        
-        CaveBiomeProvider caveBiomeProvider = ModernBetaRegistries.CAVE_BIOME
-            .get(modernBetaCaveBiomeSettings.biomeProvider)
-            .apply(caveBiomeSettings, biomeRegistry, 0L);
-
-        List<RegistryEntry<Biome>> biomes = new ArrayList<>();
-        biomes.addAll(biomeProvider.getBiomes());
-        biomes.addAll(caveBiomeProvider.getBiomes());
-        
-        return biomes;
-    }
-    
     public ModernBetaBiomeSource(
         RegistryEntryLookup<Biome> biomeRegistry,
         NbtCompound biomeSettings,
         NbtCompound caveBiomeSettings
     ) {
-        super(getBiomesForRegistry(biomeRegistry, biomeSettings, caveBiomeSettings));
+        super();
         
         this.biomeRegistry = biomeRegistry;
         this.biomeSettings = biomeSettings;
@@ -93,8 +71,8 @@ public class ModernBetaBiomeSource extends BiomeSource {
     }
     
     public void initProvider(long seed) {
-        ModernBetaSettingsBiome biomeSettings = new ModernBetaSettingsBiome.Builder(this.biomeSettings).build();
-        ModernBetaSettingsCaveBiome caveBiomeSettings = new ModernBetaSettingsCaveBiome.Builder(this.caveBiomeSettings).build();
+        ModernBetaSettingsBiome biomeSettings = ModernBetaSettingsBiome.fromCompound(this.biomeSettings);
+        ModernBetaSettingsCaveBiome caveBiomeSettings = ModernBetaSettingsCaveBiome.fromCompound(this.caveBiomeSettings);
         
         this.biomeProvider = ModernBetaRegistries.BIOME
             .get(biomeSettings.biomeProvider)
@@ -151,16 +129,31 @@ public class ModernBetaBiomeSource extends BiomeSource {
         MultiNoiseUtil.MultiNoiseSampler noiseSampler,
         WorldView world
     ) {
-        if (this.chunkGenerator == null)
-            return super.locateBiome(origin, radius, horizontalBlockCheckInterval, verticalBlockCheckInterval, predicate, noiseSampler, world);
+        if (this.chunkGenerator == null) {
+            return super.locateBiome(
+                origin,
+                radius,
+                horizontalBlockCheckInterval,
+                verticalBlockCheckInterval,
+                predicate,
+                noiseSampler,
+                world
+            );
+        }
         
-        Set<RegistryEntry<Biome>> set = this.getBiomes().stream().filter(predicate).collect(Collectors.toUnmodifiableSet());
-        if (set.isEmpty()) {
+        Set<RegistryEntry<Biome>> biomeSet = this.getBiomes()
+            .stream()
+            .filter(predicate)
+            .collect(Collectors.toUnmodifiableSet());
+        
+        if (biomeSet.isEmpty()) {
             return null;
         }
         
         int searchRadius = Math.floorDiv(radius, horizontalBlockCheckInterval);
-        int[] sections = MathHelper.stream(origin.getY(), world.getBottomY() + 1, world.getTopY(), verticalBlockCheckInterval).toArray();
+        int[] sections = MathHelper
+            .stream(origin.getY(), world.getBottomY() + 1, world.getTopY(), verticalBlockCheckInterval)
+            .toArray();
         
         for (BlockPos.Mutable mutable : BlockPos.iterateInSquare(BlockPos.ORIGIN, searchRadius, Direction.EAST, Direction.SOUTH)) {
             int x = origin.getX() + mutable.getX() * horizontalBlockCheckInterval;
@@ -170,13 +163,16 @@ public class ModernBetaBiomeSource extends BiomeSource {
             int biomeZ = BiomeCoords.fromBlock(z);
             
             for (int y : sections) {
-                RegistryEntry<Biome> biome = this.chunkGenerator.getBiomeInjector().getBiome(biomeX, BiomeCoords.fromBlock(y), biomeZ, noiseSampler);
+                RegistryEntry<Biome> biome = this.chunkGenerator
+                    .getBiomeInjector()
+                    .getBiome(biomeX, BiomeCoords.fromBlock(y), biomeZ, noiseSampler);
                 
-                if (!set.contains(biome)) continue;
+                if (!biomeSet.contains(biome)) continue;
                 
                 return Pair.of(new BlockPos(x, y, z), biome);
             }
         }
+        
         return null;
     }
 
@@ -240,5 +236,25 @@ public class ModernBetaBiomeSource extends BiomeSource {
     @Override
     protected Codec<? extends BiomeSource> getCodec() {
         return ModernBetaBiomeSource.CODEC;
+    }
+
+    @Override
+    protected Stream<RegistryEntry<Biome>> biomeStream() {
+        ModernBetaSettingsBiome modernBetaBiomeSettings = ModernBetaSettingsBiome.fromCompound(this.biomeSettings);
+        ModernBetaSettingsCaveBiome modernBetaCaveBiomeSettings = ModernBetaSettingsCaveBiome.fromCompound(this.caveBiomeSettings);
+        
+        BiomeProvider biomeProvider  = ModernBetaRegistries.BIOME
+            .get(modernBetaBiomeSettings.biomeProvider)
+            .apply(biomeSettings, biomeRegistry, 0L);
+        
+        CaveBiomeProvider caveBiomeProvider = ModernBetaRegistries.CAVE_BIOME
+            .get(modernBetaCaveBiomeSettings.biomeProvider)
+            .apply(caveBiomeSettings, biomeRegistry, 0L);
+
+        List<RegistryEntry<Biome>> biomes = new ArrayList<>();
+        biomes.addAll(biomeProvider.getBiomes());
+        biomes.addAll(caveBiomeProvider.getBiomes());
+        
+        return biomes.stream();
     }
 }

@@ -68,7 +68,7 @@
       "modern_beta:freeze_top_layer"
     ]
   ],
-  "precipitation": "snow",
+  "has_precipitation": true,
   "spawn_costs": {},
   "spawners": {
     "ambient": [
@@ -80,7 +80,14 @@
       }
     ],
     "axolotls": [],
-    "creature": [],
+    "creature": [
+      {
+        "type": "minecraft:polar_bear",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 1
+      }
+    ],
     "misc": [],
     "monster": [
       {
@@ -148,12 +155,6 @@
     ],
     "water_ambient": [
       {
-        "type": "minecraft:cod",
-        "maxCount": 6,
-        "minCount": 3,
-        "weight": 10
-      },
-      {
         "type": "minecraft:salmon",
         "maxCount": 5,
         "minCount": 1,
@@ -164,12 +165,6 @@
       {
         "type": "minecraft:squid",
         "maxCount": 4,
-        "minCount": 1,
-        "weight": 10
-      },
-      {
-        "type": "minecraft:dolphin",
-        "maxCount": 2,
         "minCount": 1,
         "weight": 1
       }

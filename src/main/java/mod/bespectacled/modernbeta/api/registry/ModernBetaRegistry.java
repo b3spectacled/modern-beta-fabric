@@ -10,10 +10,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.Level;
+import org.slf4j.event.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
+import net.minecraft.text.Text;
 
 public final class ModernBetaRegistry<T> {
     private final String name;
@@ -59,8 +60,28 @@ public final class ModernBetaRegistry<T> {
         return this.map.get(key);
     }
     
+    public T getOrElse(String key, String alternate) {
+        if (!this.contains(key)) {
+            return this.get(alternate);
+        }
+        
+        return this.map.get(key);
+    }
+    
+    public T getOrElse(String key, T alternate) {
+        if (!this.contains(key)) {
+            return alternate;
+        }
+        
+        return this.map.get(key);
+    }
+    
     public boolean contains(String key) {
         return this.map.containsKey(key);
+    }
+    
+    public boolean contains(T value) {
+        return this.map.containsValue(value);
     }
     
     public Set<String> getKeySet() {
@@ -83,6 +104,20 @@ public final class ModernBetaRegistry<T> {
             .stream()
             .filter(e -> !e.getKey().equals(ModernBetaBuiltInTypes.DEFAULT_ID))
             .collect(Collectors.toSet());
+    }
+    
+    public String getKey(T entry) {
+        return this.map.entrySet()
+            .stream()
+            .filter(e -> !e.getKey().equals(ModernBetaBuiltInTypes.DEFAULT_ID))
+            .filter(e -> e.getValue().equals(entry))
+            .findFirst()
+            .get()
+            .getKey();
+    }
+    
+    public Text getTranslatableText(T entry) {
+        return Text.translatable(this.getKey(entry));
     }
 }
   

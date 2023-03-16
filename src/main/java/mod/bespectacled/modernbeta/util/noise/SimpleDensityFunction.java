@@ -14,7 +14,7 @@ public enum SimpleDensityFunction implements DensityFunctionTypes.Beardifying {
     }
 
     @Override
-    public void applyEach(double[] densities, DensityFunction.EachApplier applier) {
+    public void fill(double[] densities, DensityFunction.EachApplier applier) {
         Arrays.fill(densities, 0.0);
     }
     

@@ -12,7 +12,6 @@ import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
-import mod.bespectacled.modernbeta.util.noise.SimplexNoise;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderBeta;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
@@ -52,7 +51,6 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
         this.scaleOctaveNoise = new PerlinOctaveNoise(this.random, 10, true);
         this.depthOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
         this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
-        this.islandNoise = new SimplexNoise(this.random);
         
         this.climateSampler = (
             this.chunkGenerator.getBiomeSource() instanceof ModernBetaBiomeSource biomeSource &&
@@ -75,8 +73,6 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
-        
-        int bedrockFloor = this.worldMinY + this.bedrockFloor;
         
         Random rand = this.createSurfaceRandom(chunkX, chunkZ);
         BlockPos.Mutable pos = new BlockPos.Mutable();
@@ -130,7 +126,7 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
                     blockState = chunk.getBlockState(pos);
                     
                     // Place bedrock
-                    if (y <= bedrockFloor + rand.nextInt(5)) {
+                    if (y <= this.bedrockFloor + rand.nextInt(5)) {
                         chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
                     }
@@ -221,6 +217,8 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
         int noiseX = startNoiseX + localNoiseX;
         int noiseZ = startNoiseZ + localNoiseZ;
         
+        double islandOffset = this.getIslandOffset(noiseX, noiseZ);
+        
         double depthNoiseScaleX = this.chunkSettings.noiseDepthNoiseScaleX;
         double depthNoiseScaleZ = this.chunkSettings.noiseDepthNoiseScaleZ;
         
@@ -237,9 +235,11 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
         double baseSize = this.chunkSettings.noiseBaseSize;
         double heightStretch = this.chunkSettings.noiseStretchY;
         
-        double islandOffset = this.getIslandOffset(startNoiseX, startNoiseZ, localNoiseX, localNoiseZ);
+        double scale = this.scaleOctaveNoise.sampleXZ(noiseX, noiseZ, 1.121D, 1.121D);
+        double depth = this.depthOctaveNoise.sampleXZ(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
 
         Clime clime = this.climateSampler.sample(x, z);
+        
         double temp = clime.temp();
         double rain = clime.rain() * temp;
         
@@ -248,7 +248,6 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
         rain *= rain;
         rain = 1.0D - rain;
 
-        double scale = this.scaleOctaveNoise.sampleXZ(noiseX, noiseZ, 1.121D, 1.121D);
         scale = (scale + 256D) / 512D;
         scale *= rain;
         
@@ -256,7 +255,6 @@ public class ChunkProviderBeta extends ChunkProviderNoise {
             scale = 1.0D;
         }
         
-        double depth = this.depthOctaveNoise.sampleXZ(noiseX, noiseZ, depthNoiseScaleX, depthNoiseScaleZ);
         depth /= 8000D;
 
         if (depth < 0.0D) {

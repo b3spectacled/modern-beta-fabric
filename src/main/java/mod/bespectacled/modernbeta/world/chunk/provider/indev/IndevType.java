@@ -1,55 +1,27 @@
 package mod.bespectacled.modernbeta.world.chunk.provider.indev;
 
 public enum IndevType {
-    ISLAND(0, "island"),
-    FLOATING(1, "floating"),
-    INLAND(2, "inland");
+    ISLAND("island"),
+    FLOATING("floating"),
+    INLAND("inland");
     
-    private final int id;
-    private final String name;
+    private final String id;
     
-    private IndevType(int id, String name) {
+    private IndevType(String id) {
         this.id = id;
-        this.name = name;
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public String getName() {
-        return this.name;
-    }
-    
-    public static IndevType fromId(int id) {
-        for (IndevType t : IndevType.values()) {
-            if (t.id == id) {
-                return t;
+    public static IndevType fromId(String id) {
+        for (IndevType type : IndevType.values()) {
+            if (type.id.equalsIgnoreCase(id)) {
+                return type;
             }
         }
         
         throw new IllegalArgumentException("No Indev Type matching id: " + id);
-    }
-    
-    public static IndevType fromName(String name) {
-        for (IndevType t : IndevType.values()) {
-            if (t.name.equalsIgnoreCase(name)) {
-                return t;
-            }
-        }
-        
-        throw new IllegalArgumentException("No Indev Type matching name: " + name);
-    }
-    
-    public static IndevType fromString(String str) {
-        IndevType type;
-        
-        if (str.matches("-?\\d+")) {
-            type = fromId(Integer.parseInt(str));
-        } else {
-            type = fromName(str);
-        }
-        
-        return type;
     }
 }

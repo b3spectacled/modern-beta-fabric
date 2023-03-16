@@ -20,7 +20,7 @@ public class BiomeIndevHell {
         ModernBetaBiomeFeatures.addIndevHellFeatures(genSettings);;
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.NONE)
+            .precipitation(false)
             .temperature(0.6F)
             .downfall(0.6F)
             .effects((new BiomeEffects.Builder())

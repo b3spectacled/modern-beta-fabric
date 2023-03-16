@@ -21,7 +21,7 @@ public class BiomePEIceDesert {
         ModernBetaBiomeFeatures.addIceDesertFeatures(genSettings, true);
         
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.SNOW)
+            .precipitation(true)
             .temperature(0.0F)
             .downfall(0.5F)
             .effects((new BiomeEffects.Builder())

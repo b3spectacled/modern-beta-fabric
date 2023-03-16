@@ -16,13 +16,12 @@ public class BiomeIndevWoods {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         ModernBetaBiomeMobs.addCommonMobs(spawnSettings);
         ModernBetaBiomeMobs.addSquid(spawnSettings);
-        ModernBetaBiomeMobs.addWolves(spawnSettings);
         
         GenerationSettings.LookupBackedBuilder genSettings = new GenerationSettings.LookupBackedBuilder(featureLookup, carverLookup);
         ModernBetaBiomeFeatures.addIndevWoodsFeatures(genSettings);
 
         return (new Biome.Builder())
-            .precipitation(Biome.Precipitation.NONE)
+            .precipitation(false)
             .temperature(0.6F)
             .downfall(0.6F)
             .effects((new BiomeEffects.Builder())
