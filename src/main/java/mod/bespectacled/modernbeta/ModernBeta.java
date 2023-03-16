@@ -45,6 +45,10 @@ public class ModernBeta implements ModInitializer {
         LOGGER.atLevel(level).log("[" + MOD_NAME + "] {}", message);
     }
     
+    public static void log(String message) {
+        log(Level.INFO, message);
+    }
+    
     @Override
     public void onInitialize() {
         log(Level.INFO, "Initializing Modern Beta...");
