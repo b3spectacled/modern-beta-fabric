@@ -77,9 +77,9 @@ public class ModernBetaSettingsScreen extends ModernBetaScreen {
         gridWidgetAdder.add(this.widgetSettings);
         gridWidgetAdder.add(this.widgetInvalid);
         
-        gridWidget.refreshPositions();
+        gridWidget.recalculateDimensions();
         SimplePositioningWidget.setPos(gridWidget, 0, this.overlayTop + 8, this.width, this.height, 0.5f, 0.0f);
-        gridWidget.forEachChild(this::addDrawableChild);
+        this.addDrawableChild(gridWidget);
         
         // Set cursor to beginning of edit box
         EditBox editBox = this.widgetSettings.editBox;

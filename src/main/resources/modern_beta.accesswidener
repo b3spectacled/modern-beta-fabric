@@ -15,3 +15,5 @@ accessible field net/minecraft/client/gui/widget/EditBoxWidget editBox Lnet/mine
 accessible field net/minecraft/client/gui/EditBox cursor I
 accessible field net/minecraft/client/gui/EditBox selectionEnd I
 accessible method net/minecraft/client/gui/EditBox onChange ()V
+
+accessible method net/minecraft/client/gui/screen/world/MoreOptionsDialog apply (Lnet/minecraft/client/world/GeneratorOptionsHolder$RegistryAwareModifier;)V

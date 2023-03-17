@@ -21,7 +21,7 @@ public class BiomeBetaDesert {
         ModernBetaBiomeFeatures.addDesertFeatures(genSettings, false);
         
         return (new Biome.Builder())
-            .precipitation(false)
+            .precipitation(Biome.Precipitation.NONE)
             .temperature(1.0F)
             .downfall(0.0F)
             .effects((new BiomeEffects.Builder())

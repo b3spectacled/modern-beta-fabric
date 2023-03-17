@@ -21,7 +21,7 @@ public class BiomeIndevParadise {
         ModernBetaBiomeFeatures.addIndevParadiseFeatures(genSettings);
         
         return (new Biome.Builder())
-            .precipitation(false)
+            .precipitation(Biome.Precipitation.NONE)
             .temperature(0.6F)
             .downfall(0.6F)
             .effects((new BiomeEffects.Builder())

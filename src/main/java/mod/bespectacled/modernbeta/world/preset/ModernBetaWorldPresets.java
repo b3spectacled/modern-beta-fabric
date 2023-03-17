@@ -17,8 +17,6 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
-import net.minecraft.world.biome.source.MultiNoiseBiomeSourceParameterList;
-import net.minecraft.world.biome.source.MultiNoiseBiomeSourceParameterLists;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
@@ -34,10 +32,9 @@ public class ModernBetaWorldPresets {
         RegistryEntryLookup<DimensionType> registryDimensionType = presetRegisterable.getRegistryLookup(RegistryKeys.DIMENSION_TYPE);
         RegistryEntryLookup<ChunkGeneratorSettings> registrySettings = presetRegisterable.getRegistryLookup(RegistryKeys.CHUNK_GENERATOR_SETTINGS);
         RegistryEntryLookup<Biome> registryBiome = presetRegisterable.getRegistryLookup(RegistryKeys.BIOME);
-        RegistryEntryLookup<MultiNoiseBiomeSourceParameterList> registryParameters = presetRegisterable.getRegistryLookup(RegistryKeys.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST);
 
         DimensionOptions overworld = createOverworldOptions(registryDimensionType, registrySettings, registryBiome);
-        DimensionOptions nether = createNetherOptions(registryDimensionType, registrySettings, registryParameters);
+        DimensionOptions nether = createNetherOptions(registryDimensionType, registrySettings, registryBiome);
         DimensionOptions end = createEndOptions(registryDimensionType, registrySettings, registryBiome);
         
         presetRegisterable.register(
@@ -73,13 +70,12 @@ public class ModernBetaWorldPresets {
     private static DimensionOptions createNetherOptions(
         RegistryEntryLookup<DimensionType> registryDimensionType,
         RegistryEntryLookup<ChunkGeneratorSettings> registrySettings,
-        RegistryEntryLookup<MultiNoiseBiomeSourceParameterList> registryParameters
+        RegistryEntryLookup<Biome> registryBiome
     ) {
         RegistryEntry.Reference<DimensionType> dimensionType = registryDimensionType.getOrThrow(DimensionTypes.THE_NETHER);
         RegistryEntry.Reference<ChunkGeneratorSettings> settings = registrySettings.getOrThrow(ChunkGeneratorSettings.NETHER);
-        RegistryEntry.Reference<MultiNoiseBiomeSourceParameterList> parameters = registryParameters.getOrThrow(MultiNoiseBiomeSourceParameterLists.NETHER);
         
-        return new DimensionOptions(dimensionType, new NoiseChunkGenerator(MultiNoiseBiomeSource.create(parameters), settings));
+        return new DimensionOptions(dimensionType, new NoiseChunkGenerator(MultiNoiseBiomeSource.Preset.NETHER.getBiomeSource(registryBiome), settings));
     }
     
     private static DimensionOptions createEndOptions(

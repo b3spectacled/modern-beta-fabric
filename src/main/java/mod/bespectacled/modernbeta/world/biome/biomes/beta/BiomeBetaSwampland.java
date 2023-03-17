@@ -23,7 +23,7 @@ public class BiomeBetaSwampland {
         ModernBetaBiomeFeatures.addSwamplandFeatures(genSettings, false);
         
         return (new Biome.Builder())
-            .precipitation(true)
+            .precipitation(Biome.Precipitation.RAIN)
             .temperature(0.5F)
             .downfall(1.0F)
             .effects((new BiomeEffects.Builder())

@@ -181,10 +181,12 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
         this.addGridTextButtonPair(gridAdderSettings, TEXT_CHUNK, buttonChunk);
         this.addGridTextButtonPair(gridAdderSettings, TEXT_BIOME, buttonBiome);
         this.addGridTextButtonPair(gridAdderSettings, TEXT_CAVE_BIOME, buttonCaveBiome);
+
+        gridWidgetSettings.recalculateDimensions();
+        gridWidgetMain.recalculateDimensions();
         
-        gridWidgetMain.refreshPositions();
         SimplePositioningWidget.setPos(gridWidgetMain, 0, this.overlayTop + 8, this.width, this.height, 0.5f, 0.0f);
-        gridWidgetMain.forEachChild(this::addDrawableChild);
+        this.addDrawableChild(gridWidgetMain);
         
         this.onPresetChange();
     }

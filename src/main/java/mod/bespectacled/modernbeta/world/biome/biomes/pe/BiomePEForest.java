@@ -23,7 +23,7 @@ public class BiomePEForest {
         ModernBetaBiomeFeatures.addForestFeatures(genSettings, true);
         
         return (new Biome.Builder())
-            .precipitation(true)
+            .precipitation(Biome.Precipitation.RAIN)
             .temperature(0.7F)
             .downfall(0.8F)
             .effects((new BiomeEffects.Builder())

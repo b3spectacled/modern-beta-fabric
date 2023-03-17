@@ -22,7 +22,7 @@ public class BiomeBetaTaiga {
         ModernBetaBiomeFeatures.addTaigaFeatures(genSettings, false);
         
         return (new Biome.Builder())
-            .precipitation(true)
+            .precipitation(Biome.Precipitation.SNOW)
             //.temperature(0.4F) TODO: Re-add this later as it looks more accurate; for some reason precipitation currently does not work properly.
             //.downfall(0.8F)
             .temperature(0.0F)

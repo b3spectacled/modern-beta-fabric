@@ -73,7 +73,7 @@
       "modern_beta:freeze_top_layer"
     ]
   ],
-  "has_precipitation": false,
+  "precipitation": "none",
   "spawn_costs": {},
   "spawners": {
     "ambient": [

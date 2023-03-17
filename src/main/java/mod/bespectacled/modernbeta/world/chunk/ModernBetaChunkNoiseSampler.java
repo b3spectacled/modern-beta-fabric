@@ -31,7 +31,7 @@ public class ModernBetaChunkNoiseSampler extends ChunkNoiseSampler {
         GenerationShapeConfig shapeConfig = chunkGeneratorSettings.generationShapeConfig().trimHeight(chunk);
         ChunkPos chunkPos = chunk.getPos();
         
-        int horizontalSize = 16 / shapeConfig.horizontalCellBlockCount();
+        int horizontalSize = 16 / shapeConfig.horizontalBlockSize();
         
         return new ModernBetaChunkNoiseSampler(
             horizontalSize,

@@ -46,10 +46,12 @@ public class ModernBetaSettingsResetScreen extends ModernBetaScreen {
         
         gridAdderButtons.add(buttonDone);
         gridAdderButtons.add(buttonCancel);
+
+        gridWidgetButtons.recalculateDimensions();
+        gridWidgetMain.recalculateDimensions();
         
-        gridWidgetMain.refreshPositions();
         SimplePositioningWidget.setPos(gridWidgetMain, 0, this.height / 2 - gridWidgetMain.getHeight(), this.width, this.height, 0.5f, 0.0f);
-        gridWidgetMain.forEachChild(this::addDrawableChild);
+        this.addDrawableChild(gridWidgetMain);
     }
     
     @Override

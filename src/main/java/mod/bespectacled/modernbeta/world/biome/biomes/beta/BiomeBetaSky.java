@@ -20,7 +20,7 @@ public class BiomeBetaSky {
         ModernBetaBiomeFeatures.addSkyFeatures(genSettings);
         
         return (new Biome.Builder())
-            .precipitation(false)
+            .precipitation(Biome.Precipitation.NONE)
             .temperature(0.5F)
             .downfall(0.0F)
             .effects((new BiomeEffects.Builder())

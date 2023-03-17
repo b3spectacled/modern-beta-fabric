@@ -63,7 +63,7 @@ public class ModernBetaBiomeSource extends BiomeSource {
         NbtCompound biomeSettings,
         NbtCompound caveBiomeSettings
     ) {
-        super();
+        super(biomeStream(biomeRegistry, biomeSettings, caveBiomeSettings));
         
         this.biomeRegistry = biomeRegistry;
         this.biomeSettings = biomeSettings;
@@ -238,10 +238,13 @@ public class ModernBetaBiomeSource extends BiomeSource {
         return ModernBetaBiomeSource.CODEC;
     }
 
-    @Override
-    protected Stream<RegistryEntry<Biome>> biomeStream() {
-        ModernBetaSettingsBiome modernBetaBiomeSettings = ModernBetaSettingsBiome.fromCompound(this.biomeSettings);
-        ModernBetaSettingsCaveBiome modernBetaCaveBiomeSettings = ModernBetaSettingsCaveBiome.fromCompound(this.caveBiomeSettings);
+    private static Stream<RegistryEntry<Biome>> biomeStream(
+        RegistryEntryLookup<Biome> biomeRegistry,
+        NbtCompound biomeSettings,
+        NbtCompound caveBiomeSettings
+    ) {
+        ModernBetaSettingsBiome modernBetaBiomeSettings = ModernBetaSettingsBiome.fromCompound(biomeSettings);
+        ModernBetaSettingsCaveBiome modernBetaCaveBiomeSettings = ModernBetaSettingsCaveBiome.fromCompound(caveBiomeSettings);
         
         BiomeProvider biomeProvider  = ModernBetaRegistries.BIOME
             .get(modernBetaBiomeSettings.biomeProvider)
