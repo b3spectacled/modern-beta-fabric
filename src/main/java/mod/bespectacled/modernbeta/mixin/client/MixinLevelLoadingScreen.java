@@ -33,7 +33,7 @@ public class MixinLevelLoadingScreen extends Screen {
         String phase = ChunkProviderFinite.getPhase();
         
         if (!phase.isBlank()) {
-            LevelLoadingScreen.drawCenteredTextWithShadow(
+            LevelLoadingScreen.drawCenteredText(
                 matrices,
                 this.textRenderer,
                 phase,

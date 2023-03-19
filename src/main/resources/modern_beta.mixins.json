@@ -18,7 +18,8 @@
     "client.MixinBiomeColors",
     "client.MixinClientWorld",
     "client.MixinDebugHud",
-    "client.MixinLevelLoadingScreen"
+    "client.MixinLevelLoadingScreen",
+    "client.MixinMoreOptionsDialog"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -5,18 +5,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
-import mod.bespectacled.modernbeta.data.ModernBetaTagProviderBiome;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.feature.BetaFreezeTopLayerFeature;
-import mod.bespectacled.modernbeta.world.feature.ModernBetaFeatureTags;
 import mod.bespectacled.modernbeta.world.feature.placed.ModernBetaMiscPlacedFeatures;
-import mod.bespectacled.modernbeta.world.feature.placed.ModernBetaPlacedFeatures;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntry.Reference;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.StructureWorldAccess;
