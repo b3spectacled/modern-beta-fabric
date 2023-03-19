@@ -199,6 +199,7 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
             Text textPreset = Text.translatable(TEXT_PRESET).append(": ").append(Text.translatable(TEXT_CUSTOM));
             
             this.widgetPreset.setMessage(textPreset);
+            this.widgetPreset.setTooltip(Tooltip.of(Text.translatable("createWorld.customize.modern_beta.desc.custom")));
             this.widgetPreset.active = false;
         } else {
             String key = ModernBetaRegistries.SETTINGS_PRESET.contains(this.preset) ?

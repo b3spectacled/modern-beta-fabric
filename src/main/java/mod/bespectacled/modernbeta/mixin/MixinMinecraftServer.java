@@ -9,6 +9,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mod.bespectacled.modernbeta.ModernBeta;
+import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
+import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderFinite;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderIndev;
 import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevTheme;
@@ -45,20 +47,29 @@ public abstract class MixinMinecraftServer {
         BlockPos spawnPos = SpawnLocating.findServerSpawnPoint(world, chunkPos);
         
         if (chunkGenerator instanceof ModernBetaChunkGenerator modernBetaChunkGenerator) {
+            ChunkProvider chunkProvider = modernBetaChunkGenerator.getChunkProvider();
+            
             world.getGameRules().get(GameRules.SPAWN_RADIUS).set(0, world.getServer()); // Ensure a centered spawn
-            spawnPos = modernBetaChunkGenerator.getChunkProvider().getSpawnLocator().locateSpawn().orElse(spawnPos);
+            spawnPos = chunkProvider.getSpawnLocator().locateSpawn().orElse(spawnPos);
             
             if (spawnPos != null && ModernBeta.DEV_ENV) {
-                ModernBeta.log(Level.INFO, String.format("Spawning at %d/%d/%d", spawnPos.getX(), spawnPos.getY(), spawnPos.getZ()));
+                int x = spawnPos.getX();
+                int y = spawnPos.getY();
+                int z = spawnPos.getZ();
+                
+                ModernBeta.log(Level.INFO, String.format("Spawning at %d/%d/%d", x, y, z));
             }
             
-            if (spawnPos != null && modernBetaChunkGenerator.getChunkProvider() instanceof ChunkProviderIndev chunkProviderIndev) {
-                
+            if (spawnPos != null && chunkProvider instanceof ChunkProviderIndev chunkProviderIndev) {
                 // Generate Indev house
                 chunkProviderIndev.generateIndevHouse(world, spawnPos);
                 
                 // Set Indev world properties.
                 setIndevProperties(world, chunkProviderIndev.getLevelTheme());
+            }
+            
+            if (chunkProvider instanceof ChunkProviderFinite chunkProviderFinite) {
+                ChunkProviderFinite.resetPhase();
             }
         }
         

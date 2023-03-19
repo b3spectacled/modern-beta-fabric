@@ -17,7 +17,8 @@
     "client.MixinBackgroundRenderer",
     "client.MixinBiomeColors",
     "client.MixinClientWorld",
-    "client.MixinDebugHud"
+    "client.MixinDebugHud",
+    "client.MixinLevelLoadingScreen"
   ],
   "injectors": {
     "defaultRequire": 1

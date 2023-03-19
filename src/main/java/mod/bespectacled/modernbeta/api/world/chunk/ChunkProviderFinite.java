@@ -44,6 +44,8 @@ import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 public abstract class ChunkProviderFinite extends ChunkProvider implements ChunkProviderNoiseImitable {
+    private static String levelPhase;
+    
     protected final int worldMinY;
     protected final int worldHeight;
     protected final int worldTopY;
@@ -88,7 +90,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         
         this.levelWidth = this.chunkSettings.indevLevelWidth;
         this.levelLength = this.chunkSettings.indevLevelLength;
-        this.levelHeight = Math.min(this.worldTopY, this.chunkSettings.indevLevelHeight);
+        this.levelHeight = this.chunkSettings.indevLevelHeight;
         this.caveRadius = this.chunkSettings.indevCaveRadius;
         
         this.heightmap = new int[this.levelWidth * this.levelLength];
@@ -340,7 +342,9 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
     }
 
     protected void setPhase(String phase) {
-        ModernBeta.log(Level.INFO, phase + "..");
+        levelPhase = phase + "..";
+        
+        ModernBeta.log(Level.INFO, levelPhase);
     }
     
     protected void fillOblateSpheroid(float centerX, float centerY, float centerZ, float radius, Block fillBlock) {
@@ -412,6 +416,14 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
                 }
             }
         }
+    }
+    
+    public static void resetPhase() {
+        levelPhase = "";
+    }
+    
+    public static String getPhase() {
+        return levelPhase;
     }
     
     protected static class TerrainState {
