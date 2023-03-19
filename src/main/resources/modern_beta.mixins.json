@@ -18,6 +18,7 @@
     "client.MixinBiomeColors",
     "client.MixinClientWorld",
     "client.MixinDebugHud",
+    "client.MixinLevelLoadingScreen",
     "client.MixinWorldCreator"
   ],
   "injectors": {
