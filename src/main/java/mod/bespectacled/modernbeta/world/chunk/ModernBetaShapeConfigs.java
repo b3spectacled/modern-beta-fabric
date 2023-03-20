@@ -25,8 +25,8 @@ public class ModernBetaShapeConfigs {
         INFDEV_420 = GenerationShapeConfig.create(-64, 192, 1, 2);
         INFDEV_415 = GenerationShapeConfig.create(-64, 192, 1, 1);
         INFDEV_227 = GenerationShapeConfig.create(-64, 192, 1, 2);
-        INDEV = GenerationShapeConfig.create(0, 128, 1, 2);
-        CLASSIC_0_30 = GenerationShapeConfig.create(0, 128, 1, 2);
+        INDEV = GenerationShapeConfig.create(0, 256, 1, 2);
+        CLASSIC_0_30 = GenerationShapeConfig.create(0, 256, 1, 2);
         PE = GenerationShapeConfig.create(-64, 192, 1, 2);
     }
 }

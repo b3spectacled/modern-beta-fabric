@@ -90,7 +90,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         
         this.levelWidth = this.chunkSettings.indevLevelWidth;
         this.levelLength = this.chunkSettings.indevLevelLength;
-        this.levelHeight = this.chunkSettings.indevLevelHeight;
+        this.levelHeight = MathHelper.clamp(this.chunkSettings.indevLevelHeight, 0, this.worldTopY);
         this.caveRadius = this.chunkSettings.indevCaveRadius;
         
         this.heightmap = new int[this.levelWidth * this.levelLength];
