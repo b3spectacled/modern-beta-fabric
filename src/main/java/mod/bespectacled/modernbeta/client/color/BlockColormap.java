@@ -1,18 +1,18 @@
 package mod.bespectacled.modernbeta.client.color;
 
-public class BlockColorMap {
-    private final int[] colorMap;
+public class BlockColormap {
+    private final int[] colormap;
     
-    public BlockColorMap() {
-        this.colorMap = new int[65536];
+    public BlockColormap() {
+        this.colormap = new int[65536];
     }
     
-    public void setColorMap(int[] map) {
+    public void setColormap(int[] map) {
         if (map.length != 65536)
             throw new IllegalArgumentException("[Modern Beta] Color map is an invalid size!");
         
-        for (int i = 0; i < colorMap.length; ++i) {
-            this.colorMap[i] = map[i];
+        for (int i = 0; i < colormap.length; ++i) {
+            this.colormap[i] = map[i];
         }
     }
     
@@ -21,10 +21,10 @@ public class BlockColorMap {
         int tempNdx = (int)((1.0 - temp) * 255.0);
         int ndx = rainNdx << 8 | tempNdx;
         
-        if (ndx >= this.colorMap.length) {
+        if (ndx >= this.colormap.length) {
             return -65281;
         }
         
-        return this.colorMap[ndx];
+        return this.colormap[ndx];
     }
 }

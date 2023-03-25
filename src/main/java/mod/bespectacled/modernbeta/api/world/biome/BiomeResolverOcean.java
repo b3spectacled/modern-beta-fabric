@@ -4,7 +4,6 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 public interface BiomeResolverOcean {
-    
     /**
      * Gets an ocean biome to overwrite the original biome at given biome coordinates.
      * 

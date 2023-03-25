@@ -1,13 +1,11 @@
 package mod.bespectacled.modernbeta.mixin.client;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderFinite;
-
-import org.spongepowered.asm.mixin.injection.At;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.WorldGenerationProgressTracker;
@@ -18,7 +16,7 @@ import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
 @Mixin(LevelLoadingScreen.class)
-public class MixinLevelLoadingScreen extends Screen {
+public abstract class MixinLevelLoadingScreen extends Screen {
     protected MixinLevelLoadingScreen(Text title) {
         super(title);
     }

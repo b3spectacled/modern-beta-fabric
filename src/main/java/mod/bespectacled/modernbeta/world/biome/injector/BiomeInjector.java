@@ -4,7 +4,7 @@ import java.util.function.Predicate;
 
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
-import mod.bespectacled.modernbeta.mixin.MixinChunkSection;
+import mod.bespectacled.modernbeta.mixin.AccessorChunkSection;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
 import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
@@ -22,7 +22,6 @@ import net.minecraft.world.chunk.PalettedContainer;
 public class BiomeInjector {
     public static final int OCEAN_START_DEPTH = 4;
     public static final int OCEAN_DEEP_START_DEPTH = 16;
-    
     public static final int CAVE_START_DEPTH = 8;
     
     private final ModernBetaChunkGenerator modernBetaChunkGenerator;
@@ -48,6 +47,7 @@ public class BiomeInjector {
         BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder();
         
         builder.add(cavePredicate, this.modernBetaBiomeSource::getCaveBiome);
+        
         if (useOceanBiomes) {
             builder.add(deepOceanPredicate, this.modernBetaBiomeSource::getDeepOceanBiome);
             builder.add(oceanPredicate, this.modernBetaBiomeSource::getOceanBiome);
@@ -90,7 +90,7 @@ public class BiomeInjector {
                 }
             }
             
-            ((MixinChunkSection)section).setBiomeContainer(container);
+            ((AccessorChunkSection)section).setBiomeContainer(container);
         }
     }
     

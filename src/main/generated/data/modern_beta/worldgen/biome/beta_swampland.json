@@ -15,7 +15,10 @@
   },
   "features": [
     [],
-    [],
+    [
+      "minecraft:lake_lava_underground",
+      "minecraft:lake_lava_surface"
+    ],
     [
       "minecraft:amethyst_geode"
     ],
@@ -61,7 +64,6 @@
       "modern_beta:patch_poppy",
       "modern_beta:trees_beta_sparse_bees",
       "minecraft:flower_swamp",
-      "minecraft:patch_waterlily",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:patch_sugar_cane",

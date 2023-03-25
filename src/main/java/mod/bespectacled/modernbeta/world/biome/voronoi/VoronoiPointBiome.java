@@ -13,10 +13,10 @@ import net.minecraft.nbt.NbtList;
 public record VoronoiPointBiome(String biome, String oceanBiome, String deepOceanBiome, double temp, double rain) {
     public static final VoronoiPointBiome DEFAULT = new VoronoiPointBiome("modern_beta:beta_forest", "modern_beta:beta_ocean", 0.5, 0.5);
     
+    
     public VoronoiPointBiome(String biome, String oceanBiome, double temp, double rain) {
         this(biome, oceanBiome, oceanBiome, temp, rain);
     }
-
 
     public static List<VoronoiPointBiome> listFromReader(NbtReader reader, List<VoronoiPointBiome> alternate) {
         if (reader.contains(NbtTags.VORONOI_POINTS)) {
@@ -26,12 +26,18 @@ public record VoronoiPointBiome(String biome, String oceanBiome, String deepOcea
                     NbtCompound point = NbtUtil.toCompoundOrThrow(e);
                     NbtReader pointReader = new NbtReader(point);
                     
+                    String biome = pointReader.readStringOrThrow(NbtTags.BIOME);
+                    String oceanBiome = pointReader.readStringOrThrow(NbtTags.OCEAN_BIOME);
+                    String deepOceanBiome = pointReader.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME);
+                    double temp = pointReader.readDoubleOrThrow(NbtTags.TEMP);
+                    double rain = pointReader.readDoubleOrThrow(NbtTags.RAIN);
+                    
                     return new VoronoiPointBiome(
-                        pointReader.readStringOrThrow(NbtTags.BIOME),
-                        pointReader.readStringOrThrow(NbtTags.OCEAN_BIOME),
-                        pointReader.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME),
-                        pointReader.readDoubleOrThrow(NbtTags.TEMP),
-                        pointReader.readDoubleOrThrow(NbtTags.RAIN)
+                        biome,
+                        oceanBiome,
+                        deepOceanBiome,
+                        temp,
+                        rain
                     );
                 })
                 .toList();

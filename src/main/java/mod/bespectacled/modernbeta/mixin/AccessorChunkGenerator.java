@@ -10,7 +10,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.util.PlacedFeatureIndexer;
 
 @Mixin(ChunkGenerator.class)
-public interface MixinChunkGenerator {
+public interface AccessorChunkGenerator {
     @Accessor
     public Supplier<List<PlacedFeatureIndexer.IndexedFeatures>> getIndexedFeaturesListSupplier();
 }

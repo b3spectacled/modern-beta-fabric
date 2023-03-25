@@ -32,6 +32,9 @@ public class ModernBetaSettingsPresets {
     public static final ModernBetaSettingsPreset PRESET_BETA_XBOX_LEGACY = presetBetaXboxLegacy();
     public static final ModernBetaSettingsPreset PRESET_BETA_SURVIVAL_ISLAND = presetBetaSurvivalIsland();
     public static final ModernBetaSettingsPreset PRESET_ALPHA_WINTER = presetAlphaWinter();
+    public static final ModernBetaSettingsPreset PRESET_INDEV_PARADISE = presetIndevParadise();
+    public static final ModernBetaSettingsPreset PRESET_INDEV_WOODS = presetIndevWoods();
+    public static final ModernBetaSettingsPreset PRESET_INDEV_HELL = presetIndevHell();
     
     private static ModernBetaSettingsPreset presetBeta() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
@@ -685,4 +688,71 @@ public class ModernBetaSettingsPresets {
             settingsCaveBiome.build()
         );
     }
+    
+    private static ModernBetaSettingsPreset presetIndevParadise() {
+        ModernBetaSettingsPreset initial = presetIndev();
+        
+        NbtCompound compoundChunk = initial.settingsChunk().toCompound();
+        NbtCompound compoundBiome = initial.settingsBiome().toCompound();
+        NbtCompound compoundCaveBiome = initial.settingsCaveBiome().toCompound();
+        
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder().fromCompound(compoundChunk);
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder().fromCompound(compoundBiome);
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder().fromCompound(compoundCaveBiome);
+        
+        settingsChunk.indevLevelTheme = IndevTheme.PARADISE.getId();
+        
+        settingsBiome.singleBiome = ModernBetaBiomes.INDEV_PARADISE.getValue().toString();
+        
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
+    
+    private static ModernBetaSettingsPreset presetIndevWoods() {
+        ModernBetaSettingsPreset initial = presetIndev();
+        
+        NbtCompound compoundChunk = initial.settingsChunk().toCompound();
+        NbtCompound compoundBiome = initial.settingsBiome().toCompound();
+        NbtCompound compoundCaveBiome = initial.settingsCaveBiome().toCompound();
+        
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder().fromCompound(compoundChunk);
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder().fromCompound(compoundBiome);
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder().fromCompound(compoundCaveBiome);
+        
+        settingsChunk.indevLevelTheme = IndevTheme.WOODS.getId();
+        
+        settingsBiome.singleBiome = ModernBetaBiomes.INDEV_WOODS.getValue().toString();
+        
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
+    
+    private static ModernBetaSettingsPreset presetIndevHell() {
+        ModernBetaSettingsPreset initial = presetIndev();
+        
+        NbtCompound compoundChunk = initial.settingsChunk().toCompound();
+        NbtCompound compoundBiome = initial.settingsBiome().toCompound();
+        NbtCompound compoundCaveBiome = initial.settingsCaveBiome().toCompound();
+        
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder().fromCompound(compoundChunk);
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder().fromCompound(compoundBiome);
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder().fromCompound(compoundCaveBiome);
+        
+        settingsChunk.indevLevelTheme = IndevTheme.HELL.getId();
+        
+        settingsBiome.singleBiome = ModernBetaBiomes.INDEV_HELL.getValue().toString();
+        
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
+   
 }

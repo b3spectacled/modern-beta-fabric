@@ -35,11 +35,11 @@ public record ClimateMapping(String biome, String oceanBiome, String deepOceanBi
     }
 
     public static ClimateMapping fromCompound(NbtCompound compound) {
-        return new ClimateMapping(
-            NbtUtil.readStringOrThrow(NbtTags.BIOME, compound),
-            NbtUtil.readStringOrThrow(NbtTags.OCEAN_BIOME, compound),
-            NbtUtil.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME, compound)
-        );
+        String biome = NbtUtil.readStringOrThrow(NbtTags.BIOME, compound);
+        String oceanBiome = NbtUtil.readStringOrThrow(NbtTags.OCEAN_BIOME, compound);
+        String deepOceanBiome = NbtUtil.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME, compound);
+        
+        return new ClimateMapping(biome, oceanBiome, deepOceanBiome);
     }
     
     public static Map<String, ClimateMapping> mapFromReader(NbtReader reader, Map<String, ClimateMapping> alternate) {

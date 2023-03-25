@@ -44,13 +44,25 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
     public static final TagKey<Biome> SURFACE_CONFIG_IS_BADLANDS = keyOf("surface_config/is_badlands");
     public static final TagKey<Biome> SURFACE_CONFIG_IS_NETHER = keyOf("surface_config/is_nether");
     public static final TagKey<Biome> SURFACE_CONFIG_IS_END = keyOf("surface_config/is_end");
+    public static final TagKey<Biome> SURFACE_CONFIG_SWAMP = keyOf("surface_config/swamp");
     
     public static final TagKey<Biome> SURFACE_CONFIG_SAND = keyOf("surface_config/sand");
     public static final TagKey<Biome> SURFACE_CONFIG_RED_SAND = keyOf("surface_config/red_sand");
     public static final TagKey<Biome> SURFACE_CONFIG_BADLANDS = keyOf("surface_config/badlands");
     public static final TagKey<Biome> SURFACE_CONFIG_NETHER = keyOf("surface_config/nether");
+    public static final TagKey<Biome> SURFACE_CONFIG_WARPED_NYLIUM = keyOf("surface_config/warped_nylium");
+    public static final TagKey<Biome> SURFACE_CONFIG_CRIMSON_NYLIUM = keyOf("surface_config/crimson_nylium");
+    public static final TagKey<Biome> SURFACE_CONFIG_BASALT = keyOf("surface_config/basalt");
+    public static final TagKey<Biome> SURFACE_CONFIG_SOUL_SOIL = keyOf("surface_config/soul_soil");
     public static final TagKey<Biome> SURFACE_CONFIG_END = keyOf("surface_config/end");
-    public static final TagKey<Biome> SURFACE_CONFIG_SWAMP = keyOf("surface_config/swamp");
+    public static final TagKey<Biome> SURFACE_CONFIG_GRASS = keyOf("surface_config/grass");
+    public static final TagKey<Biome> SURFACE_CONFIG_MUD = keyOf("surface_config/mud");
+    public static final TagKey<Biome> SURFACE_CONFIG_MYCELIUM = keyOf("surface_config/mycelium");
+    public static final TagKey<Biome> SURFACE_CONFIG_PODZOL = keyOf("surface_config/podzol");
+    public static final TagKey<Biome> SURFACE_CONFIG_STONE = keyOf("surface_config/stone");
+    public static final TagKey<Biome> SURFACE_CONFIG_SNOW = keyOf("surface_config/snow");
+    public static final TagKey<Biome> SURFACE_CONFIG_SNOW_DIRT = keyOf("surface_config/snow_dirt");
+    public static final TagKey<Biome> SURFACE_CONFIG_SNOW_PACKED_ICE = keyOf("surface_config/snow_packed_ice");
     
     public ModernBetaTagProviderBiome(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, RegistryKeys.BIOME, registriesFuture);
@@ -269,13 +281,19 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
     
         getOrCreateTagBuilder(SURFACE_CONFIG_NETHER)
             .addOptionalTag(SURFACE_CONFIG_IS_NETHER)
-            .add(
-                BiomeKeys.NETHER_WASTES,
-                BiomeKeys.SOUL_SAND_VALLEY,
-                BiomeKeys.CRIMSON_FOREST,
-                BiomeKeys.WARPED_FOREST,
-                BiomeKeys.BASALT_DELTAS
-            );
+            .add(BiomeKeys.NETHER_WASTES);
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_WARPED_NYLIUM)
+            .add(BiomeKeys.WARPED_FOREST);
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_CRIMSON_NYLIUM)
+            .add(BiomeKeys.CRIMSON_FOREST);
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_BASALT)
+            .add(BiomeKeys.BASALT_DELTAS);
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_SOUL_SOIL)
+            .add(BiomeKeys.SOUL_SAND_VALLEY);
         
         getOrCreateTagBuilder(SURFACE_CONFIG_END)
             .addOptionalTag(SURFACE_CONFIG_IS_END)
@@ -287,11 +305,37 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
                 BiomeKeys.SMALL_END_ISLANDS
             );
         
-        getOrCreateTagBuilder(SURFACE_CONFIG_SWAMP)
+        getOrCreateTagBuilder(SURFACE_CONFIG_GRASS)
+            .addOptionalTag(SURFACE_CONFIG_SWAMP)
+            .add(BiomeKeys.SWAMP);
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_MUD)
+            .add(BiomeKeys.MANGROVE_SWAMP);
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_MYCELIUM)
+            .add(BiomeKeys.MUSHROOM_FIELDS);
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_PODZOL)
             .add(
-                BiomeKeys.SWAMP,
-                BiomeKeys.MANGROVE_SWAMP
+                BiomeKeys.OLD_GROWTH_PINE_TAIGA,
+                BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA
             );
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_STONE)
+            .add(
+                BiomeKeys.STONY_PEAKS,
+                BiomeKeys.STONY_SHORE
+            );
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_SNOW)
+            .add(BiomeKeys.SNOWY_SLOPES);
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_SNOW_DIRT)
+            .add(BiomeKeys.GROVE);
+        
+        getOrCreateTagBuilder(SURFACE_CONFIG_SNOW_PACKED_ICE)
+            .add(BiomeKeys.FROZEN_PEAKS);
+
     }
     
     private void configureVanilla(WrapperLookup lookup) {

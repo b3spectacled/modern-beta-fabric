@@ -17,7 +17,7 @@ public class ModernBetaMiscPlacedFeatures {
     
     public static void bootstrap(Registerable<PlacedFeature> featureRegisterable) {
         RegistryEntryLookup<ConfiguredFeature<?, ?>> registryConfigured = featureRegisterable.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE);
-        
+
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> freezeTopLayer = registryConfigured.getOrThrow(ModernBetaMiscConfiguredFeatures.FREEZE_TOP_LAYER);
         
         PlacedFeatures.register(featureRegisterable, FREEZE_TOP_LAYER, freezeTopLayer, BiomePlacementModifier.of());

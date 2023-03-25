@@ -9,7 +9,7 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.placementmodifier.PlacementModifier;
 
 @Mixin(PlacedFeature.class)
-public interface MixinPlacedFeatureAccessor {
+public interface AccessorPlacedFeature {
     @Accessor
     List<PlacementModifier> getPlacementModifiers();
 }

@@ -70,7 +70,7 @@ public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolver
         
         return this.biomeRegistry.getOrThrow(climateMapping.getBiome(ClimateType.DEEP_OCEAN));
     }
-    
+
     @Override
     public RegistryEntry<Biome> getBiomeBlock(int x, int y, int z) {
         Clime clime = this.climateSampler.sample(x, z);

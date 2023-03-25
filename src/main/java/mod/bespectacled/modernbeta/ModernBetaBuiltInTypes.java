@@ -56,8 +56,19 @@ public final class ModernBetaBuiltInTypes {
         RED_SAND(ModernBetaTagProviderBiome.SURFACE_CONFIG_RED_SAND.id().toString()),
         BADLANDS(ModernBetaTagProviderBiome.SURFACE_CONFIG_BADLANDS.id().toString()),
         NETHER(ModernBetaTagProviderBiome.SURFACE_CONFIG_NETHER.id().toString()),
+        WARPED_NYLIUM(ModernBetaTagProviderBiome.SURFACE_CONFIG_WARPED_NYLIUM.id().toString()),
+        CRIMSON_NYLIUM(ModernBetaTagProviderBiome.SURFACE_CONFIG_CRIMSON_NYLIUM.id().toString()),
+        BASALT(ModernBetaTagProviderBiome.SURFACE_CONFIG_BASALT.id().toString()),
+        SOUL_SOIL(ModernBetaTagProviderBiome.SURFACE_CONFIG_SOUL_SOIL.id().toString()),
         THEEND(ModernBetaTagProviderBiome.SURFACE_CONFIG_END.id().toString()),
-        SWAMP(ModernBetaTagProviderBiome.SURFACE_CONFIG_SWAMP.id().toString())
+        GRASS(ModernBetaTagProviderBiome.SURFACE_CONFIG_GRASS.id().toString()),
+        MUD(ModernBetaTagProviderBiome.SURFACE_CONFIG_MUD.id().toString()),
+        MYCELIUM(ModernBetaTagProviderBiome.SURFACE_CONFIG_MYCELIUM.id().toString()),
+        PODZOL(ModernBetaTagProviderBiome.SURFACE_CONFIG_PODZOL.id().toString()),
+        STONE(ModernBetaTagProviderBiome.SURFACE_CONFIG_STONE.id().toString()),
+        SNOW(ModernBetaTagProviderBiome.SURFACE_CONFIG_SNOW.id().toString()),
+        SNOW_DIRT(ModernBetaTagProviderBiome.SURFACE_CONFIG_SNOW_DIRT.id().toString()),
+        SNOW_PACKED_ICE(ModernBetaTagProviderBiome.SURFACE_CONFIG_SNOW_PACKED_ICE.id().toString())
         ;
         
         public final String id;
@@ -118,7 +129,10 @@ public final class ModernBetaBuiltInTypes {
         BETA_LARGE_BIOMES("beta_large_biomes"),
         BETA_XBOX_LEGACY("beta_xbox_legacy"),
         BETA_SURVIVAL_ISLAND("beta_survival_island"),
-        ALPHA_WINTER("alpha_winter")
+        ALPHA_WINTER("alpha_winter"),
+        INDEV_PARADISE("indev_paradise"),
+        INDEV_WOODS("indev_woods"),
+        INDEV_HELL("indev_hell")
         ;
         
         public final String id;

@@ -42,7 +42,7 @@ public abstract class MixinBackgroundRenderer {
             
             Clime clime = BlockColorSampler.INSTANCE.getClimateSampler().get().sample(x, z);
             
-            return BlockColorSampler.INSTANCE.colorMapUnderwater.getColor(clime.temp(), clime.rain());
+            return BlockColorSampler.INSTANCE.colormapUnderwater.getColor(clime.temp(), clime.rain());
         }
         
         return waterFogColor;
