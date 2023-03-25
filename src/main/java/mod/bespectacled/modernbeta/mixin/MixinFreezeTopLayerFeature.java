@@ -47,34 +47,36 @@ public class MixinFreezeTopLayerFeature {
         
         ChunkGenerator chunkGenerator = context.getGenerator();
         BiomeSource biomeSource = chunkGenerator.getBiomeSource();
-
-        int x = pos.getX();
-        int z = pos.getZ();
-        int y = context.getWorld().getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
-        
-        BlockPos topPos = new BlockPos(x, y, z);
-        RegistryEntry<Biome> topBiome = context.getWorld().getBiome(topPos);
-        
-        Reference<PlacedFeature> betaFreezeTopLayer = context.getWorld()
-            .getRegistryManager()
-            .get(RegistryKeys.PLACED_FEATURE)
-            .getEntry(ModernBetaMiscPlacedFeatures.FREEZE_TOP_LAYER)
-            .orElseGet(() -> null);
         
         boolean hasClimateSampler =
             biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource &&
             modernBetaBiomeSource.getBiomeProvider() instanceof ClimateSampler;
         
-        boolean hasBetaFreezeTopLayer = topBiome.value()
-            .getGenerationSettings()
-            .getFeatures()
-            .stream()
-            .anyMatch(list -> list.contains(betaFreezeTopLayer));
-        
-        if (hasClimateSampler && hasBetaFreezeTopLayer) {
-            BetaFreezeTopLayerFeature.setFreezeTopLayer(world, pos, biomeSource);
+        if (hasClimateSampler) {
+            int x = pos.getX();
+            int z = pos.getZ();
+            int y = context.getWorld().getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
             
-            info.setReturnValue(true);
+            BlockPos topPos = new BlockPos(x, y, z);
+            RegistryEntry<Biome> topBiome = context.getWorld().getBiome(topPos);
+            
+            Reference<PlacedFeature> betaFreezeTopLayer = context.getWorld()
+                .getRegistryManager()
+                .get(RegistryKeys.PLACED_FEATURE)
+                .getEntry(ModernBetaMiscPlacedFeatures.FREEZE_TOP_LAYER)
+                .orElseGet(() -> null);
+            
+            boolean hasBetaFreezeTopLayer = topBiome.value()
+                .getGenerationSettings()
+                .getFeatures()
+                .stream()
+                .anyMatch(list -> list.contains(betaFreezeTopLayer));
+            
+            if (hasBetaFreezeTopLayer) {
+                BetaFreezeTopLayerFeature.setFreezeTopLayer(world, pos, biomeSource);
+                
+                info.setReturnValue(true);
+            }
         }
     }
 }

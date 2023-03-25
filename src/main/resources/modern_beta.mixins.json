@@ -4,11 +4,11 @@
   "package": "mod.bespectacled.modernbeta.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "MixinChunkGenerator",
-    "MixinChunkSection",
+    "AccessorChunkGenerator",
+    "AccessorChunkSection",
+    "AccessorPlacedFeature",
     "MixinFreezeTopLayerFeature",
     "MixinMinecraftServer",
-    "MixinPlacedFeatureAccessor",
     "MixinSpawnLocating",
     "MixinStructure",
     "MixinStructureGeneratorFactoryContext"

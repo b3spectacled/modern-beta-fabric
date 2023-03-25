@@ -7,18 +7,23 @@ public class BlockStates {
     public static final BlockState GRASS_BLOCK = Blocks.GRASS_BLOCK.getDefaultState();
     public static final BlockState PODZOL = Blocks.PODZOL.getDefaultState();
     public static final BlockState DIRT = Blocks.DIRT.getDefaultState();
+    public static final BlockState MUD = Blocks.MUD.getDefaultState();
+    public static final BlockState MYCELIUM = Blocks.MYCELIUM.getDefaultState();
     
     public static final BlockState GRAVEL = Blocks.GRAVEL.getDefaultState();
     public static final BlockState SAND = Blocks.SAND.getDefaultState();
     public static final BlockState SANDSTONE = Blocks.SANDSTONE.getDefaultState();
     public static final BlockState RED_SAND = Blocks.RED_SAND.getDefaultState();
     public static final BlockState RED_SANDSTONE = Blocks.RED_SANDSTONE.getDefaultState();
+    public static final BlockState WHITE_TERRACOTTA = Blocks.WHITE_TERRACOTTA.getDefaultState();
     
     public static final BlockState STONE = Blocks.STONE.getDefaultState();
     public static final BlockState AIR = Blocks.AIR.getDefaultState();
     public static final BlockState WATER = Blocks.WATER.getDefaultState();
     public static final BlockState ICE = Blocks.ICE.getDefaultState();
+    public static final BlockState PACKED_ICE = Blocks.PACKED_ICE.getDefaultState();
     public static final BlockState SNOW = Blocks.SNOW.getDefaultState();
+    public static final BlockState SNOW_BLOCK = Blocks.SNOW_BLOCK.getDefaultState();
     public static final BlockState LAVA = Blocks.LAVA.getDefaultState();
     public static final BlockState BEDROCK = Blocks.BEDROCK.getDefaultState();
     public static final BlockState DEEPSLATE = Blocks.DEEPSLATE.getDefaultState();
@@ -33,6 +38,9 @@ public class BlockStates {
     
     public static final BlockState NETHERRACK = Blocks.NETHERRACK.getDefaultState();
     public static final BlockState END_STONE = Blocks.END_STONE.getDefaultState();
-    public static final BlockState WHITE_TERRACOTTA = Blocks.WHITE_TERRACOTTA.getDefaultState();
     public static final BlockState SOUL_SAND = Blocks.SOUL_SAND.getDefaultState();
+    public static final BlockState WARPED_NYLIUM = Blocks.WARPED_NYLIUM.getDefaultState();
+    public static final BlockState CRIMSON_NYLIUM = Blocks.CRIMSON_NYLIUM.getDefaultState();
+    public static final BlockState BASALT = Blocks.BASALT.getDefaultState();
+    public static final BlockState SOUL_SOIL = Blocks.SOUL_SOIL.getDefaultState();
 }

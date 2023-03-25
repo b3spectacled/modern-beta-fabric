@@ -114,7 +114,7 @@ public abstract class MixinClientWorld implements ModernBetaClientWorld {
         ),
         index = 6
     )
-    private Vec3d injectBetaSkyColor(Vec3d skyColorVec) {
+    private Vec3d injectSkyColor(Vec3d skyColorVec) {
         if (this.modernBeta_climateSamplerSky != null && this.modernBeta_climateSamplerSky.useSkyColor()) {
             int x = (int)modernBeta_pos.getX();
             int z = (int)modernBeta_pos.getZ();

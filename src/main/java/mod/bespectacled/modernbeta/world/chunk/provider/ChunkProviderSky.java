@@ -17,6 +17,7 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 public class ChunkProviderSky extends ChunkProviderNoise {
@@ -40,7 +41,7 @@ public class ChunkProviderSky extends ChunkProviderNoise {
     }
 
     @Override
-    public void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
+    public void provideSurface(ChunkRegion region, StructureAccessor structureAccessor, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
         double scale = 0.03125D;
 
         ChunkPos chunkPos = chunk.getPos();

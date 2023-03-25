@@ -177,15 +177,15 @@ public class ModernBetaBiomeSource extends BiomeSource {
     }
 
     public RegistryEntry<Biome> getOceanBiome(int biomeX, int biomeY, int biomeZ) {
-        if (this.biomeProvider instanceof BiomeResolverOcean oceanBiomeResolver)
-            return oceanBiomeResolver.getOceanBiome(biomeX, biomeY, biomeZ);
+        if (this.biomeProvider instanceof BiomeResolverOcean biomeResolverOcean)
+            return biomeResolverOcean.getOceanBiome(biomeX, biomeY, biomeZ);
         
         return this.biomeProvider.getBiome(biomeX, biomeY, biomeZ);
     }
     
     public RegistryEntry<Biome> getDeepOceanBiome(int biomeX, int biomeY, int biomeZ) {
-        if (this.biomeProvider instanceof BiomeResolverOcean oceanBiomeResolver)
-            return oceanBiomeResolver.getDeepOceanBiome(biomeX, biomeY, biomeZ);
+        if (this.biomeProvider instanceof BiomeResolverOcean biomeResolverOcean)
+            return biomeResolverOcean.getDeepOceanBiome(biomeX, biomeY, biomeZ);
         
         return this.biomeProvider.getBiome(biomeX, biomeY, biomeZ);
     }

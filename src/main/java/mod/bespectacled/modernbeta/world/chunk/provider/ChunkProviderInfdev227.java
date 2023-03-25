@@ -93,7 +93,7 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
         );
     }
 
-    public void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
+    public void provideSurface(ChunkRegion region, StructureAccessor structureAccessor, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
         BlockPos.Mutable pos = new BlockPos.Mutable();
         
         ChunkPos chunkPos = chunk.getPos();

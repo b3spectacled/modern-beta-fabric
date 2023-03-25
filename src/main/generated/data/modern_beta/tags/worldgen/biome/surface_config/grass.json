@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#modern_beta:surface_config/swamp",
+      "required": false
+    },
+    "minecraft:swamp"
+  ]
+}

@@ -122,7 +122,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
     }
     
     @Override
-    public void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
+    public void provideSurface(ChunkRegion region, StructureAccessor structureAccessor, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
         BlockPos.Mutable pos = new BlockPos.Mutable();
         
         int startX = chunk.getPos().getStartX();

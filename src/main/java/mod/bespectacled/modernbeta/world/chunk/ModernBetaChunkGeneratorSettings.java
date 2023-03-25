@@ -9,7 +9,9 @@ import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry.Reference;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
+import net.minecraft.util.math.noise.DoublePerlinNoiseSampler.NoiseParameters;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.densityfunction.DensityFunction;
@@ -47,17 +49,25 @@ public class ModernBetaChunkGeneratorSettings {
         settingsRegisterable.register(PE, createGeneratorSettings(settingsRegisterable, ModernBetaShapeConfigs.PE, 64, true));
     }
     
-    private static NoiseRouter createDensityFunctions(RegistryEntryLookup<DoublePerlinNoiseSampler.NoiseParameters> noiseParametersLookup) {
-        DensityFunction aquiferBarrier = DensityFunctionTypes.noise(noiseParametersLookup.getOrThrow(NoiseParametersKeys.AQUIFER_BARRIER), 0.5);
-        DensityFunction aquiferFloodedness = DensityFunctionTypes.noise(noiseParametersLookup.getOrThrow(NoiseParametersKeys.AQUIFER_FLUID_LEVEL_FLOODEDNESS), 0.67);
-        DensityFunction aquiferSpread = DensityFunctionTypes.noise(noiseParametersLookup.getOrThrow(NoiseParametersKeys.AQUIFER_FLUID_LEVEL_SPREAD), 0.7142857142857143);
-        DensityFunction aquiferLava = DensityFunctionTypes.noise(noiseParametersLookup.getOrThrow(NoiseParametersKeys.AQUIFER_LAVA));
+    private static NoiseRouter createDensityFunctions(
+        RegistryEntryLookup<DensityFunction> densityFunctionLookup,
+        RegistryEntryLookup<DoublePerlinNoiseSampler.NoiseParameters> noiseParametersLookup
+    ) {
+        Reference<NoiseParameters> aquiferBarrier = noiseParametersLookup.getOrThrow(NoiseParametersKeys.AQUIFER_BARRIER);
+        Reference<NoiseParameters> aquiferFloodedness = noiseParametersLookup.getOrThrow(NoiseParametersKeys.AQUIFER_FLUID_LEVEL_FLOODEDNESS);
+        Reference<NoiseParameters> aquiferSpread = noiseParametersLookup.getOrThrow(NoiseParametersKeys.AQUIFER_FLUID_LEVEL_SPREAD);
+        Reference<NoiseParameters> aquiferLava = noiseParametersLookup.getOrThrow(NoiseParametersKeys.AQUIFER_LAVA);
+        
+        DensityFunction functionAquiferBarrier = DensityFunctionTypes.noise(aquiferBarrier, 0.5);
+        DensityFunction functionAquiferFloodedness = DensityFunctionTypes.noise(aquiferFloodedness, 0.67);
+        DensityFunction functionAquiferSpread = DensityFunctionTypes.noise(aquiferSpread, 0.7142857142857143);
+        DensityFunction functionAquiferLava = DensityFunctionTypes.noise(aquiferLava);
         
         return new NoiseRouter(
-            aquiferBarrier,              // Barrier noise
-            aquiferFloodedness,          // Fluid level floodedness noise
-            aquiferSpread,               // Fluid level spread noise
-            aquiferLava,                 // Lava noise
+            functionAquiferBarrier,      // Barrier noise
+            functionAquiferFloodedness,  // Fluid level floodedness noise
+            functionAquiferSpread,       // Fluid level spread noise
+            functionAquiferLava,         // Lava noise
             DensityFunctionTypes.zero(), // Temperature
             DensityFunctionTypes.zero(), // Vegetation
             DensityFunctionTypes.zero(), // Continents
@@ -72,12 +82,20 @@ public class ModernBetaChunkGeneratorSettings {
         );
     }
     
-    private static ChunkGeneratorSettings createGeneratorSettings(Registerable<ChunkGeneratorSettings> settingsRegisterable, GenerationShapeConfig shapeConfig, int seaLevel, boolean useAquifers) {
+    private static ChunkGeneratorSettings createGeneratorSettings(
+        Registerable<ChunkGeneratorSettings> settingsRegisterable,
+        GenerationShapeConfig shapeConfig,
+        int seaLevel,
+        boolean useAquifers
+    ) {
+        RegistryEntryLookup<DensityFunction> densityFunctionLookup = settingsRegisterable.getRegistryLookup(RegistryKeys.DENSITY_FUNCTION);
+        RegistryEntryLookup<DoublePerlinNoiseSampler.NoiseParameters> noiseParametersLookup = settingsRegisterable.getRegistryLookup(RegistryKeys.NOISE_PARAMETERS);
+        
         return new ChunkGeneratorSettings(
             shapeConfig,
             BlockStates.STONE,
             BlockStates.WATER,
-            createDensityFunctions(settingsRegisterable.getRegistryLookup(RegistryKeys.NOISE_PARAMETERS)),
+            createDensityFunctions(densityFunctionLookup, noiseParametersLookup),
             new SequenceMaterialRule(List.of()),
             List.of(),
             seaLevel,
@@ -87,7 +105,7 @@ public class ModernBetaChunkGeneratorSettings {
             true
         );
     }
-    
+
     static {
         MODERN_BETA = RegistryKey.of(RegistryKeys.CHUNK_GENERATOR_SETTINGS, ModernBeta.createId(ModernBeta.MOD_ID));
         BETA = RegistryKey.of(RegistryKeys.CHUNK_GENERATOR_SETTINGS, ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.BETA.id));

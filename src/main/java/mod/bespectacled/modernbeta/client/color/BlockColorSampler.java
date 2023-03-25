@@ -14,18 +14,18 @@ import net.minecraft.world.BlockRenderView;
 public final class BlockColorSampler {
     public static final BlockColorSampler INSTANCE = new BlockColorSampler();
 
-    public final BlockColorMap colorMapGrass;
-    public final BlockColorMap colorMapFoliage;
-    public final BlockColorMap colorMapWater;
-    public final BlockColorMap colorMapUnderwater;
+    public final BlockColormap colormapGrass;
+    public final BlockColormap colormapFoliage;
+    public final BlockColormap colormapWater;
+    public final BlockColormap colormapUnderwater;
     
     private Optional<ClimateSampler> climateSampler;
     
     private BlockColorSampler() {
-        this.colorMapGrass = new BlockColorMap();
-        this.colorMapFoliage = new BlockColorMap();
-        this.colorMapWater = new BlockColorMap();
-        this.colorMapUnderwater = new BlockColorMap();
+        this.colormapGrass = new BlockColormap();
+        this.colormapFoliage = new BlockColormap();
+        this.colormapWater = new BlockColormap();
+        this.colormapUnderwater = new BlockColormap();
         
         this.climateSampler = Optional.empty();
     }
@@ -103,7 +103,7 @@ public final class BlockColorSampler {
             
             Clime clime = this.climateSampler.get().sample(x, z);
             
-            return this.colorMapWater.getColor(clime.temp(), clime.rain());
+            return this.colormapWater.getColor(clime.temp(), clime.rain());
         }
         
         return BiomeColors.getWaterColor(view, pos);

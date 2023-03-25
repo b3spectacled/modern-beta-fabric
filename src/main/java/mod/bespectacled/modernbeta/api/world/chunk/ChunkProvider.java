@@ -8,8 +8,8 @@ import java.util.concurrent.Executor;
 import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
 import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
-import mod.bespectacled.modernbeta.mixin.MixinChunkGenerator;
-import mod.bespectacled.modernbeta.mixin.MixinPlacedFeatureAccessor;
+import mod.bespectacled.modernbeta.mixin.AccessorChunkGenerator;
+import mod.bespectacled.modernbeta.mixin.AccessorPlacedFeature;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
@@ -96,11 +96,12 @@ public abstract class ChunkProvider {
      * Generates biome-specific surface for given chunk.
      * 
      * @param region
+     * @param structureAccessor TODO
      * @param chunk
      * @param biomeSource
      * @param noiseConfig TODO
      */
-    public abstract void provideSurface(ChunkRegion region, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig);
+    public abstract void provideSurface(ChunkRegion region, StructureAccessor structureAccessor, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig);
     
     /**
      * Sample height at given x/z coordinate. Initially generates heightmap for entire chunk, 
@@ -195,13 +196,13 @@ public abstract class ChunkProvider {
      * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
      */
     public void initForestOctaveNoise() {
-        List<IndexedFeatures> generationSteps = ((MixinChunkGenerator)this.chunkGenerator).getIndexedFeaturesListSupplier().get();
+        List<IndexedFeatures> generationSteps = ((AccessorChunkGenerator)this.chunkGenerator).getIndexedFeaturesListSupplier().get();
         
         for (IndexedFeatures step : generationSteps) {
             List<PlacedFeature> featureList = step.features();
             
             for (PlacedFeature placedFeature : featureList) {
-                MixinPlacedFeatureAccessor accessor = (MixinPlacedFeatureAccessor)(Object)placedFeature;
+                AccessorPlacedFeature accessor = (AccessorPlacedFeature)(Object)placedFeature;
                 List<PlacementModifier> modifiers = accessor.getPlacementModifiers();
                 
                 for (PlacementModifier modifier : modifiers) {

@@ -42,4 +42,12 @@ public class ModernBetaConfig implements ConfigData {
     @ConfigEntry.Category(value = "other")
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean useOldFogColor = true;
+    
+    /*
+    @ConfigEntry.Gui.Excluded
+    public List<ModernBetaSettingsPreset> presets = List.of(
+        ModernBetaSettingsPresets.PRESET_ALPHA,
+        ModernBetaSettingsPresets.PRESET_BETA
+    );
+    */
 }

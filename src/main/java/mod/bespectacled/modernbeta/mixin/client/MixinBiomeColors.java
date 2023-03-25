@@ -21,7 +21,7 @@ public abstract class MixinBiomeColors {
         if (BlockColorSampler.INSTANCE.sampleWaterColor()) {
             Clime clime = BlockColorSampler.INSTANCE.getClimateSampler().get().sample(pos.getX(), pos.getZ());
             
-            info.setReturnValue(BlockColorSampler.INSTANCE.colorMapWater.getColor(clime.temp(), clime.rain()));
+            info.setReturnValue(BlockColorSampler.INSTANCE.colormapWater.getColor(clime.temp(), clime.rain()));
         }
     }
 }

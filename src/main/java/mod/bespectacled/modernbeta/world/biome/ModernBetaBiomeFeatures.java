@@ -207,7 +207,7 @@ public class ModernBetaBiomeFeatures {
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_SPARSE_BEES);
             builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.FLOWER_SWAMP);
-            builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_WATERLILY);
+            //builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_WATERLILY);
         }
         
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
@@ -443,6 +443,7 @@ public class ModernBetaBiomeFeatures {
         ModernBetaFeatureSettings featureSettings
     ) {
         addCarvers(builder, featureSettings.addCanyons);
+        if (featureSettings.addLakes) addLakes(builder);
         DefaultBiomeFeatures.addAmethystGeodes(builder);
         DefaultBiomeFeatures.addDungeons(builder);
         addMineables(builder, featureSettings.addClay, featureSettings.addAlternateStones, featureSettings.addNewMineables);

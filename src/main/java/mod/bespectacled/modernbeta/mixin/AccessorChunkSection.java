@@ -9,7 +9,7 @@ import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.ReadableContainer;
 
 @Mixin(ChunkSection.class)
-public interface MixinChunkSection {
+public interface AccessorChunkSection {
     @Accessor("biomeContainer")
     public void setBiomeContainer(ReadableContainer<RegistryEntry<Biome>> biomeContainer);
 }

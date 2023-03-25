@@ -104,12 +104,12 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         
         return completedChunk;
     }
-        
+     
     @Override
     public void buildSurface(ChunkRegion chunkRegion, StructureAccessor structureAccessor, NoiseConfig noiseConfig, Chunk chunk) {
         if (!this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ModernBetaGenerationStep.SURFACE)) {
             if (this.biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
-                this.chunkProvider.provideSurface(chunkRegion, chunk, modernBetaBiomeSource, noiseConfig);
+                this.chunkProvider.provideSurface(chunkRegion, structureAccessor, chunk, modernBetaBiomeSource, noiseConfig);
             } else {
                 super.buildSurface(chunkRegion, structureAccessor, noiseConfig, chunk);
             }
