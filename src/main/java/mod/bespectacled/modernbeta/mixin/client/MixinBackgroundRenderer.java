@@ -36,7 +36,7 @@ public abstract class MixinBackgroundRenderer {
         ordinal = 1
     )
     private static int modifyWaterFogColor(int waterFogColor) {
-        if (BlockColorSampler.INSTANCE.sampleWaterColor()) {
+        if (BlockColorSampler.INSTANCE.useWaterColor()) {
             int x = (int)modernBeta_pos.getX();
             int z = (int)modernBeta_pos.getZ();
             

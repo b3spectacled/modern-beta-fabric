@@ -4,10 +4,12 @@ import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
 
+import mod.bespectacled.modernbeta.util.BlockStates;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -16,11 +18,13 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.carver.Carver;
+import net.minecraft.world.gen.carver.CarverConfig;
 import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.CarvingMask;
 import net.minecraft.world.gen.carver.CaveCarver;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.densityfunction.DensityFunction;
 
 public class BetaCaveCarver extends CaveCarver {
     public BetaCaveCarver(Codec<CaveCarverConfig> codec) {
@@ -38,10 +42,10 @@ public class BetaCaveCarver extends CaveCarver {
         CaveCarverConfig config, 
         Chunk mainChunk, 
         Function<BlockPos, RegistryEntry<Biome>> posToBiome, 
-        Random random, 
+        Random random,
         AquiferSampler aquiferSampler, 
         ChunkPos pos,
-        CarvingMask bitSet
+        CarvingMask carvingMask
     ) {
         int caveCount = random.nextInt(random.nextInt(random.nextInt(40) + 1) + 1);
         if (random.nextInt(getMaxCaveCount()) != 0) {
@@ -65,7 +69,19 @@ public class BetaCaveCarver extends CaveCarver {
             if (random.nextInt(4) == 0) {
                 double yScale = config.yScale.get(random);
                 
-                this.carveCave(context, config, mainChunk, random, mainChunk.getPos().x, mainChunk.getPos().z, x, y, z, yScale, skipPredicate);
+                this.carveCave(
+                    context,
+                    config,
+                    mainChunk,
+                    random,
+                    mainChunk.getPos().x,
+                    mainChunk.getPos().z,
+                    x, y, z,
+                    yScale,
+                    skipPredicate,
+                    carvingMask,
+                    aquiferSampler
+                );
                 tunnelCount += random.nextInt(4);
             }
 
@@ -84,7 +100,9 @@ public class BetaCaveCarver extends CaveCarver {
                     horizontalScale, verticalScale, 
                     width, yaw, pitch, 
                     0, 0, 1.0D,
-                    skipPredicate
+                    skipPredicate,
+                    carvingMask,
+                    aquiferSampler
                 );
             }
         }
@@ -103,7 +121,9 @@ public class BetaCaveCarver extends CaveCarver {
         double y, 
         double z,
         double yScale,
-        Carver.SkipPredicate skipPredicate
+        Carver.SkipPredicate skipPredicate,
+        CarvingMask carvingMask,
+        AquiferSampler aquiferSampler
     ) {
         this.carveTunnels(
             context, 
@@ -117,7 +137,9 @@ public class BetaCaveCarver extends CaveCarver {
             1.0F + random.nextFloat() * 6F, 
             0.0F, 0.0F, 
             -1, -1, yScale,
-            skipPredicate
+            skipPredicate,
+            carvingMask,
+            aquiferSampler
         );
     }
 
@@ -139,7 +161,9 @@ public class BetaCaveCarver extends CaveCarver {
         int branch,
         int branchCount, 
         double yawPitchRatio,
-        Carver.SkipPredicate skipPredicate
+        Carver.SkipPredicate skipPredicate,
+        CarvingMask carvingMask,
+        AquiferSampler aquiferSampler
     ) {
         float f2 = 0.0F;
         float f3 = 0.0F;
@@ -195,7 +219,9 @@ public class BetaCaveCarver extends CaveCarver {
                     random.nextFloat() * 0.5F + 0.5F,
                     yaw - 1.570796F, pitch / 3F, 
                     branch, branchCount, 1.0D,
-                    skipPredicate
+                    skipPredicate,
+                    carvingMask,
+                    aquiferSampler
                 );
                 carveTunnels(
                     context, 
@@ -208,7 +234,9 @@ public class BetaCaveCarver extends CaveCarver {
                     random.nextFloat() * 0.5F + 0.5F,
                     yaw + 1.570796F, pitch / 3F, 
                     branch, branchCount, 1.0D,
-                    skipPredicate
+                    skipPredicate,
+                    carvingMask,
+                    aquiferSampler
                 );
                 return;
             }
@@ -229,7 +257,9 @@ public class BetaCaveCarver extends CaveCarver {
                 x, y, z, 
                 tunnelHorizontalScale * horizontalScale, 
                 tunnelVerticalScale * verticalScale,
-                skipPredicate
+                skipPredicate,
+                carvingMask,
+                aquiferSampler
             );
 
             if (noStarts) {
@@ -250,12 +280,14 @@ public class BetaCaveCarver extends CaveCarver {
         double z, 
         double horizontalScale,
         double verticalScale,
-        Carver.SkipPredicate skipPredicate
+        Carver.SkipPredicate skipPredicate,
+        CarvingMask carvingMask,
+        AquiferSampler aquiferSampler
     ) {
         double ctrX = mainChunkX * 16 + 8;
         double ctrZ = mainChunkZ * 16 + 8;
 
-        BlockPos.Mutable blockPos = new BlockPos.Mutable();
+        BlockPos.Mutable pos = new BlockPos.Mutable();
 
         if ( // Check for valid tunnel starts, I guess? Or to prevent overlap?
         x < ctrX - 16D - horizontalScale * 2D || z < ctrZ - 16D - horizontalScale * 2D || x > ctrX + 16D + horizontalScale * 2D
@@ -311,25 +343,37 @@ public class BetaCaveCarver extends CaveCarver {
                 for (int localY = maxY; localY > minY; localY--) {
                     double scaledRelY = (((double) (localY - 1) + 0.5D) - y) / verticalScale;
 
-                    if (skipPredicate.shouldSkip(context, scaledRelX, scaledRelY, scaledRelZ, localY))
+                    if (skipPredicate.shouldSkip(context, scaledRelX, scaledRelY, scaledRelZ, localY) ||
+                        carvingMask.get(localX, localY, localZ))
                         continue;
 
-                    BlockState blockState = chunk.getBlockState(blockPos.set(localX, localY, localZ));
+                    carvingMask.set(localX, localY, localZ);
+                    pos.set(localX, localY, localZ);
+                    
+                    BlockState state = chunk.getBlockState(pos);
 
-                    if (blockState.isOf(Blocks.GRASS_BLOCK)) {
+                    if (state.isOf(Blocks.GRASS_BLOCK)) {
                         isGrassBlock = true;
                     }
 
                     // Don't use canCarveBlock for accuracy, for now.
-                    if (blockState.isIn(config.replaceable)) { 
-                        if (localY < config.lavaLevel.getY(context)) {
-                            chunk.setBlockState(blockPos.set(localX, localY, localZ), Blocks.LAVA.getDefaultState(), false);
-                        } else {
-                            chunk.setBlockState(blockPos.set(localX, localY, localZ), Blocks.AIR.getDefaultState(), false);
-
+                    if (state.isIn(config.replaceable)) {
+                        int offsetX = chunk.getPos().getOffsetX(localX);
+                        int offsetZ = chunk.getPos().getOffsetZ(localZ);
+                        BlockPos carverPos = new BlockPos(offsetX, localY, offsetZ);
+                        
+                        BlockState carverState = this.getBlockState(context, config, carverPos, aquiferSampler);
+                        
+                        if (carverState != null) {
+                            chunk.setBlockState(carverPos, carverState, false);
+                            
+                            if (aquiferSampler.needsFluidTick() && !carverState.getFluidState().isEmpty()) {
+                                chunk.markBlockForPostProcessing(carverPos);
+                            }
+                            
                             // Replaces carved-out dirt with grass, if block that was removed was grass.
-                            if (isGrassBlock && chunk.getBlockState(blockPos.set(localX, localY - 1, localZ)).getBlock() == Blocks.DIRT) {
-                                chunk.setBlockState(blockPos.set(localX, localY - 1, localZ), Blocks.GRASS_BLOCK.getDefaultState(), false);
+                            if (isGrassBlock && chunk.getBlockState(carverPos.down()).getBlock() == Blocks.DIRT) {
+                                chunk.setBlockState(carverPos.down(), BlockStates.GRASS_BLOCK, false);
                             }
                         }
                     }
@@ -338,6 +382,28 @@ public class BetaCaveCarver extends CaveCarver {
         }
 
         return true;
+    }
+    
+    private BlockState getBlockState(CarverContext context, CaveCarverConfig config, BlockPos pos, AquiferSampler aquiferSampler) {
+        if (pos.getY() < config.lavaLevel.getY(context)) {
+            return BlockStates.LAVA;
+        }
+        
+        /* TODO: Produces too many flooded caves, re-visit this later.
+         
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
+        BlockState state = aquiferSampler.apply(new DensityFunction.UnblendedNoisePos(x, y, z), 0.0);
+        
+        if (state == null) {
+            return isDebug(config) ? config.debugConfig.getBarrierState() : null;
+        }
+        
+        return isDebug(config) ? getDebugState(config, state) : state;
+        */
+        
+        return BlockStates.AIR;
     }
 
     private boolean canCarveBranch(
@@ -440,4 +506,30 @@ public class BetaCaveCarver extends CaveCarver {
         float width = random.nextFloat() * 2.0f + random.nextFloat();
         return width;
     }
+    
+    /*
+    private static BlockState getDebugState(CarverConfig config, BlockState state) {
+        if (state.isOf(Blocks.AIR)) {
+            return config.debugConfig.getAirState();
+        }
+        
+        if (state.isOf(Blocks.WATER)) {
+            BlockState waterState = config.debugConfig.getWaterState();
+            if (waterState.contains(Properties.WATERLOGGED)) {
+                return (BlockState)waterState.with(Properties.WATERLOGGED, true);
+            }
+            return waterState;
+        }
+        
+        if (state.isOf(Blocks.LAVA)) {
+            return config.debugConfig.getLavaState();
+        }
+        
+        return state;
+    }
+    
+    private static boolean isDebug(CarverConfig config) {
+        return config.debugConfig.isDebugMode();
+    }
+    */
 }

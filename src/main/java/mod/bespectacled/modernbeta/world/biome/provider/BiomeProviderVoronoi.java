@@ -97,7 +97,10 @@ public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolver
             String oceanBiome = point.oceanBiome().isBlank() ? null : point.oceanBiome();
             String deepOceanBiome = point.deepOceanBiome().isBlank() ? null : point.deepOceanBiome();
             
-            builder.add(new ClimateMapping(biome, oceanBiome, deepOceanBiome), new Clime(point.temp(), point.rain()));
+            double temp = MathHelper.clamp(point.temp(), 0.0, 1.0);
+            double rain = MathHelper.clamp(point.rain(), 0.0, 1.0);
+            
+            builder.add(new ClimateMapping(biome, oceanBiome, deepOceanBiome), new Clime(temp, rain));
         }
         
         return builder.build();

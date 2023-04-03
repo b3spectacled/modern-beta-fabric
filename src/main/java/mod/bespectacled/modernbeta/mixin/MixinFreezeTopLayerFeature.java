@@ -39,7 +39,7 @@ import net.minecraft.world.gen.feature.util.FeatureContext;
  * 
  */
 @Mixin(FreezeTopLayerFeature.class)
-public class MixinFreezeTopLayerFeature {
+public abstract class MixinFreezeTopLayerFeature {
     @Inject(method = "generate", at = @At("HEAD"), cancellable = true)
     private void injectGenerate(FeatureContext<DefaultFeatureConfig> context, CallbackInfoReturnable<Boolean> info) {
         StructureWorldAccess world = context.getWorld();
