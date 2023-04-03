@@ -60,7 +60,11 @@ public class CaveBiomeProviderVoronoi extends CaveBiomeProvider implements CaveC
         for (VoronoiPointCaveBiome point : points) {
             RegistryKey<Biome> biomeKey = point.biome().isBlank() ? null : RegistryKey.of(RegistryKeys.BIOME, new Identifier(point.biome()));
             
-            builder.add(biomeKey, new CaveClime(point.temp(), point.rain(), point.depth()));
+            double temp = MathHelper.clamp(point.temp(), 0.0, 1.0);
+            double rain = MathHelper.clamp(point.rain(), 0.0, 1.0);
+            double depth = MathHelper.clamp(point.depth(), 0.0, 1.0);
+            
+            builder.add(biomeKey, new CaveClime(temp, rain, depth));
         }
         
         return builder.build();

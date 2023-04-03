@@ -43,7 +43,7 @@ public final class BlockColorSampler {
             return 8174955; // Default tint, from wiki
         }
         
-        if (this.sampleBiomeColor()) {
+        if (this.useBiomeColor()) {
             int x = pos.getX();
             int z = pos.getZ();
 
@@ -60,7 +60,7 @@ public final class BlockColorSampler {
             return 8174955; // Default tint, from wiki
         }
         
-        if (this.sampleBiomeColor()) {
+        if (this.useBiomeColor()) {
             int x = pos.getX();
             int y = pos.getY();
             int z = pos.getZ();
@@ -84,7 +84,7 @@ public final class BlockColorSampler {
             return 4764952; // Default tint, from wiki
         }
         
-        if (this.sampleBiomeColor()) {
+        if (this.useBiomeColor()) {
             int x = pos.getX();
             int z = pos.getZ();
             
@@ -97,7 +97,7 @@ public final class BlockColorSampler {
     }
     
     public int getWaterColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
-        if (this.sampleWaterColor()) {
+        if (this.useWaterColor()) {
             int x = pos.getX();
             int z = pos.getZ();
             
@@ -110,18 +110,18 @@ public final class BlockColorSampler {
     }
     
     public int getSugarCaneColor(BlockState state, BlockRenderView view, BlockPos pos, int tintNdx) {
-        if (this.sampleBiomeColor()) {
+        if (this.useBiomeColor()) {
             return 0xFFFFFF;
         }
         
         return BiomeColors.getGrassColor(view, pos);
     }
     
-    public boolean sampleBiomeColor() {
+    public boolean useBiomeColor() {
         return this.climateSampler.isPresent() && this.climateSampler.get().useBiomeColor();
     }
     
-    public boolean sampleWaterColor() {
+    public boolean useWaterColor() {
         return this.climateSampler.isPresent() && this.climateSampler.get().useWaterColor();
     }
 }
