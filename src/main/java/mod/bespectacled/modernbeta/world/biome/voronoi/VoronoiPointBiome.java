@@ -13,7 +13,6 @@ import net.minecraft.nbt.NbtList;
 public record VoronoiPointBiome(String biome, String oceanBiome, String deepOceanBiome, double temp, double rain) {
     public static final VoronoiPointBiome DEFAULT = new VoronoiPointBiome("modern_beta:beta_forest", "modern_beta:beta_ocean", 0.5, 0.5);
     
-    
     public VoronoiPointBiome(String biome, String oceanBiome, double temp, double rain) {
         this(biome, oceanBiome, oceanBiome, temp, rain);
     }
@@ -29,6 +28,7 @@ public record VoronoiPointBiome(String biome, String oceanBiome, String deepOcea
                     String biome = pointReader.readStringOrThrow(NbtTags.BIOME);
                     String oceanBiome = pointReader.readStringOrThrow(NbtTags.OCEAN_BIOME);
                     String deepOceanBiome = pointReader.readStringOrThrow(NbtTags.DEEP_OCEAN_BIOME);
+                    
                     double temp = pointReader.readDoubleOrThrow(NbtTags.TEMP);
                     double rain = pointReader.readDoubleOrThrow(NbtTags.RAIN);
                     

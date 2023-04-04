@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector.BiomeInjectionStep;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
@@ -25,8 +26,10 @@ public abstract class MixinStructure {
                     blockPos.getX(),
                     blockPos.getY(),
                     blockPos.getZ(),
-                    context.noiseConfig().getMultiNoiseSampler()
+                    context.noiseConfig().getMultiNoiseSampler(),
+                    BiomeInjectionStep.ALL
                 );
+                
                 boolean isBiomeValid = context.biomePredicate().test(biome);
                 
                 info.setReturnValue(isBiomeValid);

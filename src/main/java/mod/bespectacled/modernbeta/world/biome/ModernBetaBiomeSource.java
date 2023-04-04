@@ -21,6 +21,7 @@ import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverOcean;
 import mod.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsCaveBiome;
+import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector.BiomeInjectionStep;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
@@ -112,7 +113,7 @@ public class ModernBetaBiomeSource extends BiomeSource {
                 int z = biomeZ << 2;
                 int y = this.chunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
                 
-                set.add(this.chunkGenerator.getBiomeInjector().getBiomeAtBlock(x, y, z, noiseSampler));
+                set.add(this.chunkGenerator.getBiomeInjector().getBiomeAtBlock(x, y, z, noiseSampler, BiomeInjectionStep.ALL));
             }
         }
         
@@ -163,9 +164,11 @@ public class ModernBetaBiomeSource extends BiomeSource {
             int biomeZ = BiomeCoords.fromBlock(z);
             
             for (int y : sections) {
+                int biomeY = BiomeCoords.fromBlock(y);
+                
                 RegistryEntry<Biome> biome = this.chunkGenerator
                     .getBiomeInjector()
-                    .getBiome(biomeX, BiomeCoords.fromBlock(y), biomeZ, noiseSampler);
+                    .getBiome(biomeX, biomeY, biomeZ, noiseSampler, BiomeInjectionStep.ALL);
                 
                 if (!biomeSet.contains(biome)) continue;
                 

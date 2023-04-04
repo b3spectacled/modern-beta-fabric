@@ -31,6 +31,7 @@ public class ModernBetaSettingsPresets {
     public static final ModernBetaSettingsPreset PRESET_BETA_LARGE_BIOMES = presetBetaLargeBiomes();
     public static final ModernBetaSettingsPreset PRESET_BETA_XBOX_LEGACY = presetBetaXboxLegacy();
     public static final ModernBetaSettingsPreset PRESET_BETA_SURVIVAL_ISLAND = presetBetaSurvivalIsland();
+    public static final ModernBetaSettingsPreset PRESET_BETA_VANILLA = presetBetaVanilla();
     public static final ModernBetaSettingsPreset PRESET_ALPHA_WINTER = presetAlphaWinter();
     public static final ModernBetaSettingsPreset PRESET_INDEV_PARADISE = presetIndevParadise();
     public static final ModernBetaSettingsPreset PRESET_INDEV_WOODS = presetIndevWoods();
@@ -661,6 +662,29 @@ public class ModernBetaSettingsPresets {
         settingsChunk.islesUseIslands = true;
         settingsChunk.islesUseOuterIslands = false;
         settingsChunk.islesCenterIslandRadius = 1;
+        
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
+    
+    private static ModernBetaSettingsPreset presetBetaVanilla() {
+        ModernBetaSettingsPreset initial = presetBeta();
+        
+        NbtCompound compoundChunk = initial.settingsChunk().toCompound();
+        NbtCompound compoundBiome = initial.settingsBiome().toCompound();
+        NbtCompound compoundCaveBiome = initial.settingsCaveBiome().toCompound();
+        
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder().fromCompound(compoundChunk);
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder().fromCompound(compoundBiome);
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder().fromCompound(compoundCaveBiome);
+        
+        settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.VORONOI.id;
+        settingsBiome.climateTempNoiseScale = 0.025f / 2.0f;
+        settingsBiome.climateRainNoiseScale = 0.05f / 2.0f;
+        settingsBiome.climateDetailNoiseScale = 0.25f / 1.0f;
         
         return new ModernBetaSettingsPreset(
             settingsChunk.build(),

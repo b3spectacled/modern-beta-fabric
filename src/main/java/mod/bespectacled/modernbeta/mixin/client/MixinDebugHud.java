@@ -17,6 +17,7 @@ import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
 import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
+import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector.BiomeInjectionStep;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -122,7 +123,7 @@ public abstract class MixinDebugHud {
                 */
 
                 if (modernBetaChunkGenerator.getBiomeInjector() != null) {
-                    RegistryEntry<Biome> biome = modernBetaChunkGenerator.getBiomeInjector().getBiomeAtBlock(x, y, z, null);
+                    RegistryEntry<Biome> biome = modernBetaChunkGenerator.getBiomeInjector().getBiomeAtBlock(x, y, z, null, BiomeInjectionStep.ALL);
                     info.getReturnValue().add(
                         String.format(
                             "[Modern Beta] Injected biome: %s",

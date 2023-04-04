@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import mod.bespectacled.modernbeta.client.color.BlockColorSampler;
-import mod.bespectacled.modernbeta.util.ModernBetaClientWorld;
+import mod.bespectacled.modernbeta.client.world.ModernBetaClientWorld;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.BackgroundRenderer;

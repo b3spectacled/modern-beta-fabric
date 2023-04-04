@@ -38,6 +38,12 @@ public class BiomeInjectionRules {
             return this;
         }
         
+        public Builder add(Builder other) {
+            other.rules.forEach(rule -> this.rules.add(rule));
+            
+            return this;
+        }
+        
         public BiomeInjectionRules build() {
             return new BiomeInjectionRules(this.rules);
         }

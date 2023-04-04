@@ -1,5 +1,6 @@
 package mod.bespectacled.modernbeta.world.biome.injector;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
@@ -18,8 +19,15 @@ import net.minecraft.world.biome.source.util.MultiNoiseUtil.MultiNoiseSampler;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.PalettedContainer;
+import net.minecraft.world.chunk.ReadableContainer;
 
 public class BiomeInjector {
+    public enum BiomeInjectionStep {
+        PRE,  // Injects before surface generation step.
+        POST, // Injects after surface generation step.
+        ALL   // Injects for structure generation, spawn location.
+    }
+    
     public static final int OCEAN_START_DEPTH = 4;
     public static final int OCEAN_DEEP_START_DEPTH = 16;
     public static final int CAVE_START_DEPTH = 8;
@@ -27,13 +35,18 @@ public class BiomeInjector {
     private final ModernBetaChunkGenerator modernBetaChunkGenerator;
     private final ModernBetaBiomeSource modernBetaBiomeSource;
     
-    private final BiomeInjectionRules rules;
+    private final BiomeInjectionRules rulesPre;
+    private final BiomeInjectionRules rulesPost;
+    private final BiomeInjectionRules rulesAll;
     
     public BiomeInjector(ModernBetaChunkGenerator modernBetaChunkGenerator, ModernBetaBiomeSource modernBetaBiomeSource) {
         this.modernBetaChunkGenerator = modernBetaChunkGenerator;
         this.modernBetaBiomeSource = modernBetaBiomeSource;
+        
+        ModernBetaSettingsBiome settingsBiome;
+        settingsBiome = ModernBetaSettingsBiome.fromCompound(this.modernBetaBiomeSource.getBiomeSettings());
 
-        boolean useOceanBiomes = ModernBetaSettingsBiome.fromCompound(this.modernBetaBiomeSource.getBiomeSettings()).useOceanBiomes;
+        boolean useOceanBiomes = settingsBiome.useOceanBiomes;
         
         Predicate<BiomeInjectionContext> cavePredicate = context -> 
             context.getY() >= context.worldMinY && context.getY() + CAVE_START_DEPTH < context.minHeight;
@@ -43,20 +56,26 @@ public class BiomeInjector {
 
         Predicate<BiomeInjectionContext> deepOceanPredicate = context -> 
             this.atOceanDepth(context.topHeight, OCEAN_DEEP_START_DEPTH);
-            
-        BiomeInjectionRules.Builder builder = new BiomeInjectionRules.Builder();
         
-        builder.add(cavePredicate, this.modernBetaBiomeSource::getCaveBiome);
+        BiomeInjectionRules.Builder builderPre = new BiomeInjectionRules.Builder();
+        BiomeInjectionRules.Builder builderPost = new BiomeInjectionRules.Builder();
+        BiomeInjectionRules.Builder builderAll = new BiomeInjectionRules.Builder();
+        
+        builderPost.add(cavePredicate, this.modernBetaBiomeSource::getCaveBiome);
         
         if (useOceanBiomes) {
-            builder.add(deepOceanPredicate, this.modernBetaBiomeSource::getDeepOceanBiome);
-            builder.add(oceanPredicate, this.modernBetaBiomeSource::getOceanBiome);
+            builderPost.add(deepOceanPredicate, this.modernBetaBiomeSource::getDeepOceanBiome);
+            builderPost.add(oceanPredicate, this.modernBetaBiomeSource::getOceanBiome);
         }
         
-        this.rules = builder.build();
+        builderAll.add(builderPre).add(builderPost);
+        
+        this.rulesPre = builderPre.build();
+        this.rulesPost = builderPost.build();
+        this.rulesAll = builderAll.build();
     }
     
-    public void injectBiomes(Chunk chunk, MultiNoiseSampler noiseSampler) {
+    public void injectBiomes(Chunk chunk, MultiNoiseSampler noiseSampler, BiomeInjectionStep step) {
         ChunkPos chunkPos = chunk.getPos();
         
         int startBiomeX = chunkPos.getStartX() >> 2;
@@ -72,7 +91,9 @@ public class BiomeInjector {
         // Replace biomes from biome container
         for (int sectionY = 0; sectionY < chunk.countVerticalSections(); ++sectionY) {
             ChunkSection section = chunk.getSection(sectionY);
-            PalettedContainer<RegistryEntry<Biome>> container = section.getBiomeContainer().slice();
+            
+            ReadableContainer<RegistryEntry<Biome>> readableContainer = section.getBiomeContainer();
+            PalettedContainer<RegistryEntry<Biome>> palettedContainer = section.getBiomeContainer().slice();
             
             int yOffset = section.getYOffset() >> 2;
             
@@ -83,26 +104,52 @@ public class BiomeInjector {
                     
                     for (int localBiomeY = 0; localBiomeY < 4; ++localBiomeY) {
                         int biomeY = localBiomeY + yOffset;
-                        RegistryEntry<Biome> biome = this.getBiome(biomeX, biomeY, biomeZ, noiseSampler);
                         
-                        container.set(localBiomeX, localBiomeY, localBiomeZ, biome);
+                        RegistryEntry<Biome> initialBiome = readableContainer.get(localBiomeX, localBiomeY, localBiomeZ);
+                        RegistryEntry<Biome> replacementBiome = this.getOptionalBiome(biomeX, biomeY, biomeZ, noiseSampler, step).orElse(initialBiome);
+                        
+                        palettedContainer.set(localBiomeX, localBiomeY, localBiomeZ, replacementBiome);
                     }   
                 }
             }
             
-            ((AccessorChunkSection)section).setBiomeContainer(container);
+            ((AccessorChunkSection)section).setBiomeContainer(palettedContainer);
         }
     }
     
-    public RegistryEntry<Biome> getBiomeAtBlock(int x, int y, int z, MultiNoiseSampler noiseSampler) {
+    public RegistryEntry<Biome> getBiomeAtBlock(int x, int y, int z, MultiNoiseSampler noiseSampler, BiomeInjectionStep step) {
         int biomeX = x >> 2;
         int biomeY = y >> 2;
         int biomeZ = z >> 2;
         
-        return this.getBiome(biomeX, biomeY, biomeZ, noiseSampler);
+        return this.getBiome(biomeX, biomeY, biomeZ, noiseSampler, step);
     }
     
-    public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler) {
+    public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler, BiomeInjectionStep step) {
+        BiomeInjectionContext context = this.createContext(biomeX, biomeY, biomeZ);
+
+        return this
+            .getBiome(context, biomeX, biomeY, biomeZ, noiseSampler, step)
+            .orElse(this.modernBetaBiomeSource.getBiome(biomeX, biomeY, biomeZ, noiseSampler));
+    }
+    
+    public Optional<RegistryEntry<Biome>> getOptionalBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler, BiomeInjectionStep step) {
+        BiomeInjectionContext context = this.createContext(biomeX, biomeY, biomeZ);
+
+        return this.getBiome(context, biomeX, biomeY, biomeZ, noiseSampler, step);
+    }
+    
+    private Optional<RegistryEntry<Biome>> getBiome(BiomeInjectionContext context, int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler, BiomeInjectionStep step) {
+        RegistryEntry<Biome> biome = switch(step) {
+            case PRE -> this.rulesPre.test(context, biomeX, biomeY, biomeZ);
+            case POST -> this.rulesPost.test(context, biomeX, biomeY, biomeZ);
+            case ALL -> this.rulesAll.test(context, biomeX, biomeY, biomeZ);
+        };
+        
+        return Optional.ofNullable(biome);
+    }
+    
+    private BiomeInjectionContext createContext(int biomeX, int biomeY, int biomeZ) {
         int y = biomeY << 2;
         
         int worldMinY = this.modernBetaChunkGenerator.getMinimumY();
@@ -110,18 +157,8 @@ public class BiomeInjector {
         int minHeight = this.sampleMinHeight(biomeX, biomeZ);
         
         BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, topHeight, minHeight).setY(y);
-
-        return this.getBiome(context, biomeX, biomeY, biomeZ, noiseSampler);
-    }
-    
-    private RegistryEntry<Biome> getBiome(BiomeInjectionContext context, int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler) {
-        RegistryEntry<Biome> biome = this.rules.test(context, biomeX, biomeY, biomeZ);
         
-        if (biome == null) {
-            biome = this.modernBetaBiomeSource.getBiome(biomeX, biomeY, biomeZ, noiseSampler);
-        }
-        
-        return biome;
+        return context;
     }
     
     private int sampleTopHeight(int biomeX, int biomeZ) {

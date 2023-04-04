@@ -6,7 +6,6 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
-import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverBlock;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverOcean;
 import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import mod.bespectacled.modernbeta.util.chunk.ChunkCache;
@@ -18,11 +17,14 @@ import mod.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointBiome;
 import mod.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointRules;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
-public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolverBlock, BiomeResolverOcean {
+public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolverOcean {
     private final VoronoiClimateSampler climateSampler;
     private final VoronoiPointRules<ClimateMapping, Clime> rules;
     
@@ -40,53 +42,47 @@ public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolver
 
     @Override
     public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ) {
-        int x = biomeX << 2;
-        int z = biomeZ << 2;
-        
-        Clime clime = this.climateSampler.sample(x, z);
-        ClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
+        ClimateMapping climateMapping = this.getClimateMapping(biomeX, biomeZ);
         
         return this.biomeRegistry.getOrThrow(climateMapping.getBiome(ClimateType.LAND));
     }
  
     @Override
     public RegistryEntry<Biome> getOceanBiome(int biomeX, int biomeY, int biomeZ) {
-        int x = biomeX << 2;
-        int z = biomeZ << 2;
-        
-        Clime clime = this.climateSampler.sample(x, z);
-        ClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
+        ClimateMapping climateMapping = this.getClimateMapping(biomeX, biomeZ);
         
         return this.biomeRegistry.getOrThrow(climateMapping.getBiome(ClimateType.OCEAN));
     }
     
     @Override
     public RegistryEntry<Biome> getDeepOceanBiome(int biomeX, int biomeY, int biomeZ) {
-        int x = biomeX << 2;
-        int z = biomeZ << 2;
-        
-        Clime clime = this.climateSampler.sample(x, z);
-        ClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
+        ClimateMapping climateMapping = this.getClimateMapping(biomeX, biomeZ);
         
         return this.biomeRegistry.getOrThrow(climateMapping.getBiome(ClimateType.DEEP_OCEAN));
     }
 
     @Override
-    public RegistryEntry<Biome> getBiomeBlock(int x, int y, int z) {
-        Clime clime = this.climateSampler.sample(x, z);
-        ClimateMapping climateMapping = this.rules.calculateClosestTo(clime);
-        
-        return this.biomeRegistry.getOrThrow(climateMapping.getBiome(ClimateType.LAND));
-    }
-
-    @Override
     public List<RegistryEntry<Biome>> getBiomes() {
-        List<RegistryEntry<Biome>> biomes = new ArrayList<>();
-        biomes.addAll(this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrThrow(key.getBiome(ClimateType.LAND))).collect(Collectors.toList()));
-        biomes.addAll(this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrThrow(key.getBiome(ClimateType.OCEAN))).collect(Collectors.toList()));
-        biomes.addAll(this.rules.getItems().stream().distinct().map(key -> this.biomeRegistry.getOrThrow(key.getBiome(ClimateType.DEEP_OCEAN))).collect(Collectors.toList()));
+        List<String> biomes = new ArrayList<>();
         
-        return biomes;
+        this.rules.getItems().forEach(key -> biomes.add(key.biome()));
+        this.rules.getItems().forEach(key -> biomes.add(key.oceanBiome()));
+        this.rules.getItems().forEach(key -> biomes.add(key.deepOceanBiome()));
+        
+        return biomes
+            .stream()
+            .distinct()
+            .map(key -> this.biomeRegistry.getOrThrow(RegistryKey.of(RegistryKeys.BIOME, new Identifier(key))))
+            .collect(Collectors.toList());
+    }
+    
+    private ClimateMapping getClimateMapping(int biomeX, int biomeZ) {
+        int x = biomeX << 2;
+        int z = biomeZ << 2;
+        
+        Clime clime = this.climateSampler.sample(x, z);
+
+        return this.rules.calculateClosestTo(clime);
     }
     
     private static VoronoiPointRules<ClimateMapping, Clime> buildRules(List<VoronoiPointBiome> points) {
@@ -100,7 +96,10 @@ public class BiomeProviderVoronoi extends BiomeProvider implements BiomeResolver
             double temp = MathHelper.clamp(point.temp(), 0.0, 1.0);
             double rain = MathHelper.clamp(point.rain(), 0.0, 1.0);
             
-            builder.add(new ClimateMapping(biome, oceanBiome, deepOceanBiome), new Clime(temp, rain));
+            ClimateMapping climateMapping = new ClimateMapping(biome, oceanBiome, deepOceanBiome);
+            Clime clime = new Clime(temp, rain);
+            
+            builder.add(climateMapping, clime);
         }
         
         return builder.build();
