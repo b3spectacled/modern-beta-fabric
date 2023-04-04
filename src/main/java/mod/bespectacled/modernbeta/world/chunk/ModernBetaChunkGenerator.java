@@ -13,6 +13,7 @@ import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
+import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector.BiomeInjectionStep;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
@@ -29,6 +30,7 @@ import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.biome.source.util.MultiNoiseUtil.MultiNoiseSampler;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.GenerationStep;
@@ -107,6 +109,8 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
      
     @Override
     public void buildSurface(ChunkRegion chunkRegion, StructureAccessor structureAccessor, NoiseConfig noiseConfig, Chunk chunk) {
+        this.injectBiomes(chunk, noiseConfig.getMultiNoiseSampler(), BiomeInjectionStep.PRE);
+        
         if (!this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ModernBetaGenerationStep.SURFACE)) {
             if (this.biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
                 this.chunkProvider.provideSurface(chunkRegion, structureAccessor, chunk, modernBetaBiomeSource, noiseConfig);
@@ -115,10 +119,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
             }
         }
         
-        // Inject cave, ocean, etc. biomes
-        if (this.biomeInjector != null) {
-            this.biomeInjector.injectBiomes(chunk, noiseConfig.getMultiNoiseSampler());
-        }
+        this.injectBiomes(chunk, noiseConfig.getMultiNoiseSampler(), BiomeInjectionStep.POST);
     }
     
     @Override
@@ -273,6 +274,12 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
     @Override
     protected Codec<? extends ChunkGenerator> getCodec() {
         return ModernBetaChunkGenerator.CODEC;
+    }
+    
+    private void injectBiomes(Chunk chunk, MultiNoiseSampler noiseSampler, BiomeInjectionStep step) {
+        if (this.biomeInjector != null) {
+            this.biomeInjector.injectBiomes(chunk, noiseSampler, step);
+        }
     }
 
     public static void register() {

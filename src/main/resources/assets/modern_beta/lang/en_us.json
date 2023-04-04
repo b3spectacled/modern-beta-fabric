@@ -41,6 +41,7 @@
     "createWorld.customize.modern_beta.preset.beta_large_biomes": "Beta Large Biomes",
     "createWorld.customize.modern_beta.preset.beta_xbox_legacy": "Beta Xbox Legacy",
     "createWorld.customize.modern_beta.preset.beta_survival_island": "Beta Survival Island",
+    "createWorld.customize.modern_beta.preset.beta_vanilla": "Beta Vanilla",
     "createWorld.customize.modern_beta.preset.alpha_winter": "Alpha Winter",
     "createWorld.customize.modern_beta.preset.indev_paradise": "Indev Paradise",
     "createWorld.customize.modern_beta.preset.indev_woods": "Indev Woods",
@@ -66,6 +67,7 @@
     "createWorld.customize.modern_beta.desc.beta_large_biomes": "Explore a world with the terrain generation of Minecraft Beta 1.7.3 and much larger Beta biomes.",
     "createWorld.customize.modern_beta.desc.beta_xbox_legacy": "Explore a world where you start on a square-shaped archipelago surrounded by an endless ocean. Inspired by early versions of Minecraft Xbox 360 Edition.",
     "createWorld.customize.modern_beta.desc.beta_survival_island": "Survive on a small island surrounded by an endless ocean.",
+    "createWorld.customize.modern_beta.desc.beta_vanilla": "Explore a world with the terrain generation of Minecraft Beta 1.7.3 and vanilla biomes.",
     "createWorld.customize.modern_beta.desc.alpha_winter": "Explore a world with the terrain generation of Minecraft Alpha 1.1.2_01 and a Winter Mode-inspired Alpha biome.",
     
     "text.autoconfig.modern_beta.title": "Modern Beta Configuration",

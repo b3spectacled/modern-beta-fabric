@@ -9,7 +9,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -18,13 +17,11 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.carver.Carver;
-import net.minecraft.world.gen.carver.CarverConfig;
 import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.CarvingMask;
 import net.minecraft.world.gen.carver.CaveCarver;
 import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.chunk.AquiferSampler;
-import net.minecraft.world.gen.densityfunction.DensityFunction;
 
 public class BetaCaveCarver extends CaveCarver {
     public BetaCaveCarver(Codec<CaveCarverConfig> codec) {

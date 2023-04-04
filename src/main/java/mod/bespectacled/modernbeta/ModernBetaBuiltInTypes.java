@@ -129,6 +129,7 @@ public final class ModernBetaBuiltInTypes {
         BETA_LARGE_BIOMES("beta_large_biomes"),
         BETA_XBOX_LEGACY("beta_xbox_legacy"),
         BETA_SURVIVAL_ISLAND("beta_survival_island"),
+        BETA_VANILLA("beta_vanilla"),
         ALPHA_WINTER("alpha_winter"),
         INDEV_PARADISE("indev_paradise"),
         INDEV_WOODS("indev_woods"),
