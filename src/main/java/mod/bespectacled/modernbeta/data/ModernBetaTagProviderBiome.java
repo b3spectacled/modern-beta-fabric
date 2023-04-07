@@ -332,7 +332,10 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             .add(BiomeKeys.SNOWY_SLOPES);
         
         getOrCreateTagBuilder(SURFACE_CONFIG_SNOW_DIRT)
-            .add(BiomeKeys.GROVE);
+            .add(
+                BiomeKeys.GROVE,
+                BiomeKeys.ICE_SPIKES
+            );
         
         getOrCreateTagBuilder(SURFACE_CONFIG_SNOW_PACKED_ICE)
             .add(BiomeKeys.FROZEN_PEAKS);
