@@ -69,6 +69,9 @@
     "createWorld.customize.modern_beta.desc.beta_survival_island": "Survive on a small island surrounded by an endless ocean.",
     "createWorld.customize.modern_beta.desc.beta_vanilla": "Explore a world with the terrain generation of Minecraft Beta 1.7.3 and most vanilla biomes.",
     "createWorld.customize.modern_beta.desc.alpha_winter": "Explore a world with the terrain generation of Minecraft Alpha 1.1.2_01 and a Winter Mode-inspired Alpha biome.",
+    "createWorld.customize.modern_beta.desc.indev_paradise": "Explore a world with the terrain generation of Minecraft Indev 20100223 based on the Indev Paradise theme.",
+    "createWorld.customize.modern_beta.desc.indev_woods": "Explore a world with the terrain generation of Minecraft Indev 20100223 based on the Indev Woods theme.",
+    "createWorld.customize.modern_beta.desc.indev_hell": "Explore a world with the terrain generation of Minecraft Indev 20100223 based on the Indev Hell theme.",
     
     "text.autoconfig.modern_beta.title": "Modern Beta Configuration",
 
