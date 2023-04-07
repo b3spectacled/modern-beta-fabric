@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "minecraft:grove"
+    "minecraft:grove",
+    "minecraft:ice_spikes"
   ]
 }
