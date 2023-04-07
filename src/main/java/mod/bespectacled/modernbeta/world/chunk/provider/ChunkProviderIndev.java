@@ -1,7 +1,7 @@
 package mod.bespectacled.modernbeta.world.chunk.provider;
 
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderFinite;
-import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
+import mod.bespectacled.modernbeta.api.world.chunk.surface.SurfaceConfig;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoiseCombined;

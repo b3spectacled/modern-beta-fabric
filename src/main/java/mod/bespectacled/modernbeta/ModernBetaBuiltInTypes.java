@@ -68,7 +68,8 @@ public final class ModernBetaBuiltInTypes {
         STONE(ModernBetaTagProviderBiome.SURFACE_CONFIG_STONE.id().toString()),
         SNOW(ModernBetaTagProviderBiome.SURFACE_CONFIG_SNOW.id().toString()),
         SNOW_DIRT(ModernBetaTagProviderBiome.SURFACE_CONFIG_SNOW_DIRT.id().toString()),
-        SNOW_PACKED_ICE(ModernBetaTagProviderBiome.SURFACE_CONFIG_SNOW_PACKED_ICE.id().toString())
+        SNOW_PACKED_ICE(ModernBetaTagProviderBiome.SURFACE_CONFIG_SNOW_PACKED_ICE.id().toString()),
+        SNOW_STONE(ModernBetaTagProviderBiome.SURFACE_CONFIG_SNOW_STONE.id().toString())
         ;
         
         public final String id;

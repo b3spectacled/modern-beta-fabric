@@ -21,6 +21,10 @@ public class SimplexOctaveNoise {
         }
     }
     
+    public double sample(double x, double z, double scale, double lacunarity) {
+        return this.sample(x, z, scale, scale, lacunarity);
+    }
+    
     public double sample(double x, double z, double scaleX, double scaleZ, double lacunarity) {
         return this.sample(x, z, scaleX, scaleZ, lacunarity, 0.5);
     }

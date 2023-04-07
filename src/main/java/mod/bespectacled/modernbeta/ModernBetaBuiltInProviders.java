@@ -2,8 +2,8 @@ package mod.bespectacled.modernbeta;
 
 import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
 import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
-import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
 import mod.bespectacled.modernbeta.api.world.chunk.noise.NoisePostProcessor;
+import mod.bespectacled.modernbeta.api.world.chunk.surface.SurfaceConfig;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPresets;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderBeta;
 import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderPE;
@@ -85,6 +85,7 @@ public class ModernBetaBuiltInProviders {
         ModernBetaRegistries.SURFACE_CONFIG.register(ModernBetaBuiltInTypes.SurfaceConfig.SNOW.id, SurfaceConfig.SNOW);
         ModernBetaRegistries.SURFACE_CONFIG.register(ModernBetaBuiltInTypes.SurfaceConfig.SNOW_DIRT.id, SurfaceConfig.SNOW_DIRT);
         ModernBetaRegistries.SURFACE_CONFIG.register(ModernBetaBuiltInTypes.SurfaceConfig.SNOW_PACKED_ICE.id, SurfaceConfig.SNOW_PACKED_ICE);
+        ModernBetaRegistries.SURFACE_CONFIG.register(ModernBetaBuiltInTypes.SurfaceConfig.SNOW_STONE.id, SurfaceConfig.SNOW_STONE);
     }
     
     public static void registerBlockSources() {
