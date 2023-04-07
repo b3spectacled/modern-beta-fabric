@@ -3,7 +3,7 @@ package mod.bespectacled.modernbeta.world.chunk.provider;
 import java.util.Random;
 
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
-import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
+import mod.bespectacled.modernbeta.api.world.chunk.surface.SurfaceConfig;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;

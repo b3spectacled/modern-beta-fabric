@@ -1,4 +1,4 @@
-package mod.bespectacled.modernbeta.api.world.chunk;
+package mod.bespectacled.modernbeta.api.world.chunk.surface;
 
 import mod.bespectacled.modernbeta.util.BlockStates;
 import net.minecraft.block.BlockState;
@@ -12,6 +12,7 @@ public record SurfaceBlocks(BlockState topBlock, BlockState fillerBlock) {
     public static final SurfaceBlocks SNOW = new SurfaceBlocks(BlockStates.SNOW_BLOCK, BlockStates.SNOW_BLOCK);
     public static final SurfaceBlocks SNOW_DIRT = new SurfaceBlocks(BlockStates.SNOW_BLOCK, BlockStates.DIRT);
     public static final SurfaceBlocks SNOW_PACKED_ICE = new SurfaceBlocks(BlockStates.SNOW_BLOCK, BlockStates.PACKED_ICE);
+    public static final SurfaceBlocks SNOW_STONE = new SurfaceBlocks(BlockStates.SNOW_BLOCK, BlockStates.STONE);
     
     public static final SurfaceBlocks GRAVEL = new SurfaceBlocks(BlockStates.AIR, BlockStates.GRAVEL);
     public static final SurfaceBlocks NETHER_SOUL_SAND = new SurfaceBlocks(BlockStates.SOUL_SAND, BlockStates.SOUL_SAND);

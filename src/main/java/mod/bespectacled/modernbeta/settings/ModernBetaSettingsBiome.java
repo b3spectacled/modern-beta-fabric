@@ -23,6 +23,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
     public final float climateTempNoiseScale;
     public final float climateRainNoiseScale;
     public final float climateDetailNoiseScale;
+    public final float climateWeirdNoiseScale;
     
     public final Map<String, ClimateMapping> climateMappings;
     public final List<VoronoiPointBiome> voronoiPoints;
@@ -39,6 +40,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
         this.climateTempNoiseScale = builder.climateTempNoiseScale;
         this.climateRainNoiseScale = builder.climateRainNoiseScale;
         this.climateDetailNoiseScale = builder.climateDetailNoiseScale;
+        this.climateWeirdNoiseScale = builder.climateWeirdNoiseScale;
         
         this.climateMappings = builder.climateMappings;
         this.voronoiPoints = builder.voronoiPoints;
@@ -62,6 +64,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
             .putFloat(NbtTags.CLIMATE_TEMP_NOISE_SCALE, this.climateTempNoiseScale)
             .putFloat(NbtTags.CLIMATE_RAIN_NOISE_SCALE, this.climateRainNoiseScale)
             .putFloat(NbtTags.CLIMATE_DETAIL_NOISE_SCALE, this.climateDetailNoiseScale)
+            .putFloat(NbtTags.CLIMATE_WEIRD_NOISE_SCALE, this.climateWeirdNoiseScale)
             .putCompound(NbtTags.CLIMATE_MAPPINGS, ClimateMapping.mapToNbt(this.climateMappings))
             .putList(NbtTags.VORONOI_POINTS, VoronoiPointBiome.listToNbt(this.voronoiPoints))
             .build();
@@ -75,6 +78,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
         public float climateTempNoiseScale;
         public float climateRainNoiseScale;
         public float climateDetailNoiseScale;
+        public float climateWeirdNoiseScale;
         public Map<String, ClimateMapping> climateMappings;
         
         public List<VoronoiPointBiome> voronoiPoints;
@@ -87,6 +91,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
             this.climateTempNoiseScale = 0.025f;
             this.climateRainNoiseScale = 0.05f;
             this.climateDetailNoiseScale = 0.25f;
+            this.climateWeirdNoiseScale = 0.003125f;
             this.climateMappings = createClimateMapping(
                 new ClimateMapping(
                     ModernBetaBiomes.BETA_DESERT.getValue().toString(),
@@ -134,59 +139,318 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
                 )
             );
             this.voronoiPoints = List.of(
-                new VoronoiPointBiome(
-                    BiomeKeys.SNOWY_PLAINS.getValue().toString(),
-                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
-                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
-                    0.0, 0.0
-                ),
-                new VoronoiPointBiome(
-                    BiomeKeys.SNOWY_TAIGA.getValue().toString(),
-                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
-                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
-                    0.0, 0.5
-                ),
-                new VoronoiPointBiome(
-                    BiomeKeys.SWAMP.getValue().toString(),
-                    BiomeKeys.COLD_OCEAN.getValue().toString(),
-                    BiomeKeys.DEEP_COLD_OCEAN.getValue().toString(),
-                    0.0, 1.0
-                ),
-                new VoronoiPointBiome(
-                    BiomeKeys.SAVANNA.getValue().toString(),
-                    BiomeKeys.OCEAN.getValue().toString(),
-                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
-                    0.5, 0.0
-                ),
-                new VoronoiPointBiome(
-                    BiomeKeys.FOREST.getValue().toString(),
-                    BiomeKeys.OCEAN.getValue().toString(),
-                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
-                    0.5, 0.5
-                ),
-                new VoronoiPointBiome(
-                    BiomeKeys.PLAINS.getValue().toString(),
-                    BiomeKeys.OCEAN.getValue().toString(),
-                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
-                    0.5, 1.0
-                ),
+                // Standard Biomes
+                
                 new VoronoiPointBiome(
                     BiomeKeys.DESERT.getValue().toString(),
                     BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
                     BiomeKeys.DEEP_LUKEWARM_OCEAN.getValue().toString(),
-                    1.0, 0.0
+                    0.9, 0.1, 0.75
                 ),
                 new VoronoiPointBiome(
-                    BiomeKeys.DARK_FOREST.getValue().toString(),
+                    BiomeKeys.PLAINS.getValue().toString(),
                     BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
                     BiomeKeys.DEEP_LUKEWARM_OCEAN.getValue().toString(),
-                    1.0, 0.5
+                    0.9, 0.3, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.PLAINS.getValue().toString(),
+                    BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_LUKEWARM_OCEAN.getValue().toString(),
+                    0.9, 0.5, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SPARSE_JUNGLE.getValue().toString(),
+                    BiomeKeys.WARM_OCEAN.getValue().toString(),
+                    BiomeKeys.WARM_OCEAN.getValue().toString(),
+                    0.9, 0.7, 0.25
                 ),
                 new VoronoiPointBiome(
                     BiomeKeys.JUNGLE.getValue().toString(),
                     BiomeKeys.WARM_OCEAN.getValue().toString(),
                     BiomeKeys.WARM_OCEAN.getValue().toString(),
-                    1.0, 1.0
+                    0.9, 0.9, 0.75
+                ),
+                
+                new VoronoiPointBiome(
+                    BiomeKeys.SAVANNA.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.7, 0.1, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.PLAINS.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.7, 0.3, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.FOREST.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.7, 0.5, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.FOREST.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.7, 0.7, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.FOREST.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.7, 0.9, 0.25
+                ),
+                
+                new VoronoiPointBiome(
+                    BiomeKeys.SAVANNA.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.5, 0.1, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.PLAINS.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.5, 0.3, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.FOREST.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.5, 0.5, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.FOREST.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.5, 0.7, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SWAMP.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.5, 0.9, 0.25
+                ),
+                
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_PLAINS.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.3, 0.1, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.TAIGA.getValue().toString(),
+                    BiomeKeys.COLD_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_COLD_OCEAN.getValue().toString(),
+                    0.3, 0.3, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.TAIGA.getValue().toString(),
+                    BiomeKeys.COLD_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_COLD_OCEAN.getValue().toString(),
+                    0.3, 0.5, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_TAIGA.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.3, 0.7, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_TAIGA.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.3, 0.9, 0.25
+                ),
+                
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_PLAINS.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.1, 0.1, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_PLAINS.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.1, 0.3, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_PLAINS.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.1, 0.5, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_PLAINS.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.1, 0.7, 0.25
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_PLAINS.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.1, 0.9, 0.25
+                ),
+                
+                // Mutated Biomes
+                
+                new VoronoiPointBiome(
+                    BiomeKeys.BADLANDS.getValue().toString(),
+                    BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_LUKEWARM_OCEAN.getValue().toString(),
+                    0.9, 0.1, 0.9
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SUNFLOWER_PLAINS.getValue().toString(),
+                    BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_LUKEWARM_OCEAN.getValue().toString(),
+                    0.9, 0.3, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SUNFLOWER_PLAINS.getValue().toString(),
+                    BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_LUKEWARM_OCEAN.getValue().toString(),
+                    0.9, 0.5, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.BAMBOO_JUNGLE.getValue().toString(),
+                    BiomeKeys.WARM_OCEAN.getValue().toString(),
+                    BiomeKeys.WARM_OCEAN.getValue().toString(),
+                    0.9, 0.7, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.MUSHROOM_FIELDS.getValue().toString(),
+                    BiomeKeys.WARM_OCEAN.getValue().toString(),
+                    BiomeKeys.WARM_OCEAN.getValue().toString(),
+                    0.9, 0.9, 0.9
+                ),
+                
+                new VoronoiPointBiome(
+                    BiomeKeys.SAVANNA.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.7, 0.1, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.MEADOW.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.7, 0.3, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.FLOWER_FOREST.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.7, 0.5, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.DARK_FOREST.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.7, 0.7, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.DARK_FOREST.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.7, 0.9, 0.75
+                ),
+                
+                new VoronoiPointBiome(
+                    BiomeKeys.SAVANNA.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.5, 0.1, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.MEADOW.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.5, 0.3, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.FLOWER_FOREST.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.5, 0.5, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.BIRCH_FOREST.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.5, 0.7, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.MANGROVE_SWAMP.getValue().toString(),
+                    BiomeKeys.OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
+                    0.5, 0.9, 0.75
+                ),
+                
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_PLAINS.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.3, 0.1, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.OLD_GROWTH_PINE_TAIGA.getValue().toString(),
+                    BiomeKeys.COLD_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_COLD_OCEAN.getValue().toString(),
+                    0.3, 0.3, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA.getValue().toString(),
+                    BiomeKeys.COLD_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_COLD_OCEAN.getValue().toString(),
+                    0.3, 0.5, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.GROVE.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.3, 0.7, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.GROVE.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.3, 0.9, 0.75
+                ),
+                
+                new VoronoiPointBiome(
+                    BiomeKeys.ICE_SPIKES.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.1, 0.1, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.ICE_SPIKES.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.1, 0.3, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_PLAINS.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.1, 0.5, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_SLOPES.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.1, 0.7, 0.75
+                ),
+                new VoronoiPointBiome(
+                    BiomeKeys.SNOWY_SLOPES.getValue().toString(),
+                    BiomeKeys.FROZEN_OCEAN.getValue().toString(),
+                    BiomeKeys.DEEP_FROZEN_OCEAN.getValue().toString(),
+                    0.1, 0.9, 0.75
                 )
             );
         }
@@ -201,6 +465,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
             this.climateTempNoiseScale = reader.readFloat(NbtTags.CLIMATE_TEMP_NOISE_SCALE, this.climateTempNoiseScale);
             this.climateRainNoiseScale = reader.readFloat(NbtTags.CLIMATE_RAIN_NOISE_SCALE, this.climateRainNoiseScale);
             this.climateDetailNoiseScale = reader.readFloat(NbtTags.CLIMATE_DETAIL_NOISE_SCALE, this.climateDetailNoiseScale);
+            this.climateWeirdNoiseScale = reader.readFloat(NbtTags.CLIMATE_WEIRD_NOISE_SCALE, this.climateWeirdNoiseScale);
             this.climateMappings = ClimateMapping.mapFromReader(reader, this.climateMappings);
             this.voronoiPoints = VoronoiPointBiome.listFromReader(reader, this.voronoiPoints);
             

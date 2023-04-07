@@ -6,7 +6,7 @@ import java.util.concurrent.Executor;
 
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoiseImitable;
-import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
+import mod.bespectacled.modernbeta.api.world.chunk.surface.SurfaceConfig;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;

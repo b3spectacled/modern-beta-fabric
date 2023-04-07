@@ -63,6 +63,7 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
     public static final TagKey<Biome> SURFACE_CONFIG_SNOW = keyOf("surface_config/snow");
     public static final TagKey<Biome> SURFACE_CONFIG_SNOW_DIRT = keyOf("surface_config/snow_dirt");
     public static final TagKey<Biome> SURFACE_CONFIG_SNOW_PACKED_ICE = keyOf("surface_config/snow_packed_ice");
+    public static final TagKey<Biome> SURFACE_CONFIG_SNOW_STONE = keyOf("surface_config/snow_stone");
     
     public ModernBetaTagProviderBiome(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, RegistryKeys.BIOME, registriesFuture);
@@ -336,6 +337,8 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
         getOrCreateTagBuilder(SURFACE_CONFIG_SNOW_PACKED_ICE)
             .add(BiomeKeys.FROZEN_PEAKS);
 
+        getOrCreateTagBuilder(SURFACE_CONFIG_SNOW_STONE)
+            .add(BiomeKeys.JAGGED_PEAKS);
     }
     
     private void configureVanilla(WrapperLookup lookup) {

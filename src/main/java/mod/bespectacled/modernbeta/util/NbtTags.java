@@ -83,6 +83,7 @@ public class NbtTags {
     public static final String CLIMATE_TEMP_NOISE_SCALE = "climateTempNoiseScale";
     public static final String CLIMATE_RAIN_NOISE_SCALE = "climateRainNoiseScale";
     public static final String CLIMATE_DETAIL_NOISE_SCALE = "climateDetailNoiseScale";
+    public static final String CLIMATE_WEIRD_NOISE_SCALE = "climateWeirdNoiseScale";
     public static final String CLIMATE_MAPPINGS = "climateMappings";
     
     public static final String VORONOI_HORIZONTAL_NOISE_SCALE = "voronoiHorizontalNoiseScale";

@@ -1,4 +1,4 @@
-package mod.bespectacled.modernbeta.api.world.chunk;
+package mod.bespectacled.modernbeta.api.world.chunk.surface;
 
 import java.util.Optional;
 
@@ -32,6 +32,7 @@ public record SurfaceConfig(SurfaceBlocks normal, SurfaceBlocks beachSand, Surfa
     public static final SurfaceConfig SNOW = new SurfaceConfig(SurfaceBlocks.SNOW);
     public static final SurfaceConfig SNOW_DIRT = new SurfaceConfig(SurfaceBlocks.SNOW_DIRT);
     public static final SurfaceConfig SNOW_PACKED_ICE = new SurfaceConfig(SurfaceBlocks.SNOW_PACKED_ICE);
+    public static final SurfaceConfig SNOW_STONE = new SurfaceConfig(SurfaceBlocks.SNOW_STONE);
     
     public static SurfaceConfig getSurfaceConfig(RegistryEntry<Biome> biome) {
         SurfaceConfig config = DEFAULT;

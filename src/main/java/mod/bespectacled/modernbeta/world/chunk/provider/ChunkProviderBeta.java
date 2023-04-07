@@ -5,7 +5,7 @@ import java.util.Random;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.api.world.biome.climate.Clime;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
-import mod.bespectacled.modernbeta.api.world.chunk.SurfaceConfig;
+import mod.bespectacled.modernbeta.api.world.chunk.surface.SurfaceConfig;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
 import mod.bespectacled.modernbeta.util.BlockStates;
