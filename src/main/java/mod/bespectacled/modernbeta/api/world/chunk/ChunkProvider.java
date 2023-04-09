@@ -243,6 +243,10 @@ public abstract class ChunkProvider {
         );
     }
     
+    public ModernBetaSettingsChunk getChunkSettings() {
+        return this.chunkSettings;
+    }
+    
     /**
      * Get a new Random object initialized with chunk coordinates for seed, for surface generation.
      * 

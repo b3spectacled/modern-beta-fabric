@@ -8,7 +8,9 @@ import mod.bespectacled.modernbeta.util.BlockStates;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeavesBlock;
+import net.minecraft.block.PillarBlock;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
@@ -221,9 +223,9 @@ public class BetaFancyOakFeature extends Feature<DefaultFeatureConfig> {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         
         int[] distance = {0, 0, 0};
-        
         byte sideNdx = 0;
         byte longestSideNdx = 0;
+        boolean getLogAxis = false;
     
         for (sideNdx = 0; sideNdx < 3; ++sideNdx) {
             distance[sideNdx] = endPos[sideNdx] - startPos[sideNdx];
@@ -250,6 +252,9 @@ public class BetaFancyOakFeature extends Feature<DefaultFeatureConfig> {
                 pos[longestSideNdx] = MathHelper.floor((startPos[longestSideNdx] + offset) + 0.5D);
                 pos[ndx0] = MathHelper.floor(startPos[ndx0] + offset * branchStep0 + 0.5D);
                 pos[ndx1] = MathHelper.floor(startPos[ndx1] + offset * branchStep1 + 0.5D);
+                
+                if (getLogAxis)
+                    state = state.withIfExists(PillarBlock.AXIS, this.getLogAxis(startPos, pos));
                 
                 world.setBlockState(mutable.set(pos[0], pos[1], pos[2]), state, 19);
                 
@@ -390,6 +395,24 @@ public class BetaFancyOakFeature extends Feature<DefaultFeatureConfig> {
         }
         
         return -1;
+    }
+    
+    private Direction.Axis getLogAxis(int[] startPos, int[] endPos) {
+        Direction.Axis axis = Direction.Axis.Y;
+        
+        int distX = Math.abs(endPos[0] - startPos[0]);
+        int distZ = Math.abs(endPos[2] - startPos[2]);
+        int maxLen = Math.max(distX, distZ);
+        
+        if (maxLen > 0) {
+            if (distX == maxLen) {
+                axis = Direction.Axis.X;
+            } else if (distZ == maxLen) {
+                axis = Direction.Axis.Z;
+            }
+        }
+        
+        return axis;
     }
     
     /*

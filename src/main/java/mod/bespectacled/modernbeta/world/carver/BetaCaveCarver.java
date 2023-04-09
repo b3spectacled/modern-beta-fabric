@@ -5,6 +5,7 @@ import java.util.function.Function;
 import com.mojang.serialization.Codec;
 
 import mod.bespectacled.modernbeta.util.BlockStates;
+import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -44,6 +45,14 @@ public class BetaCaveCarver extends CaveCarver {
         ChunkPos pos,
         CarvingMask carvingMask
     ) {
+        boolean useFixedCaves = false;
+        
+        if (context instanceof ModernBetaCarverContext modernBetaCarverContext &&
+            modernBetaCarverContext.getChunkGenerator() instanceof ModernBetaChunkGenerator modernBetaChunkGenerator
+        ) {
+            useFixedCaves = modernBetaChunkGenerator.getChunkProvider().getChunkSettings().useFixedCaves;
+        }
+        
         int caveCount = random.nextInt(random.nextInt(random.nextInt(40) + 1) + 1);
         if (random.nextInt(getMaxCaveCount()) != 0) {
             caveCount = 0;
@@ -77,7 +86,8 @@ public class BetaCaveCarver extends CaveCarver {
                     yScale,
                     skipPredicate,
                     carvingMask,
-                    aquiferSampler
+                    aquiferSampler,
+                    useFixedCaves
                 );
                 tunnelCount += random.nextInt(4);
             }
@@ -99,7 +109,8 @@ public class BetaCaveCarver extends CaveCarver {
                     0, 0, 1.0D,
                     skipPredicate,
                     carvingMask,
-                    aquiferSampler
+                    aquiferSampler,
+                    useFixedCaves
                 );
             }
         }
@@ -111,7 +122,7 @@ public class BetaCaveCarver extends CaveCarver {
         CarverContext context, 
         CaveCarverConfig config, 
         Chunk chunk, 
-        Random random, 
+        Random random,
         int mainChunkX, 
         int mainChunkZ, 
         double x, 
@@ -120,52 +131,55 @@ public class BetaCaveCarver extends CaveCarver {
         double yScale,
         Carver.SkipPredicate skipPredicate,
         CarvingMask carvingMask,
-        AquiferSampler aquiferSampler
+        AquiferSampler aquiferSampler,
+        boolean useFixedCaves
     ) {
         this.carveTunnels(
-            context, 
-            config, 
-            chunk, 
-            random, 
-            mainChunkX, 
-            mainChunkZ, 
-            x, y, z, 
+            context,
+            config,
+            chunk,
+            random,
+            mainChunkX,
+            mainChunkZ,
+            x, y, z,
             1.0, 1.0,
-            1.0F + random.nextFloat() * 6F, 
-            0.0F, 0.0F, 
+            1.0F + random.nextFloat() * 6F,
+            0.0F, 0.0F,
             -1, -1, yScale,
             skipPredicate,
             carvingMask,
-            aquiferSampler
+            aquiferSampler,
+            useFixedCaves
         );
     }
 
     private void carveTunnels(
         CarverContext context,
         CaveCarverConfig config,
-        Chunk chunk, 
-        Random rand, 
-        int mainChunkX, 
+        Chunk chunk,
+        Random initialRandom,
+        int mainChunkX,
         int mainChunkZ,
-        double x, 
+        double x,
         double y,
         double z,
         double horizontalScale,
         double verticalScale,
-        float width, 
-        float yaw, 
-        float pitch, 
+        float width,
+        float yaw,
+        float pitch,
         int branch,
-        int branchCount, 
+        int branchCount,
         double yawPitchRatio,
         Carver.SkipPredicate skipPredicate,
         CarvingMask carvingMask,
-        AquiferSampler aquiferSampler
+        AquiferSampler aquiferSampler,
+        boolean useFixedCaves
     ) {
         float f2 = 0.0F;
         float f3 = 0.0F;
 
-        Random random = new LocalRandom(rand.nextLong());
+        Random random = new LocalRandom(initialRandom.nextLong());
 
         if (branchCount <= 0) {
             int someNumMaxStarts = 8 * 16 - 16;
@@ -206,34 +220,36 @@ public class BetaCaveCarver extends CaveCarver {
 
             if (!noStarts && branch == randBranch && width > 1.0F) {
                 carveTunnels(
-                    context, 
-                    config, 
-                    chunk, 
-                    rand, 
-                    mainChunkX, mainChunkZ, 
-                    x, y, z, 
-                    horizontalScale, verticalScale, 
+                    context,
+                    config,
+                    chunk,
+                    useFixedCaves ? random : initialRandom,
+                    mainChunkX, mainChunkZ,
+                    x, y, z,
+                    horizontalScale, verticalScale,
                     random.nextFloat() * 0.5F + 0.5F,
-                    yaw - 1.570796F, pitch / 3F, 
+                    yaw - 1.570796F, pitch / 3F,
                     branch, branchCount, 1.0D,
                     skipPredicate,
                     carvingMask,
-                    aquiferSampler
+                    aquiferSampler,
+                    useFixedCaves
                 );
                 carveTunnels(
-                    context, 
-                    config, 
-                    chunk, 
-                    rand, 
-                    mainChunkX, mainChunkZ, 
-                    x, y, z, 
-                    horizontalScale, verticalScale, 
+                    context,
+                    config,
+                    chunk,
+                    useFixedCaves ? random : initialRandom,
+                    mainChunkX, mainChunkZ,
+                    x, y, z,
+                    horizontalScale, verticalScale,
                     random.nextFloat() * 0.5F + 0.5F,
-                    yaw + 1.570796F, pitch / 3F, 
+                    yaw + 1.570796F, pitch / 3F,
                     branch, branchCount, 1.0D,
                     skipPredicate,
                     carvingMask,
-                    aquiferSampler
+                    aquiferSampler,
+                    useFixedCaves
                 );
                 return;
             }
