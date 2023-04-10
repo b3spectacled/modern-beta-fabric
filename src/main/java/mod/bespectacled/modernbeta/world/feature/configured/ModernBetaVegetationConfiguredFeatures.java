@@ -174,7 +174,7 @@ public class ModernBetaVegetationConfiguredFeatures {
         RegistryEntry.Reference<PlacedFeature> oak = registryPlaced.getOrThrow(TreePlacedFeatures.OAK_CHECKED);
         RegistryEntry.Reference<PlacedFeature> oakBees = registryPlaced.getOrThrow(TreePlacedFeatures.OAK_BEES_0002);
         
-        return new RandomFeatureConfig(List.of(withChance(bees ? oakBees : oak, 0.1f)), fancyOak);
+        return new RandomFeatureConfig(List.of(withChance(fancyOak, 0.1f)), bees ? oakBees : oak);
     }
 
     private static RandomFeatureConfig createTaigaRandomTreeConfig(RegistryEntryLookup<PlacedFeature> registryPlaced) {
