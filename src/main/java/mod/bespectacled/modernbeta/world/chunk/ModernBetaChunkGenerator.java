@@ -14,7 +14,6 @@ import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector.BiomeInjectionStep;
-import mod.bespectacled.modernbeta.world.carver.ModernBetaCarverContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
@@ -138,7 +137,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         // Chunk Noise Sampler used to sample surface level
         ChunkNoiseSampler chunkNoiseSampler = chunk.getOrCreateChunkNoiseSampler(c -> this.createChunkNoiseSampler(c, structureAccessor, Blender.getBlender(chunkRegion), noiseConfig));
         
-        CarverContext carverContext = new ModernBetaCarverContext(this, chunkRegion.getRegistryManager(), chunk.getHeightLimitView(), chunkNoiseSampler, noiseConfig, this.settings.value().surfaceRule());
+        CarverContext carverContext = new CarverContext(this, chunkRegion.getRegistryManager(), chunk.getHeightLimitView(), chunkNoiseSampler, noiseConfig, this.settings.value().surfaceRule());
         CarvingMask carvingMask = ((ProtoChunk)chunk).getOrCreateCarvingMask(carverStep);
         
         LocalRandom random = new LocalRandom(seed);

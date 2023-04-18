@@ -202,7 +202,7 @@ public class ModernBetaVegetationPlacedFeatures {
         PlacedFeatures.register(featureRegisterable, PATCH_GRASS_PLAINS_10, patchGrass, CountPlacementModifier.of(10), SquarePlacementModifier.of(), WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of());
         PlacedFeatures.register(featureRegisterable, PATCH_GRASS_TAIGA_1, patchGrass, CountPlacementModifier.of(1), SquarePlacementModifier.of(), WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of());
         PlacedFeatures.register(featureRegisterable, PATCH_GRASS_RAINFOREST_10, patchGrassLush, CountPlacementModifier.of(10), SquarePlacementModifier.of(), WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of());
-        PlacedFeatures.register(featureRegisterable, PATCH_GRASS_ALPHA_2, patchGrass, withCountExtraModifier(0, 0.1f, 1), SquarePlacementModifier.of(), WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of());
+        PlacedFeatures.register(featureRegisterable, PATCH_GRASS_ALPHA_2, patchGrass, withCountExtraModifier(0, 0.05f, 1), SquarePlacementModifier.of(), WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of());
         
         PlacedFeatures.register(featureRegisterable, TREES_ALPHA, treesAlpha, withNoiseBasedCountModifier(ModernBetaFeatureTags.TREES_ALPHA, NoiseBasedCountPlacementModifierAlpha.of(0, 0.1f, 1)));
         PlacedFeatures.register(featureRegisterable, TREES_INFDEV_611, treesInfdev611, withNoiseBasedCountModifier(ModernBetaFeatureTags.TREES_INFDEV_611, NoiseBasedCountPlacementModifierInfdev611.of(0, 0.1f, 1)));

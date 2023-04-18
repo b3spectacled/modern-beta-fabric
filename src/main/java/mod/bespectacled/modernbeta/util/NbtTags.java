@@ -15,7 +15,6 @@ public class NbtTags {
     public static final String WORLD_BORDER_LENGTH = "worldBorderLength";
     
     public static final String USE_CAVES = "useCaves";
-    public static final String USE_FIXED_CAVES = "useFixedCaves";
     
     // Noise
     public static final String NOISE_POST_PROCESSOR = "noisePostProcessor";

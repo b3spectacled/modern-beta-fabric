@@ -1,7 +1,10 @@
 package mod.bespectacled.modernbeta.world.carver.configured;
 
+import java.util.Optional;
+
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.data.ModernBetaTagProviderBlock;
+import mod.bespectacled.modernbeta.world.carver.BetaCaveCarverConfig;
 import mod.bespectacled.modernbeta.world.carver.ModernBetaCarvers;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -28,7 +31,10 @@ public class ModernBetaConfiguredCarvers {
         Registerable<ConfiguredCarver<?>> carverRegisterable = (Registerable<ConfiguredCarver<?>>)registerable;
         RegistryEntryLookup<Block> registryBlock = carverRegisterable.getRegistryLookup(RegistryKeys.BLOCK);
         
-        CaveCarverConfig configCave = new CaveCarverConfig(
+        boolean useFixedCaves = false;
+        boolean useAquifers = false;
+        
+        BetaCaveCarverConfig configCave = new BetaCaveCarverConfig(
             0.0f,                                                                               // Probability, unused here
             BiasedToBottomHeightProvider.create(YOffset.fixed(0), YOffset.fixed(127), 8),       // Y Level
             ConstantFloatProvider.create(0.5f),                                                 // Y scale, for large cave case(?)
@@ -37,7 +43,9 @@ public class ModernBetaConfiguredCarvers {
             registryBlock.getOrThrow(ModernBetaTagProviderBlock.OVERWORLD_CARVER_REPLACEABLES),
             ConstantFloatProvider.create(1.0f),                                                 // Tunnel horizontal scale
             ConstantFloatProvider.create(1.0f),                                                 // Tunnel vertical scale
-            ConstantFloatProvider.create(-0.7f)                                                 // Y Floor Level
+            ConstantFloatProvider.create(-0.7f),                                                // Y Floor Level
+            Optional.of(useFixedCaves),
+            Optional.of(useAquifers)
         );
         
         CaveCarverConfig configCaveDeep = new CaveCarverConfig(

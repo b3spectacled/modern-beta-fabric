@@ -5,11 +5,11 @@ import java.util.function.Function;
 import com.mojang.serialization.Codec;
 
 import mod.bespectacled.modernbeta.util.BlockStates;
-import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -18,26 +18,26 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.carver.Carver;
+import net.minecraft.world.gen.carver.CarverConfig;
 import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.CarvingMask;
-import net.minecraft.world.gen.carver.CaveCarver;
-import net.minecraft.world.gen.carver.CaveCarverConfig;
 import net.minecraft.world.gen.chunk.AquiferSampler;
+import net.minecraft.world.gen.densityfunction.DensityFunction;
 
-public class BetaCaveCarver extends CaveCarver {
-    public BetaCaveCarver(Codec<CaveCarverConfig> codec) {
-        super(codec);
+public class BetaCaveCarver extends Carver<BetaCaveCarverConfig> {
+    public BetaCaveCarver(Codec<BetaCaveCarverConfig> caveCodec) {
+        super(caveCodec);
     }
     
     @Override
-    public boolean shouldCarve(CaveCarverConfig config, Random random) {
+    public boolean shouldCarve(BetaCaveCarverConfig config, Random random) {
         return true;
     }
     
     @Override
     public boolean carve(
         CarverContext context, 
-        CaveCarverConfig config, 
+        BetaCaveCarverConfig config, 
         Chunk mainChunk, 
         Function<BlockPos, RegistryEntry<Biome>> posToBiome, 
         Random random,
@@ -45,13 +45,7 @@ public class BetaCaveCarver extends CaveCarver {
         ChunkPos pos,
         CarvingMask carvingMask
     ) {
-        boolean useFixedCaves = false;
-        
-        if (context instanceof ModernBetaCarverContext modernBetaCarverContext &&
-            modernBetaCarverContext.getChunkGenerator() instanceof ModernBetaChunkGenerator modernBetaChunkGenerator
-        ) {
-            useFixedCaves = modernBetaChunkGenerator.getChunkProvider().getChunkSettings().useFixedCaves;
-        }
+        boolean useFixedCaves = config.useFixedCaves.orElse(false);
         
         int caveCount = random.nextInt(random.nextInt(random.nextInt(40) + 1) + 1);
         if (random.nextInt(getMaxCaveCount()) != 0) {
@@ -120,7 +114,7 @@ public class BetaCaveCarver extends CaveCarver {
 
     private void carveCave(
         CarverContext context, 
-        CaveCarverConfig config, 
+        BetaCaveCarverConfig config, 
         Chunk chunk, 
         Random random,
         int mainChunkX, 
@@ -155,7 +149,7 @@ public class BetaCaveCarver extends CaveCarver {
 
     private void carveTunnels(
         CarverContext context,
-        CaveCarverConfig config,
+        BetaCaveCarverConfig config,
         Chunk chunk,
         Random initialRandom,
         int mainChunkX,
@@ -284,7 +278,7 @@ public class BetaCaveCarver extends CaveCarver {
 
     private boolean carveRegion(
         CarverContext context,
-        CaveCarverConfig config,
+        BetaCaveCarverConfig config,
         Chunk chunk,
         int mainChunkX, 
         int mainChunkZ, 
@@ -397,12 +391,18 @@ public class BetaCaveCarver extends CaveCarver {
         return true;
     }
     
-    private BlockState getBlockState(CarverContext context, CaveCarverConfig config, BlockPos pos, AquiferSampler aquiferSampler) {
+    private BlockState getBlockState(CarverContext context, BetaCaveCarverConfig config, BlockPos pos, AquiferSampler aquiferSampler) {
         if (pos.getY() < config.lavaLevel.getY(context)) {
             return BlockStates.LAVA;
         }
         
-        /* TODO: Produces too many flooded caves, re-visit this later.
+        boolean useAquifers = config.useAquifers.orElse(false);
+        
+        if (!useAquifers) {
+            return BlockStates.AIR;
+        }
+        
+        // TODO: Produces too many flooded caves, re-visit this later.
          
         int x = pos.getX();
         int y = pos.getY();
@@ -414,9 +414,6 @@ public class BetaCaveCarver extends CaveCarver {
         }
         
         return isDebug(config) ? getDebugState(config, state) : state;
-        */
-        
-        return BlockStates.AIR;
     }
 
     private boolean canCarveBranch(
@@ -445,7 +442,7 @@ public class BetaCaveCarver extends CaveCarver {
 
     private boolean isRegionUncarvable(
         CarverContext context,
-        CaveCarverConfig config,
+        BetaCaveCarverConfig config,
         Chunk chunk, 
         int mainChunkX, 
         int mainChunkZ, 
@@ -457,11 +454,12 @@ public class BetaCaveCarver extends CaveCarver {
         int relMaxZ
     ) {
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
+        
+        boolean useAquifers = config.useAquifers.orElse(false);
 
         for (int relX = relMinX; relX < relMaxX; relX++) {
             for (int relZ = relMinZ; relZ < relMaxZ; relZ++) {
                 for (int relY = maxY + 1; relY >= minY - 1; relY--) {
-
                     if (relY < context.getMinY() || relY >= context.getMinY() + context.getHeight()) {
                         continue;
                     }
@@ -469,13 +467,13 @@ public class BetaCaveCarver extends CaveCarver {
                     int lavaLevel = config.lavaLevel.getY(context);
                     Block block = chunk.getBlockState(blockPos.set(relX, relY, relZ)).getBlock();
 
-                    // Second check is to avoid overlapping (and generating lava in) noise caves.
-                    if (block.equals(Blocks.WATER) || (block.equals(Blocks.AIR) && relY < lavaLevel)) {
+                    // Don't carve into water bodies, unless useAquifers enabled
+                    if (!useAquifers && block == Blocks.WATER) {
                         return true;
                     }
                     
-                    // Don't carve into lava aquifers that spawn above lava level.
-                    if (block.equals(Blocks.LAVA) && relY >= lavaLevel) {
+                    // Don't carve into lava aquifers that spawn above lava level, unless useAquifers enabled
+                    if (!useAquifers && block == Blocks.LAVA && relY >= lavaLevel) {
                         return true;
                     }
 
@@ -520,7 +518,6 @@ public class BetaCaveCarver extends CaveCarver {
         return width;
     }
     
-    /*
     private static BlockState getDebugState(CarverConfig config, BlockState state) {
         if (state.isOf(Blocks.AIR)) {
             return config.debugConfig.getAirState();
@@ -544,5 +541,4 @@ public class BetaCaveCarver extends CaveCarver {
     private static boolean isDebug(CarverConfig config) {
         return config.debugConfig.isDebugMode();
     }
-    */
 }
