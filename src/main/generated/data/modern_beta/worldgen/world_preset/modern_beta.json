@@ -599,8 +599,7 @@
           "noiseTopSlideTarget": -10,
           "noiseUpperLimitScale": 512.0,
           "useCaves": 1,
-          "useDeepslate": 1,
-          "useFixedCaves": 0
+          "useDeepslate": 1
         },
         "settings": "modern_beta:beta"
       }
