@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderFinite;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.WorldGenerationProgressTracker;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
@@ -27,12 +27,11 @@ public abstract class MixinLevelLoadingScreen extends Screen {
     }
     
     @Inject(method = "render", at = @At("TAIL"))
-    private void injectRender(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo info) {
+    private void injectRender(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo info) {
         String phase = ChunkProviderFinite.getPhase();
         
         if (!phase.isBlank()) {
-            LevelLoadingScreen.drawCenteredTextWithShadow(
-                matrices,
+            context.drawCenteredTextWithShadow(
                 this.textRenderer,
                 phase,
                 this.width / 2,

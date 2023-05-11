@@ -373,7 +373,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
                     0.5, 0.3, 0.75
                 ),
                 new VoronoiPointBiome(
-                    BiomeKeys.FLOWER_FOREST.getValue().toString(),
+                    BiomeKeys.CHERRY_GROVE.getValue().toString(),
                     BiomeKeys.OCEAN.getValue().toString(),
                     BiomeKeys.DEEP_OCEAN.getValue().toString(),
                     0.5, 0.5, 0.75

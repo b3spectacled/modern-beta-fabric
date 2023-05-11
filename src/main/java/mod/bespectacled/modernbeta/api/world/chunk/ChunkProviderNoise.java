@@ -33,7 +33,6 @@ import net.minecraft.util.math.random.RandomSplitter;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
-import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler;
@@ -428,7 +427,8 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
             for (int subChunkZ = 0; subChunkZ < this.noiseSizeZ; ++subChunkZ) {
                 int noiseZ = subChunkZ;
                 
-                ChunkSection section = chunk.getSection(chunk.countVerticalSections() - 1);
+                int sections = chunk.countVerticalSections() - 1;
+                ChunkSection section = chunk.getSection(sections);
                 
                 for (int subChunkY = 0; subChunkY < this.noiseSizeY; ++subChunkY) {
                     int noiseY = subChunkY;
@@ -440,7 +440,8 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
                         int localY = y & 0xF;
                         
                         int sectionNdx = chunk.getSectionIndex(y);
-                        if (chunk.getSectionIndex(section.getYOffset()) != sectionNdx) {
+                        if (sections != sectionNdx) {
+                            sections = sectionNdx;
                             section = chunk.getSection(sectionNdx);
                         }
                         
@@ -463,10 +464,6 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
                                 
                                 BlockState blockState = blockSources.apply(x, y, z);
                                 if (blockState.equals(BlockStates.AIR)) continue;
-                                
-                                if (blockState.getLuminance() != 0 && chunk instanceof ProtoChunk protoChunk) {
-                                    protoChunk.addLightSource(mutable.set(x, y, z));
-                                }
                                 
                                 section.setBlockState(localX, localY, localZ, blockState, false);
 

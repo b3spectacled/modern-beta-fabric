@@ -13,6 +13,7 @@ import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.Biom
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil.MultiNoiseSampler;
@@ -80,6 +81,7 @@ public class BiomeInjector {
         
         int startBiomeX = chunkPos.getStartX() >> 2;
         int startBiomeZ = chunkPos.getStartZ() >> 2;
+        HeightLimitView view = chunk.getHeightLimitView();
         
         /*
          * Collect the following for an x/z coordinate:
@@ -89,13 +91,12 @@ public class BiomeInjector {
          */
         
         // Replace biomes from biome container
-        for (int sectionY = 0; sectionY < chunk.countVerticalSections(); ++sectionY) {
-            ChunkSection section = chunk.getSection(sectionY);
+        for (int sectionY = view.getBottomSectionCoord(); sectionY < view.getTopSectionCoord(); ++sectionY) {
+            int sectionYNdx = chunk.sectionCoordToIndex(sectionY);
+            ChunkSection section = chunk.getSection(sectionYNdx);
             
             ReadableContainer<RegistryEntry<Biome>> readableContainer = section.getBiomeContainer();
             PalettedContainer<RegistryEntry<Biome>> palettedContainer = section.getBiomeContainer().slice();
-            
-            int yOffset = section.getYOffset() >> 2;
             
             for (int localBiomeX = 0; localBiomeX < 4; ++localBiomeX) {
                 for (int localBiomeZ = 0; localBiomeZ < 4; ++localBiomeZ) {
@@ -103,7 +104,7 @@ public class BiomeInjector {
                     int biomeZ = localBiomeZ + startBiomeZ;
                     
                     for (int localBiomeY = 0; localBiomeY < 4; ++localBiomeY) {
-                        int biomeY = localBiomeY + yOffset;
+                        int biomeY = localBiomeY + sectionY << 2;
                         
                         RegistryEntry<Biome> initialBiome = readableContainer.get(localBiomeX, localBiomeY, localBiomeZ);
                         RegistryEntry<Biome> replacementBiome = this.getOptionalBiome(biomeX, biomeY, biomeZ, noiseSampler, step).orElse(initialBiome);

@@ -451,7 +451,7 @@
                 "weird": 0.75
               },
               {
-                "biome": "minecraft:flower_forest",
+                "biome": "minecraft:cherry_grove",
                 "deepOceanBiome": "minecraft:deep_ocean",
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.5,

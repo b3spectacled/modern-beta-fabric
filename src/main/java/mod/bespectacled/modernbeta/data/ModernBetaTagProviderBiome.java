@@ -468,6 +468,15 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
         
         getOrCreateTagBuilder(BiomeTags.ALLOWS_SURFACE_SLIME_SPAWNS)
             .addTag(IS_SWAMP);
+        
+        getOrCreateTagBuilder(BiomeTags.TRAIL_RUINS_HAS_STRUCTURE)
+            .add(
+                ModernBetaBiomes.BETA_TAIGA,
+                ModernBetaBiomes.BETA_RAINFOREST,
+                
+                ModernBetaBiomes.PE_TAIGA,
+                ModernBetaBiomes.PE_RAINFOREST
+            );
     }
     
     /*
