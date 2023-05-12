@@ -179,7 +179,7 @@
                 "weird": 0.5
               },
               {
-                "biome": "minecraft:sparse_jungle",
+                "biome": "minecraft:forest",
                 "deepOceanBiome": "minecraft:warm_ocean",
                 "oceanBiome": "minecraft:warm_ocean",
                 "rain": 0.7,
@@ -251,7 +251,7 @@
                 "weird": 0.5
               },
               {
-                "biome": "minecraft:forest",
+                "biome": "minecraft:birch_forest",
                 "deepOceanBiome": "minecraft:deep_ocean",
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.5,
@@ -259,7 +259,7 @@
                 "weird": 0.5
               },
               {
-                "biome": "minecraft:forest",
+                "biome": "minecraft:birch_forest",
                 "deepOceanBiome": "minecraft:deep_ocean",
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.7,
@@ -360,7 +360,7 @@
                 "oceanBiome": "minecraft:lukewarm_ocean",
                 "rain": 0.1,
                 "temp": 0.9,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:sunflower_plains",
@@ -368,7 +368,7 @@
                 "oceanBiome": "minecraft:lukewarm_ocean",
                 "rain": 0.3,
                 "temp": 0.9,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:sunflower_plains",
@@ -376,15 +376,15 @@
                 "oceanBiome": "minecraft:lukewarm_ocean",
                 "rain": 0.5,
                 "temp": 0.9,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
-                "biome": "minecraft:sparse_jungle",
+                "biome": "minecraft:dark_forest",
                 "deepOceanBiome": "minecraft:warm_ocean",
                 "oceanBiome": "minecraft:warm_ocean",
                 "rain": 0.7,
                 "temp": 0.9,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:bamboo_jungle",
@@ -392,7 +392,7 @@
                 "oceanBiome": "minecraft:warm_ocean",
                 "rain": 0.9,
                 "temp": 0.9,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:savanna",
@@ -400,7 +400,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.1,
                 "temp": 0.7,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:meadow",
@@ -408,7 +408,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.3,
                 "temp": 0.7,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:flower_forest",
@@ -416,7 +416,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.5,
                 "temp": 0.7,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:flower_forest",
@@ -424,7 +424,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.7,
                 "temp": 0.7,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:flower_forest",
@@ -432,7 +432,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.9,
                 "temp": 0.7,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:meadow",
@@ -440,7 +440,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.1,
                 "temp": 0.5,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:meadow",
@@ -448,7 +448,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.3,
                 "temp": 0.5,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:cherry_grove",
@@ -456,7 +456,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.5,
                 "temp": 0.5,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:cherry_grove",
@@ -464,7 +464,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.7,
                 "temp": 0.5,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:mangrove_swamp",
@@ -472,7 +472,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.9,
                 "temp": 0.5,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:snowy_plains",
@@ -480,7 +480,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.1,
                 "temp": 0.3,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:old_growth_pine_taiga",
@@ -488,7 +488,7 @@
                 "oceanBiome": "minecraft:cold_ocean",
                 "rain": 0.3,
                 "temp": 0.3,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:old_growth_pine_taiga",
@@ -496,7 +496,7 @@
                 "oceanBiome": "minecraft:cold_ocean",
                 "rain": 0.5,
                 "temp": 0.3,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:grove",
@@ -504,7 +504,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.7,
                 "temp": 0.3,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:grove",
@@ -512,7 +512,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.9,
                 "temp": 0.3,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:snowy_plains",
@@ -520,7 +520,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.1,
                 "temp": 0.1,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:snowy_plains",
@@ -528,7 +528,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.3,
                 "temp": 0.1,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:snowy_plains",
@@ -536,7 +536,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.5,
                 "temp": 0.1,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:snowy_slopes",
@@ -544,7 +544,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.7,
                 "temp": 0.1,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:snowy_slopes",
@@ -552,7 +552,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.9,
                 "temp": 0.1,
-                "weird": 0.1
+                "weird": 0.2
               },
               {
                 "biome": "minecraft:desert",
@@ -560,7 +560,7 @@
                 "oceanBiome": "minecraft:lukewarm_ocean",
                 "rain": 0.1,
                 "temp": 0.9,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:plains",
@@ -568,7 +568,7 @@
                 "oceanBiome": "minecraft:lukewarm_ocean",
                 "rain": 0.3,
                 "temp": 0.9,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:plains",
@@ -576,7 +576,7 @@
                 "oceanBiome": "minecraft:lukewarm_ocean",
                 "rain": 0.5,
                 "temp": 0.9,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:sparse_jungle",
@@ -584,7 +584,7 @@
                 "oceanBiome": "minecraft:warm_ocean",
                 "rain": 0.7,
                 "temp": 0.9,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:mushroom_fields",
@@ -592,7 +592,7 @@
                 "oceanBiome": "minecraft:warm_ocean",
                 "rain": 0.9,
                 "temp": 0.9,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:savanna",
@@ -600,7 +600,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.1,
                 "temp": 0.7,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:plains",
@@ -608,7 +608,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.3,
                 "temp": 0.7,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:dark_forest",
@@ -616,7 +616,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.5,
                 "temp": 0.7,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:dark_forest",
@@ -624,7 +624,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.7,
                 "temp": 0.7,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:dark_forest",
@@ -632,7 +632,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.9,
                 "temp": 0.7,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:plains",
@@ -640,7 +640,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.1,
                 "temp": 0.5,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:plains",
@@ -648,7 +648,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.3,
                 "temp": 0.5,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:old_growth_birch_forest",
@@ -656,7 +656,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.5,
                 "temp": 0.5,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:old_growth_birch_forest",
@@ -664,7 +664,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.7,
                 "temp": 0.5,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:mangrove_swamp",
@@ -672,7 +672,7 @@
                 "oceanBiome": "minecraft:ocean",
                 "rain": 0.9,
                 "temp": 0.5,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:snowy_plains",
@@ -680,7 +680,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.1,
                 "temp": 0.3,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:old_growth_spruce_taiga",
@@ -688,7 +688,7 @@
                 "oceanBiome": "minecraft:cold_ocean",
                 "rain": 0.3,
                 "temp": 0.3,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:old_growth_spruce_taiga",
@@ -696,7 +696,7 @@
                 "oceanBiome": "minecraft:cold_ocean",
                 "rain": 0.5,
                 "temp": 0.3,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:grove",
@@ -704,7 +704,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.7,
                 "temp": 0.3,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:grove",
@@ -712,7 +712,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.9,
                 "temp": 0.3,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:snowy_plains",
@@ -720,7 +720,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.1,
                 "temp": 0.1,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:snowy_plains",
@@ -728,7 +728,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.3,
                 "temp": 0.1,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:snowy_plains",
@@ -736,7 +736,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.5,
                 "temp": 0.1,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:ice_spikes",
@@ -744,7 +744,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.7,
                 "temp": 0.1,
-                "weird": 0.9
+                "weird": 0.8
               },
               {
                 "biome": "minecraft:ice_spikes",
@@ -752,7 +752,7 @@
                 "oceanBiome": "minecraft:frozen_ocean",
                 "rain": 0.9,
                 "temp": 0.1,
-                "weird": 0.9
+                "weird": 0.8
               }
             ]
           }

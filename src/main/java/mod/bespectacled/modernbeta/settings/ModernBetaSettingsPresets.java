@@ -682,9 +682,9 @@ public class ModernBetaSettingsPresets {
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder().fromCompound(compoundCaveBiome);
         
         settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.VORONOI.id;
-        settingsBiome.climateTempNoiseScale = 0.025f / 4.0f;
-        settingsBiome.climateRainNoiseScale = 0.05f / 4.0f;
-        settingsBiome.climateDetailNoiseScale = 0.25f / 2.0f;
+        settingsBiome.climateTempNoiseScale = 0.025f / 3.0f;
+        settingsBiome.climateRainNoiseScale = 0.05f / 3.0f;
+        settingsBiome.climateDetailNoiseScale = 0.25f / 1.5f;
         
         return new ModernBetaSettingsPreset(
             settingsChunk.build(),
