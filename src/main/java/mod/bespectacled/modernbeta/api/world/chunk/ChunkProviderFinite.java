@@ -116,7 +116,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
             this.generateBorder(chunk);
         }
 
-        return CompletableFuture.<Chunk>supplyAsync(
+        return CompletableFuture.supplyAsync(
             () -> chunk, Util.getMainWorkerExecutor()
         );
     }

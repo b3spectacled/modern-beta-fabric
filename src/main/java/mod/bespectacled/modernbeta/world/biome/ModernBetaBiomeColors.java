@@ -6,7 +6,7 @@ public final class ModernBetaBiomeColors {
     
     public static final int OLD_GRASS_COLOR = 11272039;
     public static final int OLD_FOLIAGE_COLOR = 5242667;
-    public static final int OLD_WATER_COLOR = 3625215;
+    public static final int OLD_WATER_COLOR = 4610815;
     public static final int OLD_WATER_FOG_COLOR = 329011; // Vanilla color is apparently the same as original water fog color
     
     public static final int PE_GRASS_COLOR = 3709744;
