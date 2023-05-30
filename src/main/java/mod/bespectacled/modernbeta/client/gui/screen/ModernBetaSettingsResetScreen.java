@@ -53,8 +53,7 @@ public class ModernBetaSettingsResetScreen extends ModernBetaScreen {
     }
     
     @Override
-    protected void renderBackgroundOverlay(DrawContext context) {}
-    
-    @Override
-    protected void renderBackgroundGradient(DrawContext context) {}
+    protected void renderBackgroundWithOverlay(DrawContext context) {
+        this.renderBackgroundTexture(context);
+    }
 }

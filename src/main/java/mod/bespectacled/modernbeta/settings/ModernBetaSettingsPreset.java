@@ -52,6 +52,10 @@ public record ModernBetaSettingsPreset(ModernBetaSettingsChunk settingsChunk, Mo
         
         return new Pair<>(new ModernBetaSettingsPreset(settingsChunk, settingsBiome, settingsCaveBiome), successful);
     }
+    
+    public ModernBetaSettingsPreset copy() {
+        return this.set("", "", "").getLeft();
+    }
 
     @Override
     public boolean equals(Object obj) {

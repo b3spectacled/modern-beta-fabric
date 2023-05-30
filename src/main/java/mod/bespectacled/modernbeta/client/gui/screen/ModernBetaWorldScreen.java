@@ -1,7 +1,6 @@
 package mod.bespectacled.modernbeta.client.gui.screen;
 
 import java.util.Random;
-import java.util.function.Function;
 
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -11,15 +10,14 @@ import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPreset;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.client.world.GeneratorOptionsHolder;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenTexts;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
@@ -32,16 +30,18 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
     private static final String TEXT_TITLE_CAVE_BIOME = "createWorld.customize.modern_beta.title.cave_biome"; 
     
     private static final String TEXT_PRESET = "createWorld.customize.modern_beta.preset";
-    private static final String TEXT_CUSTOM = "createWorld.customize.modern_beta.preset.custom";
+    private static final String TEXT_PRESET_NAME = "createWorld.customize.modern_beta.preset.name";
+    private static final String TEXT_PRESET_CUSTOM = "createWorld.customize.modern_beta.preset.custom";
+    
     private static final String TEXT_CHUNK = "createWorld.customize.modern_beta.chunk";
     private static final String TEXT_BIOME = "createWorld.customize.modern_beta.biome";
     private static final String TEXT_CAVE_BIOME = "createWorld.customize.modern_beta.cave_biome";
+    
     private static final String TEXT_SETTINGS = "createWorld.customize.modern_beta.settings";
     private static final String TEXT_RESET = "createWorld.customize.modern_beta.reset";
     //private static final String TEXT_INVALID_SETTINGS = "createWorld.customize.modern_beta.invalid_settings";
     
     private static final String[] TEXT_HINTS = new String[] {
-        "createWorld.customize.modern_beta.hint.alt",
         "createWorld.customize.modern_beta.hint.settings"
     };
     
@@ -49,7 +49,7 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
     private final String hintString;
     
     private ModernBetaSettingsPreset preset;
-    private CyclingButtonWidget<String> widgetPreset;
+    private ButtonWidget buttonPreset;
     
     public ModernBetaWorldScreen(Screen parent, GeneratorOptionsHolder generatorOptionsHolder, TriConsumer<NbtCompound, NbtCompound, NbtCompound> onDone) {
         super(Text.translatable(TEXT_TITLE), parent);
@@ -66,6 +66,10 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
             modernBetaBiomeSource.getBiomeSettings(),
             modernBetaBiomeSource.getCaveBiomeSettings()
         );
+    }
+    
+    public void setPreset(ModernBetaSettingsPreset preset) {
+        this.preset = preset;
     }
     
     @Override
@@ -98,27 +102,24 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
             this.textRenderer
         ));
         
-        Function<String, Text> presetText = key -> {
-            Formatting color = ModernBetaRegistries.SETTINGS_PRESET.contains(key) ?
-                Formatting.YELLOW :
-                Formatting.AQUA;
-            
-            return Text.translatable(TEXT_PRESET + "." + key).formatted(color);
-        };
+        Formatting presetTextColor = ModernBetaRegistries.SETTINGS_PRESET.contains(this.getPresetKey()) ?
+            Formatting.YELLOW :
+            Formatting.AQUA;
+        MutableText presetText = Text.translatable(TEXT_PRESET).append(": ");
+        presetText.append(this.isPresetCustom() ?
+            Text.translatable(TEXT_PRESET_CUSTOM) : 
+            Text.translatable(TEXT_PRESET_NAME + "." + this.getPresetKey()).formatted(presetTextColor)
+        );
         
-        this.widgetPreset = CyclingButtonWidget
-            .builder(presetText)
-            .values(
+        this.buttonPreset = ButtonWidget.builder(
+            presetText,
+            button -> this.client.setScreen(new ModernBetaSettingsPresetScreen(
+                this,
                 ModernBetaRegistries.SETTINGS_PRESET.getKeySet().stream().toList(),
-                ModernBetaRegistries.SETTINGS_PRESET_ALT.getKeySet().stream().toList()
-            )
-            .initially(this.preset.settingsChunk().chunkProvider)
-            .tooltip(string -> Tooltip.of(Text.translatable("createWorld.customize.modern_beta.desc." + string)))
-            .build(0, 0, BUTTON_LONG_LENGTH, BUTTON_HEIGHT, Text.translatable(TEXT_PRESET), (button, key) -> {
-                this.preset = ModernBetaRegistries.SETTINGS_PRESET.contains(key) ?
-                    ModernBetaRegistries.SETTINGS_PRESET.get(key) :
-                    ModernBetaRegistries.SETTINGS_PRESET_ALT.get(key);
-        });
+                ModernBetaRegistries.SETTINGS_PRESET_ALT.getKeySet().stream().toList(),
+                this.preset
+            ))
+        ).dimensions(0, 0, BUTTON_LONG_LENGTH, BUTTON_HEIGHT).build();
         
         ButtonWidget buttonChunk = ButtonWidget.builder(
             Text.translatable(TEXT_SETTINGS),
@@ -174,7 +175,7 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
         GridWidget.Adder gridAdderSettings = gridWidgetSettings.createAdder(2);
         gridAdderSettings.getMainPositioner().alignVerticalCenter();
         
-        gridAdderMain.add(this.widgetPreset);
+        gridAdderMain.add(this.buttonPreset);
         gridAdderMain.add(gridWidgetSettings);
         gridAdderMain.add(buttonReset);
         
@@ -190,27 +191,30 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
     }
     
     private void onPresetChange() {
-        boolean isPresent = ModernBetaRegistries.SETTINGS_PRESET.contains(this.preset) ||
-            ModernBetaRegistries.SETTINGS_PRESET_ALT.contains(this.preset);
-        
-        if (!isPresent) {
-            Text textPreset = Text.translatable(TEXT_PRESET).append(": ").append(Text.translatable(TEXT_CUSTOM));
-            
-            this.widgetPreset.setMessage(textPreset);
-            this.widgetPreset.setTooltip(Tooltip.of(Text.translatable("createWorld.customize.modern_beta.desc.custom")));
-            this.widgetPreset.active = false;
+        if (this.isPresetCustom()) {
+            this.buttonPreset.active = false;
         } else {
-            String key = ModernBetaRegistries.SETTINGS_PRESET.contains(this.preset) ?
-                ModernBetaRegistries.SETTINGS_PRESET.getKey(this.preset) :
-                ModernBetaRegistries.SETTINGS_PRESET_ALT.getKey(this.preset);
-            
-            this.widgetPreset.setValue(key);
-            this.widgetPreset.active = true;
+            this.buttonPreset.active = true;
         }
     }
     
     private void resetPreset() {
         this.preset = ModernBetaRegistries.SETTINGS_PRESET.get(ModernBetaBuiltInTypes.Preset.BETA.id);
         this.onPresetChange();
+    }
+    
+    private boolean isPresetCustom() {
+        return !(ModernBetaRegistries.SETTINGS_PRESET.contains(this.preset) ||
+            ModernBetaRegistries.SETTINGS_PRESET_ALT.contains(this.preset));
+    }
+    
+    private String getPresetKey() {
+        if (ModernBetaRegistries.SETTINGS_PRESET.contains(this.preset))
+            return ModernBetaRegistries.SETTINGS_PRESET.getKey(this.preset);
+        
+        if (ModernBetaRegistries.SETTINGS_PRESET_ALT.contains(this.preset))
+            return ModernBetaRegistries.SETTINGS_PRESET_ALT.getKey(this.preset);
+        
+        return null;
     }
 }

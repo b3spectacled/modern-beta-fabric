@@ -34,9 +34,7 @@ public abstract class ModernBetaScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackgroundTexture(context);
-        this.renderBackgroundOverlay(context);
-        this.renderBackgroundGradient(context);
+        this.renderBackgroundWithOverlay(context);
         
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 16, 0xFFFFFF);
 
@@ -76,5 +74,11 @@ public abstract class ModernBetaScreen extends Screen {
         context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         context.fillGradient(this.overlayLeft, this.overlayTop, this.overlayRight, this.overlayTop + 4, -16777216, 0);
         context.fillGradient(this.overlayLeft, this.overlayBottom - 4, this.overlayRight, this.overlayBottom, 0, -16777216);
+    }
+    
+    protected void renderBackgroundWithOverlay(DrawContext context) {
+        this.renderBackgroundTexture(context);
+        this.renderBackgroundOverlay(context);
+        this.renderBackgroundGradient(context);
     }
 }
