@@ -8,6 +8,7 @@ import mod.bespectacled.modernbeta.api.world.chunk.ChunkProvider;
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoiseImitable;
 import mod.bespectacled.modernbeta.api.world.chunk.surface.SurfaceConfig;
 import mod.bespectacled.modernbeta.util.BlockStates;
+import mod.bespectacled.modernbeta.util.chunk.ChunkCache;
 import mod.bespectacled.modernbeta.util.noise.PerlinOctaveNoise;
 import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
@@ -53,6 +54,8 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
     private final PerlinOctaveNoise octaveNoiseE;
     private final PerlinOctaveNoise octaveNoiseF;
     private final PerlinOctaveNoise forestOctaveNoise;
+    
+    private final ChunkCache<int[]> chunkCacheHeightmap;
 
     public ChunkProviderInfdev227(ModernBetaChunkGenerator chunkGenerator, long seed) {
         super(chunkGenerator, seed);
@@ -82,6 +85,8 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
         new PerlinOctaveNoise(this.random, 3, true);
         new PerlinOctaveNoise(this.random, 3, true);
         this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
+        
+        this.chunkCacheHeightmap = new ChunkCache<>("heightmap", this::sampleHeightmapChunk);
     }
 
     @Override
@@ -121,7 +126,7 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
 
                 int runDepth = 0;
 
-                for (int y = this.worldHeight - Math.abs(this.worldMinY) - 1; y >= this.worldMinY; --y) {
+                for (int y = this.worldTopY; y >= this.worldMinY; --y) {
                     BlockState blockState;
                     
                     pos.set(localX, y, localZ);
@@ -157,7 +162,11 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
 
     @Override
     public int getHeight(int x, int z, Type type) {
-        int height = this.sampleHeightmap(x, z);
+        int chunkX = x >> 4;
+        int chunkZ = z >> 4;
+        
+        int[] heightmap = this.chunkCacheHeightmap.get(chunkX, chunkZ); 
+        int height = heightmap[(z & 0xF) + (x & 0xF) * 16];
         
         if (type == Heightmap.Type.WORLD_SURFACE_WG && height < this.seaLevel)
             height = this.seaLevel;
@@ -174,6 +183,9 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
         StructureWeightSampler structureWeightSampler = StructureWeightSampler.createStructureWeightSampler(structureAccessor, chunk.getPos());
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         SimpleNoisePos noisePos = new SimpleNoisePos();
+        
+        int chunkX = chunk.getPos().x;
+        int chunkZ = chunk.getPos().z;
         
         int startX = chunk.getPos().getStartX();
         int startZ = chunk.getPos().getStartZ();
@@ -196,12 +208,13 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
                 int z = startZ + localZ;
                 int rZ = z / 1024;
                 
-                int heightVal = this.sampleHeightmap(x, z);
+                int[] heightmap = this.chunkCacheHeightmap.get(chunkX, chunkZ); 
+                int height = heightmap[(z & 0xF) + (x & 0xF) * 16];
                 
                 for (int y = this.worldMinY; y < this.worldTopY; ++y) {
                     Block block = Blocks.AIR;
                     
-                    if (this.infdevUseWall && (x == 0 || z == 0) && y <= heightVal + 2) {
+                    if (this.infdevUseWall && (x == 0 || z == 0) && y <= height + 2) {
                         block = Blocks.OBSIDIAN;
                     }
                     
@@ -220,7 +233,7 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
                     }
                     */
                     
-                    else if (y <= heightVal) {
+                    else if (y <= height) {
                         block = defaultBlock;
                     }
                     
@@ -241,7 +254,7 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
                         
                         if (bZ > bX) bX = bZ;
                         if ((bX = 127 - bX) == 255) bX = 1;
-                        if (bX < heightVal) bX = heightVal;
+                        if (bX < height) bX = height;
                         
                         if (y <= bX && (block == Blocks.AIR || block == defaultFluid))
                             block = Blocks.BRICKS;     
@@ -285,5 +298,20 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
         }
         
         return heightVal;
+    }
+    
+    private int[] sampleHeightmapChunk(int chunkX, int chunkZ) {
+        int[] heightmap = new int[256];
+        int startX = chunkX << 4;
+        int startZ = chunkZ << 4;
+        
+        int ndx = 0;
+        for (int x = startX; x < startX + 16; ++x) {
+            for (int z = startZ; z < startZ + 16; ++z) {
+                heightmap[ndx++] = this.sampleHeightmap(x, z);
+            }
+        }
+        
+        return heightmap;
     }
 }
