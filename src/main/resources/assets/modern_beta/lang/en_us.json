@@ -17,8 +17,10 @@
     
     "createWorld.customize.modern_beta.hint.settings": "Hint: Settings can be copied and pasted into a text editor for easier editing.",
     
-    "createWorld.customize.modern_beta.reset": "Reset settings",
-    "createWorld.customize.modern_beta.reset.message": "Reset world settings to default?",
+    "createWorld.customize.modern_beta.settings.reset": "Reset settings",
+    "createWorld.customize.modern_beta.settings.reset.message": "Reset world settings to default?",
+    
+    "createWorld.customize.modern_beta.settings.save": "Save settings",
     
     "createWorld.customize.modern_beta.preset": "World Preset",
     "createWorld.customize.modern_beta.preset.custom": "Custom",

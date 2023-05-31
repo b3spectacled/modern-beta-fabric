@@ -22,6 +22,7 @@ import net.minecraft.util.Formatting;
 public class ModernBetaSettingsScreen extends ModernBetaScreen {
     private static final String TEXT_NAVIGATION = "createWorld.customize.modern_beta.navigation";
     private static final String TEXT_SETTINGS = "createWorld.customize.modern_beta.settings";
+    private static final String TEXT_SETTINGS_SAVE = "createWorld.customize.modern_beta.settings.save";
     private static final String TEXT_INVALID_JSON = "createWorld.customize.modern_beta.invalid_json";
     
     private final Consumer<String> onDone;
@@ -44,7 +45,7 @@ public class ModernBetaSettingsScreen extends ModernBetaScreen {
     protected void init() {
         super.init();
         
-        this.widgetDone = ButtonWidget.builder(ScreenTexts.DONE, button -> {
+        this.widgetDone = ButtonWidget.builder(Text.translatable(TEXT_SETTINGS_SAVE), button -> {
             this.onDone.accept(this.settingsString);
             this.client.setScreen(this.parent);
         }).dimensions(this.width / 2 - 155, this.height - 28, BUTTON_LENGTH, BUTTON_HEIGHT).build();

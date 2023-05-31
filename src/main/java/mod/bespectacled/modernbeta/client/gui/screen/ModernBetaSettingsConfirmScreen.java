@@ -9,27 +9,29 @@ import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 
-public class ModernBetaSettingsResetScreen extends ModernBetaScreen {
-    public static final String TEXT_RESET_MESSAGE = "createWorld.customize.modern_beta.reset.message";
-    
+public class ModernBetaSettingsConfirmScreen extends ModernBetaScreen {
     private final Runnable runnable;
+    private final Text messageText;
+    private final Text confirmText;
     
-    public ModernBetaSettingsResetScreen(Screen parent, Runnable runnable) {
+    public ModernBetaSettingsConfirmScreen(Screen parent, Runnable runnable, Text messageText, Text confirmText) {
         super(Text.empty(), parent);
         
         this.runnable = runnable;
+        this.messageText = messageText;
+        this.confirmText = confirmText;
     }
 
     @Override
     protected void init() {
         super.init();
         
-        ButtonWidget buttonDone = ButtonWidget.builder(ScreenTexts.YES, button -> {
+        ButtonWidget buttonDone = ButtonWidget.builder(this.confirmText, button -> {
             this.runnable.run();
             this.client.setScreen(this.parent);
         }).dimensions(0, 0, BUTTON_LENGTH, BUTTON_HEIGHT).build();
         
-        ButtonWidget buttonCancel = ButtonWidget.builder(ScreenTexts.NO, button ->
+        ButtonWidget buttonCancel = ButtonWidget.builder(ScreenTexts.CANCEL, button ->
             this.client.setScreen(this.parent)
         ).dimensions(this.width / 2 + 5, this.height - 28, BUTTON_LENGTH, BUTTON_HEIGHT).build();
         
@@ -40,7 +42,7 @@ public class ModernBetaSettingsResetScreen extends ModernBetaScreen {
         GridWidget.Adder gridAdderMain = gridWidgetMain.createAdder(1);
         GridWidget.Adder gridAdderButtons = gridWidgetButtons.createAdder(2);
         
-        gridAdderMain.add(new TextWidget(Text.translatable(TEXT_RESET_MESSAGE), this.textRenderer));
+        gridAdderMain.add(new TextWidget(this.messageText, this.textRenderer));
         gridAdderMain.add(new TextWidget(Text.empty(), this.textRenderer));
         gridAdderMain.add(gridWidgetButtons);
         
