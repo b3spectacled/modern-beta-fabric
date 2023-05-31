@@ -37,7 +37,8 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
     private static final String TEXT_BIOME = "createWorld.customize.modern_beta.biome";
     private static final String TEXT_CAVE_BIOME = "createWorld.customize.modern_beta.cave_biome";
     private static final String TEXT_SETTINGS = "createWorld.customize.modern_beta.settings";
-    private static final String TEXT_RESET = "createWorld.customize.modern_beta.reset";
+    private static final String TEXT_SETTINGS_RESET = "createWorld.customize.modern_beta.settings.reset";
+    private static final String TEXT_SETTINGS_RESET_MESSAGE = "createWorld.customize.modern_beta.settings.reset.message";
     //private static final String TEXT_INVALID_SETTINGS = "createWorld.customize.modern_beta.invalid_settings";
     
     private static final String[] TEXT_HINTS = new String[] {
@@ -163,8 +164,13 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
         ).build();
         
         ButtonWidget buttonReset = ButtonWidget.builder(
-            Text.translatable(TEXT_RESET),
-            button -> this.client.setScreen(new ModernBetaSettingsResetScreen(this, this::resetPreset))
+            Text.translatable(TEXT_SETTINGS_RESET),
+            button -> this.client.setScreen(new ModernBetaSettingsConfirmScreen(
+                this,
+                this::resetPreset,
+                Text.translatable(TEXT_SETTINGS_RESET_MESSAGE),
+                Text.translatable(TEXT_SETTINGS_RESET)
+            ))
         ).build();
         
         GridWidget gridWidgetMain = this.createGridWidget();
