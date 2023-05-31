@@ -922,13 +922,13 @@ public class ModernBetaSettingsPresets {
                    0.5, 0.3, 0.2
                ),
                new VoronoiPointBiome(
-                   BiomeKeys.CHERRY_GROVE.getValue().toString(),
+                   BiomeKeys.FLOWER_FOREST.getValue().toString(),
                    BiomeKeys.OCEAN.getValue().toString(),
                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
                    0.5, 0.5, 0.2
                ),
                new VoronoiPointBiome(
-                   BiomeKeys.CHERRY_GROVE.getValue().toString(),
+                   BiomeKeys.FLOWER_FOREST.getValue().toString(),
                    BiomeKeys.OCEAN.getValue().toString(),
                    BiomeKeys.DEEP_OCEAN.getValue().toString(),
                    0.5, 0.7, 0.2
