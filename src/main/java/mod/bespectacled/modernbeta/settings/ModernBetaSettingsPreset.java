@@ -3,6 +3,7 @@ package mod.bespectacled.modernbeta.settings;
 import org.slf4j.event.Level;
 
 import mod.bespectacled.modernbeta.ModernBeta;
+import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Pair;
 
@@ -28,6 +29,7 @@ public record ModernBetaSettingsPreset(ModernBetaSettingsChunk settingsChunk, Mo
         boolean successful = true;
         
         try {
+            // Attempt to read settings
             settingsChunk = stringChunk != null && !stringChunk.isBlank() ?
                 ModernBetaSettingsChunk.fromString(stringChunk) :
                 this.settingsChunk;
@@ -39,6 +41,11 @@ public record ModernBetaSettingsPreset(ModernBetaSettingsChunk settingsChunk, Mo
             settingsCaveBiome = stringCaveBiome != null && !stringCaveBiome.isBlank() ?
                 ModernBetaSettingsCaveBiome.fromString(stringCaveBiome) :
                 this.settingsCaveBiome;
+            
+            // Test providers
+            ModernBetaRegistries.CHUNK.get(settingsChunk.chunkProvider);
+            ModernBetaRegistries.BIOME.get(settingsBiome.biomeProvider);
+            ModernBetaRegistries.CAVE_BIOME.get(settingsCaveBiome.biomeProvider);
             
         } catch (Exception e) {
             ModernBeta.log(Level.ERROR, "Unable to read settings JSON! Reverting to previous settings..");

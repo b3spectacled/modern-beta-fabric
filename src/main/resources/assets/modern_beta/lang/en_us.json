@@ -21,10 +21,10 @@
     "createWorld.customize.modern_beta.reset.message": "Reset world settings to default?",
     
     "createWorld.customize.modern_beta.preset": "World Preset",
+    "createWorld.customize.modern_beta.preset.custom": "Custom",
     "createWorld.customize.modern_beta.preset.type.default": "Default",
     "createWorld.customize.modern_beta.preset.type.custom": "Custom",
     
-    "createWorld.customize.modern_beta.preset.name.custom": "Custom",
     "createWorld.customize.modern_beta.preset.name.beta": "Beta",
     "createWorld.customize.modern_beta.preset.name.alpha": "Alpha",
     "createWorld.customize.modern_beta.preset.name.skylands": "Skylands",
@@ -65,7 +65,7 @@
     "createWorld.customize.modern_beta.preset.desc.beta_skylands": "Explore a world with the terrain generation of the removed Sky Dimension and Beta biomes.",
     "createWorld.customize.modern_beta.preset.desc.beta_isles": "Explore a world where you start on an archipelago surrounded by a large ocean and outer islands.",
     "createWorld.customize.modern_beta.preset.desc.beta_isle_land": "Explore a world where floating islands are scattered throughout the skies. Inspired by the Minecraft 1.12.2 Customized preset.",
-    "createWorld.customize.modern_beta.preset.esc.beta_cave_delight": "Explore a world filled with hilly and mountainous terrain. Inspired by the Minecraft 1.12.2 Customized preset.",
+    "createWorld.customize.modern_beta.preset.desc.beta_cave_delight": "Explore a world filled with hilly and mountainous terrain. Inspired by the Minecraft 1.12.2 Customized preset.",
     "createWorld.customize.modern_beta.preset.desc.beta_cave_chaos": "Explore a world with great heights and expansive caves. Inspired by the Minecraft 1.12.2 Customized preset.",
     "createWorld.customize.modern_beta.preset.desc.beta_large_biomes": "Explore a world with the terrain generation of Minecraft Beta 1.7.3 and much larger Beta biomes.",
     "createWorld.customize.modern_beta.preset.desc.beta_xbox_legacy": "Explore a world where you start on a square-shaped archipelago surrounded by an endless ocean. Inspired by early versions of Minecraft Xbox 360 Edition.",

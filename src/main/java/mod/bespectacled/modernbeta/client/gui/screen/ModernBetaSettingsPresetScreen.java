@@ -141,6 +141,7 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
             private static final int TEXT_SPACING = 11;
             private static final int TEXT_LENGTH = 240;
             
+            private final Identifier presetTexture;
             private final MutableText presetType;
             private final MutableText presetName;
             private final MutableText presetDesc;
@@ -148,6 +149,7 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
             private final boolean isCustom;
             
             public PresetEntry(String presetName, ModernBetaSettingsPreset preset, boolean isCustom) {
+                this.presetTexture = isCustom ? TEXTURE_PRESET_CUSTOM : TEXTURE_PRESET_DEFAULT;
                 this.presetType = isCustom ? Text.translatable(TEXT_PRESET_TYPE_CUSTOM) : Text.translatable(TEXT_PRESET_TYPE_DEFAULT);
                 this.presetName = Text.translatable(TEXT_PRESET_NAME + "." + presetName);
                 this.presetDesc = Text.translatable(TEXT_PRESET_DESC + "." + presetName);
@@ -175,13 +177,13 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
                 
                 context.drawText(textRenderer, presetNameText, textStartX, y + textStartY, Colors.WHITE, false);
                 
-                int descSpacing = TEXT_SPACING + textStartY;
+                int descSpacing = TEXT_SPACING + textStartY + 1;
                 for (OrderedText line : presetDescTexts) {
                     context.drawText(textRenderer, line, textStartX, y + descSpacing, Colors.GRAY, false);
                     descSpacing += TEXT_SPACING;
                 }
 
-                this.draw(context, x, y, isCustom ? TEXTURE_PRESET_CUSTOM : TEXTURE_PRESET_DEFAULT);
+                this.draw(context, x, y, this.presetTexture);
                 context.drawTextWithShadow(textRenderer, presetTypeText, x + 1, y + 1, Colors.WHITE);
             }
             
