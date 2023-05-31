@@ -10,6 +10,7 @@ import org.slf4j.event.Level;
 import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.world.biome.climate.ClimateSampler;
 import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
+import mod.bespectacled.modernbeta.api.world.chunk.surface.SurfaceConfig;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.util.noise.SimpleNoisePos;
@@ -135,6 +136,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
                 int x = startX + localX;
                 int z = startZ + localZ;
                 RegistryEntry<Biome> biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, 0, z));
+                SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
                 
                 boolean isCold;
                 if (biomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
@@ -147,7 +149,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
                 for (int y = worldTopY - 1; y >= this.worldMinY; --y) {
                     pos.set(x, y, z);
                     
-                    BlockState blockState = this.postProcessSurfaceState(chunk.getBlockState(pos), biome, pos, isCold);
+                    BlockState blockState = this.postProcessSurfaceState(chunk.getBlockState(pos), surfaceConfig, pos, isCold);
                     
                     chunk.setBlockState(pos, blockState, false);
 
@@ -271,7 +273,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
     
     protected abstract void generateBedrock(Chunk chunk, Block block, BlockPos pos);
 
-    protected abstract BlockState postProcessSurfaceState(BlockState blockState, RegistryEntry<Biome> biome, BlockPos pos, boolean isCold);
+    protected abstract BlockState postProcessSurfaceState(BlockState blockState, SurfaceConfig config, BlockPos pos, boolean isCold);
     
     protected void generateTerrain(Chunk chunk, StructureAccessor structureAccessor) {
         int chunkX = chunk.getPos().x;

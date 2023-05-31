@@ -13,12 +13,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SnowyBlock;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 
 public class ChunkProviderIndev extends ChunkProviderFinite {
@@ -206,8 +204,7 @@ public class ChunkProviderIndev extends ChunkProviderFinite {
     }
 
     @Override
-    protected BlockState postProcessSurfaceState(BlockState blockState, RegistryEntry<Biome> biome, BlockPos pos, boolean isCold) {
-        SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
+    protected BlockState postProcessSurfaceState(BlockState blockState, SurfaceConfig surfaceConfig, BlockPos pos, boolean isCold) {
         BlockState topBlock = surfaceConfig.normal().topBlock();
         BlockState fillerBlock = surfaceConfig.normal().fillerBlock();
         
