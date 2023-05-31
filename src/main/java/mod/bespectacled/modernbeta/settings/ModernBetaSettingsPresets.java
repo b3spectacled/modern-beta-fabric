@@ -1005,7 +1005,7 @@ public class ModernBetaSettingsPresets {
                // Mutated Biomes 2
 
                new VoronoiPointBiome(
-                   BiomeKeys.DESERT.getValue().toString(),
+                   BiomeKeys.BADLANDS.getValue().toString(),
                    BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
                    BiomeKeys.DEEP_LUKEWARM_OCEAN.getValue().toString(),
                    0.9, 0.1, 0.8
