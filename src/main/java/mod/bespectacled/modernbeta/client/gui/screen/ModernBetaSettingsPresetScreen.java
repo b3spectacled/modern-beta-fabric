@@ -29,8 +29,8 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
     private static final String TEXT_PRESET_TYPE_DEFAULT = "createWorld.customize.modern_beta.preset.type.default";
     private static final String TEXT_PRESET_TYPE_CUSTOM = "createWorld.customize.modern_beta.preset.type.custom";
     
-    private static final Identifier TEXTURE_PRESET_DEFAULT = ModernBeta.createId("textures/gui/preset_default.png");
-    private static final Identifier TEXTURE_PRESET_CUSTOM = ModernBeta.createId("textures/gui/preset_custom.png");
+    private static final Identifier TEXTURE_PRESET_DEFAULT = createTextureId("default");
+    private static final Identifier TEXTURE_PRESET_CUSTOM = createTextureId("custom");
     
     private final List<String> presetsDefault;
     private final List<String> presetsCustom;
@@ -87,6 +87,10 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
 
     private void updateSelectButton(boolean hasSelected) {
         this.selectPresetButton.active = hasSelected;
+    }
+    
+    private static Identifier createTextureId(String id) {
+        return ModernBeta.createId("textures/gui/preset_" + id + ".png");
     }
 
     private class PresetsListWidget extends AlwaysSelectedEntryListWidget<PresetsListWidget.PresetEntry> {
@@ -149,7 +153,7 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
             private final boolean isCustom;
             
             public PresetEntry(String presetName, ModernBetaSettingsPreset preset, boolean isCustom) {
-                this.presetTexture = isCustom ? TEXTURE_PRESET_CUSTOM : TEXTURE_PRESET_DEFAULT;
+                this.presetTexture = isCustom ? TEXTURE_PRESET_CUSTOM : createTextureId(presetName);
                 this.presetType = isCustom ? Text.translatable(TEXT_PRESET_TYPE_CUSTOM) : Text.translatable(TEXT_PRESET_TYPE_DEFAULT);
                 this.presetName = Text.translatable(TEXT_PRESET_NAME + "." + presetName);
                 this.presetDesc = Text.translatable(TEXT_PRESET_DESC + "." + presetName);
@@ -184,7 +188,7 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
                 }
 
                 this.draw(context, x, y, this.presetTexture);
-                context.drawTextWithShadow(textRenderer, presetTypeText, x + 1, y + 1, Colors.WHITE);
+                // context.drawTextWithShadow(textRenderer, presetTypeText, x + 1, y + 1, Colors.WHITE);
             }
             
             @Override

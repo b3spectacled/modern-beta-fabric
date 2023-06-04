@@ -35,7 +35,6 @@ public record SurfaceConfig(SurfaceBlocks normal, SurfaceBlocks beachSand, Surfa
     public static final SurfaceConfig SNOW_STONE = new SurfaceConfig(SurfaceBlocks.SNOW_STONE);
     
     public static SurfaceConfig getSurfaceConfig(RegistryEntry<Biome> biome) {
-        SurfaceConfig config = DEFAULT;
         Optional<String> optionalKey = ModernBetaRegistries.SURFACE_CONFIG.getKeySet()
             .stream()
             .filter(id -> biome.isIn(keyOf(id)))
@@ -45,7 +44,7 @@ public record SurfaceConfig(SurfaceBlocks normal, SurfaceBlocks beachSand, Surfa
             return ModernBetaRegistries.SURFACE_CONFIG.get(optionalKey.get());
         }
         
-        return config;
+        return DEFAULT;
     }
     
     private static TagKey<Biome> keyOf(String id) {

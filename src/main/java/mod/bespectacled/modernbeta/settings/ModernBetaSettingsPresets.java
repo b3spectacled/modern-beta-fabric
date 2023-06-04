@@ -703,7 +703,7 @@ public class ModernBetaSettingsPresets {
                    0.9, 0.3, 0.5
                ),
                new VoronoiPointBiome(
-                   BiomeKeys.PLAINS.getValue().toString(),
+                   BiomeKeys.FOREST.getValue().toString(),
                    BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
                    BiomeKeys.DEEP_LUKEWARM_OCEAN.getValue().toString(),
                    0.9, 0.5, 0.5
@@ -860,7 +860,7 @@ public class ModernBetaSettingsPresets {
                    0.9, 0.3, 0.2
                ),
                new VoronoiPointBiome(
-                   BiomeKeys.SUNFLOWER_PLAINS.getValue().toString(),
+                   BiomeKeys.DARK_FOREST.getValue().toString(),
                    BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
                    BiomeKeys.DEEP_LUKEWARM_OCEAN.getValue().toString(),
                    0.9, 0.5, 0.2
@@ -1017,7 +1017,7 @@ public class ModernBetaSettingsPresets {
                    0.9, 0.3, 0.8
                ),
                new VoronoiPointBiome(
-                   BiomeKeys.PLAINS.getValue().toString(),
+                   BiomeKeys.SPARSE_JUNGLE.getValue().toString(),
                    BiomeKeys.LUKEWARM_OCEAN.getValue().toString(),
                    BiomeKeys.DEEP_LUKEWARM_OCEAN.getValue().toString(),
                    0.9, 0.5, 0.8
