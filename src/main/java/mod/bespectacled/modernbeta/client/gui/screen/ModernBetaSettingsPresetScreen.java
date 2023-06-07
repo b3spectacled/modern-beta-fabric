@@ -13,13 +13,16 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.screen.ScreenTexts;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 @Environment(value=EnvType.CLIENT)
 public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
@@ -95,7 +98,7 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
 
     private class PresetsListWidget extends AlwaysSelectedEntryListWidget<PresetsListWidget.PresetEntry> {
         private static final int ITEM_HEIGHT = 60;
-        private static final int TEXTURE_SIZE = 56;
+        private static final int ICON_SIZE = 56;
         
         public PresetsListWidget(List<String> presetsDefault, List<String> presetsCustom) {
             super(
@@ -142,6 +145,10 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
         }
         
         private class PresetEntry extends AlwaysSelectedEntryListWidget.Entry<PresetEntry> {
+            private static final Identifier TEXTURE_WORLD_SELECT = new Identifier("textures/gui/world_selection.png");
+            private static final int TEXTURE_WORLD_SELECT_ATLAS_SIZE = 256;
+            private static final int TEXTURE_WORLD_SELECT_SIZE= 32;
+            
             private static final int TEXT_SPACING = 11;
             private static final int TEXT_LENGTH = 240;
             
@@ -151,6 +158,8 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
             private final MutableText presetDesc;
             private final ModernBetaSettingsPreset preset;
             private final boolean isCustom;
+            
+            private long time;
             
             public PresetEntry(String presetName, ModernBetaSettingsPreset preset, boolean isCustom) {
                 this.presetTexture = isCustom ? TEXTURE_PRESET_CUSTOM : createTextureId(presetName);
@@ -176,7 +185,7 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
                 
                 List<OrderedText> presetDescTexts = this.splitText(textRenderer, this.presetDesc);
 
-                int textStartX = x + TEXTURE_SIZE + 3;
+                int textStartX = x + ICON_SIZE + 3;
                 int textStartY = 1;
                 
                 context.drawText(textRenderer, presetNameText, textStartX, y + textStartY, Colors.WHITE, false);
@@ -188,16 +197,47 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
                 }
 
                 this.draw(context, x, y, this.presetTexture);
-                // context.drawTextWithShadow(textRenderer, presetTypeText, x + 1, y + 1, Colors.WHITE);
+
+                if (ModernBetaSettingsPresetScreen.this.client.options.getTouchscreen().getValue().booleanValue() || hovered) {
+                    boolean isMouseHovering = (mouseX - x) < ICON_SIZE;
+                    float v = isMouseHovering ? TEXTURE_WORLD_SELECT_SIZE : 0;
+                    
+                    context.fill(x, y, x + ICON_SIZE, y + ICON_SIZE, -1601138544);
+                    context.drawTexture(
+                        TEXTURE_WORLD_SELECT,
+                        x,
+                        y,
+                        ICON_SIZE,
+                        ICON_SIZE,
+                        0.0f,
+                        v,
+                        TEXTURE_WORLD_SELECT_SIZE,
+                        TEXTURE_WORLD_SELECT_SIZE,
+                        TEXTURE_WORLD_SELECT_ATLAS_SIZE,
+                        TEXTURE_WORLD_SELECT_ATLAS_SIZE
+                    );
+                }
             }
             
             @Override
             public boolean mouseClicked(double mouseX, double mouseY, int button) {
-                if (button == 0) {
-                    this.setPreset();
+                if (button != 0) {
+                    return false;
                 }
                 
-                return false;
+                this.setPreset();
+                
+                if (mouseX - PresetsListWidget.this.getRowLeft() <= ICON_SIZE) {
+                    this.selectPreset();
+                }
+                
+                if (Util.getMeasuringTimeMs() - this.time < 250L) {
+                    this.selectPreset();
+                }
+                
+                this.time = Util.getMeasuringTimeMs();
+                
+                return true;
             }
             
             private void setPreset() {
@@ -205,9 +245,20 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
                 ModernBetaSettingsPresetScreen.this.preset = this.preset.copy();
             }
             
+            private void selectPreset() {
+                ModernBetaSettingsPresetScreen presetScreen = ModernBetaSettingsPresetScreen.this;
+                
+                presetScreen.client.getSoundManager().play(
+                    PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0f)
+                );
+                
+                ((ModernBetaWorldScreen)presetScreen.parent).setPreset(this.preset);
+                presetScreen.client.setScreen(presetScreen.parent);
+            }
+            
             private void draw(DrawContext context, int x, int y, Identifier textureId) {
                 RenderSystem.enableBlend();
-                context.drawTexture(textureId, x, y, 0.0f, 0.0f, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE);
+                context.drawTexture(textureId, x, y, 0.0f, 0.0f, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
                 RenderSystem.disableBlend();
             }
             
