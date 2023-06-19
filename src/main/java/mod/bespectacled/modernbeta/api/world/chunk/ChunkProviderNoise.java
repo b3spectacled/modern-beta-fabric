@@ -490,7 +490,7 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
      * @return A HeightmapChunk, containing an array of ints containing the heights for the entire chunk.
      */
     private ChunkHeightmap sampleHeightmap(int chunkX, int chunkZ) {
-        short minHeight = 16;
+        short minHeight = 32;
         short worldMinY = (short)this.worldMinY;
         short worldTopY = (short)this.worldTopY;
         

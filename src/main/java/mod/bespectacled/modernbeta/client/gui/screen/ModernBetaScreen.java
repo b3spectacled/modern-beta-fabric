@@ -10,7 +10,8 @@ import net.minecraft.text.Text;
 public abstract class ModernBetaScreen extends Screen {
     public static final int BUTTON_HEIGHT = 20;
     public static final int BUTTON_LENGTH = 150;
-    public static final int BUTTON_LONG_LENGTH = 200;
+    public static final int BUTTON_LENGTH_PRESET = 200;
+    public static final int BUTTON_HEIGHT_PRESET = 20;
     
     public static final int TEXTURE_HEIGHT = 50;
     public static final int TEXTURE_LENGTH = 150;

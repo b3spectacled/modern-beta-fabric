@@ -7,6 +7,7 @@ import java.util.concurrent.Executor;
 
 import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
 import mod.bespectacled.modernbeta.api.world.blocksource.BlockSource;
+import mod.bespectacled.modernbeta.api.world.chunk.surface.SurfaceBuilder;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.mixin.AccessorChunkGenerator;
 import mod.bespectacled.modernbeta.mixin.AccessorPlacedFeature;
@@ -54,6 +55,7 @@ public abstract class ChunkProvider {
     protected final BlockSourceDeepslate blockSourceDeepslate;
     
     protected final List<BlockSource> blockSources;
+    protected final SurfaceBuilder surfaceBuilder;
     
     /**
      * Construct a Modern Beta chunk provider with seed and settings.
@@ -78,6 +80,8 @@ public abstract class ChunkProvider {
             .stream()
             .map(func -> func.apply(this.chunkSettings, this.randomSplitter))
             .toList();
+        
+        this.surfaceBuilder = new SurfaceBuilder(this.chunkGenerator.getBiomeSource());
     }
     
     /**

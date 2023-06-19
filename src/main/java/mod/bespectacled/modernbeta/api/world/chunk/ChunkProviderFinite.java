@@ -136,7 +136,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
                 int x = startX + localX;
                 int z = startZ + localZ;
                 RegistryEntry<Biome> biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, 0, z));
-                SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
+                SurfaceConfig surfaceConfig = this.surfaceBuilder.getSurfaceConfig(biome);
                 
                 boolean isCold;
                 if (biomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&

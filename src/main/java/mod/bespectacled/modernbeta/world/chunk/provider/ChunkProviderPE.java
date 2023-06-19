@@ -120,7 +120,7 @@ public class ChunkProviderPE extends ChunkProviderNoise {
                 
                 RegistryEntry<Biome> biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
 
-                SurfaceConfig surfaceConfig = SurfaceConfig.getSurfaceConfig(biome);
+                SurfaceConfig surfaceConfig = this.surfaceBuilder.getSurfaceConfig(biome);
                 BlockState topBlock = surfaceConfig.normal().topBlock();
                 BlockState fillerBlock = surfaceConfig.normal().fillerBlock();
                 

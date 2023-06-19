@@ -111,7 +111,7 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
             Text.translatable(TEXT_PRESET_CUSTOM) : 
             Text.translatable(TEXT_PRESET_NAME + "." + this.getPresetKey()).formatted(presetTextColor)
         );
-        
+            
         this.buttonPreset = ButtonWidget.builder(
             presetText,
             button -> this.client.setScreen(new ModernBetaSettingsPresetScreen(
@@ -120,7 +120,7 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
                 ModernBetaRegistries.SETTINGS_PRESET_ALT.getKeySet().stream().toList(),
                 this.preset
             ))
-        ).dimensions(0, 0, BUTTON_LONG_LENGTH, BUTTON_HEIGHT).build();
+        ).dimensions(0, 0, BUTTON_LENGTH_PRESET, BUTTON_HEIGHT_PRESET).build();
         
         ButtonWidget buttonChunk = ButtonWidget.builder(
             Text.translatable(TEXT_SETTINGS),

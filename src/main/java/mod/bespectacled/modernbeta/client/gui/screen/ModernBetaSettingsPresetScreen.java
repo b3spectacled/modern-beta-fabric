@@ -32,7 +32,7 @@ public class ModernBetaSettingsPresetScreen extends ModernBetaScreen {
     private static final String TEXT_PRESET_TYPE_DEFAULT = "createWorld.customize.modern_beta.preset.type.default";
     private static final String TEXT_PRESET_TYPE_CUSTOM = "createWorld.customize.modern_beta.preset.type.custom";
     
-    private static final Identifier TEXTURE_PRESET_DEFAULT = createTextureId("default");
+    //private static final Identifier TEXTURE_PRESET_DEFAULT = createTextureId("default");
     private static final Identifier TEXTURE_PRESET_CUSTOM = createTextureId("custom");
     
     private final List<String> presetsDefault;
