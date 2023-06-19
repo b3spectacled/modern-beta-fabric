@@ -532,7 +532,7 @@ public class ModernBetaBiomeFeatures {
         private static final ModernBetaFeatureSettings BETA = new ModernBetaFeatureSettings(true);
         private static final ModernBetaFeatureSettings PE = new ModernBetaFeatureSettings(true, false, true, true, false, true, true);
         private static final ModernBetaFeatureSettings SKY = new ModernBetaFeatureSettings(false, true, true, true, false, false, true);
-        private static final ModernBetaFeatureSettings ALPHA = new ModernBetaFeatureSettings(false, false, true, false, false, false, false);
+        private static final ModernBetaFeatureSettings ALPHA = new ModernBetaFeatureSettings(false, false, true, true, false, false, false);
         private static final ModernBetaFeatureSettings INFDEV_611 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INFDEV_420 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INFDEV_415 = new ModernBetaFeatureSettings(false);
