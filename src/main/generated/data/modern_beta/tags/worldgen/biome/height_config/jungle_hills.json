@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:badlands",
+    "minecraft:eroded_badlands",
+    "minecraft:wooded_badlands",
+    "minecraft:savanna",
+    "#modern_beta:height_config/jungle"
+  ]
+}

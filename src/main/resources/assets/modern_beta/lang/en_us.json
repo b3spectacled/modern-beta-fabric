@@ -37,7 +37,12 @@
     "createWorld.customize.modern_beta.preset.name.indev": "Indev",
     "createWorld.customize.modern_beta.preset.name.classic_0_30": "Classic 0.30",
     "createWorld.customize.modern_beta.preset.name.pe": "Pocket Edition",
-    
+    "createWorld.customize.modern_beta.preset.name.beta_1_8_1": "Beta 1.8",
+    "createWorld.customize.modern_beta.preset.name.release_1_0_0": "1.0.0",
+    "createWorld.customize.modern_beta.preset.name.release_1_1": "1.1",
+    "createWorld.customize.modern_beta.preset.name.release_1_2_5": "1.2.5",
+    "createWorld.customize.modern_beta.preset.name.release_1_6_4": "1.6.4",
+
     "createWorld.customize.modern_beta.preset.name.beta_skylands": "Beta Skylands",
     "createWorld.customize.modern_beta.preset.name.beta_isles": "Beta Isles",
     "createWorld.customize.modern_beta.preset.name.beta_isle_land": "Beta Isle Land",
@@ -47,6 +52,7 @@
     "createWorld.customize.modern_beta.preset.name.beta_xbox_legacy": "Beta Xbox Legacy",
     "createWorld.customize.modern_beta.preset.name.beta_survival_island": "Beta Survival Island",
     "createWorld.customize.modern_beta.preset.name.beta_vanilla": "Beta Vanilla",
+    "createWorld.customize.modern_beta.preset.name.release_hybrid": "Release Hybrid",
     "createWorld.customize.modern_beta.preset.name.alpha_winter": "Alpha Winter",
     "createWorld.customize.modern_beta.preset.name.indev_paradise": "Indev Paradise",
     "createWorld.customize.modern_beta.preset.name.indev_woods": "Indev Woods",
@@ -63,7 +69,12 @@
     "createWorld.customize.modern_beta.preset.desc.indev": "Explore a world with the terrain generation of Minecraft Indev 20100223",
     "createWorld.customize.modern_beta.preset.desc.classic_0_30": "Explore a world with the terrain generation of Minecraft Classic 0.30.",
     "createWorld.customize.modern_beta.preset.desc.pe": "Explore a world with the terrain generation of Minecraft Pocket Edition v0.6.0 Alpha.",
-    
+    "createWorld.customize.modern_beta.preset.desc.beta_1_8_1": "Explore a world with the terrain generation of Minecraft Beta 1.8.1.",
+    "createWorld.customize.modern_beta.preset.desc.release_1_0_0": "Explore a world with the terrain generation of Minecraft 1.0.0.",
+    "createWorld.customize.modern_beta.preset.desc.release_1_1": "Explore a world with the terrain generation of Minecraft 1.1.",
+    "createWorld.customize.modern_beta.preset.desc.release_1_2_5": "Explore a world with the terrain generation of Minecraft 1.2.5.",
+    "createWorld.customize.modern_beta.preset.desc.release_1_6_4": "Explore a world with the terrain generation of Minecraft 1.6.4.",
+
     "createWorld.customize.modern_beta.preset.desc.beta_skylands": "Explore a world with the terrain generation of the removed Sky Dimension and Beta biomes.",
     "createWorld.customize.modern_beta.preset.desc.beta_isles": "Explore a world where you start on an archipelago surrounded by a large ocean and outer islands.",
     "createWorld.customize.modern_beta.preset.desc.beta_isle_land": "Explore a world where floating islands are scattered throughout the skies. Inspired by the Minecraft 1.12.2 Customized preset.",
@@ -73,6 +84,7 @@
     "createWorld.customize.modern_beta.preset.desc.beta_xbox_legacy": "Explore a world where you start on a square-shaped archipelago surrounded by an endless ocean. Inspired by early versions of Minecraft Xbox 360 Edition.",
     "createWorld.customize.modern_beta.preset.desc.beta_survival_island": "Survive on a small island surrounded by an endless ocean.",
     "createWorld.customize.modern_beta.preset.desc.beta_vanilla": "Explore a world with the terrain generation of Minecraft Beta 1.7.3 and most vanilla biomes.",
+    "createWorld.customize.modern_beta.preset.desc.release_hybrid": "Explore a world with the terrain generation of Minecraft 1.6.4 and most vanilla biomes.",
     "createWorld.customize.modern_beta.preset.desc.alpha_winter": "Explore a world with the terrain generation of Minecraft Alpha 1.1.2_01 and a Winter Mode-inspired Alpha biome.",
     "createWorld.customize.modern_beta.preset.desc.indev_paradise": "Explore a world with the terrain generation of Minecraft Indev 20100223 based on the Indev Paradise theme.",
     "createWorld.customize.modern_beta.preset.desc.indev_woods": "Explore a world with the terrain generation of Minecraft Indev 20100223 based on the Indev Woods theme.",
@@ -176,5 +188,14 @@
     "biome.modern_beta.pe_lukewarm_ocean": "PE Lukewarm Ocean",
     "biome.modern_beta.pe_warm_ocean": "PE Warm Ocean",
     "biome.modern_beta.pe_cold_ocean": "PE Cold Ocean",
-    "biome.modern_beta.pe_frozen_ocean": "PE Frozen Ocean"
+    "biome.modern_beta.pe_frozen_ocean": "PE Frozen Ocean",
+
+    "biome.modern_beta.late_beta_extreme_hills": "Late Beta Extreme Hills",
+    "biome.modern_beta.late_beta_swampland": "Late Beta Swampland",
+    "biome.modern_beta.late_beta_plains": "Late Beta Plains",
+    "biome.modern_beta.late_beta_taiga": "Late Beta Taiga",
+
+    "biome.modern_beta.early_release_ice_plains": "Early Release Ice Plains",
+    "biome.modern_beta.early_release_swampland": "Early Release Swampland",
+    "biome.modern_beta.early_release_extreme_hills": "Early Release Extreme Hills"
 }

@@ -65,7 +65,7 @@ public class ChunkProviderPE extends ChunkProviderNoise {
     
     @Override
     public SpawnLocator getSpawnLocator() {
-        return new SpawnLocatorPE(this, this.beachOctaveNoise);
+        return new SpawnLocatorPE(this, this.beachOctaveNoise, new MTRandom(this.seed));
     }
 
     @Override

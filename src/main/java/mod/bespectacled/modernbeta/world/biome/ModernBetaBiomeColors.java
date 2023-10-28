@@ -17,13 +17,15 @@ public final class ModernBetaBiomeColors {
     public static final int VANILLA_FROZEN_WATER_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_COLOR : 4159204;
     public static final int VANILLA_LUKEWARM_WATER_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_COLOR : 4159204;
     public static final int VANILLA_WARM_WATER_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_COLOR : 4159204;
-    
+    public static final int VANILLA_SWAMP_WATER_COLOR = USE_OLD_WATER_COLORS ? 4020848 : 3634788;
+
     public static final int VANILLA_WATER_FOG_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_FOG_COLOR : 329011;
     public static final int VANILLA_COLD_WATER_FOG_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_FOG_COLOR : 329011;
     public static final int VANILLA_FROZEN_WATER_FOG_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_FOG_COLOR : 329011;
     public static final int VANILLA_LUKEWARM_WATER_FOG_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_FOG_COLOR : 329011;
     public static final int VANILLA_WARM_WATER_FOG_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_FOG_COLOR : 329011;
-    
+    public static final int VANILLA_SWAMP_WATER_FOG_COLOR = USE_OLD_WATER_COLORS ? OLD_WATER_FOG_COLOR : 329011;
+
     // Made-up colors based on biome temperature and own custom sky colormap.
     public static final int BETA_WARM_SKY_COLOR = 6733055;
     public static final int BETA_TEMP_SKY_COLOR = 7777023;

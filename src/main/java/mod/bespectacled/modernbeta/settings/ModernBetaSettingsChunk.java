@@ -20,7 +20,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
     public final String deepslateBlock;
     
     public final boolean useCaves;
-    
+
     public final String noisePostProcessor;
     public final float noiseCoordinateScale;
     public final float noiseHeightScale;
@@ -41,7 +41,9 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
     public final int noiseBottomSlideTarget;
     public final int noiseBottomSlideSize;
     public final int noiseBottomSlideOffset;
-    
+
+    public final boolean releaseExtraHillHeight;
+
     public final boolean infdevUsePyramid;
     public final boolean infdevUseWall;
     
@@ -77,7 +79,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         this.deepslateBlock = builder.deepslateBlock;
         
         this.useCaves = builder.useCaves;
-        
+
         this.noisePostProcessor = builder.noisePostProcessor;
         this.noiseCoordinateScale = builder.noiseCoordinateScale;
         this.noiseHeightScale = builder.noiseHeightScale;
@@ -98,7 +100,9 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         this.noiseBottomSlideTarget = builder.noiseBottomSlideTarget;
         this.noiseBottomSlideSize = builder.noiseBottomSlideSize;
         this.noiseBottomSlideOffset = builder.noiseBottomSlideOffset;
-        
+
+        this.releaseExtraHillHeight = builder.releaseExtraHillHeight;
+
         this.infdevUsePyramid = builder.infdevUsePyramid;
         this.infdevUseWall = builder.infdevUseWall;
         
@@ -141,7 +145,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             .putString(NbtTags.DEEPSLATE_BLOCK, this.deepslateBlock)
             
             .putBoolean(NbtTags.USE_CAVES, this.useCaves)
-            
+
             .putFloat(NbtTags.NOISE_COORDINATE_SCALE, this.noiseCoordinateScale)
             .putFloat(NbtTags.NOISE_HEIGHT_SCALE, this.noiseHeightScale)
             .putFloat(NbtTags.NOISE_UPPER_LIMIT_SCALE, this.noiseUpperLimitScale)
@@ -161,7 +165,9 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             .putInt(NbtTags.NOISE_BOTTOM_SLIDE_TARGET, this.noiseBottomSlideTarget)
             .putInt(NbtTags.NOISE_BOTTOM_SLIDE_SIZE, this.noiseBottomSlideSize)
             .putInt(NbtTags.NOISE_BOTTOM_SLIDE_OFFSET, this.noiseBottomSlideOffset)
-           
+
+            .putBoolean(NbtTags.RELEASE_EXTRA_HILL_HEIGHT, this.releaseExtraHillHeight)
+
             .putBoolean(NbtTags.INFDEV_USE_PYRAMID, this.infdevUsePyramid)
             .putBoolean(NbtTags.INFDEV_USE_WALL, this.infdevUseWall)
             
@@ -197,7 +203,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         
         public boolean useCaves;
         public boolean useFixedCaves;
-        
+
         public String noisePostProcessor;
         public float noiseCoordinateScale;
         public float noiseHeightScale;
@@ -218,6 +224,8 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         public int noiseBottomSlideTarget;
         public int noiseBottomSlideSize;
         public int noiseBottomSlideOffset;
+
+        public boolean releaseExtraHillHeight;
 
         public boolean infdevUsePyramid;
         public boolean infdevUseWall;
@@ -251,7 +259,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             
             this.useCaves = true;
             this.useFixedCaves = false;
-            
+
             this.noiseCoordinateScale = 684.412f;
             this.noiseHeightScale = 684.412f;
             this.noiseUpperLimitScale = 512f;
@@ -271,7 +279,9 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.noiseBottomSlideTarget = 15;
             this.noiseBottomSlideSize = 3;
             this.noiseBottomSlideOffset = 0;
-            
+
+            this.releaseExtraHillHeight = false;
+
             this.infdevUsePyramid = true;
             this.infdevUseWall = true;
             
@@ -306,7 +316,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.deepslateBlock = reader.readString(NbtTags.DEEPSLATE_BLOCK, this.deepslateBlock);
             
             this.useCaves = reader.readBoolean(NbtTags.USE_CAVES, this.useCaves);
-        
+
             this.noiseCoordinateScale = reader.readFloat(NbtTags.NOISE_COORDINATE_SCALE, this.noiseCoordinateScale);
             this.noiseHeightScale = reader.readFloat(NbtTags.NOISE_HEIGHT_SCALE, this.noiseHeightScale);
             this.noiseUpperLimitScale = reader.readFloat(NbtTags.NOISE_UPPER_LIMIT_SCALE, this.noiseUpperLimitScale);
@@ -326,7 +336,9 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.noiseBottomSlideTarget = reader.readInt(NbtTags.NOISE_BOTTOM_SLIDE_TARGET, this.noiseBottomSlideTarget);
             this.noiseBottomSlideSize = reader.readInt(NbtTags.NOISE_BOTTOM_SLIDE_SIZE, this.noiseBottomSlideSize);
             this.noiseBottomSlideOffset = reader.readInt(NbtTags.NOISE_BOTTOM_SLIDE_OFFSET, this.noiseBottomSlideOffset);
-            
+
+            this.releaseExtraHillHeight = reader.readBoolean(NbtTags.RELEASE_EXTRA_HILL_HEIGHT, this.releaseExtraHillHeight);
+
             this.infdevUsePyramid = reader.readBoolean(NbtTags.INFDEV_USE_PYRAMID, this.infdevUsePyramid);
             this.infdevUseWall = reader.readBoolean(NbtTags.INFDEV_USE_WALL, this.infdevUseWall);
             

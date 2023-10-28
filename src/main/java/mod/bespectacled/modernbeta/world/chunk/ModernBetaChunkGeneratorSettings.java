@@ -33,7 +33,8 @@ public class ModernBetaChunkGeneratorSettings {
     public static final RegistryKey<ChunkGeneratorSettings> INDEV;
     public static final RegistryKey<ChunkGeneratorSettings> CLASSIC_0_30;
     public static final RegistryKey<ChunkGeneratorSettings> PE;
-    
+    public static final RegistryKey<ChunkGeneratorSettings> EARLY_RELEASE;
+
     @SuppressWarnings("deprecation")
     public static void bootstrap(Registerable<ChunkGeneratorSettings> settingsRegisterable) {
         settingsRegisterable.register(MODERN_BETA, createGeneratorSettings(settingsRegisterable, ModernBetaShapeConfigs.MODERN_BETA, 64, true));
@@ -47,6 +48,7 @@ public class ModernBetaChunkGeneratorSettings {
         settingsRegisterable.register(INDEV, createGeneratorSettings(settingsRegisterable, ModernBetaShapeConfigs.INDEV, 64, false));
         settingsRegisterable.register(CLASSIC_0_30, createGeneratorSettings(settingsRegisterable, ModernBetaShapeConfigs.CLASSIC_0_30, 64, false));
         settingsRegisterable.register(PE, createGeneratorSettings(settingsRegisterable, ModernBetaShapeConfigs.PE, 64, true));
+        settingsRegisterable.register(EARLY_RELEASE, createGeneratorSettings(settingsRegisterable, ModernBetaShapeConfigs.EARLY_RELEASE, 63, true));
     }
     
     private static NoiseRouter createDensityFunctions(
@@ -118,5 +120,6 @@ public class ModernBetaChunkGeneratorSettings {
         INDEV = RegistryKey.of(RegistryKeys.CHUNK_GENERATOR_SETTINGS, ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.INDEV.id));
         CLASSIC_0_30 = RegistryKey.of(RegistryKeys.CHUNK_GENERATOR_SETTINGS, ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.CLASSIC_0_30.id));
         PE = RegistryKey.of(RegistryKeys.CHUNK_GENERATOR_SETTINGS, ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.PE.id));
+        EARLY_RELEASE = RegistryKey.of(RegistryKeys.CHUNK_GENERATOR_SETTINGS, ModernBeta.createId(ModernBetaBuiltInTypes.Chunk.EARLY_RELEASE.id));
     }
 }

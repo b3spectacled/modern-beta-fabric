@@ -46,7 +46,7 @@ public class ChunkProviderInfdev420 extends ChunkProviderNoise {
     
     @Override
     public SpawnLocator getSpawnLocator() {
-        return new SpawnLocatorBeta(this, this.beachOctaveNoise);
+        return new SpawnLocatorBeta(this, this.beachOctaveNoise, new Random(this.seed));
     }
 
     @Override

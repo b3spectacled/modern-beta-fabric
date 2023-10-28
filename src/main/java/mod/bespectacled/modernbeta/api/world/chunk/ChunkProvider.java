@@ -159,7 +159,7 @@ public abstract class ChunkProvider {
     public int getSeaLevel() {
         return this.generatorSettings.value().seaLevel();
     }
-    
+
     /**
      * Get aquifer sampler, for carving for now.
      * 

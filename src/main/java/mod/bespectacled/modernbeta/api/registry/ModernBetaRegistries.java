@@ -8,6 +8,7 @@ import mod.bespectacled.modernbeta.api.world.chunk.noise.NoisePostProcessor;
 import mod.bespectacled.modernbeta.api.world.chunk.surface.SurfaceConfig;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsChunk;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsPreset;
+import mod.bespectacled.modernbeta.world.biome.HeightConfig;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryEntryLookup;
@@ -20,6 +21,7 @@ public final class ModernBetaRegistries {
     public static final ModernBetaRegistry<CaveBiomeProviderCreator> CAVE_BIOME;
     public static final ModernBetaRegistry<NoisePostProcessor> NOISE_POST_PROCESSOR;
     public static final ModernBetaRegistry<SurfaceConfig> SURFACE_CONFIG;
+    public static final ModernBetaRegistry<HeightConfig> HEIGHT_CONFIG;
     public static final ModernBetaRegistry<BlockSourceCreator> BLOCKSOURCE;
     public static final ModernBetaRegistry<ModernBetaSettingsPreset> SETTINGS_PRESET;
     public static final ModernBetaRegistry<ModernBetaSettingsPreset> SETTINGS_PRESET_ALT;
@@ -30,6 +32,7 @@ public final class ModernBetaRegistries {
         CAVE_BIOME = new ModernBetaRegistry<>("CAVE_BIOME");
         NOISE_POST_PROCESSOR = new ModernBetaRegistry<>("NOISE_POST_PROCESSOR");
         SURFACE_CONFIG = new ModernBetaRegistry<>("SURFACE_CONFIG");
+        HEIGHT_CONFIG = new ModernBetaRegistry<>("HEIGHT_CONFIG");
         BLOCKSOURCE = new ModernBetaRegistry<>("BLOCKSOURCE");
         SETTINGS_PRESET = new ModernBetaRegistry<>("SETTINGS_PRESET");
         SETTINGS_PRESET_ALT = new ModernBetaRegistry<>("SETTINGS_PRESET_ALT");

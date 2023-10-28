@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "modern_beta:early_release_ice_plains",
+    "minecraft:snowy_plains",
+    "minecraft:grove",
+    "minecraft:frozen_peaks",
+    "minecraft:jagged_peaks",
+    "minecraft:stony_peaks",
+    "minecraft:snowy_slopes"
+  ]
+}

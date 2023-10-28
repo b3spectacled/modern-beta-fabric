@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "modern_beta:beta_desert",
+    "modern_beta:pe_desert",
+    "minecraft:desert",
+    "minecraft:badlands",
+    "minecraft:eroded_badlands",
+    "minecraft:wooded_badlands"
+  ]
+}

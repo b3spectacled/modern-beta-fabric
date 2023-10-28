@@ -69,6 +69,7 @@ public class ModernBeta implements ModInitializer {
         ModernBetaBuiltInProviders.registerBiomeProviders();
         ModernBetaBuiltInProviders.registerCaveBiomeProviders();
         ModernBetaBuiltInProviders.registerSurfaceConfigs();
+        ModernBetaBuiltInProviders.registerHeightConfigs();
         ModernBetaBuiltInProviders.registerNoisePostProcessors();
         ModernBetaBuiltInProviders.registerBlockSources();
         ModernBetaBuiltInProviders.registerSettingsPresets();

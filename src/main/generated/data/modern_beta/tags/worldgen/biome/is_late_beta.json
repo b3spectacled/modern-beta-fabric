@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "modern_beta:late_beta_extreme_hills",
+    "modern_beta:late_beta_swampland",
+    "modern_beta:late_beta_plains",
+    "modern_beta:late_beta_taiga"
+  ]
+}

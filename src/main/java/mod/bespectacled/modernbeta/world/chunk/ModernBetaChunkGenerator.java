@@ -91,7 +91,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public CompletableFuture<Chunk> populateBiomes(Executor executor, NoiseConfig noiseConfig, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
-        return CompletableFuture.<Chunk>supplyAsync(Util.debugSupplier("init_biomes", () -> {
+        return CompletableFuture.supplyAsync(Util.debugSupplier("init_biomes", () -> {
             ChunkNoiseSampler noiseSampler = chunk.getOrCreateChunkNoiseSampler(c -> this.createChunkNoiseSampler(c, structureAccessor, blender, noiseConfig));
             chunk.populateBiomes(this.biomeSource, noiseSampler.createMultiNoiseSampler(noiseConfig.getNoiseRouter(), this.settings.value().spawnTarget()));
             

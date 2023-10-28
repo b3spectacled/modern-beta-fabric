@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "modern_beta:late_beta_swampland",
+    "modern_beta:early_release_swampland",
+    "minecraft:swamp",
+    "minecraft:mangrove_swamp"
+  ]
+}
