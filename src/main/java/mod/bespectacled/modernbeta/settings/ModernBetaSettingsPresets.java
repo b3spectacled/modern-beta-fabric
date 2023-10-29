@@ -40,6 +40,7 @@ public class ModernBetaSettingsPresets {
     public static final ModernBetaSettingsPreset PRESET_BETA_XBOX_LEGACY = presetBetaXboxLegacy();
     public static final ModernBetaSettingsPreset PRESET_BETA_SURVIVAL_ISLAND = presetBetaSurvivalIsland();
     public static final ModernBetaSettingsPreset PRESET_BETA_VANILLA = presetBetaVanilla();
+    public static final ModernBetaSettingsPreset PRESET_BETA_HYBRID = presetBetaHybrid();
     public static final ModernBetaSettingsPreset PRESET_RELEASE_HYBRID = presetReleaseHybrid();
     public static final ModernBetaSettingsPreset PRESET_ALPHA_WINTER = presetAlphaWinter();
     public static final ModernBetaSettingsPreset PRESET_INDEV_PARADISE = presetIndevParadise();
@@ -1431,40 +1432,40 @@ public class ModernBetaSettingsPresets {
             "minecraft:sparse_jungle"
         );
         settingsBiome.fractalHillVariants = Map.ofEntries(
-                Map.entry("minecraft:desert", "*minecraft:desert"),
-                Map.entry("minecraft:forest", "*minecraft:forest"),
-                Map.entry("minecraft:windswept_hills", "minecraft:windswept_forest"),
-                Map.entry("minecraft:swamp", "*minecraft:swamp"),
-                Map.entry("minecraft:plains", "minecraft:forest"),
-                Map.entry("minecraft:taiga", "*minecraft:taiga"),
-                Map.entry("minecraft:jungle", "*minecraft:jungle"),
-                Map.entry("minecraft:snowy_taiga", "*minecraft:snowy_taiga"),
-                Map.entry("minecraft:savanna", "*minecraft:savanna"),
-                Map.entry("minecraft:cherry_grove", "minecraft:plains"),
-                Map.entry("minecraft:dark_forest", "minecraft:plains"),
-                Map.entry("minecraft:birch_forest", "*minecraft:birch_forest"),
-                Map.entry("minecraft:old_growth_birch_forest", "*minecraft:old_growth_birch_forest"),
-                Map.entry("minecraft:wooded_badlands", "*minecraft:wooded_badlands"),
-                Map.entry("minecraft:mangrove_swamp", "*minecraft:mangrove_swamp"),
-                Map.entry("minecraft:flower_forest", "*minecraft:flower_forest"),
-                Map.entry("minecraft:sparse_jungle", "minecraft:jungle")
+            Map.entry("minecraft:desert", "*minecraft:desert"),
+            Map.entry("minecraft:forest", "*minecraft:forest"),
+            Map.entry("minecraft:windswept_hills", "minecraft:windswept_forest"),
+            Map.entry("minecraft:swamp", "*minecraft:swamp"),
+            Map.entry("minecraft:plains", "minecraft:forest"),
+            Map.entry("minecraft:taiga", "*minecraft:taiga"),
+            Map.entry("minecraft:jungle", "*minecraft:jungle"),
+            Map.entry("minecraft:snowy_taiga", "*minecraft:snowy_taiga"),
+            Map.entry("minecraft:savanna", "*minecraft:savanna"),
+            Map.entry("minecraft:cherry_grove", "minecraft:plains"),
+            Map.entry("minecraft:dark_forest", "minecraft:plains"),
+            Map.entry("minecraft:birch_forest", "*minecraft:birch_forest"),
+            Map.entry("minecraft:old_growth_birch_forest", "*minecraft:old_growth_birch_forest"),
+            Map.entry("minecraft:wooded_badlands", "*minecraft:wooded_badlands"),
+            Map.entry("minecraft:mangrove_swamp", "*minecraft:mangrove_swamp"),
+            Map.entry("minecraft:flower_forest", "*minecraft:flower_forest"),
+            Map.entry("minecraft:sparse_jungle", "minecraft:jungle")
         );
         settingsBiome.fractalSubVariants = Map.ofEntries(
-                Map.entry("minecraft:snowy_plains", List.of(
-                        "minecraft:snowy_plains",
-                        "minecraft:snowy_taiga",
-                        "minecraft:snowy_plains",
-                        "minecraft:snowy_taiga",
-                        "minecraft:snowy_plains",
-                        "minecraft:ice_spikes"
-                )),
-                Map.entry("minecraft:savanna", List.of(
-                        "minecraft:savanna",
-                        "minecraft:savanna",
-                        "minecraft:windswept_savanna",
-                        "minecraft:savanna",
-                        "minecraft:savanna"
-                ))
+            Map.entry("minecraft:snowy_plains", List.of(
+                "minecraft:snowy_plains",
+                "minecraft:snowy_taiga",
+                "minecraft:snowy_plains",
+                "minecraft:snowy_taiga",
+                "minecraft:snowy_plains",
+                "minecraft:ice_spikes"
+            )),
+            Map.entry("minecraft:savanna", List.of(
+                "minecraft:savanna",
+                "minecraft:savanna",
+                "minecraft:windswept_savanna",
+                "minecraft:savanna",
+                "minecraft:savanna"
+            ))
         );
         settingsBiome.fractalPlains = "minecraft:plains";
         settingsBiome.fractalIcePlains = "minecraft:snowy_plains";
@@ -1475,6 +1476,46 @@ public class ModernBetaSettingsPresets {
         settingsBiome.fractalAddBeaches = true;
         settingsBiome.fractalAddHills = true;
         settingsBiome.fractalAddSwampRivers = true;
+
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
+
+    private static ModernBetaSettingsPreset presetBetaHybrid() {
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
+
+        settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.EARLY_RELEASE.id;
+        settingsChunk.releaseExtraHillHeight = true;
+        settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.FRACTAL.id;
+        settingsBiome.fractalBiomes = List.of(
+            "modern_beta:beta_desert",
+            "modern_beta:beta_seasonal_forest",
+            "modern_beta:beta_shrubland",
+            "modern_beta:beta_savanna",
+            "modern_beta:beta_plains",
+            "modern_beta:beta_rainforest",
+            "modern_beta:beta_forest",
+            "modern_beta:beta_swampland"
+        );
+        settingsBiome.fractalSubVariants = Map.ofEntries(
+            Map.entry("modern_beta:beta_tundra", List.of(
+                "modern_beta:beta_tundra",
+                "modern_beta:beta_tundra",
+                "modern_beta:beta_taiga"
+            ))
+        );
+        settingsBiome.fractalPlains = "modern_beta:beta_plains";
+        settingsBiome.fractalIcePlains = "modern_beta:beta_tundra";
+        settingsBiome.fractalSubVariantScale = 0;
+        settingsBiome.fractalLargerIslands = false;
+        settingsBiome.fractalAddSnow = true;
+        settingsBiome.fractalAddBeaches = true;
+        settingsBiome.fractalAddHills = true;
 
         return new ModernBetaSettingsPreset(
             settingsChunk.build(),

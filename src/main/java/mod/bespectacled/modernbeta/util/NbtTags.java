@@ -40,6 +40,7 @@ public class NbtTags {
 
     // Release
     public static final String RELEASE_EXTRA_HILL_HEIGHT = "releaseExtraHillHeight";
+    public static final String RELEASE_HEIGHT_OVERRIDES = "releaseHeightOverrides";
 
     // Infdev 227
     public static final String INFDEV_USE_PYRAMID = "infdevUsePyramid";

@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "modern_beta:early_release_ice_plains",
+    "#modern_beta:is_tundra",
     "minecraft:snowy_plains",
     "minecraft:grove",
     "minecraft:frozen_peaks",

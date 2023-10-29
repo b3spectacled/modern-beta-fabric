@@ -21,12 +21,13 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class ChunkProviderEarlyRelease extends ChunkProviderNoise {
@@ -38,6 +39,7 @@ public class ChunkProviderEarlyRelease extends ChunkProviderNoise {
     private final PerlinOctaveNoise surfaceOctaveNoise;
     private final PerlinOctaveNoise depthOctaveNoise;
     private final PerlinOctaveNoise forestOctaveNoise;
+    private final Map<BiomeInfo, HeightConfig> heightOverrideCache;
 
     static {
         for (int x = -2; x <= 2; x++) {
@@ -58,6 +60,8 @@ public class ChunkProviderEarlyRelease extends ChunkProviderNoise {
         new PerlinOctaveNoise(this.random, 10, true);
         this.depthOctaveNoise = new PerlinOctaveNoise(this.random, 16, true);
         this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
+
+        this.heightOverrideCache = new HashMap<>();
     }
     
     @Override
@@ -222,20 +226,20 @@ public class ChunkProviderEarlyRelease extends ChunkProviderNoise {
         float totalBiomeHeightWeight = 0.0F;
 
         BiomeInfo biome = this.getBiomeInfo(noiseX, noiseZ);
-        double minSurfaceHeight = this.getHeightConfig(biome).surfaceHeight();
+        double minSurfaceHeight = this.getHeightConfig(biome).scale();
 
         for (int biomeX = -2; biomeX <= 2; biomeX++) {
             for (int biomeZ = -2; biomeZ <= 2; biomeZ++) {
                 biome = this.getBiomeInfo(noiseX + biomeX, noiseZ + biomeZ);
                 HeightConfig heightConfig = this.getHeightConfig(biome);
 
-                float weight = BIOME_HEIGHT_WEIGHTS[biomeX + 2 + (biomeZ + 2) * 5] / (heightConfig.surfaceHeight() + 2.0F);
-                if (heightConfig.surfaceHeight() > minSurfaceHeight) {
+                float weight = BIOME_HEIGHT_WEIGHTS[biomeX + 2 + (biomeZ + 2) * 5] / (heightConfig.scale() + 2.0F);
+                if (heightConfig.scale() > minSurfaceHeight) {
                     weight /= 2.0F;
                 }
 
-                biomeHeightStretch += heightConfig.heightStretch() * weight;
-                biomeSurfaceHeight += heightConfig.surfaceHeight() * weight;
+                biomeHeightStretch += heightConfig.depth() * weight;
+                biomeSurfaceHeight += heightConfig.scale() * weight;
                 totalBiomeHeightWeight += weight;
             }
         }
@@ -364,10 +368,28 @@ public class ChunkProviderEarlyRelease extends ChunkProviderNoise {
 
     private HeightConfig getHeightConfig(BiomeInfo biomeInfo) {
         HeightConfig config = HeightConfig.getHeightConfig(biomeInfo);
+
         if (this.chunkSettings.releaseExtraHillHeight) {
-            if (config.equals(HeightConfig.HILLS)) return HeightConfig.HILLS_1_3;
-            if (config.equals(HeightConfig.SHORT_HILLS)) return HeightConfig.SHORT_HILLS_1_3;
+            if (config.equals(HeightConfig.HILLS)) config = HeightConfig.HILLS_1_3;
+            else if (config.equals(HeightConfig.SHORT_HILLS)) config = HeightConfig.SHORT_HILLS_1_3;
         }
+
+        String id = biomeInfo.getId();
+        if (this.chunkSettings.releaseHeightOverrides.containsKey(id)) {
+            HeightConfig fallbackConfig = config;
+            config = this.heightOverrideCache.computeIfAbsent(biomeInfo, k -> {
+                String heightConfigString = this.chunkSettings.releaseHeightOverrides.get(id);
+                String[] heightConfigPair = heightConfigString.split(";");
+                try {
+                    float scale = Float.parseFloat(heightConfigPair[0]);
+                    float depth = Float.parseFloat(heightConfigPair[1]);
+                    return new HeightConfig(scale, depth);
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException ignored) {
+                    return fallbackConfig;
+                }
+            });
+        }
+
         return config;
     }
 }

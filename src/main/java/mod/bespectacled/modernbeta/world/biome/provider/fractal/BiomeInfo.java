@@ -29,4 +29,12 @@ public record BiomeInfo(RegistryEntry<Biome> biome, boolean special) {
 		RegistryEntry<Biome> biome = biomeRegistry.getOrThrow(key);
 		return new BiomeInfo(biome, special);
 	}
+
+	public String getId() {
+		String id = biome.getKey().orElse(BiomeKeys.PLAINS).getValue().toString();
+		if (special) {
+			id = "*" + id;
+		}
+		return id;
+	}
 }

@@ -178,12 +178,25 @@
               "minecraft:snowy_taiga": "*minecraft:snowy_taiga",
               "minecraft:sparse_jungle": "*minecraft:sparse_jungle",
               "minecraft:taiga": "*minecraft:taiga",
+              "modern_beta:beta_desert": "*modern_beta:beta_desert",
+              "modern_beta:beta_forest": "*modern_beta:beta_forest",
               "modern_beta:beta_plains": "modern_beta:beta_forest",
+              "modern_beta:beta_savanna": "*modern_beta:beta_savanna",
+              "modern_beta:beta_seasonal_forest": "*modern_beta:beta_seasonal_forest",
+              "modern_beta:beta_shrubland": "*modern_beta:beta_shrubland",
+              "modern_beta:beta_swampland": "*modern_beta:beta_swampland",
               "modern_beta:beta_taiga": "*modern_beta:beta_taiga",
+              "modern_beta:beta_tundra": "*modern_beta:beta_tundra",
               "modern_beta:early_release_ice_plains": "*modern_beta:early_release_ice_plains",
               "modern_beta:early_release_taiga": "*modern_beta:early_release_taiga",
               "modern_beta:late_beta_plains": "minecraft:forest",
-              "modern_beta:late_beta_taiga": "*modern_beta:late_beta_taiga"
+              "modern_beta:late_beta_taiga": "*modern_beta:late_beta_taiga",
+              "modern_beta:pe_desert": "*modern_beta:pe_desert",
+              "modern_beta:pe_forest": "*modern_beta:pe_forest",
+              "modern_beta:pe_plains": "modern_beta:pe_forest",
+              "modern_beta:pe_seasonal_forest": "*modern_beta:pe_seasonal_forest",
+              "modern_beta:pe_taiga": "*modern_beta:pe_taiga",
+              "modern_beta:pe_tundra": "*modern_beta:pe_tundra"
             },
             "fractalIcePlains": "modern_beta:early_release_ice_plains",
             "fractalLargerIslands": 1,
@@ -247,6 +260,10 @@
           "noiseTopSlideTarget": -10,
           "noiseUpperLimitScale": 512.0,
           "releaseExtraHillHeight": 0,
+          "releaseHeightOverrides": {
+            "*example:flat_biome": "-0.1;0.5",
+            "example:flat_biome": "-0.2;0.1"
+          },
           "useCaves": 1,
           "useDeepslate": 1
         },

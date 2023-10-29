@@ -167,6 +167,7 @@ public final class ModernBetaBuiltInTypes {
         BETA_XBOX_LEGACY("beta_xbox_legacy"),
         BETA_SURVIVAL_ISLAND("beta_survival_island"),
         BETA_VANILLA("beta_vanilla"),
+        BETA_HYBRID("beta_hybrid"),
         RELEASE_HYBRID("release_hybrid"),
         ALPHA_WINTER("alpha_winter"),
         INDEV_PARADISE("indev_paradise"),

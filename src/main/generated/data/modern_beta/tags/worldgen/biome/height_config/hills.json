@@ -1,9 +1,7 @@
 {
   "replace": false,
   "values": [
-    "modern_beta:beta_desert",
-    "modern_beta:pe_desert",
-    "minecraft:desert",
+    "#modern_beta:height_config/desert",
     "#modern_beta:height_config/taiga"
   ]
 }

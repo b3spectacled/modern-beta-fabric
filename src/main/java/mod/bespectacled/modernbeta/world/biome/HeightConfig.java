@@ -10,7 +10,7 @@ import net.minecraft.world.biome.Biome;
 
 import java.util.List;
 
-public record HeightConfig(float surfaceHeight, float heightStretch, boolean special) {
+public record HeightConfig(float scale, float depth, boolean special) {
 	public static final HeightConfig DEFAULT = new HeightConfig(0.1F, 0.3F);
 	public static final HeightConfig OCEAN = new HeightConfig(-1.0F, 0.4F);
 	public static final HeightConfig BETA_OCEAN = new HeightConfig(-1.0F, 0.5F);
@@ -34,8 +34,8 @@ public record HeightConfig(float surfaceHeight, float heightStretch, boolean spe
 	public static final HeightConfig PLATEAU = new HeightConfig(1.8F, 0.2F);
 	public static final HeightConfig SWAMPLAND_HILLS = new HeightConfig(-0.1F, 0.5F, true);
 
-	public HeightConfig(float surfaceHeight, float heightStretch) {
-		this(surfaceHeight, heightStretch, false);
+	public HeightConfig(float scale, float depth) {
+		this(scale, depth, false);
 	}
 
 	public static HeightConfig getHeightConfig(BiomeInfo biomeInfo) {

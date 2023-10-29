@@ -136,6 +136,7 @@ public class ModernBetaBuiltInProviders {
         ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_XBOX_LEGACY.id, ModernBetaSettingsPresets.PRESET_BETA_XBOX_LEGACY);
         ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_SURVIVAL_ISLAND.id, ModernBetaSettingsPresets.PRESET_BETA_SURVIVAL_ISLAND);
         ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_VANILLA.id, ModernBetaSettingsPresets.PRESET_BETA_VANILLA);
+        ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.BETA_HYBRID.id, ModernBetaSettingsPresets.PRESET_BETA_HYBRID);
         ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.RELEASE_HYBRID.id, ModernBetaSettingsPresets.PRESET_RELEASE_HYBRID);
         ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.ALPHA_WINTER.id, ModernBetaSettingsPresets.PRESET_ALPHA_WINTER);
         ModernBetaRegistries.SETTINGS_PRESET_ALT.register(ModernBetaBuiltInTypes.PresetAlt.INDEV_PARADISE.id, ModernBetaSettingsPresets.PRESET_INDEV_PARADISE);

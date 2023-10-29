@@ -1,8 +1,7 @@
 {
   "replace": false,
   "values": [
-    "modern_beta:late_beta_swampland",
-    "modern_beta:early_release_swampland",
+    "#modern_beta:is_swamp",
     "minecraft:swamp",
     "minecraft:mangrove_swamp"
   ]

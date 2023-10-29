@@ -1,6 +1,12 @@
 {
   "replace": false,
   "values": [
+    "#modern_beta:is_forest",
+    "#modern_beta:is_seasonal_forest",
+    "#modern_beta:is_savanna",
+    "#modern_beta:is_shrubland",
+    "#modern_beta:is_plains",
+    "minecraft:plains",
     "minecraft:forest",
     "minecraft:flower_forest",
     "minecraft:birch_forest",

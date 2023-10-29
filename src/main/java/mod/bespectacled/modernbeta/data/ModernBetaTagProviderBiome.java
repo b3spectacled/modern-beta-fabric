@@ -423,9 +423,8 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             .addTag(BiomeTags.IS_OCEAN);
 
         getOrCreateTagBuilder(HEIGHT_CONFIG_DESERT)
+            .addTag(IS_DESERT)
             .add(
-                ModernBetaBiomes.BETA_DESERT,
-                ModernBetaBiomes.PE_DESERT,
                 BiomeKeys.DESERT,
                 BiomeKeys.BADLANDS,
                 BiomeKeys.ERODED_BADLANDS,
@@ -433,6 +432,7 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             );
 
         getOrCreateTagBuilder(HEIGHT_CONFIG_BETA_HILLS)
+            .addTag(IS_RAINFOREST)
             .add(
                 ModernBetaBiomes.LATE_BETA_EXTREME_HILLS,
                 BiomeKeys.WINDSWEPT_SAVANNA
@@ -450,9 +450,8 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             .addTag(BiomeTags.IS_TAIGA);
 
         getOrCreateTagBuilder(HEIGHT_CONFIG_SWAMPLAND)
+            .addTag(IS_SWAMP)
             .add(
-                ModernBetaBiomes.LATE_BETA_SWAMPLAND,
-                ModernBetaBiomes.EARLY_RELEASE_SWAMPLAND,
                 BiomeKeys.SWAMP,
                 BiomeKeys.MANGROVE_SWAMP
             );
@@ -464,8 +463,8 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             );
 
         getOrCreateTagBuilder(HEIGHT_CONFIG_MOUNTAINS)
+            .addTag(IS_TUNDRA)
             .add(
-                ModernBetaBiomes.EARLY_RELEASE_ICE_PLAINS,
                 BiomeKeys.SNOWY_PLAINS,
                 BiomeKeys.GROVE,
                 BiomeKeys.FROZEN_PEAKS,
@@ -487,15 +486,17 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             );
 
         getOrCreateTagBuilder(HEIGHT_CONFIG_HILLS)
-            .add(
-                ModernBetaBiomes.BETA_DESERT,
-                ModernBetaBiomes.PE_DESERT,
-                BiomeKeys.DESERT
-            )
+            .addTag(HEIGHT_CONFIG_DESERT)
             .addTag(HEIGHT_CONFIG_TAIGA);
 
         getOrCreateTagBuilder(HEIGHT_CONFIG_SHORT_HILLS)
+            .addTag(IS_FOREST)
+            .addTag(IS_SEASONAL_FOREST)
+            .addTag(IS_SAVANNA)
+            .addTag(IS_SHRUBLAND)
+            .addTag(IS_PLAINS)
             .add(
+                BiomeKeys.PLAINS,
                 BiomeKeys.FOREST,
                 BiomeKeys.FLOWER_FOREST,
                 BiomeKeys.BIRCH_FOREST,
@@ -514,13 +515,13 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             );
 
         getOrCreateTagBuilder(HEIGHT_CONFIG_JUNGLE_HILLS)
+            .addTag(HEIGHT_CONFIG_JUNGLE)
             .add(
                 BiomeKeys.BADLANDS,
                 BiomeKeys.ERODED_BADLANDS,
                 BiomeKeys.WOODED_BADLANDS,
                 BiomeKeys.SAVANNA
-            )
-            .addTag(HEIGHT_CONFIG_JUNGLE);
+            );
 
         getOrCreateTagBuilder(HEIGHT_CONFIG_PLATEAU)
             .add(

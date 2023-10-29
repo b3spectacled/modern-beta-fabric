@@ -6,10 +6,13 @@ import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import mod.bespectacled.modernbeta.util.NbtCompoundBuilder;
 import mod.bespectacled.modernbeta.util.NbtReader;
 import mod.bespectacled.modernbeta.util.NbtTags;
+import mod.bespectacled.modernbeta.world.biome.provider.fractal.FractalSettings;
 import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevTheme;
 import mod.bespectacled.modernbeta.world.chunk.provider.indev.IndevType;
 import mod.bespectacled.modernbeta.world.chunk.provider.island.IslandShape;
 import net.minecraft.nbt.NbtCompound;
+
+import java.util.Map;
 
 public class ModernBetaSettingsChunk implements ModernBetaSettings {
     public final String chunkProvider;
@@ -43,6 +46,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
     public final int noiseBottomSlideOffset;
 
     public final boolean releaseExtraHillHeight;
+    public final Map<String, String> releaseHeightOverrides;
 
     public final boolean infdevUsePyramid;
     public final boolean infdevUseWall;
@@ -102,6 +106,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         this.noiseBottomSlideOffset = builder.noiseBottomSlideOffset;
 
         this.releaseExtraHillHeight = builder.releaseExtraHillHeight;
+        this.releaseHeightOverrides = builder.releaseHeightOverrides;
 
         this.infdevUsePyramid = builder.infdevUsePyramid;
         this.infdevUseWall = builder.infdevUseWall;
@@ -167,6 +172,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             .putInt(NbtTags.NOISE_BOTTOM_SLIDE_OFFSET, this.noiseBottomSlideOffset)
 
             .putBoolean(NbtTags.RELEASE_EXTRA_HILL_HEIGHT, this.releaseExtraHillHeight)
+            .putCompound(NbtTags.RELEASE_HEIGHT_OVERRIDES, FractalSettings.mapToNbt(this.releaseHeightOverrides))
 
             .putBoolean(NbtTags.INFDEV_USE_PYRAMID, this.infdevUsePyramid)
             .putBoolean(NbtTags.INFDEV_USE_WALL, this.infdevUseWall)
@@ -226,6 +232,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         public int noiseBottomSlideOffset;
 
         public boolean releaseExtraHillHeight;
+        public Map<String, String> releaseHeightOverrides;
 
         public boolean infdevUsePyramid;
         public boolean infdevUseWall;
@@ -281,6 +288,10 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.noiseBottomSlideOffset = 0;
 
             this.releaseExtraHillHeight = false;
+            this.releaseHeightOverrides = Map.ofEntries(
+                Map.entry("example:flat_biome", "-0.2;0.1"),
+                Map.entry("*example:flat_biome", "-0.1;0.5")
+            );
 
             this.infdevUsePyramid = true;
             this.infdevUseWall = true;
@@ -338,6 +349,7 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.noiseBottomSlideOffset = reader.readInt(NbtTags.NOISE_BOTTOM_SLIDE_OFFSET, this.noiseBottomSlideOffset);
 
             this.releaseExtraHillHeight = reader.readBoolean(NbtTags.RELEASE_EXTRA_HILL_HEIGHT, this.releaseExtraHillHeight);
+            this.releaseHeightOverrides = FractalSettings.mapFromReader(NbtTags.RELEASE_HEIGHT_OVERRIDES, reader, this.releaseHeightOverrides);
 
             this.infdevUsePyramid = reader.readBoolean(NbtTags.INFDEV_USE_PYRAMID, this.infdevUsePyramid);
             this.infdevUseWall = reader.readBoolean(NbtTags.INFDEV_USE_WALL, this.infdevUseWall);
