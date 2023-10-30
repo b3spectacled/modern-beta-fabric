@@ -21,6 +21,7 @@ public class ModernBetaSettingsPresets {
     public static final ModernBetaSettingsPreset PRESET_INFDEV_415 = presetInfdev415();
     public static final ModernBetaSettingsPreset PRESET_INFDEV_420 = presetInfdev420();
     public static final ModernBetaSettingsPreset PRESET_INFDEV_611 = presetInfdev611();
+    public static final ModernBetaSettingsPreset PRESET_INFDEV_325 = presetInfdev325();
     public static final ModernBetaSettingsPreset PRESET_INFDEV_227 = presetInfdev227();
     public static final ModernBetaSettingsPreset PRESET_INDEV = presetIndev();
     public static final ModernBetaSettingsPreset PRESET_CLASSIC = presetClassic();
@@ -334,6 +335,29 @@ public class ModernBetaSettingsPresets {
             settingsCaveBiome.build()
         );
     }
+
+    private static ModernBetaSettingsPreset presetInfdev325() {
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
+
+        settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.INFDEV_227.id;
+        settingsChunk.useDeepslate = false;
+        settingsChunk.useCaves = true;
+        settingsChunk.infdevUsePyramid = true;
+        settingsChunk.infdevUseWall = false;
+
+        settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.SINGLE.id;
+        settingsBiome.singleBiome = ModernBetaBiomes.INFDEV_325.getValue().toString();
+
+        settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
+
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
     
     private static ModernBetaSettingsPreset presetInfdev227() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
@@ -357,7 +381,7 @@ public class ModernBetaSettingsPresets {
             settingsCaveBiome.build()
         );
     }
-    
+
     private static ModernBetaSettingsPreset presetIndev() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
@@ -1268,6 +1292,11 @@ public class ModernBetaSettingsPresets {
 
         settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.EARLY_RELEASE.id;
         settingsChunk.releaseExtraHillHeight = false;
+        settingsChunk.releaseHeightOverrides = Map.ofEntries(
+            Map.entry("example:flat_biome", "-0.2;0.1"),
+            Map.entry("*example:flat_biome", "-0.1;0.5"),
+            Map.entry("minecraft:ocean", "-1.0;0.5")
+        );
         settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.FRACTAL.id;
         settingsBiome.fractalBiomes = List.of(
             "minecraft:desert",

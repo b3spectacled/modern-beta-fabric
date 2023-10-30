@@ -420,6 +420,16 @@ public class ModernBetaBiomeFeatures {
         
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
     }
+
+    public static void addInfdev325Features(GenerationSettings.LookupBackedBuilder builder) {
+        addDefaultFeatures(builder, ModernBetaFeatureSettings.INFDEV_325);
+
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_DANDELION_INFDEV_227);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INFDEV_325);
+
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+    }
     
     public static void addInfdev227Features(GenerationSettings.LookupBackedBuilder builder) {
         addDefaultFeatures(builder, ModernBetaFeatureSettings.INFDEV_227);
@@ -577,6 +587,7 @@ public class ModernBetaBiomeFeatures {
         private static final ModernBetaFeatureSettings INFDEV_611 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INFDEV_420 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INFDEV_415 = new ModernBetaFeatureSettings(false);
+        private static final ModernBetaFeatureSettings INFDEV_325 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INFDEV_227 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INDEV = new ModernBetaFeatureSettings(false);
     }

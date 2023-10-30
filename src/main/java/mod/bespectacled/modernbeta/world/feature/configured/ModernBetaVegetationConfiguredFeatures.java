@@ -38,12 +38,14 @@ public class ModernBetaVegetationConfiguredFeatures {
     public static final RegistryKey<ConfiguredFeature<?, ?>> TREES_INFDEV_611 = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_611);
     public static final RegistryKey<ConfiguredFeature<?, ?>> TREES_INFDEV_420 = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_420);
     public static final RegistryKey<ConfiguredFeature<?, ?>> TREES_INFDEV_415 = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_415);
+    public static final RegistryKey<ConfiguredFeature<?, ?>> TREES_INFDEV_325 = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_325);
     public static final RegistryKey<ConfiguredFeature<?, ?>> TREES_INFDEV_227 = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_227);
-    
+
     public static final RegistryKey<ConfiguredFeature<?, ?>> TREES_ALPHA_BEES = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.TREES_ALPHA_BEES);
     public static final RegistryKey<ConfiguredFeature<?, ?>> TREES_INFDEV_611_BEES = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_611_BEES);
     public static final RegistryKey<ConfiguredFeature<?, ?>> TREES_INFDEV_420_BEES = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_420_BEES);
     public static final RegistryKey<ConfiguredFeature<?, ?>> TREES_INFDEV_415_BEES = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_415_BEES);
+    public static final RegistryKey<ConfiguredFeature<?, ?>> TREES_INFDEV_325_BEES = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_325_BEES);
     public static final RegistryKey<ConfiguredFeature<?, ?>> TREES_INFDEV_227_BEES = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_227_BEES);
 
     public static final RegistryKey<ConfiguredFeature<?, ?>> TREES_BETA_FOREST = ModernBetaConfiguredFeatures.of(ModernBetaFeatureTags.TREES_BETA_FOREST);
@@ -90,12 +92,14 @@ public class ModernBetaVegetationConfiguredFeatures {
         ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_611, Feature.RANDOM_SELECTOR, createOakTreeConfig(registryPlaced, false));
         ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_420, Feature.RANDOM_SELECTOR, createInfdevRandomTreeConfig(registryPlaced, false));
         ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_415, Feature.RANDOM_SELECTOR, createInfdevRandomTreeConfig(registryPlaced, false));
+        ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_325, Feature.RANDOM_SELECTOR, createOakTreeConfig(registryPlaced, false));
         ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_227, Feature.RANDOM_SELECTOR, createOakTreeConfig(registryPlaced, false));
         
         ConfiguredFeatures.register(featureRegisterable, TREES_ALPHA_BEES, Feature.RANDOM_SELECTOR, createDefaultRandomTreeConfig(registryPlaced, true));
         ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_611_BEES, Feature.RANDOM_SELECTOR, createOakTreeConfig(registryPlaced, true));
         ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_420_BEES, Feature.RANDOM_SELECTOR, createInfdevRandomTreeConfig(registryPlaced, true));
         ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_415_BEES, Feature.RANDOM_SELECTOR, createInfdevRandomTreeConfig(registryPlaced, true));
+        ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_325_BEES, Feature.RANDOM_SELECTOR, createOakTreeConfig(registryPlaced, true));
         ConfiguredFeatures.register(featureRegisterable, TREES_INFDEV_227_BEES, Feature.RANDOM_SELECTOR, createOakTreeConfig(registryPlaced, true));
 
         ConfiguredFeatures.register(featureRegisterable, TREES_BETA_FOREST, Feature.RANDOM_SELECTOR, createForestRandomTreeConfig(registryPlaced, false));

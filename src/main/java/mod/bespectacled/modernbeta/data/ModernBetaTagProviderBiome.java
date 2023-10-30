@@ -69,7 +69,6 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
     public static final TagKey<Biome> SURFACE_CONFIG_SNOW_STONE = keyOf("surface_config/snow_stone");
 
     public static final TagKey<Biome> HEIGHT_CONFIG_OCEAN = keyOf("height_config/ocean");
-    public static final TagKey<Biome> HEIGHT_CONFIG_BETA_OCEAN = keyOf("height_config/beta_ocean");
     public static final TagKey<Biome> HEIGHT_CONFIG_DESERT = keyOf("height_config/desert");
     public static final TagKey<Biome> HEIGHT_CONFIG_EXTREME_HILLS = keyOf("height_config/extreme_hills");
     public static final TagKey<Biome> HEIGHT_CONFIG_BETA_HILLS = keyOf("height_config/beta_hills");
@@ -148,8 +147,9 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             ModernBetaBiomes.INFDEV_611,
             ModernBetaBiomes.INFDEV_420,
             ModernBetaBiomes.INFDEV_415,
+            ModernBetaBiomes.INFDEV_325,
             ModernBetaBiomes.INFDEV_227,
-            
+
             ModernBetaBiomes.INDEV_NORMAL,
             ModernBetaBiomes.INDEV_HELL,
             ModernBetaBiomes.INDEV_PARADISE,
@@ -228,6 +228,7 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             ModernBetaBiomes.INFDEV_611,
             ModernBetaBiomes.INFDEV_420,
             ModernBetaBiomes.INFDEV_415,
+            ModernBetaBiomes.INFDEV_325,
             ModernBetaBiomes.INFDEV_227
         );
 

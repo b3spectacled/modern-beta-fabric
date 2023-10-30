@@ -6,13 +6,7 @@ import com.google.common.collect.ImmutableList;
 
 import mod.bespectacled.modernbeta.world.feature.ModernBetaFeatureTags;
 import mod.bespectacled.modernbeta.world.feature.configured.ModernBetaVegetationConfiguredFeatures;
-import mod.bespectacled.modernbeta.world.feature.placement.HeightmapSpreadDoublePlacementModifier;
-import mod.bespectacled.modernbeta.world.feature.placement.NoiseBasedCountPlacementModifier;
-import mod.bespectacled.modernbeta.world.feature.placement.NoiseBasedCountPlacementModifierAlpha;
-import mod.bespectacled.modernbeta.world.feature.placement.NoiseBasedCountPlacementModifierBeta;
-import mod.bespectacled.modernbeta.world.feature.placement.NoiseBasedCountPlacementModifierInfdev415;
-import mod.bespectacled.modernbeta.world.feature.placement.NoiseBasedCountPlacementModifierInfdev420;
-import mod.bespectacled.modernbeta.world.feature.placement.NoiseBasedCountPlacementModifierInfdev611;
+import mod.bespectacled.modernbeta.world.feature.placement.*;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
@@ -97,12 +91,14 @@ public class ModernBetaVegetationPlacedFeatures {
     public static final RegistryKey<PlacedFeature> TREES_INFDEV_611 = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_611);
     public static final RegistryKey<PlacedFeature> TREES_INFDEV_420 = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_420);
     public static final RegistryKey<PlacedFeature> TREES_INFDEV_415 = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_415);
+    public static final RegistryKey<PlacedFeature> TREES_INFDEV_325 = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_325);
     public static final RegistryKey<PlacedFeature> TREES_INFDEV_227 = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_227);
 
     public static final RegistryKey<PlacedFeature> TREES_ALPHA_BEES = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.TREES_ALPHA_BEES);
     public static final RegistryKey<PlacedFeature> TREES_INFDEV_611_BEES = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_611_BEES);
     public static final RegistryKey<PlacedFeature> TREES_INFDEV_420_BEES = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_420_BEES);
     public static final RegistryKey<PlacedFeature> TREES_INFDEV_415_BEES = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_415_BEES);
+    public static final RegistryKey<PlacedFeature> TREES_INFDEV_325_BEES = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_325_BEES);
     public static final RegistryKey<PlacedFeature> TREES_INFDEV_227_BEES = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.TREES_INFDEV_227_BEES);
     
     public static final RegistryKey<PlacedFeature> TREES_BETA_FOREST = ModernBetaPlacedFeatures.of(ModernBetaFeatureTags.TREES_BETA_FOREST);
@@ -151,12 +147,14 @@ public class ModernBetaVegetationPlacedFeatures {
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesInfdev611 = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_INFDEV_611);
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesInfdev420 = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_INFDEV_420);
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesInfdev415 = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_INFDEV_415);
+        RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesInfdev325 = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_INFDEV_325);
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesInfdev227 = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_INFDEV_227);
 
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesAlphaBees = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_ALPHA_BEES);
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesInfdev611Bees = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_INFDEV_611_BEES);
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesInfdev420Bees = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_INFDEV_420_BEES);
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesInfdev415Bees = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_INFDEV_415_BEES);
+        RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesInfdev325Bees = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_INFDEV_325_BEES);
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesInfdev227Bees = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_INFDEV_227_BEES);
 
         RegistryEntry.Reference<ConfiguredFeature<?, ?>> treesBetaForest = registryConfigured.getOrThrow(ModernBetaVegetationConfiguredFeatures.TREES_BETA_FOREST);
@@ -208,12 +206,14 @@ public class ModernBetaVegetationPlacedFeatures {
         PlacedFeatures.register(featureRegisterable, TREES_INFDEV_611, treesInfdev611, withNoiseBasedCountModifier(ModernBetaFeatureTags.TREES_INFDEV_611, NoiseBasedCountPlacementModifierInfdev611.of(0, 0.1f, 1)));
         PlacedFeatures.register(featureRegisterable, TREES_INFDEV_420, treesInfdev420, withNoiseBasedCountModifier(ModernBetaFeatureTags.TREES_INFDEV_420, NoiseBasedCountPlacementModifierInfdev420.of(0, 0.01f, 1)));
         PlacedFeatures.register(featureRegisterable, TREES_INFDEV_415, treesInfdev415, withNoiseBasedCountModifier(ModernBetaFeatureTags.TREES_INFDEV_415, NoiseBasedCountPlacementModifierInfdev415.of(0, 0, 0)));
+        PlacedFeatures.register(featureRegisterable, TREES_INFDEV_325, treesInfdev325, withNoiseBasedCountModifier(ModernBetaFeatureTags.TREES_INFDEV_325, NoiseBasedCountPlacementModifierInfdev325.of(0, 0, 0)));
         PlacedFeatures.register(featureRegisterable, TREES_INFDEV_227, treesInfdev227, withCountExtraAndTreeModifier(0, 0.1f, 1));
-        
+
         PlacedFeatures.register(featureRegisterable, TREES_ALPHA_BEES, treesAlphaBees, withNoiseBasedCountModifier(ModernBetaFeatureTags.TREES_ALPHA_BEES, NoiseBasedCountPlacementModifierAlpha.of(0, 0.1f, 1)));
         PlacedFeatures.register(featureRegisterable, TREES_INFDEV_611_BEES, treesInfdev611Bees, withNoiseBasedCountModifier(ModernBetaFeatureTags.TREES_INFDEV_611_BEES, NoiseBasedCountPlacementModifierInfdev611.of(0, 0.1f, 1)));
         PlacedFeatures.register(featureRegisterable, TREES_INFDEV_420_BEES, treesInfdev420Bees, withNoiseBasedCountModifier(ModernBetaFeatureTags.TREES_INFDEV_420_BEES, NoiseBasedCountPlacementModifierInfdev420.of(0, 0.01f, 1)));
         PlacedFeatures.register(featureRegisterable, TREES_INFDEV_415_BEES, treesInfdev415Bees, withNoiseBasedCountModifier(ModernBetaFeatureTags.TREES_INFDEV_415_BEES, NoiseBasedCountPlacementModifierInfdev415.of(0, 0, 0)));
+        PlacedFeatures.register(featureRegisterable, TREES_INFDEV_325_BEES, treesInfdev325Bees, withNoiseBasedCountModifier(ModernBetaFeatureTags.TREES_INFDEV_325_BEES, NoiseBasedCountPlacementModifierInfdev325.of(0, 0, 0)));
         PlacedFeatures.register(featureRegisterable, TREES_INFDEV_227_BEES, treesInfdev227Bees, withCountExtraAndTreeModifier(0, 0.1f, 1));
              
         PlacedFeatures.register(featureRegisterable, TREES_BETA_FOREST, treesBetaForest, withNoiseBasedCountModifier(ModernBetaFeatureTags.TREES_BETA_FOREST, NoiseBasedCountPlacementModifierBeta.of(5, 0.1f, 1)));

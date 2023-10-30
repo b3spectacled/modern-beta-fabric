@@ -29,14 +29,16 @@ public class ModernBetaFeatureTags {
     public static final String TREES_INFDEV_611 = "trees_infdev_611";
     public static final String TREES_INFDEV_420 = "trees_infdev_420";
     public static final String TREES_INFDEV_415 = "trees_infdev_415";
+    public static final String TREES_INFDEV_325 = "trees_infdev_325";
     public static final String TREES_INFDEV_227 = "trees_infdev_227";
-    
+
     public static final String TREES_ALPHA_BEES = "trees_alpha_bees";
     public static final String TREES_INFDEV_611_BEES = "trees_infdev_611_bees";
     public static final String TREES_INFDEV_420_BEES = "trees_infdev_420_bees";
     public static final String TREES_INFDEV_415_BEES = "trees_infdev_415_bees";
+    public static final String TREES_INFDEV_325_BEES = "trees_infdev_325_bees";
     public static final String TREES_INFDEV_227_BEES = "trees_infdev_227_bees";
-    
+
     public static final String TREES_BETA_FOREST = "trees_beta_forest";
     public static final String TREES_BETA_RAINFOREST = "trees_beta_rainforest";
     public static final String TREES_BETA_SEASONAL_FOREST = "trees_beta_seasonal_forest";

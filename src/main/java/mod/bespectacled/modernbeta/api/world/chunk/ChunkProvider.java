@@ -113,7 +113,7 @@ public abstract class ChunkProvider {
      *
      * @param x x-coordinate in block coordinates.
      * @param z z-coordinate in block coordinates.
-     * @param type Vanilla heightmap type.
+     * @param heightmap Vanilla heightmap type.
      * 
      * @return The y-coordinate of top block at x/z.
      */
@@ -124,7 +124,7 @@ public abstract class ChunkProvider {
      * 
      * @param chunkX x-coordinate in chunk coordinates.
      * @param chunkZ z-coordinate in chunk coordinates.
-     * @param chunkStatus Chunk generation step used for skip context.
+     * @param step Chunk generation step used for skip context.
      * 
      * @return Whether to skip the chunk.
      */
@@ -196,8 +196,6 @@ public abstract class ChunkProvider {
      * Sets forest density using PerlinOctaveNoise sampler created with world seed.
      * Checks every placed feature in the biome source feature list,
      * and if it uses ModernBetaNoiseBasedCountPlacementModifier, replaces the noise sampler.
-     * 
-     * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
      */
     public void initForestOctaveNoise() {
         List<IndexedFeatures> generationSteps = ((AccessorChunkGenerator)this.chunkGenerator).getIndexedFeaturesListSupplier().get();

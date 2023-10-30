@@ -83,7 +83,6 @@ public final class ModernBetaBuiltInTypes {
 
     public enum HeightConfig {
         HEIGHT_CONFIG_OCEAN(ModernBetaTagProviderBiome.HEIGHT_CONFIG_OCEAN.id().toString()),
-        HEIGHT_CONFIG_BETA_OCEAN(ModernBetaTagProviderBiome.HEIGHT_CONFIG_BETA_OCEAN.id().toString()),
         HEIGHT_CONFIG_DESERT(ModernBetaTagProviderBiome.HEIGHT_CONFIG_DESERT.id().toString()),
         HEIGHT_CONFIG_EXTREME_HILLS(ModernBetaTagProviderBiome.HEIGHT_CONFIG_EXTREME_HILLS.id().toString()),
         HEIGHT_CONFIG_BETA_HILLS(ModernBetaTagProviderBiome.HEIGHT_CONFIG_BETA_HILLS.id().toString()),
@@ -133,16 +132,17 @@ public final class ModernBetaBuiltInTypes {
     }
     
     public enum Preset {
-        BETA(Chunk.BETA.id),
-        SKYLANDS(Chunk.SKYLANDS.id),
-        ALPHA(Chunk.ALPHA.id),
-        INFDEV_611(Chunk.INFDEV_611.id),
-        INFDEV_420(Chunk.INFDEV_420.id),
-        INFDEV_415(Chunk.INFDEV_415.id),
-        INFDEV_227(Chunk.INFDEV_227.id),
-        INDEV(Chunk.INDEV.id),
-        CLASSIC_0_30(Chunk.CLASSIC_0_30.id),
-        PE(Chunk.PE.id),
+        BETA("beta"),
+        SKYLANDS("skylands"),
+        ALPHA("alpha"),
+        INFDEV_611("infdev_611"),
+        INFDEV_420("infdev_420"),
+        INFDEV_415("infdev_415"),
+        INFDEV_325("infdev_325"),
+        INFDEV_227("infdev_227"),
+        INDEV("indev"),
+        CLASSIC_0_30("classic_0_30"),
+        PE("pe"),
         BETA_1_8_1("beta_1_8_1"),
         RELEASE_1_0_0("release_1_0_0"),
         RELEASE_1_1("release_1_1"),

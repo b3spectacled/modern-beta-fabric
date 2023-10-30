@@ -13,7 +13,6 @@ import java.util.List;
 public record HeightConfig(float scale, float depth, boolean special) {
 	public static final HeightConfig DEFAULT = new HeightConfig(0.1F, 0.3F);
 	public static final HeightConfig OCEAN = new HeightConfig(-1.0F, 0.4F);
-	public static final HeightConfig BETA_OCEAN = new HeightConfig(-1.0F, 0.5F);
 	public static final HeightConfig DESERT = new HeightConfig(0.1F, 0.2F);
 	public static final HeightConfig EXTREME_HILLS = new HeightConfig(0.2F, 1.3F);
 	public static final HeightConfig BETA_HILLS = new HeightConfig(0.2F, 1.8F);
