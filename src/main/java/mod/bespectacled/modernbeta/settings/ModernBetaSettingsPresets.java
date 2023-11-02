@@ -1470,7 +1470,6 @@ public class ModernBetaSettingsPresets {
             Map.entry("minecraft:jungle", "*minecraft:jungle"),
             Map.entry("minecraft:snowy_taiga", "*minecraft:snowy_taiga"),
             Map.entry("minecraft:savanna", "*minecraft:savanna"),
-            Map.entry("minecraft:cherry_grove", "minecraft:plains"),
             Map.entry("minecraft:dark_forest", "minecraft:plains"),
             Map.entry("minecraft:birch_forest", "*minecraft:birch_forest"),
             Map.entry("minecraft:old_growth_birch_forest", "*minecraft:old_growth_birch_forest"),
