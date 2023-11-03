@@ -11,12 +11,10 @@ import net.minecraft.util.Identifier;
 
 public class ModernBetaColormapResource implements SimpleSynchronousResourceReloadListener {
     private final Identifier id;
-    private final Identifier optifineId;
     private final Consumer<int[]> consumer;
     
     public ModernBetaColormapResource(String path, Consumer<int[]> consumer) {
         this.id = ModernBeta.createId(path);
-        this.optifineId = new Identifier("optifine/" + path);
         this.consumer = consumer;
     }
 
@@ -31,7 +29,7 @@ public class ModernBetaColormapResource implements SimpleSynchronousResourceRelo
         int[] map;
         
         try {
-            map = RawTextureDataLoader.loadRawTextureData(resourceManager, this.optifineId);
+            map = RawTextureDataLoader.loadRawTextureData(resourceManager, this.id);
         } catch (IOException exception) {
             throw new IllegalStateException("[Modern Beta] Failed to load colormap texture!", exception);
         }

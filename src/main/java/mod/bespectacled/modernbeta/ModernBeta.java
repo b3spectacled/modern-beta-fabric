@@ -82,12 +82,12 @@ public class ModernBeta implements ModInitializer {
             ResourceManagerHelper resourceManager = ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES);
             
             resourceManager.registerReloadListener(new ModernBetaColormapResource(
-                "colormap/water.png",
+                "textures/colormap/water.png",
                 BlockColorSampler.INSTANCE.colormapWater::setColormap
             ));
             
             resourceManager.registerReloadListener(new ModernBetaColormapResource(
-                "colormap/underwater.png",
+                "textures/colormap/underwater.png",
                 BlockColorSampler.INSTANCE.colormapUnderwater::setColormap
             ));
         }
