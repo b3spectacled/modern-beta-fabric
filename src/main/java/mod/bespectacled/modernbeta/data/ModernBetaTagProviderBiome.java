@@ -17,12 +17,14 @@ import net.minecraft.world.biome.BiomeKeys;
 
 public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
     public static final TagKey<Biome> IS_MODERN_BETA = keyOf("is_modern_beta");
+    public static final TagKey<Biome> IS_EARLY_RELEASE = keyOf("is_early_release");
+    public static final TagKey<Biome> IS_LATE_BETA = keyOf("is_late_beta");
     public static final TagKey<Biome> IS_BETA = keyOf("is_beta");
     public static final TagKey<Biome> IS_PE = keyOf("is_pe");
     public static final TagKey<Biome> IS_ALPHA = keyOf("is_alpha");
     public static final TagKey<Biome> IS_INFDEV = keyOf("is_infdev");
     public static final TagKey<Biome> IS_INDEV = keyOf("is_indev");
-    
+
     public static final TagKey<Biome> IS_FOREST = keyOf("is_forest");
     public static final TagKey<Biome> IS_SEASONAL_FOREST = keyOf("is_seasonal_forest");
     public static final TagKey<Biome> IS_RAINFOREST = keyOf("is_rainforest");
@@ -34,7 +36,8 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
     public static final TagKey<Biome> IS_TAIGA = keyOf("is_taiga");
     public static final TagKey<Biome> IS_TUNDRA = keyOf("is_tundra");
     public static final TagKey<Biome> IS_OCEAN = keyOf("is_ocean");
-    
+    public static final TagKey<Biome> IS_EARLY_RELEASE_SPAWN = keyOf("is_early_release_spawn");
+
     public static final TagKey<Biome> INDEV_STRONGHOLD_HAS_STRUCTURE = keyOf("has_structure/indev_stronghold");
     
     /*
@@ -64,7 +67,31 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
     public static final TagKey<Biome> SURFACE_CONFIG_SNOW_DIRT = keyOf("surface_config/snow_dirt");
     public static final TagKey<Biome> SURFACE_CONFIG_SNOW_PACKED_ICE = keyOf("surface_config/snow_packed_ice");
     public static final TagKey<Biome> SURFACE_CONFIG_SNOW_STONE = keyOf("surface_config/snow_stone");
-    
+
+    public static final TagKey<Biome> HEIGHT_CONFIG_OCEAN = keyOf("height_config/ocean");
+    public static final TagKey<Biome> HEIGHT_CONFIG_DESERT = keyOf("height_config/desert");
+    public static final TagKey<Biome> HEIGHT_CONFIG_EXTREME_HILLS = keyOf("height_config/extreme_hills");
+    public static final TagKey<Biome> HEIGHT_CONFIG_BETA_HILLS = keyOf("height_config/beta_hills");
+    public static final TagKey<Biome> HEIGHT_CONFIG_TAIGA = keyOf("height_config/taiga");
+    public static final TagKey<Biome> HEIGHT_CONFIG_SWAMPLAND = keyOf("height_config/swampland");
+    public static final TagKey<Biome> HEIGHT_CONFIG_RIVER = keyOf("height_config/river");
+    public static final TagKey<Biome> HEIGHT_CONFIG_MOUNTAINS = keyOf("height_config/mountains");
+    public static final TagKey<Biome> HEIGHT_CONFIG_MUSHROOM_ISLAND = keyOf("height_config/mushroom_island");
+    public static final TagKey<Biome> HEIGHT_CONFIG_MUSHROOM_ISLAND_SHORE = keyOf("height_config/mushroom_island_shore");
+    public static final TagKey<Biome> HEIGHT_CONFIG_BEACH = keyOf("height_config/beach");
+    public static final TagKey<Biome> HEIGHT_CONFIG_HILLS = keyOf("height_config/hills");
+    public static final TagKey<Biome> HEIGHT_CONFIG_SHORT_HILLS = keyOf("height_config/short_hills");
+    public static final TagKey<Biome> HEIGHT_CONFIG_EXTREME_HILLS_EDGE = keyOf("height_config/extreme_hills_edge");
+    public static final TagKey<Biome> HEIGHT_CONFIG_JUNGLE = keyOf("height_config/jungle");
+    public static final TagKey<Biome> HEIGHT_CONFIG_JUNGLE_HILLS = keyOf("height_config/jungle_hills");
+    public static final TagKey<Biome> HEIGHT_CONFIG_PLATEAU = keyOf("height_config/plateau");
+    public static final TagKey<Biome> HEIGHT_CONFIG_SWAMPLAND_HILLS = keyOf("height_config/swampland_hills");
+    public static final TagKey<Biome> HEIGHT_CONFIG_PLATEAU_HILL = keyOf("height_config/plateau_hill");
+
+    public static final TagKey<Biome> FRACTAL_SWAMP_RIVERS = keyOf("fractal_swamp_rivers");
+    public static final TagKey<Biome> FRACTAL_JUNGLE_RIVERS = keyOf("fractal_jungle_rivers");
+    public static final TagKey<Biome> FRACTAL_NO_BEACHES = keyOf("fractal_no_beaches");
+
     public ModernBetaTagProviderBiome(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
         super(output, RegistryKeys.BIOME, registriesFuture);
     }
@@ -121,14 +148,39 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             ModernBetaBiomes.INFDEV_611,
             ModernBetaBiomes.INFDEV_420,
             ModernBetaBiomes.INFDEV_415,
+            ModernBetaBiomes.INFDEV_325,
             ModernBetaBiomes.INFDEV_227,
-            
+
             ModernBetaBiomes.INDEV_NORMAL,
             ModernBetaBiomes.INDEV_HELL,
             ModernBetaBiomes.INDEV_PARADISE,
-            ModernBetaBiomes.INDEV_WOODS
+            ModernBetaBiomes.INDEV_WOODS,
+
+            ModernBetaBiomes.LATE_BETA_EXTREME_HILLS,
+            ModernBetaBiomes.LATE_BETA_SWAMPLAND,
+            ModernBetaBiomes.LATE_BETA_PLAINS,
+            ModernBetaBiomes.LATE_BETA_TAIGA,
+
+            ModernBetaBiomes.EARLY_RELEASE_ICE_PLAINS,
+            ModernBetaBiomes.EARLY_RELEASE_SWAMPLAND,
+            ModernBetaBiomes.EARLY_RELEASE_EXTREME_HILLS,
+            ModernBetaBiomes.EARLY_RELEASE_TAIGA
         );
-        
+
+        getOrCreateTagBuilder(IS_EARLY_RELEASE).add(
+            ModernBetaBiomes.EARLY_RELEASE_ICE_PLAINS,
+            ModernBetaBiomes.EARLY_RELEASE_SWAMPLAND,
+            ModernBetaBiomes.EARLY_RELEASE_EXTREME_HILLS,
+            ModernBetaBiomes.EARLY_RELEASE_TAIGA
+        );
+
+        getOrCreateTagBuilder(IS_LATE_BETA).add(
+            ModernBetaBiomes.LATE_BETA_EXTREME_HILLS,
+            ModernBetaBiomes.LATE_BETA_SWAMPLAND,
+            ModernBetaBiomes.LATE_BETA_PLAINS,
+            ModernBetaBiomes.LATE_BETA_TAIGA
+        );
+
         getOrCreateTagBuilder(IS_BETA).add(
             ModernBetaBiomes.BETA_FOREST,
             ModernBetaBiomes.BETA_SHRUBLAND,
@@ -177,6 +229,7 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             ModernBetaBiomes.INFDEV_611,
             ModernBetaBiomes.INFDEV_420,
             ModernBetaBiomes.INFDEV_415,
+            ModernBetaBiomes.INFDEV_325,
             ModernBetaBiomes.INFDEV_227
         );
 
@@ -209,7 +262,8 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
         
         getOrCreateTagBuilder(IS_PLAINS).add(
             ModernBetaBiomes.BETA_PLAINS,
-            ModernBetaBiomes.PE_PLAINS
+            ModernBetaBiomes.PE_PLAINS,
+            ModernBetaBiomes.LATE_BETA_PLAINS
         );
         
         getOrCreateTagBuilder(IS_SHRUBLAND).add(
@@ -224,19 +278,24 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
         
         getOrCreateTagBuilder(IS_SWAMP).add(
             ModernBetaBiomes.BETA_SWAMPLAND,
-            ModernBetaBiomes.PE_SWAMPLAND
+            ModernBetaBiomes.PE_SWAMPLAND,
+            ModernBetaBiomes.LATE_BETA_SWAMPLAND,
+            ModernBetaBiomes.EARLY_RELEASE_SWAMPLAND
         );
         
         getOrCreateTagBuilder(IS_TAIGA).add(
             ModernBetaBiomes.BETA_TAIGA,
-            ModernBetaBiomes.PE_TAIGA
+            ModernBetaBiomes.PE_TAIGA,
+            ModernBetaBiomes.LATE_BETA_TAIGA,
+            ModernBetaBiomes.EARLY_RELEASE_TAIGA
         );
         
         getOrCreateTagBuilder(IS_TUNDRA).add(
             ModernBetaBiomes.BETA_TUNDRA,
             ModernBetaBiomes.PE_TUNDRA,
             ModernBetaBiomes.BETA_ICE_DESERT,
-            ModernBetaBiomes.PE_ICE_DESERT
+            ModernBetaBiomes.PE_ICE_DESERT,
+            ModernBetaBiomes.EARLY_RELEASE_ICE_PLAINS
         );
         
         getOrCreateTagBuilder(IS_OCEAN).add(
@@ -251,6 +310,23 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
             ModernBetaBiomes.PE_WARM_OCEAN,
             ModernBetaBiomes.PE_COLD_OCEAN,
             ModernBetaBiomes.PE_FROZEN_OCEAN
+        );
+
+        getOrCreateTagBuilder(IS_EARLY_RELEASE_SPAWN).add(
+            ModernBetaBiomes.BETA_FOREST,
+            ModernBetaBiomes.BETA_PLAINS,
+            ModernBetaBiomes.BETA_TAIGA,
+            ModernBetaBiomes.BETA_RAINFOREST,
+            ModernBetaBiomes.LATE_BETA_PLAINS,
+            ModernBetaBiomes.LATE_BETA_TAIGA,
+            ModernBetaBiomes.EARLY_RELEASE_TAIGA,
+            BiomeKeys.FOREST,
+            BiomeKeys.PLAINS,
+            BiomeKeys.TAIGA,
+            BiomeKeys.SNOWY_TAIGA,
+            BiomeKeys.JUNGLE,
+            BiomeKeys.BAMBOO_JUNGLE,
+            BiomeKeys.SPARSE_JUNGLE
         );
 
         /* Modern Beta Biome Structure Tags */
@@ -342,6 +418,151 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
 
         getOrCreateTagBuilder(SURFACE_CONFIG_SNOW_STONE)
             .add(BiomeKeys.JAGGED_PEAKS);
+
+        /* Modern Beta Biome Height Tags */
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_OCEAN)
+            .addTag(BiomeTags.IS_OCEAN);
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_DESERT)
+            .addTag(IS_DESERT)
+            .add(
+                BiomeKeys.DESERT,
+                BiomeKeys.BADLANDS,
+                BiomeKeys.ERODED_BADLANDS,
+                BiomeKeys.WOODED_BADLANDS
+            );
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_BETA_HILLS)
+            .addTag(IS_RAINFOREST)
+            .add(
+                ModernBetaBiomes.LATE_BETA_EXTREME_HILLS,
+                BiomeKeys.WINDSWEPT_SAVANNA
+            );
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_EXTREME_HILLS)
+            .add(
+                ModernBetaBiomes.EARLY_RELEASE_EXTREME_HILLS,
+                BiomeKeys.WINDSWEPT_HILLS,
+                BiomeKeys.WINDSWEPT_FOREST,
+                BiomeKeys.WINDSWEPT_GRAVELLY_HILLS
+            );
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_TAIGA)
+            .addTag(BiomeTags.IS_TAIGA);
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_SWAMPLAND)
+            .addTag(IS_SWAMP)
+            .add(
+                BiomeKeys.SWAMP,
+                BiomeKeys.MANGROVE_SWAMP
+            );
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_RIVER)
+            .add(
+                BiomeKeys.RIVER,
+                BiomeKeys.FROZEN_RIVER
+            );
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_MOUNTAINS)
+            .addTag(IS_TUNDRA)
+            .add(
+                BiomeKeys.SNOWY_PLAINS,
+                BiomeKeys.GROVE,
+                BiomeKeys.FROZEN_PEAKS,
+                BiomeKeys.JAGGED_PEAKS,
+                BiomeKeys.STONY_PEAKS,
+                BiomeKeys.SNOWY_SLOPES
+            );
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_MUSHROOM_ISLAND)
+            .add(BiomeKeys.MUSHROOM_FIELDS);
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_MUSHROOM_ISLAND_SHORE)
+            .add(BiomeKeys.MUSHROOM_FIELDS);
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_BEACH)
+            .add(
+                BiomeKeys.BEACH,
+                BiomeKeys.SNOWY_BEACH
+            );
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_HILLS)
+            .addTag(HEIGHT_CONFIG_DESERT)
+            .addTag(HEIGHT_CONFIG_TAIGA);
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_SHORT_HILLS)
+            .addTag(IS_FOREST)
+            .addTag(IS_SEASONAL_FOREST)
+            .addTag(IS_SAVANNA)
+            .addTag(IS_SHRUBLAND)
+            .addTag(IS_PLAINS)
+            .add(
+                BiomeKeys.PLAINS,
+                BiomeKeys.FOREST,
+                BiomeKeys.FLOWER_FOREST,
+                BiomeKeys.BIRCH_FOREST,
+                BiomeKeys.OLD_GROWTH_BIRCH_FOREST,
+                BiomeKeys.SNOWY_BEACH
+            );
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_EXTREME_HILLS_EDGE)
+            .addTag(HEIGHT_CONFIG_EXTREME_HILLS);
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_JUNGLE)
+            .add(
+                BiomeKeys.JUNGLE,
+                BiomeKeys.BAMBOO_JUNGLE,
+                BiomeKeys.SPARSE_JUNGLE
+            );
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_JUNGLE_HILLS)
+            .addTag(HEIGHT_CONFIG_JUNGLE)
+            .add(
+                BiomeKeys.BADLANDS,
+                BiomeKeys.ERODED_BADLANDS,
+                BiomeKeys.WOODED_BADLANDS,
+                BiomeKeys.SAVANNA
+            );
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_PLATEAU)
+            .add(
+                BiomeKeys.CHERRY_GROVE,
+                BiomeKeys.MEADOW
+            );
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_SWAMPLAND_HILLS)
+            .addTag(HEIGHT_CONFIG_SWAMPLAND);
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_PLATEAU_HILL)
+            .add(
+                    BiomeKeys.BADLANDS,
+                    BiomeKeys.ERODED_BADLANDS,
+                    BiomeKeys.WOODED_BADLANDS
+            );
+
+        /* Modern Beta Fractal Tags */
+
+        getOrCreateTagBuilder(FRACTAL_SWAMP_RIVERS)
+            .addTag(HEIGHT_CONFIG_SWAMPLAND);
+
+        getOrCreateTagBuilder(FRACTAL_JUNGLE_RIVERS)
+            .addTag(HEIGHT_CONFIG_JUNGLE);
+
+        getOrCreateTagBuilder(FRACTAL_NO_BEACHES)
+            .addTag(BiomeTags.IS_OCEAN)
+            .add(
+                BiomeKeys.RIVER,
+                ModernBetaBiomes.LATE_BETA_SWAMPLAND,
+                ModernBetaBiomes.EARLY_RELEASE_SWAMPLAND,
+                BiomeKeys.SWAMP,
+                BiomeKeys.MANGROVE_SWAMP,
+                ModernBetaBiomes.LATE_BETA_EXTREME_HILLS,
+                ModernBetaBiomes.EARLY_RELEASE_EXTREME_HILLS,
+                BiomeKeys.WINDSWEPT_HILLS,
+                BiomeKeys.WINDSWEPT_FOREST,
+                BiomeKeys.WINDSWEPT_GRAVELLY_HILLS
+            );
     }
     
     private void configureVanilla(WrapperLookup lookup) {
@@ -476,6 +697,13 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
                 
                 ModernBetaBiomes.PE_TAIGA,
                 ModernBetaBiomes.PE_RAINFOREST
+            );
+
+        getOrCreateTagBuilder(BiomeTags.SPAWNS_SNOW_FOXES)
+            .add(
+                    ModernBetaBiomes.BETA_TAIGA,
+                    ModernBetaBiomes.PE_TAIGA,
+                    ModernBetaBiomes.EARLY_RELEASE_TAIGA
             );
     }
     

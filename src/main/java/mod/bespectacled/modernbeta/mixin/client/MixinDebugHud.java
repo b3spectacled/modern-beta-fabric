@@ -109,8 +109,8 @@ public abstract class MixinDebugHud {
 
                 /*
                 int worldMinY = modernBetaChunkGenerator.getMinimumY();
-                int minHeight = modernBetaChunkGenerator.getBiomeInjector().sampleMinHeightAround(biomeX, biomeZ);
-                BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, -1, minHeight).setY(y);
+                int surfaceHeight = modernBetaChunkGenerator.getBiomeInjector().sampleMinHeightAround(biomeX, biomeZ);
+                BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, -1, surfaceHeight).setY(y);
                 
                 boolean canPlaceCave = BiomeInjector.CAVE_PREDICATE.test(context);
                 

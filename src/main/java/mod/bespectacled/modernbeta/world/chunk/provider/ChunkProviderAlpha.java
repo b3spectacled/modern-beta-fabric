@@ -3,6 +3,7 @@ package mod.bespectacled.modernbeta.world.chunk.provider;
 import java.util.Random;
 
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
+import mod.bespectacled.modernbeta.api.world.chunk.surface.SurfaceBlocks;
 import mod.bespectacled.modernbeta.api.world.chunk.surface.SurfaceConfig;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.util.BlockStates;
@@ -49,7 +50,7 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
     
     @Override
     public SpawnLocator getSpawnLocator() {
-        return new SpawnLocatorBeta(this, this.beachOctaveNoise);
+        return new SpawnLocatorBeta(this, this.beachOctaveNoise, new Random(this.seed));
     }
 
     @Override
@@ -96,7 +97,7 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
                 int surfaceMinY = (this.hasNoisePostProcessor()) ? 
                     heightmapChunk.getHeight(x, z, ChunkHeightmap.Type.SURFACE_FLOOR) - 8 : 
                     this.worldMinY;
-                
+
                 boolean genSandBeach = sandNoise[localX + localZ * 16] + rand.nextDouble() * 0.2 > 0.0;
                 boolean genGravelBeach = gravelNoise[localX + localZ * 16] + rand.nextDouble() * 0.2 > 3.0;
                 int surfaceDepth = (int) (surfaceNoise[localX + localZ * 16] / 3.0 + 3.0 + rand.nextDouble() * 0.25);
@@ -121,17 +122,7 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
                         chunk.setBlockState(pos, BlockStates.BEDROCK, false);
                         continue;
                     }
-                    
-                    // TODO: As of 21w08b.
-                    // Check to remove later, not accurate but temporary to ensure bottom layer of world is always bedrock.
-                    // Game breaks during ore decoration breaks if any block at yMin is stone/deepslate
-                    // since the game checks all adjacent blocks for a particular position,
-                    // even if the downward direction is below the world limit!!
-                    if (y <= this.worldMinY) {
-                        chunk.setBlockState(pos, BlockStates.BEDROCK, false);
-                        continue;
-                    }
-                    
+
                     // Skip if at surface min y
                     if (y < surfaceMinY) {
                         continue;
@@ -189,6 +180,80 @@ public class ChunkProviderAlpha extends ChunkProviderNoise {
                     if (runDepth > 0) { 
                         runDepth--;
                         chunk.setBlockState(pos, fillerBlock, false);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void provideSurfaceExtra(ChunkRegion region, StructureAccessor structureAccessor, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
+        double scale = 0.03125;
+
+        ChunkPos chunkPos = chunk.getPos();
+        int chunkX = chunkPos.x;
+        int chunkZ = chunkPos.z;
+
+        int startX = chunk.getPos().getStartX();
+        int startZ = chunk.getPos().getStartZ();
+
+        Random rand = this.createSurfaceRandom(chunkX, chunkZ);
+        BlockPos.Mutable pos = new BlockPos.Mutable();
+
+        double[] sandNoise = beachOctaveNoise.sampleAlpha(
+            chunkX * 16, chunkZ * 16, 0.0D,
+            16, 16, 1,
+            scale, scale, 1.0D);
+
+        double[] gravelNoise = beachOctaveNoise.sampleAlpha(
+            chunkX * 16, 109.0134D, chunkZ * 16,
+            16, 1, 16,
+            scale, 1.0D, scale);
+
+        double[] surfaceNoise = surfaceOctaveNoise.sampleAlpha(
+            chunkX * 16, chunkZ * 16, 0.0D,
+            16, 16, 1,
+            scale * 2D, scale * 2D, scale * 2D
+        );
+
+        for (int localZ = 0; localZ < 16; localZ++) {
+            for (int localX = 0; localX < 16; localX++) {
+                int x = startX + localX;
+                int z = startZ + localZ;
+                int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
+
+                boolean genSandBeach = sandNoise[localZ + localX * 16] + rand.nextDouble() * 0.2D > 0.0D;
+                boolean genGravelBeach = gravelNoise[localZ + localX * 16] + rand.nextDouble() * 0.2D > 3D;
+                int surfaceDepth = (int) (surfaceNoise[localZ + localX * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
+
+                RegistryEntry<Biome> biome = biomeSource.getBiomeForSurfaceGen(region, pos.set(x, surfaceTopY, z));
+
+                SurfaceConfig surfaceConfig = this.surfaceBuilder.getSurfaceConfig(biome);
+
+                if (surfaceDepth <= 0) {
+                    int y = surfaceTopY;
+                    pos.set(localX, y, localZ);
+                    chunk.setBlockState(pos, BlockStates.AIR, false);
+                    pos.setY(--y);
+
+                    BlockState blockState;
+                    while (!(blockState = chunk.getBlockState(pos)).isAir() && !blockState.isOf(this.defaultBlock.getBlock())) {
+                        chunk.setBlockState(pos, this.defaultBlock, false);
+                        pos.setY(--y);
+                    }
+                } else if (surfaceTopY >= this.seaLevel - 4 && surfaceTopY < this.seaLevel + 1) {
+                    SurfaceBlocks beach = genSandBeach ? surfaceConfig.beachSand() : genGravelBeach ? surfaceConfig.beachGravel() : null;
+                    if (beach != null) {
+                        int y = surfaceTopY;
+                        pos.set(localX, y, localZ);
+                        chunk.setBlockState(pos, beach.topBlock(), false);
+                        pos.setY(--y);
+
+                        BlockState blockState;
+                        while (!(blockState = chunk.getBlockState(pos)).isAir() && !blockState.isOf(this.defaultBlock.getBlock())) {
+                            chunk.setBlockState(pos, beach.fillerBlock(), false);
+                            pos.setY(--y);
+                        }
                     }
                 }
             }

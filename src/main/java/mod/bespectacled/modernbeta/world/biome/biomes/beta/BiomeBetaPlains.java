@@ -23,7 +23,7 @@ public class BiomeBetaPlains {
         
         return (new Biome.Builder())
             .precipitation(true)
-            //.temperature(0.8F)
+//            .temperature(0.8F)
             .temperature(1.0F)
             .downfall(0.4F)
             .effects((new BiomeEffects.Builder())

@@ -1,6 +1,7 @@
 package mod.bespectacled.modernbeta.world.spawn;
 
 import java.util.Optional;
+import java.util.Random;
 
 import org.slf4j.event.Level;
 
@@ -24,13 +25,13 @@ import net.minecraft.world.biome.Biome;
  * 
  */
 public class SpawnLocatorPE implements SpawnLocator {
-    private final MTRandom rand;
+    private final Random rand;
     
     private final ChunkProvider chunkProvider;
     private final PerlinOctaveNoise beachOctaveNoise;
     
-    public SpawnLocatorPE(ChunkProvider chunkProvider, PerlinOctaveNoise beachOctaveNoise) {
-        this.rand = new MTRandom();
+    public SpawnLocatorPE(ChunkProvider chunkProvider, PerlinOctaveNoise beachOctaveNoise, MTRandom rand) {
+        this.rand = rand;
         
         this.chunkProvider = chunkProvider;
         this.beachOctaveNoise = beachOctaveNoise;

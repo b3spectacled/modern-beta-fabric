@@ -15,7 +15,8 @@ public final class ModernBetaBuiltInTypes {
         INFDEV_227("infdev_227"),
         INDEV("indev"),
         CLASSIC_0_30("classic_0_30"),
-        PE("pe")
+        PE("pe"),
+        EARLY_RELEASE("early_release")
         ;
         
         public final String id;
@@ -29,7 +30,8 @@ public final class ModernBetaBuiltInTypes {
         BETA("beta"),
         SINGLE("single"),
         PE("pe"),
-        VORONOI("voronoi")
+        VORONOI("voronoi"),
+        FRACTAL("fractal")
         ;
         
         public final String id;
@@ -78,6 +80,35 @@ public final class ModernBetaBuiltInTypes {
             this.id = id;
         }
     }
+
+    public enum HeightConfig {
+        HEIGHT_CONFIG_OCEAN(ModernBetaTagProviderBiome.HEIGHT_CONFIG_OCEAN.id().toString()),
+        HEIGHT_CONFIG_DESERT(ModernBetaTagProviderBiome.HEIGHT_CONFIG_DESERT.id().toString()),
+        HEIGHT_CONFIG_EXTREME_HILLS(ModernBetaTagProviderBiome.HEIGHT_CONFIG_EXTREME_HILLS.id().toString()),
+        HEIGHT_CONFIG_BETA_HILLS(ModernBetaTagProviderBiome.HEIGHT_CONFIG_BETA_HILLS.id().toString()),
+        HEIGHT_CONFIG_TAIGA(ModernBetaTagProviderBiome.HEIGHT_CONFIG_TAIGA.id().toString()),
+        HEIGHT_CONFIG_SWAMPLAND(ModernBetaTagProviderBiome.HEIGHT_CONFIG_SWAMPLAND.id().toString()),
+        HEIGHT_CONFIG_RIVER(ModernBetaTagProviderBiome.HEIGHT_CONFIG_RIVER.id().toString()),
+        HEIGHT_CONFIG_MOUNTAINS(ModernBetaTagProviderBiome.HEIGHT_CONFIG_MOUNTAINS.id().toString()),
+        HEIGHT_CONFIG_MUSHROOM_ISLAND(ModernBetaTagProviderBiome.HEIGHT_CONFIG_MUSHROOM_ISLAND.id().toString()),
+        HEIGHT_CONFIG_MUSHROOM_ISLAND_SHORE(ModernBetaTagProviderBiome.HEIGHT_CONFIG_MUSHROOM_ISLAND_SHORE.id().toString()),
+        HEIGHT_CONFIG_BEACH(ModernBetaTagProviderBiome.HEIGHT_CONFIG_BEACH.id().toString()),
+        HEIGHT_CONFIG_HILLS(ModernBetaTagProviderBiome.HEIGHT_CONFIG_HILLS.id().toString()),
+        HEIGHT_CONFIG_SHORT_HILLS(ModernBetaTagProviderBiome.HEIGHT_CONFIG_SHORT_HILLS.id().toString()),
+        HEIGHT_CONFIG_EXTREME_HILLS_EDGE(ModernBetaTagProviderBiome.HEIGHT_CONFIG_EXTREME_HILLS_EDGE.id().toString()),
+        HEIGHT_CONFIG_JUNGLE(ModernBetaTagProviderBiome.HEIGHT_CONFIG_JUNGLE.id().toString()),
+        HEIGHT_CONFIG_JUNGLE_HILLS(ModernBetaTagProviderBiome.HEIGHT_CONFIG_JUNGLE_HILLS.id().toString()),
+        HEIGHT_CONFIG_PLATEAU(ModernBetaTagProviderBiome.HEIGHT_CONFIG_PLATEAU.id().toString()),
+        HEIGHT_CONFIG_SWAMPLAND_HILLS(ModernBetaTagProviderBiome.HEIGHT_CONFIG_SWAMPLAND_HILLS.id().toString()),
+        HEIGHT_CONFIG_PLATEAU_HILL(ModernBetaTagProviderBiome.HEIGHT_CONFIG_PLATEAU_HILL.id().toString())
+        ;
+
+        public final String id;
+
+        private HeightConfig(String id) {
+            this.id = id;
+        }
+    }
     
     public enum NoisePostProcessor {
         NONE("none")
@@ -102,16 +133,22 @@ public final class ModernBetaBuiltInTypes {
     }
     
     public enum Preset {
-        BETA(Chunk.BETA.id),
-        SKYLANDS(Chunk.SKYLANDS.id),
-        ALPHA(Chunk.ALPHA.id),
-        INFDEV_611(Chunk.INFDEV_611.id),
-        INFDEV_420(Chunk.INFDEV_420.id),
-        INFDEV_415(Chunk.INFDEV_415.id),
-        INFDEV_227(Chunk.INFDEV_227.id),
-        INDEV(Chunk.INDEV.id),
-        CLASSIC_0_30(Chunk.CLASSIC_0_30.id),
-        PE(Chunk.PE.id)
+        BETA("beta"),
+        SKYLANDS("skylands"),
+        ALPHA("alpha"),
+        INFDEV_611("infdev_611"),
+        INFDEV_420("infdev_420"),
+        INFDEV_415("infdev_415"),
+        INFDEV_325("infdev_325"),
+        INFDEV_227("infdev_227"),
+        INDEV("indev"),
+        CLASSIC_0_30("classic_0_30"),
+        PE("pe"),
+        BETA_1_8_1("beta_1_8_1"),
+        RELEASE_1_0_0("release_1_0_0"),
+        RELEASE_1_1("release_1_1"),
+        RELEASE_1_2_5("release_1_2_5"),
+        RELEASE_1_6_4("release_1_6_4")
         ;
         
         public final String id;
@@ -131,10 +168,12 @@ public final class ModernBetaBuiltInTypes {
         BETA_XBOX_LEGACY("beta_xbox_legacy"),
         BETA_SURVIVAL_ISLAND("beta_survival_island"),
         BETA_VANILLA("beta_vanilla"),
+        BETA_HYBRID("beta_hybrid"),
+        RELEASE_HYBRID("release_hybrid"),
         ALPHA_WINTER("alpha_winter"),
         INDEV_PARADISE("indev_paradise"),
         INDEV_WOODS("indev_woods"),
-        INDEV_HELL("indev_hell")
+        INDEV_HELL("indev_hell"),
         ;
         
         public final String id;

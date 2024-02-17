@@ -17,7 +17,7 @@ public class SurfaceBuilder {
     }
     
     public SurfaceConfig getSurfaceConfig(RegistryEntry<Biome> biome) {
-        return this.surfaceConfigs.get(biome);
+        return this.surfaceConfigs.computeIfAbsent(biome, (k) -> SurfaceConfig.getSurfaceConfig(biome));
     }
     
     private void initMap(BiomeSource biomeSource) {

@@ -29,8 +29,8 @@ public class SpawnLocatorBeta implements SpawnLocator {
     private final ChunkProvider chunkProvider;
     private final PerlinOctaveNoise beachOctaveNoise;
     
-    public SpawnLocatorBeta(ChunkProvider chunkProvider, PerlinOctaveNoise beachOctaveNoise) {
-        this.rand = new Random();
+    public SpawnLocatorBeta(ChunkProvider chunkProvider, PerlinOctaveNoise beachOctaveNoise, Random rand) {
+        this.rand = rand;
         
         this.chunkProvider = chunkProvider;
         this.beachOctaveNoise = beachOctaveNoise;

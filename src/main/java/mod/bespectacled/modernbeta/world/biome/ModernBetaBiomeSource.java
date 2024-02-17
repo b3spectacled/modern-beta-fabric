@@ -17,11 +17,13 @@ import mod.bespectacled.modernbeta.ModernBeta;
 import mod.bespectacled.modernbeta.api.registry.ModernBetaRegistries;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeProvider;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverBlock;
+import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverInfo;
 import mod.bespectacled.modernbeta.api.world.biome.BiomeResolverOcean;
 import mod.bespectacled.modernbeta.api.world.cavebiome.CaveBiomeProvider;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
 import mod.bespectacled.modernbeta.settings.ModernBetaSettingsCaveBiome;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector.BiomeInjectionStep;
+import mod.bespectacled.modernbeta.world.biome.provider.fractal.BiomeInfo;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
@@ -210,6 +212,13 @@ public class ModernBetaBiomeSource extends BiomeSource {
             return biomeResolver.getBiomeBlock(pos.getX(), pos.getY(), pos.getZ());
         
         return region.getBiome(pos);
+    }
+
+    public BiomeInfo getBiomeForHeightGen(int biomeX, int biomeY, int biomeZ) {
+        if (this.biomeProvider instanceof BiomeResolverInfo biomeResolver)
+            return biomeResolver.getBiomeInfo(biomeX, biomeY, biomeZ);
+
+        return BiomeInfo.of(this.biomeProvider.getBiome(biomeX, biomeY, biomeZ));
     }
     
     public void setChunkGenerator(ModernBetaChunkGenerator chunkGenerator) {

@@ -15,7 +15,8 @@ public class ModernBetaShapeConfigs {
     public static final GenerationShapeConfig INDEV;
     public static final GenerationShapeConfig CLASSIC_0_30;
     public static final GenerationShapeConfig PE;
-    
+    public static final GenerationShapeConfig EARLY_RELEASE;
+
     static {
         MODERN_BETA = GenerationShapeConfig.create(-64, 192, 1, 2);
         BETA = GenerationShapeConfig.create(-64, 192, 1, 2);
@@ -28,5 +29,6 @@ public class ModernBetaShapeConfigs {
         INDEV = GenerationShapeConfig.create(0, 256, 1, 2);
         CLASSIC_0_30 = GenerationShapeConfig.create(0, 256, 1, 2);
         PE = GenerationShapeConfig.create(-64, 192, 1, 2);
+        EARLY_RELEASE = GenerationShapeConfig.create(-64, 192, 1, 2);
     }
 }

@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#modern_beta:height_config/desert",
+    "#modern_beta:height_config/taiga"
+  ]
+}

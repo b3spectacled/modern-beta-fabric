@@ -81,10 +81,7 @@ public class ChunkProviderInfdev227 extends ChunkProvider implements ChunkProvid
         this.octaveNoiseD = new PerlinOctaveNoise(this.random, 4, true);
         this.octaveNoiseE = new PerlinOctaveNoise(this.random, 4, true);
         this.octaveNoiseF = new PerlinOctaveNoise(this.random, 5, true);
-        new PerlinOctaveNoise(this.random, 3, true);
-        new PerlinOctaveNoise(this.random, 3, true);
-        new PerlinOctaveNoise(this.random, 3, true);
-        this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 8, true);
+        this.forestOctaveNoise = new PerlinOctaveNoise(this.random, 5, true);
         
         this.chunkCacheHeightmap = new ChunkCache<>("heightmap", this::sampleHeightmapChunk);
     }

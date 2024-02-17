@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "modern_beta:beta_swampland",
-    "modern_beta:pe_swampland"
+    "modern_beta:pe_swampland",
+    "modern_beta:late_beta_swampland",
+    "modern_beta:early_release_swampland"
   ]
 }

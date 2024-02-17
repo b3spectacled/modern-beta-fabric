@@ -81,7 +81,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
 
     public void initProvider(long seed) {
         ModernBetaSettingsChunk chunkSettings = ModernBetaSettingsChunk.fromCompound(this.chunkSettings);
-        
+
         this.chunkProvider = ModernBetaRegistries.CHUNK
             .get(chunkSettings.chunkProvider)
             .apply(this, seed);
@@ -91,7 +91,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public CompletableFuture<Chunk> populateBiomes(Executor executor, NoiseConfig noiseConfig, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
-        return CompletableFuture.<Chunk>supplyAsync(Util.debugSupplier("init_biomes", () -> {
+        return CompletableFuture.supplyAsync(Util.debugSupplier("init_biomes", () -> {
             ChunkNoiseSampler noiseSampler = chunk.getOrCreateChunkNoiseSampler(c -> this.createChunkNoiseSampler(c, structureAccessor, blender, noiseConfig));
             chunk.populateBiomes(this.biomeSource, noiseSampler.createMultiNoiseSampler(noiseConfig.getNoiseRouter(), this.settings.value().spawnTarget()));
             
@@ -106,19 +106,24 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         
         return completedChunk;
     }
-     
+
     @Override
     public void buildSurface(ChunkRegion chunkRegion, StructureAccessor structureAccessor, NoiseConfig noiseConfig, Chunk chunk) {
         this.injectBiomes(chunk, noiseConfig.getMultiNoiseSampler(), BiomeInjectionStep.PRE);
-        
+
         if (!this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ModernBetaGenerationStep.SURFACE)) {
             if (this.biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
-                this.chunkProvider.provideSurface(chunkRegion, structureAccessor, chunk, modernBetaBiomeSource, noiseConfig);
+                if (this.chunkProvider.getChunkSettings().useSurfaceRules) {
+                    super.buildSurface(chunkRegion, structureAccessor, noiseConfig, chunk);
+                    this.chunkProvider.provideSurfaceExtra(chunkRegion, structureAccessor, chunk, modernBetaBiomeSource, noiseConfig);
+                } else {
+                    this.chunkProvider.provideSurface(chunkRegion, structureAccessor, chunk, modernBetaBiomeSource, noiseConfig);
+                }
             } else {
                 super.buildSurface(chunkRegion, structureAccessor, noiseConfig, chunk);
             }
         }
-        
+
         this.injectBiomes(chunk, noiseConfig.getMultiNoiseSampler(), BiomeInjectionStep.POST);
     }
     

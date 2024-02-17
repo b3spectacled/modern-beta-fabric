@@ -55,7 +55,7 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
                 double temp;
                 double coldThreshold;
                 
-                if (biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource && 
+                if (biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource &&
                     modernBetaBiomeSource.getBiomeProvider() instanceof ClimateSampler climateSampler &&
                     climateSampler.useBiomeFeature()
                 ) {
@@ -122,9 +122,9 @@ public class BetaFreezeTopLayerFeature extends Feature<DefaultFeatureConfig> {
     }
 
     private static boolean canSetSnow(WorldView worldView, BlockPos blockPos, double temp, double coldThreshold) {
-        double heightTemp = temp - ((double) (blockPos.getY() - 64) / 64.0) * 0.3;
+//        double heightTemp = temp - ((double) (blockPos.getY() - 64) / 64.0) * 0.3;
 
-        if (heightTemp >= coldThreshold) {
+        if (temp >= coldThreshold) {
             return false;
         }
         

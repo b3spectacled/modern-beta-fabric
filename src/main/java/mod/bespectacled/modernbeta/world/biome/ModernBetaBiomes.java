@@ -3,6 +3,14 @@ package mod.bespectacled.modernbeta.world.biome;
 import java.util.function.BiFunction;
 
 import mod.bespectacled.modernbeta.ModernBeta;
+import mod.bespectacled.modernbeta.world.biome.biomes.earlyrelease.BiomeEarlyReleaseIcePlains;
+import mod.bespectacled.modernbeta.world.biome.biomes.earlyrelease.BiomeEarlyReleaseSwampland;
+import mod.bespectacled.modernbeta.world.biome.biomes.earlyrelease.BiomeEarlyReleaseTaiga;
+import mod.bespectacled.modernbeta.world.biome.biomes.infdev.*;
+import mod.bespectacled.modernbeta.world.biome.biomes.latebeta.BiomeLateBetaExtremeHills;
+import mod.bespectacled.modernbeta.world.biome.biomes.latebeta.BiomeLateBetaPlains;
+import mod.bespectacled.modernbeta.world.biome.biomes.latebeta.BiomeLateBetaSwampland;
+import mod.bespectacled.modernbeta.world.biome.biomes.latebeta.BiomeLateBetaTaiga;
 import mod.bespectacled.modernbeta.world.biome.biomes.alpha.BiomeAlpha;
 import mod.bespectacled.modernbeta.world.biome.biomes.alpha.BiomeAlphaWinter;
 import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaColdOcean;
@@ -26,10 +34,6 @@ import mod.bespectacled.modernbeta.world.biome.biomes.indev.BiomeIndevHell;
 import mod.bespectacled.modernbeta.world.biome.biomes.indev.BiomeIndevNormal;
 import mod.bespectacled.modernbeta.world.biome.biomes.indev.BiomeIndevParadise;
 import mod.bespectacled.modernbeta.world.biome.biomes.indev.BiomeIndevWoods;
-import mod.bespectacled.modernbeta.world.biome.biomes.infdev.BiomeInfdev227;
-import mod.bespectacled.modernbeta.world.biome.biomes.infdev.BiomeInfdev415;
-import mod.bespectacled.modernbeta.world.biome.biomes.infdev.BiomeInfdev420;
-import mod.bespectacled.modernbeta.world.biome.biomes.infdev.BiomeInfdev611;
 import mod.bespectacled.modernbeta.world.biome.biomes.pe.BiomePEColdOcean;
 import mod.bespectacled.modernbeta.world.biome.biomes.pe.BiomePEDesert;
 import mod.bespectacled.modernbeta.world.biome.biomes.pe.BiomePEForest;
@@ -100,13 +104,24 @@ public class ModernBetaBiomes {
     public static final RegistryKey<Biome> INFDEV_611 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_611));
     public static final RegistryKey<Biome> INFDEV_420 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_420));
     public static final RegistryKey<Biome> INFDEV_415 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_415));
+    public static final RegistryKey<Biome> INFDEV_325 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_325));
     public static final RegistryKey<Biome> INFDEV_227 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_227));
-    
+
     public static final RegistryKey<Biome> INDEV_NORMAL = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INDEV_NORMAL));
     public static final RegistryKey<Biome> INDEV_HELL = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INDEV_HELL));
     public static final RegistryKey<Biome> INDEV_PARADISE = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INDEV_PARADISE));
     public static final RegistryKey<Biome> INDEV_WOODS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INDEV_WOODS));
-    
+
+    public static final RegistryKey<Biome> LATE_BETA_EXTREME_HILLS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.LATE_BETA_EXTREME_HILLS));
+    public static final RegistryKey<Biome> LATE_BETA_SWAMPLAND = keyOf(ModernBeta.createId(ModernBetaBiomeTags.LATE_BETA_SWAMPLAND));
+    public static final RegistryKey<Biome> LATE_BETA_PLAINS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.LATE_BETA_PLAINS));
+    public static final RegistryKey<Biome> LATE_BETA_TAIGA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.LATE_BETA_TAIGA));
+
+    public static final RegistryKey<Biome> EARLY_RELEASE_ICE_PLAINS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.EARLY_RELEASE_ICE_PLAINS));
+    public static final RegistryKey<Biome> EARLY_RELEASE_SWAMPLAND = keyOf(ModernBeta.createId(ModernBetaBiomeTags.EARLY_RELEASE_SWAMPLAND));
+    public static final RegistryKey<Biome> EARLY_RELEASE_EXTREME_HILLS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.EARLY_RELEASE_EXTREME_HILLS));
+    public static final RegistryKey<Biome> EARLY_RELEASE_TAIGA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.EARLY_RELEASE_TAIGA));
+
     public static void bootstrap(Registerable<Biome> biomeRegisterable) {
         register(biomeRegisterable, BETA_FOREST, BiomeBetaForest::create);
         register(biomeRegisterable, BETA_SHRUBLAND, BiomeBetaShrubland::create);
@@ -152,12 +167,23 @@ public class ModernBetaBiomes {
         register(biomeRegisterable, INFDEV_611, BiomeInfdev611::create);
         register(biomeRegisterable, INFDEV_420, BiomeInfdev420::create);
         register(biomeRegisterable, INFDEV_415, BiomeInfdev415::create);
+        register(biomeRegisterable, INFDEV_325, BiomeInfdev325::create);
         register(biomeRegisterable, INFDEV_227, BiomeInfdev227::create);
 
         register(biomeRegisterable, INDEV_NORMAL, BiomeIndevNormal::create);
         register(biomeRegisterable, INDEV_HELL, BiomeIndevHell::create);
         register(biomeRegisterable, INDEV_PARADISE, BiomeIndevParadise::create);
         register(biomeRegisterable, INDEV_WOODS, BiomeIndevWoods::create);
+
+        register(biomeRegisterable, LATE_BETA_EXTREME_HILLS, BiomeLateBetaExtremeHills::create);
+        register(biomeRegisterable, LATE_BETA_SWAMPLAND, BiomeLateBetaSwampland::create);
+        register(biomeRegisterable, LATE_BETA_PLAINS, BiomeLateBetaPlains::create);
+        register(biomeRegisterable, LATE_BETA_TAIGA, BiomeLateBetaTaiga::create);
+
+        register(biomeRegisterable, EARLY_RELEASE_ICE_PLAINS, BiomeEarlyReleaseIcePlains::create);
+        register(biomeRegisterable, EARLY_RELEASE_SWAMPLAND, BiomeEarlyReleaseSwampland::create);
+        register(biomeRegisterable, EARLY_RELEASE_EXTREME_HILLS, BiomeLateBetaExtremeHills::create);
+        register(biomeRegisterable, EARLY_RELEASE_TAIGA, BiomeEarlyReleaseTaiga::create);
     }
     
     private static void register(Registerable<Biome> biomeRegisterable, RegistryKey<Biome> biome, BiFunction<RegistryEntryLookup<PlacedFeature>, RegistryEntryLookup<ConfiguredCarver<?>>, Biome> biomeCreator) {

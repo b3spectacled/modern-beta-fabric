@@ -11,6 +11,7 @@ import mod.bespectacled.modernbeta.util.NbtReader;
 import mod.bespectacled.modernbeta.util.NbtTags;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
 import mod.bespectacled.modernbeta.world.biome.provider.climate.ClimateMapping;
+import mod.bespectacled.modernbeta.world.biome.provider.fractal.FractalSettings;
 import mod.bespectacled.modernbeta.world.biome.voronoi.VoronoiPointBiome;
 import net.minecraft.nbt.NbtCompound;
 
@@ -23,10 +24,27 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
     public final float climateRainNoiseScale;
     public final float climateDetailNoiseScale;
     public final float climateWeirdNoiseScale;
-    
     public final Map<String, ClimateMapping> climateMappings;
+
     public final List<VoronoiPointBiome> voronoiPoints;
-    
+
+    public final List<String> fractalBiomes;
+    public final Map<String, String> fractalHillVariants;
+    public final Map<String, List<String>> fractalSubVariants;
+    public final String fractalPlains;
+    public final String fractalIcePlains;
+    public final int fractalBiomeScale;
+    public final int fractalHillScale;
+    public final int fractalSubVariantScale;
+    public final boolean fractalLargerIslands;
+    public final boolean fractalOceans;
+    public final boolean fractalAddRivers;
+    public final boolean fractalAddSnow;
+    public final boolean fractalAddMushroomIslands;
+    public final boolean fractalAddBeaches;
+    public final boolean fractalAddHills;
+    public final boolean fractalAddSwampRivers;
+
     public ModernBetaSettingsBiome() {
         this(new Builder());
     }
@@ -40,9 +58,26 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
         this.climateRainNoiseScale = builder.climateRainNoiseScale;
         this.climateDetailNoiseScale = builder.climateDetailNoiseScale;
         this.climateWeirdNoiseScale = builder.climateWeirdNoiseScale;
-        
         this.climateMappings = builder.climateMappings;
+
         this.voronoiPoints = builder.voronoiPoints;
+
+        this.fractalBiomes = builder.fractalBiomes;
+        this.fractalHillVariants = builder.fractalHillVariants;
+        this.fractalSubVariants = builder.fractalSubVariants;
+        this.fractalPlains = builder.fractalPlains;
+        this.fractalIcePlains = builder.fractalIcePlains;
+        this.fractalBiomeScale = builder.fractalBiomeScale;
+        this.fractalHillScale = builder.fractalHillScale;
+        this.fractalSubVariantScale = builder.fractalSubVariantScale;
+        this.fractalLargerIslands = builder.fractalLargerIslands;
+        this.fractalOceans = builder.fractalOceans;
+        this.fractalAddRivers = builder.fractalAddRivers;
+        this.fractalAddSnow = builder.fractalAddSnow;
+        this.fractalAddMushroomIslands = builder.fractalAddMushroomIslands;
+        this.fractalAddBeaches = builder.fractalAddBeaches;
+        this.fractalAddHills = builder.fractalAddHills;
+        this.fractalAddSwampRivers = builder.fractalAddSwampRivers;
     }
     
     public static ModernBetaSettingsBiome fromString(String string) {
@@ -66,6 +101,22 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
             .putFloat(NbtTags.CLIMATE_WEIRD_NOISE_SCALE, this.climateWeirdNoiseScale)
             .putCompound(NbtTags.CLIMATE_MAPPINGS, ClimateMapping.mapToNbt(this.climateMappings))
             .putList(NbtTags.VORONOI_POINTS, VoronoiPointBiome.listToNbt(this.voronoiPoints))
+            .putList(NbtTags.FRACTAL_BIOMES, FractalSettings.listToNbt(this.fractalBiomes))
+            .putCompound(NbtTags.FRACTAL_HILL_VARIANTS, FractalSettings.mapToNbt(this.fractalHillVariants))
+            .putCompound(NbtTags.FRACTAL_SUB_VARIANTS, FractalSettings.mapOfListToNbt(this.fractalSubVariants))
+            .putString(NbtTags.FRACTAL_PLAINS, this.fractalPlains)
+            .putString(NbtTags.FRACTAL_ICE_PLAINS, this.fractalIcePlains)
+            .putInt(NbtTags.FRACTAL_BIOME_SCALE, this.fractalBiomeScale)
+            .putInt(NbtTags.FRACTAL_HILL_SCALE, this.fractalHillScale)
+            .putInt(NbtTags.FRACTAL_SUB_VARIANT_SCALE, this.fractalSubVariantScale)
+            .putBoolean(NbtTags.FRACTAL_LARGER_ISLANDS, this.fractalLargerIslands)
+            .putBoolean(NbtTags.FRACTAL_OCEANS, this.fractalOceans)
+            .putBoolean(NbtTags.FRACTAL_ADD_RIVERS, this.fractalAddRivers)
+            .putBoolean(NbtTags.FRACTAL_ADD_SNOW, this.fractalAddSnow)
+            .putBoolean(NbtTags.FRACTAL_ADD_MUSHROOM_ISLANDS, this.fractalAddMushroomIslands)
+            .putBoolean(NbtTags.FRACTAL_ADD_BEACHES, this.fractalAddBeaches)
+            .putBoolean(NbtTags.FRACTAL_ADD_HILLS, this.fractalAddHills)
+            .putBoolean(NbtTags.FRACTAL_ADD_SWAMP_RIVERS, this.fractalAddSwampRivers)
             .build();
     }
     
@@ -81,7 +132,24 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
         public Map<String, ClimateMapping> climateMappings;
         
         public List<VoronoiPointBiome> voronoiPoints;
-        
+
+        public List<String> fractalBiomes;
+        public Map<String, String> fractalHillVariants;
+        public Map<String, List<String>> fractalSubVariants;
+        public String fractalPlains;
+        public String fractalIcePlains;
+        public int fractalBiomeScale;
+        public int fractalSubVariantScale;
+        public int fractalHillScale;
+        public boolean fractalLargerIslands;
+        public boolean fractalOceans;
+        public boolean fractalAddRivers;
+        public boolean fractalAddSnow;
+        public boolean fractalAddMushroomIslands;
+        public boolean fractalAddBeaches;
+        public boolean fractalAddHills;
+        public boolean fractalAddSwampRivers;
+
         public Builder() {
             this.biomeProvider = ModernBetaBuiltInTypes.Biome.BETA.id;
             this.singleBiome = ModernBetaBiomes.BETA_PLAINS.getValue().toString();
@@ -137,6 +205,7 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
                     ModernBetaBiomes.BETA_FROZEN_OCEAN.getValue().toString()
                 )
             );
+
             this.voronoiPoints = List.of(
                 new VoronoiPointBiome(
                     ModernBetaBiomes.BETA_PLAINS.getValue().toString(),
@@ -144,6 +213,61 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
                     ModernBetaBiomes.BETA_OCEAN.getValue().toString(),
                     0.5, 0.5, 0.5
                 ));
+
+            this.fractalBiomes = List.of(
+                "minecraft:desert",
+                "minecraft:forest",
+                "modern_beta:late_beta_extreme_hills",
+                "modern_beta:late_beta_swampland",
+                "modern_beta:late_beta_plains",
+                "modern_beta:late_beta_taiga"
+            );
+            this.fractalHillVariants = Map.ofEntries(
+                Map.entry("minecraft:desert", "*minecraft:desert"),
+                Map.entry("modern_beta:beta_desert", "*modern_beta:beta_desert"),
+                Map.entry("modern_beta:pe_desert", "*modern_beta:pe_desert"),
+                Map.entry("minecraft:forest", "*minecraft:forest"),
+                Map.entry("minecraft:birch_forest", "*minecraft:birch_forest"),
+                Map.entry("modern_beta:beta_forest", "*modern_beta:beta_forest"),
+                Map.entry("modern_beta:pe_forest", "*modern_beta:pe_forest"),
+                Map.entry("modern_beta:beta_seasonal_forest", "*modern_beta:beta_seasonal_forest"),
+                Map.entry("modern_beta:pe_seasonal_forest", "*modern_beta:pe_seasonal_forest"),
+                Map.entry("minecraft:taiga", "*minecraft:taiga"),
+                Map.entry("modern_beta:late_beta_taiga", "*modern_beta:late_beta_taiga"),
+                Map.entry("minecraft:snowy_taiga", "*minecraft:snowy_taiga"),
+                Map.entry("modern_beta:early_release_taiga", "*modern_beta:early_release_taiga"),
+                Map.entry("modern_beta:beta_taiga", "*modern_beta:beta_taiga"),
+                Map.entry("modern_beta:pe_taiga", "*modern_beta:pe_taiga"),
+                Map.entry("minecraft:plains", "minecraft:forest"),
+                Map.entry("modern_beta:late_beta_plains", "minecraft:forest"),
+                Map.entry("modern_beta:beta_plains", "modern_beta:beta_forest"),
+                Map.entry("modern_beta:pe_plains", "modern_beta:pe_forest"),
+                Map.entry("modern_beta:beta_savanna", "*modern_beta:beta_savanna"),
+                Map.entry("modern_beta:beta_shrubland", "*modern_beta:beta_shrubland"),
+                Map.entry("modern_beta:beta_swampland", "*modern_beta:beta_swampland"),
+                Map.entry("minecraft:snowy_plains", "*minecraft:snowy_plains"),
+                Map.entry("modern_beta:early_release_ice_plains", "*modern_beta:early_release_ice_plains"),
+                Map.entry("modern_beta:beta_tundra", "*modern_beta:beta_tundra"),
+                Map.entry("modern_beta:pe_tundra", "*modern_beta:pe_tundra"),
+                Map.entry("minecraft:jungle", "*minecraft:jungle"),
+                Map.entry("minecraft:bamboo_jungle", "*minecraft:bamboo_jungle"),
+                Map.entry("minecraft:sparse_jungle", "*minecraft:sparse_jungle")
+            );
+            this.fractalSubVariants = Map.of();
+            this.fractalPlains = "modern_beta:late_beta_plains";
+            this.fractalIcePlains = "modern_beta:early_release_ice_plains";
+
+            this.fractalBiomeScale = 4;
+            this.fractalHillScale = 2;
+            this.fractalSubVariantScale = 2;
+            this.fractalLargerIslands = true;
+            this.fractalOceans = true;
+            this.fractalAddRivers = true;
+            this.fractalAddSnow = false;
+            this.fractalAddBeaches = false;
+            this.fractalAddMushroomIslands = false;
+            this.fractalAddHills = false;
+            this.fractalAddSwampRivers = false;
         }
         
         public Builder fromCompound(NbtCompound compound) {
@@ -158,8 +282,26 @@ public class ModernBetaSettingsBiome implements ModernBetaSettings {
             this.climateDetailNoiseScale = reader.readFloat(NbtTags.CLIMATE_DETAIL_NOISE_SCALE, this.climateDetailNoiseScale);
             this.climateWeirdNoiseScale = reader.readFloat(NbtTags.CLIMATE_WEIRD_NOISE_SCALE, this.climateWeirdNoiseScale);
             this.climateMappings = ClimateMapping.mapFromReader(reader, this.climateMappings);
+
             this.voronoiPoints = VoronoiPointBiome.listFromReader(reader, this.voronoiPoints);
-            
+
+            this.fractalBiomes = FractalSettings.listFromReader(NbtTags.FRACTAL_BIOMES, reader, this.fractalBiomes);
+            this.fractalHillVariants = FractalSettings.mapFromReader(NbtTags.FRACTAL_HILL_VARIANTS, reader, this.fractalHillVariants);
+            this.fractalSubVariants = FractalSettings.mapOfListFromReader(NbtTags.FRACTAL_SUB_VARIANTS, reader, this.fractalSubVariants);
+            this.fractalPlains = reader.readString(NbtTags.FRACTAL_PLAINS, this.fractalPlains);
+            this.fractalIcePlains = reader.readString(NbtTags.FRACTAL_ICE_PLAINS, this.fractalIcePlains);
+            this.fractalBiomeScale = reader.readInt(NbtTags.FRACTAL_BIOME_SCALE, this.fractalBiomeScale);
+            this.fractalSubVariantScale = reader.readInt(NbtTags.FRACTAL_SUB_VARIANT_SCALE, this.fractalSubVariantScale);
+            this.fractalHillScale = reader.readInt(NbtTags.FRACTAL_HILL_SCALE, this.fractalHillScale);
+            this.fractalLargerIslands = reader.readBoolean(NbtTags.FRACTAL_LARGER_ISLANDS, this.fractalLargerIslands);
+            this.fractalOceans = reader.readBoolean(NbtTags.FRACTAL_OCEANS, this.fractalOceans);
+            this.fractalAddRivers = reader.readBoolean(NbtTags.FRACTAL_ADD_RIVERS, this.fractalAddRivers);
+            this.fractalAddSnow = reader.readBoolean(NbtTags.FRACTAL_ADD_SNOW, this.fractalAddSnow);
+            this.fractalAddMushroomIslands = reader.readBoolean(NbtTags.FRACTAL_ADD_MUSHROOM_ISLANDS, this.fractalAddMushroomIslands);
+            this.fractalAddBeaches = reader.readBoolean(NbtTags.FRACTAL_ADD_BEACHES, this.fractalAddBeaches);
+            this.fractalAddHills = reader.readBoolean(NbtTags.FRACTAL_ADD_HILLS, this.fractalAddHills);
+            this.fractalAddSwampRivers = reader.readBoolean(NbtTags.FRACTAL_ADD_HILLS, this.fractalAddSwampRivers);
+
             this.loadDatafix(reader);
             
             return this;

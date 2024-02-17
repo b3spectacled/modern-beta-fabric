@@ -1,6 +1,7 @@
 package mod.bespectacled.modernbeta.settings;
 
 import java.util.List;
+import java.util.Map;
 
 import mod.bespectacled.modernbeta.ModernBetaBuiltInTypes;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomes;
@@ -20,11 +21,17 @@ public class ModernBetaSettingsPresets {
     public static final ModernBetaSettingsPreset PRESET_INFDEV_415 = presetInfdev415();
     public static final ModernBetaSettingsPreset PRESET_INFDEV_420 = presetInfdev420();
     public static final ModernBetaSettingsPreset PRESET_INFDEV_611 = presetInfdev611();
+    public static final ModernBetaSettingsPreset PRESET_INFDEV_325 = presetInfdev325();
     public static final ModernBetaSettingsPreset PRESET_INFDEV_227 = presetInfdev227();
     public static final ModernBetaSettingsPreset PRESET_INDEV = presetIndev();
     public static final ModernBetaSettingsPreset PRESET_CLASSIC = presetClassic();
     public static final ModernBetaSettingsPreset PRESET_PE = presetPE();
-    
+    public static final ModernBetaSettingsPreset PRESET_BETA_1_8_1 = presetBeta181();
+    public static final ModernBetaSettingsPreset PRESET_RELEASE_1_0_0 = preset100();
+    public static final ModernBetaSettingsPreset PRESET_RELEASE_1_1 = preset11();
+    public static final ModernBetaSettingsPreset PRESET_RELEASE_1_2_5 = preset125();
+    public static final ModernBetaSettingsPreset PRESET_RELEASE_1_6_4 = preset164();
+
     public static final ModernBetaSettingsPreset PRESET_BETA_SKYLANDS = presetBetaSkylands();
     public static final ModernBetaSettingsPreset PRESET_BETA_ISLES = presetBetaIsles();
     public static final ModernBetaSettingsPreset PRESET_BETA_ISLE_LAND = presetBetaIsleLand();
@@ -34,11 +41,13 @@ public class ModernBetaSettingsPresets {
     public static final ModernBetaSettingsPreset PRESET_BETA_XBOX_LEGACY = presetBetaXboxLegacy();
     public static final ModernBetaSettingsPreset PRESET_BETA_SURVIVAL_ISLAND = presetBetaSurvivalIsland();
     public static final ModernBetaSettingsPreset PRESET_BETA_VANILLA = presetBetaVanilla();
+    public static final ModernBetaSettingsPreset PRESET_BETA_HYBRID = presetBetaHybrid();
+    public static final ModernBetaSettingsPreset PRESET_RELEASE_HYBRID = presetReleaseHybrid();
     public static final ModernBetaSettingsPreset PRESET_ALPHA_WINTER = presetAlphaWinter();
     public static final ModernBetaSettingsPreset PRESET_INDEV_PARADISE = presetIndevParadise();
     public static final ModernBetaSettingsPreset PRESET_INDEV_WOODS = presetIndevWoods();
     public static final ModernBetaSettingsPreset PRESET_INDEV_HELL = presetIndevHell();
-    
+
     private static ModernBetaSettingsPreset presetBeta() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
@@ -326,6 +335,29 @@ public class ModernBetaSettingsPresets {
             settingsCaveBiome.build()
         );
     }
+
+    private static ModernBetaSettingsPreset presetInfdev325() {
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
+
+        settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.INFDEV_227.id;
+        settingsChunk.useDeepslate = false;
+        settingsChunk.useCaves = true;
+        settingsChunk.infdevUsePyramid = true;
+        settingsChunk.infdevUseWall = false;
+
+        settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.SINGLE.id;
+        settingsBiome.singleBiome = ModernBetaBiomes.INFDEV_325.getValue().toString();
+
+        settingsCaveBiome.biomeProvider = ModernBetaBuiltInTypes.CaveBiome.NONE.id;
+
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
     
     private static ModernBetaSettingsPreset presetInfdev227() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
@@ -349,7 +381,7 @@ public class ModernBetaSettingsPresets {
             settingsCaveBiome.build()
         );
     }
-    
+
     private static ModernBetaSettingsPreset presetIndev() {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
@@ -682,7 +714,9 @@ public class ModernBetaSettingsPresets {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder().fromCompound(compoundChunk);
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder().fromCompound(compoundBiome);
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder().fromCompound(compoundCaveBiome);
-        
+
+        settingsChunk.useSurfaceRules = true;
+
         settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.VORONOI.id;
         settingsBiome.climateTempNoiseScale = 0.025f / 3.0f;
         settingsBiome.climateRainNoiseScale = 0.05f / 3.0f;
@@ -1252,5 +1286,276 @@ public class ModernBetaSettingsPresets {
             settingsCaveBiome.build()
         );
     }
-   
+
+    private static ModernBetaSettingsPreset presetBeta181() {
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
+
+        settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.EARLY_RELEASE.id;
+        settingsChunk.releaseExtraHillHeight = false;
+        settingsChunk.releaseHeightOverrides = Map.ofEntries(
+            Map.entry("example:flat_biome", "-0.2;0.1"),
+            Map.entry("*example:flat_biome", "-0.1;0.5"),
+            Map.entry("minecraft:ocean", "-1.0;0.5")
+        );
+        settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.FRACTAL.id;
+        settingsBiome.fractalBiomes = List.of(
+            "minecraft:desert",
+            "minecraft:forest",
+            "modern_beta:late_beta_extreme_hills",
+            "modern_beta:late_beta_swampland",
+            "modern_beta:late_beta_plains",
+            "modern_beta:late_beta_taiga"
+        );
+
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
+
+    private static ModernBetaSettingsPreset preset100() {
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
+
+        settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.EARLY_RELEASE.id;
+        settingsChunk.releaseExtraHillHeight = false;
+        settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.FRACTAL.id;
+        settingsBiome.fractalBiomes = List.of(
+            "minecraft:desert",
+            "minecraft:forest",
+            "modern_beta:late_beta_extreme_hills",
+            "modern_beta:early_release_swampland",
+            "modern_beta:late_beta_plains",
+            "modern_beta:late_beta_taiga"
+        );
+        settingsBiome.fractalLargerIslands = false;
+        settingsBiome.fractalAddSnow = true;
+        settingsBiome.fractalAddMushroomIslands = true;
+
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
+
+    private static ModernBetaSettingsPreset preset11() {
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
+
+        settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.EARLY_RELEASE.id;
+        settingsChunk.releaseExtraHillHeight = false;
+        settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.FRACTAL.id;
+        settingsBiome.fractalBiomes = List.of(
+            "minecraft:desert",
+            "minecraft:forest",
+            "modern_beta:early_release_extreme_hills",
+            "modern_beta:early_release_swampland",
+            "modern_beta:late_beta_plains",
+            "modern_beta:early_release_taiga"
+        );
+        settingsBiome.fractalLargerIslands = false;
+        settingsBiome.fractalAddSnow = true;
+        settingsBiome.fractalAddMushroomIslands = true;
+        settingsBiome.fractalAddBeaches = true;
+        settingsBiome.fractalAddHills = true;
+        settingsBiome.fractalAddSwampRivers = true;
+
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
+
+    private static ModernBetaSettingsPreset preset125() {
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
+
+        settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.EARLY_RELEASE.id;
+        settingsChunk.releaseExtraHillHeight = false;
+        settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.FRACTAL.id;
+        settingsBiome.fractalBiomes = List.of(
+            "minecraft:desert",
+            "minecraft:forest",
+            "modern_beta:early_release_extreme_hills",
+            "modern_beta:early_release_swampland",
+            "modern_beta:late_beta_plains",
+            "modern_beta:early_release_taiga",
+            "minecraft:jungle"
+        );
+        settingsBiome.fractalLargerIslands = false;
+        settingsBiome.fractalAddSnow = true;
+        settingsBiome.fractalAddMushroomIslands = true;
+        settingsBiome.fractalAddBeaches = true;
+        settingsBiome.fractalAddHills = true;
+        settingsBiome.fractalAddSwampRivers = true;
+
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
+
+    private static ModernBetaSettingsPreset preset164() {
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
+
+        settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.EARLY_RELEASE.id;
+        settingsChunk.releaseExtraHillHeight = true;
+        settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.FRACTAL.id;
+        settingsBiome.fractalBiomes = List.of(
+            "minecraft:desert",
+            "minecraft:forest",
+            "modern_beta:early_release_extreme_hills",
+            "modern_beta:early_release_swampland",
+            "modern_beta:late_beta_plains",
+            "modern_beta:early_release_taiga",
+            "minecraft:jungle"
+        );
+        settingsBiome.fractalLargerIslands = false;
+        settingsBiome.fractalAddSnow = true;
+        settingsBiome.fractalAddMushroomIslands = true;
+        settingsBiome.fractalAddBeaches = true;
+        settingsBiome.fractalAddHills = true;
+        settingsBiome.fractalAddSwampRivers = true;
+
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
+
+    private static ModernBetaSettingsPreset presetReleaseHybrid() {
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
+
+        settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.EARLY_RELEASE.id;
+        settingsChunk.releaseExtraHillHeight = true;
+        settingsChunk.useSurfaceRules = true;
+
+        settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.FRACTAL.id;
+        settingsBiome.fractalBiomes = List.of(
+            "minecraft:desert",
+            "minecraft:forest",
+            "minecraft:windswept_hills",
+            "minecraft:swamp",
+            "minecraft:plains",
+            "minecraft:taiga",
+            "minecraft:jungle",
+            "minecraft:savanna",
+            "minecraft:cherry_grove",
+            "minecraft:dark_forest",
+            "minecraft:birch_forest",
+            "minecraft:old_growth_birch_forest",
+            "minecraft:mangrove_swamp",
+            "minecraft:flower_forest",
+            "minecraft:sunflower_plains",
+            "minecraft:old_growth_spruce_taiga",
+            "minecraft:sparse_jungle",
+            "minecraft:badlands"
+        );
+        settingsBiome.fractalHillVariants = Map.ofEntries(
+            Map.entry("minecraft:desert", "*minecraft:desert"),
+            Map.entry("minecraft:forest", "*minecraft:forest"),
+            Map.entry("minecraft:windswept_hills", "minecraft:windswept_forest"),
+            Map.entry("minecraft:swamp", "*minecraft:swamp"),
+            Map.entry("minecraft:plains", "minecraft:forest"),
+            Map.entry("minecraft:taiga", "*minecraft:taiga"),
+            Map.entry("minecraft:jungle", "*minecraft:jungle"),
+            Map.entry("minecraft:snowy_taiga", "*minecraft:snowy_taiga"),
+            Map.entry("minecraft:savanna", "*minecraft:savanna"),
+            Map.entry("minecraft:dark_forest", "minecraft:plains"),
+            Map.entry("minecraft:birch_forest", "*minecraft:birch_forest"),
+            Map.entry("minecraft:old_growth_birch_forest", "*minecraft:old_growth_birch_forest"),
+            Map.entry("minecraft:wooded_badlands", "*minecraft:wooded_badlands"),
+            Map.entry("minecraft:mangrove_swamp", "*minecraft:mangrove_swamp"),
+            Map.entry("minecraft:flower_forest", "*minecraft:flower_forest"),
+            Map.entry("minecraft:sparse_jungle", "minecraft:jungle"),
+            Map.entry("minecraft:badlands", "*minecraft:badlands")
+        );
+        settingsBiome.fractalSubVariants = Map.ofEntries(
+            Map.entry("minecraft:snowy_plains", List.of(
+                "minecraft:snowy_plains",
+                "minecraft:snowy_taiga",
+                "minecraft:snowy_plains",
+                "minecraft:snowy_taiga",
+                "minecraft:snowy_plains",
+                "minecraft:ice_spikes"
+            )),
+            Map.entry("minecraft:savanna", List.of(
+                "minecraft:savanna",
+                "minecraft:savanna",
+                "minecraft:windswept_savanna",
+                "minecraft:savanna",
+                "minecraft:savanna"
+            ))
+        );
+        settingsBiome.fractalPlains = "minecraft:plains";
+        settingsBiome.fractalIcePlains = "minecraft:snowy_plains";
+        settingsBiome.fractalSubVariantScale = 1;
+        settingsBiome.fractalLargerIslands = false;
+        settingsBiome.fractalAddSnow = true;
+        settingsBiome.fractalAddMushroomIslands = true;
+        settingsBiome.fractalAddBeaches = true;
+        settingsBiome.fractalAddHills = true;
+        settingsBiome.fractalAddSwampRivers = true;
+
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
+
+    private static ModernBetaSettingsPreset presetBetaHybrid() {
+        ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder();
+        ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder();
+        ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder();
+
+        settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.EARLY_RELEASE.id;
+        settingsChunk.releaseExtraHillHeight = true;
+
+        settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.FRACTAL.id;
+        settingsBiome.fractalBiomes = List.of(
+            "modern_beta:beta_desert",
+            "modern_beta:beta_seasonal_forest",
+            "modern_beta:beta_shrubland",
+            "modern_beta:beta_savanna",
+            "modern_beta:beta_plains",
+            "modern_beta:beta_rainforest",
+            "modern_beta:beta_forest",
+            "modern_beta:beta_swampland"
+        );
+        settingsBiome.fractalSubVariants = Map.ofEntries(
+            Map.entry("modern_beta:beta_tundra", List.of(
+                "modern_beta:beta_tundra",
+                "modern_beta:beta_tundra",
+                "modern_beta:beta_taiga"
+            ))
+        );
+        settingsBiome.fractalPlains = "modern_beta:beta_plains";
+        settingsBiome.fractalIcePlains = "modern_beta:beta_tundra";
+        settingsBiome.fractalSubVariantScale = 0;
+        settingsBiome.fractalLargerIslands = false;
+        settingsBiome.fractalAddSnow = true;
+        settingsBiome.fractalAddBeaches = true;
+        settingsBiome.fractalAddHills = true;
+
+        return new ModernBetaSettingsPreset(
+            settingsChunk.build(),
+            settingsBiome.build(),
+            settingsCaveBiome.build()
+        );
+    }
 }

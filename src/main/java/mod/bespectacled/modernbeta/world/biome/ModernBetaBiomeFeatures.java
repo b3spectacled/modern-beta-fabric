@@ -81,7 +81,7 @@ public class ModernBetaBiomeFeatures {
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_DANDELION_2);
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_FOREST_BEES);
-            
+
             builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.FOREST_FLOWERS);
             builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_GRASS_FOREST);
         }
@@ -244,7 +244,48 @@ public class ModernBetaBiomeFeatures {
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
         DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
-    
+
+    public static void addExtremeHillsFeatures(GenerationSettings.LookupBackedBuilder builder) {
+        addDefaultFeatures(builder, ModernBetaFeatureSettings.BETA);
+
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_SPARSE);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_TAIGA_1);
+
+        DefaultBiomeFeatures.addDefaultDisks(builder);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
+    }
+
+    public static void addAdventureSwamplandFeatures(GenerationSettings.LookupBackedBuilder builder, boolean lilypads) {
+        addDefaultFeatures(builder, ModernBetaFeatureSettings.BETA);
+
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
+        builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.TREES_SWAMP);
+        builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.FLOWER_SWAMP);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_TAIGA_1);
+        builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_DEAD_BUSH);
+        if (lilypads) builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_WATERLILY);
+        builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.BROWN_MUSHROOM_SWAMP);
+        builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.RED_MUSHROOM_SWAMP);
+
+        DefaultBiomeFeatures.addDefaultDisks(builder);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
+    }
+
+    public static void addIcePlainsFeatures(GenerationSettings.LookupBackedBuilder builder) {
+        addDefaultFeatures(builder, ModernBetaFeatureSettings.BETA);
+
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_SPARSE);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_TAIGA_1);
+
+        DefaultBiomeFeatures.addDefaultDisks(builder);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
+    }
+
     public static void addOceanFeatures(GenerationSettings.LookupBackedBuilder builder, boolean pe) {
         addDefaultFeatures(builder, pe ? ModernBetaFeatureSettings.PE : ModernBetaFeatureSettings.BETA);
         
@@ -377,6 +418,16 @@ public class ModernBetaBiomeFeatures {
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INFDEV_415);
         builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
         
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+    }
+
+    public static void addInfdev325Features(GenerationSettings.LookupBackedBuilder builder) {
+        addDefaultFeatures(builder, ModernBetaFeatureSettings.INFDEV_325);
+
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_DANDELION_INFDEV_227);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INFDEV_325);
+
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
     }
     
@@ -536,6 +587,7 @@ public class ModernBetaBiomeFeatures {
         private static final ModernBetaFeatureSettings INFDEV_611 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INFDEV_420 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INFDEV_415 = new ModernBetaFeatureSettings(false);
+        private static final ModernBetaFeatureSettings INFDEV_325 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INFDEV_227 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INDEV = new ModernBetaFeatureSettings(false);
     }
