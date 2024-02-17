@@ -99,7 +99,8 @@ public final class ModernBetaBuiltInTypes {
         HEIGHT_CONFIG_JUNGLE(ModernBetaTagProviderBiome.HEIGHT_CONFIG_JUNGLE.id().toString()),
         HEIGHT_CONFIG_JUNGLE_HILLS(ModernBetaTagProviderBiome.HEIGHT_CONFIG_JUNGLE_HILLS.id().toString()),
         HEIGHT_CONFIG_PLATEAU(ModernBetaTagProviderBiome.HEIGHT_CONFIG_PLATEAU.id().toString()),
-        HEIGHT_CONFIG_SWAMPLAND_HILLS(ModernBetaTagProviderBiome.HEIGHT_CONFIG_SWAMPLAND_HILLS.id().toString())
+        HEIGHT_CONFIG_SWAMPLAND_HILLS(ModernBetaTagProviderBiome.HEIGHT_CONFIG_SWAMPLAND_HILLS.id().toString()),
+        HEIGHT_CONFIG_PLATEAU_HILL(ModernBetaTagProviderBiome.HEIGHT_CONFIG_PLATEAU_HILL.id().toString())
         ;
 
         public final String id;

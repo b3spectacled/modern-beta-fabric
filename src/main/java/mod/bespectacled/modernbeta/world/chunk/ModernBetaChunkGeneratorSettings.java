@@ -19,6 +19,7 @@ import net.minecraft.world.gen.densityfunction.DensityFunctionTypes;
 import net.minecraft.world.gen.noise.NoiseParametersKeys;
 import net.minecraft.world.gen.noise.NoiseRouter;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules.SequenceMaterialRule;
+import net.minecraft.world.gen.surfacebuilder.VanillaSurfaceRules;
 
 public class ModernBetaChunkGeneratorSettings {
     @Deprecated
@@ -98,7 +99,7 @@ public class ModernBetaChunkGeneratorSettings {
             BlockStates.STONE,
             BlockStates.WATER,
             createDensityFunctions(densityFunctionLookup, noiseParametersLookup),
-            new SequenceMaterialRule(List.of()),
+            VanillaSurfaceRules.createDefaultRule(false, false, true),
             List.of(),
             seaLevel,
             false,

@@ -1,6 +1,7 @@
 package mod.bespectacled.modernbeta.world.chunk.provider;
 
 import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderNoise;
+import mod.bespectacled.modernbeta.api.world.chunk.surface.SurfaceBlocks;
 import mod.bespectacled.modernbeta.api.world.chunk.surface.SurfaceConfig;
 import mod.bespectacled.modernbeta.api.world.spawn.SpawnLocator;
 import mod.bespectacled.modernbeta.util.BlockStates;
@@ -186,6 +187,44 @@ public class ChunkProviderEarlyRelease extends ChunkProviderNoise {
                     if (runDepth == 0 && fillerBlock.isOf(Blocks.RED_SAND)) {
                         runDepth = rand.nextInt(4);
                         fillerBlock = BlockStates.RED_SANDSTONE;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void provideSurfaceExtra(ChunkRegion region, StructureAccessor structureAccessor, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
+        double scale = 0.03125;
+
+        ChunkPos chunkPos = chunk.getPos();
+        int chunkX = chunkPos.x;
+        int chunkZ = chunkPos.z;
+
+        Random rand = this.createSurfaceRandom(chunkX, chunkZ);
+        BlockPos.Mutable pos = new BlockPos.Mutable();
+
+        double[] surfaceNoise = surfaceOctaveNoise.sampleBeta(
+            chunkX * 16, chunkZ * 16, 0.0D,
+            16, 16, 1,
+            scale * 2D, scale * 2D, scale * 2D
+        );
+
+        for (int localZ = 0; localZ < 16; localZ++) {
+            for (int localX = 0; localX < 16; localX++) {
+                int surfaceTopY = chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG).get(localX, localZ);
+                int surfaceDepth = (int) (surfaceNoise[localZ + localX * 16] / 3D + 3D + rand.nextDouble() * 0.25D);
+
+                if (surfaceDepth <= 0) {
+                    int y = surfaceTopY;
+                    pos.set(localX, y, localZ);
+                    chunk.setBlockState(pos, BlockStates.AIR, false);
+                    pos.setY(--y);
+
+                    BlockState blockState;
+                    while (!(blockState = chunk.getBlockState(pos)).isAir() && !blockState.isOf(this.defaultBlock.getBlock())) {
+                        chunk.setBlockState(pos, this.defaultBlock, false);
+                        pos.setY(--y);
                     }
                 }
             }

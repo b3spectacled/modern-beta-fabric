@@ -106,7 +106,19 @@ public abstract class ChunkProvider {
      * @param noiseConfig TODO
      */
     public abstract void provideSurface(ChunkRegion region, StructureAccessor structureAccessor, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig);
-    
+
+    /**
+     * Generates biome-specific surface for given chunk on top of surface rules.
+     *
+     * @param region
+     * @param structureAccessor TODO
+     * @param chunk
+     * @param biomeSource
+     * @param noiseConfig TODO
+     */
+    public void provideSurfaceExtra(ChunkRegion region, StructureAccessor structureAccessor, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
+    }
+
     /**
      * Sample height at given x/z coordinate. Initially generates heightmap for entire chunk, 
      * if chunk containing x/z coordinates has never been sampled.

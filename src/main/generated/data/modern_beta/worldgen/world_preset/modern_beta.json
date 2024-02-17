@@ -265,7 +265,8 @@
             "example:flat_biome": "-0.2;0.1"
           },
           "useCaves": 1,
-          "useDeepslate": 1
+          "useDeepslate": 1,
+          "useSurfaceRules": 0
         },
         "settings": "modern_beta:beta"
       }

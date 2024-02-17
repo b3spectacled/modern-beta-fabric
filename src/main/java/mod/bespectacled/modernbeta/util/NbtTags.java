@@ -13,7 +13,9 @@ public class NbtTags {
     public static final String USE_WORLD_BORDER = "useWorldBorder";
     public static final String WORLD_BORDER_WIDTH = "worldBorderWidth";
     public static final String WORLD_BORDER_LENGTH = "worldBorderLength";
-    
+
+    public static final String USE_SURFACE_RULES = "useSurfaceRules";
+
     public static final String USE_CAVES = "useCaves";
 
     // Noise

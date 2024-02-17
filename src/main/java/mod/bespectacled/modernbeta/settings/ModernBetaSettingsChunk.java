@@ -21,7 +21,9 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
     public final int deepslateMinY;
     public final int deepslateMaxY;
     public final String deepslateBlock;
-    
+
+    public final boolean useSurfaceRules;
+
     public final boolean useCaves;
 
     public final String noisePostProcessor;
@@ -81,7 +83,9 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         this.deepslateMinY = builder.deepslateMinY;
         this.deepslateMaxY = builder.deepslateMaxY;
         this.deepslateBlock = builder.deepslateBlock;
-        
+
+        this.useSurfaceRules = builder.useSurfaceRules;
+
         this.useCaves = builder.useCaves;
 
         this.noisePostProcessor = builder.noisePostProcessor;
@@ -148,7 +152,9 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             .putInt(NbtTags.DEEPSLATE_MIN_Y, this.deepslateMinY)
             .putInt(NbtTags.DEEPSLATE_MAX_Y, this.deepslateMaxY)
             .putString(NbtTags.DEEPSLATE_BLOCK, this.deepslateBlock)
-            
+
+            .putBoolean(NbtTags.USE_SURFACE_RULES, this.useSurfaceRules)
+
             .putBoolean(NbtTags.USE_CAVES, this.useCaves)
 
             .putFloat(NbtTags.NOISE_COORDINATE_SCALE, this.noiseCoordinateScale)
@@ -206,7 +212,9 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
         public int deepslateMinY;
         public int deepslateMaxY;
         public String deepslateBlock;
-        
+
+        public boolean useSurfaceRules;
+
         public boolean useCaves;
         public boolean useFixedCaves;
 
@@ -263,6 +271,8 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.deepslateMinY = 0;
             this.deepslateMaxY = 8;
             this.deepslateBlock = "minecraft:deepslate";
+
+            this.useSurfaceRules = false;
             
             this.useCaves = true;
             this.useFixedCaves = false;
@@ -325,7 +335,9 @@ public class ModernBetaSettingsChunk implements ModernBetaSettings {
             this.deepslateMinY = reader.readInt(NbtTags.DEEPSLATE_MIN_Y, this.deepslateMinY);
             this.deepslateMaxY = reader.readInt(NbtTags.DEEPSLATE_MAX_Y, this.deepslateMaxY);
             this.deepslateBlock = reader.readString(NbtTags.DEEPSLATE_BLOCK, this.deepslateBlock);
-            
+
+            this.useSurfaceRules = reader.readBoolean(NbtTags.USE_SURFACE_RULES, this.useSurfaceRules);
+
             this.useCaves = reader.readBoolean(NbtTags.USE_CAVES, this.useCaves);
 
             this.noiseCoordinateScale = reader.readFloat(NbtTags.NOISE_COORDINATE_SCALE, this.noiseCoordinateScale);

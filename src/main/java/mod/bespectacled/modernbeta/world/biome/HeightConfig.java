@@ -32,6 +32,7 @@ public record HeightConfig(float scale, float depth, boolean special) {
 	public static final HeightConfig JUNGLE_HILLS = new HeightConfig(1.8F, 0.2F, true);
 	public static final HeightConfig PLATEAU = new HeightConfig(1.8F, 0.2F);
 	public static final HeightConfig SWAMPLAND_HILLS = new HeightConfig(-0.1F, 0.5F, true);
+	public static final HeightConfig PLATEAU_HILL = new HeightConfig(1.8F, 0.2F, true);
 
 	public HeightConfig(float scale, float depth) {
 		this(scale, depth, false);

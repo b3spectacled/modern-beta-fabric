@@ -714,7 +714,9 @@ public class ModernBetaSettingsPresets {
         ModernBetaSettingsChunk.Builder settingsChunk = new ModernBetaSettingsChunk.Builder().fromCompound(compoundChunk);
         ModernBetaSettingsBiome.Builder settingsBiome = new ModernBetaSettingsBiome.Builder().fromCompound(compoundBiome);
         ModernBetaSettingsCaveBiome.Builder settingsCaveBiome = new ModernBetaSettingsCaveBiome.Builder().fromCompound(compoundCaveBiome);
-        
+
+        settingsChunk.useSurfaceRules = true;
+
         settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.VORONOI.id;
         settingsBiome.climateTempNoiseScale = 0.025f / 3.0f;
         settingsBiome.climateRainNoiseScale = 0.05f / 3.0f;
@@ -1440,6 +1442,8 @@ public class ModernBetaSettingsPresets {
 
         settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.EARLY_RELEASE.id;
         settingsChunk.releaseExtraHillHeight = true;
+        settingsChunk.useSurfaceRules = true;
+
         settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.FRACTAL.id;
         settingsBiome.fractalBiomes = List.of(
             "minecraft:desert",
@@ -1458,7 +1462,8 @@ public class ModernBetaSettingsPresets {
             "minecraft:flower_forest",
             "minecraft:sunflower_plains",
             "minecraft:old_growth_spruce_taiga",
-            "minecraft:sparse_jungle"
+            "minecraft:sparse_jungle",
+            "minecraft:badlands"
         );
         settingsBiome.fractalHillVariants = Map.ofEntries(
             Map.entry("minecraft:desert", "*minecraft:desert"),
@@ -1476,7 +1481,8 @@ public class ModernBetaSettingsPresets {
             Map.entry("minecraft:wooded_badlands", "*minecraft:wooded_badlands"),
             Map.entry("minecraft:mangrove_swamp", "*minecraft:mangrove_swamp"),
             Map.entry("minecraft:flower_forest", "*minecraft:flower_forest"),
-            Map.entry("minecraft:sparse_jungle", "minecraft:jungle")
+            Map.entry("minecraft:sparse_jungle", "minecraft:jungle"),
+            Map.entry("minecraft:badlands", "*minecraft:badlands")
         );
         settingsBiome.fractalSubVariants = Map.ofEntries(
             Map.entry("minecraft:snowy_plains", List.of(
@@ -1519,6 +1525,7 @@ public class ModernBetaSettingsPresets {
 
         settingsChunk.chunkProvider = ModernBetaBuiltInTypes.Chunk.EARLY_RELEASE.id;
         settingsChunk.releaseExtraHillHeight = true;
+
         settingsBiome.biomeProvider = ModernBetaBuiltInTypes.Biome.FRACTAL.id;
         settingsBiome.fractalBiomes = List.of(
             "modern_beta:beta_desert",

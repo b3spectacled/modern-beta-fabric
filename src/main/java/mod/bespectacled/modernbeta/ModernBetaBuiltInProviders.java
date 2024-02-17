@@ -99,6 +99,7 @@ public class ModernBetaBuiltInProviders {
         ModernBetaRegistries.HEIGHT_CONFIG.register(ModernBetaBuiltInTypes.HeightConfig.HEIGHT_CONFIG_JUNGLE_HILLS.id, HeightConfig.JUNGLE_HILLS);
         ModernBetaRegistries.HEIGHT_CONFIG.register(ModernBetaBuiltInTypes.HeightConfig.HEIGHT_CONFIG_PLATEAU.id, HeightConfig.PLATEAU);
         ModernBetaRegistries.HEIGHT_CONFIG.register(ModernBetaBuiltInTypes.HeightConfig.HEIGHT_CONFIG_SWAMPLAND_HILLS.id, HeightConfig.SWAMPLAND_HILLS);
+        ModernBetaRegistries.HEIGHT_CONFIG.register(ModernBetaBuiltInTypes.HeightConfig.HEIGHT_CONFIG_PLATEAU_HILL.id, HeightConfig.PLATEAU_HILL);
     }
     
     public static void registerBlockSources() {

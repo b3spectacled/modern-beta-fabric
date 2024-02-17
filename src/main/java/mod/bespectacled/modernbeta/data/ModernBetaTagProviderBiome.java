@@ -86,6 +86,7 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
     public static final TagKey<Biome> HEIGHT_CONFIG_JUNGLE_HILLS = keyOf("height_config/jungle_hills");
     public static final TagKey<Biome> HEIGHT_CONFIG_PLATEAU = keyOf("height_config/plateau");
     public static final TagKey<Biome> HEIGHT_CONFIG_SWAMPLAND_HILLS = keyOf("height_config/swampland_hills");
+    public static final TagKey<Biome> HEIGHT_CONFIG_PLATEAU_HILL = keyOf("height_config/plateau_hill");
 
     public static final TagKey<Biome> FRACTAL_SWAMP_RIVERS = keyOf("fractal_swamp_rivers");
     public static final TagKey<Biome> FRACTAL_JUNGLE_RIVERS = keyOf("fractal_jungle_rivers");
@@ -532,6 +533,13 @@ public class ModernBetaTagProviderBiome extends FabricTagProvider<Biome> {
 
         getOrCreateTagBuilder(HEIGHT_CONFIG_SWAMPLAND_HILLS)
             .addTag(HEIGHT_CONFIG_SWAMPLAND);
+
+        getOrCreateTagBuilder(HEIGHT_CONFIG_PLATEAU_HILL)
+            .add(
+                    BiomeKeys.BADLANDS,
+                    BiomeKeys.ERODED_BADLANDS,
+                    BiomeKeys.WOODED_BADLANDS
+            );
 
         /* Modern Beta Fractal Tags */
 
