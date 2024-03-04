@@ -13,7 +13,8 @@
     "Arenovas",
     "Amb0s",
     "PaulEvs",
-    "comp500"
+    "comp500",
+    "ErzeKawek"
   ],
   "contact": {
     "homepage": "https://github.com/b3spectacled/",
@@ -45,7 +46,7 @@
   "depends": {
     "fabricloader": ">=0.15.0",
     "fabric": "*",
-    "minecraft": "1.20.*",
+    "minecraft": "1.20.4",
     "java": ">=17",
     "cloth-config2": "*"
   }
