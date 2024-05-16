@@ -20,7 +20,7 @@ public class BiomePEForest {
         ModernBetaBiomeMobs.addTurtles(spawnSettings);
         
         GenerationSettings.LookupBackedBuilder genSettings = new GenerationSettings.LookupBackedBuilder(featureLookup, carverLookup);
-        ModernBetaBiomeFeatures.addForestFeatures(genSettings, true);
+        ModernBetaBiomeFeatures.addForestFeatures(genSettings, true, true);
         
         return (new Biome.Builder())
             .precipitation(true)

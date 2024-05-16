@@ -19,7 +19,7 @@ public class BiomeBetaTaiga {
         ModernBetaBiomeMobs.addTaigaMobs(spawnSettings);
         
         GenerationSettings.LookupBackedBuilder genSettings = new GenerationSettings.LookupBackedBuilder(featureLookup, carverLookup);
-        ModernBetaBiomeFeatures.addTaigaFeatures(genSettings, false);
+        ModernBetaBiomeFeatures.addTaigaFeatures(genSettings, false, true);
         
         return (new Biome.Builder())
             .precipitation(true)

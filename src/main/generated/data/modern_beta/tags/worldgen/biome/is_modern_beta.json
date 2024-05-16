@@ -39,10 +39,19 @@
     "modern_beta:infdev_611",
     "modern_beta:infdev_420",
     "modern_beta:infdev_415",
+    "modern_beta:infdev_325",
     "modern_beta:infdev_227",
     "modern_beta:indev_normal",
     "modern_beta:indev_hell",
     "modern_beta:indev_paradise",
-    "modern_beta:indev_woods"
+    "modern_beta:indev_woods",
+    "modern_beta:late_beta_extreme_hills",
+    "modern_beta:late_beta_swampland",
+    "modern_beta:late_beta_plains",
+    "modern_beta:late_beta_taiga",
+    "modern_beta:early_release_ice_plains",
+    "modern_beta:early_release_swampland",
+    "modern_beta:early_release_extreme_hills",
+    "modern_beta:early_release_taiga"
   ]
 }

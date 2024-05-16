@@ -89,7 +89,7 @@ public class BetaCaveCarver extends Carver<BetaCaveCarverConfig> {
             for (int j = 0; j < tunnelCount; ++j) {
                 float yaw = random.nextFloat() * 3.141593F * 2.0F;
                 float pitch = ((random.nextFloat() - 0.5F) * 2.0F) / 8F;
-                float width = getTunnelSystemWidth(random);
+                float width = getTunnelSystemWidth(random, useFixedCaves);
 
                 this.carveTunnels(
                     context, 
@@ -513,8 +513,11 @@ public class BetaCaveCarver extends Carver<BetaCaveCarverConfig> {
         return 15;
     }
 
-    protected float getTunnelSystemWidth(Random random) {
+    protected float getTunnelSystemWidth(Random random, boolean useFixedCaves) {
         float width = random.nextFloat() * 2.0f + random.nextFloat();
+        if (useFixedCaves && random.nextInt(10) == 0) {
+            width *= random.nextFloat() * random.nextFloat() * 3.0F + 1.0F;
+        }
         return width;
     }
     

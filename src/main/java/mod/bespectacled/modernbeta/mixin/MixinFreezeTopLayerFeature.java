@@ -1,5 +1,8 @@
 package mod.bespectacled.modernbeta.mixin;
 
+import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderEarlyRelease;
+import mod.bespectacled.modernbeta.world.chunk.provider.ChunkProviderMajorRelease;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -47,6 +50,14 @@ public abstract class MixinFreezeTopLayerFeature {
         
         ChunkGenerator chunkGenerator = context.getGenerator();
         BiomeSource biomeSource = chunkGenerator.getBiomeSource();
+
+        if (chunkGenerator instanceof ModernBetaChunkGenerator modernBetaChunkGenerator
+                && (modernBetaChunkGenerator.getChunkProvider() instanceof ChunkProviderEarlyRelease
+                        || modernBetaChunkGenerator.getChunkProvider() instanceof ChunkProviderMajorRelease)) {
+            BetaFreezeTopLayerFeature.setFreezeTopLayer(world, pos, biomeSource, modernBetaChunkGenerator.getChunkProvider().getChunkSettings().useSurfaceRules);
+            info.setReturnValue(true);
+            return;
+        }
         
         boolean hasClimateSampler =
             biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource &&
@@ -64,7 +75,7 @@ public abstract class MixinFreezeTopLayerFeature {
                 .getRegistryManager()
                 .get(RegistryKeys.PLACED_FEATURE)
                 .getEntry(ModernBetaMiscPlacedFeatures.FREEZE_TOP_LAYER)
-                .orElseGet(() -> null);
+                .orElse(null);
             
             boolean hasBetaFreezeTopLayer = topBiome.value()
                 .getGenerationSettings()
@@ -73,8 +84,7 @@ public abstract class MixinFreezeTopLayerFeature {
                 .anyMatch(list -> list.contains(betaFreezeTopLayer));
             
             if (hasBetaFreezeTopLayer) {
-                BetaFreezeTopLayerFeature.setFreezeTopLayer(world, pos, biomeSource);
-                
+                BetaFreezeTopLayerFeature.setFreezeTopLayer(world, pos, biomeSource, false);
                 info.setReturnValue(true);
             }
         }

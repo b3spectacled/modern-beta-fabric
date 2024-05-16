@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:is_ocean",
+    "minecraft:river",
+    "modern_beta:late_beta_swampland",
+    "modern_beta:early_release_swampland",
+    "minecraft:swamp",
+    "minecraft:mangrove_swamp",
+    "modern_beta:late_beta_extreme_hills",
+    "modern_beta:early_release_extreme_hills",
+    "minecraft:windswept_hills",
+    "minecraft:windswept_forest",
+    "minecraft:windswept_gravelly_hills"
+  ]
+}

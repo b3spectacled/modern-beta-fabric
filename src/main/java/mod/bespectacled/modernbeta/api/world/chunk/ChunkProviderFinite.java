@@ -81,7 +81,7 @@ public abstract class ChunkProviderFinite extends ChunkProvider implements Chunk
         this.worldMinY = shapeConfig.minimumY();
         this.worldHeight = shapeConfig.height();
         this.worldTopY = this.worldHeight + this.worldMinY;
-        this.seaLevel = generatorSettings.seaLevel();
+        this.seaLevel = generatorSettings.seaLevel() + this.getChunkSettings().seaLevelOffset;
         this.bedrockFloor = 0;
         this.bedrockCeiling = Integer.MIN_VALUE;
         this.useDeepslate = this.chunkSettings.useDeepslate;

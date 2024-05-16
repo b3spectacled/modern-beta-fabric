@@ -1,8 +1,8 @@
 {
   "carvers": {
     "air": [
-      "modern_beta:beta_cave",
-      "modern_beta:beta_cave_deep"
+      "minecraft:cave",
+      "minecraft:cave_extra_underground"
     ]
   },
   "downfall": 0.6,

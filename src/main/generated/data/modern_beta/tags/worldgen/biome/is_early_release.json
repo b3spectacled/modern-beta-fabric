@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "modern_beta:early_release_ice_plains",
+    "modern_beta:early_release_swampland",
+    "modern_beta:early_release_extreme_hills",
+    "modern_beta:early_release_taiga"
+  ]
+}

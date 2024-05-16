@@ -10,7 +10,10 @@ import mod.bespectacled.modernbeta.settings.ModernBetaSettingsBiome;
 import mod.bespectacled.modernbeta.util.chunk.ChunkHeightmap;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjectionRules.BiomeInjectionContext;
+import mod.bespectacled.modernbeta.world.biome.provider.BiomeProviderFractal;
+import mod.bespectacled.modernbeta.world.biome.provider.fractal.BiomeInfo;
 import mod.bespectacled.modernbeta.world.chunk.ModernBetaChunkGenerator;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.HeightLimitView;
@@ -124,6 +127,21 @@ public class BiomeInjector {
         int biomeZ = z >> 2;
         
         return this.getBiome(biomeX, biomeY, biomeZ, noiseSampler, step);
+    }
+
+    public String getBiomeNameAtBlock(int x, int y, int z, MultiNoiseSampler noiseSampler, BiomeInjectionStep step) {
+        int biomeX = x >> 2;
+        int biomeY = y >> 2;
+        int biomeZ = z >> 2;
+
+        if (this.modernBetaBiomeSource.getBiomeProvider() instanceof BiomeProviderFractal biomeProviderFractal) {
+            BiomeInfo biomeInfo = biomeProviderFractal.getBiomeInfo(biomeX, biomeY, biomeZ);
+            return biomeInfo.toString();
+        }
+
+        RegistryKey<Biome> key = this.getBiome(biomeX, biomeY, biomeZ, noiseSampler, step).getKey().orElse(null);
+        if (key == null) return "???";
+        return key.getValue().toString();
     }
     
     public RegistryEntry<Biome> getBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseSampler noiseSampler, BiomeInjectionStep step) {

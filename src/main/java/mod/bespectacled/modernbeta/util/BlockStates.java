@@ -28,7 +28,7 @@ public class BlockStates {
     public static final BlockState BEDROCK = Blocks.BEDROCK.getDefaultState();
     public static final BlockState DEEPSLATE = Blocks.DEEPSLATE.getDefaultState();
     
-    public static final BlockState GRASS = Blocks.GRASS.getDefaultState();
+    public static final BlockState SHORT_GRASS = Blocks.SHORT_GRASS.getDefaultState();
     public static final BlockState FERN = Blocks.FERN.getDefaultState();
     public static final BlockState TALL_GRASS = Blocks.TALL_GRASS.getDefaultState();
     public static final BlockState TALL_FERN = Blocks.LARGE_FERN.getDefaultState();

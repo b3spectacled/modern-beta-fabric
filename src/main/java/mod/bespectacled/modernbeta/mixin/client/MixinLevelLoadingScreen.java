@@ -1,5 +1,6 @@
 package mod.bespectacled.modernbeta.mixin.client;
 
+import net.minecraft.server.WorldGenerationProgressTracker;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -9,8 +10,7 @@ import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderFinite;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.WorldGenerationProgressTracker;
-import net.minecraft.client.gui.screen.LevelLoadingScreen;
+import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
@@ -21,7 +21,7 @@ public abstract class MixinLevelLoadingScreen extends Screen {
         super(title);
     }
 
-    @Inject(method = " <init>(Lnet/minecraft/client/gui/WorldGenerationProgressTracker;)V", at = @At("TAIL"))
+    @Inject(method = " <init>(Lnet/minecraft/server/WorldGenerationProgressTracker;)V", at = @At("TAIL"))
     private void injectInit(WorldGenerationProgressTracker progressProvider, CallbackInfo info) {
         ChunkProviderFinite.resetPhase();
     }

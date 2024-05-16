@@ -79,7 +79,7 @@ public abstract class ChunkProviderNoise extends ChunkProvider {
         this.worldMinY = shapeConfig.minimumY();
         this.worldHeight = shapeConfig.height();
         this.worldTopY = this.worldHeight + this.worldMinY;
-        this.seaLevel = generatorSettings.seaLevel();
+        this.seaLevel = generatorSettings.seaLevel() + this.getChunkSettings().seaLevelOffset;
         
         this.bedrockFloor = this.worldMinY;
         this.bedrockCeiling = this.worldTopY;

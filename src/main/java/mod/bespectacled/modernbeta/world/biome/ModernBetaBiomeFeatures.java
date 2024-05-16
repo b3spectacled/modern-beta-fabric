@@ -71,7 +71,7 @@ public class ModernBetaBiomeFeatures {
         }
     }
     
-    public static void addForestFeatures(GenerationSettings.LookupBackedBuilder builder, boolean pe) {
+    public static void addForestFeatures(GenerationSettings.LookupBackedBuilder builder, boolean pe, boolean hasBirch) {
         addDefaultFeatures(builder, pe ? ModernBetaFeatureSettings.PE : ModernBetaFeatureSettings.BETA);
         
         if (pe) {
@@ -80,8 +80,10 @@ public class ModernBetaBiomeFeatures {
         } else {
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_DANDELION_2);
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
-            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_FOREST_BEES);
-            
+            builder.feature(Feature.VEGETAL_DECORATION,
+                hasBirch ? ModernBetaVegetationPlacedFeatures.TREES_BETA_FOREST_BEES
+                : ModernBetaVegetationPlacedFeatures.TREES_BETA_OAK_FOREST_BEES);
+
             builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.FOREST_FLOWERS);
             builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_GRASS_FOREST);
         }
@@ -103,8 +105,11 @@ public class ModernBetaBiomeFeatures {
         DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
-    public static void addPlainsFeatures(GenerationSettings.LookupBackedBuilder builder, boolean pe) {
-        addDefaultFeatures(builder, pe ? ModernBetaFeatureSettings.PE : ModernBetaFeatureSettings.BETA);
+    public static void addPlainsFeatures(GenerationSettings.LookupBackedBuilder builder, boolean pe, boolean earlyRelease) {
+        addDefaultFeatures(builder,
+            pe ? ModernBetaFeatureSettings.PE
+            : earlyRelease ? ModernBetaFeatureSettings.EARLY_RELEASE
+            : ModernBetaFeatureSettings.BETA);
         
         if (pe) {
             addPEVegetation(builder, true);
@@ -214,7 +219,7 @@ public class ModernBetaBiomeFeatures {
         DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
     
-    public static void addTaigaFeatures(GenerationSettings.LookupBackedBuilder builder, boolean pe) {
+    public static void addTaigaFeatures(GenerationSettings.LookupBackedBuilder builder, boolean pe, boolean spruce) {
         addDefaultFeatures(builder, pe ? ModernBetaFeatureSettings.PE : ModernBetaFeatureSettings.BETA);
         
         if (pe) {
@@ -223,7 +228,9 @@ public class ModernBetaBiomeFeatures {
         } else {
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_DANDELION_2);
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
-            builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_TAIGA);
+            builder.feature(Feature.VEGETAL_DECORATION,
+                spruce ? ModernBetaVegetationPlacedFeatures.TREES_BETA_TAIGA
+                : ModernBetaVegetationPlacedFeatures.TREES_BETA_OAK_FOREST);
             builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_TAIGA_1);
         }
         
@@ -244,7 +251,48 @@ public class ModernBetaBiomeFeatures {
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
         DefaultBiomeFeatures.addDefaultVegetation(builder);
     }
-    
+
+    public static void addExtremeHillsFeatures(GenerationSettings.LookupBackedBuilder builder) {
+        addDefaultFeatures(builder, ModernBetaFeatureSettings.EARLY_RELEASE);
+
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_SPARSE);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_TAIGA_1);
+
+        DefaultBiomeFeatures.addDefaultDisks(builder);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
+    }
+
+    public static void addAdventureSwamplandFeatures(GenerationSettings.LookupBackedBuilder builder, boolean lilypads) {
+        addDefaultFeatures(builder, ModernBetaFeatureSettings.EARLY_RELEASE);
+
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
+        builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.TREES_SWAMP);
+        builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.FLOWER_SWAMP);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_TAIGA_1);
+        builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_DEAD_BUSH);
+        if (lilypads) builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_WATERLILY);
+        builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.BROWN_MUSHROOM_SWAMP);
+        builder.feature(Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.RED_MUSHROOM_SWAMP);
+
+        DefaultBiomeFeatures.addDefaultDisks(builder);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
+    }
+
+    public static void addIcePlainsFeatures(GenerationSettings.LookupBackedBuilder builder, boolean grass) {
+        addDefaultFeatures(builder, ModernBetaFeatureSettings.EARLY_RELEASE);
+
+        if (grass) builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_POPPY);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_BETA_SPARSE);
+        if (grass) builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_TAIGA_1);
+
+        DefaultBiomeFeatures.addDefaultDisks(builder);
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+        DefaultBiomeFeatures.addDefaultVegetation(builder);
+    }
+
     public static void addOceanFeatures(GenerationSettings.LookupBackedBuilder builder, boolean pe) {
         addDefaultFeatures(builder, pe ? ModernBetaFeatureSettings.PE : ModernBetaFeatureSettings.BETA);
         
@@ -379,6 +427,16 @@ public class ModernBetaBiomeFeatures {
         
         DefaultBiomeFeatures.addDefaultMushrooms(builder);
     }
+
+    public static void addInfdev325Features(GenerationSettings.LookupBackedBuilder builder) {
+        addDefaultFeatures(builder, ModernBetaFeatureSettings.INFDEV_325);
+
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_GRASS_ALPHA_2);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.PATCH_DANDELION_INFDEV_227);
+        builder.feature(Feature.VEGETAL_DECORATION, ModernBetaVegetationPlacedFeatures.TREES_INFDEV_325);
+
+        DefaultBiomeFeatures.addDefaultMushrooms(builder);
+    }
     
     public static void addInfdev227Features(GenerationSettings.LookupBackedBuilder builder) {
         addDefaultFeatures(builder, ModernBetaFeatureSettings.INFDEV_227);
@@ -442,7 +500,8 @@ public class ModernBetaBiomeFeatures {
         GenerationSettings.LookupBackedBuilder builder,
         ModernBetaFeatureSettings featureSettings
     ) {
-        addCarvers(builder, featureSettings.addCanyons);
+        addCarvers(builder, featureSettings.addCanyons, featureSettings.useBetaCarvers);
+
         if (featureSettings.addLakes) addLakes(builder);
         DefaultBiomeFeatures.addAmethystGeodes(builder);
         DefaultBiomeFeatures.addDungeons(builder);
@@ -466,10 +525,15 @@ public class ModernBetaBiomeFeatures {
         DefaultBiomeFeatures.addAmethystGeodes(builder);
     }
 
-    private static void addCarvers(GenerationSettings.LookupBackedBuilder builder, boolean addCanyons) {
-        builder.carver(GenerationStep.Carver.AIR, ModernBetaConfiguredCarvers.BETA_CAVE);
-        builder.carver(GenerationStep.Carver.AIR, ModernBetaConfiguredCarvers.BETA_CAVE_DEEP);
-        
+    private static void addCarvers(GenerationSettings.LookupBackedBuilder builder, boolean addCanyons, boolean useBetaCarvers) {
+        if (useBetaCarvers) {
+            builder.carver(GenerationStep.Carver.AIR, ModernBetaConfiguredCarvers.BETA_CAVE);
+            builder.carver(GenerationStep.Carver.AIR, ModernBetaConfiguredCarvers.BETA_CAVE_DEEP);
+        } else {
+            builder.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CAVE);
+            builder.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CAVE_EXTRA_UNDERGROUND);
+        }
+
         if (addCanyons) {
             builder.carver(GenerationStep.Carver.AIR, ConfiguredCarvers.CANYON);
         }
@@ -523,19 +587,22 @@ public class ModernBetaBiomeFeatures {
         boolean addClay,
         boolean addAlternateStones,
         boolean addNewMineables,
-        boolean useBetaFreezeTopLayer
+        boolean useBetaFreezeTopLayer,
+        boolean useBetaCarvers
     ) {
         private ModernBetaFeatureSettings(boolean setting) {
-            this(setting, setting, setting, setting, setting, setting, setting);
+            this(setting, setting, setting, setting, setting, setting, setting, setting);
         }
         
+        private static final ModernBetaFeatureSettings EARLY_RELEASE = new ModernBetaFeatureSettings(true, true, true, false, true, true, true, false);
         private static final ModernBetaFeatureSettings BETA = new ModernBetaFeatureSettings(true);
-        private static final ModernBetaFeatureSettings PE = new ModernBetaFeatureSettings(true, false, true, true, false, true, true);
-        private static final ModernBetaFeatureSettings SKY = new ModernBetaFeatureSettings(false, true, true, true, false, false, true);
-        private static final ModernBetaFeatureSettings ALPHA = new ModernBetaFeatureSettings(false, false, true, true, false, false, false);
+        private static final ModernBetaFeatureSettings PE = new ModernBetaFeatureSettings(true, false, true, true, false, true, true, true);
+        private static final ModernBetaFeatureSettings SKY = new ModernBetaFeatureSettings(false, true, true, true, false, false, true, true);
+        private static final ModernBetaFeatureSettings ALPHA = new ModernBetaFeatureSettings(false, false, true, true, false, false, false, true);
         private static final ModernBetaFeatureSettings INFDEV_611 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INFDEV_420 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INFDEV_415 = new ModernBetaFeatureSettings(false);
+        private static final ModernBetaFeatureSettings INFDEV_325 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INFDEV_227 = new ModernBetaFeatureSettings(false);
         private static final ModernBetaFeatureSettings INDEV = new ModernBetaFeatureSettings(false);
     }

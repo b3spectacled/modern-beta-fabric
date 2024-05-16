@@ -106,14 +106,26 @@ public abstract class ChunkProvider {
      * @param noiseConfig TODO
      */
     public abstract void provideSurface(ChunkRegion region, StructureAccessor structureAccessor, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig);
-    
+
+    /**
+     * Generates biome-specific surface for given chunk on top of surface rules.
+     *
+     * @param region
+     * @param structureAccessor TODO
+     * @param chunk
+     * @param biomeSource
+     * @param noiseConfig TODO
+     */
+    public void provideSurfaceExtra(ChunkRegion region, StructureAccessor structureAccessor, Chunk chunk, ModernBetaBiomeSource biomeSource, NoiseConfig noiseConfig) {
+    }
+
     /**
      * Sample height at given x/z coordinate. Initially generates heightmap for entire chunk, 
      * if chunk containing x/z coordinates has never been sampled.
      *
      * @param x x-coordinate in block coordinates.
      * @param z z-coordinate in block coordinates.
-     * @param type Vanilla heightmap type.
+     * @param heightmap Vanilla heightmap type.
      * 
      * @return The y-coordinate of top block at x/z.
      */
@@ -124,7 +136,7 @@ public abstract class ChunkProvider {
      * 
      * @param chunkX x-coordinate in chunk coordinates.
      * @param chunkZ z-coordinate in chunk coordinates.
-     * @param chunkStatus Chunk generation step used for skip context.
+     * @param step Chunk generation step used for skip context.
      * 
      * @return Whether to skip the chunk.
      */
@@ -159,7 +171,7 @@ public abstract class ChunkProvider {
     public int getSeaLevel() {
         return this.generatorSettings.value().seaLevel();
     }
-    
+
     /**
      * Get aquifer sampler, for carving for now.
      * 
@@ -196,8 +208,6 @@ public abstract class ChunkProvider {
      * Sets forest density using PerlinOctaveNoise sampler created with world seed.
      * Checks every placed feature in the biome source feature list,
      * and if it uses ModernBetaNoiseBasedCountPlacementModifier, replaces the noise sampler.
-     * 
-     * @param forestOctaves PerlinOctaveNoise object used to set forest octaves.
      */
     public void initForestOctaveNoise() {
         List<IndexedFeatures> generationSteps = ((AccessorChunkGenerator)this.chunkGenerator).getIndexedFeaturesListSupplier().get();

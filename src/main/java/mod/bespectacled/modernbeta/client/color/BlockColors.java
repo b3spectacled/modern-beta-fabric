@@ -15,7 +15,7 @@ public final class BlockColors {
         ColorProviderRegistry.BLOCK.register(
             (state, view, pos, tintNdx) -> BlockColorSampler.INSTANCE.getTallGrassColor(state, view, pos, tintNdx), 
             Blocks.FERN,
-            Blocks.GRASS,
+            Blocks.SHORT_GRASS,
             Blocks.POTTED_FERN,
             Blocks.TALL_GRASS,
             Blocks.LARGE_FERN

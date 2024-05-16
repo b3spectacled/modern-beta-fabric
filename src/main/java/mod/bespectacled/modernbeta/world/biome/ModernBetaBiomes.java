@@ -3,33 +3,18 @@ package mod.bespectacled.modernbeta.world.biome;
 import java.util.function.BiFunction;
 
 import mod.bespectacled.modernbeta.ModernBeta;
+import mod.bespectacled.modernbeta.world.biome.biomes.beta.*;
+import mod.bespectacled.modernbeta.world.biome.biomes.earlyrelease.BiomeEarlyReleaseIcePlains;
+import mod.bespectacled.modernbeta.world.biome.biomes.earlyrelease.BiomeEarlyReleaseSwampland;
+import mod.bespectacled.modernbeta.world.biome.biomes.earlyrelease.BiomeEarlyReleaseTaiga;
+import mod.bespectacled.modernbeta.world.biome.biomes.infdev.*;
+import mod.bespectacled.modernbeta.world.biome.biomes.latebeta.*;
 import mod.bespectacled.modernbeta.world.biome.biomes.alpha.BiomeAlpha;
 import mod.bespectacled.modernbeta.world.biome.biomes.alpha.BiomeAlphaWinter;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaColdOcean;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaDesert;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaForest;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaFrozenOcean;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaIceDesert;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaLukewarmOcean;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaOcean;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaPlains;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaRainforest;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaSavanna;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaSeasonalForest;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaShrubland;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaSky;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaSwampland;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaTaiga;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaTundra;
-import mod.bespectacled.modernbeta.world.biome.biomes.beta.BiomeBetaWarmOcean;
 import mod.bespectacled.modernbeta.world.biome.biomes.indev.BiomeIndevHell;
 import mod.bespectacled.modernbeta.world.biome.biomes.indev.BiomeIndevNormal;
 import mod.bespectacled.modernbeta.world.biome.biomes.indev.BiomeIndevParadise;
 import mod.bespectacled.modernbeta.world.biome.biomes.indev.BiomeIndevWoods;
-import mod.bespectacled.modernbeta.world.biome.biomes.infdev.BiomeInfdev227;
-import mod.bespectacled.modernbeta.world.biome.biomes.infdev.BiomeInfdev415;
-import mod.bespectacled.modernbeta.world.biome.biomes.infdev.BiomeInfdev420;
-import mod.bespectacled.modernbeta.world.biome.biomes.infdev.BiomeInfdev611;
 import mod.bespectacled.modernbeta.world.biome.biomes.pe.BiomePEColdOcean;
 import mod.bespectacled.modernbeta.world.biome.biomes.pe.BiomePEDesert;
 import mod.bespectacled.modernbeta.world.biome.biomes.pe.BiomePEForest;
@@ -57,6 +42,7 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 
 public class ModernBetaBiomes {
     public static final RegistryKey<Biome> BETA_FOREST = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_FOREST));
+    public static final RegistryKey<Biome> BETA_OAK_FOREST = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_OAK_FOREST));
     public static final RegistryKey<Biome> BETA_SHRUBLAND = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_SHRUBLAND));
     public static final RegistryKey<Biome> BETA_DESERT = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_DESERT));
     public static final RegistryKey<Biome> BETA_SAVANNA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_SAVANNA));
@@ -65,6 +51,7 @@ public class ModernBetaBiomes {
     public static final RegistryKey<Biome> BETA_RAINFOREST = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_RAINFOREST));
     public static final RegistryKey<Biome> BETA_SWAMPLAND = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_SWAMPLAND));
     public static final RegistryKey<Biome> BETA_TAIGA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_TAIGA));
+    public static final RegistryKey<Biome> BETA_OAK_TAIGA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_OAK_TAIGA));
     public static final RegistryKey<Biome> BETA_TUNDRA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_TUNDRA));
     public static final RegistryKey<Biome> BETA_ICE_DESERT = keyOf(ModernBeta.createId(ModernBetaBiomeTags.BETA_ICE_DESERT));
 
@@ -100,15 +87,28 @@ public class ModernBetaBiomes {
     public static final RegistryKey<Biome> INFDEV_611 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_611));
     public static final RegistryKey<Biome> INFDEV_420 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_420));
     public static final RegistryKey<Biome> INFDEV_415 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_415));
+    public static final RegistryKey<Biome> INFDEV_325 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_325));
     public static final RegistryKey<Biome> INFDEV_227 = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INFDEV_227));
-    
+
     public static final RegistryKey<Biome> INDEV_NORMAL = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INDEV_NORMAL));
     public static final RegistryKey<Biome> INDEV_HELL = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INDEV_HELL));
     public static final RegistryKey<Biome> INDEV_PARADISE = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INDEV_PARADISE));
     public static final RegistryKey<Biome> INDEV_WOODS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.INDEV_WOODS));
-    
+
+    public static final RegistryKey<Biome> LATE_BETA_EXTREME_HILLS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.LATE_BETA_EXTREME_HILLS));
+    public static final RegistryKey<Biome> LATE_BETA_ICE_PLAINS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.LATE_BETA_ICE_PLAINS));
+    public static final RegistryKey<Biome> LATE_BETA_SWAMPLAND = keyOf(ModernBeta.createId(ModernBetaBiomeTags.LATE_BETA_SWAMPLAND));
+    public static final RegistryKey<Biome> LATE_BETA_PLAINS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.LATE_BETA_PLAINS));
+    public static final RegistryKey<Biome> LATE_BETA_TAIGA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.LATE_BETA_TAIGA));
+
+    public static final RegistryKey<Biome> EARLY_RELEASE_ICE_PLAINS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.EARLY_RELEASE_ICE_PLAINS));
+    public static final RegistryKey<Biome> EARLY_RELEASE_SWAMPLAND = keyOf(ModernBeta.createId(ModernBetaBiomeTags.EARLY_RELEASE_SWAMPLAND));
+    public static final RegistryKey<Biome> EARLY_RELEASE_EXTREME_HILLS = keyOf(ModernBeta.createId(ModernBetaBiomeTags.EARLY_RELEASE_EXTREME_HILLS));
+    public static final RegistryKey<Biome> EARLY_RELEASE_TAIGA = keyOf(ModernBeta.createId(ModernBetaBiomeTags.EARLY_RELEASE_TAIGA));
+
     public static void bootstrap(Registerable<Biome> biomeRegisterable) {
         register(biomeRegisterable, BETA_FOREST, BiomeBetaForest::create);
+        register(biomeRegisterable, BETA_OAK_FOREST, BiomeBetaOakForest::create);
         register(biomeRegisterable, BETA_SHRUBLAND, BiomeBetaShrubland::create);
         register(biomeRegisterable, BETA_DESERT, BiomeBetaDesert::create);
         register(biomeRegisterable, BETA_SAVANNA, BiomeBetaSavanna::create);
@@ -117,6 +117,7 @@ public class ModernBetaBiomes {
         register(biomeRegisterable, BETA_RAINFOREST, BiomeBetaRainforest::create);
         register(biomeRegisterable, BETA_SWAMPLAND, BiomeBetaSwampland::create);
         register(biomeRegisterable, BETA_TAIGA, BiomeBetaTaiga::create);
+        register(biomeRegisterable, BETA_OAK_TAIGA, BiomeBetaOakTaiga::create);
         register(biomeRegisterable, BETA_TUNDRA, BiomeBetaTundra::create);
         register(biomeRegisterable, BETA_ICE_DESERT, BiomeBetaIceDesert::create);
 
@@ -152,12 +153,24 @@ public class ModernBetaBiomes {
         register(biomeRegisterable, INFDEV_611, BiomeInfdev611::create);
         register(biomeRegisterable, INFDEV_420, BiomeInfdev420::create);
         register(biomeRegisterable, INFDEV_415, BiomeInfdev415::create);
+        register(biomeRegisterable, INFDEV_325, BiomeInfdev325::create);
         register(biomeRegisterable, INFDEV_227, BiomeInfdev227::create);
 
         register(biomeRegisterable, INDEV_NORMAL, BiomeIndevNormal::create);
         register(biomeRegisterable, INDEV_HELL, BiomeIndevHell::create);
         register(biomeRegisterable, INDEV_PARADISE, BiomeIndevParadise::create);
         register(biomeRegisterable, INDEV_WOODS, BiomeIndevWoods::create);
+
+        register(biomeRegisterable, LATE_BETA_EXTREME_HILLS, BiomeLateBetaExtremeHills::create);
+        register(biomeRegisterable, LATE_BETA_ICE_PLAINS, BiomeLateBetaIcePlains::create);
+        register(biomeRegisterable, LATE_BETA_SWAMPLAND, BiomeLateBetaSwampland::create);
+        register(biomeRegisterable, LATE_BETA_PLAINS, BiomeLateBetaPlains::create);
+        register(biomeRegisterable, LATE_BETA_TAIGA, BiomeLateBetaTaiga::create);
+
+        register(biomeRegisterable, EARLY_RELEASE_ICE_PLAINS, BiomeEarlyReleaseIcePlains::create);
+        register(biomeRegisterable, EARLY_RELEASE_SWAMPLAND, BiomeEarlyReleaseSwampland::create);
+        register(biomeRegisterable, EARLY_RELEASE_EXTREME_HILLS, BiomeLateBetaExtremeHills::create);
+        register(biomeRegisterable, EARLY_RELEASE_TAIGA, BiomeEarlyReleaseTaiga::create);
     }
     
     private static void register(Registerable<Biome> biomeRegisterable, RegistryKey<Biome> biome, BiFunction<RegistryEntryLookup<PlacedFeature>, RegistryEntryLookup<ConfiguredCarver<?>>, Biome> biomeCreator) {

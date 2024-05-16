@@ -2,6 +2,8 @@ package mod.bespectacled.modernbeta.mixin.client;
 
 import java.util.List;
 
+import mod.bespectacled.modernbeta.api.world.chunk.ChunkProviderForcedHeight;
+import mod.bespectacled.modernbeta.world.biome.HeightConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -107,10 +109,20 @@ public abstract class MixinDebugHud {
                     );
                 }
 
+                if (chunkProvider instanceof ChunkProviderForcedHeight forcedHeightChunkProvider) {
+                    HeightConfig heightConfig = forcedHeightChunkProvider.getRawHeightConfigAt(x >> 2, z >> 2);
+                    info.getReturnValue().add(
+                        String.format(
+                            "[Modern Beta] Forced Height Chunk Provider height: %s",
+                            heightConfig.toString()
+                        )
+                    );
+                }
+
                 /*
                 int worldMinY = modernBetaChunkGenerator.getMinimumY();
-                int minHeight = modernBetaChunkGenerator.getBiomeInjector().sampleMinHeightAround(biomeX, biomeZ);
-                BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, -1, minHeight).setY(y);
+                int surfaceHeight = modernBetaChunkGenerator.getBiomeInjector().sampleMinHeightAround(biomeX, biomeZ);
+                BiomeInjectionContext context = new BiomeInjectionContext(worldMinY, -1, surfaceHeight).setY(y);
                 
                 boolean canPlaceCave = BiomeInjector.CAVE_PREDICATE.test(context);
                 
@@ -123,13 +135,8 @@ public abstract class MixinDebugHud {
                 */
 
                 if (modernBetaChunkGenerator.getBiomeInjector() != null) {
-                    RegistryEntry<Biome> biome = modernBetaChunkGenerator.getBiomeInjector().getBiomeAtBlock(x, y, z, null, BiomeInjectionStep.ALL);
-                    info.getReturnValue().add(
-                        String.format(
-                            "[Modern Beta] Injected biome: %s",
-                            biome.getKey().get().getValue().toString()
-                        )
-                   );
+                    String biome = modernBetaChunkGenerator.getBiomeInjector().getBiomeNameAtBlock(x, y, z, null, BiomeInjectionStep.ALL);
+                    info.getReturnValue().add(String.format("[Modern Beta] Injected biome: %s", biome));
                 }
             }
         }

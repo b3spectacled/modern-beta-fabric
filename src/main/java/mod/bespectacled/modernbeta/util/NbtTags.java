@@ -13,9 +13,14 @@ public class NbtTags {
     public static final String USE_WORLD_BORDER = "useWorldBorder";
     public static final String WORLD_BORDER_WIDTH = "worldBorderWidth";
     public static final String WORLD_BORDER_LENGTH = "worldBorderLength";
-    
+
+    public static final String USE_SURFACE_RULES = "useSurfaceRules";
+    public static final String SEA_LEVEL_OFFSET = "seaLevelOffset";
+
     public static final String USE_CAVES = "useCaves";
-    
+    public static final String USE_FIXED_CAVES = "useFixedCaves";
+    public static final String FORCE_BETA_CAVES = "forceBetaCaves";
+
     // Noise
     public static final String NOISE_POST_PROCESSOR = "noisePostProcessor";
     public static final String NOISE_COORDINATE_SCALE = "noiseCoordinateScale";
@@ -37,7 +42,14 @@ public class NbtTags {
     public static final String NOISE_BOTTOM_SLIDE_TARGET = "noiseBottomSlideTarget";
     public static final String NOISE_BOTTOM_SLIDE_SIZE = "noiseBottomSlideSize";
     public static final String NOISE_BOTTOM_SLIDE_OFFSET = "noiseBottomSlideOffset";
-    
+
+    // Release
+    public static final String RELEASE_HEIGHT_OVERRIDES = "releaseHeightOverrides";
+    public static final String RELEASE_BIOME_DEPTH_OFFSET = "releaseBiomeDepthOffset";
+    public static final String RELEASE_BIOME_DEPTH_WEIGHT = "releaseBiomeDepthWeight";
+    public static final String RELEASE_BIOME_SCALE_OFFSET = "releaseBiomeScaleOffset";
+    public static final String RELEASE_BIOME_SCALE_WEIGHT = "releaseBiomeScaleWeight";
+
     // Infdev 227
     public static final String INFDEV_USE_PYRAMID = "infdevUsePyramid";
     public static final String INFDEV_USE_WALL = "infdevUseWall";
@@ -50,7 +62,7 @@ public class NbtTags {
     public static final String INDEV_LEVEL_HEIGHT = "indevLevelHeight";
     public static final String INDEV_CAVE_RADIUS = "indevCaveRadius";
     public static final String INDEV_USE_CAVES = "indevUseCaves";
-    
+
     // Islands
     public static final String ISLES_USE_ISLANDS = "islesUseIslands";
     public static final String ISLES_USE_OUTER_ISLANDS = "islesUseOuterIslands";
@@ -91,7 +103,34 @@ public class NbtTags {
     public static final String VORONOI_DEPTH_MIN_Y = "voronoiDepthMinY";
     public static final String VORONOI_DEPTH_MAX_Y = "voronoiDepthMaxY";
     public static final String VORONOI_POINTS = "voronoiPoints";
-    
+
+    public static final String FRACTAL_BIOMES = "fractalBiomes";
+    public static final String FRACTAL_CLIMATIC_BIOMES = "fractalClimaticBiomes";
+    public static final String FRACTAL_HILL_VARIANTS = "fractalHillVariants";
+    public static final String FRACTAL_EDGE_VARIANTS = "fractalEdgeVariants";
+    public static final String FRACTAL_VERY_RARE_VARIANTS = "fractalVeryRareVariants";
+    public static final String FRACTAL_SUB_VARIANTS = "fractalSubVariants";
+    public static final String FRACTAL_PLAINS = "fractalPlains";
+    public static final String FRACTAL_ICE_PLAINS = "fractalIcePlains";
+    public static final String FRACTAL_BIOME_SCALE = "fractalBiomeScale";
+    public static final String FRACTAL_HILL_SCALE = "fractalHillScale";
+    public static final String FRACTAL_SUB_VARIANT_SCALE = "fractalSubVariantScale";
+    public static final String FRACTAL_SUB_VARIANT_SEED = "fractalSubVariantSeed";
+    public static final String FRACTAL_BEACH_SHRINK = "fractalBeachShrink";
+    public static final String FRACTAL_OCEAN_SHRINK = "fractalOceanShrink";
+    public static final String FRACTAL_TERRAIN_TYPE = "fractalTerrainType";
+    public static final String FRACTAL_OCEANS = "fractalOceans";
+    public static final String FRACTAL_ADD_RIVERS = "fractalAddRivers";
+    public static final String FRACTAL_ADD_SNOW = "fractalAddSnow";
+    public static final String FRACTAL_ADD_MUSHROOM_ISLANDS = "fractalAddMushroomIslands";
+    public static final String FRACTAL_ADD_BEACHES = "fractalAddBeaches";
+    public static final String FRACTAL_ADD_HILLS = "fractalAddHills";
+    public static final String FRACTAL_ADD_SWAMP_RIVERS = "fractalAddSwampRivers";
+    public static final String FRACTAL_ADD_DEEP_OCEANS = "fractalAddDeepOceans";
+    public static final String FRACTAL_ADD_MUTATIONS = "fractalAddMutations";
+    public static final String FRACTAL_ADD_CLIMATIC_OCEANS = "fractalAddClimaticOceans";
+    public static final String FRACTAL_USE_CLIMATIC_BIOMES = "fractalUseClimaticBiomes";
+
     /* Cave Biome Settings */
     
     public static final String CAVE_BIOME_PROVIDER = "biomeProvider";

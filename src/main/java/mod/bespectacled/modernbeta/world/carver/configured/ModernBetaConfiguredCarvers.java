@@ -48,7 +48,7 @@ public class ModernBetaConfiguredCarvers {
             Optional.of(useAquifers)
         );
         
-        CaveCarverConfig configCaveDeep = new CaveCarverConfig(
+        BetaCaveCarverConfig configCaveDeep = new BetaCaveCarverConfig(
             0.15f,                                                                              // Probability, unused here
             UniformHeightProvider.create(YOffset.aboveBottom(0), YOffset.fixed(0)),             // Y Level
             UniformFloatProvider.create(0.1f, 0.9f),                                            // Y scale, for large cave case(?)
@@ -57,7 +57,9 @@ public class ModernBetaConfiguredCarvers {
             registryBlock.getOrThrow(ModernBetaTagProviderBlock.OVERWORLD_CARVER_REPLACEABLES),
             UniformFloatProvider.create(0.7f, 1.4f),                                            // Tunnel horizontal scale
             UniformFloatProvider.create(0.8f, 1.3f),                                            // Tunnel vertical scale
-            UniformFloatProvider.create(-1.0f, -0.4f)                                           // Y Floor Level
+            UniformFloatProvider.create(-1.0f, -0.4f),                                          // Y Floor Level
+            Optional.of(useFixedCaves),
+            Optional.of(useAquifers)
         );
     
         carverRegisterable.register(BETA_CAVE, ModernBetaCarvers.BETA_CAVE.configure(configCave));

@@ -8,7 +8,7 @@ import net.minecraft.util.math.MathHelper;
  * Used for additional info: https://adrianb.io/2014/08/09/perlinnoise.html
  */
 public class PerlinNoise {
-    private int permutations[]; 
+    private int[] permutations;
     
     public double offsetX;
     public double offsetY;
@@ -108,7 +108,7 @@ public class PerlinNoise {
     }
    
     public void sampleAlpha(
-        double arr[], 
+        double[] arr,
         double x, double y, double z, 
         int sizeX, int sizeY, int sizeZ, 
         double scaleX, double scaleY, double scaleZ, 
@@ -194,7 +194,7 @@ public class PerlinNoise {
     }
 
     public void sampleBeta(
-        double arr[], 
+        double[] arr,
         double x, double y, double z, 
         int sizeX, int sizeY, int sizeZ, 
         double scaleX, double scaleY, double scaleZ, 

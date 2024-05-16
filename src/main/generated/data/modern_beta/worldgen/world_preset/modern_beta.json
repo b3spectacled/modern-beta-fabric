@@ -151,6 +151,134 @@
             "climateRainNoiseScale": 0.05,
             "climateTempNoiseScale": 0.025,
             "climateWeirdNoiseScale": 0.003125,
+            "fractalAddBeaches": 0,
+            "fractalAddClimaticOceans": 0,
+            "fractalAddDeepOceans": 0,
+            "fractalAddHills": 0,
+            "fractalAddMushroomIslands": 0,
+            "fractalAddMutations": 0,
+            "fractalAddRivers": 1,
+            "fractalAddSnow": 0,
+            "fractalAddSwampRivers": 0,
+            "fractalBeachShrink": 1,
+            "fractalBiomeScale": 4,
+            "fractalBiomes": [
+              "minecraft:desert",
+              "minecraft:forest",
+              "modern_beta:late_beta_extreme_hills",
+              "modern_beta:late_beta_swampland",
+              "modern_beta:late_beta_plains",
+              "modern_beta:late_beta_taiga"
+            ],
+            "fractalClimaticBiomes": [
+              {
+                "normal": [
+                  "minecraft:desert",
+                  "minecraft:desert",
+                  "minecraft:desert",
+                  "minecraft:savanna",
+                  "minecraft:savanna",
+                  "minecraft:plains"
+                ],
+                "rare": [
+                  "*minecraft:badlands",
+                  "*minecraft:wooded_badlands",
+                  "*minecraft:wooded_badlands"
+                ]
+              },
+              {
+                "normal": [
+                  "minecraft:forest",
+                  "minecraft:dark_forest",
+                  "minecraft:windswept_hills",
+                  "minecraft:plains",
+                  "minecraft:birch_forest",
+                  "minecraft:swamp"
+                ],
+                "rare": [
+                  "minecraft:jungle"
+                ]
+              },
+              {
+                "normal": [
+                  "minecraft:forest",
+                  "minecraft:windswept_hills",
+                  "minecraft:taiga",
+                  "minecraft:plains"
+                ],
+                "rare": [
+                  "minecraft:old_growth_pine_taiga"
+                ]
+              },
+              {
+                "normal": [
+                  "minecraft:snowy_plains",
+                  "minecraft:snowy_plains",
+                  "minecraft:snowy_plains",
+                  "minecraft:snowy_taiga"
+                ],
+                "rare": []
+              }
+            ],
+            "fractalEdgeVariants": {
+              "*minecraft:badlands": "minecraft:badlands",
+              "*minecraft:wooded_badlands": "minecraft:badlands",
+              "minecraft:desert": "-1*minecraft:windswept_forest",
+              "minecraft:old_growth_pine_taiga": "minecraft:taiga",
+              "minecraft:swamp": "-1*minecraft:sparse_jungle",
+              "modern_beta:early_release_extreme_hills": "*modern_beta:early_release_extreme_hills"
+            },
+            "fractalHillScale": 2,
+            "fractalHillVariants": {
+              "*minecraft:badlands": "minecraft:badlands",
+              "*minecraft:wooded_badlands": "minecraft:badlands",
+              "minecraft:bamboo_jungle": "*minecraft:bamboo_jungle",
+              "minecraft:birch_forest": "*minecraft:birch_forest",
+              "minecraft:dark_forest": "minecraft:plains",
+              "minecraft:deep_ocean": "*minecraft:deep_ocean",
+              "minecraft:desert": "*minecraft:desert",
+              "minecraft:forest": "*minecraft:forest",
+              "minecraft:jungle": "*minecraft:jungle",
+              "minecraft:ocean": "*minecraft:ocean",
+              "minecraft:old_growth_pine_taiga": "*minecraft:old_growth_pine_taiga",
+              "minecraft:old_growth_spruce_taiga": "*minecraft:old_growth_spruce_taiga",
+              "minecraft:plains": "minecraft:forest",
+              "minecraft:savanna": "*minecraft:savanna",
+              "minecraft:snowy_plains": "*minecraft:snowy_plains",
+              "minecraft:snowy_taiga": "*minecraft:snowy_taiga",
+              "minecraft:sparse_jungle": "*minecraft:sparse_jungle",
+              "minecraft:taiga": "*minecraft:taiga",
+              "minecraft:windswept_hills": "minecraft:windswept_forest",
+              "modern_beta:beta_desert": "*modern_beta:beta_desert",
+              "modern_beta:beta_forest": "*modern_beta:beta_forest",
+              "modern_beta:beta_plains": "modern_beta:beta_forest",
+              "modern_beta:beta_savanna": "*modern_beta:beta_savanna",
+              "modern_beta:beta_seasonal_forest": "*modern_beta:beta_seasonal_forest",
+              "modern_beta:beta_shrubland": "*modern_beta:beta_shrubland",
+              "modern_beta:beta_swampland": "*modern_beta:beta_swampland",
+              "modern_beta:beta_taiga": "*modern_beta:beta_taiga",
+              "modern_beta:beta_tundra": "*modern_beta:beta_tundra",
+              "modern_beta:early_release_ice_plains": "*modern_beta:early_release_ice_plains",
+              "modern_beta:early_release_taiga": "*modern_beta:early_release_taiga",
+              "modern_beta:late_beta_plains": "minecraft:forest",
+              "modern_beta:late_beta_taiga": "*modern_beta:late_beta_taiga",
+              "modern_beta:pe_desert": "*modern_beta:pe_desert",
+              "modern_beta:pe_forest": "*modern_beta:pe_forest",
+              "modern_beta:pe_plains": "modern_beta:pe_forest",
+              "modern_beta:pe_seasonal_forest": "*modern_beta:pe_seasonal_forest",
+              "modern_beta:pe_taiga": "*modern_beta:pe_taiga",
+              "modern_beta:pe_tundra": "*modern_beta:pe_tundra"
+            },
+            "fractalIcePlains": "modern_beta:early_release_ice_plains",
+            "fractalOceanShrink": 0,
+            "fractalOceans": 1,
+            "fractalPlains": "modern_beta:late_beta_plains",
+            "fractalSubVariantScale": 0,
+            "fractalSubVariantSeed": 3000,
+            "fractalSubVariants": {},
+            "fractalTerrainType": "beta",
+            "fractalUseClimaticBiomes": 0,
+            "fractalVeryRareVariants": {},
             "singleBiome": "modern_beta:beta_plains",
             "useOceanBiomes": 1,
             "voronoiPoints": [
@@ -170,6 +298,7 @@
           "deepslateBlock": "minecraft:deepslate",
           "deepslateMaxY": 8,
           "deepslateMinY": 0,
+          "forceBetaCaves": 1,
           "indevCaveRadius": 1.0,
           "indevLevelHeight": 128,
           "indevLevelLength": 256,
@@ -206,8 +335,20 @@
           "noiseTopSlideSize": 3,
           "noiseTopSlideTarget": -10,
           "noiseUpperLimitScale": 512.0,
+          "releaseBiomeDepthOffset": 0.0,
+          "releaseBiomeDepthWeight": 1.0,
+          "releaseBiomeScaleOffset": 0.0,
+          "releaseBiomeScaleWeight": 1.0,
+          "releaseHeightOverrides": {
+            "*example:flat_biome": "-0.1;0.5",
+            "2*example:flat_biome": "0.1;1.0",
+            "example:flat_biome": "-0.2;0.1"
+          },
+          "seaLevelOffset": 0.0,
           "useCaves": 1,
-          "useDeepslate": 1
+          "useDeepslate": 1,
+          "useFixedCaves": 0,
+          "useSurfaceRules": 0
         },
         "settings": "modern_beta:beta"
       }

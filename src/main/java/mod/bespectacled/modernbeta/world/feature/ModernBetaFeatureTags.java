@@ -29,25 +29,29 @@ public class ModernBetaFeatureTags {
     public static final String TREES_INFDEV_611 = "trees_infdev_611";
     public static final String TREES_INFDEV_420 = "trees_infdev_420";
     public static final String TREES_INFDEV_415 = "trees_infdev_415";
+    public static final String TREES_INFDEV_325 = "trees_infdev_325";
     public static final String TREES_INFDEV_227 = "trees_infdev_227";
-    
+
     public static final String TREES_ALPHA_BEES = "trees_alpha_bees";
     public static final String TREES_INFDEV_611_BEES = "trees_infdev_611_bees";
     public static final String TREES_INFDEV_420_BEES = "trees_infdev_420_bees";
     public static final String TREES_INFDEV_415_BEES = "trees_infdev_415_bees";
+    public static final String TREES_INFDEV_325_BEES = "trees_infdev_325_bees";
     public static final String TREES_INFDEV_227_BEES = "trees_infdev_227_bees";
-    
+
     public static final String TREES_BETA_FOREST = "trees_beta_forest";
     public static final String TREES_BETA_RAINFOREST = "trees_beta_rainforest";
     public static final String TREES_BETA_SEASONAL_FOREST = "trees_beta_seasonal_forest";
     public static final String TREES_BETA_SPARSE = "trees_beta_sparse";
     public static final String TREES_BETA_TAIGA = "trees_beta_taiga";
+    public static final String TREES_BETA_OAK_FOREST = "trees_beta_oak_forest";
 
     public static final String TREES_BETA_FOREST_BEES = "trees_beta_forest_bees";
     public static final String TREES_BETA_RAINFOREST_BEES = "trees_beta_rainforest_bees";
     public static final String TREES_BETA_SEASONAL_FOREST_BEES = "trees_beta_seasonal_forest_bees";
     public static final String TREES_BETA_SPARSE_BEES = "trees_beta_sparse_bees";
-    
+    public static final String TREES_BETA_OAK_FOREST_BEES = "trees_beta_oak_forest_bees";
+
     public static final String TREES_PE_FOREST = "trees_pe_forest";
     public static final String TREES_PE_RAINFOREST = "trees_pe_rainforest";
     public static final String TREES_PE_SEASONAL_FOREST = "trees_pe_seasonal_forest";

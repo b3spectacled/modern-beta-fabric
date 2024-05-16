@@ -22,8 +22,8 @@ public class BetaCaveCarverConfig extends CaveCarverConfig {
             Codec.BOOL.optionalFieldOf("use_aquifers").forGetter(config -> config.useAquifers))
         ).apply(instance, BetaCaveCarverConfig::new));
     
-    public final Optional<Boolean> useFixedCaves;
-    public final Optional<Boolean> useAquifers;
+    public Optional<Boolean> useFixedCaves;
+    public Optional<Boolean> useAquifers;
     
     public BetaCaveCarverConfig(
         float probability,

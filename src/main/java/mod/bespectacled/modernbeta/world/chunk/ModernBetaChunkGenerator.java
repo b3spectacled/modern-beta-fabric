@@ -1,5 +1,6 @@
 package mod.bespectacled.modernbeta.world.chunk;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -14,10 +15,15 @@ import mod.bespectacled.modernbeta.util.BlockStates;
 import mod.bespectacled.modernbeta.world.biome.ModernBetaBiomeSource;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector;
 import mod.bespectacled.modernbeta.world.biome.injector.BiomeInjector.BiomeInjectionStep;
+import mod.bespectacled.modernbeta.world.carver.BetaCaveCarver;
+import mod.bespectacled.modernbeta.world.carver.BetaCaveCarverConfig;
+import mod.bespectacled.modernbeta.world.carver.configured.ModernBetaConfiguredCarvers;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.ChunkPos;
@@ -39,6 +45,7 @@ import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.carver.CarverContext;
 import net.minecraft.world.gen.carver.CarvingMask;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
+import net.minecraft.world.gen.carver.ConfiguredCarvers;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -67,7 +74,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         NbtCompound chunkProviderSettings
     ) {
         super(biomeSource, settings);
-        
+
         this.settings = settings;
         this.chunkSettings = chunkProviderSettings;
         this.biomeInjector = this.biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource ?
@@ -81,7 +88,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
 
     public void initProvider(long seed) {
         ModernBetaSettingsChunk chunkSettings = ModernBetaSettingsChunk.fromCompound(this.chunkSettings);
-        
+
         this.chunkProvider = ModernBetaRegistries.CHUNK
             .get(chunkSettings.chunkProvider)
             .apply(this, seed);
@@ -91,7 +98,7 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
 
     @Override
     public CompletableFuture<Chunk> populateBiomes(Executor executor, NoiseConfig noiseConfig, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
-        return CompletableFuture.<Chunk>supplyAsync(Util.debugSupplier("init_biomes", () -> {
+        return CompletableFuture.supplyAsync(Util.debugSupplier("init_biomes", () -> {
             ChunkNoiseSampler noiseSampler = chunk.getOrCreateChunkNoiseSampler(c -> this.createChunkNoiseSampler(c, structureAccessor, blender, noiseConfig));
             chunk.populateBiomes(this.biomeSource, noiseSampler.createMultiNoiseSampler(noiseConfig.getNoiseRouter(), this.settings.value().spawnTarget()));
             
@@ -106,20 +113,29 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
         
         return completedChunk;
     }
-     
+
     @Override
     public void buildSurface(ChunkRegion chunkRegion, StructureAccessor structureAccessor, NoiseConfig noiseConfig, Chunk chunk) {
         this.injectBiomes(chunk, noiseConfig.getMultiNoiseSampler(), BiomeInjectionStep.PRE);
-        
+
         if (!this.chunkProvider.skipChunk(chunk.getPos().x, chunk.getPos().z, ModernBetaGenerationStep.SURFACE)) {
             if (this.biomeSource instanceof ModernBetaBiomeSource modernBetaBiomeSource) {
-                this.chunkProvider.provideSurface(chunkRegion, structureAccessor, chunk, modernBetaBiomeSource, noiseConfig);
+                if (this.chunkProvider.getChunkSettings().useSurfaceRules) {
+                    this.buildDefaultSurface(chunkRegion, structureAccessor, noiseConfig, chunk);
+                    this.chunkProvider.provideSurfaceExtra(chunkRegion, structureAccessor, chunk, modernBetaBiomeSource, noiseConfig);
+                } else {
+                    this.chunkProvider.provideSurface(chunkRegion, structureAccessor, chunk, modernBetaBiomeSource, noiseConfig);
+                }
             } else {
                 super.buildSurface(chunkRegion, structureAccessor, noiseConfig, chunk);
             }
         }
-        
+
         this.injectBiomes(chunk, noiseConfig.getMultiNoiseSampler(), BiomeInjectionStep.POST);
+    }
+
+    public void buildDefaultSurface(ChunkRegion chunkRegion, StructureAccessor structureAccessor, NoiseConfig noiseConfig, Chunk chunk) {
+        super.buildSurface(chunkRegion, structureAccessor, noiseConfig, chunk);
     }
     
     @Override
@@ -158,8 +174,28 @@ public class ModernBetaChunkGenerator extends NoiseChunkGenerator {
                 for(RegistryEntry<ConfiguredCarver<?>> carverEntry : carverList) {
                     ConfiguredCarver<?> configuredCarver = carverEntry.value();
                     random.setSeed((long) chunkX * l + (long) chunkZ * l1 ^ seed);
-                    
+
+                    if (this.chunkProvider.getChunkSettings().forceBetaCaves) {
+                        RegistryKey<ConfiguredCarver<?>> carverKey = carverEntry.getKey().orElse(null);
+                        if (carverKey != null) {
+                            ConfiguredCarver<?> replacementCarver = null;
+                            if (carverKey.equals(ConfiguredCarvers.CAVE)) {
+                                replacementCarver = chunkRegion.getRegistryManager().get(RegistryKeys.CONFIGURED_CARVER).get(ModernBetaConfiguredCarvers.BETA_CAVE);
+                            } else if (carverKey.equals(ConfiguredCarvers.CAVE_EXTRA_UNDERGROUND)) {
+                                replacementCarver = chunkRegion.getRegistryManager().get(RegistryKeys.CONFIGURED_CARVER).get(ModernBetaConfiguredCarvers.BETA_CAVE_DEEP);
+                            }
+
+                            if (replacementCarver != null) {
+                                configuredCarver = replacementCarver;
+                            }
+                        }
+                    }
+
                     if (configuredCarver.shouldCarve(random)) {
+                        if (configuredCarver.config() instanceof BetaCaveCarverConfig betaCaveCarverConfig) {
+                            betaCaveCarverConfig.useFixedCaves = Optional.of(this.chunkProvider.getChunkSettings().useFixedCaves);
+                        }
+
                         configuredCarver.carve(carverContext, chunk, biomeAccessWithSource::getBiome, random, aquiferSampler, carverPos, carvingMask);
                     }
                 }

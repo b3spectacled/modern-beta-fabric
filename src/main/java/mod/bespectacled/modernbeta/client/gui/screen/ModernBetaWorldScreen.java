@@ -205,7 +205,7 @@ public class ModernBetaWorldScreen extends ModernBetaScreen {
     }
     
     private void resetPreset() {
-        this.preset = ModernBetaRegistries.SETTINGS_PRESET.get(ModernBetaBuiltInTypes.Preset.BETA.id);
+        this.preset = ModernBetaRegistries.SETTINGS_PRESET.get(ModernBetaBuiltInTypes.Preset.BETA_1_7_3.id);
         this.onPresetChange();
     }
     
