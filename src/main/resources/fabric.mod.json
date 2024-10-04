@@ -13,7 +13,8 @@
     "Arenovas",
     "Amb0s",
     "PaulEvs",
-    "comp500"
+    "comp500",
+    "ErzeKawek"
   ],
   "contact": {
     "homepage": "https://github.com/b3spectacled/",
@@ -27,7 +28,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "mod.bespectacled.modernbeta.ModernBeta"  
+      "mod.bespectacled.modernbeta.ModernBeta"
     ],
     "modmenu": [
       "mod.bespectacled.modernbeta.config.ModernBetaModMenu"
@@ -43,9 +44,9 @@
   "accessWidener": "modern_beta.accesswidener",
 
   "depends": {
-    "fabricloader": ">=0.11.3",
+    "fabricloader": ">=0.15.0",
     "fabric": "*",
-    "minecraft": "1.20.*",
+    "minecraft": "1.20.4",
     "java": ">=17",
     "cloth-config2": "*"
   }
